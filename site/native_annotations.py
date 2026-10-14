@@ -7,7 +7,6 @@ from __future__ import annotations
 
 from copy import deepcopy
 from functools import lru_cache
-from fractions import Fraction
 import json
 from pathlib import Path
 import re
@@ -34,19 +33,35 @@ def is_native(item: Any) -> bool:
     return isinstance(item, dict) and ("links" in item or "unlinked" in item)
 
 
+def normalize(annotation: dict) -> dict:
+    """literature_links.companion.normalize, mirrored so this pipeline needs no package.
+
+    A copy with a string target as {"uri": ...} and a string status as
+    {"value": ...}, so readers handle one shape.
+    """
+    if not isinstance(annotation, dict):
+        raise TypeError("normalize takes one annotation object")
+    result = deepcopy(annotation)
+    if isinstance(result.get("target"), str):
+        result["target"] = {"uri": result["target"]}
+    if isinstance(result.get("status"), str):
+        result["status"] = {"value": result["status"]}
+    return result
+
+
+def _target(annotation: Any) -> dict:
+    target = normalize(annotation).get("target") if isinstance(annotation, dict) else None
+    return target if isinstance(target, dict) else {}
+
+
 def target_uri(annotation: Any) -> str | None:
-    """The formal reference of a record whose target is a string or an endpoint object."""
-    target = annotation.get("target") if isinstance(annotation, dict) else None
-    if isinstance(target, str):
-        return target
-    if isinstance(target, dict) and isinstance(target.get("uri"), str):
-        return target["uri"]
-    return None
+    """The formal reference of a record; None when it has no target."""
+    uri = _target(annotation).get("uri")
+    return uri if isinstance(uri, str) else None
 
 
 def target_pin(annotation: Any) -> dict | None:
-    target = annotation.get("target") if isinstance(annotation, dict) else None
-    pin = target.get("pin") if isinstance(target, dict) else None
+    pin = _target(annotation).get("pin")
     return pin if isinstance(pin, dict) and isinstance(pin.get("type"), str) else None
 
 
@@ -106,9 +121,12 @@ def validate_link_record(annotation: Any) -> None:
     if problem is not None:
         raise NativeAnnotationError(f"Literature Links {problem.json_path}: {problem.message}")
     location = annotation.get("location", {})
+    if "profile" in location:
+        return  # Application-defined in every mode; the built-in checks do not apply.
     mode = annotation["source"]["type"]
     if mode == "pdf" and "rect" in location:
-        x, y, width, height = (Fraction(str(value)) for value in location["rect"])
+        # Double sums, as the specification says, so every language agrees.
+        x, y, width, height = (float(value) for value in location["rect"])
         if width <= 0 or height <= 0 or x + width > 1 or y + height > 1:
             raise NativeAnnotationError("Literature Links PDF rectangle has invalid extents or bounds")
     if mode == "latex" and "lines" in location:

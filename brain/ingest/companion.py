@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 from types import SimpleNamespace
 import builtins
+import copy
 import ctypes
 import hashlib
 import importlib
@@ -79,8 +80,6 @@ def _validate_captured(collection):
     for record in collection.records:
         if not isinstance(record.path, Path) or not record.path.is_absolute():
             raise ImportError("Captured records require an absolute carrier Path")
-        if not isinstance(record.pointer, str):
-            raise ImportError("Captured records require a JSON pointer string")
         if record.line is not None and (type(record.line) is not int or record.line < 1):
             raise ImportError("Captured JSONL line must be a positive integer")
         try:
@@ -91,7 +90,8 @@ def _validate_captured(collection):
         if findings:
             raise ImportError("Invalid captured annotation; nothing imported: " +
                               "; ".join(str(problem) for problem in findings))
-        copied.records.append(discovery.Record(annotation, record.path, record.pointer, record.line))
+        copied.records.append(discovery.Record(annotation, record.path, line=record.line,
+                                               defaults=tuple(record.defaults)))
     return copied
 
 
@@ -183,12 +183,25 @@ def _resolve_reference(base_uri: str, reference: str) -> tuple[str, dict[str, st
     return key, {"status": "resolved"}
 
 
+def normalize(annotation: dict) -> dict:
+    """literature_links.companion.normalize, mirrored so reading an index needs no package.
+
+    A copy with a string target as {"uri": ...} and a string status as
+    {"value": ...}, so readers handle one shape.
+    """
+    if not isinstance(annotation, dict):
+        raise TypeError("normalize takes one annotation object")
+    result = copy.deepcopy(annotation)
+    if isinstance(result.get("target"), str):
+        result["target"] = {"uri": result["target"]}
+    if isinstance(result.get("status"), str):
+        result["status"] = {"value": result["status"]}
+    return result
+
+
 def target_reference(annotation: dict) -> str | None:
-    """The formal reference of a record whose target is absent, a string or an endpoint object."""
-    target = annotation.get("target")
-    if isinstance(target, dict):
-        return target.get("uri")
-    return target
+    """The formal reference of a record; None when it has no target."""
+    return normalize(annotation).get("target", {}).get("uri")
 
 
 def _projection(collection, source_key: str):
@@ -205,7 +218,7 @@ def _projection(collection, source_key: str):
         if hasattr(record, "origin"):
             origin = record.origin
         else:
-            origin = {"base_uri": record.path.as_uri(), "pointer": record.pointer}
+            origin = {"base_uri": record.path.as_uri()}
             if record.line is not None:
                 origin["line"] = record.line
         base_uri = origin["base_uri"]
@@ -323,8 +336,10 @@ def import_retained(entries, *, source_key: str, output: Path | str) -> dict[str
             raise ImportError("Retained origin requires an absolute carrier base_uri")
         if reference.check({"source": {"type": "generic", "uri": origin["base_uri"]}, "target": "urn:wikilean:origin-validation"}).problems:
             raise ImportError("Retained carrier base_uri is not a valid URI reference")
-        if not isinstance(origin.get("pointer"), str) or (origin["pointer"] and not origin["pointer"].startswith("/")) or re.search(r"~(?![01])", origin["pointer"]):
-            raise ImportError("Retained origin requires a JSON pointer with valid escapes")
+        # A pointer names the annotation inside an application document, such as
+        # a native article; an annotation file needs none.
+        if "pointer" in origin and (not isinstance(origin["pointer"], str) or (origin["pointer"] and not origin["pointer"].startswith("/")) or re.search(r"~(?![01])", origin["pointer"])):
+            raise ImportError("Retained origin pointer must be a JSON pointer with valid escapes")
         if "path" in origin and (not isinstance(origin["path"], str) or not origin["path"]):
             raise ImportError("Retained origin path must be a nonempty string when supplied")
         if origin.get("line") is not None and (type(origin["line"]) is not int or origin["line"] < 1):

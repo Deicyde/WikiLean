@@ -22,9 +22,10 @@ try {
   nativeDb=new DatabaseSync(resolve(directory,'native.sqlite3'));
   harness.env.DB=makeD1(nativeDb);
   globalThis.fetch=async()=>{throw new Error('network forbidden in native integration fixture');};
-  const response=await app.request(`/api/article/${SLUG}/companion.json`,undefined,harness.env);
+  const response=await app.request(`/api/article/${SLUG}/companion.jsonl`,undefined,harness.env);
   if(response.status!==200) throw new Error('native HTTP '+response.status);
-  const annotations=await response.json();
+  const text=await response.text();
+  const annotations=text.split('\n').filter(Boolean).map(line=>JSON.parse(line));
   const stored=nativeDb.prepare('SELECT annotations,revid,schema_version,version,wikipedia_title FROM articles WHERE slug=?').get(SLUG)!;
   const items=JSON.parse(String(stored.annotations));
   // The route returns each stored link with the item's review facts and the
@@ -32,6 +33,6 @@ try {
   const expected=storedCompanionRecords(items,{wikipediaTitle:String(stored.wikipedia_title),revid:Number(stored.revid)}).map(record=>record.annotation);
   if(JSON.stringify(expected)!==JSON.stringify(annotations)) throw new Error('HTTP changed stored native records');
   writeFileSync(resolve(directory,'article.json'),JSON.stringify({...stored,slug:SLUG,annotations:items},null,2)+'\n');
-  writeFileSync(resolve(directory,'links.json'),JSON.stringify(annotations,null,2)+'\n');
+  writeFileSync(resolve(directory,'links.jsonl'),text);
   process.stdout.write(JSON.stringify({annotations:expected.length,source_items:items.length,migration:report,records_unchanged:true}));
 } finally {nativeDb?.close();harness.db.close();}

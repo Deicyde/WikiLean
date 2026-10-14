@@ -46,15 +46,22 @@ export function isNativeItem(value: unknown): value is NativeItem {
 }
 export const isAbsoluteReference = (value: string): boolean => ABSOLUTE.test(value);
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
-/** The formal reference of a record whose target is a string or an endpoint object. */
+/** literature_links.companion.normalize: a copy with a string target as {uri}
+ * and a string status as {value}, so readers handle one shape. */
+export function normalize<T extends { target?: unknown; status?: unknown }>(record: T): Omit<T, 'target' | 'status'> & { target?: JsonObject; status?: JsonObject } {
+  const result = copy(record) as JsonObject;
+  if (typeof result.target === 'string') result.target = { uri: result.target };
+  if (typeof result.status === 'string') result.status = { value: result.status };
+  return result as Omit<T, 'target' | 'status'> & { target?: JsonObject; status?: JsonObject };
+}
+/** The formal reference of a record; undefined when it has no target. */
 export function targetUri(record: { target?: unknown }): string | undefined {
-  const target = record.target;
-  if (typeof target === 'string') return target;
-  return isObject(target) && typeof target.uri === 'string' ? target.uri : undefined;
+  const uri = normalize(record).target?.uri;
+  return typeof uri === 'string' ? uri : undefined;
 }
 export function targetPin(record: { target?: unknown }): LinkPin | undefined {
-  const target = record.target;
-  return isObject(target) && isObject(target.pin) && typeof target.pin.type === 'string' ? target.pin as LinkPin : undefined;
+  const pin = normalize(record).target?.pin;
+  return isObject(pin) && typeof pin.type === 'string' ? pin as LinkPin : undefined;
 }
 /** WikiLean's explicit module+declaration link: the docs URL plus a repository pin naming the declaration. */
 export function mathlibTarget(module: string, decl: string): LinkTarget {
@@ -150,15 +157,6 @@ function jsonProblem(value: unknown, active = new Set<unknown>(), safeIntegers =
   active.delete(value);
   return null;
 }
-function decimal(value: number): [bigint, number] {
-  const [mantissa, exponent = '0'] = String(value).split('e');
-  const [whole, fraction = ''] = mantissa.split('.');
-  return [BigInt(whole + fraction), fraction.length - Number(exponent)];
-}
-function exceedsOne(a: number, b: number): boolean {
-  const [x, xs] = decimal(a); const [y, ys] = decimal(b); const scale = Math.max(0, xs, ys);
-  return x * 10n ** BigInt(scale - xs) + y * 10n ** BigInt(scale - ys) > 10n ** BigInt(scale);
-}
 export function validateLinkRecord(value: unknown): string[] {
   let problem: string | null;
   try { problem = jsonProblem(value); } catch { return ['JSON nesting exceeds implementation limit']; }
@@ -166,9 +164,12 @@ export function validateLinkRecord(value: unknown): string[] {
   if (!schemaCheck(value)) return (schemaCheck.errors ?? []).map(e => `${e.instancePath || '/'}: ${e.message}`);
   const ann = value as LinkRecord;
   const loc = ann.location;
+  // A location with a profile is application-defined; the built-in checks do not apply.
+  if (loc && 'profile' in loc) return [];
   if (ann.source.type === 'pdf' && Array.isArray(loc?.rect)) {
+    // Double sums, as the specification says, so every language agrees.
     const [x, y, w, h] = loc.rect as number[];
-    if (w <= 0 || h <= 0 || exceedsOne(x, w) || exceedsOne(y, h)) return ['PDF rectangle must have positive size and fit within the page'];
+    if (w <= 0 || h <= 0 || x + w > 1 || y + h > 1) return ['PDF rectangle must have positive size and fit within the page'];
   }
   if (ann.source.type === 'latex' && Array.isArray(loc?.lines) && loc.lines[1] < loc.lines[0]) return ['LaTeX lines must be ordered'];
   return [];

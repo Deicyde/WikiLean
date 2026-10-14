@@ -37,9 +37,9 @@ def annotation():
 
 def collection(path, documents):
     return SimpleNamespace(
-        records=[SimpleNamespace(annotation=doc, path=path, pointer=f"/{i}",
-                                 line=None, base_uri=path.as_uri())
-                 for i, doc in enumerate(documents)],
+        records=[SimpleNamespace(annotation=doc, path=path, line=i if len(documents) > 1 else None,
+                                 defaults=(), base_uri=path.as_uri())
+                 for i, doc in enumerate(documents, 1)],
         problems=[], files=[path])
 
 
@@ -166,7 +166,7 @@ class ProjectionTests(unittest.TestCase):
     def test_bases_are_containing_shards_and_raw_references_survive(self):
         self.import_fixture()
         row, = companion.iter_annotations(self.output)
-        self.assertEqual(row["origin"], {"base_uri": self.shard.as_uri(), "pointer": "/0"})
+        self.assertEqual(row["origin"], {"base_uri": self.shard.as_uri()})
         self.assertEqual(row["source"], (self.root / "source.md").as_uri())
         self.assertEqual(row["annotation"]["source"]["uri"], "../source.md")
         self.assertFalse((self.root / "source.md").exists())
@@ -288,6 +288,11 @@ class ReferenceTests(unittest.TestCase):
         path.write_text(json.dumps(value, ensure_ascii=False), encoding="utf-8")
         return path
 
+    def write_lines(self, name, values):
+        path = self.input / name
+        path.write_text("".join(json.dumps(value, ensure_ascii=False) + "\n" for value in values), encoding="utf-8")
+        return path
+
     def ingest(self, **kwargs):
         return companion.import_companions([self.input], source_key="reference", output=self.output, **kwargs)
 
@@ -304,7 +309,7 @@ class ReferenceTests(unittest.TestCase):
             else:
                 del doc["location"]
             docs.append(doc)
-        self.write("all.json", docs)
+        self.write_lines("all.jsonl", docs)
         self.ingest()
         recovered = [row["annotation"] for row in companion.iter_annotations(self.output)]
         self.assertEqual(recovered, docs)
@@ -332,7 +337,30 @@ class ReferenceTests(unittest.TestCase):
         self.assertEqual(result["annotations"], 2)
         rows = list(companion.iter_annotations(self.output))
         self.assertEqual([row["origin"]["line"] for row in rows], [2, 4])
-        self.assertEqual([row["origin"]["pointer"] for row in rows], ["", ""])
+        self.assertTrue(all("pointer" not in row["origin"] for row in rows))
+
+    def test_a_json_array_is_a_shape_problem_not_a_list(self):
+        self.write("links.json", [annotation(), annotation()])
+        with self.assertRaisesRegex(companion.ImportError, "SHAPE"):
+            self.ingest()
+        self.assertFalse(self.output.exists())
+
+    def test_folder_defaults_are_applied_and_rebased(self):
+        self.write("_defaults.json", {"source": {"type": "generic", "uri": "../source.md"}})
+        self.write("chapter/link.json", {"target": "urn:fixture:result"})
+        self.ingest()
+        row, = companion.iter_annotations(self.output)
+        self.assertEqual(row["annotation"]["source"]["uri"], "../../source.md")
+        self.assertEqual(row["source"], (self.root.resolve() / "source.md").as_uri())
+        self.assertEqual(row["origin"], {"base_uri": (self.input.resolve() / "chapter/link.json").as_uri()})
+
+    def test_normalize_mirrors_the_reference(self):
+        for value in (annotation(), {**annotation(), "status": "partial"},
+                      {**annotation(), "target": {"uri": "urn:x"}, "status": {"value": "partial"}},
+                      {"source": {"type": "html", "uri": "urn:s"}}):
+            self.assertEqual(companion.normalize(value), reference.normalize(value))
+        self.assertEqual(companion.target_reference({"source": {}, "target": "urn:x"}), "urn:x")
+        self.assertIsNone(companion.target_reference({"source": {}}))
 
     def test_explicit_selection_does_not_traverse_arbitrary_nested_data(self):
         self.write("nested/link.json", annotation())
@@ -417,7 +445,7 @@ class ReferenceTests(unittest.TestCase):
             doc["target"] = source
             self.assertFalse(reference.check(doc).problems)
             docs.append(doc)
-        self.write("links.json", docs)
+        self.write_lines("links.jsonl", docs)
         self.ingest()
         rows = list(companion.iter_annotations(self.output))
         self.assertEqual([row["annotation"] for row in rows], docs)
@@ -467,6 +495,14 @@ class RetainedNativeTests(unittest.TestCase):
             companion.import_retained([{"annotation":annotation(),"origin":origin}], source_key="native", output=output)
             row, = companion.iter_annotations(output)
             self.assertEqual(row["origin"],origin)
+
+    def test_annotation_file_origin_needs_no_pointer(self):
+        with tempfile.TemporaryDirectory() as root:
+            output = Path(root) / "index"
+            origin = {"base_uri": "https://example.org/links.jsonl", "line": 3}
+            companion.import_retained([{"annotation": annotation(), "origin": origin}], source_key="native", output=output)
+            row, = companion.iter_annotations(output)
+            self.assertEqual(row["origin"], origin)
 
     def test_bad_carrier_base_rejected_without_output(self):
         with tempfile.TemporaryDirectory() as root:

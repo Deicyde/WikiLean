@@ -254,7 +254,7 @@ def _same_occurrences(entries, index: Path, catalog: Path) -> None:
 
     def identity(annotation, origin):
         # Ignore the archive's human-readable path alias, not the URI base,
-        # pointer or physical line identifying an occurrence.
+        # article pointer or physical line identifying an occurrence.
         return json.dumps([annotation, origin], sort_keys=True, ensure_ascii=True, separators=(",", ":"))
 
     expected = Counter(identity(entry["annotation"], entry["origin"]) for entry in entries)
@@ -376,7 +376,7 @@ def synchronize(workspace: Path) -> dict:
                 raise WorkspaceError("; ".join(f"{p.code}: {p.message}" for p in problems))
             entries = []
             for record in selection.records:
-                origin = {"base_uri": record.path.as_uri(), "pointer": record.pointer}
+                origin = {"base_uri": record.path.as_uri()}
                 if record.line is not None:
                     origin["line"] = record.line
                 entries.append({"annotation": record.annotation, "origin": origin})

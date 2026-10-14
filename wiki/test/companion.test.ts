@@ -117,17 +117,20 @@ describe("atomic companion export", () => {
   });
 });
 
-describe("GET /api/article/:slug/companion.json", () => {
-  it("returns a shard from one read with the pinned revid, not latest_revid; no writes or auth side effects", async () => {
+describe("GET /api/article/:slug/companion.jsonl", () => {
+  it("returns one annotation per line from one read with the pinned revid, not latest_revid; no writes or auth side effects", async () => {
     const { db, env } = setup();
     db.prepare("UPDATE articles SET latest_revid=99999 WHERE slug=?").run(SLUG);
     const before = articleRow(db);
-    const response = await get(env, `/api/article/${SLUG}/companion.json`);
+    const response = await get(env, `/api/article/${SLUG}/companion.jsonl`);
     expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("application/x-ndjson; charset=utf-8");
     expect(response.headers.get("Cache-Control")).toBe("no-store");
     expect(response.headers.get("X-Companion-Annotations")).toBe("1");
     expect(response.headers.get("X-Companion-Omissions")).toBe("1");
-    const records = await response.json() as Array<{ source: { uri: string } }>;
+    const text = await response.text();
+    expect(text.endsWith("\n")).toBe(true);
+    const records = text.split("\n").filter(Boolean).map((line) => JSON.parse(line)) as Array<{ source: { uri: string } }>;
     expect(records).toHaveLength(1);
     expect(records[0].source.uri).toContain("oldid=12345");
     expect(records[0]).toMatchObject({ status: "formalized", kind: "definition", label: "Abelian group",
@@ -135,18 +138,21 @@ describe("GET /api/article/:slug/companion.json", () => {
       target: { pin: { type: "repository", module: "Mathlib.Algebra.Group.Defs", declaration: "AddCommGroup" } },
       extensions: { "org.wikilean": { provenance: "ai", match_kind: "exact" } } });
     expect(articleRow(db)).toEqual(before);
-    const report = await get(env, `/api/article/${SLUG}/companion.json?report=1`);
+    const report = await get(env, `/api/article/${SLUG}/companion-report.json`);
     expect(await report.json()).toMatchObject({ annotations: records, diagnostics: [{ code: "NO_FORMAL_TARGET" }] });
   });
 
   it("never exposes tombstones even to the bot and distinguishes empty/unknown/unpinned articles", async () => {
     const { db, env } = setup();
     db.prepare("UPDATE articles SET annotations=? WHERE slug=?").run(JSON.stringify([{ ...annotation, status: "rejected" }]), SLUG);
-    const response = await get(env, `/api/article/${SLUG}/companion.json?report=1`, { bearer: PIPELINE_TOKEN });
+    const response = await get(env, `/api/article/${SLUG}/companion-report.json`, { bearer: PIPELINE_TOKEN });
     expect(await response.json()).toEqual({ annotations: [], diagnostics: [] });
-    expect((await get(env, "/api/article/unknown/companion.json")).status).toBe(404);
+    expect(await (await get(env, `/api/article/${SLUG}/companion.jsonl`)).text()).toBe("");
+    expect((await get(env, "/api/article/unknown/companion.jsonl")).status).toBe(404);
+    expect((await get(env, "/api/article/unknown/companion-report.json")).status).toBe(404);
     db.prepare("UPDATE articles SET revid=NULL WHERE slug=?").run(SLUG);
-    expect((await get(env, `/api/article/${SLUG}/companion.json`)).status).toBe(409);
+    expect((await get(env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
+    expect((await get(env, `/api/article/${SLUG}/companion.json`)).status).toBe(404);
     expect((await get(env, `/api/article/${SLUG}.json`)).status).toBe(200);
   });
 });

@@ -35,9 +35,9 @@ def docs():
 
 def build_index(output, values=None):
     values = docs() if values is None else values
-    shard = output.parent.resolve() / "shards" / "links.json"
-    captured = SimpleNamespace(records=[SimpleNamespace(annotation=value, path=shard, pointer=f"/{i}", line=None)
-                                       for i, value in enumerate(values)], files=[shard], problems=[])
+    shard = output.parent.resolve() / "shards" / "links.jsonl"
+    captured = SimpleNamespace(records=[SimpleNamespace(annotation=value, path=shard, line=i, defaults=())
+                                       for i, value in enumerate(values, 1)], files=[shard], problems=[])
     # This suite tests the real SQLite/browser boundary, with validation covered
     # by test_companion_ingest.py and its separately required reference suite.
     with patch.object(companion, "_validate_captured", side_effect=lambda value: value):
@@ -85,7 +85,8 @@ class ViewerTests(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertEqual([row["annotation"] for row in page["records"]], docs())
         self.assertEqual(page["records"][2]["resolution"]["source"]["status"], "unresolved")
-        self.assertEqual(page["records"][0]["origin"]["pointer"], "/0")
+        self.assertEqual(page["records"][0]["origin"]["line"], 1)
+        self.assertNotIn("pointer", page["records"][0]["origin"])
         self.assertIn(str(2**100), body)
 
     def test_page_boundaries_and_exact_endpoint_filters(self):

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
   validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, wikipediaSourceUri,
-  strictJsonParse, targetUri, targetPin, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
+  strictJsonParse, targetUri, targetPin, normalize, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
   type NativeItem, type LinkRecord,
 } from '../src/native-companion.js';
 
@@ -31,9 +31,16 @@ describe('canonical native companion records', () => {
     expect(validateNativeItems([a])).toEqual([]);
   });
   it('enforces the reference semantic checks and preserves lexical references', () => {
-    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.10000000000000002, 1] } })).not.toEqual([]);
+    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.2, 1] } })).not.toEqual([]);
     expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.1, 1] } })).toEqual([]);
+    // The bound is a double sum, so a width computed as 1 - x fits.
+    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.10000000000000002, 1] } })).toEqual([]);
     expect(validateLinkRecord({ ...core('latex'), location: { lines: [3, 1] } })).not.toEqual([]);
+    // A profile makes the location application-defined in every mode.
+    expect(validateLinkRecord({ ...core('pdf'), location: { profile: 'urn:x', rect: [0.9, 0, 0.2, 1] } })).toEqual([]);
+    expect(validateLinkRecord({ ...core('latex'), location: { profile: 'urn:x', lines: [3, 1] } })).toEqual([]);
+    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, quote: { exact: 'a group' } } })).toEqual([]);
+    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0, 0, 1, 1], quote: { exact: 'a group' } } })).not.toEqual([]);
     for (const uri of ['https://[oops', 'file:foo', 'urn:opaque:α%2f#']) {
       expect(validateNativeItems([item({ source: { type: 'generic', uri }, target: uri })])).toEqual([]);
     }
@@ -51,6 +58,8 @@ describe('canonical native companion records', () => {
       target: { uri: 'urn:x', pin: { type: 'repository', url: MATHLIB_REPOSITORY, module: 'Mathlib.X', declaration: 'x' } } };
     expect(validateLinkRecord(pinned)).toEqual([]);
     expect(targetUri(pinned)).toBe('urn:x'); expect(targetPin(pinned)?.declaration).toBe('x');
+    expect(normalize({ ...core(), status: 'partial' })).toEqual({ source: core().source, target: { uri: 'urn:target' }, status: { value: 'partial' } });
+    expect(normalize(pinned)).toEqual(pinned);
     expect(validateNativeItems([item(pinned)])).toEqual([]);
     const absent: LinkRecord = { source: { type: 'html', uri: 'urn:source' }, status: 'not_formalized' };
     expect(validateLinkRecord(absent)).toEqual([]);

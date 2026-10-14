@@ -10,6 +10,7 @@ import { editorItems, wikipediaSourceUri, type NativeItem, type LinkRecord } fro
 blockNetwork();
 function nativeSetup() { const h = setup(); migrateLocalDatabase(h.db); return h; }
 const nativeItems = (h: ReturnType<typeof setup>) => storedAnnotations(h.db) as NativeItem[];
+const jsonl = (text: string): unknown[] => text.split('\n').filter(Boolean).map(line => JSON.parse(line));
 function repin(items: NativeItem[], revid: number) {
   const output = echo(items);
   for (const item of output) {
@@ -40,9 +41,10 @@ describe('native canonical API and lifecycle', () => {
     expect(stored[0].links).toEqual(items[0].links);
     expect(stored[0].provenance).toBe('ai');
     expect(h.db.prepare('SELECT source_revid,schema_version FROM revisions WHERE slug=?').get('Native_New')).toMatchObject({ source_revid: REVID, schema_version: 4 });
-    const records = await get(h.env, '/api/article/Native_New/companion.json');
+    const records = await get(h.env, '/api/article/Native_New/companion.jsonl');
+    expect(records.headers.get('Content-Type')).toContain('application/x-ndjson');
     // Stored records come back with the item's facts; the sources are not the article, so no website pin.
-    expect(await records.json()).toEqual(items[0].links.map(link => ({ id: 'aaaaaaaaaaaa', status: 'formalized', ...link.annotation,
+    expect(jsonl(await records.text())).toEqual(items[0].links.map(link => ({ id: 'aaaaaaaaaaaa', status: 'formalized', ...link.annotation,
       extensions: { ...link.annotation.extensions, 'org.wikilean': { provenance: 'ai' } } })));
     const legacy = await put(h.env, '/api/article/Legacy_Implicit', { wikipedia_title: 'Legacy', revid: REVID, annotations: [{ status: 'partial', anchor: {} }] }, { bearer: PIPELINE_TOKEN });
     expect(legacy.status).toBe(400);
@@ -57,20 +59,20 @@ describe('native canonical API and lifecycle', () => {
     const projected = { ...value, status: 'formalized', kind: 'definition', label: 'Abelian group',
       extensions: { ...value.extensions, 'org.wikilean': { provenance: 'ai', match_kind: 'exact' } } };
     expect(await response.json()).toEqual({ version: 3, records: items[0].links.map(link => ({ ...link, annotation: projected, item_id: items[0].id })) });
-    expect((await get(h.env, `/api/article/${SLUG}/companion.json`)).status).toBe(409);
+    expect((await get(h.env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
   });
   it('retains relative schema hints in record reads and refuses to change their carrier silently', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
     items[0].links[0].annotation.$schema = '../schema.json'; items[0].links[0].base_uri = 'https://example.org/shards/a.json';
     expect((await botSave(h.env, { annotations: items, base_version: 2 })).status).toBe(200);
-    expect((await get(h.env, `/api/article/${SLUG}/companion.json`)).status).toBe(409);
+    expect((await get(h.env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
   });
   it('keeps an explicit carrier for opaque profile references even when core references are absolute', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
     items[0].links[0].annotation.location = { profile: 'urn:custom', relative_part: '../part.json' };
     items[0].links[0].base_uri = 'https://example.org/shards/original.json';
     expect((await botSave(h.env, { annotations: items, base_version: 2 })).status).toBe(200);
-    expect((await get(h.env, `/api/article/${SLUG}/companion.json`)).status).toBe(409);
+    expect((await get(h.env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
     const lossless = await (await get(h.env, `/api/article/${SLUG}/companion-records.json`)).json() as { records: unknown[] };
     expect(lossless.records[0]).toMatchObject(items[0].links[0]);
   });
@@ -122,7 +124,7 @@ describe('native canonical API and lifecycle', () => {
     expect((await save(h.env, { annotations: items, base_version: 2 }, { user: 'u-human' })).status).toBe(200);
     const changed = nativeItems(h); changed[0].links[0].annotation.target = 'urn:changed';
     expect((await botSave(h.env, { annotations: changed, base_version: 3 })).status).toBe(422);
-    expect(await (await get(h.env, `/api/article/${SLUG}/companion.json`, { bearer: PIPELINE_TOKEN })).json()).toEqual([]);
+    expect(await (await get(h.env, `/api/article/${SLUG}/companion.jsonl`, { bearer: PIPELINE_TOKEN })).text()).toBe('');
   });
   it('endorses native items and makes a stale edit fail without mutation', async () => {
     const h = nativeSetup();

@@ -56,7 +56,7 @@ class NativeContract(unittest.TestCase):
         self.assertEqual(n.strict_loads('{"left":{"id":"a"},"right":{"id":"b"}}'),
                          {'left':{'id':'a'},'right':{'id':'b'}})
 
-    def test_native_fca_all_modes_and_unknown_values_survive(self):
+    def test_native_all_modes_and_unknown_values_survive(self):
         locations = {'pdf': {'page': 1, 'rect': [0, 0, 1, 1]}, 'latex': {'lines': [1, 2]},
                      'html': {'fragment': 'α'}, 'generic': {'unknown': {'list': [None, True, 1.25]}}}
         work = item()
@@ -77,6 +77,27 @@ class NativeContract(unittest.TestCase):
             work = item(); patcher(work['links'][0]['annotation'])
             with self.subTest(work=work), self.assertRaises(n.NativeAnnotationError):
                 n.validate_items([work])
+
+    def test_profile_locations_and_double_sum_rectangles(self):
+        record = lambda mode, location: {'source': {'type': mode, 'uri': URI}, 'target': 'urn:x', 'location': location}
+        # The bound is a double sum, so a width computed as 1 - x fits.
+        n.validate_link_record(record('pdf', {'page': 1, 'rect': [.9, 0, .10000000000000002, 1]}))
+        # A profile makes the location application-defined in every mode.
+        n.validate_link_record(record('pdf', {'profile': 'urn:x', 'rect': [.9, 0, .2, 1]}))
+        n.validate_link_record(record('latex', {'profile': 'urn:x', 'lines': [9, 2]}))
+        n.validate_link_record(record('pdf', {'page': 1, 'quote': {'exact': 'a group'}}))
+        with self.assertRaises(n.NativeAnnotationError):
+            n.validate_link_record(record('pdf', {'page': 1, 'rect': [0, 0, 1, 1], 'quote': {'exact': 'a group'}}))
+
+    def test_normalize_gives_one_shape(self):
+        value = {'source': {'type': 'html', 'uri': URI}, 'target': 'urn:x', 'status': 'partial'}
+        self.assertEqual(n.normalize(value), {'source': value['source'], 'target': {'uri': 'urn:x'}, 'status': {'value': 'partial'}})
+        self.assertEqual(n.normalize(n.normalize(value)), n.normalize(value))
+        try:
+            from literature_links.companion import normalize
+        except ImportError:
+            return
+        self.assertEqual(n.normalize(value), normalize(value))
 
     def test_native_shape_internal_identity_and_base_are_checked(self):
         broken = []

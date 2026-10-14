@@ -7,9 +7,10 @@ wiki remains canonical in D1; imported companions do not modify articles, modera
 the source registry, the nightly reducer, or a published Brain release.
 
 Literature Links is the interchange format. There is no companion manifest or imposed directory
-layout. Each record has one informal source and at most one formal target; JSON objects,
-arrays of complete records, and JSONL/NDJSON shards are supported by the reference
-package's recursive discovery. PDF, LaTeX, HTML, and generic sources all work. No
+layout. Each record has one informal source and at most one formal target. A `.json`
+file holds one annotation and a `.jsonl` or `.ndjson` file holds one per line; folder
+defaults (`_defaults.json`) apply as the package's recursive discovery defines them.
+A JSON array is a `SHAPE` problem, not a list of annotations. PDF, LaTeX, HTML, and generic sources all work. No
 Autoform-specific extension is required.
 
 ## Install the reference validator
@@ -65,7 +66,8 @@ output outside input roots to avoid selecting generated artifacts on a later sca
 
 The query emits JSONL with `annotation`, `origin`, `source` and `target` lookup keys,
 and per-endpoint `resolution` status. The annotation is the complete original decoded object. `origin` contains
-the carrier's absolute base URI, JSON pointer, and physical JSONL line when relevant.
+the carrier's absolute base URI and physical JSONL line when relevant; a native
+article entry also keeps the JSON pointer of its annotation inside the article.
 Discovery supplies file bases; `import_retained(entries, ...)` also accepts native
 operational `{annotation, origin}` entries with HTTP or opaque bases, preserving
 all origin fields (including an explicit null line).

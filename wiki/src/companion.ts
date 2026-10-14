@@ -133,6 +133,38 @@ export function exportCompanionAnnotations(article: CompanionArticle): {
   return { annotations, diagnostics };
 }
 
+/** Each annotation on its own line; an empty list is an empty document. */
+export function toJsonl(annotations: unknown[]): string {
+  return annotations.map((annotation) => JSON.stringify(annotation) + "\n").join("");
+}
+
+type CompanionResult =
+  | { ok: true; annotations: unknown[]; diagnostics: ExportDiagnostic[] }
+  | { ok: false; status: 404 | 409; body: ObjectValue };
+
+/** The public annotations of one article from a single read of its row. */
+async function articleCompanion(env: Env, slug: string): Promise<CompanionResult> {
+  const db = drizzle(env.DB);
+  const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+  if (!row) return { ok: false, status: 404, body: { ok: false, error: "unknown slug" } };
+  if (row.schemaVersion === NATIVE_SCHEMA_VERSION) {
+    const items = strictJsonParse(row.annotations) as ObjectValue[];
+    if (validateNativeItems(items).length) return { ok: false, status: 409, body: { ok: false, error: "invalid native stored snapshot" } };
+    const records = storedCompanionRecords(items, { wikipediaTitle: row.wikipediaTitle, revid: row.revid, wikidataQid: row.wikidataQid });
+    if (records.some(record => record.base_uri !== undefined || !isAbsoluteReference(record.annotation.source.uri) || !isAbsoluteReference(targetUri(record.annotation) ?? '')
+      || (record.annotation.$schema !== undefined && !isAbsoluteReference(record.annotation.$schema)))) {
+      return { ok: false, status: 409, body: { ok: false, error: 'relative records require their original carrier bases',
+        records_url: `/api/article/${encodeURIComponent(row.slug)}/companion-records.json` } };
+    }
+    return { ok: true, annotations: records.map(record => record.annotation), diagnostics: [] };
+  }
+  if (!isPinnedRevision(row.revid)) {
+    return { ok: false, status: 409, body: { ok: false, error: "article has no pinned Wikipedia revision" } };
+  }
+  // No cross-version cache: rows and their pinned revid come from one read.
+  return { ok: true, ...exportCompanionAnnotations({ ...row, annotations: strictJsonParse(row.annotations) as unknown[] }) };
+}
+
 export function registerCompanionRoutes(app: Hono<{ Bindings: Env }>): void {
   // Lossless stored-record read. Carrier bases accompany raw references; no
   // URI normalization, source fetching, or extension projection takes place.
@@ -146,35 +178,21 @@ export function registerCompanionRoutes(app: Hono<{ Bindings: Env }>): void {
     c.header('Cache-Control', 'no-store');
     return c.json({ version: row.version, records: storedCompanionRecords(items, { wikipediaTitle: row.wikipediaTitle, revid: row.revid, wikidataQid: row.wikidataQid }) });
   });
-  app.get("/api/article/:slug/companion.json", async (c) => {
-    const db = drizzle(c.env.DB);
-    const row = (await db.select().from(articles).where(eq(articles.slug, c.req.param("slug"))).limit(1))[0];
-    if (!row) return c.json({ ok: false, error: "unknown slug" }, 404);
-    if (row.schemaVersion === NATIVE_SCHEMA_VERSION) {
-      const items = strictJsonParse(row.annotations) as ObjectValue[];
-      if (validateNativeItems(items).length) return c.json({ ok: false, error: 'invalid native stored snapshot' }, 409);
-      const records = storedCompanionRecords(items, { wikipediaTitle: row.wikipediaTitle, revid: row.revid, wikidataQid: row.wikidataQid });
-      if (records.some(record => record.base_uri !== undefined || !isAbsoluteReference(record.annotation.source.uri) || !isAbsoluteReference(targetUri(record.annotation) ?? '')
-        || (record.annotation.$schema !== undefined && !isAbsoluteReference(record.annotation.$schema)))) {
-        return c.json({ ok: false, error: 'relative records require their original carrier bases',
-          records_url: `/api/article/${encodeURIComponent(row.slug)}/companion-records.json` }, 409);
-      }
-      const annotations = records.map(record => record.annotation);
-      c.header('Cache-Control', 'no-store');
-      c.header('X-Companion-Annotations', String(annotations.length));
-      c.header('X-Companion-Omissions', '0');
-      return c.json(c.req.query('report') === '1' ? { annotations, diagnostics: [] } : annotations);
-    }
-    if (!isPinnedRevision(row.revid)) {
-      return c.json({ ok: false, error: "article has no pinned Wikipedia revision" }, 409);
-    }
-    const result = exportCompanionAnnotations({ ...row, annotations: strictJsonParse(row.annotations) as unknown[] });
-    // No cross-version cache: rows and their pinned revid come from one read.
+  // One annotation per line, as Literature Links reads a list of annotations
+  // from a file or a web response. The report is operational JSON, not a list.
+  app.get("/api/article/:slug/companion.jsonl", async (c) => {
+    const result = await articleCompanion(c.env, c.req.param("slug"));
+    if (!result.ok) return c.json(result.body, result.status);
+    return new Response(toJsonl(result.annotations), { headers: {
+      "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store",
+      "X-Companion-Annotations": String(result.annotations.length),
+      "X-Companion-Omissions": String(result.diagnostics.length),
+    } });
+  });
+  app.get("/api/article/:slug/companion-report.json", async (c) => {
+    const result = await articleCompanion(c.env, c.req.param("slug"));
+    if (!result.ok) return c.json(result.body, result.status);
     c.header("Cache-Control", "no-store");
-    c.header("X-Companion-Annotations", String(result.annotations.length));
-    c.header("X-Companion-Omissions", String(result.diagnostics.length));
-    // The default array is a discovery-compatible shard. The optional report
-    // is operational output and must be saved outside a shard scan's include.
-    return c.json(c.req.query("report") === "1" ? result : result.annotations);
+    return c.json({ annotations: result.annotations, diagnostics: result.diagnostics });
   });
 }

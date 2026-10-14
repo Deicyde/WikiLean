@@ -79,12 +79,12 @@ def main() -> int:
     autoform_records = [{"source": {"type": "generic", "uri": article_source},
                          "target": f"urn:lean:Consumer.{name}",
                          "extensions": {"fixture": {"native": True}}} for name in ("result", "other")]
-    (autoform_output / "links.json").write_text(json.dumps(autoform_records) + "\n")
+    (autoform_output / "links.jsonl").write_text("".join(json.dumps(a) + "\n" for a in autoform_records))
     web = output / "wiki" / "nested"
     web.mkdir(parents=True)
     native_fixture = output / "wikilean-database"
     wiki_report = json.loads(run([args.node, "--import", "tsx", "scripts/native-companion-fixture.ts", str(native_fixture)], cwd=ROOT / "wiki"))
-    (web / "article.json").write_bytes((native_fixture / "links.json").read_bytes())
+    (web / "article.jsonl").write_bytes((native_fixture / "links.jsonl").read_bytes())
 
     # Mix all location modes, duplicate IDs and huge integers with real exports.
     # Relative references deliberately resolve against nested/modes.jsonl.
@@ -120,7 +120,7 @@ def main() -> int:
     assert {row["target"] for row in pdf} == {(output / "formal.html").as_uri() + "#pdf"}
     exported = [row for row in rows if row["annotation"].get("extensions", {}).get("fixture", {}).get("native")]
     assert len(exported) == 2
-    wikilean = [row["annotation"] for row in rows if row["origin"]["base_uri"].endswith("/wiki/nested/article.json")]
+    wikilean = [row["annotation"] for row in rows if row["origin"]["base_uri"].endswith("/wiki/nested/article.jsonl")]
     assert len(wikilean) == 5, len(wikilean)
     assert all(a["status"] in {"formalized", "partial"} and a["source"]["pin"]["type"] == "website"
                and a["target"]["pin"]["declaration"] for a in wikilean), wikilean
