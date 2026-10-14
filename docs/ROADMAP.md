@@ -254,10 +254,10 @@ The paragraphs from here to the P1A heading are the 2026-09-26 record, kept as h
 "production selector absent" statements predate the promotion. P1A–P1C below are current.
 
 The 2026-09-26 operational checkpoint is
-[`BRAIN-SQLITE-HANDOFF-2026-09-26.md`](BRAIN-SQLITE-HANDOFF-2026-09-26.md), with the
-retained pack/source details in the [September 23 handoff](BRAIN-SQLITE-HANDOFF-2026-09-23.md).
+[`BRAIN-SQLITE-HANDOFF-2026-09-26.md`](archive/BRAIN-SQLITE-HANDOFF-2026-09-26.md), with the
+retained pack/source details in the [September 23 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md).
 The SQLite stack and PRs #32–#34 merged on 2026-09-21. Earlier handoffs and the
-[review map](BRAIN-SQLITE-PR-REVIEW.md) preserve implementation history; their missing-store,
+[review map](archive/BRAIN-SQLITE-PR-REVIEW.md) preserve implementation history; their missing-store,
 pending-merge, live-process, and quota instructions are no longer the current queue.
 
 The September 26 continuation fixes a publication mismatch: the verified replay
@@ -569,7 +569,7 @@ explicit approval.
     - [x] Capture and independently verify a fresh canonical production bundle. The
       2026-09-08 read captured 778 articles and zero community edges/nodes; the private
       bundle and receipt/lineage identities are recorded in
-      `BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
+      `docs/archive/BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
     - [x] Bind the retained receipt/lineage and exact normalized annotation/community
       outputs into the complete private candidate source plan on 2026-09-23. The exporter
       preserves original capture evidence and derives sidecars without ambient cache
@@ -802,7 +802,8 @@ explicit approval.
     release, or deployment readiness.
   - [x] Compile and independently verify the first real v3 pack. The September 23 result
     contains 113 sources and 90,410 files totaling 7.408 GB; exact IDs and full SHA/evidence
-    verification are retained in the current handoff and private `full-pack-attempt-02`.
+    verification are retained in the [September 23 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md)
+    and private `full-pack-attempt-02`.
   - [ ] Bind the final authority generation's verified `offline_pack_id` and
     `source_set_root` into build-attestation/v2 and release verification.
     Pack-bound release production/verification is implemented in the continuation:
