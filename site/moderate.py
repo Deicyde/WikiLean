@@ -581,8 +581,11 @@ def error_sample(jobs: list[dict], token: str | None = None) -> str:
     """Bounded summary of a run's distinct per-article errors, most common
     first: '15/15 errors: 15x ~2s RuntimeError: agent_error: … (e.g. A, B)'.
     `jobs` is run_jobs' per-job list ({slug, error, elapsed_s}). Empty when
-    nothing errored. The ~Ns median tells a launch/login failure (seconds)
-    from one after the agents ran (minutes), which the 0-token count can't."""
+    nothing errored. ~Ns is the median of the group's elapsed_s: the
+    article's own pipeline time in annotate_one, timed from the concurrency
+    slot (queue wait excluded); errors that never reach it (get_failed_*) carry
+    none. It is a hint, since an agent-pipeline error reports 0 tokens either
+    way: seconds suggest a launch/login failure, minutes that agents ran."""
     failed = [j for j in jobs if j.get("error")]
     if not failed:
         return ""
@@ -1615,7 +1618,7 @@ def main() -> int:
                   else "new" if args.command == "new" else None)
     # The error text otherwise lives only in this host's site/cache logs;
     # carrying a sanitized sample in notes makes a failing night diagnosable
-    # from D1 (backups, wrangler d1) without access to the host.
+    # from D1 (wrangler d1 execute --remote) without access to the host.
     sample = error_sample(job_results, token)
     maybe_register_run(
         args, token, started_at, totals,
