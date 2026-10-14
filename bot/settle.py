@@ -289,9 +289,11 @@ def ready_header(cls):
     green, recycle = cls["green"], cls["recycle"]
     who = ", ".join(f"`{u}`" for u in cls["reviewers"]) or "none"
     return (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags with at least one approval 🟢 "
-            f"and no unresolved objection. Under this bot's rule one approval per tag is enough, and it can "
-            f"be the PR author's own or a single 👍 reaction; a verdict from a Mathlib maintainer or from "
-            f"anyone GitHub lists as a mathlib4 owner, member or collaborator overrides the others. "
+            f"and no reject/revise/flag recorded by this bot that a maintainer's verdict did not override "
+            f"(GitHub \"Request changes\" reviews and free-text comments are not counted). Under this bot's "
+            f"rule one approval per tag is enough, and it can be the PR author's own or a single 👍 reaction. "
+            f"Only a per-tag verdict or 👍/👎 from `jcommelin`, `faenuccio` or someone GitHub shows the bot "
+            f"as a mathlib4 owner, member or collaborator overrides the others; a GitHub PR approval never does. "
             f"Reviews recorded from: {who}. **Ready for a maintainer's review.**"
             + (f" {len(recycle)} recycled to the next batch." if recycle else "")
             + " <!-- wikilean-bot-ready -->")
