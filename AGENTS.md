@@ -113,7 +113,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - Schema changes go through ordered, numbered files in `wiki/migrations/`. **Remote migration
   tracking is out of sync**: the headers of `0009`, `0010` and `0012` say so, and all four of
   `0009`–`0012` give the manual command.
-  Apply a new migration the same way, as an operator action after a D1 backup (`npm run backup:d1`):
+  Apply a new migration the same way, as an operator action after a D1 backup (`cd wiki && npm run backup:d1`; it needs `age` installed and `BACKUP_AGE_RECIPIENTS` exported, see `docs/BACKUP.md`):
   `cd wiki && npx wrangler d1 execute wikilean --remote --file=migrations/<NNNN_name>.sql`.
   Never `wrangler d1 migrations apply --remote`, which could re-run files the remote tracking
   table does not list (`0008`'s `ALTER TABLE … ADD COLUMN` fails on a re-run). Keep new files
