@@ -117,5 +117,7 @@ run_check "Portable nightly launcher tests" "$PYTHON_BIN" site/ops/test_nightly_
 run_check "Brain nightly shell tests" "$PYTHON_BIN" site/ops/test_brain_nightly.py
 run_check "Frontier suitability policy tests" "$PYTHON_BIN" brain/test_frontier_suitability.py
 run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_page.py
+run_check "Bot poller fail-closed tests" "$PYTHON_BIN" bot/test_poll.py
+run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"
