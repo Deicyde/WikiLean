@@ -30,9 +30,16 @@ describe('native editor preservation',()=>{
   });
   it('explicit re-anchoring changes only the selected source and selector',()=>{
     const after=model.edit(base(),'link:first',{anchor:{section:'New',snippet:'text'},reanchorSource:sourceUri},newId).item;
-    expect(after.links[0].annotation.source).toEqual({type:'generic',uri:sourceUri});
+    expect(after.links[0].annotation.source).toEqual({type:'html',uri:sourceUri});
     expect(after.links[0].annotation.extensions).toEqual(base().links[0].annotation.extensions);
     expect(after.links[1]).toEqual(base().links[1]); expect(after.unlinked).toEqual(base().unlinked);
+  });
+  it('edits anchors on html sources and on generic ones written before the profile form',()=>{
+    for(const type of ['html','generic']){
+      const item={links:[],unlinked:[{source:{type,uri:sourceUri},location:{profile:'urn:wikilean:anchor:v3',anchor:{snippet:'old'}}}]};
+      expect(model.anchor(model.entries(item)[0],sourceUri)).toEqual({snippet:'old'});
+      expect(model.edit(item,'unlinked:0',{anchor:{snippet:'new'}},newId).item.unlinked[0].location.anchor).toEqual({snippet:'new'});
+    }
   });
   it('preserves unknown selector details on ordinary range edits',()=>{
     const after=model.edit(base(),'link:second',{anchor:{section:'New',snippet:'text'}},newId).item;
@@ -61,6 +68,6 @@ describe('native editor preservation',()=>{
   });
   it('new work requires a pinned source and begins with one targetless occurrence',()=>{
     expect(()=>model.makeItem(null,{snippet:'text'})).toThrow(/pinned/);
-    expect(model.makeItem(sourceUri,{section:'(lead)',snippet:'text'})).toMatchObject({links:[],unlinked:[{source:{type:'generic',uri:sourceUri}}]});
+    expect(model.makeItem(sourceUri,{section:'(lead)',snippet:'text'})).toMatchObject({links:[],unlinked:[{source:{type:'html',uri:sourceUri}}]});
   });
 });

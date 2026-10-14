@@ -191,7 +191,8 @@ export function legacyAnchorOccurrences(item: JsonObject, context?: SourceContex
     if (!sourceMatches(occurrence.source, context, occurrence.base_uri)) return null;
     if (!('location' in occurrence) && ['html', 'generic'].includes(occurrence.source.type)) return { type: 'whole_resource' };
     const loc = occurrence.location;
-    if (occurrence.source.type !== 'generic' || loc?.profile !== ANCHOR_PROFILE || !isObject(loc.anchor)) return null;
+    // Written as html since the profile form exists; generic records predate it.
+    if (!['html', 'generic'].includes(occurrence.source.type) || loc?.profile !== ANCHOR_PROFILE || !isObject(loc.anchor)) return null;
     const keys = ['type', 'value', 'section', 'snippet', 'from', 'from_snippet', 'to', 'to_snippet', 'to_math', 'to_alttext'];
     const anchor = loc.anchor;
     if (keys.some(key => key in anchor && typeof anchor[key] !== 'string')) return null;
@@ -303,7 +304,7 @@ export function migrateLegacyItems(items: JsonObject[], context: SourceContext):
       const valid = isObject(span) && keys.every(key => span[key] === undefined || (typeof span[key] === 'string' && !jsonProblem(span[key])));
       if (!valid) diagnostics.push({ item: index, anchor: anchorIndex, code: 'INVALID_ANCHOR' });
       const anchor = valid ? Object.fromEntries(keys.filter(key => key in span).map(key => [key, span[key]])) : {};
-      const occurrence: UnlinkedOccurrence = { source: { type: 'generic', uri }, location: { profile: ANCHOR_PROFILE, anchor, resolution: valid ? 'not_attempted' : 'unresolved' } };
+      const occurrence: UnlinkedOccurrence = { source: { type: 'html', uri }, location: { profile: ANCHOR_PROFILE, anchor, resolution: valid ? 'not_attempted' : 'unresolved' } };
       if (target && valid) item.links.push({ id: `${original.id || 'item' + index}:link:${anchorIndex}`, annotation: { ...occurrence, target } });
       else item.unlinked.push(occurrence);
     });

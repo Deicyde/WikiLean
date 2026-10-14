@@ -34,7 +34,7 @@ export interface CompanionAnnotation {
   kind?: string;
   label?: string;
   status: string;
-  source: { type: "generic"; uri: string; pin: LinkPin };
+  source: { type: "html"; uri: string; pin: LinkPin };
   location: { profile: string; anchor: Record<string, string>; resolution: "not_attempted" };
   target: LinkTarget;
   note?: string;
@@ -112,7 +112,7 @@ export function exportCompanionAnnotations(article: CompanionArticle): {
         ...(nonempty(annotation.kind) ? { kind: annotation.kind } : {}),
         ...(nonempty(annotation.label) ? { label: annotation.label } : {}),
         status: annotation.status,
-        source: { type: "generic", uri: source, pin: articleSourcePin(context) },
+        source: { type: "html", uri: source, pin: articleSourcePin(context) },
         // WikiLean snippets use a different normalization and ranges include
         // the endpoint. Keeping the locator opaque avoids false HTML quotes
         // or silently changing an unresolved span into the entire article.

@@ -15,16 +15,20 @@ function createCompanionEditorModel() {
     if (typeof target === "string") return target;
     return target && typeof target === "object" && typeof target.uri === "string" ? target.uri : "";
   }
+  // The anchor profile on an html source; generic records predate the profile form.
+  function wikipediaText(occ) {
+    return (occ.source.type === "html" || occ.source.type === "generic") && !!occ.location && occ.location.profile === profile;
+  }
   function makeItem(source, anchor) {
     if (!source) throw new Error("The article has no pinned source revision. A source revision is required before adding a location.");
-    return { links: [], unlinked: [{ source: { type: "generic", uri: source }, location: { profile, anchor: clone(anchor) } }] };
+    return { links: [], unlinked: [{ source: { type: "html", uri: source }, location: { profile, anchor: clone(anchor) } }] };
   }
   function anchor(entry, source) {
     if (!entry || !source) return null;
     const occ = entry.occurrence;
     let uri;
     try { uri = entry.base ? new URL(occ.source.uri, entry.base).href : new URL(occ.source.uri).href; } catch (_) { return null; }
-    return uri === source && occ.source.type === "generic" && occ.location && occ.location.profile === profile && occ.location.anchor
+    return uri === source && wikipediaText(occ) && occ.location.anchor
       ? occ.location.anchor : null;
   }
   function edit(item, key, change, newId) {
@@ -33,10 +37,10 @@ function createCompanionEditorModel() {
     const occ = entry.occurrence;
     if (change.anchor) {
       if (change.reanchorSource) {
-        occ.source = { type: "generic", uri: change.reanchorSource };
+        occ.source = { type: "html", uri: change.reanchorSource };
         occ.location = { profile, anchor: clone(change.anchor) };
       } else {
-        if (occ.source.type !== "generic" || !occ.location || occ.location.profile !== profile)
+        if (!wikipediaText(occ))
           throw new Error("This location cannot be edited as Wikipedia text. Use a new article selection to replace it explicitly.");
         occ.location = { ...occ.location, anchor: { ...occ.location.anchor, ...clone(change.anchor) } };
       }

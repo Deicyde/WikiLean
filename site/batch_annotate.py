@@ -125,7 +125,7 @@ NATIVE_ITEM_GUIDANCE = """
 Use WikiLean's native review-item format. Each item retains id, kind, label,
 status, note, provenance and other review metadata, and REQUIRES two arrays:
   links: [{"id":"<stable internal link id>", "annotation":{
-    "source":{"type":"generic","uri":"<supplied pinned article URI>"},
+    "source":{"type":"html","uri":"<supplied pinned article URI>"},
     "location":{"profile":"urn:wikilean:anchor:v3","anchor":{
       "section":"<heading>","snippet":"<verbatim phrase>"},"resolution":"not_attempted"},
     "target":{"uri":"<explicit formal resource URI>","pin":{"type":"repository",
@@ -150,7 +150,7 @@ NATIVE_AGENT1_SYSTEM = """Enumerate or review the mathematical statements in
 the supplied Wikipedia sections. Copy snippet phrases exactly; select one
 statement per review item. For new statements use status not_formalized,
 provenance ai, links [], and unlinked source selections using the supplied
-pinned article URI. The generic WikiLean anchor can be section+snippet,
+pinned article URI. The WikiLean anchor can be section+snippet,
 theorem_box/value, math_alttext/value or prose_range. Keep all occurrences as
 separate selections. Do not guess formal targets. Review existing selections
 without discarding existing links or unknown data.

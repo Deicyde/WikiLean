@@ -133,6 +133,8 @@ describe('canonical native companion records', () => {
     expect(result.items[0].provenance).toBe('human');
     expect(result.items[0]).not.toHaveProperty('mathlib');
     expect(result.items[0].match_kind).toBe('exact');
+    // The anchor profile marks an application-defined location on the article's HTML.
+    expect(result.items[0].links[0].annotation.source.type).toBe('html');
     expect(result.items[1].unlinked).toHaveLength(1);
     expect(result.items[2].unlinked).toHaveLength(1);
     expect(result.diagnostics.map(d => d.code)).toEqual(expect.arrayContaining(['STATUS_TARGET_CONFLICT', 'MISSING_ANCHOR', 'INVALID_ANCHOR']));
@@ -150,6 +152,13 @@ describe('canonical native companion records', () => {
     a.links[0].annotation.location = { css: '#x' };
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
     a.links[0].annotation = { source: { type: 'generic', uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 1 } } };
+    expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
+    // Records written before the profile form used generic sources; both read the same.
+    for (const type of ['html', 'generic'] as const) {
+      a.links[0].annotation = { source: { type, uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
+      expect(legacyAnchorOccurrences(a, context)).toEqual([{ snippet: 'x' }]);
+    }
+    a.links[0].annotation.source.type = 'pdf';
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
   });
   it('uses a cross-language exact numeric signature without number/string collisions', () => {
