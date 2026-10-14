@@ -36,7 +36,7 @@ export const revisions = sqliteTable(
     userId: text("user_id"), // null = system/seed
     annotations: text("annotations").notNull(), // full snapshot AFTER this edit
     sourceRevid: integer("source_revid"), // NULL on old history means unknown; never infer from current article
-    schemaVersion: integer("schema_version"), // internal snapshot dialect, independent of unversioned FCA
+    schemaVersion: integer("schema_version"), // internal snapshot dialect, independent of the unversioned Literature Links format
     comment: text("comment"),
     kind: text("kind").notNull().default("edit"), // edit | revert | seed | pipeline | contribution
     meta: text("meta"), // JSON: run_id, model, tokens, cost, mathlib_sha, auth_mode, approved_by, ...

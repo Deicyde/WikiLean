@@ -71,8 +71,8 @@ interpreting the native record. Unknown extensions and unsupported locations mus
 survive an edit that does not explicitly replace them.
 
 Existing WikiLean selectors have different semantics from the Literature Links HTML quotation
-selectors. They can remain native Literature Links `generic` locations under the current
-WikiLean anchor profile while the resolver consumes them directly. Native storage
+selectors. They are stored as `html` sources whose location carries the WikiLean anchor
+profile, which the resolver consumes directly. Native storage
 does not require pretending that every existing selector is an HTML quote.
 
 Publicly readable records must contain only intentionally shareable data. Private

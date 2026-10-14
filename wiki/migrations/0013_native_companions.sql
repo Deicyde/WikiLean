@@ -1,4 +1,4 @@
--- Native FCA links live inside work-item snapshots in articles.annotations.
+-- Native Literature Links annotations live inside work-item snapshots in articles.annotations.
 -- No automatic rewrite: use the explicit local migration rehearsal, and keep
 -- source pins absent for old revisions rather than guessing historical context.
 ALTER TABLE revisions ADD COLUMN source_revid INTEGER;

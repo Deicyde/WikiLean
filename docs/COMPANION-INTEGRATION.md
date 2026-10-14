@@ -11,8 +11,8 @@ path into Autoform's source catalog, use [the local workspace](COMPANION-WORKSPA
 The shared exchange unit is one Literature Links informal–formal association. Autoform emits
 that unit from committed blueprint articles; WikiLean emits it from a consistent
 D1 article snapshot and ingests it into a local SQLite index. Authors can arrange
-shards however they want. The reference schema remains in Formal Companion
-Annotations; neither application maintains a copy or adds mandatory core fields.
+shards however they want. The schema belongs to Literature Links; WikiLean vendors an exact
+copy under wiki/src/vendor/literature-links, and neither application adds mandatory core fields.
 
 ```mermaid
 flowchart LR
