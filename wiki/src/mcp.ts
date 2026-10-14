@@ -81,17 +81,10 @@ const INSTRUCTIONS =
   "match:'none' with `nearest` candidates instead of a forced weak grounding (a forced " +
   "match is what creates hallucinated citations). When the best hit is a generalization or " +
   "special_case rather than exact, a top-level `note` says so. " +
-  "SNAPSHOT ECHO: every response carries release_id plus snapshot:{generated_at,pin}, " +
-  "copied from the release's cells manifest. release_id identifies the whole release; " +
-  "compare the snapshot fields verbatim as opaque strings and never parse them. " +
-  "generated_at names the cell build: a sha256: generation id in offline-replay releases " +
-  "(equal ids mean the same build context), an ISO 8601 UTC build timestamp in " +
-  "brain-current-v1 releases. pin is the first mathlib/kerodon/stacks provenance pin: in " +
-  "current offline-replay releases a sha256: digest of the concept-graph derivation inputs " +
-  "and configuration (including the Mathlib tree, WikiLean annotations, Wikidata, " +
-  "TheoremGraph and curated grounding), so it can change while Mathlib does not; in " +
-  "brain-current-v1 releases a date. pin is not a mathlib4 commit, and equal pins do not " +
-  "mean equal build inputs. " +
+  "SNAPSHOT ECHO: every response carries release_id plus snapshot:{generated_at,pin}. " +
+  "release_id identifies the whole release. generated_at and pin are opaque provenance " +
+  "values of the release's inputs: compare them for equality, never parse them, and do " +
+  "not read them as a build time or a Mathlib revision. " +
   "An organ's `bond` says why it is in the cell: 'exact' = it IS the atom (identity); " +
   "'generalization'/'special_case' = it has no formal home of its own and attaches to " +
   "its single best target; 'xref'/'field' = a cross-reference / an area concept.";

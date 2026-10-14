@@ -340,7 +340,7 @@ async function supercellsFile(c: Ctx, release: BrainReleaseContext): Promise<Sup
   return value as SupercellsFile;
 }
 
-// ---- snapshot echo (SCHEMA v3; held-out evaluation is dishonest without it) ----
+// ---- snapshot echo (SCHEMA v3; opaque provenance, not a build time or a Mathlib rev) ----
 
 // The provenance pin echoed as snapshot.pin. Organs carry a `prov` index; the
 // pointed-at prov row carries the pin. Rather than open an organ, we read the
@@ -2686,14 +2686,9 @@ mode) exposing nine tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
 card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
 <code>release_id</code> and <code>snapshot:{generated_at,pin}</code>. <code>release_id</code>
-identifies the whole release; compare the snapshot fields verbatim as opaque strings and never parse
-them. <code>generated_at</code> names the cell build: a <code>sha256:</code> generation id in
-offline-replay releases (equal ids mean the same build context), an ISO 8601 UTC build timestamp in
-brain-current-v1 releases. <code>pin</code> is the first mathlib/kerodon/stacks provenance pin: in
-current offline-replay releases a <code>sha256:</code> digest of the concept-graph derivation inputs
-and configuration (including the Mathlib tree, WikiLean annotations, Wikidata, TheoremGraph and
-curated grounding), so it can change while Mathlib does not; in brain-current-v1 releases a date.
-<code>pin</code> is not a mathlib4 commit, and equal pins do not mean equal build inputs.</p>
+identifies the whole release. <code>generated_at</code> and <code>pin</code> are opaque provenance
+values of the release's inputs: compare them for equality, never parse them, and do not read them
+as a build time or a Mathlib revision.</p>
 
 <h2>Id grammar</h2>
 <table>

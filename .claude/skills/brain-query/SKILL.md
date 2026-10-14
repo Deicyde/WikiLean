@@ -148,6 +148,7 @@ adversarially reviewed — treat as candidate-quality.
   abstention**: `brain_bridge`/`brain_transfer` carry a `match` + `confidence_floor`
   and return `match:"none"` + `nearest` rather than forcing a weak grounding; a
   non-exact best hit adds a `note` ("Module generalizes Vector space"). **Every**
-  response echoes `snapshot:{generated_at,pin}` (the Mathlib rev the decls were
-  built against). These live on the remote API/MCP only — the local CLI above is
-  unchanged.
+  response echoes `snapshot:{generated_at,pin}`: opaque provenance values of the
+  release's inputs — compare them for equality, never parse them, and do not
+  read them as a build time or a Mathlib revision. These live on the remote
+  API/MCP only — the local CLI above is unchanged.
