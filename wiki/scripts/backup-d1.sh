@@ -11,8 +11,10 @@
 # Decrypt and restore (local D1 first): see docs/BACKUP.md.
 #
 # Schedule daily via launchd / cron, e.g. add to your crontab (keep the key
-# file in sync with the repo variable when keys rotate):
-#   30 7 * * *  cd /path/to/WikiLean/wiki && PATH=/opt/homebrew/bin:$PATH BACKUP_AGE_RECIPIENTS="$(cat ~/.config/wikilean/backup-recipients.txt)" ./scripts/backup-d1.sh
+# file in sync with the repo variable when keys rotate; PATH must include the
+# directories holding age and node — Homebrew uses /opt/homebrew/bin on Apple
+# silicon and /usr/local/bin on Intel):
+#   30 7 * * *  cd /path/to/WikiLean/wiki && PATH=/opt/homebrew/bin:/usr/local/bin:$PATH BACKUP_AGE_RECIPIENTS="$(cat ~/.config/wikilean/backup-recipients.txt)" ./scripts/backup-d1.sh
 set -euo pipefail
 
 DIR="${1:-./backups}"
