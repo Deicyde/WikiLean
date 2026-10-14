@@ -189,5 +189,43 @@ class StoredRecords(unittest.TestCase):
             self.assertEqual(plain['locations'], {'profile': 2})
 
 
+class ResolveSqlite(unittest.TestCase):
+    def test_resolves_a_migrated_copy_in_place_without_changing_versions(self):
+        import sqlite3
+        from unittest.mock import patch
+        import resolve_sqlite
+        items, _ = n.migrate_items([legacy({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'})], title=TITLE, revid=REVID)
+        encoded = json.dumps(items)
+        with tempfile.TemporaryDirectory() as tmp:
+            db_path = Path(tmp) / 'migrated.sqlite'
+            db = sqlite3.connect(str(db_path))
+            db.executescript("""
+                CREATE TABLE articles (slug TEXT PRIMARY KEY, wikipedia_title TEXT, revid INTEGER, annotations TEXT, version INTEGER, schema_version INTEGER);
+                CREATE TABLE revisions (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT, annotations TEXT, kind TEXT, meta TEXT);
+            """)
+            db.execute("INSERT INTO articles VALUES ('synthetic', ?, ?, ?, 5, 4)", (TITLE, REVID, encoded))
+            db.execute("INSERT INTO articles VALUES ('legacy', ?, ?, '[]', 1, 3)", (TITLE, REVID))
+            db.execute("INSERT INTO revisions (slug, annotations, kind, meta) VALUES ('synthetic', ?, 'native-migration-checkpoint', NULL)", ('[]',))
+            db.execute("INSERT INTO revisions (slug, annotations, kind, meta) VALUES ('synthetic', ?, 'native-migration', '{\"previous_version\": 4}')", (encoded,))
+            db.commit(); db.close()
+            with patch.object(render, 'fetch_article_html', return_value=HTML):
+                resolve_sqlite.main([str(db_path), '--pause', '0', '--report', str(Path(tmp) / 'report.json')])
+            db = sqlite3.connect(str(db_path))
+            stored, version = db.execute("SELECT annotations, version FROM articles WHERE slug='synthetic'").fetchone()
+            self.assertEqual(version, 5)
+            location = json.loads(stored)[0]['links'][0]['annotation']['location']
+            self.assertIn('quote', location)
+            revision, meta = db.execute("SELECT annotations, meta FROM revisions WHERE slug='synthetic' AND kind='native-migration'").fetchone()
+            self.assertEqual(json.loads(revision), json.loads(stored))
+            self.assertEqual(json.loads(meta)['location_resolution'], {'quote_context': 1})
+            self.assertEqual(json.loads(meta)['previous_version'], 4)
+            checkpoint = db.execute("SELECT annotations FROM revisions WHERE kind='native-migration-checkpoint'").fetchone()[0]
+            self.assertEqual(checkpoint, '[]')
+            legacy_row = db.execute("SELECT annotations FROM articles WHERE slug='legacy'").fetchone()[0]
+            self.assertEqual(legacy_row, '[]')
+            report = json.loads((Path(tmp) / 'report.json').read_text())
+            self.assertEqual(report['totals'], {'quote_context': 1})
+
+
 if __name__ == '__main__':
     unittest.main()
