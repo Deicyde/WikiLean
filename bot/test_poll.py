@@ -321,6 +321,13 @@ class TickTest(PollFixture):
         with self.assertRaises(settle.GhError):
             self.run_with(FakeGh(fail=auth_failure), poll.tick, Path("/unused"), True)
 
+    def test_conflict_rebuild_without_the_approved_file_halts(self):
+        self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
+        (self.here / "state" / "batch7_approved.json").unlink()
+        fake = FakeGh(mergeable=("CONFLICTING",), reviews=approvals("Deicyde") + approvals("jcommelin"))
+        with self.assertRaisesRegex(poll.Halt, "batch7_approved.json MISSING"):
+            self.run_with(fake, poll.tick, Path("/unused"), True)
+
     def test_failed_ci_retrigger_fails_the_tick_and_keeps_the_retry(self):
         self.write_state(settled_pr=PR, conflict_sha=CONFLICT_SHA)
         flake = "ci / Build\tpass\t10m\tu\t\nci / Post-Build Step\tfail\t1m\tu\t\n"

@@ -154,12 +154,11 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     if not apath.exists():
         # An ADOPTED batch (open_batch adopt guard) heals bot_state but cannot
         # conjure the approved file another runner assembled. Without it we can't
-        # map green qids back to decl/file, so we cannot rebuild — wait loudly
-        # for a human instead of crash-looping every tick.
-        print(f"  RESOLVE-CONFLICT #{pr}: {apath.name} MISSING (adopted batch?) — "
-              f"cannot rebuild without decl/file per green tag; reconstruct it by "
-              f"hand from the PR diff, then re-tick.")
-        return
+        # map green qids back to decl/file, so we cannot rebuild — halt (a red run)
+        # for a human; a green 'wait' here would hide the stall.
+        raise Halt(f"RESOLVE-CONFLICT #{pr}: {apath.name} MISSING (adopted batch?) — "
+                   f"cannot rebuild without decl/file per green tag; reconstruct it by "
+                   f"hand from the PR diff on the bot-state branch, then re-tick.")
     approved = json.loads(apath.read_text())
     # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
     # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
