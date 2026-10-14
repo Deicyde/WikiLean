@@ -115,7 +115,10 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   `cd wiki && npx wrangler d1 execute wikilean --remote --file=migrations/<NNNN_name>.sql`.
   Never `wrangler d1 migrations apply --remote`, which could re-run files the remote tracking
   table does not list (`0008`'s `ALTER TABLE … ADD COLUMN` fails on a re-run). Keep new files
-  idempotent (`CREATE … IF NOT EXISTS`, as `0009`–`0012` are). Reconciling the remote
+  idempotent (`CREATE … IF NOT EXISTS`, as `0009`–`0012` are). SQLite has no
+  `ADD COLUMN IF NOT EXISTS`, so an `ALTER TABLE … ADD COLUMN` migration is the exception:
+  its header must say it is not idempotent and runs once, and the operator verifies it after
+  applying (e.g. `SELECT name FROM pragma_table_info('<table>')`). Reconciling the remote
   `d1_migrations` table is an open operator task.
 
 **Bot pipeline (deterministic — no LLM on the git path)**
