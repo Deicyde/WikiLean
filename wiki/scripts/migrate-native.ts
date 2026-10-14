@@ -22,7 +22,7 @@ export function migrateLocalDatabase(db: DatabaseSync, now = Date.now()) {
   try {
     const columns = db.prepare('PRAGMA table_info(revisions)').all() as Array<{ name: string }>;
     if (!columns.some(column => column.name === 'source_revid')) {
-      db.exec(readFileSync(new URL('../migrations/0013_native_companions.sql', import.meta.url), 'utf8'));
+      db.exec(readFileSync(new URL('../migrations/0014_native_companions.sql', import.meta.url), 'utf8'));
     }
     const rows = db.prepare('SELECT slug, wikipedia_title, revid, annotations, version, schema_version FROM articles ORDER BY slug').all() as unknown as Article[];
     for (const row of rows) {

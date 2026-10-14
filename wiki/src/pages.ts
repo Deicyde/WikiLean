@@ -1098,7 +1098,10 @@ export function proposalsQueuePage(
   const body =
     PROPOSALS_CSS +
     `<h1>AI proposals</h1>` +
-    `<p class="muted">The AI may propose updates to human-owned annotations but never applies them ` +
+    `<p class="muted">The AI pipeline proposes updates to human-owned annotations instead of overwriting them. ` +
+    `Each night a deterministic resolver decides the proposals that match its fixed rules: it rejects ones that ` +
+    `change nothing, approves verified Mathlib declaration renames, and approves marking a <code>proof_wanted</code> ` +
+    `stub as partial. The rest wait here for a patroller ` +
     `(<a class="wl-navlink" href="/about">how moderation works</a>). Approving applies the change and keeps the annotation yours; ` +
     `rejecting remembers the delta so it is not re-proposed.</p>` +
     truncNote +

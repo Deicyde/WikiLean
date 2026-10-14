@@ -162,7 +162,7 @@ article's item, link and unlinked counts and diagnostics, including status/targe
 contradictions, missing targets and unresolved legacy anchors.
 Only application schemas 3 and 4 are recognized; unknown formats fail closed.
 
-The additive SQL migration is `wiki/migrations/0013_native_companions.sql`. The
+The additive SQL migration is `wiki/migrations/0014_native_companions.sql`. The
 rehearsal applies it to an older copied database when needed, then performs all
 article conversions in one transaction. For every converted article it:
 

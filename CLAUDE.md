@@ -27,7 +27,7 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 |---|---|
 | Live site (Worker) | `wiki/` — entry `wiki/src/index.ts` (`export default { fetch, scheduled }`) |
 | Annotation data | `site/annotations/*.json` — disk is cache/backup; **D1 is canonical** |
-| Tagging bot | `bot/` + `.github/workflows/wikidata-poll.yml`; state in `bot/state/` |
+| Tagging bot | `bot/` + `.github/workflows/wikidata-poll.yml`; live state on the `bot-state` branch (`bot/state/` on main is a frozen snapshot; see `bot/README.md`) |
 | Tag catalog | `catalog/data/*.jsonl` |
 | Management control plane | `manage/` — centrality × coverage → worklists (see `manage/README.md`) |
 | The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego/explorer; contract `brain/SCHEMA.md`; design `docs/BRAIN-V2.md`). v2 adds `ext` nodes (10 external DBs via `brain/ingest/*.py` → `catalog/data/external/`), `links` edges, `unit` cards, `f` facet bits. The old graph stack is **deleted** (retired 2026-07-10, tombstones destroyed 2026-08-04): `/map`, `/map-v2`, `/graph`, `/atlas`, `/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas` and `GET /api/brain/node` answer plain 404s — `RESERVED` (index.ts) only squats the names; agents use `/api/brain/*` + `POST /mcp` (docs: GET `/mcp`). `catalog/data/source_registry.json` = provenance single-source-of-truth. |
@@ -64,7 +64,9 @@ cd wiki && node --experimental-strip-types scripts/build-public.ts \
   --brain-release-dir ../site/out/brain-releases/<manifest-hex>       # verified assets; RUN FROM wiki/
 # Tagging bot
 gh workflow run wikidata-poll.yml --repo Deicyde/WikiLean
-python3 bot/poll.py --mathlib /tmp/unused --decide     # act|wait (cheap, gh-only)
+python3 bot/poll.py --mathlib /tmp/unused --decide     # act|wait for main's frozen snapshot, with YOUR gh login;
+                                                       # exits non-zero (POLL_ERROR) on any gh failure. The CI
+                                                       # poller's verdict is its latest workflow run.
 # Management
 python3 manage/status.py [--live]  # ground-truth snapshot (the SessionStart hook runs this)
 python3 manage/refresh.py [--snapshot-bundle /absolute/path] # rebuild control plane
@@ -92,8 +94,8 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   decide proposals (approve/reject), and an AI approve that changes human bytes re-labels
   them `ai-moderated` — **AI-changed bytes are never left marked `human`, and bots never
   mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
-- **Render-cache keys are manually versioned + load-bearing** (currently `render:v17:`,
-  `page:home:v10`, `page:articles:v2`, `page:articles-index:v1`, `page:about:v1`,
+- **Render-cache keys are manually versioned + load-bearing** (currently `render:v18:`,
+  `page:home:v10`, `page:articles:v3`, `page:articles-index:v1`, `page:about:v2`,
   `page:sitemap:v4`, `page:stats:v5`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
   prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset

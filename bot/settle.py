@@ -5,10 +5,13 @@ Reads an upstream PR's reviews and computes the gate + per-tag green/recycle
 split. No mutations. Importable (`classify(pr)`) and runnable (prints a report).
 
 Rule (see bot/README.md):
-  - Gate: >=2 distinct human reviewers on the PR AND >=24h since it opened.
+  - Gate: >=2 distinct people with a recorded review on the PR, the PR author
+    included, >=1 of them a "maintainer": MAINTAINERS, an OWNER/MEMBER/COLLABORATOR
+    association on the PR, or a public org member who reacted. No PR age is checked.
   - A bare note/comment = "defer to the other reviewer" -> ignored.
-  - A maintainer's explicit approve/reject/revise/flag TRUMPS.
-  - Else: any reject/revise/flag -> recycle; else >=1 approve -> green; else recycle.
+  - A maintainer's explicit approve/reject/revise/flag (a 👍/👎 reaction included) TRUMPS.
+  - Else: any reject/revise/flag -> recycle; else >=1 approve (the author's own
+    included) -> green; else recycle.
 """
 import json, subprocess, re, sys, datetime as dt
 
@@ -25,34 +28,60 @@ BOTS = {"github-actions[bot]"}
 REACTION_VERDICT = {"+1": "approve", "-1": "reject"}  # 👍 = approve, 👎 = reject (REST content names)
 
 
+class GhError(RuntimeError):
+    """A gh call failed or answered with nothing usable. Never read it as 'wait':
+    an expired token once kept the poller green and blind for three weeks."""
+
+
+def gh_failure(args, r):
+    """One-line reason for a failed gh call. gh puts the reason on stderr; `gh api`
+    also prints the JSON error body on stdout. Neither carries the token itself."""
+    detail = " ".join((r.stderr or "").split()) or " ".join((r.stdout or "").split()) or "no output"
+    msg = f"gh {' '.join(str(a) for a in args[:3])} failed (exit {r.returncode}): {detail[:300]}"
+    if "HTTP 401" in detail or "Bad credentials" in detail or '"status":"401"' in detail:
+        msg += (" -- GH_TOKEN is missing, expired or revoked (CI: MATHLIB_FORK_PAT;"
+                " see 'Token rotation' in bot/README.md)")
+    return msg
+
+
+def gh_run(args):
+    """stdout of `gh <args>`; GhError on a non-zero exit."""
+    r = subprocess.run(["gh", *args], capture_output=True, text=True)
+    if r.returncode != 0:
+        raise GhError(gh_failure(args, r))
+    return r.stdout
+
+
 def gh_list(repo, path):
-    out = subprocess.run(["gh", "api", f"repos/{repo}/{path}", "--paginate", "-q", ".[]"],
-                         capture_output=True, text=True)
-    if out.returncode != 0:
-        raise RuntimeError(f"gh api {path}: {out.stderr[:200]}")
-    items, dec, s, i, n = [], json.JSONDecoder(), out.stdout, 0, len(out.stdout)
+    s = gh_run(["api", f"repos/{repo}/{path}", "--paginate", "-q", ".[]"])
+    items, dec, i, n = [], json.JSONDecoder(), 0, len(s)
     while i < n:
         while i < n and s[i] in " \t\r\n":
             i += 1
         if i >= n:
             break
-        obj, i = dec.raw_decode(s, i)
+        try:
+            obj, i = dec.raw_decode(s, i)
+        except json.JSONDecodeError as ex:
+            raise GhError(f"gh api {path}: unparseable output ({ex})") from ex
         items.append(obj)
     return items
 
 
 def gh_obj(repo, path):
-    return json.loads(subprocess.run(["gh", "api", f"repos/{repo}/{path}"],
-                                     capture_output=True, text=True).stdout)
+    out = gh_run(["api", f"repos/{repo}/{path}"])
+    if not out.strip():
+        raise GhError(f"gh api {path}: empty output")
+    try:
+        return json.loads(out)
+    except json.JSONDecodeError as ex:
+        raise GhError(f"gh api {path}: unparseable output ({ex})") from ex
 
 
 def gh_reactions(repo, comment_id):
-    """Reactions on an inline PR review comment. [] on error — reactions are an
-    additive verdict source, so a fetch hiccup must never fail the settle."""
-    try:
-        return gh_list(repo, f"pulls/comments/{comment_id}/reactions")
-    except RuntimeError:
-        return []
+    """Reactions on an inline PR review comment. A failed fetch raises: a dropped
+    thumbs-down would turn a rejected tag green."""
+    return gh_list(repo, f"pulls/comments/{comment_id}/reactions")
 
 
 _ORG_MEMBER = {}
@@ -64,9 +93,11 @@ def is_org_member(repo, login):
     org = repo.split("/")[0]
     k = (org, login)
     if k not in _ORG_MEMBER:
-        r = subprocess.run(["gh", "api", f"orgs/{org}/members/{login}", "--silent"],
-                           capture_output=True, text=True)
-        _ORG_MEMBER[k] = (r.returncode == 0)  # 204 -> 0 (member), 404 -> nonzero
+        args = ["api", f"orgs/{org}/members/{login}", "--silent"]
+        r = subprocess.run(["gh", *args], capture_output=True, text=True)
+        if r.returncode != 0 and "HTTP 404" not in (r.stderr or ""):
+            raise GhError(gh_failure(args, r))
+        _ORG_MEMBER[k] = (r.returncode == 0)  # 204 -> 0 (member), 404 -> not a public member
     return _ORG_MEMBER[k]
 
 
@@ -123,8 +154,10 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     age_h = (dt.datetime.now(dt.timezone.utc) - created).total_seconds() / 3600
     head_sha = meta["head"]["sha"]
 
-    diff = subprocess.run(["gh", "pr", "diff", str(pr), "--repo", repo],
-                          capture_output=True, text=True).stdout
+    diff = gh_run(["pr", "diff", str(pr), "--repo", repo])
+    if not diff.strip():
+        # A batch PR always adds tags; an empty one had every tag recycled by hand.
+        raise GhError(f"gh pr diff {pr}: empty diff (if every tag was recycled, close the PR)")
     tags, decl_line, f = [], {}, None
     lines = diff.split("\n")
     for idx, ln in enumerate(lines):
@@ -247,6 +280,23 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         "gate_reasons": {"two_reviewers": len(reviewers) >= 2, "has_maintainer": bool(maint_reviewers)},
         "tags": tags, "green": green, "recycle": recycle,
     }
+
+
+def ready_header(cls):
+    """The settle comment's first line, stating the rule classify() applied. It names
+    reviewers in code font, without @, so it adds no mentions of its own (the tag
+    table below it already lists reviewers)."""
+    green, recycle = cls["green"], cls["recycle"]
+    who = ", ".join(f"`{u}`" for u in cls["reviewers"]) or "none"
+    return (f"This PR was trimmed to the **{len(green)}** `@[wikidata]` tags with at least one approval 🟢 "
+            f"and no reject/revise/flag recorded by this bot that a maintainer's verdict did not override "
+            f"(GitHub \"Request changes\" reviews and free-text comments are not counted). Under this bot's "
+            f"rule one approval per tag is enough, and it can be the PR author's own or a single 👍 reaction. "
+            f"Only a per-tag verdict or 👍/👎 from `jcommelin`, `faenuccio` or someone GitHub shows the bot "
+            f"as a mathlib4 owner, member or collaborator overrides the others; a GitHub PR approval never does. "
+            f"Reviews recorded from: {who}. **Ready for a maintainer's review.**"
+            + (f" {len(recycle)} recycled to the next batch." if recycle else "")
+            + " <!-- wikilean-bot-ready -->")
 
 
 if __name__ == "__main__":
