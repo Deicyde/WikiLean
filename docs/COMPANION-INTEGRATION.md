@@ -67,9 +67,9 @@ planning or proving workflow is needed for export.
 
 ## Export a WikiLean article
 
-The Worker adds `GET /api/article/:slug/companion.json`. After deploying this branch,
-a caller can save its default JSON array as a shard and feed it to the same import
-command. This endpoint is not assumed to be deployed on the public site yet.
+The Worker adds `GET /api/article/:slug/companion.jsonl` (`application/x-ndjson`,
+one annotation per line). After deploying this branch, a caller can save it as a
+`.jsonl` file and feed it to the same import command. This endpoint is not assumed to be deployed on the public site yet.
 
 The endpoint reads D1 once and pins the informal URL to `articles.revid`, with a
 `website` pin on the source (title, owner, oldid permalink, revision, and the
@@ -96,9 +96,10 @@ Editor identities, review tokens and unknown private fields are not exported.
 A public status still does not establish equivalence or a proof.
 
 The response has `X-Companion-Annotations` and `X-Companion-Omissions` counts.
-`?report=1` returns `{annotations, diagnostics}` for inspection; that report is not
-a shard. Unknown articles return 404; articles without a pinned revision return
-409. An empty successful export is `[]`. Responses are not cached across versions.
+`GET /api/article/:slug/companion-report.json` returns `{annotations, diagnostics}`
+for inspection; that report is not an annotation file. Unknown articles return 404;
+articles without a pinned revision return 409. An empty successful export is an
+empty body. Responses are not cached across versions.
 
 ## Run the complete offline integration check
 
@@ -126,7 +127,7 @@ resources. This test does not run Lean or establish mathematical correspondence.
 ## Current boundary
 
 The local index uses WikiLean's existing Brain storage implementation. It preserves
-all annotations, carrier bases, JSON pointers, and JSONL lines, including duplicate
+all annotations, carrier bases, and JSONL lines, including duplicate
 IDs and content. It accepts PDF, LaTeX, HTML, and generic sources without an Autoform
 extension. A bad selected shard rejects the entire import before publication.
 

@@ -99,16 +99,17 @@ saves retain the existing work-item count, field-length and payload-size limits.
 
 ## Read and write contracts
 
-- `GET /api/article/:slug/companion.json` returns the stored public Literature Links objects,
-  with the item facts and pins projected as above, as a discovery-compatible
-  array. Rejected items are omitted for every caller.
+- `GET /api/article/:slug/companion.jsonl` returns the stored public Literature Links
+  objects, with the item facts and pins projected as above, one per line
+  (`application/x-ndjson`). Rejected items are omitted for every caller.
+  `companion-report.json` adds the export diagnostics.
   It returns 409 whenever a record has an explicit carrier base, including when
   all core references are absolute: an opaque profile may contain relative values.
 - `GET /api/article/:slug/companion-records.json` returns
   `{version, records:[{item_id,id,annotation,base_uri?}]}` for native articles,
   with the same projection applied to each `annotation`. Nothing stored is
   removed, so the response keeps relative references and bases; it is not an
-  Literature Links shard container.
+  annotation file.
 - `GET /api/article/:slug.json` retains the application envelope. Anonymous reads
   use a native metadata allowlist and null tombstone placeholders. The pipeline
   bearer receives full work items so it can preserve protected data.

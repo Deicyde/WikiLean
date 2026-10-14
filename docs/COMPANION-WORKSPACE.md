@@ -28,7 +28,8 @@ python3.12 scripts/companion-workspace.py --workspace /absolute/workspace init \
 ```
 
 The consumer, shards, and article inputs are optional. The workspace creates an
-`inbox/` for individual annotations, arrays, JSONL or NDJSON. Repeated `--shards`,
+`inbox/` for annotation files: one annotation per `.json`, several per `.jsonl`
+or `.ndjson`. Repeated `--shards`,
 `--include`, and `--exclude` select any directory arrangement supported by the Literature Links
 reader. Keep reports and generated workspace history outside the shard selection.
 No repository URL, commit, or Node exporter is needed for native synchronization.
@@ -67,8 +68,8 @@ writing, and follows the selected generation on each request.
 
 Each generation contains `index/brain.sqlite3` and
 `autoform-native/records.jsonl`. The latter is a lossless operational archive:
-each entry has `annotation` and its original `origin`, including `base_uri` and
-pointer. It must not be mistaken for a naked Literature Links shard. Relative references never
+each entry has `annotation` and its original `origin`, including `base_uri`, a
+JSONL line, or the pointer into a native article. It must not be mistaken for a naked Literature Links shard. Relative references never
 start resolving against the generated archive's location.
 
 With a consumer configured, sync registers one stable archive reference in its
