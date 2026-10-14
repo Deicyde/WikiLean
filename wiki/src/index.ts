@@ -369,36 +369,11 @@ function statusCounts(annotations: AnnRecord[]): {
   return counts;
 }
 
-function hexOf(buf: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-// Plain SHA-256 hex; callers that need a pseudonym append their own salt
-// (the research export salts with PIPELINE_TOKEN).
+// Plain SHA-256 hex. The research export salts its pseudonyms with
+// PIPELINE_TOKEN before hashing.
 async function sha256Hex(s: string): Promise<string> {
-  return hexOf(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
-}
-
-// Pseudonymous abuse handle for anonymous flags: HMAC-SHA256 of the client IP
-// under the IP_HASH_SECRET Worker secret, stored as "hmac-sha256:<hex>". The
-// prefix tells these rows apart from the legacy unsalted sha256(ip) values,
-// which migration 0013 scrubs. No secret (or no IP) → null, never a bare hash.
-// No code path uses ip_hash (dedupe and the per-target cap count open flags,
-// and FLAG_LIMITER keys on the raw IP, which the binding does not persist);
-// it leaves D1 only in full database backups.
-const IP_HASH_PREFIX = "hmac-sha256:";
-
-async function flagIpHash(env: Env, ip: string): Promise<string | null> {
-  if (!ip || !env.IP_HASH_SECRET) return null;
-  const enc = new TextEncoder();
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(env.IP_HASH_SECRET),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  return IP_HASH_PREFIX + hexOf(await crypto.subtle.sign("HMAC", key, enc.encode(ip)));
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 // Each mutation unit bundles its guarded article write, revision, events, and
@@ -2473,7 +2448,10 @@ app.post("/api/flag/:slug", async (c) => {
     reason: posted.reason,
     comment,
     userId: user?.id ?? null,
-    ipHash: await flagIpHash(c.env, ip),
+    // Never store anything derived from the IP: nothing reads it, and an
+    // unsalted IPv4 hash is reversible. FLAG_LIMITER and the per-target cap
+    // are the abuse defenses. Migration 0013 scrubbed the legacy values.
+    ipHash: null,
     createdAt: now,
   });
   // flag_count feeds the /api/work priority ladder (flagged sorts first).
