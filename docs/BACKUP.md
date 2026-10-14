@@ -205,12 +205,24 @@ routine schedule.
    they expire 30 days after their run. Local `.age` files made by
    `wiki/scripts/backup-d1.sh` never expire. Keep the old private key as long
    as you keep any of them. The alternative is to re-encrypt each one to the
-   new keys before retiring the old key:
+   new keys before retiring the old key. Run this in each directory that holds
+   them (`wiki/backups/` by default):
 
    ```bash
-   age -d -i old.key wikilean-<ts>.sql.age | age -R backup-recipients.txt -o wikilean-<ts>.sql.age.new \
-     && mv wikilean-<ts>.sql.age.new wikilean-<ts>.sql.age
+   OLD=/path/to/old.key NEW=/path/to/backup-recipients.txt
+   for f in wikilean-*.sql.age; do
+     if ( set -o pipefail; age -d -i "$OLD" "$f" | age -R "$NEW" -o "$f.new" ); then
+       mv "$f.new" "$f"
+     else
+       rm -f "$f.new"; echo "left unchanged: $f" >&2
+     fi
+   done
    ```
+
+   `pipefail` matters: without it, a failed decryption (wrong key, damaged
+   file) goes unnoticed, the second `age` still writes a valid encryption of
+   whatever it received, and `mv` replaces the backup with it. With it, such a
+   file is left as it was.
 3. **If the old private key leaked**, every artifact encrypted to it is
    readable by whoever holds it. Delete them all right away:
 
@@ -221,8 +233,10 @@ routine schedule.
    ```
 
    Local `.age` files encrypted to the old key are just as readable to whoever
-   holds it. Re-encrypt them as in step 2 wherever copies may have travelled,
-   such as laptop backups.
+   holds it. Re-encrypt them as in step 2 on every machine and disk they were
+   copied to. Copies already inside Time Machine, iCloud or another backup
+   tool cannot be re-encrypted in place: delete them there, or treat them as
+   exposed.
 
    Then treat their contents as exposed: revoke the OAuth app's user tokens,
    rotate `BETTER_AUTH_SECRET`, and consider whether users must be notified.
@@ -274,3 +288,7 @@ for f in wikilean-*.sql; do
   age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" && rm "$f"
 done
 ```
+
+This reaches only the files in `wiki/backups/`. Copies of the plaintext that
+Time Machine, iCloud or another backup tool already took cannot be encrypted
+in place: delete them there, or treat their contents as exposed.
