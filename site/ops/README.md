@@ -108,9 +108,9 @@ Jack supplies `--first-deploy-approval` only during P1C execution, after reviewi
 frozen evidence IDs and deployment window.
 P1A is merged on `main`. A selector has existed since 2026-10-04, so later promotions omit
 the first-deploy exception. The 2026-10-04 attempt is journaled `manual_intervention_required`
-and blocks further promotions until it is reconciled. Bundles use the launch-context
-Mathlib checkout, Wikidata observation plan, interpreter paths, and external evidence stores
-that Jack authorized; see the release runbook.
+and blocks further promotions until it is reconciled. Each new bundle still needs Jack to
+authorize the launch-context Mathlib checkout, Wikidata observation plan, interpreter paths,
+and external evidence stores; see the release runbook.
 
 ## Install the three nightly jobs
 ```sh

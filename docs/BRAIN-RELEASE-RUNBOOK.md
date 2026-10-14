@@ -136,9 +136,9 @@ The optional proposal agents use a separate interpreter
 skipped with an explicit warning if that environment is absent. Verify all configured
 paths from the same launch context that will run the job; missing paths fail closed.
 
-P1A is merged on `main`, and P1B evidence was generated for the 2026-10-04 promotion.
-Evidence generation uses the read-only Mathlib checkout, observation plan, and
-Git/Node/npm/Python executable paths that Jack approved. Do not substitute an arbitrary project-local Mathlib dependency or unreviewed plan
+P1A is merged on `main`, and P1B evidence was generated for the 2026-10-04 promotion. Each
+new release's evidence still needs Jack's approval of the exact read-only Mathlib checkout,
+observation plan, and Git/Node/npm/Python executable paths. Do not substitute an arbitrary project-local Mathlib dependency or unreviewed plan
 for that reviewed host context.
 
 ## Shadow release
@@ -468,8 +468,8 @@ independently with both returned IDs and retain its bundle ID/root for review:
 ```
 
 This entire section is P1B preparation only. `context`, the CI recorder, `freeze`, and
-`verify` do not authorize or perform a production deployment. Evidence generation uses the
-Jack-authorized host paths and evidence inputs above.
+`verify` do not authorize or perform a production deployment. Evidence generation for each
+new release requires Jack's authorization of the host paths and evidence inputs above.
 
 The review artifact is an attested two-root set: the 11-file activation bundle plus the
 content-addressed retained promoter root named by `promoter-dry-run.json`. Normal `verify`
