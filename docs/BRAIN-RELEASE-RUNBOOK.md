@@ -603,8 +603,10 @@ A stable unrelated deployment remains blocked unless Jack explicitly authorizes
 same timeout/process/history fence applies, and reconciliation records that it made no
 production change. Reconciliation may run from clean current `main` (so reviewed recovery
 fixes remain usable) or a clean detached checkout of the historical authority commit. Either
-way, the checkout's `wiki/wrangler.jsonc` and its Node/Wrangler executables and versions must
-match the durable intent byte for byte, or reconciliation refuses. Do not change them between
+way, the checkout's `wiki/wrangler.jsonc`, its Node/Wrangler executables (paths included) and
+versions, and its installed Wrangler dependency tree (`wiki/package-lock.json` and
+`wiki/node_modules`) must match the durable intent byte for byte, or reconciliation refuses.
+Do not change them (no `npm ci`, no lockfile change, no moving the checkout) between
 `--execute` and a clean `final_state`.
 
 ```bash
