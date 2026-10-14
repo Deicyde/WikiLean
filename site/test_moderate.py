@@ -2299,6 +2299,29 @@ def test_run_jobs_returns_per_job_outcomes_keyed_by_queue_slug():
     assert by_slug["good"]["error"] is None
 
 
+def test_annotate_one_elapsed_excludes_queue_wait():
+    """elapsed_s (the sample's ~Ns) is the article's own time: a job queued
+    behind a busy slot must not report the wait."""
+    if ba is None:
+        raise unittest.SkipTest("claude-agent-sdk not installed")
+
+    async def queued():
+        sem = asyncio.Semaphore(1)
+        await sem.acquire()              # another article holds the only slot
+        task = asyncio.create_task(ba.annotate_one({"title": "Queued"}, sem, {}))
+        await asyncio.sleep(0.3)
+        sem.release()
+        return await task
+
+    saved = ba.fetch_html
+    ba.fetch_html = lambda slug, title, target_revid=None: False
+    try:
+        rec = asyncio.run(queued())
+    finally:
+        ba.fetch_html = saved
+    assert rec["error"] == "fetch_failed" and rec["elapsed_s"] < 0.2, rec
+
+
 # ---------------------------------------------------------------------------
 # Queue rotation: articles whose review failed for article-specific reasons
 # move behind the rest
