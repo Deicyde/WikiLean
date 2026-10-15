@@ -58,7 +58,7 @@ scripts/
   seed.ts           generate seed.sql from site/ (full populate)
   seed-delta.ts     generate delta.sql: only NEW slugs (never clobbers)
   seed-refresh.ts   generate refresh.sql: UPDATE changed slugs, SKIP user-edited
-  backup-d1.sh      wrangler export → ./backups/wikilean-<utc>.sql
+  backup-d1.sh      wrangler export, age-encrypted → ./backups/wikilean-<utc>.sql.age
   build-mathlib-index.ts   builds public/assets/mathlib-index.json
 
 public/              static assets served by the Worker (`ASSETS` binding)
@@ -117,10 +117,17 @@ Production reads the same names as Worker secrets (`wrangler secret put NAME`).
 
 ## Seeding D1 from `site/`
 
+> **Legacy.** D1 is canonical and is never re-seeded from disk. The pipeline now reads and
+> writes D1 directly through the Worker API (`site/moderate.py`). `seed-delta` and
+> `seed-refresh` are retired legacy migration tools (docs/ROADMAP.md); do not run them
+> against production.
+
 The pipeline that produces local annotations lives in `site/`. To sync new and changed annotations to the live D1:
 
 ```sh
-# (insurance) snapshot D1 first
+# (insurance) snapshot D1 first. Needs age (`brew install age`) and the backup
+# public keys; without them it exits before exporting (see docs/BACKUP.md).
+export BACKUP_AGE_RECIPIENTS="$(gh variable get BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean)"
 npm run backup:d1
 
 # 1. INSERT new articles (slugs not yet in D1). Idempotent.
@@ -137,8 +144,15 @@ npx wrangler d1 execute wikilean --remote --file=refresh.sql
 
 ## Deploy
 
+Production deploys go only through the exact Brain release promoter,
+`site/ops/brain-promote-release.sh`, following
+[`docs/BRAIN-RELEASE-RUNBOOK.md`](../docs/BRAIN-RELEASE-RUNBOOK.md). Since 2026-10-04 production
+serves an immutable Brain release ([activation record](../docs/BRAIN-ACTIVATION-2026-10-04.md)).
+Do **not** run plain `npm run deploy` (`wrangler deploy`) against production: it uploads the local
+`public/` directory and replaces the live Brain selector and the whole asset tree, without the
+journal or canary. Worker source changes are release-affecting and ship only in a new release.
+
 ```sh
-npm run deploy        # wrangler deploy — production
 npm run tail          # follow Worker logs
 ```
 
@@ -161,7 +175,7 @@ These are deterministic guards backed by unit tests — not just prompt instruct
 
 ## Operational notes
 
-- **Backups**: `npm run backup:d1` dumps full SQL to `wiki/backups/wikilean-<utc>.sql` via D1's official export endpoint. Run before big seed operations.
+- **Backups**: `npm run backup:d1` dumps full SQL via D1's official export endpoint and keeps only the age-encrypted `wiki/backups/wikilean-<utc>.sql.age`. It needs `age` installed and `BACKUP_AGE_RECIPIENTS` set, and exits without exporting otherwise; see [`docs/BACKUP.md`](../docs/BACKUP.md) for setup, decryption and restore. Run before big seed operations.
 - **Rate limit**: 30 writes per user per minute (`EDIT_LIMITER` binding). Adjust in `wrangler.jsonc`.
 - **Cache invalidation**: KV `RENDER_CACHE` keys are versioned by annotation `version` (incremented on each save), so saves are seen immediately by the next reader.
 - **Asset versioning**: when bumping `public/assets/editor.js` or `review.css`, also bump the `?v=N` query in `src/pages.ts` so browsers refetch.
