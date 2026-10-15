@@ -123,6 +123,39 @@ class PerTagRuleTest(PollFixture):
                           issue_comments=[AUTHOR_REJECTS_SET])
         self.assertEqual(self.verdict(r)[0], "recycle")
 
+    def test_the_author_s_reject_never_drops_another_maintainer_s_objection(self):
+        # A listed maintainer's written approve comes after the author's reject, but
+        # another maintainer objects too: a listed one by 👎, a listed MEMBER in writing
+        # before the author, or a collaborator by 👎. Each recycles, as it does when the
+        # author never rejected.
+        approve_after = written_verdict("jcommelin", "Q36161", "approve")
+        shapes = {
+            "listed 👎 later": dict(
+                comments=[approve_after, crossref_comment(101, "Q36161", minus=1)],
+                reactions={101: [reaction("kbuzzard", "-1", LATER)]}),
+            "listed written reject earlier": dict(
+                comments=[written_verdict("sgouezel", "Q36161", "reject", at=APPROVE_AT,
+                                          assoc="MEMBER"), approve_after]),
+            "collaborator 👎 later": dict(
+                reviews=[review("SnirBroshi", assoc="COLLABORATOR")],
+                comments=[approve_after, crossref_comment(101, "Q36161", minus=1)],
+                reactions={101: [reaction("SnirBroshi", "-1", LATER)]}),
+        }
+        for name, shape in shapes.items():
+            for author_rejects in (False, True):
+                with self.subTest(shape=name, author_rejects=author_rejects):
+                    r = self.classify(**shape,
+                                      issue_comments=[AUTHOR_REJECTS_SET] if author_rejects else [])
+                    self.assertEqual(self.verdict(r), ("recycle", "maintainer rejected/revised"))
+
+    def test_an_author_with_an_org_role_keeps_a_maintainer_s_objection(self):
+        # Unchanged: if GitHub shows the author as a collaborator, their reject is a
+        # maintainer's, and not even a listed maintainer's later written approve lifts it.
+        r = self.classify(reviews=[review(AUTHOR, assoc="COLLABORATOR")],
+                          comments=[written_verdict("jcommelin", "Q36161", "approve")],
+                          issue_comments=[AUTHOR_REJECTS_SET])
+        self.assertEqual(self.verdict(r), ("recycle", "maintainer rejected/revised"))
+
     def test_an_association_only_maintainer_does_not_override_the_author(self):
         r = self.classify(reviews=[review("SnirBroshi", assoc="COLLABORATOR")],
                           comments=[written_verdict("SnirBroshi", "Q36161", "approve", at=LATER,
