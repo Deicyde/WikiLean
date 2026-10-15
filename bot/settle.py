@@ -267,12 +267,16 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         # The PR author's latest reject/revise/flag stands unless a LISTED maintainer
         # wrote a verdict on the tag after it and still holds it. An earlier verdict, a
         # reaction alone, or an association-only maintainer no longer overrides it.
+        # Only the approvals that can override it are narrowed: every maintainer's
+        # objection still counts, so no tag goes green that the same maintainers would
+        # recycle without this exception.
         a = explicit.get((qid, author))
         if a and a[0] in OBJECT:
             def wrote_later(u):
                 w = written.get((qid, u))
                 return w is not None and w[0] == real[u] and w[1] > a[1]
-            mver = [real[u] for u in real if is_maintainer(u) and wrote_later(u)]
+            mver = [s for u, s in real.items()
+                    if (is_maint(u) and s in OBJECT) or (is_maintainer(u) and wrote_later(u))]
         if mver:
             if any(s in OBJECT for s in mver):
                 return "recycle", ex, "maintainer rejected/revised"
