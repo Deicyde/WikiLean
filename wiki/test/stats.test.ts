@@ -185,7 +185,7 @@ describe("GET /stats", () => {
     // rule — a broken subquery rendering 0 forever would stay green on a
     // label-only assertion) and the human decision does NOT count.
     expect(html).toContain('<td>Decided by AI (auto-resolve)</td><td class="wl-stat-num">1</td>');
-    expect(html).toContain('<td>Pending (awaiting a human)</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>Pending (undecided)</td><td class="wl-stat-num">1</td>');
 
     // Pipeline runs: per-kind row + the all-runs total, cost rendered in $.
     expect(html).toContain(
@@ -252,7 +252,7 @@ describe("GET /stats", () => {
     expect(n.n).toBe(1);
   });
 
-  it("lists recent runs newest first with notes escaped and re-redacted", async () => {
+  it("lists recent runs newest reported first, counts only (notes are not shown)", async () => {
     const h = setup();
     const report = (runId: string, startedAt: number, notes: string) =>
       post(
@@ -263,18 +263,19 @@ describe("GET /stats", () => {
       );
     const t = Date.UTC(2026, 9, 12, 7, 20);
     expect((await report("0000aaa1", t - DAY, "older run")).status).toBe(200);
-    expect(
-      (await report("0000aaa2", t, '15/15 errors: <script>alert(1)</script> Bearer abc.def ops@example.org')).status,
-    ).toBe(200);
+    expect((await report("0000aaa2", t, "15/15 errors: RuntimeError sample")).status).toBe(200);
+    // Pin receipt order (the table's sort key) so a same-millisecond pair
+    // cannot fall back to the run_id tie-break.
+    h.db.prepare("UPDATE pipeline_runs SET created_at = 1 WHERE run_id = '0000aaa1'").run();
     const html = await (await get(h.env, "/stats")).text();
     expect(html).toContain("<h2 class=\"wl-stats-h\">Recent pipeline runs</h2>");
-    expect(html).not.toContain("<script>alert(1)</script>");
     expect(html).toContain(
       '<tr><td style="white-space:nowrap">2026-10-12 07:20</td><td>review</td><td class="wl-stat-num">15</td><td class="wl-stat-num">15</td>' +
-        '<td class="wl-stat-num">0</td><td><code style="overflow-wrap:anywhere">15/15 errors: &lt;script&gt;alert(1)&lt;/script&gt; [redacted] [redacted]</code></td></tr>',
+        '<td class="wl-stat-num">0</td></tr>',
     );
-    expect(html).not.toContain("abc.def");
-    expect(html).not.toContain("ops@example.org");
+    expect(html).not.toContain("<th>Notes</th>");
+    expect(html).not.toContain("older run");
+    expect(html).not.toContain("RuntimeError sample");
     expect(html.indexOf("2026-10-12 07:20")).toBeLessThan(html.indexOf("2026-10-11 07:20"));
   });
 
@@ -295,7 +296,7 @@ describe("GET /stats", () => {
   it("an empty run registry renders a placeholder row", async () => {
     const h = setup();
     const html = await (await get(h.env, "/stats")).text();
-    expect(html).toContain('<td colspan="6" class="muted">No run reports yet.</td>');
+    expect(html).toContain('<td colspan="5" class="muted">No run reports yet.</td>');
   });
 
   it("no AI review revision at all renders the latest-review cell as none", async () => {

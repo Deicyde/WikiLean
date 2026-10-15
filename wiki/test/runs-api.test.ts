@@ -1,8 +1,9 @@
 // GET /api/runs — public per-run reports (the read twin of POST /api/runs).
-// Pins: anonymous access, response shape, newest-first order (started_at,
-// then created_at), the kind filter ('all' is a run kind, not a wildcard),
-// limit bounds (400, no clamping), notes re-redaction + cap, and the
-// public 5-minute Cache-Control.
+// Pins: anonymous access, the counts-only response shape (notes are never
+// served), newest-first order by server receipt (created_at, then run_id; a
+// runner-reported started_at/finished_at cannot pin the top row), the kind
+// filter ('all' is a run kind, not a wildcard), limit bounds (400, no
+// clamping), and the public 5-minute Cache-Control.
 
 import { describe, it, expect } from "vitest";
 import { setup, post, get, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
@@ -24,14 +25,18 @@ async function runs(h: Harness, query = ""): Promise<{ status: number; body: { r
 }
 
 describe("GET /api/runs", () => {
-  it("is public and returns the full row shape, newest first, with a 5-minute public cache", async () => {
+  it("is public and returns the counts-only row shape, newest first, with a 5-minute public cache", async () => {
     const h = setup();
     expect((await report(h, { run_id: "0000aaa1", kind: "review", started_at: 100, finished_at: 200, articles_processed: 15, errors: 15, tokens: 0, model: "claude-x", prompt_sha: "abc123", cost_usd_equiv: 0, notes: "15/15 errors" })).status).toBe(200);
     expect((await report(h, { run_id: "0000aaa2", kind: "wp-update", started_at: 300 })).status).toBe(200);
     const res = await get(h.env, "/api/runs"); // no cookie, no bearer
     expect(res.status).toBe(200);
     expect(res.headers.get("Cache-Control")).toBe("public, max-age=300");
-    const body = (await res.json()) as { runs: Array<Record<string, unknown>> };
+    const text = await res.text();
+    // Notes stay in D1: neither the key nor the posted text is served.
+    expect(text).not.toContain("notes");
+    expect(text).not.toContain("15/15 errors");
+    const body = JSON.parse(text) as { runs: Array<Record<string, unknown>> };
     expect(body.runs.map((r) => r.run_id)).toEqual(["0000aaa2", "0000aaa1"]);
     expect(body.runs[1]).toEqual({
       run_id: "0000aaa1",
@@ -44,12 +49,11 @@ describe("GET /api/runs", () => {
       cost_usd_equiv: 0,
       model: "claude-x",
       prompt_sha: "abc123",
-      notes: "15/15 errors",
     });
-    expect(body.runs[0]).toMatchObject({ kind: "wp-update", cost_usd_equiv: null, model: null, notes: null });
+    expect(body.runs[0]).toMatchObject({ kind: "wp-update", cost_usd_equiv: null, model: null });
   });
 
-  it("breaks started_at ties by server receipt time, newest first, then run_id", async () => {
+  it("orders by server receipt time, newest first, then run_id", async () => {
     const h = setup();
     expect((await report(h, { run_id: "0000bbb1", kind: "review", started_at: 500 })).status).toBe(200);
     expect((await report(h, { run_id: "0000bbb2", kind: "review", started_at: 500 })).status).toBe(200);
@@ -85,47 +89,20 @@ describe("GET /api/runs", () => {
     }
   });
 
-  it("re-redacts tokens and emails, strips control bytes, and caps notes at 2000 chars", async () => {
+  it("a future-dated runner timestamp does not take the top row", async () => {
     const h = setup();
-    const notes =
-      "agent_error: Authorization: Bearer abc.def-ghi sk-ant-api03-XYZ_123 ghp_" + "a".repeat(36) +
-      " github_pat_11ABCDEF_xyz mail jack@example.org \u001b[31mred\u0007";
-    expect((await report(h, { run_id: "0000ddd1", kind: "review", started_at: 10, notes })).status).toBe(200);
-    const got = (await runs(h)).body.runs![0].notes as string;
-    expect(got).toBe("agent_error: Authorization: [redacted] [redacted] [redacted] [redacted] mail [redacted] [31mred");
-    // Redaction runs before the cap, so a secret straddling char 2000 never
-    // leaves a prefix behind, and a lengthening redaction is cut back to 2000.
-    h.db.prepare("UPDATE pipeline_runs SET notes = ? WHERE run_id = '0000ddd1'").run("x ".repeat(997) + "Bearer secretvalue");
-    const capped = (await runs(h)).body.runs![0].notes as string;
-    expect(capped.length).toBe(2000);
-    expect(capped).not.toContain("Bea");
-  });
-
-  it("also catches lowercase/Basic schemes, the Worker's own secrets, high-entropy runs, IDN emails, home paths", async () => {
-    const h = setup();
-    const notes = [
-      "bearer lowercase1",
-      "BASIC dXNlcjpwYXNz",
-      "Authorization%3A%20Bearer%20enc0ded",
-      `raw ${PIPELINE_TOKEN} leaked`,
-      "cf " + "Ab1".repeat(14),
-      "jürgen@exämple.de",
-      "/Users/jack/projects/x and /home/ops/y",
-      "slug Group_(mathematics) kept, 15/15 errors kept, token budget kept",
-    ].join(" | ");
-    expect((await report(h, { run_id: "0000ddd2", kind: "review", started_at: 10, notes })).status).toBe(200);
-    expect((await runs(h)).body.runs![0].notes).toBe(
-      [
-        "[redacted]",
-        "[redacted]",
-        "Authorization%3A%20[redacted]",
-        "raw [redacted] leaked",
-        "cf [redacted]",
-        "[redacted]",
-        "~/projects/x and ~/y",
-        "slug Group_(mathematics) kept, 15/15 errors kept, token budget kept",
-      ].join(" | "),
-    );
+    const now = Date.now();
+    // A healthy run whose runner reported microseconds (far future as ms),
+    // then a failing real run. The bogus row has the higher run_id, so only
+    // the receipt-time order puts the real run on top.
+    expect((await report(h, { run_id: "0000fff2", kind: "review", started_at: now * 1000, finished_at: now * 1000, articles_processed: 15, errors: 0, tokens: 90000 })).status).toBe(200);
+    expect((await report(h, { run_id: "0000fff1", kind: "review", started_at: now, finished_at: now + 1, articles_processed: 15, errors: 15, tokens: 0 })).status).toBe(200);
+    h.db.prepare("UPDATE pipeline_runs SET created_at = ? WHERE run_id = '0000fff2'").run(now - 1000);
+    h.db.prepare("UPDATE pipeline_runs SET created_at = ? WHERE run_id = '0000fff1'").run(now);
+    for (const q of ["", "?kind=review"]) {
+      const top = (await runs(h, q)).body.runs![0];
+      expect(top, q).toMatchObject({ run_id: "0000fff1", errors: 15, tokens: 0 });
+    }
   });
 
   it("POST /api/runs still requires the bot bearer", async () => {
