@@ -80,7 +80,7 @@ Eleven of thirteen normalized files are byte-identical to the prior generation-1
 the other two contain changed source-identity metadata. The graph-input JSONL bytes are
 unchanged. The five manual container contributions remain preserved, and the previously
 documented 15 FC retractions and two discovery module changes remain visible decisions
-for the eventual semantic review. See [the curation decision](BRAIN-SQLITE-CURATION-DECISION.md).
+for the eventual semantic review. See [the curation decision](../BRAIN-SQLITE-CURATION-DECISION.md).
 
 ### Native runtime
 
@@ -432,10 +432,10 @@ The original checkout's local commit and data changes remain untouched.
    isolated candidate builds, verify parity and provenance coverage, and review/finalize
    their reproducibility attestation. Findings that change code or assets require a new C
    and repetition of the affected evidence.
-5. Follow [the release runbook](BRAIN-RELEASE-RUNBOOK.md) for the retained P1B dry run and
+5. Follow [the release runbook](../BRAIN-RELEASE-RUNBOOK.md) for the retained P1B dry run and
    activation evidence, then the separate P1C release review, production promotion,
    canaries, and rollback exercise.
    `completion-20260923/release-prerequisite-audit.json` lists the observed prerequisites.
 
 P0-R and P1 activation remain open. Later Git-authority, D1-overlay, and generated-artifact
-retirement phases retain their separate [roadmap](ROADMAP.md) boundaries.
+retirement phases retain their separate [roadmap](../ROADMAP.md) boundaries.

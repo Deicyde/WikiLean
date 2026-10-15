@@ -2,8 +2,19 @@
 #
 # This mirrors `wiki/scripts/backup-d1.sh` (which runs `wrangler d1 export`)
 # but on GitHub-hosted infrastructure, so backups happen even when no one's
-# laptop is on. The export of the `wikilean` D1 database is uploaded as a
-# workflow artifact and retained for 30 days.
+# laptop is on. The repo is public (artifacts and run logs included), so the
+# export of the `wikilean` D1 database is encrypted with age on the runner:
+# only the .age file is uploaded as a workflow artifact (retained for 30
+# days), and the plaintext is deleted as soon as it is encrypted. Keys,
+# decryption and restore: docs/BACKUP.md.
+#
+# ── Required repo variable ────────────────────────────────────────────────
+#   BACKUP_AGE_RECIPIENTS — the age public key(s) the backups are encrypted
+#   to, one per line (age1…). Public keys only: it is a variable, not a
+#   secret, and it is printed in this workflow's public run log. The job
+#   fails before exporting anything if it is empty or not a valid age
+#   recipient list. Set it with:
+#       gh variable set BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean
 #
 # ── Required repo secrets ─────────────────────────────────────────────────
 #   CLOUDFLARE_API_TOKEN — a Cloudflare API token with D1 read/export scope
@@ -21,12 +32,14 @@
 #   export step fails — the database backup is unaffected (continue-on-error).
 #
 # ── Running it manually ───────────────────────────────────────────────────
-#   GitHub UI:  Actions tab → "Backup D1" → "Run workflow".
-#   gh CLI:     gh workflow run backup-d1.yml
+#   GitHub UI:  Actions tab → "Backup D1" → "Run workflow" (branch: main).
+#   gh CLI:     gh workflow run backup-d1.yml --ref main   (never another ref,
+#               and never re-run a run from before encryption: docs/BACKUP.md)
 #   Download the resulting artifact from the run's summary page.
 #
-# ── Restore (into a fresh empty D1 of the same name) ──────────────────────
-#   cd wiki && npm ci && ./node_modules/.bin/wrangler d1 execute wikilean --remote --file=wikilean-<ts>.sql
+# ── Restore ───────────────────────────────────────────────────────────────
+#   Decrypt with the offline age identity, rehearse into a local D1, and only
+#   then touch production: docs/BACKUP.md.
 
 name: Backup D1
 
@@ -46,6 +59,51 @@ jobs:
     # name via the API (CLOUDFLARE_ACCOUNT_ID below), so this workflow has no
     # dependency on wiki/wrangler.jsonc being present in the checkout.
     steps:
+      # age and the recipient check come first, so a missing or bad key fails
+      # the job before anything is exported.
+      - name: Install age (pinned release, SHA-256 verified)
+        env:
+          AGE_VERSION: v1.3.2
+          # sha256 of age-v1.3.2-linux-amd64.tar.gz: equals the release asset's
+          # GitHub digest, and the tarball verifies against the release's
+          # Sigsum proof (docs/BACKUP.md, "Upgrading the pinned age").
+          AGE_SHA256: cbe24006683f8eb669266162894b9a522a1af52f2665fbc63a4bb032ed26ac10
+        run: |
+          set -euo pipefail
+          tarball="$RUNNER_TEMP/age.tar.gz"
+          curl --fail -sSL --retry 3 --proto '=https' --tlsv1.2 -o "$tarball" \
+            "https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-linux-amd64.tar.gz"
+          echo "${AGE_SHA256}  ${tarball}" | sha256sum --check --strict
+          mkdir -p "$RUNNER_TEMP/age-bin"
+          tar -xzf "$tarball" -C "$RUNNER_TEMP/age-bin" --strip-components=1 age/age
+          echo "$RUNNER_TEMP/age-bin" >> "$GITHUB_PATH"
+
+      - name: Check backup recipients
+        env:
+          BACKUP_AGE_RECIPIENTS: ${{ vars.BACKUP_AGE_RECIPIENTS }}
+        run: |
+          set -euo pipefail
+          if [ -z "${BACKUP_AGE_RECIPIENTS//[[:space:]]/}" ]; then
+            echo "::error::Repo variable BACKUP_AGE_RECIPIENTS is empty; refusing to export an unencrypted backup (see docs/BACKUP.md)."
+            exit 1
+          fi
+          printf '%s\n' "$BACKUP_AGE_RECIPIENTS" > "$RUNNER_TEMP/age-recipients.txt"
+          # age itself is the validator: it rejects malformed keys, identities
+          # (AGE-SECRET-KEY-…), and plugin recipients whose plugin is absent.
+          # It only *warns* about SSH key types it can't use (ECDSA, security
+          # keys, short RSA) and skips them, so any output fails the check too:
+          # otherwise a spare key could be dropped from every backup silently.
+          if ! age_out=$(age -R "$RUNNER_TEMP/age-recipients.txt" -o /dev/null < /dev/null 2>&1); then
+            printf '%s\n' "$age_out" >&2
+            echo "::error::Repo variable BACKUP_AGE_RECIPIENTS is not a valid age recipient list; refusing to export (see docs/BACKUP.md)."
+            exit 1
+          fi
+          if [ -n "$age_out" ]; then
+            printf '%s\n' "$age_out" >&2
+            echo "::error::age warned about BACKUP_AGE_RECIPIENTS (a line it would skip, such as an unsupported SSH key type); refusing to export (see docs/BACKUP.md)."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -65,38 +123,64 @@ jobs:
         id: stamp
         run: echo "ts=$(date -u +%Y%m%dT%H%M%SZ)" >> "$GITHUB_OUTPUT"
 
-      - name: Export D1 (wikilean)
+      - name: Export D1 (wikilean) and encrypt
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: "02e868c47ebe2b175a0609df94e857e6"
-        run: wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="wikilean-${{ steps.stamp.outputs.ts }}.sql"
+          # `d1 export --remote` logs a presigned URL that serves the plaintext
+          # dump to anyone for an hour. The run log is public, so keep wrangler
+          # to warnings and errors, discard its stdout, redact URLs from its
+          # stderr (in case a wrangler upgrade starts logging the URL as a
+          # warning or in an error), and skip its on-disk debug log (which
+          # records every message, URL included).
+          WRANGLER_LOG: warn
+          WRANGLER_WRITE_LOGS: "false"
+        run: |
+          set -euo pipefail
+          umask 077
+          # The plaintext stays outside the workspace and is removed on every
+          # exit path; only the .age file is left for the upload step.
+          plain="$RUNNER_TEMP/wikilean-${{ steps.stamp.outputs.ts }}.sql"
+          trap 'rm -f "$plain"' EXIT
+          # stdout goes to /dev/null; stderr goes through the redactor. pipefail
+          # keeps wrangler's exit status.
+          wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" 2>&1 > /dev/null \
+            | sed -E 's#[A-Za-z][A-Za-z0-9+.-]*://[^[:space:]]+#[URL redacted]#g' >&2
+          # An empty export must fail, not upload as a valid-looking .age.
+          test -s "$plain" || { echo "::error::wrangler produced an empty export"; exit 1; }
+          age -R "$RUNNER_TEMP/age-recipients.txt" -o "wikilean-${{ steps.stamp.outputs.ts }}.sql.age" "$plain"
+          rm -f "$plain"
+          test "$(head -n 1 "wikilean-${{ steps.stamp.outputs.ts }}.sql.age")" = "age-encryption.org/v1"
 
-      - name: Upload backup artifact
+      - name: Upload encrypted backup artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: wikilean-d1-${{ steps.stamp.outputs.ts }}
-          path: wikilean-${{ steps.stamp.outputs.ts }}.sql
+          path: wikilean-${{ steps.stamp.outputs.ts }}.sql.age
           retention-days: 30
           if-no-files-found: error
 
       # ── Research export (P2a) ───────────────────────────────────────────
       # Second nightly artifact: the pseudonymized annotation_events JSONL
       # from the live Worker (GET /api/research/export.jsonl, bearer-gated).
+      # The endpoint is not public, so the artifact is encrypted like the
+      # backup; the response streams straight into age and never touches disk.
       # Ordered AFTER the backup upload and continue-on-error on purpose: a
       # failed/missing export must never fail the database backup.
-      - name: Fetch research export
+      - name: Fetch and encrypt research export
         id: research
         continue-on-error: true
         env:
           PIPELINE_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
         run: |
+          set -euo pipefail
           test -n "$PIPELINE_TOKEN" # fail fast (and quietly) if the secret is missing
           curl --fail -sS --max-time 300 \
             -H "Authorization: Bearer $PIPELINE_TOKEN" \
             "https://wikilean.jackmccarthy.org/api/research/export.jsonl" \
-            -o "research-export-${{ steps.stamp.outputs.ts }}.jsonl"
+            | age -R "$RUNNER_TEMP/age-recipients.txt" -o "research-export-${{ steps.stamp.outputs.ts }}.jsonl.age"
 
-      - name: Upload research export artifact
+      - name: Upload encrypted research export artifact
         # steps.research.outcome is its pre-continue-on-error result, so this
         # step is skipped (not failed) when the fetch didn't produce a file.
         if: steps.research.outcome == 'success'
@@ -104,6 +188,6 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: research-export-${{ steps.stamp.outputs.ts }}
-          path: research-export-${{ steps.stamp.outputs.ts }}.jsonl
+          path: research-export-${{ steps.stamp.outputs.ts }}.jsonl.age
           retention-days: 30
           if-no-files-found: error

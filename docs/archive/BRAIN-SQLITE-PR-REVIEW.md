@@ -95,7 +95,7 @@ fixtures because the comparison runner must bind the historical program bytes it
 Patch 01 leaves the pre-existing host-local launchd files untouched; patch 07 replaces them
 with the portable generated-launcher design and tests that own that migration.
 
-Finally read [ROADMAP.md](ROADMAP.md) and the
+Finally read [ROADMAP.md](../ROADMAP.md) and the
 [current handoff](BRAIN-SQLITE-HANDOFF-2026-09-19.md) to verify that implementation claims
 and outstanding operational gates still match the code.
 

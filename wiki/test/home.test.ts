@@ -126,6 +126,13 @@ describe("homePage", () => {
     expect(html).toContain("https://github.com/Deicyde/WikiLean");
   });
 
+  it("names the existing Wikidata property (P14534), not the proposal-era one", () => {
+    const html = homePage([row()]).replace(/\s+/g, " ");
+    expect(html).toContain("<em>&ldquo;Mathlib Declaration ID&rdquo;</em>, P14534");
+    expect(html).not.toContain("formalized as (Lean/Mathlib)");
+    expect(html).not.toContain("basis for a proposed");
+  });
+
   it("labels the search input for assistive tech", () => {
     const html = homePage([row()]);
     expect(html).toContain('<label class="sr" for="q">');

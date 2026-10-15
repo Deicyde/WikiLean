@@ -50,7 +50,7 @@ def table(pr, repo="leanprover-community/mathlib4", header=None, fresh=False):
         rows.append(f"| {i} | {c} | [{qid}](https://www.wikidata.org/wiki/{qid}) | `{decl}` | {reviews_cell(verdicts.get(qid, {}))} |")
     head = header or (
         f"This PR adds **{len(decls)}** `@[wikidata]` cross-reference tags." if fresh
-        else f"This PR was trimmed to the **{len(decls)}** `@[wikidata]` tags that were approved 🟢 in review.")
+        else f"This PR carries the **{len(decls)}** `@[wikidata]` tags kept at its last settle; each tag's reviews are below.")
     return (head + "\n\n| # | Concept | Wikidata | Mathlib declaration | Reviews |\n"
             "|--:|:--|:--|:--|:--|\n" + "\n".join(rows) +
             "\n\n<sub>Reviews: 🟢 approve · 🟡 revise · 🔴 reject · ⚠️ deletion-candidate · 💬 comment. \\* = maintainer. "

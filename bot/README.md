@@ -15,7 +15,8 @@ Each run does two phases:
      anyone GitHub lists as an owner, member or collaborator of mathlib4 (which
      includes Mathlib reviewers). No minimum PR age is checked.
    - When the gate is open, classify each tag and **split** the PR down to its
-     green tags (`split.py`, force-push), then post a ready-to-merge comment.
+     green tags (`split.py`, force-push), then post the tag table under a header
+     stating the rule applied and "Ready for a maintainer's review" (`settle.ready_header`).
    - Any Mathlib maintainer merges the now-all-green PR (`bors merge`, or delegates
      with `bors d+`); reviewers route PRs to maintainers with a `maintainer merge`
      comment. The bot can't merge upstream.

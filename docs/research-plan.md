@@ -7,20 +7,43 @@
 > /stats row that should be nonzero once data flows (a zero count after the
 > feature ships = broken instrumentation, per the roadmap's /stats rule).
 
-## Instrumentation inventory (precise, as of 2026-06-12)
+## Instrumentation inventory (refreshed 2026-10-13)
+
+The 2026-06-12 inventory listed `pipeline_runs` as pending and `/stats` as not built. Both
+have shipped. Every source below is live; counts are from
+[`/stats`](https://wikilean.jackmccarthy.org/stats) on 2026-10-13.
 
 | Source | Status | Notes |
 |---|---|---|
-| `annotation_events` (D1) | **EXISTS** — migration 0005, deployed 2026-06-12 | Field-level diffs by annotation id on every write path; event types `add\|modify\|delete\|endorse\|reject\|revert_restore`; `actor_type` `human\|pipeline`. Left-truncated: annotations created before 0005 have no `add` event. |
-| `revisions.kind` + `meta` (D1) | **EXISTS** — migration 0004 + Wave B/C | `kind` ∈ edit/revert/seed/pipeline(/contribution); pipeline `meta` carries run_id, model, prompt_sha, tokens, cost_usd_equiv, mathlib_sha, auth_mode, `ladder` (restored/reinserted/downgrades_blocked/moderation_flags), `ids` wire stats. |
-| `flags` (D1) | **EXISTS** — migration 0005 | Anonymous reader reports by annotation id; resolution status. |
-| `moderation_state` (D1) | **EXISTS** — migration 0004 | last_reviewed_at/version, wp_drifted, flag_count. |
-| Stable annotation ids | **EXISTS** — backfilled 2026-06-11 | 31,394 ids across 706 articles; lazy-heal + runner echo-validation keep identity continuity. |
-| `site/cache/.decisions.jsonl` sidecar | **EXISTS after this wave (P2c)** | One line per article per moderate.py pass: ts, run_id, mode, slug, model, prompt_sha, tokens, cost_usd_equiv, ladder, ids, anchors {matched,total}, base_version, outcome `posted\|noop\|409-rebased\|422\|error\|dry-run`. Local artifact (gitignored with site/cache). |
-| `pipeline_runs` (D1) + POST /api/runs | **PENDING** — RUNS-API contract | The runner already POSTs aggregate run stats at the end of every real run and tolerates 404 with one warning; rows accumulate as soon as the endpoint deploys. |
-| Per-annotation `confidence` | **NO — deferred** | No new agent output fields this wave; adding it changes prompts (breaks prompt_sha comparability) and the wire schema. Gates RQ7. |
-| Considered-candidates / tool transcript | **NO — deferred** | Same deferral; planned as a deterministic post-pass strip, never stored in the article blob. |
-| /stats page | **NOT BUILT** (P2) | Row names below are the spec for it. |
+| `annotation_events` (D1) | **LIVE** (migration 0005, 2026-06-12) | Field-level diffs by annotation id on every write path; `actor_type` `human\|pipeline`. 13,063 events all-time, 184 in the last 30 days. Left-truncated: annotations created before 0005 have no `add` event. |
+| `revisions.kind` + `meta` (D1) | **LIVE** (migration 0004) | Kinds seen: `seed` 949, `pipeline` 3,309, `edit` 32, `proposal-approved` 6, `proposal-decided-ai` 6. Pipeline `meta` carries run_id, model, tokens, cost, ladder, and id stats. |
+| `flags` (D1) | **LIVE** (migration 0005) | 2 open, 0 resolved. |
+| `moderation_state` (D1) | **LIVE** (migration 0004) | `last_reviewed_at` is stamped by every bot save, including zero-token stage-0 re-pins, so `/stats` "Review fresh" overstates AI review coverage. |
+| Stable annotation ids | **LIVE** (backfilled 2026-06-11) | Lazy-heal plus runner echo-validation keep identity continuity. |
+| `pipeline_runs` (D1) + `POST /api/runs` | **LIVE** (migration 0006) | 227 runs: review 118, new 7, wp-update 102. |
+| Revision patrol marks | **LIVE** (migration 0006) | 0 of the 32 `edit` revisions patrolled. Those 32 include `system` import revisions, not only human edits. |
+| `proposals` lifecycle table (D1) | **LIVE** (migration 0009; propose-then-approve, 2026-08-06) | 12 approved, 3 rejected, 6 decided by AI, 1 pending; mean 19.0 h to decision. |
+| `/stats` page | **LIVE** (cache key `page:stats:v5`) | RQ-labelled rows; footer explains what a zero means. |
+| Research export | **LIVE** endpoint | `GET /api/research/export.jsonl` (bot bearer or admin), pseudonymized. A nightly artifact step rides the D1 backup workflow and needs the `PIPELINE_TOKEN` repo secret. |
+| `site/cache/.decisions.jsonl` sidecar | **LIVE, host-local** | Written by `site/moderate.py` on the nightly host; gitignored, not in this repo. RQ3's ladder data lives here. |
+| Per-annotation `confidence` | **NO**, deferred | Gates RQ7. |
+| Considered-candidates / tool transcript | **NO**, deferred | Planned as a deterministic post-pass strip. |
+
+## RQ status (2026-10-13)
+
+No RQ1–RQ8 analysis exists yet: no analysis code or report is committed. The Bridge study
+(`docs/research/BRIDGE-REPORT.md`) is separate research output, not an RQ analysis.
+
+| RQ | Instrumented | Data so far (`/stats`, 2026-10-13) | Analysis |
+|---|---|---|---|
+| RQ1 human-correction rate | yes | 7 human `modify` and 1 human `add` events all-time, 0 in the last 30 days; every human revision in the article histories is from one account | none; blocked on contributors |
+| RQ2 endorse vs modify | yes | 0 endorsements, 7 human modifications; proxy: proposal acceptance 80% (12 approved / 3 rejected) | none; blocked on contributors |
+| RQ3 AI dissent and ladder blocks | yes (revisions `meta.ladder`, decisions sidecar) | not on `/stats`; sidecar is host-local | none |
+| RQ4 time to correction | yes | 0 rejections, 2 open flags and 0 resolved; proposals average 19.0 h to decision | none; blocked on contributors |
+| RQ5 survival across AI passes | yes (ids, `revisions.kind`, events) | 3,309 pipeline revisions, 13,063 events; the planned survival-rate row is not on `/stats` (its RQ5 rows show review freshness) | none |
+| RQ6 inter-generation agreement | deferred | no double-run sample | none |
+| RQ7 confidence calibration | deferred | no confidence field | none |
+| RQ8 cost per accepted annotation | yes | 27,413,887 tokens, $1,433.15 API-equivalent over 227 runs; [token_budget.md](token_budget.md) (2026-08-04) gives $1.54 per reviewed and $1.32 per new article | none; no cost-per-accepted figure |
 
 ## RQ1 — Human-correction rate of AI annotations, by field
 
@@ -154,8 +177,8 @@ notice"): edits are public and attributed (display name, article, timestamp,
 comment), and contributors are told up front that edit *metadata* —
 field-level changes, provenance, timing — is analyzed and published **in
 aggregate**. Research exports use salted-hash pseudonyms by default and
-never include emails or IP addresses (`flags.ip_hash` is a pseudonymous
-abuse handle and is never exported; the roadmap also tracks dropping
+never include emails or IP addresses (anonymous flags store no IP-derived
+value; `flags.ip_hash` is always `NULL`. The roadmap also tracks dropping
 better-auth's session `ip_address` storage). An **IRB exemption is filed
 before any paper** — that's a roadmap line item (P2 "Privacy"), not an
 afterthought; nothing in RQ1–RQ8 requires identifiable data.
