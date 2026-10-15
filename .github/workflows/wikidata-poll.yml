@@ -65,6 +65,11 @@ jobs:
     # adds the CrossRefAttribute import deterministically and lets mathlib CI compile
     # (commit 80a4741), so a heavy tick is git-clone + apply + gh + the triage LLM =
     # minutes. 30m is generous headroom; no-op (decide=wait) ticks still exit in ~12s.
+    # The long steps carry shorter timeouts of their own. A step that hits its
+    # timeout fails, so a hang reports as a failed run; hitting this job limit
+    # instead ends the run as cancelled, which is easy to read as harmless. The
+    # steps before them take about a minute, so a timed-out step still leaves
+    # time for Commit poll state inside this limit.
     timeout-minutes: 30
     env:
       PYTHONUNBUFFERED: "1"        # stream poll/open_batch print()s live (no 40m of silence)
@@ -148,12 +153,14 @@ jobs:
           cache-dependency-path: .github/claude-cli/package-lock.json
       - name: Install pinned Claude CLI
         if: steps.decide.outputs.act == 'true'
+        timeout-minutes: 10
         run: |
           npm ci --prefix .github/claude-cli
           echo "$GITHUB_WORKSPACE/.github/claude-cli/node_modules/.bin" >> "$GITHUB_PATH"
 
       - name: Clone mathlib4 (fork origin + upstream)
         if: steps.decide.outputs.act == 'true'
+        timeout-minutes: 10
         run: |
           git clone --filter=blob:none https://github.com/Deicyde/mathlib4.git "$MATHLIB"
           git -C "$MATHLIB" remote add upstream https://github.com/leanprover-community/mathlib4.git
@@ -162,6 +169,7 @@ jobs:
 
       - name: Poll tick (apply)
         if: steps.decide.outputs.act == 'true'
+        timeout-minutes: 20
         env:
           GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
           WIKILEAN_API_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
