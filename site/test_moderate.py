@@ -2420,6 +2420,64 @@ def test_review_failures_file_roundtrip_and_corruption():
         assert out["c"]["n"] == 2, out
 
 
+def test_fetch_work_clamps_limit_per_mode():
+    """wp-update may ask for the whole drifted set; review stays one page."""
+    import io
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        with _patched_get(200, {"jobs": []}) as gets:
+            m.fetch_work("http://api.test", "tok", "wp-update", 5000)
+            m.fetch_work("http://api.test", "tok", "wp-update", 300)
+            m.fetch_work("http://api.test", "tok", "review", 500)
+    assert [u.rsplit("?", 1)[1] for u in gets] == [
+        "mode=wp-update&limit=1000", "mode=wp-update&limit=300",
+        "mode=review&limit=100"], gets
+    assert out.getvalue().splitlines() == [
+        "note: /api/work caps wp-update at 1000",
+        "note: /api/work caps review at 100"], out.getvalue()
+
+
+def test_wp_update_sweeps_the_whole_limit_and_paces_every_article():
+    """The nightly asks for up to 1000 drifted articles; a sweep that long
+    must pace read-only articles too, not just re-pins."""
+    import io
+    import tempfile
+    outcomes = ["needs-work", "repinned", "up-to-date", "needs-work"]
+    fake_ufu = types.ModuleType("update_from_upstream")
+    fake_ufu.WRITE_PACE_SECONDS, fake_ufu.GET_PACE_SECONDS = 2.1, 0.5
+    fake_ufu.REPORT_PATH = Path("report.jsonl")
+    fake_ufu.make_session = lambda: None
+    fake_ufu.process_slug = lambda s, base, slug, ns, run_id, tok: {
+        "slug": slug, "outcome": outcomes[int(slug[1:])], "matched": None,
+        "total": None, "old_revid": None, "new_revid": None}
+    asked, sleeps = [], []
+
+    def fake_fetch(api_base, token, mode, limit):
+        asked.append((mode, limit))
+        return [{"slug": f"s{i}"} for i in range(len(outcomes))]
+
+    saved = (sys.modules.get("update_from_upstream"), m.fetch_work, m.time.sleep,
+             m.DECISIONS_LOG)
+    with tempfile.TemporaryDirectory() as td:
+        sys.modules["update_from_upstream"] = fake_ufu
+        m.fetch_work, m.time.sleep = fake_fetch, sleeps.append
+        m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                rc, stats = m.run_wp_update(SimpleNamespace(
+                    api_base="http://api.test", limit=1000, dry_run=False,
+                    run_id="0000bbbb"), "tok")
+        finally:
+            if saved[0] is None:
+                sys.modules.pop("update_from_upstream", None)
+            else:
+                sys.modules["update_from_upstream"] = saved[0]
+            m.fetch_work, m.time.sleep, m.DECISIONS_LOG = saved[1:]
+    assert asked == [("wp-update", 1000)], asked
+    assert rc == 0 and stats["processed"] == 4, (rc, stats)
+    assert sleeps == [0.5, 2.1, 0.5], sleeps  # none after the last article
+
+
 class _Nights:
     """Drive run_mode('review') night after night with fakes for the Worker
     and the agents; `fail` maps slug -> error for the next night."""
@@ -2493,6 +2551,17 @@ def test_review_mode_rotates_past_article_specific_failures():
         assert sorted(n.reviewed[0]) == ["h0", "h1", "h2"], n.reviewed
         assert sorted(n.reviewed[1]) == ["h3", "h4", "h5"], n.reviewed
         assert rc == 0 and stats["errors"] == 0
+
+
+def test_review_mode_over_fetch_stays_within_the_review_cap():
+    """98 + 5 recent failures asks for 100, review's cap, not wp-update's."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
+        n.fail = {f"h{i}": "fetch_failed" for i in range(5)}
+        n.night(limit=98)
+        n.fail = {}
+        n.night(limit=98)
+        assert n.calls == [98, 100], n.calls
 
 
 def test_review_mode_does_not_rotate_on_account_wide_failures():
