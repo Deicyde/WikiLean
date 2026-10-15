@@ -1,9 +1,12 @@
 # AGENTS.md — WikiLean
 
 Auto-loaded every session. **Durable conventions + invariants only.** Live state comes
-from `python3 manage/status.py` (a SessionStart hook runs it); evolving facts live in the
-memory system; `docs/ROADMAP.md` is the canonical plan; `HANDOFF.md` is deep human
-onboarding. When this file contradicts the code, trust the code and fix this file.
+from `python3 manage/status.py` (a SessionStart hook runs it) and the live site (`/stats`,
+`/assets/brain/current.json`); evolving facts live in `docs/`: the `docs/ROADMAP.md` status
+log, the Brain checkpoint named by `docs/BRAIN-SQLITE-HANDOFF.md`, and
+`docs/BRAIN-ACTIVATION-2026-10-04.md` for production. Agent memory is per-host and may be
+empty, so don't rely on it. `docs/ROADMAP.md` is the canonical plan; `HANDOFF.md` is the
+onboarding map. When this file contradicts the code, trust the code and fix this file.
 
 ## What WikiLean is
 
@@ -16,7 +19,9 @@ interaction data is a first-class goal; clean UI matters). Three components shar
 2. **The `@[wikidata]` tagging bot** (`bot/`) — automated PRs into
    `leanprover-community/mathlib4` (from fork `Deicyde/mathlib4`), gated by human review;
    runs unattended on GitHub Actions.
-3. **Wikifunctions** (`wikifunctions/`) — experimental spec/verification sub-project.
+3. **Wikifunctions** (`wikifunctions/`): the QID → Wikifunctions ZID → Mathlib data
+   pipeline behind `/wikifunctions`. The verification project (Lean proofs, spec corpus)
+   moved to `Deicyde/wikifunctions` on 2026-07-02.
 
 Mission = three routine AI operations: (1) generate annotations for new articles,
 (2) review/correct existing ones, (3) update on Wikipedia drift.
@@ -30,9 +35,9 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Tagging bot | `bot/` + `.github/workflows/wikidata-poll.yml`; live state on the `bot-state` branch (`bot/state/` on main is a frozen snapshot; see `bot/README.md`) |
 | Tag catalog | `catalog/data/*.jsonl` |
 | Management control plane | `manage/` — centrality × coverage → worklists (see `manage/README.md`) |
-| The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego/explorer; contract `brain/SCHEMA.md`; design `docs/BRAIN-V2.md`). v2 adds `ext` nodes (10 external DBs via `brain/ingest/*.py` → `catalog/data/external/`), `links` edges, `unit` cards, `f` facet bits. The old graph stack is **deleted** (retired 2026-07-10, tombstones destroyed 2026-08-04): `/map`, `/map-v2`, `/graph`, `/atlas`, `/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas` and `GET /api/brain/node` answer plain 404s — `RESERVED` (index.ts) only squats the names; agents use `/api/brain/*` + `POST /mcp` (docs: GET `/mcp`). `catalog/data/source_registry.json` = provenance single-source-of-truth. |
-| Wikibrain agent API + MCP | `wiki/src/brain-api.ts` (`/api/brain/{unit,transfer,neighborhood,snippets,filter}`) + `wiki/src/mcp.ts` (stateless streamable-HTTP MCP at `POST /mcp`, 9 tools); reference `docs/BRAIN-API.md` + live `/brain/api`; benchmark harness `bench/` (no_tools vs wikibrain arms) |
-| Nightly ops | `site/ops/` (launchd; brain 02:20, newtags 03:10, moderate 03:20); tracked tunables in `nightly.env`, host-local paths in gitignored `nightly.local.env`, and generated plists via `nightly-launchd.py`. Community graduation is opt-in from an explicit sealed D1 bundle; nightly never acquires it implicitly. Brain nightly = `brain-nightly.sh`: cadenced ingest → canonical proposal-QID plan → sealed Wikidata entity acquisition only when nonempty → offline-only `fold_proposals` with the explicit verified bundle → unified `build_snapshot` (JSONL + generated local SQLite index) → `test_acceptance` (red aborts publish) → cells/shards → frozen-release verification + shadow staging/Worker checks only. Planning/acquisition/fold failure aborts the build; the Brain lock is never stolen by age and requires verified manual recovery. Nonzero `WIKILEAN_BRAIN_DEPLOY` is rejected. Exact production promotion is a separate approved operator action via `site/ops/brain-promote-release.sh`, an attested immutable public baseline, and a durable external journal. The Worker still serves static cell shards and D1 remains the community overlay; agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
+| The Brain (map of mathematics) | `brain/` pipeline → `site/build_brain_page.py` + `brain/build_shards.py` → **`/brain`** (bubbles/web/ego/explorer; contract `brain/SCHEMA.md`; design `docs/BRAIN-V2.md`). v2 adds `ext` nodes (10 external DBs via `brain/ingest/*.py` → `catalog/data/external/`), `links` edges, `unit` cards, `f` facet bits. The old graph stack is **deleted** (retired 2026-07-10, tombstones destroyed 2026-08-04): `/map`, `/map-v2`, `/graph`, `/atlas`, `/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas` and `GET /api/brain/node` answer plain 404s — `RESERVED` (index.ts) only squats the names; agents use `/api/brain/*` + `POST /mcp` (docs: `/mcp` in a browser, which other clients get as a JSON 405, and `/brain/api`). `catalog/data/source_registry.json` = provenance single-source-of-truth. |
+| Wikibrain agent API + MCP | `wiki/src/brain-api.ts` (release-qualified, rate-limited reads: `GET /api/brain/{cell,unit,transfer,neighborhood,snippets,filter,search,decl,premises,bridge}`; reference page `GET /brain/api`) + `wiki/src/brain-edits.ts` (community overlay in D1: `POST /api/brain/edge`, `GET /api/brain/edges` (read), `POST /api/brain/node`, `DELETE /api/brain/{edge,node}/:id` or `POST …/:id/delete`, `POST /api/brain/quickstatements`) + `wiki/src/mcp.ts` (stateless streamable-HTTP MCP at `POST /mcp`, 9 tools); reference `docs/BRAIN-API.md` + live `/brain/api`; benchmark harness `bench/` (no_tools vs wikibrain arms) |
+| Nightly ops | `site/ops/` (launchd; brain 02:20, moderate 03:20). newtags (03:10) has a plist but has not run as a routine job (evidence: ROADMAP status log, 2026-10-13); switching it on is Jack's decision. **Nightly host:** jobs run only on the one operator Mac where the LaunchAgents are installed and loaded, and the repo does not record which Mac that is. Check `launchctl print gui/$(id -u)/org.wikilean.moderate` before assuming a checkout runs anything; a checkout without them runs nothing. Tracked tunables in `nightly.env`, host-local paths in gitignored `nightly.local.env`, and generated plists via `nightly-launchd.py`. Community graduation is opt-in from an explicit sealed D1 bundle; nightly never acquires it implicitly. Brain nightly = `brain-nightly.sh`: cadenced ingest → canonical proposal-QID plan → sealed Wikidata entity acquisition only when nonempty → offline-only `fold_proposals` with the explicit verified bundle → unified `build_snapshot` (JSONL + generated local SQLite index) → `test_acceptance` (red aborts publish) → cells/shards → frozen-release verification + shadow staging/Worker checks only. Planning/acquisition/fold failure aborts the build; the Brain lock is never stolen by age and requires verified manual recovery. Nonzero `WIKILEAN_BRAIN_DEPLOY` is rejected. Exact production promotion is a separate approved operator action via `site/ops/brain-promote-release.sh`, an attested immutable public baseline, and a durable external journal. The Worker still serves static cell shards and D1 remains the community overlay; agent team `brain/sync_agents.py` (`WIKILEAN_BRAIN_AGENTS=1`) |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
 | Mathlib checkout | External, read-only, and host-configured through `WIKILEAN_MATHLIB` / `BRAIN_MATHLIB_CHECKOUT`; the bot's checkout must never be edited |
 
@@ -57,8 +62,10 @@ cd wiki && npm run test:e2e
 cd wiki && npm run test:corpus     # renderer/annotation/decl-index corpora
 python3 brain/test_fold_xref.py    # real catalog + private decl cache/Mathlib checkout
 
-# Site (wiki/)
-cd wiki && npm run deploy          # deploy the Worker (bundles ALL of wiki/src)
+# Site (wiki/). Production deploys ONLY via the exact promoter; see docs/BRAIN-RELEASE-RUNBOOK.md.
+# Never plain `npm run deploy` / `wrangler deploy`: it uploads the local wiki/public and
+# replaces the Brain selector and the whole asset tree.
+bash site/ops/brain-promote-release.sh sha256:<release-hex> --release-root <abs> ...  # see runbook
 cd wiki && node --experimental-strip-types scripts/build-public.ts \
   --brain-release-manifest ../site/out/brain-releases/<manifest-hex>/release.json \
   --brain-release-dir ../site/out/brain-releases/<manifest-hex>       # verified assets; RUN FROM wiki/
@@ -95,7 +102,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   them `ai-moderated` — **AI-changed bytes are never left marked `human`, and bots never
   mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
 - **Render-cache keys are manually versioned + load-bearing** (currently `render:v17:`,
-  `page:home:v10`, `page:articles:v2`, `page:articles-index:v1`, `page:about:v1`,
+  `page:home:v10`, `page:articles:v3`, `page:articles-index:v1`, `page:about:v2`,
   `page:sitemap:v4`, `page:stats:v6`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
   prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset
@@ -103,7 +110,18 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - **The `RESERVED` set (`index.ts`) must list every non-article top-level path** or the
   `/:slug` catch-all swallows it. Provenance is matched by exact string
   (`human`/`ai-moderated`/`ai`) — don't rename.
-- Schema changes go through ordered `wrangler d1 migrations`.
+- Schema changes go through ordered, numbered files in `wiki/migrations/`. **Remote migration
+  tracking is out of sync**: the headers of `0009`, `0010` and `0012` say so, and all four of
+  `0009`–`0012` give the manual command.
+  Apply a new migration the same way, as an operator action after a D1 backup (`cd wiki && npm run backup:d1`; it needs `age` installed and `BACKUP_AGE_RECIPIENTS` exported, see `docs/BACKUP.md`):
+  `cd wiki && npx wrangler d1 execute wikilean --remote --file=migrations/<NNNN_name>.sql`.
+  Never `wrangler d1 migrations apply --remote`, which could re-run files the remote tracking
+  table does not list (`0008`'s `ALTER TABLE … ADD COLUMN` fails on a re-run). Keep new files
+  idempotent (`CREATE … IF NOT EXISTS`, as `0009`–`0012` are). SQLite has no
+  `ADD COLUMN IF NOT EXISTS`, so an `ALTER TABLE … ADD COLUMN` migration is the exception:
+  its header must say it is not idempotent and runs once, and the operator verifies it after
+  applying (e.g. `SELECT name FROM pragma_table_info('<table>')`). Reconciling the remote
+  `d1_migrations` table is an open operator task.
 
 **Bot pipeline (deterministic — no LLM on the git path)**
 - The ONLY LLM in the whole pipeline is `triage.py`. Gate / tag application / split / comments /
@@ -132,8 +150,8 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   secrets via `wrangler secret put` / `gh secret set`.
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
-- Never take custody of others' API keys. Never edit the mathlib4 checkout — do Lean work in
-  `wikifunctions/lean/`.
+- Never take custody of others' API keys. Never edit the mathlib4 checkout; do Lean work in a
+  separate project (the Wikifunctions Lean proofs live in `Deicyde/wikifunctions`).
 
 ## CI test boundaries
 - `npm test` / `npm run test:unit` excludes corpus-dependent Vitest files. `npm run test:ci` is
@@ -148,10 +166,17 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   `npx playwright install --with-deps chromium`.
 
 ## Deploy notes
-- `npm run deploy` bundles **all** of `wiki/src` — don't leave unreleased Worker WIP committed
-  before an operator-approved deployment. Nightly jobs never deploy: the 02:20 Brain job is
-  shadow-only and rejects nonzero `WIKILEAN_BRAIN_DEPLOY`; exact promotion uses
-  `site/ops/brain-promote-release.sh` and the reviewed release runbook.
+- **Production deploys go only through `site/ops/brain-promote-release.sh`** and the reviewed
+  release runbook. A plain `npm run deploy` (`wrangler deploy` with `assets.directory`
+  `./public`) uploads whatever the local `wiki/public` holds: it replaces the live Brain
+  selector and the whole asset tree, and it skips the journal and canary. Since 2026-10-04
+  production serves an immutable release (`docs/BRAIN-ACTIVATION-2026-10-04.md`).
+- Worker source and config, `wiki/scripts/`, `wiki/package*.json`, lockfiles, non-test
+  `site/*.py` and site assets are release-affecting; `site/ops/brain_release_authority.py` is
+  the exact list. A change there ships only in
+  a new release built at the new commit, with a fresh P1B and Jack's approval; no Worker-only
+  hotfix path exists. Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
+  rejects nonzero `WIKILEAN_BRAIN_DEPLOY`.
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
   `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen

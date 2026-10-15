@@ -82,6 +82,20 @@ DECISIONS_LOG = HERE / "cache" / ".decisions.jsonl"
 # Under site/cache (gitignored).
 PENDING_DIR = HERE / "cache" / ".pending_posts"
 
+# A failed review returns before the POST, so it never stamps
+# moderation_state.last_reviewed_at and /api/work hands the same articles out
+# again the next night. This host-local record ({slug: {ts, n, error}}) lets
+# review mode move articles whose review failed for an article-specific reason
+# behind the rest of the queue. Account- or host-wide failures (login, limits,
+# CLI, network, Worker writes) are never recorded: they would only push the
+# highest-priority articles back once the cause is fixed.
+REVIEW_FAILURES = HERE / "cache" / ".review_failures.json"
+REVIEW_RETRY_AFTER_DAYS = 3   # nights before a failed article goes first again
+REVIEW_FAILURES_KEEP_DAYS = 30
+ARTICLE_SPECIFIC_ERROR_RE = re.compile(
+    r"^(fetch_failed|extract_failed|agent[12]_no_json|render_failed"
+    r"|final_read_failed|human_lost_422|get_failed_404)\b")
+
 
 def _pending_path(slug: str, pending_dir: Path | None = None) -> Path:
     safe = urllib.parse.quote(slug, safe="")
@@ -515,6 +529,99 @@ def register_run(api_base: str, token: str, payload: dict,
     return False
 
 
+# POST /api/runs rejects notes longer than MAX_TEXT_LEN = 2000 (wiki/src/
+# validation.ts; JS string length, i.e. UTF-16 code units) with a 413 that
+# drops the whole pipeline_runs row, so the notes cap is strict.
+RUN_NOTES_MAX = 2000
+ERROR_SAMPLE_DISTINCT = 5
+_ANSI_RE = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+_CTRL_RE = re.compile(r"[\x00-\x1f\x7f]")
+_HOME_RE = re.compile(r"/(?:Users|home)/[^/\s'\"]+")
+_SECRET_RE = re.compile(
+    r"sk-ant-[\w-]+|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_\w+|Bearer\s+\S+"
+    r"|\b(?=[A-Za-z]*\d)[A-Za-z0-9]{32,}\b")
+# An alphabetic TLD keeps package@version strings (claude-agent-sdk@0.1.3),
+# which name the exact CLI/SDK build, out of the email rule.
+_EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)*\.[A-Za-z]{2,}\b")
+
+
+def sanitize_error(err, token: str | None = None, limit: int = 160) -> str:
+    """One public-safe line from a per-article error: no bearer token, no
+    token-like strings, no emails, no home directory, no control bytes."""
+    s = str(err)
+    if token:
+        # Also catch the token wrapped across lines or split by escape codes.
+        gap = r"(?:\s|\x1b\[[0-9;?]*[A-Za-z])*" if len(token) >= 8 else ""
+        s = re.sub(gap.join(re.escape(c) for c in token), "[redacted]", s)
+    s = _CTRL_RE.sub(" ", _ANSI_RE.sub("", s))
+    s = " ".join(s.split())
+    s = _SECRET_RE.sub("[redacted]", _HOME_RE.sub("~", s))
+    s = _EMAIL_RE.sub("[email]", s)
+    return s if len(s) <= limit else s[: limit - 1] + "…"
+
+
+def _utf16_len(s: str) -> int:
+    return len(s.encode("utf-16-le")) // 2
+
+
+def _fit_utf16(s: str, cap: int) -> str:
+    if _utf16_len(s) <= cap:
+        return s
+    out, n = [], 0
+    for ch in s:
+        w = 2 if ord(ch) > 0xFFFF else 1
+        if n + w > cap - 1:  # keep one unit for the ellipsis
+            break
+        out.append(ch)
+        n += w
+    return "".join(out) + "…"
+
+
+def error_sample(jobs: list[dict], token: str | None = None) -> str:
+    """Bounded summary of a run's distinct per-article errors, most common
+    first: '15/15 errors: 15x ~2s RuntimeError: agent_error: … (e.g. A, B)'.
+    `jobs` is run_jobs' per-job list ({slug, error, elapsed_s}). Empty when
+    nothing errored. ~Ns is the median of the group's elapsed_s: the
+    article's own pipeline time in annotate_one, timed from the concurrency
+    slot (queue wait excluded); errors that never reach it (get_failed_*) carry
+    none. It is a hint, since an agent-pipeline error reports 0 tokens either
+    way: seconds suggest a launch/login failure, minutes that agents ran."""
+    failed = [j for j in jobs if j.get("error")]
+    if not failed:
+        return ""
+    # Give each shown error an even share of the notes budget: the cause often
+    # sits after a long 'RuntimeError: agent_error:' prefix.
+    n_distinct = len({sanitize_error(j["error"], token, 2000) for j in failed})
+    per_error = max(160, min(600, 1700 // min(n_distinct, ERROR_SAMPLE_DISTINCT)))
+    groups: dict[str, dict] = {}
+    for j in failed:
+        g = groups.setdefault(sanitize_error(j["error"], token, per_error),
+                              {"n": 0, "slugs": [], "t": []})
+        g["n"] += 1
+        if len(g["slugs"]) < 2:
+            g["slugs"].append(sanitize_error(j.get("slug") or "?", token, 60))
+        if isinstance(j.get("elapsed_s"), (int, float)):
+            g["t"].append(float(j["elapsed_s"]))
+    ranked = sorted(groups.items(), key=lambda kv: -kv[1]["n"])
+    parts = []
+    for msg, g in ranked[:ERROR_SAMPLE_DISTINCT]:
+        t = sorted(g["t"])
+        med = f" ~{t[len(t) // 2]:.0f}s" if t else ""
+        parts.append(f"{g['n']}x{med} {msg} (e.g. {', '.join(g['slugs'])})")
+    if len(ranked) > ERROR_SAMPLE_DISTINCT:
+        parts.append(f"+{len(ranked) - ERROR_SAMPLE_DISTINCT} more distinct")
+    return f"{len(failed)}/{len(jobs)} errors: " + " | ".join(parts)
+
+
+def build_run_notes(modes: list[str], aborted: bool, sample: str = "") -> str:
+    """pipeline_runs.notes: the mode list, the abort marker, then the error
+    sample, cut to the Worker's cap."""
+    notes = "modes=" + "+".join(modes) + (" aborted" if aborted else "")
+    if sample:
+        notes += "; " + sample
+    return _fit_utf16(notes, RUN_NOTES_MAX)
+
+
 def maybe_register_run(args, token: str | None, started_at: int, totals: dict,
                        model=None, prompt_sha=None, notes=None,
                        transport=None) -> bool:
@@ -704,6 +811,89 @@ def fetch_work(api_base: str, token: str, mode: str, limit: int) -> list[dict]:
     if r.status_code != 200:
         sys.exit(f"GET /api/work?mode={mode} failed: {r.status_code} {r.text[:200]}")
     return r.json().get("jobs", [])
+
+
+def load_review_failures(path: Path | None = None) -> dict:
+    """The host-local failed-review record; a missing or corrupt file is empty."""
+    p = path or REVIEW_FAILURES
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return {}
+    except (OSError, ValueError) as e:
+        print(f"warning: ignoring unreadable {p.name} ({e})", file=sys.stderr)
+        return {}
+    if not isinstance(data, dict):
+        return {}
+    out = {}
+    for s, e in data.items():
+        if (isinstance(s, str) and isinstance(e, dict)
+                and isinstance(e.get("ts"), (int, float))
+                and not isinstance(e.get("ts"), bool)):
+            n = e.get("n")
+            out[s] = {**e, "n": n if isinstance(n, int) and not isinstance(n, bool) else 1}
+    return out
+
+
+def save_review_failures(failures: dict, path: Path | None = None) -> None:
+    """Atomic best-effort write: scheduling state must never fail a run."""
+    p = path or REVIEW_FAILURES
+    try:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        tmp = p.with_name(f".{p.name}.{os.getpid()}.tmp")
+        tmp.write_text(json.dumps(failures, ensure_ascii=False, sort_keys=True,
+                                  indent=1), encoding="utf-8")
+        tmp.replace(p)
+    except OSError as e:
+        print(f"warning: could not save {p.name} ({e}); continuing", file=sys.stderr)
+
+
+def recently_failed(failures: dict, now_ms: int) -> set[str]:
+    # Half a day short of whole days: a failure stamped at the end of one
+    # night's run is retried at the start of the run REVIEW_RETRY_AFTER_DAYS
+    # nights later, not one night after that.
+    cutoff = now_ms - (REVIEW_RETRY_AFTER_DAYS * 86_400_000 - 43_200_000)
+    return {s for s, e in failures.items() if e["ts"] >= cutoff}
+
+
+def defer_recent_failures(jobs: list[dict], failures: dict, limit: int,
+                          now_ms: int) -> tuple[list[dict], list[str]]:
+    """Pick `limit` jobs, keeping /api/work's order but moving articles that
+    failed review in the last REVIEW_RETRY_AFTER_DAYS behind the others
+    (oldest failure first). Deferral never empties a run: when too few other
+    articles are left, the oldest failures fill the remaining slots. Returns
+    (selected, deferred slugs that were left out)."""
+    recent = recently_failed(failures, now_ms)
+    fresh = [j for j in jobs if j["slug"] not in recent]
+    held = sorted((j for j in jobs if j["slug"] in recent),
+                  key=lambda j: failures[j["slug"]]["ts"])
+    picked = (fresh + held)[:limit]
+    chosen = {j["slug"] for j in picked}
+    return picked, [j["slug"] for j in held if j["slug"] not in chosen]
+
+
+def record_review_outcomes(failures: dict, jobs: list[dict], now_ms: int,
+                           token: str | None = None) -> dict:
+    """Fold one run's per-job results into the failed-review record: an
+    article-specific error (ARTICLE_SPECIFIC_ERROR_RE) (re)stamps the slug, a
+    success (posted, no-op, 409 skip) clears it, and any other error leaves
+    the entry as it was. Entries older than REVIEW_FAILURES_KEEP_DAYS go."""
+    out = dict(failures)
+    for j in jobs:
+        slug = j.get("slug")
+        if not isinstance(slug, str) or slug in ("", "?"):
+            continue
+        err = j.get("error")
+        if not err:
+            out.pop(slug, None)
+        elif ARTICLE_SPECIFIC_ERROR_RE.match(str(err)):
+            prev = out.get(slug) or {}
+            n = prev.get("n")
+            out[slug] = {"ts": now_ms,
+                         "n": (n if isinstance(n, int) and not isinstance(n, bool) else 0) + 1,
+                         "error": sanitize_error(err, token)}
+    keep = now_ms - REVIEW_FAILURES_KEEP_DAYS * 86_400_000
+    return {s: e for s, e in out.items() if e["ts"] >= keep}
 
 
 def load_slug_jobs(path: Path, limit: int, reason: str = "targeted") -> list[dict]:
@@ -1161,13 +1351,14 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
 
 async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
     """Returns (exit_code, stats) — stats is the zero_stats() shape
-    {processed, errors, tokens, cost} that feeds the /api/runs registration.
+    {processed, errors, tokens, cost} that feeds the /api/runs registration,
+    plus `jobs`: one {slug, error, elapsed_s} per processed job.
     exit_code 3 = aborted (window/budget), matching batch_annotate.run's
     convention. Every processed job also appends one decisions-sidecar line
     (P2c) next to the run-log write, under the same lock."""
     t0 = time.time()
     state = {"consec_err": 0, "abort": False, "n_done": 0, "n_err": 0,
-             "tokens": 0, "cost": 0.0}
+             "tokens": 0, "cost": 0.0, "jobs": []}
     # The guard is what every process_* acquires (via annotate_one); once
     # abort trips, queued jobs raise AbortSkip at the acquire instead of
     # burning a slot — see _AbortingSem.
@@ -1195,6 +1386,14 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
                 log.flush()
                 append_decision(decision_line(ctx, rec))  # P2c sidecar
                 state["n_done"] += 1
+                # Per-job outcome for the run's error sample (pipeline_runs
+                # notes) and the failed-review record that rotates the queue.
+                # Keyed by the work-queue slug: annotate_one overwrites
+                # rec["slug"] with its own make_slug(title), which can differ.
+                job_slug = job.get("slug") if isinstance(job, dict) else None
+                state["jobs"].append({"slug": job_slug or rec.get("slug"),
+                                      "error": rec.get("error"),
+                                      "elapsed_s": rec.get("elapsed_s")})
                 state["tokens"] += rec.get("tokens") or 0
                 state["cost"] += rec.get("cost_usd_equiv") or 0
                 err = rec.get("error")
@@ -1202,10 +1401,14 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
                     state["n_err"] += 1
                     low = str(err).lower()
                     # An auth/credit misconfiguration (e.g. an ANTHROPIC_API_KEY
-                    # shadowing the Max login → "Credit balance is too low") fails
-                    # EVERY article identically and won't self-resolve — abort on
-                    # the first one instead of burning the whole batch.
-                    if "credit balance" in low or "authentication" in low:
+                    # shadowing the Max login → "Credit balance is too low", a
+                    # logged-out CLI → "Not logged in", an expired OAuth token →
+                    # "Failed to authenticate") fails EVERY article identically
+                    # and won't self-resolve — abort on the first one instead of
+                    # burning the whole batch.
+                    if ("credit balance" in low or "authentication" in low
+                            or "failed to authenticate" in low
+                            or "not logged in" in low):
                         state["consec_err"] = ABORT_AFTER
                     elif ("error result" in low or "rate" in low
                             or "limit" in low or "overloaded" in low):
@@ -1239,7 +1442,8 @@ async def run_jobs(jobs: list, ctx, process) -> tuple[int, dict]:
           f"{state['tokens'] / 1e6:.2f}M tokens"
           + ("  [ABORTED — rerun to resume]" if state["abort"] else ""))
     stats = {"processed": state["n_done"], "errors": state["n_err"],
-             "tokens": state["tokens"], "cost": round(state["cost"], 4)}
+             "tokens": state["tokens"], "cost": round(state["cost"], 4),
+             "jobs": state["jobs"]}
     return (3 if state["abort"] else 0), stats
 
 
@@ -1268,6 +1472,8 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
 
     if mode == "review":
         ba_mod = _try_import_ba(args.auth) if args.dry_run else _import_ba(args.auth)
+        failures = load_review_failures()
+        now_ms = int(time.time() * 1000)
         if getattr(args, "slugs", None):
             # Targeted review from an explicit slug list (e.g. the formalize
             # backlog) instead of the /api/work ladder.
@@ -1277,12 +1483,33 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
             # The job list is fetched HERE — i.e. in 'all' mode AFTER wp-update
             # has run, when stage-0 re-pins have already cleared wp_drifted for
             # zero tokens (F3: review spend goes to articles needing judgment).
-            jobs = fetch_work(args.api_base, token, "review", args.limit)
+            # Over-fetch by the recently-failed count so those articles can
+            # move behind the rest without shrinking the run.
+            n_recent = len(recently_failed(failures, now_ms))
+            jobs = fetch_work(args.api_base, token, "review",
+                              min(100, args.limit + n_recent))
+            jobs, deferred = defer_recent_failures(jobs, failures, args.limit, now_ms)
             print(f"review: {len(jobs)} jobs from /api/work")
+            if deferred:
+                print(f"review: deferred {len(deferred)} article(s) whose review "
+                      f"failed in the last {REVIEW_RETRY_AFTER_DAYS} nights: "
+                      f"{', '.join(deferred[:10])}{' …' if len(deferred) > 10 else ''}")
         if not jobs:
             return 0, zero_stats()
         ctx = make_ctx(args, "review", token, ba_mod)
-        return asyncio.run(run_jobs(jobs, ctx, process_review))
+        rc, stats = asyncio.run(run_jobs(jobs, ctx, process_review))
+        # An aborted run (window, budget, auth or credit) says nothing about
+        # the articles it touched. Reload just before saving so a run that
+        # finished meanwhile keeps its outcomes.
+        if not args.dry_run and rc != 3:
+            try:
+                save_review_failures(record_review_outcomes(
+                    load_review_failures(), stats.get("jobs") or [],
+                    int(time.time() * 1000), token))
+            except Exception as e:  # scheduling state must never fail a run
+                print(f"warning: failed-review record not updated ({e})",
+                      file=sys.stderr)
+        return rc, stats
 
     # mode == "new" — candidates from --from-file (discover_articles.py
     # output: slug precomputed, no ba needed to enumerate) or the catalog
@@ -1369,6 +1596,7 @@ def main() -> int:
     budget_left = args.budget_tokens
     started_at = int(time.time() * 1000)
     totals = zero_stats()
+    job_results: list[dict] = []
     for mode in modes:
         if mode in ("review", "new") and not args.dry_run:
             # Mathlib seed-decl leads for Agent 2 (cheap disk read, load once).
@@ -1379,6 +1607,7 @@ def main() -> int:
         mode_rc, stats = run_mode(mode, args, token)
         for k in totals:
             totals[k] += stats.get(k) or 0
+        job_results += stats.get("jobs") or []
         if budget_left is not None:
             budget_left = max(0, budget_left - stats.get("tokens", 0))
         rc = max(rc, mode_rc)
@@ -1391,11 +1620,15 @@ def main() -> int:
     # a 404 from a not-yet-deployed /api/runs cannot fail the runner.
     agent_mode = ("review" if args.command in ("review", "all")
                   else "new" if args.command == "new" else None)
+    # The error text otherwise lives only in this host's site/cache logs;
+    # carrying a sanitized sample in notes makes a failing night diagnosable
+    # from D1 (wrangler d1 execute --remote) without access to the host.
+    sample = error_sample(job_results, token)
     maybe_register_run(
         args, token, started_at, totals,
         model=ba.MODEL if ba is not None else None,
         prompt_sha=get_prompt_sha(ba, agent_mode) if agent_mode else None,
-        notes=("modes=" + "+".join(modes) + (" aborted" if rc == 3 else "")))
+        notes=build_run_notes(modes, rc == 3, sample))
     return rc
 
 

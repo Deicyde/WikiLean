@@ -4,6 +4,10 @@
 // /flags patrol page gating.
 
 import { createHash } from "node:crypto";
+import { readFileSync, readdirSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
+import { dirname, resolve as resolvePath } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, it, expect } from "vitest";
 import {
   setup,
@@ -21,7 +25,8 @@ import {
 blockNetwork();
 
 const ANNO_ID = "aaaaaaaaaaaa"; // seed annotation
-const TEST_IP_HASH = createHash("sha256").update(TEST_IP).digest("hex");
+// What older Workers stored: an unsalted sha256 of the IP (migration 0013 scrubs it).
+const UNSALTED_IP_HASH = createHash("sha256").update(TEST_IP).digest("hex");
 
 function flag(
   h: Harness,
@@ -37,7 +42,7 @@ function resolve(h: Harness, id: number, resolution: string, user = "u-patroller
 }
 
 describe("POST /api/flag/:slug", () => {
-  it("anonymous flag inserts a row, hashes the IP, and bumps moderation_state.flag_count", async () => {
+  it("anonymous flag inserts a row, stores no IP-derived value, and bumps moderation_state.flag_count", async () => {
     const h = setup();
     const res = await flag(h, { annotation_id: ANNO_ID, reason: "wrong_decl", comment: "decl points elsewhere" });
     expect(res.status).toBe(200);
@@ -51,7 +56,7 @@ describe("POST /api/flag/:slug", () => {
       reason: "wrong_decl",
       comment: "decl points elsewhere",
       user_id: null, // anonymous
-      ip_hash: TEST_IP_HASH, // pseudonymous, never the raw IP
+      ip_hash: null, // nothing derived from CF-Connecting-IP is stored
       status: "open",
       resolved_by: null,
       resolved_at: null,
@@ -207,5 +212,30 @@ describe("GET /api/flags + GET /flags (patrol surfaces)", () => {
     const patrol = await get(h.env, "/flags", { user: "u-patroller" });
     expect(patrol.status).toBe(200);
     expect(await patrol.text()).toContain("wl-resolve");
+  });
+});
+
+// Migration 0013 NULLs every ip_hash value. No Worker version reads the
+// column, so it is safe to apply any time, and rerunning it changes nothing.
+describe("migration 0013_flags_ip_hash_scrub", () => {
+  it("scrubs every ip_hash value and is idempotent", () => {
+    const dir = resolvePath(dirname(fileURLToPath(import.meta.url)), "../migrations");
+    const files = readdirSync(dir).filter((f) => f.endsWith(".sql")).sort();
+    const scrub = "0013_flags_ip_hash_scrub.sql";
+    expect(files).toContain(scrub);
+    const db = new DatabaseSync(":memory:");
+    for (const f of files.filter((f) => f < scrub)) db.exec(readFileSync(resolvePath(dir, f), "utf8"));
+    const ins = db.prepare("INSERT INTO flags (slug, reason, ip_hash, created_at) VALUES (?,?,?,?)");
+    ins.run("A", "other", UNSALTED_IP_HASH, 1);
+    ins.run("B", "other", "hmac-sha256:" + "0".repeat(64), 2); // any other shape goes too
+    ins.run("C", "other", null, 3);
+    db.exec(readFileSync(resolvePath(dir, scrub), "utf8"));
+    db.exec(readFileSync(resolvePath(dir, scrub), "utf8")); // idempotent
+    const rows = db.prepare("SELECT slug, ip_hash FROM flags ORDER BY slug").all();
+    expect(rows).toEqual([
+      { slug: "A", ip_hash: null },
+      { slug: "B", ip_hash: null },
+      { slug: "C", ip_hash: null },
+    ]);
   });
 });

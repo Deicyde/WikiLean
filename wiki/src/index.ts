@@ -45,6 +45,7 @@ import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
+import { registerSecurityHeaders } from "./security.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -122,6 +123,7 @@ const RESERVED = new Set([
 ]);
 
 const app = new Hono<{ Bindings: Env }>();
+registerSecurityHeaders(app); // first: middleware must wrap every route below
 registerAuthRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
@@ -369,7 +371,8 @@ function statusCounts(annotations: AnnRecord[]): {
   return counts;
 }
 
-// Pseudonymous abuse handle for anonymous flags: sha256 hex of the client IP.
+// Plain SHA-256 hex. The research export salts its pseudonyms with
+// PIPELINE_TOKEN before hashing.
 async function sha256Hex(s: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
@@ -567,7 +570,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/articles", async (c) => {
-  const cacheKey = "page:articles:v2";  // v2: Recent changes + Stats links in the nav
+  const cacheKey = "page:articles:v3";  // v3: Wikidata property named (P14534)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = homePage(await homeRows(c));
@@ -613,7 +616,7 @@ app.get("/api/articles", async (c) => {
 // static wiki/public/about.html asset, which used to shadow this path with
 // stats baked at build time). One aggregate over the D-C5 count columns.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v1";  // v1: dynamic port of the static About page
+  const cacheKey = "page:about:v2";  // v2: moderation copy matches Human-at-boundaries
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -2469,7 +2472,10 @@ app.post("/api/flag/:slug", async (c) => {
     reason: posted.reason,
     comment,
     userId: user?.id ?? null,
-    ipHash: ip ? await sha256Hex(ip) : null,
+    // Never store anything derived from the IP: nothing reads it, and an
+    // unsalted IPv4 hash is reversible. FLAG_LIMITER and the per-target cap
+    // are the abuse defenses. Migration 0013 scrubbed the legacy values.
+    ipHash: null,
     createdAt: now,
   });
   // flag_count feeds the /api/work priority ladder (flagged sorts first).
