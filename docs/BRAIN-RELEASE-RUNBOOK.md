@@ -484,9 +484,11 @@ Do not delete or relocate either root after review.
 > with `--execute` changes production and needs Jack's approval for the exact release and
 > window. After any `--execute`, keep `wiki/wrangler.jsonc` and the Node/Wrangler toolchain
 > unchanged until that attempt has a clean `final_state`: reconciliation requires both to match
-> the attempt's intent byte for byte (see "If an attempt is incomplete"). Never deploy with
-> plain `npm run deploy` / `wrangler deploy`: it uploads the local
-> `wiki/public` and replaces the selector and the whole asset tree.
+> the attempt's intent byte for byte (see "If an attempt is incomplete"). `npm run deploy`
+> refuses. Never run `wrangler deploy` directly: it uploads the Worker built from local
+> `wiki/src` and the local `wiki/public` outside the promoter, replacing the selector and the
+> whole asset tree. The only emergency lever is "Wrangler rollback" below; a forward hotfix
+> path, if one is ever wanted, would be a journaled promoter mode.
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.
