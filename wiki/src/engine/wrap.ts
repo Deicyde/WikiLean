@@ -334,10 +334,10 @@ const BLOCK_TAGS = new Set(["p", "div", "dl", "dd", "dt", "li", "ul", "ol", "blo
 
 /** Locate a Literature Links HTML quotation: exact text, with optional prefix
  * and suffix, in the specification's text layer. Mirrors render.find_quote. */
-function findQuote(src: string, anchor: Anchor): [number, number, WrapperTag] | null {
+function findQuote(src: string, anchor: Anchor, layer?: PlainTextMap): [number, number, WrapperTag] | null {
   const exact = anchor.exact;
   if (!exact) return null;
-  const { text, starts, ends } = textLayer(src);
+  const { text, starts, ends } = layer ?? textLayer(src);
   const prefix = anchor.prefix ?? "", suffix = anchor.suffix ?? "";
   const hits = (hay: string, needle: string, before: string, after: string): number[] => {
     const found: number[] = [];
@@ -351,7 +351,12 @@ function findQuote(src: string, anchor: Anchor): [number, number, WrapperTag] | 
     return found;
   };
   let matches = hits(text, exact, prefix, suffix);
-  if (!matches.length && (prefix || suffix)) matches = hits(text, exact, "", "");
+  if (!matches.length && (prefix || suffix)) {
+    // Context exists because the text alone is ambiguous: only a unique bare
+    // occurrence may stand in for it; anything else is anchor rot.
+    const bare = hits(text, exact, "", "");
+    if (bare.length === 1) matches = bare;
+  }
   if (!matches.length) {
     const lowered = text.toLowerCase();
     if (lowered.length === text.length) matches = hits(lowered, exact.toLowerCase(), prefix.toLowerCase(), suffix.toLowerCase());
@@ -364,8 +369,13 @@ function findQuote(src: string, anchor: Anchor): [number, number, WrapperTag] | 
 /** Locate the element whose id attribute equals elementId. Mirrors render.find_fragment. */
 function findFragment(src: string, elementId: string): [number, number, WrapperTag] | null {
   if (!elementId) return null;
-  const escaped = htmlEscape(elementId, true).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const m = new RegExp(`<([A-Za-z][A-Za-z0-9:-]*)\\b[^>]*\\sid="${escaped}"[^>]*>`).exec(src);
+  // Match the attribute's decoded value: ids carry raw apostrophes and
+  // entity-encoded characters such as the underscore in cite&#95;ref-1.
+  const idAttr = /<([A-Za-z][A-Za-z0-9:-]*)\b[^>]*?\sid="([^"]*)"[^>]*>/g;
+  let m: RegExpExecArray | null = null;
+  for (let candidate = idAttr.exec(src); candidate; candidate = idAttr.exec(src)) {
+    if (htmlUnescape(candidate[2]) === elementId) { m = candidate; break; }
+  }
   if (!m) return null;
   const tag = m[1].toLowerCase();
   let depth = 1, pos = m.index + m[0].length;
@@ -734,6 +744,7 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[], con
   // group key "start:end" → list of [annotationIndex, wrapperTag]
   const groups = new Map<string, Array<[number, WrapperTag]>>();
   const groupRange = new Map<string, [number, number]>();
+  let layer: PlainTextMap | undefined; // the text layer for quote anchors, built once per call
 
   for (let i = 0; i < annotations.length; i++) {
     const a = annotations[i];
@@ -777,7 +788,8 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[], con
         if (!r) continue;
         loc = r;
       } else if (t === "quote") {
-        const r = findQuote(bodyHtml, anchor);
+        if (!layer) layer = textLayer(bodyHtml);
+        const r = findQuote(bodyHtml, anchor, layer);
         if (!r) continue;
         loc = r;
       } else if (t === "fragment") {

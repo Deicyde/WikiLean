@@ -101,7 +101,8 @@ def css_string(value: str) -> str:
 
 
 def css_unstring(value: str) -> str:
-    return re.sub(r"\\a ", "\n", value).replace('\\"', '"').replace("\\\\", "\\")
+    # One pass, so an escaped backslash before "a " stays a backslash.
+    return re.sub(r"\\(a |.)", lambda m: "\n" if m.group(1) == "a " else m.group(1), value, flags=re.S)
 
 
 def parse_math_selector(selector: str) -> str | None:
@@ -152,15 +153,27 @@ def _with_context(text: str, position: int, exact: str) -> dict | None:
 
 
 def resolve_snippet(src: str, section: str | None, snippet: str, layer=None) -> tuple[dict | None, str]:
-    """Resolve a section+snippet anchor to an HTML quote location."""
+    """Resolve a section+snippet anchor to an HTML quote location.
+
+    As the renderer, a named section bounds the search: the words elsewhere on
+    the page never stand in for the passage the anchor names.
+    """
     text, starts, ends = layer or text_layer(src)
     key = collapse(snippet)
     if not key:
         return None, "empty"
-    hits = _find_all(text, key)
+    bounds = None
+    if section is not None:
+        import render
+        bounds = render._find_section_bounds(src, section)
+
+    def in_section(hit: int) -> bool:
+        return bounds is None or bounds[0] <= starts[hit] < bounds[1]
+
+    hits = [hit for hit in _find_all(text, key) if in_section(hit)]
     if not hits:
         lowered = _lowered(text)
-        hits = _find_all(lowered, _lowered(key))
+        hits = [hit for hit in _find_all(lowered, _lowered(key)) if in_section(hit)]
     if not hits and section is not None:
         # Wikitext-derived or formula-spanning snippets: take the element the
         # renderer finds and quote its text layer instead.
@@ -168,19 +181,12 @@ def resolve_snippet(src: str, section: str | None, snippet: str, layer=None) -> 
         located = render.find_prose_block(src, section, snippet)
         if located:
             key = _slice_for_range(text, starts, ends, located[0], located[1])
-            hits = _find_all(text, key) if key else []
+            hits = [hit for hit in (_find_all(text, key) if key else []) if in_section(hit)]
     if not hits:
         return None, "no_match"
     chosen = hits[0]
-    if len(hits) > 1 and section is not None:
-        import render
-        bounds = render._find_section_bounds(src, section)
-        if bounds:
-            inside = [hit for hit in hits if bounds[0] <= starts[hit] < bounds[1]]
-            if inside:
-                chosen = inside[0]
     exact = text[chosen:chosen + len(key)]
-    if len(hits) == 1 and len(exact) >= _SHORT_QUOTE:
+    if len(_find_all(text, exact)) == 1 and len(exact) >= _SHORT_QUOTE:
         return {"quote": {"exact": exact}}, "quote"
     quote = _with_context(text, chosen, exact)
     if quote is None:

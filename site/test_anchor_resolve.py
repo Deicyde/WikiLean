@@ -60,6 +60,8 @@ class TextLayer(unittest.TestCase):
         self.assertEqual(ar.parse_math_selector(f'img[alt="{ar.css_string(value)}"]'), value)
         self.assertEqual(ar.parse_math_selector('math[alttext="x"]'), 'x')
         self.assertIsNone(ar.parse_math_selector('article > p'))
+        tricky = 'x\\a y'  # an escaped backslash before "a " is not a newline
+        self.assertEqual(ar.parse_math_selector(f'img[alt="{ar.css_string(tricky)}"]'), tricky)
 
 
 class Resolving(unittest.TestCase):
@@ -77,6 +79,18 @@ class Resolving(unittest.TestCase):
         self.assertEqual(text.count(quote.get('prefix', '') + quote['exact'] + quote['suffix']), 1)
         first, _ = ar.resolve({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'}, HTML)
         self.assertTrue(first['quote']['suffix'].startswith(' A finite group'), first['quote'])
+
+    def test_snippet_outside_its_section_is_not_relocated(self):
+        self.assertEqual(ar.resolve({'section': 'Examples', 'snippet': 'Every subgroup of a finite group is finite.'}, HTML), (None, 'no_match'))
+
+    def test_stale_context_only_stands_in_for_a_unique_quotation(self):
+        self.assertIsNone(render.find_quote(HTML, {'exact': 'The order of a subgroup', 'prefix': 'stale context '}))
+        self.assertIsNotNone(render.find_quote(HTML, {'exact': 'Every subgroup of a finite group', 'prefix': 'stale context '}))
+
+    def test_fragment_matches_the_decoded_id(self):
+        page = '<p id="cite&#95;ref-1">x</p><h3 id="Planck\'s_constant">y</h3>'
+        self.assertEqual(render.find_fragment(page, 'cite_ref-1')[2], 'div')
+        self.assertIsNotNone(render.find_fragment(page, "Planck's_constant"))
 
     def test_case_and_whitespace_differences_quote_the_page_as_written(self):
         location, how = ar.resolve({'section': '(Lead)', 'snippet': 'every   SUBGROUP of a finite group is finite.'}, HTML)

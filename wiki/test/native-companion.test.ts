@@ -100,6 +100,7 @@ describe('canonical native companion records', () => {
     const math = item({ source: { type: 'html', uri }, target: 'urn:x', location: { css: 'img[alt="{\\\\displaystyle |G|}"]' } });
     expect(legacyAnchorOccurrences(math, context)).toEqual([{ type: 'math_alttext', value: '{\\displaystyle |G|}' }]);
     expect(parseMathSelector('article > p')).toBeNull();
+    expect(parseMathSelector('img[alt="x\\\\a y"]')).toBe('x\\a y');
     const heading = item({ source: { type: 'html', uri }, target: 'urn:x', location: { fragment: 'Statement' } });
     expect(legacyAnchorOccurrences(heading, context)).toEqual([{ type: 'fragment', value: 'Statement' }]);
     const other = item({ source: { type: 'html', uri }, target: 'urn:x', location: { css: 'article > p' } });

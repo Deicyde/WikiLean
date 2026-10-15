@@ -113,8 +113,9 @@ saves retain the existing work-item count, field-length and payload-size limits.
 - `GET /api/article/:slug.json` retains the application envelope. Anonymous reads
   use a native metadata allowlist and null tombstone placeholders. The pipeline
   bearer receives full work items so it can preserve protected data.
-- `PUT /api/article/:slug` remains bot-only. New articles default to native format;
-  an explicit `schema_version:3` selects temporary legacy compatibility. Native
+- `PUT /api/article/:slug` remains bot-only. An explicit `schema_version` (3 or 4)
+  decides the storage format; without one, native work items create a native
+  article and a legacy payload keeps temporary legacy compatibility. Native
   creation requires native work items and a pinned Wikipedia revision.
 - `POST /api/article/:slug` retains existing authentication and `base_version`
   concurrency. Native articles reject legacy payloads. Old articles require an
@@ -139,9 +140,11 @@ Article updates, counts, source pin, revisions, events and proposal bookkeeping
 share the existing guarded D1 transaction. Counts continue to count work items,
 not links. A source-pin advance checks every active article-local occurrence
 against the new Wikipedia HTML. Other imported sources are retained independently.
-Human veto tombstones retain their original source pins. A bot cannot bypass human
-preservation by changing source URIs; a moderator can explicitly save a coherent
-reanchored native snapshot with `revid` and `base_version`, with human attribution.
+Human veto tombstones retain their original source pins. A pin advance moves every
+active article-local source, human-owned ones included: the pin is article metadata,
+so human items are compared modulo that move and keep their human attribution, while
+any other change to human bytes is still refused. A moderator can also save a coherent
+reanchored native snapshot with `revid` and `base_version`.
 
 ## Copied-database migration rehearsal
 
@@ -173,11 +176,26 @@ article conversions in one transaction. For every converted article it:
 3. Retains every work item, including vetoes, unknown metadata and targetless work.
    Invalid source context, IDs, statuses or unsafe numeric values fail the batch.
    Expansion beyond the Worker's save limits also fails, preserving an editable
-   canonical state rather than publishing a snapshot that cannot be saved.
+   canonical state rather than publishing a snapshot that cannot be saved. The
+   resolution pass below re-checks those limits on its own output.
 4. Adds an observed pre-migration checkpoint with its known source revision, then
    a native snapshot. It leaves older history unchanged, including unknown pins.
 5. Bumps the article content version and computes counts from final work items.
    Operational proposals stay intact; their IDs still refer to the same items.
+
+The migrated copy still holds every WikiLean anchor in the profile form. The
+cutover's second pass, run from the repository root with Python 3.12, resolves
+them into Literature Links quotations and selectors against each article's
+pinned Wikipedia HTML:
+
+```sh
+python3 site/resolve_sqlite.py /absolute/path/native.sqlite --report /absolute/path/resolution.json
+```
+
+It rewrites `articles.annotations` and the unserved `native-migration` revision
+only, leaves `version` unchanged, and re-checks the Worker's save limits on the
+resolved snapshot: an article that would exceed them keeps its profile
+locations and is reported as skipped.
 
 Repeated migration of an already native database validates it and leaves its
 article versions and history unchanged. The library entry point

@@ -36,6 +36,11 @@ describe('native article rendering', () => {
     expect(wrapAnnotations(page,[annotation(heading)],context).html).toContain('data-decl="Finite Group"><span class="mw-headline" id="Statement">Statement</span></span></h2>');
     const missing=item(); missing.links[0].annotation.location={quote:{exact:'absent words'}};
     expect(wrapAnnotations(page,[annotation(missing)],context).matched).toEqual([false]);
+    // Stale context stands in only for a unique quotation; 'A finite group' occurs twice here.
+    const stale=item(); stale.links[0].annotation.location={quote:{exact:'A finite group',prefix:'stale '}};
+    expect(wrapAnnotations(page,[annotation(stale)],context).matched).toEqual([false]);
+    const entity=item(); entity.links[0].annotation.location={fragment:'cite_ref-1'};
+    expect(wrapAnnotations('<p id="cite&#95;ref-1">x</p>'+page,[annotation(entity)],context).matched).toEqual([true]);
   });
   it('distinguishes absent location from empty generic location', () => {
     const a=item(); delete a.links[0].annotation.location;

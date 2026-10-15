@@ -7,7 +7,9 @@ revision through render.py's cache, resolves each profile-form anchor to a
 Literature Links quotation or selector (native_annotations.resolve_locations),
 and writes the resolved items back into ``articles.annotations`` and into the
 ``native companion migration`` revision row, which has not been served yet.
-``version`` is unchanged. Never touches D1; the input is a local file.
+``version`` is unchanged. Never touches D1; the input is a local file. An article
+whose resolved snapshot would exceed the Worker's save limits keeps its profile
+locations and is reported as skipped.
 """
 from __future__ import annotations
 
@@ -21,6 +23,11 @@ import time
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import native_annotations as native  # noqa: E402
 import render  # noqa: E402
+
+# wiki/src/validation.ts MAX_ANNOTATIONS and MAX_ANNOTATIONS_BYTES: the Worker
+# refuses every save above them, so a resolved snapshot must stay below.
+MAX_ANNOTATIONS = 2000
+MAX_ANNOTATIONS_BYTES = 256 * 1024
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -54,7 +61,12 @@ def main(argv: list[str] | None = None) -> int:
         time.sleep(args.pause)
         counts, diagnostics = native.resolve_locations(items, html)
         native.validate_items(items, title=row["wikipedia_title"], revid=row["revid"])
-        encoded = json.dumps(items, ensure_ascii=False, allow_nan=False)
+        encoded = json.dumps(items, ensure_ascii=False, allow_nan=False, separators=(",", ":"))
+        # The Worker measures JSON.stringify(...).length (UTF-16 units); a snapshot
+        # above its caps could never be saved again, so keep the profile form instead.
+        if len(items) > MAX_ANNOTATIONS or len(encoded.encode("utf-16-le")) // 2 > MAX_ANNOTATIONS_BYTES:
+            report.append({"slug": row["slug"], "skipped": "resolved snapshot exceeds Worker save limits; profile locations kept"})
+            continue
         with db:
             db.execute("UPDATE articles SET annotations=? WHERE slug=? AND version=?", (encoded, row["slug"], row["version"]))
             db.execute("""UPDATE revisions SET annotations=?, meta=json_set(COALESCE(meta,'{}'), '$.location_resolution', json(?))

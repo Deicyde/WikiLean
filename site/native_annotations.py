@@ -632,7 +632,12 @@ def migrate_items(items: list[dict], *, title: str, revid: int, html: str | None
 
 
 def repin_items(items: list[dict], *, title: str, old_revid: int, new_revid: int) -> tuple[list[dict], list[dict]]:
-    """Make an auditable AI-owned source update; never rewrite human items."""
+    """Move every active article-local source to the new pin, with an audit trail.
+
+    The pin is article metadata, so this is the one change a repin makes to a
+    human-owned item; its human attribution stays (the Worker compares human
+    items modulo this move). Rejected items keep their historical pins.
+    """
     old_uri, new_uri = wikipedia_source_uri(title, old_revid), wikipedia_source_uri(title, new_revid)
     validate_items(items, title=title, revid=old_revid)
     result, changes = deepcopy(items), []
@@ -644,8 +649,6 @@ def repin_items(items: list[dict], *, title: str, old_revid: int, new_revid: int
             previous = source.get("uri")
             if resolved_web_uri(previous, span.get("base_uri")) != old_uri:
                 continue
-            if item.get("provenance") == "human":
-                raise NativeAnnotationError("human source revision update requires a moderator source-revision save")
             source["uri"] = new_uri
             changes.append({"item": item.get("id", index), "occurrence": span_index, "from": previous, "to": new_uri})
     validate_items(result, title=title, revid=new_revid)
