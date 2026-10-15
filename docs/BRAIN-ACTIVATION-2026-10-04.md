@@ -150,11 +150,14 @@ What that means for this release:
    `wiki/src` needs a new release built at the new commit, a fresh P1B, and a Jack-gated
    promotion. PR #45 puts the rebuild chain at about 5.5 hours and a fresh P1B at about 30
    minutes. No Worker-only hotfix path is documented.
-4. **Do not deploy with plain `npm run deploy`.** It runs `wrangler deploy` with
-   `assets.directory` `./public` (`wiki/wrangler.jsonc`), which replaces the selector and the
-   whole asset tree with whatever the local `wiki/public` holds. Production Worker and asset
-   changes go through `site/ops/brain-promote-release.sh` and the
-   [release runbook](BRAIN-RELEASE-RUNBOOK.md).
+4. **Never run `wrangler deploy` directly.** `npm run deploy` refuses. A direct
+   `wrangler deploy` uploads the Worker built from local `wiki/src` and, through
+   `assets.directory` `./public` (`wiki/wrangler.jsonc`), replaces the selector and the whole
+   asset tree with whatever the local `wiki/public` holds, outside the promoter. Production
+   Worker and asset changes go through `site/ops/brain-promote-release.sh` and the
+   [release runbook](BRAIN-RELEASE-RUNBOOK.md). The only emergency lever is `wrangler rollback`
+   (Rollback above); a forward hotfix path, if one is ever wanted, would be a journaled promoter
+   mode.
 
 ## Frozen inputs
 
