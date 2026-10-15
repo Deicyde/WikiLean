@@ -2,8 +2,8 @@
 // Replaces the static site/out/ pages that build-public.ts used to copy into
 // wiki/public/ — articles created via PUT /api/article/:slug now appear
 // without a static rebuild. index.ts serves brainLanding() cached in
-// RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v2',
-// TTL 300s), aboutPage() ('page:about:v1', TTL 300s), and sitemapXml()
+// RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v3',
+// TTL 300s), aboutPage() ('page:about:v2', TTL 300s), and sitemapXml()
 // ('page:sitemap:v4', TTL 3600s).
 //
 // Visual language: warm academic-minimalist — paper background, serif display
@@ -471,8 +471,8 @@ footer a:hover { text-decoration:underline; }
         cross-database pages, and literature &mdash; with machine-checkable
         provenance on every edge.</li>
       <li><a href="/concepts">Wikidata concept links</a> &mdash; every formalized concept keyed
-        to its Wikidata item, as an open RDF dataset (the basis for a proposed
-        <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> Wikidata property).</li>
+        to its Wikidata item, as an open RDF dataset (Wikidata&rsquo;s property for these
+        links is <em>&ldquo;Mathlib Declaration ID&rdquo;</em>, P14534).</li>
       <li><a href="/mcp">Wikibrain MCP</a> &mdash; a remote MCP server any AI agent can
         connect to mid-proof: jump between informal mathematics and formal
         Mathlib declarations (full REST reference at <a href="/brain/api">/brain/api</a>).</li>
@@ -565,7 +565,7 @@ export interface AboutStats {
   nNotFormalized: number;
 }
 
-// The About & method page, served dynamically from D1 (KV 'page:about:v1',
+// The About & method page, served dynamically from D1 (KV 'page:about:v2',
 // TTL 300s). Replaces the static site/out/about.html asset (retired from
 // build_static_pages.py) whose baked stats went stale the day it was built.
 // Visual shell reproduced from that page: self-contained inline CSS, warm
@@ -695,10 +695,10 @@ footer p { margin:4px 0; }
   <h2>Wikidata concept links</h2>
   <p>Every concept matched to a <em>formalized</em> declaration is also keyed to its
   <a href="https://www.wikidata.org/">Wikidata</a> item and published as an open
-  <a href="/concepts">RDF dataset</a>. This is the basis for a proposed Wikidata
-  property, <em>&ldquo;formalized as (Lean/Mathlib)&rdquo;</em> — the long-term goal is
-  for these links to live in Wikidata itself, maintainable by the community and queryable
-  via SPARQL.</p>
+  <a href="/concepts">RDF dataset</a>. Wikidata has a property for these links,
+  <a href="https://www.wikidata.org/wiki/Property:P14534"><em>&ldquo;Mathlib Declaration
+  ID&rdquo;</em> (P14534)</a>; the long-term goal is for them to live in Wikidata
+  itself, maintainable by the community and queryable via SPARQL.</p>
 
   <h2>For AI agents: the Wikibrain MCP</h2>
   <p>For AI agents, the same graph is queryable as the
@@ -720,14 +720,36 @@ footer p { margin:4px 0; }
   documents where every external link comes from, with its Wikidata property and license.</p>
 
   <h2>Limitations &amp; how to contribute</h2>
-  <p>Annotations are best-effort and cover a growing sample of WikiProject Mathematics,
+  <p>Annotations are best-effort and cover a sample of WikiProject Mathematics,
   not the whole corpus. A match reflects a judgment that a Mathlib declaration formalizes
   a statement; it can be incomplete or wrong, and Mathlib itself evolves, so coverage is
-  a snapshot rather than a guarantee. Corrections happen right on the site: sign in
-  (GitHub or Google) to edit annotations in-context on any article, or — without an account — report
-  a problem from any annotation's tooltip (the ⚑ link). Human edits are patrolled by
-  moderators, and AI proposals to change a human-authored annotation are queued for
-  human approval before anything lands.</p>
+  a snapshot rather than a guarantee. Corrections happen right on the site:
+  <a href="/login">sign in</a> to edit annotations in-context on any article, or — without
+  an account — report a problem from any annotation's tooltip (the ⚑ link).</p>
+
+  <h2>How edits are moderated</h2>
+  <p>Annotation edits by people take effect immediately and are shown as human-curated.
+  They are not screened first: each one is listed, newest first, in
+  <a href="/recent-changes?kind=edit">Recent changes</a> with an awaiting-patrol marker,
+  and the <a href="/stats">Stats</a> page shows how many have been patrolled. Every change
+  to an article&rsquo;s annotations, by a person or by the AI pipeline, is recorded in the
+  article&rsquo;s history, and patrollers can restore an article&rsquo;s annotations to
+  any earlier version in that history.</p>
+  <p>The AI pipeline cannot silently overwrite a human-curated annotation: a pipeline save
+  that drops or alters one is refused, and the pipeline can file a proposal instead. Under
+  WikiLean&rsquo;s human-at-boundaries policy (adopted August 2026), those proposals no
+  longer need a person&rsquo;s approval. Each night a deterministic resolver, which uses no
+  language model, approves or rejects the proposals that match its fixed rules; the rest
+  stay pending until a patroller or a later nightly run decides them, or lapse when the
+  pipeline next saves the article and finds their target annotation removed or already
+  matching them. When the pipeline approves a change to a human-curated annotation, the
+  annotation is relabeled: it is then shown as &ldquo;AI-generated &middot; not yet
+  reviewed&rdquo; and loses the human-curated protection, so later pipeline saves can
+  change it directly. When a patroller approves a change, the result is shown as
+  human-curated. People remain the gate wherever WikiLean contributes
+  to outside projects: the tagging bot opens pull requests to Mathlib on its own, but they
+  merge only after Mathlib reviewers approve them, and statements are added to Wikidata
+  only for mappings people have reviewed.</p>
 
   <footer>
     <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
