@@ -457,6 +457,12 @@ like real ones in `.decisions.jsonl`. With fewer than 20 distinct drifted slugs 
 script says the sample is too small instead of judging the trigger.
 
 It also lists the slugs that failed every attempt in the window, most-retried first.
-`/api/work` hands wp-update at most 100 drifted articles, ordered flagged first, then
-those with the drift flag set, then human-edited, then oldest review stamp. A failed re-pin stamps nothing, so those slugs
-hold the head of the queue night after night.
+`/api/work` orders wp-update's drifted articles flagged first, then those with the drift
+flag set, then human-edited, then oldest review stamp, and a failed re-pin stamps
+nothing. A Worker older than release B hands out at most 100 of them, so those slugs
+hold the head of the queue night after night. From release B, `/api/work` serves
+wp-update up to 1000 rows (review stays at 100) and the nightly asks for 1000
+(`WIKILEAN_WPUPDATE_LIMIT`), so every drifted article gets a stage-0 attempt each night;
+the first night after release B runs one long wp-update sweep over the whole backlog, at
+zero model tokens. The script warns once a single wp-update run reaches 800 articles,
+because past 1000 the same failures hold the head again.
