@@ -161,10 +161,10 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     # not approved minus recycled, which would re-add trimmed tags, and not the green set:
     # trimming belongs to the settle (triage, requeue, table), and a tag that recycles
     # while the gate is closed must not silently vanish here. decl/file from approved.
-    green_qids = set(cls["tags"])
-    green = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
-             "tags": [t for t in approved["tags"] if t["qid"] in green_qids]}
-    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with the {len(green['tags'])} tags it carries")
+    pr_qids = set(cls["tags"])
+    carried = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
+               "tags": [t for t in approved["tags"] if t["qid"] in pr_qids]}
+    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with the {len(carried['tags'])} tags it carries")
     if dry:
         return
     sh(["git", "-C", str(mathlib), "fetch", "origin", branch], check=True)       # --force-with-lease base
@@ -176,16 +176,16 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     # foundational modules (it ran 80m+ on #40861 before timing out). The original build
     # already proved which files need the CrossRefAttribute import; re-add exactly those
     # and let mathlib CI do the compile check.
-    green_files = {t["file"] for t in green["tags"]}
+    carried_files = {t["file"] for t in carried["tags"]}
     gr = subprocess.run(["git", "-C", str(mathlib), "grep", "-l", "Mathlib.Tactic.CrossRefAttribute",
                          f"origin/{branch}", "--", "Mathlib"], capture_output=True, text=True).stdout.split()
-    green["import_files"] = sorted({f.split(":", 1)[1] for f in gr if ":" in f} & green_files)
+    carried["import_files"] = sorted({f.split(":", 1)[1] for f in gr if ":" in f} & carried_files)
     # Record the master we rebuild ONTO *before* the fallible push, so a failed rebuild
     # doesn't re-loop every tick at the same master — it retries only when master advances.
     stt = json.loads(STATE.read_text()); stt["conflict_sha"] = rebuilt; stt.pop("retriggered_pr", None)
     STATE.write_text(json.dumps(stt, indent=1))
     gpath = HERE / "state" / "reapply_green.json"
-    gpath.write_text(json.dumps(green, indent=1))
+    gpath.write_text(json.dumps(carried, indent=1))
     sh(["git", "-C", str(mathlib), "checkout", "-B", branch, "FETCH_HEAD"], check=True)
     sh([sys.executable, str(HERE / "open_batch_pr.py"), "--approved", str(gpath),
         "--mathlib", str(mathlib), "--repo", REPO, "--base", "master",
@@ -196,7 +196,7 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     # `gh pr diff` and no GitHub diff-recompute lag right after the force-push).
     import pr_table
     sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--no-body-sync"], check=False)
-    pr_table.sync_body_count(pr, REPO, n=len(green["tags"]))
+    pr_table.sync_body_count(pr, REPO, n=len(carried["tags"]))
 
 
 def do_open(mathlib, dry):
