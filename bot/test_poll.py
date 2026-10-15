@@ -396,6 +396,39 @@ class SettleHelpersTest(PollFixture):
         self.assertEqual(result["tags"], ["Q36161", "Q474715"])
 
 
+class ReadyHeaderTest(PollFixture):
+    CLS = {"pr": PR, "reviewers": ["Deicyde", "SnirBroshi"], "maintainer_reviewers": ["SnirBroshi"],
+           "gate": True, "tags": ["Q1", "Q2", "Q3"], "green": [{"qid": "Q1"}, {"qid": "Q2"}],
+           "recycle": [{"qid": "Q3"}]}
+
+    def test_header_states_the_rule_classify_applies(self):
+        h = settle.ready_header(self.CLS)
+        self.assertIn("**2** `@[wikidata]` tags with at least one approval", h)
+        self.assertIn("no reject/revise/flag recorded by this bot that a maintainer's verdict did not override", h)
+        self.assertIn('GitHub "Request changes" reviews and free-text comments are not counted', h)
+        self.assertIn("the PR author's own or a single 👍 reaction", h)
+        self.assertIn("Only a per-tag verdict or 👍/👎 from `jcommelin`, `faenuccio` or someone GitHub shows "
+                      "the bot as a mathlib4 owner, member or collaborator overrides the others", h)
+        self.assertIn("a GitHub PR approval never does", h)
+        self.assertIn("Reviews recorded from: `Deicyde`, `SnirBroshi`.", h)
+        self.assertIn("1 recycled to the next batch.", h)
+        self.assertNotRegex(h, r"@\w")  # names, not pings
+        self.assertNotIn("≥2 reviewers", h)
+        self.assertNotIn("unresolved objection", h)
+        self.assertTrue(h.endswith("<!-- wikilean-bot-ready -->"))
+
+    def test_settle_posts_that_header(self):
+        self.write_state()
+        commands = []
+        with mock.patch.object(poll, "sh", side_effect=lambda cmd, **kw: commands.append(cmd)), \
+             mock.patch.object(poll, "CANDS", self.here / "state" / "pool_candidates.json"), \
+             mock.patch.object(poll.pool, "candidates", return_value=[]), \
+             mock.patch("pr_table.sync_body_count"):
+            poll.do_settle(PR, "wikilean/wikidata-batch-7", Path("/unused"), self.CLS, dry=False)
+        table = next(c for c in commands if str(c[1]).endswith("pr_table.py"))
+        self.assertEqual(table[table.index("--header") + 1], settle.ready_header(self.CLS))
+
+
 class DecideCommandLineTest(unittest.TestCase):
     """`poll.py --decide` as CI runs it, with a fake gh executable on PATH."""
 

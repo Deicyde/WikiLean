@@ -76,7 +76,7 @@ This changes test execution only, not generated page bytes.
 5. Complete the exact-pack private-use review; run the seven-stage same-input
    legacy baseline, review its semantic/provenance differences, then perform
    both isolated candidate replays and finalize their measured evidence.
-6. Follow the [release runbook](BRAIN-RELEASE-RUNBOOK.md) for the public-field
+6. Follow the [release runbook](../BRAIN-RELEASE-RUNBOOK.md) for the public-field
    review, retained P1B dry run and activation bundle, then exact P1C promotion,
    live canaries, and rollback exercise.
 
