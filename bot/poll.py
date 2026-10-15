@@ -90,12 +90,9 @@ def do_settle(pr, branch, mathlib, cls, dry):
     sh([sys.executable, str(HERE / "resolve_concepts.py")])   # fill QIDs the note named but didn't number
     sh([sys.executable, str(HERE / "apply_corrections.py")])
     # The tag table IS the trim/ready notice: ONE idempotent comment carrying the
-    # green-only table + the ready-to-merge + recycled summary, rather than a
+    # green-only table + the ready-for-review header + recycled summary, rather than a
     # separate bare line (template: the trim comment on #40682).
-    header = (f"This PR was trimmed to the **{green}** `@[wikidata]` tags approved 🟢 "
-              f"by ≥2 reviewers (incl. a maintainer) — **ready to merge**."
-              + (f" {len(recycle)} recycled to the next batch." if recycle else "")
-              + " <!-- wikilean-bot-ready -->")
+    header = settle.ready_header(cls)
     sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--header", header,
         "--no-body-sync"])
     # The trim shrank the diff to the green set; re-sync the PR body's count to match.

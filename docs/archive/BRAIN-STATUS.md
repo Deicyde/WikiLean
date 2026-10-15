@@ -1,7 +1,7 @@
 # BRAIN.md ↔ brain-as-built reconciliation
 
 > Generated 2026-07-04 by a 21-agent Sonnet comb over every paragraph of
-> [docs/BRAIN.md](BRAIN.md) (the pre-build spec), with every high-priority
+> [docs/BRAIN.md](../BRAIN.md) (the pre-build spec), with every high-priority
 > "missing" verdict adversarially re-verified by a second pass (22 verifiers).
 > 324 distinct claims/recommendations evaluated against the shipped brain.
 >
