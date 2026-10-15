@@ -9,23 +9,41 @@ Rule (see bot/README.md):
     included, >=1 of them a "maintainer": MAINTAINERS, an OWNER/MEMBER/COLLABORATOR
     association on the PR, or a public org member who reacted. No PR age is checked.
   - A bare note/comment = "defer to the other reviewer" -> ignored.
-  - A maintainer's explicit approve/reject/revise/flag (a 👍/👎 reaction included) TRUMPS.
+  - A maintainer's explicit approve/reject/revise/flag (a 👍/👎 reaction included) TRUMPS,
+    except that the PR author's latest reject/revise/flag on a tag stands unless a
+    LISTED maintainer (MAINTAINERS) wrote a verdict on that tag after it (a reaction
+    alone never overrides it).
   - Else: any reject/revise/flag -> recycle; else >=1 approve (the author's own
     included) -> green; else recycle.
 """
 import json, subprocess, re, sys, datetime as dt
 
-# Allowlist seed (always treated as maintainer). Needed for maintainers whose
-# leanprover-community org membership is PRIVATE: their author_association
-# shows CONTRIBUTOR and the members probe 404s, so without the seed their
-# verdicts lose the maintainer trump — batch 6 bug: faenuccio's post-settle
-# rejects were trumped by an earlier approve and never re-trimmed the PR.
-MAINTAINERS = {"jcommelin", "faenuccio"}
+# Always treated as maintainer: the "Mathlib maintainers" team in
+# leanprover-community/leanprover-community.github.io data/teams.yaml (commit
+# 5b8381a4, 2026-09-13), as GitHub logins (each checked with `gh api users/<login>`).
+# Needed for maintainers whose org membership is PRIVATE: their author_association
+# shows CONTRIBUTOR and the members probe 404s, so without the list their verdicts
+# lose the maintainer trump — batch 6 bug: faenuccio's post-settle rejects were
+# trumped by an earlier approve and never re-trimmed the PR. Only a listed
+# maintainer overrides the PR author's objection. Update it when the team changes.
+MAINTAINERS = frozenset({
+    "adamtopaz", "ADedecker", "adomani", "b-mehta", "bryangingechen", "digama0",
+    "dupuisf", "eric-wieser", "faenuccio", "fpvandoorn", "grunweg", "hrmacbeth",
+    "j-loreaux", "jcommelin", "joelriou", "kbuzzard", "kim-em", "kmill",
+    "mattrobball", "ocfnash", "PatrickMassot", "RemyDegenne", "riccardobrasca",
+    "robertylewis", "sgouezel", "TwoFX", "urkud", "Vierkantor",
+})
+_MAINTAINERS_LC = frozenset(m.lower() for m in MAINTAINERS)
 # GitHub author_association values that mark a Mathlib maintainer/reviewer.
 ORG_ROLES = {"OWNER", "MEMBER", "COLLABORATOR"}
 OBJECT = ("reject", "revise", "flag")  # hard objections (a note is NOT one)
 BOTS = {"github-actions[bot]"}
 REACTION_VERDICT = {"+1": "approve", "-1": "reject"}  # 👍 = approve, 👎 = reject (REST content names)
+
+
+def is_maintainer(login):
+    """Is `login` on MAINTAINERS? GitHub logins are case-insensitive."""
+    return bool(login) and login.lower() in _MAINTAINERS_LC
 
 
 class GhError(RuntimeError):
@@ -88,7 +106,7 @@ _ORG_MEMBER = {}
 def is_org_member(repo, login):
     """Is `login` a PUBLIC member of the repo's org? Reaction objects carry no
     author_association, so this is how a react-only reviewer is recognised as a
-    maintainer (private members 404 — they fall back to the MAINTAINERS seed).
+    maintainer (private members 404 — they fall back to the MAINTAINERS list).
     Cached per run so N reactions by one maintainer cost one API call."""
     org = repo.split("/")[0]
     k = (org, login)
@@ -153,6 +171,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     created = dt.datetime.fromisoformat(meta["created_at"].replace("Z", "+00:00"))
     age_h = (dt.datetime.now(dt.timezone.utc) - created).total_seconds() / 3600
     head_sha = meta["head"]["sha"]
+    author = (meta.get("user") or {}).get("login", "")
 
     diff = gh_run(["pr", "diff", str(pr), "--repo", repo])
     if not diff.strip():
@@ -170,20 +189,25 @@ def classify(pr, repo="leanprover-community/mathlib4"):
                 decl_line[m.group(1)] = (f, idx)
     tags = list(dict.fromkeys(tags))
 
-    # explicit[(qid, login)] = (status, ts); notes[(qid, login)] = text
-    explicit, notes, reviewers = {}, {}, set()
-    # Maintainers/reviewers: anyone whose GitHub author_association on the PR is an
-    # org role, seeded by the explicit allowlist. Their verdict trumps, and the
+    # explicit[(qid, login)] = (status, ts); notes[(qid, login)] = text;
+    # written[(qid, login)] = (status, ts) of their latest verdict that is not a reaction
+    explicit, written, notes, reviewers = {}, {}, {}, set()
+    # Maintainers/reviewers: everyone on MAINTAINERS, plus anyone whose GitHub
+    # author_association on the PR is an org role. Their verdict trumps, and the
     # settle gate needs >=1 of them.
-    maint = set(MAINTAINERS)
+    maint = set()
+    def is_maint(login):
+        return is_maintainer(login) or login in maint
     def record_assoc(login, assoc):
         if login and login not in BOTS and assoc in ORG_ROLES:
             maint.add(login)
-    def note_explicit(qid, login, status, ts, text=""):
+    def note_explicit(qid, login, status, ts, text="", reaction=False):
         if not login or login in BOTS:
             return
         reviewers.add(login)
         k = (qid, login)
+        if not reaction and (k not in written or ts > written[k][1]):
+            written[k] = (status, ts)
         if k not in explicit or ts > explicit[k][1]:
             explicit[k] = (status, ts)
             if text:
@@ -211,9 +235,9 @@ def classify(pr, repo="leanprover-community/mathlib4"):
                 ru = (r.get("user") or {}).get("login", "")
                 if not v or not ru or ru in BOTS:
                     continue
-                if ru not in maint and is_org_member(repo, ru):
+                if not is_maint(ru) and is_org_member(repo, ru):
                     maint.add(ru)  # a maintainer's reaction trumps, like a maintainer comment
-                note_explicit(qid, ru, v, r.get("created_at", ""))
+                note_explicit(qid, ru, v, r.get("created_at", ""), reaction=True)
     for c in gh_list(repo, f"issues/{pr}/comments"):
         u = (c.get("user") or {}).get("login", "")
         record_assoc(u, c.get("author_association"))
@@ -239,7 +263,16 @@ def classify(pr, repo="leanprover-community/mathlib4"):
     def decide(qid):
         ex = {u: stt for (q, u), (stt, _) in explicit.items() if q == qid}
         real = {u: stt for u, stt in ex.items() if stt != "(note)"}
-        mver = [stt for u, stt in real.items() if u in maint]
+        mver = [stt for u, stt in real.items() if is_maint(u)]
+        # The PR author's latest reject/revise/flag stands unless a LISTED maintainer
+        # wrote a verdict on the tag after it and still holds it. An earlier verdict, a
+        # reaction alone, or an association-only maintainer no longer overrides it.
+        a = explicit.get((qid, author))
+        if a and a[0] in OBJECT:
+            def wrote_later(u):
+                w = written.get((qid, u))
+                return w is not None and w[0] == real[u] and w[1] > a[1]
+            mver = [real[u] for u in real if is_maintainer(u) and wrote_later(u)]
         if mver:
             if any(s in OBJECT for s in mver):
                 return "recycle", ex, "maintainer rejected/revised"
@@ -270,7 +303,7 @@ def classify(pr, repo="leanprover-community/mathlib4"):
         }
         (green if verdict == "green" else recycle).append(rec)
 
-    maint_reviewers = sorted(reviewers & maint)
+    maint_reviewers = sorted(u for u in reviewers if is_maint(u))
     gate_ok = len(reviewers) >= 2 and bool(maint_reviewers)
     return {
         "pr": pr, "repo": repo, "head_sha": head_sha, "age_h": round(age_h, 1),
@@ -292,8 +325,10 @@ def ready_header(cls):
             f"and no reject/revise/flag recorded by this bot that a maintainer's verdict did not override "
             f"(GitHub \"Request changes\" reviews and free-text comments are not counted). Under this bot's "
             f"rule one approval per tag is enough, and it can be the PR author's own or a single 👍 reaction. "
-            f"Only a per-tag verdict or 👍/👎 from `jcommelin`, `faenuccio` or someone GitHub shows the bot "
-            f"as a mathlib4 owner, member or collaborator overrides the others; a GitHub PR approval never does. "
+            f"Only a per-tag verdict or 👍/👎 from a Mathlib maintainer listed in the bot or someone GitHub "
+            f"shows the bot as a mathlib4 owner, member or collaborator overrides the others; a GitHub PR "
+            f"approval never does. The PR author's own reject/revise/flag on a tag is overridden only by a "
+            f"written verdict a listed maintainer gives on that tag after it. "
             f"Reviews recorded from: {who}. **Ready for a maintainer's review.**"
             + (f" {len(recycle)} recycled to the next batch." if recycle else "")
             + " <!-- wikilean-bot-ready -->")
