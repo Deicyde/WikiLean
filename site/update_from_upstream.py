@@ -6,9 +6,9 @@ article HTML at `latest_revid` (render.py's revid-aware fetch), run the
 EXISTING anchor matcher (render.wrap_annotations) against the new HTML, and:
 
   - every non-tombstone occurrence still anchors → POST with revid=latest_revid.
-    Legacy items remain verbatim. Native AI-owned source URIs move to the new
-    pin with an explicit per-occurrence audit; human-owned source changes need
-    a moderator source-revision save and stop this automatic update. The Worker advances
+    Legacy items remain verbatim. Native article-local source URIs, human-owned
+    ones included (the pin is article metadata; human attribution stays), move
+    to the new pin with an explicit per-occurrence audit. The Worker advances
     version + revid atomically and resets wp_drifted.
   - any anchor fails  →  NO write. The slug + failing anchors are appended to
     site/cache/.wp_update_report.jsonl — these are the candidates for future
@@ -272,6 +272,26 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
         probes = [{**item, "anchor": anchor, "anchors": []} for anchor in anchors if anchor is not None]
         _, flags = render.wrap_annotations(src, probes)
         matched_flags[index] = bool(anchors) and len(probes) == len(anchors) and all(flags)
+    # Native items: only article-local occurrences must survive the new revision;
+    # imported sources (a PDF, another page) are retained, not re-anchored, as in
+    # the Worker's own advance check (articleLocalOccurrences).
+    for index, item in enumerate(annotations):
+        if not native.is_native(item) or item.get("status") == "rejected":
+            continue
+
+        def local(span: dict) -> bool:
+            source = span.get("source")
+            return (isinstance(source, dict)
+                    and native.resolved_web_uri(source.get("uri", ""), span.get("base_uri")) == source_uri)
+        probe = {**item,
+                 "links": [link for link in item["links"] if isinstance(link, dict)
+                           and local({**link.get("annotation", {}), "base_uri": link.get("base_uri")})],
+                 "unlinked": [span for span in item["unlinked"] if isinstance(span, dict) and local(span)]}
+        if not probe["links"] and not probe["unlinked"]:
+            matched_flags[index] = True
+            continue
+        _, flags = render.wrap_annotations(src, [probe], source_uri=source_uri)
+        matched_flags[index] = flags[0]
 
     # Tombstones (status='rejected') are human vetoes: the engines report them
     # matched=True ("excluded, not anchor rot"), so they never count as
@@ -315,7 +335,7 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
 
     # All non-tombstone anchors survive at the new revision → atomic re-pin.
     # Legacy annotations stay verbatim. Native AI-owned source URI changes
-    # are explicit audit data; human-owned changes were refused above.
+    # are explicit audit data; the Worker compares human items modulo that move.
     payload = {
         "annotations": annotations,
         "base_version": art["version"],

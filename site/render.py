@@ -769,14 +769,18 @@ _BLOCK_TAGS = frozenset({"p", "div", "dl", "dd", "dt", "li", "ul", "ol", "blockq
                          "h1", "h2", "h3", "h4", "h5", "h6", "section"})
 
 
-def find_quote(src: str, anchor: dict) -> tuple[int, int, str] | None:
+_ID_ATTR_RE = re.compile(r'<([A-Za-z][A-Za-z0-9:-]*)\b[^>]*?\sid="([^"]*)"[^>]*>')
+
+
+def find_quote(src: str, anchor: dict, layer=None) -> tuple[int, int, str] | None:
     """Locate a Literature Links HTML quotation (exact text with optional prefix
-    and suffix, in the specification's text layer) in `src`."""
+    and suffix, in the specification's text layer) in `src`. `layer` is a
+    precomputed `anchor_resolve.text_layer(src)`."""
     from anchor_resolve import text_layer
     exact = anchor.get("exact")
     if not isinstance(exact, str) or not exact:
         return None
-    text, starts, ends = text_layer(src)
+    text, starts, ends = layer or text_layer(src)
     prefix, suffix = anchor.get("prefix") or "", anchor.get("suffix") or ""
 
     def hits(haystack: str, needle: str, before: str, after: str) -> list[int]:
@@ -791,7 +795,11 @@ def find_quote(src: str, anchor: dict) -> tuple[int, int, str] | None:
 
     matches = hits(text, exact, prefix, suffix)
     if not matches and (prefix or suffix):
-        matches = hits(text, exact, "", "")
+        # Context exists because the text alone is ambiguous: only a unique bare
+        # occurrence may stand in for it; anything else is anchor rot.
+        bare = hits(text, exact, "", "")
+        if len(bare) == 1:
+            matches = bare
     if not matches:
         lowered = text.lower()
         if len(lowered) == len(text):
@@ -807,8 +815,10 @@ def find_fragment(src: str, element_id: str) -> tuple[int, int, str] | None:
     """Locate the element whose id attribute equals `element_id`."""
     if not element_id:
         return None
-    escaped = re.escape(html.escape(element_id, quote=True))
-    m = re.search(rf'<([A-Za-z][A-Za-z0-9:-]*)\b[^>]*\sid="{escaped}"[^>]*>', src)
+    # Match the attribute's decoded value: ids carry raw apostrophes and
+    # entity-encoded characters such as the underscore in cite&#95;ref-1.
+    m = next((candidate for candidate in _ID_ATTR_RE.finditer(src)
+              if html.unescape(candidate.group(2)) == element_id), None)
     if m is None:
         return None
     tag = m.group(1).lower()
@@ -844,6 +854,7 @@ def wrap_annotations(body_html: str, annotations: list[dict], *,
 
     # group_key → list of (annotation_index, wrapper_tag)
     groups: dict[tuple[int, int], list[tuple[int, str]]] = {}
+    layer = None  # the text layer for quote anchors, built once per call
 
     for i, a in enumerate(annotations):
         # Human-deletion tombstone: status="rejected" is a human veto — never
@@ -887,7 +898,10 @@ def wrap_annotations(body_html: str, annotations: list[dict], *,
                     continue
                 start, end, wrapper = loc
             elif t == "quote":
-                loc = find_quote(body_html, anchor)
+                if layer is None:
+                    from anchor_resolve import text_layer
+                    layer = text_layer(body_html)
+                loc = find_quote(body_html, anchor, layer)
                 if loc is None:
                     continue
                 start, end, wrapper = loc

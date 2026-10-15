@@ -217,7 +217,8 @@ const MATH_SELECTOR = /^(img\[alt|math\[alttext)="((?:[^"\\]|\\.)*)"\]$/;
 /** The alt text named by a selector the Python resolver writes, or null. */
 export function parseMathSelector(selector: string): string | null {
   const match = MATH_SELECTOR.exec(selector);
-  return match ? match[2].replace(/\\a /g, '\n').replace(/\\"/g, '"').replace(/\\\\/g, '\\') : null;
+  // One pass, so an escaped backslash before "a " stays a backslash.
+  return match ? match[2].replace(/\\(a |[\s\S])/g, (_, c: string) => c === 'a ' ? '\n' : c) : null;
 }
 /** Read a built-in HTML location as a renderer anchor: a quotation, a formula or an element id. */
 export function deriveAnchor(location: JsonObject): JsonObject | null {
@@ -267,6 +268,18 @@ export function articleLocalOccurrences(items: JsonObject[], context: SourceCont
     links: item.links.filter(link => local({ ...link.annotation, base_uri: link.base_uri })),
     unlinked: item.unlinked.filter(local),
   })).filter(item => item.links.length + item.unlinked.length > 0);
+}
+/** The items with every active article-local source moved to `revid`. The pin is
+ * article metadata, so this is the one change a repin makes to human-owned
+ * items; rejected items keep their historical pins. */
+export function repinArticleSources(items: JsonObject[], context: SourceContext, revid: number): JsonObject[] {
+  const next = wikipediaSourceUri({ ...context, revid });
+  const move = <T extends { source: LinkRecord['source'] }>(occurrence: T, baseUri?: string): T =>
+    sourceMatches(occurrence.source, context, baseUri) ? { ...occurrence, source: { ...occurrence.source, uri: next } } : occurrence;
+  return items.map(item => !isNativeItem(item) || item.status === 'rejected' ? item : { ...item,
+    links: item.links.map(link => ({ ...link, annotation: move(link.annotation, link.base_uri) })),
+    unlinked: item.unlinked.map(occurrence => move(occurrence, occurrence.base_uri)),
+  });
 }
 export function validateNativeItems(items: unknown[], context?: SourceContext): string[] {
   const errors: string[] = []; const ids = new Set<string>(); const itemIds = new Set<string>();

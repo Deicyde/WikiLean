@@ -48,7 +48,7 @@ import { registerRepoRoutes } from "./repos.js";
 import { registerCompanionRoutes } from "./companion.js";
 import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems, migrateLegacyItems,
-  publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, strictJsonParse, type SourceContext,
+  publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, strictJsonParse, type SourceContext,
 } from "./native-companion.js";
 import { registerSecurityHeaders } from "./security.js";
 import type { Annotation } from "./engine/types.js";
@@ -1388,7 +1388,10 @@ app.put("/api/article/:slug", async (c) => {
   if (posted.schema_version !== undefined && ![3, NATIVE_SCHEMA_VERSION].includes(posted.schema_version as number)) {
     return c.json({ ok: false, error: "unknown application storage format" }, 400);
   }
-  const createSchemaVersion = posted.schema_version === 3 ? 3 : NATIVE_SCHEMA_VERSION;
+  // An explicit schema_version wins; otherwise the posted items decide, so a
+  // legacy envelope that never named its format is not validated as native.
+  const createSchemaVersion = posted.schema_version === 3 || (posted.schema_version === undefined && !posted.annotations.some(isNativeItem))
+    ? 3 : NATIVE_SCHEMA_VERSION;
   if (createSchemaVersion === 3 && posted.annotations.some(isNativeItem)) return c.json({ ok: false, error: "native records require native storage format" }, 400);
   if (createSchemaVersion === NATIVE_SCHEMA_VERSION) {
     const errors = validateNativeItems(posted.annotations, { wikipediaTitle: posted.wikipedia_title as string, revid });
@@ -1848,7 +1851,11 @@ app.post("/api/article/:slug", async (c) => {
     // Human-preservation assertion (server-side _preserve_human twin): a bot
     // write may never lose or alter a stored provenance='human' annotation —
     // tombstones (status='rejected') included; they are human vetoes.
-    const missing = findLostHuman(stored, postedAnnotations);
+    // A pin advance moves every active article-local source; that move is
+    // article metadata, so human items are compared in their repinned form.
+    const expected = row.schemaVersion === NATIVE_SCHEMA_VERSION && postedRevid !== null && postedRevid !== row.revid
+      ? repinArticleSources(stored, { wikipediaTitle: row.wikipediaTitle, revid: row.revid }, postedRevid) : stored;
+    const missing = findLostHuman(expected, postedAnnotations);
     if (missing.length > 0) {
       return c.json({ ok: false, error: "human annotation lost", missing }, 422);
     }

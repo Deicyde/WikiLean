@@ -374,12 +374,29 @@ class Pipeline(unittest.TestCase):
         self.assertEqual(result,[tombstone]); self.assertEqual(audit,[])
         n.validate_items(result,title=TITLE,revid=43)
 
-    def test_native_human_source_changes_require_review_without_post(self):
+    def test_native_human_sources_move_with_the_pin_and_keep_attribution(self):
         import update_from_upstream as drift
         article={'annotations':[item(provenance='human')],'wikipedia_title':TITLE,'revid':42,'latest_revid':43,'version':7}
-        with patch.object(drift,'get_article',return_value=article),patch.object(drift.render,'fetch_article_html',return_value=HTML),patch.object(drift,'post_repin') as posted:
+        with patch.object(drift,'get_article',return_value=article),patch.object(drift.render,'fetch_article_html',return_value=HTML),patch.object(drift,'post_repin',return_value=(200,{})) as posted:
             result=drift.process_slug(None,'http://unused','Synthetic_Article',SimpleNamespace(force_revid=None,dry_run=False),'run',lambda:'test')
-        self.assertEqual(result['outcome'],'needs-source-review'); posted.assert_not_called()
+        self.assertEqual(result['outcome'],'repinned')
+        payload=posted.call_args.args[-1]
+        self.assertEqual(payload['annotations'][0]['provenance'],'human')
+        self.assertEqual(payload['annotations'][0]['links'][0]['annotation']['source']['uri'],n.wikipedia_source_uri(TITLE,43))
+        self.assertEqual(payload['meta']['native_source_repin'][0]['to'],n.wikipedia_source_uri(TITLE,43))
+
+    def test_veto_guard_ignores_the_article_pin(self):
+        tombstone=item(provenance='human',status='rejected')
+        fresh,_=n.repin_items([item()],title=TITLE,old_revid=42,new_revid=43)
+        self.assertTrue(moderate._veto_adjacent(fresh[0],[tombstone]))
+
+    def test_only_article_local_occurrences_gate_a_repin(self):
+        import update_from_upstream as drift
+        work=item(); work['links'].append({'id':'pdf','annotation':{'source':{'type':'pdf','uri':'https://example.net/paper.pdf'},'target':'urn:formal:pdf','location':{'page':2}}})
+        article={'annotations':[work],'wikipedia_title':TITLE,'revid':42,'latest_revid':43,'version':7}
+        with patch.object(drift,'get_article',return_value=article),patch.object(drift.render,'fetch_article_html',return_value=HTML),patch.object(drift,'post_repin',return_value=(200,{})) as posted:
+            result=drift.process_slug(None,'http://unused','Synthetic_Article',SimpleNamespace(force_revid=None,dry_run=False),'run',lambda:'test')
+        self.assertEqual(result['outcome'],'repinned'); posted.assert_called_once()
 
     def test_lost_second_legacy_anchor_prevents_repin(self):
         import update_from_upstream as drift

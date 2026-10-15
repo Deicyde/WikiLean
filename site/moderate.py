@@ -218,6 +218,20 @@ def _snippet_tokens(s) -> set[str]:
     return set(re.findall(r"\w+", s.lower())) if isinstance(s, str) else set()
 
 
+def _pin_free(uri: str) -> str:
+    """An article's own Wikipedia source without its pinned oldid. Tombstones keep
+    their original pin while active items move on a repin, so the veto guard
+    compares sources modulo the pin."""
+    try:
+        parts = urllib.parse.urlsplit(uri)
+        if parts.hostname != "en.wikipedia.org" or parts.path != "/w/index.php":
+            return uri
+        query = [(k, v) for k, v in urllib.parse.parse_qsl(parts.query, keep_blank_values=True) if k != "oldid"]
+        return urllib.parse.urlunsplit(parts._replace(query=urllib.parse.urlencode(query)))
+    except ValueError:
+        return uri
+
+
 def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
     """F6: True when `a` (a produced annotation with NO stored counterpart by
     id or anchor sig) lands in a stored tombstone's section AND its snippet
@@ -235,7 +249,7 @@ def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
                     uri = urljoin(span.get("base_uri", ""), span["source"]["uri"])
                 except ValueError:
                     continue
-                result.append((anchor, uri))
+                result.append((anchor, _pin_free(uri)))
         return result
 
     for anc, source in candidates(a):
@@ -735,6 +749,8 @@ def build_create_body(envelope: dict, *, revid: int | None = None,
         "annotations": annotations,
         "comment": f"ai-create:{run_id}",
     }
+    if envelope.get("schema_version") in (3, 4):
+        body["schema_version"] = envelope["schema_version"]
     dt = envelope.get("display_title")
     if isinstance(dt, str) and dt:
         body["display_title"] = dt

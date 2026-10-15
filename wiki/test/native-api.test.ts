@@ -47,7 +47,7 @@ describe('native canonical API and lifecycle', () => {
     expect(jsonl(await records.text())).toEqual(items[0].links.map(link => ({ id: 'aaaaaaaaaaaa', status: 'formalized', ...link.annotation,
       extensions: { ...link.annotation.extensions, 'org.wikilean': { provenance: 'ai' } } })));
     const legacy = await put(h.env, '/api/article/Legacy_Implicit', { wikipedia_title: 'Legacy', revid: REVID, annotations: [{ status: 'partial', anchor: {} }] }, { bearer: PIPELINE_TOKEN });
-    expect(legacy.status).toBe(400);
+    expect(legacy.status).toBe(201); expect(articleRow(h.db, 'Legacy_Implicit')?.schema_version).toBe(3);
   });
   it('serves stored associations verbatim, preserves duplicate IDs and records with their bases', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
@@ -168,11 +168,21 @@ describe('native canonical API and lifecycle', () => {
     const h = nativeSetup();
     await save(h.env, { action: 'endorse', annotation_id: 'aaaaaaaaaaaa', base_version: 2 }, { user: 'u-human' });
     const changed = repin(nativeItems(h), NEW_REVID);
-    expect((await botSave(h.env, { annotations: changed, base_version: 3, revid: NEW_REVID })).status).toBe(422);
+    const edited = echo(changed); edited[0].note = 'a bot may not change this';
+    expect((await botSave(h.env, { annotations: edited, base_version: 3, revid: NEW_REVID })).status).toBe(422);
     expect((await save(h.env, { annotations: editorItems(changed), base_version: 3, revid: NEW_REVID }, { user: 'u-human' })).status).toBe(403);
     expect((await save(h.env, { annotations: editorItems(changed), base_version: 3, revid: NEW_REVID }, { user: 'u-patroller' })).status).toBe(200);
     expect(nativeItems(h)[0].provenance).toBe('human');
     expect(articleRow(h.db)?.revid).toBe(NEW_REVID);
+  });
+  it('lets a bot advance the pin of human-owned article sources with their attribution intact', async () => {
+    const h = nativeSetup();
+    await save(h.env, { action: 'endorse', annotation_id: 'aaaaaaaaaaaa', base_version: 2 }, { user: 'u-human' });
+    expect((await botSave(h.env, { annotations: repin(nativeItems(h), NEW_REVID), base_version: 3, revid: NEW_REVID })).status).toBe(200);
+    expect(articleRow(h.db)?.revid).toBe(NEW_REVID);
+    const human = nativeItems(h)[0];
+    expect(human.provenance).toBe('human');
+    expect(human.links[0].annotation.source.uri).toBe(wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid: NEW_REVID }));
   });
   it('restores native source pins and rejects unresolved legacy history', async () => {
     const h = nativeSetup(); const before = nativeItems(h); const rev = latestRevision(h.db).id;
