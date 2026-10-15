@@ -18,7 +18,6 @@ os.environ.setdefault('WIKILEAN_SEARCH_TOOLS', '0')
 import native_annotations as n
 import render
 import moderate
-from migrate_native import migrate_file, _publish_new
 
 TITLE = 'Synthetic Article'
 URI = n.wikipedia_source_uri(TITLE, 42)
@@ -26,7 +25,7 @@ HTML = '<h2><span id="Statement">Statement</span></h2><p>A finite group has an i
 
 
 def occurrence(snippet='A finite group', **extras):
-    return {'source': {'type': 'generic', 'uri': URI},
+    return {'source': {'type': 'html', 'uri': URI},
             'location': {'profile': n.ANCHOR_PROFILE, 'anchor': {'section': 'Statement', 'snippet': snippet},
                          'resolution': 'not_attempted'}, **extras}
 
@@ -45,17 +44,6 @@ def old_item(**extras):
 
 
 class NativeContract(unittest.TestCase):
-    def test_strict_native_json_rejects_duplicate_keys_and_nonfinite_numbers(self):
-        import batch_annotate as ba
-        for payload in ('{"annotations":[],"annotations":[]}',
-                        '{"annotations":[{"links":[{"id":"a","id":"b"}]}]}',
-                        '{"value":1e999}', '{"value":NaN}'):
-            with self.subTest(payload=payload):
-                with self.assertRaises(n.NativeAnnotationError): n.strict_loads(payload)
-                self.assertIsNone(ba.parse_json_object(payload))
-        self.assertEqual(n.strict_loads('{"left":{"id":"a"},"right":{"id":"b"}}'),
-                         {'left':{'id':'a'},'right':{'id':'b'}})
-
     def test_native_all_modes_and_unknown_values_survive(self):
         locations = {'pdf': {'page': 1, 'rect': [0, 0, 1, 1]}, 'latex': {'lines': [1, 2]},
                      'html': {'fragment': 'α'}, 'generic': {'unknown': {'list': [None, True, 1.25]}}}
@@ -113,7 +101,7 @@ class NativeContract(unittest.TestCase):
         for work in broken:
             with self.subTest(work=work), self.assertRaises(n.NativeAnnotationError): n.validate_items([work])
 
-    def test_endpoint_targets_pins_and_facts_validate_and_project(self):
+    def test_endpoint_targets_and_pins_validate(self):
         work = item(kind='theorem', note='why', match_kind='exact')
         pinned = {'uri': 'https://formal.example/Groups.html#identity',
                   'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY, 'module': 'Mathlib.Group', 'declaration': 'Group.identity'}}
@@ -122,26 +110,8 @@ class NativeContract(unittest.TestCase):
                    'target': {'uri': 'urn:formal:b'}, 'status': {'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY}},
                    'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1}}}
         work['links'].append({'id': 'foreign', 'base_uri': 'https://example.net/shards/a.json', 'annotation': foreign})
-        before = deepcopy(work)
         n.validate_items([work], title=TITLE, revid=42)
-        first = n.companion_annotation(work, work['links'][0], title=TITLE, revid=42, wikidata_qid='Q1')
-        self.assertEqual(first, {'id': 'aabbccddeeff', 'kind': 'theorem', 'label': 'Fixture', 'status': 'formalized',
-            'source': {'type': 'generic', 'uri': URI, 'pin': {'type': 'website', 'title': TITLE, 'owner': 'Wikipedia', 'url': URI,
-                                                              'revision': '42', 'identifiers': {'wikidata': 'Q1'}}},
-            'location': occurrence()['location'], 'target': pinned, 'note': 'why',
-            'extensions': {'org.wikilean': {'provenance': 'ai', 'match_kind': 'exact'}}})
-        # A foreign source gets no article pin; stored id, label, extensions and the status pin survive.
-        second = n.companion_annotation(work, work['links'][1], title=TITLE, revid=42)
-        self.assertEqual(second, {'id': 'their-id', 'kind': 'theorem', 'label': 'Their label',
-            'status': {'value': 'formalized', 'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY}},
-            'source': foreign['source'], 'target': foreign['target'], 'note': 'why',
-            'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1, 'provenance': 'ai', 'match_kind': 'exact'}}})
-        for record in (first, second):
-            n.validate_link_record(record)
-        self.assertEqual(work, before)
         self.assertEqual(n.formal_links(work)[0]['label'], 'Group.identity')
-        self.assertEqual(n.first_target(work), pinned['uri'])
-        self.assertNotIn('pin', n.companion_annotation({'status': 'partial', 'links': [], 'unlinked': []}, work['links'][0])['source'])
         n.validate_link_record({'source': {'type': 'html', 'uri': URI}, 'status': 'not_formalized'})
 
     def test_opaque_extension_fields_survive_agent_partial_updates(self):
@@ -210,78 +180,6 @@ class NativeContract(unittest.TestCase):
         self.assertNotEqual(n.anchor_sig(first), n.anchor_sig(second))
         self.assertEqual(n.anchor_sig(item(links=[])), '["native",null,null,null]')
         self.assertNotEqual(n.anchor_sig(first), n.anchor_sig(old_item()))
-
-
-class Migration(unittest.TestCase):
-    def test_one_link_per_anchor_and_exact_private_archive(self):
-        old=old_item(anchors=[{'section':'Statement','snippet':'A finite group'}, {'type':'math_alttext','value':'x'}],
-                     unknown={'nested': [1, False]}, proof_note='private')
-        before=deepcopy(old)
-        result, diagnostics=n.migrate_items([old], title=TITLE, revid=42)
-        converted=result[0]
-        self.assertEqual(diagnostics, [])
-        self.assertEqual(converted['legacy'], before)
-        self.assertEqual(old, before)
-        self.assertFalse(n.LEGACY_FIELDS & converted.keys())
-        self.assertEqual(converted['match_kind'], 'exact')
-        self.assertEqual({link['annotation']['source']['type'] for link in converted['links']}, {'html'})
-        # Records written before the profile form used generic sources; both read the same.
-        generic = deepcopy(converted); generic['links'][0]['annotation']['source']['type'] = 'generic'
-        self.assertEqual(n.anchors(generic), n.anchors(converted))
-        self.assertEqual([link['id'] for link in converted['links']], ['aabbccddeeff:link:0','aabbccddeeff:link:1'])
-        self.assertEqual(converted['links'][0]['annotation']['target'], {
-            'uri': 'https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#Group.identity',
-            'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY, 'module': 'Mathlib.Group', 'declaration': 'Group.identity'}})
-        again, diagnostics=n.migrate_items(result, title=TITLE, revid=42)
-        self.assertEqual(again, result); self.assertEqual(diagnostics, [])
-
-    def test_only_absent_anchor_is_missing_and_explicit_null_is_invalid(self):
-        for value in ({},None,[]):
-            with self.subTest(anchor=value):
-                converted,diagnostics=n.migrate_items([old_item(anchor=value)],title=TITLE,revid=42)
-                self.assertNotIn('MISSING_ANCHOR',[entry['code'] for entry in diagnostics])
-                self.assertEqual(len(converted[0]['links']),int(isinstance(value,dict)))
-                self.assertEqual('INVALID_ANCHOR' in [entry['code'] for entry in diagnostics],not isinstance(value,dict))
-
-    def test_targetless_conflicting_and_invalid_anchors_are_preserved(self):
-        for old, links, code in ((old_item(mathlib=None), 0, 'NO_FORMAL_TARGET'),
-                                  (old_item(status='not_formalized'), 1, 'STATUS_TARGET_CONFLICT'),
-                                  (old_item(anchor={'snippet': 9}), 0, 'INVALID_ANCHOR')):
-            with self.subTest(old=old):
-                converted, diagnostics=n.migrate_items([old], title=TITLE, revid=42)
-                self.assertEqual(len(converted[0]['links']), links)
-                self.assertIn(code, [entry['code'] for entry in diagnostics])
-                self.assertEqual(converted[0]['legacy'], old)
-
-    def test_unknown_anchor_fields_stay_private_and_missing_is_not_whole_source(self):
-        old=old_item(anchor={'section':'Statement','snippet':'A finite group','private':'secret'})
-        converted,_=n.migrate_items([old],title=TITLE,revid=42)
-        self.assertNotIn('private', converted[0]['links'][0]['annotation']['location']['anchor'])
-        old=old_item(); del old['anchor']
-        converted, diagnostics=n.migrate_items([old],title=TITLE,revid=42)
-        self.assertEqual(converted[0]['links'][0]['annotation']['location']['anchor'], {})
-        self.assertIn('MISSING_ANCHOR',[entry['code'] for entry in diagnostics])
-
-    def test_explicit_json_bundle_archives_bytes_and_refuses_overwrite(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            source=Path(tmp)/'old.json'; output=Path(tmp)/'converted'
-            original=json.dumps({'wikipedia_title':TITLE,'annotations':[old_item()]},indent=3).encode()
-            source.write_bytes(original)
-            with self.assertRaises(n.NativeAnnotationError): migrate_file(source, output)
-            report=migrate_file(source,output,revid=42)
-            self.assertEqual((output/'original.json').read_bytes(),original)
-            self.assertEqual(json.loads((output/'article.json').read_text())['schema_version'],4)
-            self.assertFalse(report['d1_updated'])
-            with self.assertRaises(n.NativeAnnotationError): migrate_file(source,output,revid=42)
-
-    def test_bundle_publication_refuses_even_a_racing_empty_directory(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            source=Path(tmp)/'staged'; destination=Path(tmp)/'racing'
-            source.mkdir(); destination.mkdir()
-            (source/'original.json').write_text('kept')
-            with self.assertRaises(OSError): _publish_new(source,destination)
-            self.assertEqual(list(destination.iterdir()),[])
-            self.assertEqual((source/'original.json').read_text(),'kept')
 
 
 class Rendering(unittest.TestCase):

@@ -6,7 +6,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { readFileSync, existsSync, linkSync, unlinkSync, mkdirSync, chmodSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { NATIVE_SCHEMA_VERSION, migrateLegacyItems, validateNativeItems, strictJsonParse, type JsonObject } from '../src/native-companion.js';
+import { NATIVE_SCHEMA_VERSION, migrateLegacyItems, validateNativeItems, type JsonObject } from '../src/native-companion.js';
 import { MAX_ANNOTATIONS, MAX_ANNOTATIONS_BYTES, MAX_FIELD_LEN, MAX_TEXT_LEN } from '../src/validation.js';
 
 type Article = { slug: string; wikipedia_title: string; revid: number | null; annotations: string; version: number; schema_version: number };
@@ -27,7 +27,7 @@ export function migrateLocalDatabase(db: DatabaseSync, now = Date.now()) {
     const rows = db.prepare('SELECT slug, wikipedia_title, revid, annotations, version, schema_version FROM articles ORDER BY slug').all() as unknown as Article[];
     for (const row of rows) {
       if (![3, NATIVE_SCHEMA_VERSION].includes(row.schema_version)) throw new Error(`${row.slug}: unsupported article schema version ${row.schema_version}`);
-      const original = strictJsonParse(row.annotations) as JsonObject[];
+      const original = JSON.parse(row.annotations) as JsonObject[];
       if (!Array.isArray(original)) throw new Error(`${row.slug}: annotations must be an array`);
       const context = { wikipediaTitle: row.wikipedia_title, revid: row.revid };
       if (row.schema_version === NATIVE_SCHEMA_VERSION) {

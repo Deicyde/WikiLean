@@ -49,7 +49,7 @@ def main(argv: list[str] | None = None) -> int:
     totals: dict[str, int] = {}
     report = []
     for row in rows:
-        items = native.strict_loads(row["annotations"])
+        items = json.loads(row["annotations"])
         if row["revid"] is None:
             report.append({"slug": row["slug"], "skipped": "no pinned revision"})
             continue

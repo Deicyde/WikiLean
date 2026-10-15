@@ -1094,7 +1094,7 @@ def main() -> int:
     if not annot_path.exists():
         print(f"missing: {annot_path}", file=sys.stderr)
         return 1
-    annot = native.strict_loads(annot_path.read_text(encoding="utf-8"))
+    annot = json.loads(annot_path.read_text(encoding="utf-8"))
 
     pinned = annot.get("revid")
     src = fetch_article_html(slug, annot["wikipedia_title"], target_revid=pinned)

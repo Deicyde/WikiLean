@@ -71,22 +71,6 @@ def mathlib_target(module: str, decl: str) -> dict:
     return {"uri": uri, "pin": {"type": "repository", "url": MATHLIB_REPOSITORY, "module": module, "declaration": decl}}
 
 
-def strict_loads(text: str) -> Any:
-    """Read an unambiguous finite JSON value without collapsing duplicate keys."""
-    def pairs(items):
-        result = {}
-        for key, value in items:
-            if key in result:
-                raise NativeAnnotationError(f"duplicate JSON key: {key}")
-            result[key] = value
-        return result
-    def invalid(value):
-        raise NativeAnnotationError(f"nonfinite JSON number: {value}")
-    value = json.loads(text, object_pairs_hook=pairs, parse_constant=invalid)
-    _strict_json(value)
-    return value
-
-
 def _strict_json(value: Any) -> None:
     try:
         encoded = json.dumps(value, ensure_ascii=False, allow_nan=False)
@@ -254,12 +238,10 @@ def anchors(item: dict, *, source_uri: str | None = None,
             if source_uri is None or actual != source_uri:
                 result.append(None)
                 continue
-        if ("location" not in span and isinstance(source, dict)
-                and source.get("type") in {"generic", "html"}):
+        if "location" not in span and isinstance(source, dict) and source.get("type") == "html":
             result.append({"type": "whole_resource"})
             continue
-        # Written as html since the profile form exists; generic records predate it.
-        if not (isinstance(source, dict) and source.get("type") in {"html", "generic"} and isinstance(location, dict)):
+        if not (isinstance(source, dict) and source.get("type") == "html" and isinstance(location, dict)):
             result.append(None)
             continue
         if location.get("profile") == ANCHOR_PROFILE and isinstance(location.get("anchor"), dict):
@@ -334,7 +316,7 @@ def resolve_locations(items: list[dict], html: str) -> tuple[dict[str, int], lis
             if not isinstance(record, dict):
                 continue
             source, location = record.get("source"), record.get("location")
-            if (not isinstance(source, dict) or source.get("type") not in {"html", "generic"}
+            if (not isinstance(source, dict) or source.get("type") != "html"
                     or not isinstance(location, dict) or location.get("profile") != ANCHOR_PROFILE
                     or not isinstance(location.get("anchor"), dict)):
                 continue
@@ -346,7 +328,6 @@ def resolve_locations(items: list[dict], html: str) -> tuple[dict[str, int], lis
                 diagnostics.append({"item": index, kind: position, "code": "LOCATION_UNRESOLVED", "reason": how})
                 continue
             record["location"] = resolved
-            source["type"] = "html"  # a built-in form applies by source type
             extensions = record.get("extensions") if isinstance(record.get("extensions"), dict) else {}
             wikilean = dict(extensions["org.wikilean"]) if isinstance(extensions.get("org.wikilean"), dict) else {}
             wikilean["anchor"] = deepcopy(anchor)
@@ -498,137 +479,10 @@ def preserve_native_items(existing: list[dict], produced: list[dict]) -> list[di
     return result
 
 
-def first_target(item: dict) -> str | None:
-    if not is_native(item):
-        return None
-    for link in item.get("links", []):
-        target = target_uri(link.get("annotation", {}))
-        if target is not None:
-            return urljoin(link.get("base_uri", ""), target)
-    return None
-
-
-def article_source_pin(title: str, revid: int, *, wikidata_qid: str | None = None) -> dict:
-    """The website pin citing the article's pinned Wikipedia revision."""
-    pin = {"type": "website", "title": title, "owner": "Wikipedia",
-           "url": wikipedia_source_uri(title, revid), "revision": str(revid)}
-    if isinstance(wikidata_qid, str) and wikidata_qid:
-        pin["identifiers"] = {"wikidata": wikidata_qid}
-    return pin
-
-
-def companion_annotation(item: dict, link: dict, *, title: str | None = None, revid: int | None = None,
-                         wikidata_qid: str | None = None) -> dict:
-    """The portable record for one stored link (mirrors TS companionAnnotation).
-
-    The stored annotation gains the review item's facts in the format's own
-    fields (status, kind, label, note, id), the article's website pin on an
-    article-local source, and provenance/match_kind under org.wikilean. The item
-    stays the editable authority; stored fields are kept and only absent ones
-    are filled, except status, which is always the item's review status.
-    """
-    stored = deepcopy(link["annotation"])
-    record: dict = {}
-    if isinstance(stored.get("id"), str):
-        record["id"] = stored["id"]
-    elif isinstance(item.get("id"), str) and item["id"]:
-        record["id"] = item["id"]
-    for key in ("kind", "label"):
-        if isinstance(stored.get(key), str):
-            record[key] = stored[key]
-        elif isinstance(item.get(key), str) and item[key].strip():
-            record[key] = item[key]
-    if isinstance(item.get("status"), str) and item["status"]:
-        record["status"] = ({**stored["status"], "value": item["status"]}
-                            if isinstance(stored.get("status"), dict) else item["status"])
-    elif "status" in stored:
-        record["status"] = stored["status"]
-    if "$schema" in stored:
-        record["$schema"] = stored["$schema"]
-    record["source"] = stored["source"]
-    if title is not None and revid is not None and "pin" not in record["source"]:
-        pinned = resolved_web_uri(wikipedia_source_uri(title, revid))
-        if resolved_web_uri(record["source"].get("uri", ""), link.get("base_uri")) == pinned:
-            record["source"] = {**record["source"], "pin": article_source_pin(title, revid, wikidata_qid=wikidata_qid)}
-    if "location" in stored:
-        record["location"] = stored["location"]
-    if "target" in stored:
-        record["target"] = stored["target"]
-    if isinstance(stored.get("note"), str):
-        record["note"] = stored["note"]
-    elif isinstance(item.get("note"), str) and item["note"].strip():
-        record["note"] = item["note"]
-    extensions = stored.get("extensions") if isinstance(stored.get("extensions"), dict) else {}
-    wikilean = dict(extensions["org.wikilean"]) if isinstance(extensions.get("org.wikilean"), dict) else {}
-    for key in ("provenance", "match_kind"):
-        if isinstance(item.get(key), str) and item[key]:
-            wikilean[key] = item[key]
-    if wikilean:
-        record["extensions"] = {**extensions, "org.wikilean": wikilean}
-    elif "extensions" in stored:
-        record["extensions"] = stored["extensions"]
-    return record
-
-
 def wikipedia_source_uri(title: str, revid: int) -> str:
     if not isinstance(title, str) or not title.strip() or type(revid) is not int or not 0 < revid <= 2**53 - 1:
         raise NativeAnnotationError("migration requires a title and pinned Wikipedia revision")
     return f"https://en.wikipedia.org/w/index.php?title={quote(title.replace(' ', '_'), safe=_JS_SAFE)}&oldid={revid}"
-
-
-def migrate_items(items: list[dict], *, title: str, revid: int, html: str | None = None) -> tuple[list[dict], list[dict]]:
-    """Explicit one-way conversion; preserve the entire original in legacy.
-
-    With the pinned article ``html``, every WikiLean anchor is resolved to a
-    built-in Literature Links location (see :func:`resolve_locations`); without
-    it, locations keep the profile form with resolution ``not_attempted``.
-    """
-    source_uri = wikipedia_source_uri(title, revid)
-    _strict_json(items)
-    migrated, diagnostics = [], []
-    for index, old in enumerate(items):
-        if not isinstance(old, dict):
-            raise NativeAnnotationError(f"item {index} is not an object")
-        if is_native(old):
-            migrated.append(deepcopy(old))
-            continue
-        item = {key: deepcopy(value) for key, value in old.items() if key not in LEGACY_FIELDS}
-        item.update(links=[], unlinked=[], legacy=deepcopy(old))
-        raw_spans = old.get("anchors") if isinstance(old.get("anchors"), list) and old["anchors"] else [old.get("anchor", {})]
-        mathlib = old.get("mathlib") if isinstance(old.get("mathlib"), dict) else {}
-        if "match_kind" not in item and isinstance(mathlib.get("match_kind"), str):
-            item["match_kind"] = mathlib["match_kind"]
-        decl, module = mathlib.get("decl") or old.get("decl"), mathlib.get("module") or old.get("module")
-        # The legacy module and declaration become the target's repository pin,
-        # so the only remaining copy of that information is not the archive.
-        target = None
-        if (isinstance(decl, str) and decl.strip() and isinstance(module, str) and module.strip()
-                and all(part and not re.search(r"[\s/\\#?]", part) for part in module.split("."))):
-            target = mathlib_target(module, decl)
-        if target is None:
-            diagnostics.append({"item": index, "code": "NO_FORMAL_TARGET"})
-        elif old.get("status") == "not_formalized":
-            diagnostics.append({"item": index, "code": "STATUS_TARGET_CONFLICT"})
-        if "anchor" not in old and not (isinstance(old.get("anchors"), list) and old["anchors"]):
-            diagnostics.append({"item": index, "code": "MISSING_ANCHOR"})
-        for anchor_index, anchor in enumerate(raw_spans):
-            valid = isinstance(anchor, dict) and all(key not in anchor or isinstance(anchor[key], str) for key in ANCHOR_FIELDS)
-            if not valid:
-                diagnostics.append({"item": index, "anchor": anchor_index, "code": "INVALID_ANCHOR"})
-            selector = {key: deepcopy(anchor[key]) for key in ANCHOR_FIELDS if key in anchor} if valid else {}
-            selection = {"source": {"type": "html", "uri": source_uri},
-                         "location": {"profile": ANCHOR_PROFILE, "anchor": selector,
-                                      "resolution": "not_attempted" if valid else "unresolved"}}
-            if target is None or not valid:
-                item["unlinked"].append(selection)
-            else:
-                identity = f"{old.get('id') or 'item' + str(index)}:link:{anchor_index}"
-                item["links"].append({"id": identity, "annotation": {**selection, "target": target}})
-        migrated.append(item)
-    if html is not None:
-        diagnostics.extend(resolve_locations(migrated, html)[1])
-    validate_items(migrated, title=title, revid=revid)
-    return migrated, diagnostics
 
 
 def repin_items(items: list[dict], *, title: str, old_revid: int, new_revid: int) -> tuple[list[dict], list[dict]]:
