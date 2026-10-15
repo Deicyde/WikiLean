@@ -4,7 +4,7 @@ import { wrapAnnotations } from '../src/engine/wrap.js';
 import { ANCHOR_PROFILE, MATHLIB_REPOSITORY, wikipediaSourceUri, type NativeItem } from '../src/native-companion.js';
 import type { Annotation } from '../src/engine/types.js';
 const context = { wikipediaTitle: 'Test Article', revid: 12345 };
-const source = { type: 'generic' as const, uri: wikipediaSourceUri(context) };
+const source = { type: 'html' as const, uri: wikipediaSourceUri(context) };
 const body = '<p>A finite group has a finite set of elements.</p>';
 const item = (): NativeItem => ({ id:'aaaaaaaaaaaa', status:'formalized', label:'Group', links:[
   {id:'a', annotation:{source,target:'https://example.org/docs#Finite%20Group',location:{profile:ANCHOR_PROFILE,anchor:{section:'(lead)',snippet:'finite group'}},extensions:{custom:{data:[1,2,3]}}}},
@@ -42,7 +42,7 @@ describe('native article rendering', () => {
     const entity=item(); entity.links[0].annotation.location={fragment:'cite_ref-1'};
     expect(wrapAnnotations('<p id="cite&#95;ref-1">x</p>'+page,[annotation(entity)],context).matched).toEqual([true]);
   });
-  it('distinguishes absent location from empty generic location', () => {
+  it('distinguishes absent location from empty location', () => {
     const a=item(); delete a.links[0].annotation.location;
     expect(wrapAnnotations(body,[annotation(a)],context).matched).toEqual([true]);
     a.links[0].annotation.location={};

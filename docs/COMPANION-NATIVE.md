@@ -102,7 +102,6 @@ saves retain the existing work-item count, field-length and payload-size limits.
 - `GET /api/article/:slug/companion.jsonl` returns the stored public Literature Links
   objects, with the item facts and pins projected as above, one per line
   (`application/x-ndjson`). Rejected items are omitted for every caller.
-  `companion-report.json` adds the export diagnostics.
   It returns 409 whenever a record has an explicit carrier base, including when
   all core references are absolute: an opaque profile may contain relative values.
 - `GET /api/article/:slug/companion-records.json` returns
@@ -143,8 +142,7 @@ against the new Wikipedia HTML. Other imported sources are retained independentl
 Human veto tombstones retain their original source pins. A pin advance moves every
 active article-local source, human-owned ones included: the pin is article metadata,
 so human items are compared modulo that move and keep their human attribution, while
-any other change to human bytes is still refused. A moderator can also save a coherent
-reanchored native snapshot with `revid` and `base_version`.
+any other change to human bytes is still refused.
 
 ## Copied-database migration rehearsal
 
@@ -221,8 +219,5 @@ usual authorized revert workflow. Rolling back software requires a reader that
 understands native snapshots. Restoring the original input database would discard
 new edits and is not the rollback procedure.
 
-The legacy companion conversion endpoint remains only for explicitly unmigrated
-articles during compatibility testing. Native articles and the local workspace's
-normal path read stored associations directly. See
-[the native design](COMPANION-NATIVE.plan.md) and
-[the local workspace guide](COMPANION-WORKSPACE.md).
+`companion.jsonl` and `companion-records.json` answer 409 for an article that
+has not been migrated; there is no legacy conversion.

@@ -250,8 +250,8 @@ def parse_json_object(text: str) -> dict | None:
             depth -= 1
             if depth == 0:
                 try:
-                    return native.strict_loads(text[start : i + 1])
-                except (json.JSONDecodeError, native.NativeAnnotationError):
+                    return json.loads(text[start : i + 1])
+                except (json.JSONDecodeError):
                     return None
     return None
 
@@ -554,7 +554,7 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                     ap = ANNOT / f"{slug}.json"
                     if ap.exists():
                         try:
-                            existing = native.strict_loads(ap.read_text()).get("annotations", [])
+                            existing = json.loads(ap.read_text()).get("annotations", [])
                         except (json.JSONDecodeError, OSError):
                             existing = []
             do_moderate = moderate and bool(existing)

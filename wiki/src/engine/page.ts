@@ -143,12 +143,10 @@ export function renderArticlePage(input: PageInput): string {
   // noise on fully-covered (or math-free) articles (W3 fix #12).
   const nUntouched = Math.max(0, nDisplayTotal - nDisplayAnnotated);
 
-  const nativePage = annotations.some(isNativeItem);
-  const library = nativePage ? "formal libraries" : "Mathlib4";
   const desc =
     nTotal > 0
-      ? `${displayTitle} from Wikipedia, annotated with links into ${library}: ${counts.formalized} of ${nTotal} definitions, theorems, and proofs formalized in Lean (${counts.partial} partial).`
-      : `${displayTitle} from Wikipedia, annotated with links into ${library} / Lean.`;
+      ? `${displayTitle} from Wikipedia, annotated with links into Mathlib4: ${counts.formalized} of ${nTotal} definitions, theorems, and proofs formalized in Lean (${counts.partial} partial).`
+      : `${displayTitle} from Wikipedia, annotated with links into Mathlib4 / Lean.`;
 
   const title = htmlEscape(displayTitle, false);
   // Attribute positions (og:title content="...") need quotes escaped too;
@@ -249,9 +247,9 @@ ${SEARCHBOX_CSS}</style>
       <button id="wl-legend-btn" class="wl-legend-btn" type="button" aria-expanded="false" aria-controls="wl-legend-pop" aria-label="What do these labels mean?" title="What do these labels mean?">?</button>
       <div id="wl-legend-pop" class="wl-legend-pop" role="region" aria-label="Annotation legend" hidden>
         <ul>
-          <li><i class="sw sw-f"></i><b>Formalized</b> — ${nativePage ? "a linked formal result" : "a Mathlib declaration"} captures this statement as stated.</li>
-          <li><i class="sw sw-p"></i><b>Partial</b> — ${nativePage ? "The formal result is" : "Mathlib has"} a related, weaker, or special-case form only.</li>
-          <li><i class="sw sw-n"></i><b>Not formalized</b> — no matching ${nativePage ? "formal result" : "Mathlib declaration"} found at annotation time.</li>
+          <li><i class="sw sw-f"></i><b>Formalized</b> — a Mathlib declaration captures this statement as stated.</li>
+          <li><i class="sw sw-p"></i><b>Partial</b> — Mathlib has a related, weaker, or special-case form only.</li>
+          <li><i class="sw sw-n"></i><b>Not formalized</b> — no matching Mathlib declaration found at annotation time.</li>
           <li><i class="sw sw-u"></i><b>Unannotated math</b> — display math with no annotation yet; the &ldquo;Dim unannotated&rdquo; toggle fades it.</li>
           <li><b>N/M human-reviewed</b> — how many of this page&#x27;s annotations were written or verified by a human (the rest are AI-generated).</li>
           <li><b>⚑</b> — report a problem: open any highlighted statement&#x27;s tooltip and use its ⚑ link.</li>

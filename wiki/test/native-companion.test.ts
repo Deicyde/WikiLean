@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
   validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, parseMathSelector, wikipediaSourceUri,
-  strictJsonParse, targetUri, targetPin, normalize, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
+  targetUri, targetPin, normalize, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
   type NativeItem, type LinkRecord,
 } from '../src/native-companion.js';
 
@@ -12,10 +12,6 @@ const core = (mode: LinkRecord['source']['type'] = 'generic'): LinkRecord => ({ 
 const item = (annotation = core()): NativeItem => ({ id: 'aaaaaaaaaaaa', status: 'partial', links: [{ id: 'record-1', annotation }], unlinked: [] });
 
 describe('canonical native companion records', () => {
-  it('decodes strict JSON before object keys or integer precision can be lost', () => {
-    for (const text of ['{"x":1,"\\u0078":2}', '{"ext":{"same":1,"same":2}}', '[9007199254740993]', '[1e400]']) expect(() => strictJsonParse(text)).toThrow();
-    expect(strictJsonParse('{"a":[{"x":"\\\""},true,null,-2.5e-1]}')).toEqual({ a: [{ x: '"' }, true, null, -0.25] });
-  });
   it('vendors exactly the pinned reference schema', () => {
     const bytes = readFileSync(new URL('../src/vendor/literature-links/companion.schema.json', import.meta.url));
     const provenance = JSON.parse(readFileSync(new URL('../src/vendor/literature-links/provenance.json', import.meta.url), 'utf8'));
@@ -70,7 +66,7 @@ describe('canonical native companion records', () => {
     expect(validateNativeItems([relative])).toEqual([]);
   });
   it('projects the review item onto each stored link without changing what is stored', () => {
-    const local = { source: { type: 'generic' as const, uri: wikipediaSourceUri(context) }, target: 'urn:formal:a', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
+    const local = { source: { type: 'html' as const, uri: wikipediaSourceUri(context) }, target: 'urn:formal:a', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
     const foreign: LinkRecord = { id: 'their-id', label: 'Their label', source: { type: 'pdf', uri: '../paper.pdf' }, target: { uri: 'urn:formal:b' },
       status: { pin: { type: 'repository', url: MATHLIB_REPOSITORY } }, extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1 } } };
     const work: NativeItem = { id: 'aaaaaaaaaaaa', status: 'partial', kind: 'theorem', label: 'Ours', note: 'why partial', provenance: 'ai-moderated', match_kind: 'generalization',
@@ -169,13 +165,13 @@ describe('canonical native companion records', () => {
     expect(legacyAnchorOccurrences(a, context)).toEqual([{ type: 'whole_resource' }]);
     a.links[0].annotation.location = { css: '#x' };
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
-    a.links[0].annotation = { source: { type: 'generic', uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 1 } } };
+    a.links[0].annotation = { source: { type: 'html', uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 1 } } };
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
-    // Records written before the profile form used generic sources; both read the same.
-    for (const type of ['html', 'generic'] as const) {
-      a.links[0].annotation = { source: { type, uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
-      expect(legacyAnchorOccurrences(a, context)).toEqual([{ snippet: 'x' }]);
-    }
+    a.links[0].annotation = { source: { type: 'html', uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
+    expect(legacyAnchorOccurrences(a, context)).toEqual([{ snippet: 'x' }]);
+    // Only html sources carry Wikipedia text; another mode is left to its own reader.
+    a.links[0].annotation.source.type = 'generic';
+    expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
     a.links[0].annotation.source.type = 'pdf';
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
   });

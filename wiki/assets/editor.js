@@ -22,9 +22,9 @@ function createCompanionEditorModel() {
     return wikilean && wikilean.anchor && typeof wikilean.anchor === "object" ? wikilean.anchor : null;
   }
   // Wikipedia text on an html source: the anchor profile, or a built-in
-  // location with the editing key beside it. Generic records predate the profile form.
+  // location with the editing key beside it.
   function wikipediaText(occ) {
-    if (!(occ.source.type === "html" || occ.source.type === "generic") || !occ.location) return false;
+    if (occ.source.type !== "html" || !occ.location) return false;
     return occ.location.profile === profile || (!("profile" in occ.location) && !!editingKey(occ));
   }
   // Store the editing key beside a built-in location, or remove it when the

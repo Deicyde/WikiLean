@@ -23,14 +23,6 @@ function repin(items: NativeItem[], revid: number) {
 const core = (type: LinkRecord['source']['type']): LinkRecord => ({ source: { type, uri: 'urn:source' }, target: 'urn:target', extensions: { 'urn:opaque': { deep: [null, 'α', 1] } } });
 
 describe('native canonical API and lifecycle', () => {
-  it('rejects duplicate members in the raw HTTP annotation instead of silently collapsing extensions', async () => {
-    const h = nativeSetup(); const items = nativeItems(h);
-    items[0].links[0].annotation.extensions = { 'urn:opaque': { duplicate: 'one' } };
-    const body = JSON.stringify({ annotations: items, base_version: 2 }).replace('"duplicate":"one"', '"duplicate":"one","dupl\\u0069cate":"two"');
-    const before = articleRow(h.db);
-    const response = await app.request(`/api/article/${SLUG}`, { method: 'POST', headers: { Authorization: `Bearer ${PIPELINE_TOKEN}`, 'Content-Type': 'application/json' }, body }, h.env);
-    expect(response.status).toBe(400); expect(articleRow(h.db)).toEqual(before);
-  });
   it('defaults new articles to native storage, records source context, and cannot mint human provenance', async () => {
     const h = setup();
     const items = [{ id: 'aaaaaaaaaaaa', status: 'formalized', provenance: 'human', links: ['pdf', 'html', 'latex', 'generic'].map((type, index) => ({ id: `link-${index}`, annotation: core(type as LinkRecord['source']['type']) })), unlinked: [] }];
@@ -164,16 +156,12 @@ describe('native canonical API and lifecycle', () => {
     expect((await botSave(h.env, { annotations: repin(nativeItems(h), NEW_REVID), revid: NEW_REVID, base_version: 3 })).status).toBe(200);
     expect(nativeItems(h)[0]).toEqual(before);
   });
-  it('allows a moderator to reanchor a complete human snapshot atomically and truthfully', async () => {
+  it('still refuses any other change to human bytes during a repin', async () => {
     const h = nativeSetup();
     await save(h.env, { action: 'endorse', annotation_id: 'aaaaaaaaaaaa', base_version: 2 }, { user: 'u-human' });
-    const changed = repin(nativeItems(h), NEW_REVID);
-    const edited = echo(changed); edited[0].note = 'a bot may not change this';
+    const edited = repin(nativeItems(h), NEW_REVID); edited[0].note = 'a bot may not change this';
     expect((await botSave(h.env, { annotations: edited, base_version: 3, revid: NEW_REVID })).status).toBe(422);
-    expect((await save(h.env, { annotations: editorItems(changed), base_version: 3, revid: NEW_REVID }, { user: 'u-human' })).status).toBe(403);
-    expect((await save(h.env, { annotations: editorItems(changed), base_version: 3, revid: NEW_REVID }, { user: 'u-patroller' })).status).toBe(200);
-    expect(nativeItems(h)[0].provenance).toBe('human');
-    expect(articleRow(h.db)?.revid).toBe(NEW_REVID);
+    expect(articleRow(h.db)?.revid).toBe(REVID);
   });
   it('lets a bot advance the pin of human-owned article sources with their attribution intact', async () => {
     const h = nativeSetup();

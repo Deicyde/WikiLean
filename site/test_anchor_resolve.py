@@ -12,7 +12,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import anchor_resolve as ar
 import native_annotations as n
 import render
-from migrate_native import migrate_file
 
 TITLE = 'Synthetic Article'
 REVID = 42
@@ -33,9 +32,17 @@ HTML = (
 )
 
 
-def legacy(anchor, **extras):
-    return {'id': 'aabbccddeeff', 'status': 'formalized', 'provenance': 'ai', 'anchor': anchor,
-            'mathlib': {'module': 'Mathlib.Group', 'decl': 'Group.identity', 'match_kind': 'exact'}, **extras}
+def native(anchor, **extras):
+    """A native item as the SQLite migration writes it: the profile form, one link per anchor."""
+    item = {'id': 'aabbccddeeff', 'status': 'formalized', 'provenance': 'ai', 'links': [], 'unlinked': [], **extras}
+    selection = {'source': {'type': 'html', 'uri': URI},
+                 'location': {'profile': n.ANCHOR_PROFILE, 'anchor': anchor, 'resolution': 'not_attempted'}}
+    if item['status'] == 'not_formalized':
+        item['unlinked'].append(selection)
+    else:
+        item['links'].append({'id': item['id'] + ':link:0',
+                              'annotation': {**selection, 'target': n.mathlib_target('Mathlib.Group', 'Group.identity')}})
+    return item
 
 
 class TextLayer(unittest.TestCase):
@@ -122,35 +129,29 @@ class Resolving(unittest.TestCase):
 
 
 class StoredRecords(unittest.TestCase):
-    def test_migration_resolves_locations_and_keeps_the_editing_key(self):
-        items = [legacy({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'}),
-                 legacy({'type': 'math_alttext', 'value': '{\\displaystyle |G|}'}, id='bbccddeeff00'),
-                 legacy({'type': 'prose_range', 'section': 'Statement', 'from': 'The'}, id='ccddeeff0011'),
-                 legacy({'section': 'Statement', 'snippet': 'absent text'}, id='ddeeff001122')]
-        migrated, diagnostics = n.migrate_items(items, title=TITLE, revid=REVID, html=HTML)
-        first = migrated[0]['links'][0]['annotation']
+    def test_resolution_replaces_profile_locations_and_keeps_the_editing_key(self):
+        items = [native({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'}),
+                 native({'type': 'math_alttext', 'value': '{\\displaystyle |G|}'}, id='bbccddeeff00'),
+                 native({'type': 'prose_range', 'section': 'Statement', 'from': 'The'}, id='ccddeeff0011'),
+                 native({'section': 'Statement', 'snippet': 'absent text'}, id='ddeeff001122')]
+        _, diagnostics = n.resolve_locations(items, HTML)
+        first = items[0]['links'][0]['annotation']
         self.assertEqual(first['source'], {'type': 'html', 'uri': URI})
         self.assertIn('quote', first['location'])
         self.assertEqual(first['extensions']['org.wikilean']['anchor'],
                          {'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'})
-        self.assertEqual(migrated[1]['links'][0]['annotation']['location'], {'css': 'img[alt="{\\\\displaystyle |G|}"]'})
-        self.assertEqual(migrated[2]['links'][0]['annotation']['location']['resolution'], 'unsupported')
-        self.assertEqual(migrated[3]['links'][0]['annotation']['location']['resolution'], 'unresolved')
-        codes = [d for d in diagnostics if d['code'] == 'LOCATION_UNRESOLVED']
-        self.assertEqual([(d['item'], d['reason']) for d in codes], [(2, 'unsupported'), (3, 'no_match')])
-        for item in migrated:
-            for link in item['links']:
-                n.validate_link_record(link['annotation'])
-        # Without the HTML nothing is resolved: the profile form stays, as before.
-        plain, _ = n.migrate_items(items[:1], title=TITLE, revid=REVID)
-        self.assertEqual(plain[0]['links'][0]['annotation']['location']['profile'], n.ANCHOR_PROFILE)
+        self.assertEqual(items[1]['links'][0]['annotation']['location'], {'css': 'img[alt="{\\\\displaystyle |G|}"]'})
+        self.assertEqual(items[2]['links'][0]['annotation']['location']['resolution'], 'unsupported')
+        self.assertEqual(items[3]['links'][0]['annotation']['location']['resolution'], 'unresolved')
+        self.assertEqual([(d['item'], d['reason']) for d in diagnostics], [(2, 'unsupported'), (3, 'no_match')])
+        n.validate_items(items, title=TITLE, revid=REVID)
 
     def test_renderers_read_built_in_locations(self):
-        items = [legacy({'section': 'Examples', 'snippet': 'It really does.'})]
-        migrated, _ = n.migrate_items(items, title=TITLE, revid=REVID, html=HTML)
+        items = [native({'section': 'Examples', 'snippet': 'It really does.'})]
+        n.resolve_locations(items, HTML)
         # The editing key beside the quotation drives the renderer, unchanged.
-        self.assertEqual(n.anchors(migrated[0]), [{'section': 'Examples', 'snippet': 'It really does.'}])
-        wrapped, matched = render.wrap_annotations(HTML, migrated, source_uri=URI)
+        self.assertEqual(n.anchors(items[0]), [{'section': 'Examples', 'snippet': 'It really does.'}])
+        wrapped, matched = render.wrap_annotations(HTML, items, source_uri=URI)
         self.assertEqual(matched, [True])
         self.assertIn('class="anno anno-formalized"', wrapped)
         # A record from elsewhere has no editing key; the quotation itself is read.
@@ -170,37 +171,13 @@ class StoredRecords(unittest.TestCase):
         self.assertEqual(render.find_fragment(HTML, 'nowhere'), None)
 
     def test_unlinked_selections_keep_their_editing_key(self):
-        items = [legacy({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'}, status='not_formalized', mathlib={})]
-        migrated, _ = n.migrate_items(items, title=TITLE, revid=REVID, html=HTML)
-        span = migrated[0]['unlinked'][0]
+        items = [native({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'}, status='not_formalized')]
+        n.resolve_locations(items, HTML)
+        span = items[0]['unlinked'][0]
         self.assertEqual(set(span), {'source', 'location', 'extensions'})
         self.assertIn('quote', span['location'])
-        n.validate_items(migrated, title=TITLE, revid=REVID)
-        self.assertEqual(n.anchors(migrated[0])[0]['section'], 'Statement')
-
-    def test_companion_records_carry_the_quotation_and_the_key(self):
-        items = [legacy({'section': '(Lead)', 'snippet': 'Every subgroup of a finite group is finite.'})]
-        migrated, _ = n.migrate_items(items, title=TITLE, revid=REVID, html=HTML)
-        record = n.companion_annotation(migrated[0], migrated[0]['links'][0], title=TITLE, revid=REVID)
-        self.assertEqual(record['location'], {'quote': {'exact': 'Every subgroup of a finite group is finite.'}})
-        self.assertEqual(record['extensions']['org.wikilean']['anchor']['snippet'], 'Every subgroup of a finite group is finite.')
-        self.assertEqual(record['extensions']['org.wikilean']['provenance'], 'ai')
-        n.validate_link_record(record)
-
-    def test_migrate_file_reports_location_forms(self):
-        article = {'slug': 'synthetic', 'wikipedia_title': TITLE, 'display_title': TITLE, 'schema_version': 3, 'revid': REVID,
-                   'annotations': [legacy({'section': '(Lead)', 'snippet': 'Every subgroup of a finite group is finite.'}),
-                                   legacy({'section': 'Statement', 'snippet': 'absent text'}, id='bbccddeeff00')]}
-        with tempfile.TemporaryDirectory() as tmp:
-            source = Path(tmp) / 'synthetic.json'
-            source.write_text(json.dumps(article), encoding='utf-8')
-            report = migrate_file(source, Path(tmp) / 'out', html=HTML)
-            self.assertEqual(report['locations'], {'quote': 1, 'profile': 1})
-            self.assertTrue(report['resolved_against_html'])
-            published = json.loads((Path(tmp) / 'out' / 'article.json').read_text(encoding='utf-8'))
-            self.assertEqual(published['schema_version'], 4)
-            plain = migrate_file(source, Path(tmp) / 'plain')
-            self.assertEqual(plain['locations'], {'profile': 2})
+        n.validate_items(items, title=TITLE, revid=REVID)
+        self.assertEqual(n.anchors(items[0])[0]['section'], 'Statement')
 
 
 class ResolveSqlite(unittest.TestCase):
@@ -208,7 +185,7 @@ class ResolveSqlite(unittest.TestCase):
         import sqlite3
         from unittest.mock import patch
         import resolve_sqlite
-        items, _ = n.migrate_items([legacy({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'})], title=TITLE, revid=REVID)
+        items = [native({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'})]
         encoded = json.dumps(items)
         with tempfile.TemporaryDirectory() as tmp:
             db_path = Path(tmp) / 'migrated.sqlite'

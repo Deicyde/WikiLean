@@ -47,8 +47,8 @@ import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
 import { registerCompanionRoutes } from "./companion.js";
 import {
-  NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems, migrateLegacyItems,
-  publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, strictJsonParse, type SourceContext,
+  NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
+  publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
 import { registerSecurityHeaders } from "./security.js";
 import type { Annotation } from "./engine/types.js";
@@ -186,7 +186,7 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
     console.log(JSON.stringify({ event: "render-null-revid", slug, resolved_revid: wp.revid }));
   }
 
-  const annotations = strictJsonParse(row.annotations) as Annotation[];
+  const annotations = JSON.parse(row.annotations) as Annotation[];
   const src = absolutizeWikipediaUrls(wp.html);
   const { html: body, matched } = wrapAnnotations(src, annotations, { wikipediaTitle: row.wikipediaTitle, revid: row.revid });
   // Anchor-rot telemetry (P1): one structured line per cache-miss render,
@@ -298,11 +298,12 @@ function validateAnnotations(
   annJson: string,
   context?: SourceContext,
 ): Response | null {
-  // Payload caps first (cheap, bounds the work below).
+  // Payload caps first (cheap, bounds the work below). Native records are
+  // validated once, with their article's source context, on the final array.
   if (annJson.length > MAX_ANNOTATIONS_BYTES || annotations.length > MAX_ANNOTATIONS) {
     return c.json({ ok: false, error: "payload too large" }, 413);
   }
-  if (annotations.some(isNativeItem)) {
+  if (context && annotations.some(isNativeItem)) {
     const problems = validateNativeItems(annotations, context);
     if (problems.length) return c.json({ ok: false, error: "invalid native annotations", problems: problems.slice(0, 20) }, 400);
   }
@@ -522,8 +523,8 @@ async function runGuardedArticleBatch(
         error: "stale",
         version: fresh ? fresh.version : fallback.version,
         annotations: (await getUser(c))?.role === "bot"
-          ? strictJsonParse(fresh ? fresh.annotations : fallback.annotations)
-          : editorItems(strictJsonParse(fresh ? fresh.annotations : fallback.annotations) as AnnRecord[]),
+          ? JSON.parse(fresh ? fresh.annotations : fallback.annotations)
+          : editorItems(JSON.parse(fresh ? fresh.annotations : fallback.annotations) as AnnRecord[]),
       },
       409,
     );
@@ -1260,8 +1261,8 @@ app.get("/:slug/diff/:fromId/:toId", async (c) => {
   let fromArr: unknown;
   let toArr: unknown;
   try {
-    fromArr = strictJsonParse(from.annotations);
-    toArr = strictJsonParse(to.annotations);
+    fromArr = JSON.parse(from.annotations);
+    toArr = JSON.parse(to.annotations);
   } catch {
     return c.text("corrupt revision", 400);
   }
@@ -1292,7 +1293,7 @@ app.get("/api/article/:slug{.+\\.json}", async (c) => {
   const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
   if (!row) return c.json({ ok: false, error: "unknown slug" }, 404);
   const user = await getUser(c);
-  const annotations = strictJsonParse(row.annotations) as unknown[];
+  const annotations = JSON.parse(row.annotations) as unknown[];
   const full = user?.role === "bot";
   return c.json({
     slug: row.slug,
@@ -1331,7 +1332,7 @@ app.put("/api/article/:slug", async (c) => {
     meta?: unknown;
   };
   try {
-    posted = strictJsonParse(await c.req.text()) as typeof posted;
+    posted = await c.req.json();
   } catch {
     return c.json({ ok: false, error: "bad json" }, 400);
   }
@@ -1491,7 +1492,7 @@ app.post("/api/article/:slug", async (c) => {
     proposal_id?: unknown;
   };
   try {
-    posted = strictJsonParse(await c.req.text()) as typeof posted;
+    posted = await c.req.json();
   } catch {
     return c.json({ ok: false, error: "bad json" }, 400);
   }
@@ -1570,9 +1571,9 @@ app.post("/api/article/:slug", async (c) => {
       // approve_proposal — mutates the annotation, so CAS on version.
       if (typeof posted.base_version !== "number") return c.json({ ok: false, error: "base_version required" }, 400);
       if (posted.base_version !== row.version) {
-        return c.json({ error: "stale", version: row.version, annotations: isBot ? strictJsonParse(row.annotations) : editorItems(strictJsonParse(row.annotations) as AnnRecord[]) }, 409);
+        return c.json({ error: "stale", version: row.version, annotations: isBot ? JSON.parse(row.annotations) : editorItems(JSON.parse(row.annotations) as AnnRecord[]) }, 409);
       }
-      const stored = strictJsonParse(row.annotations) as AnnRecord[];
+      const stored = JSON.parse(row.annotations) as AnnRecord[];
       // A tombstoned target is as dead as a missing one: a `rejected`
       // annotation is a human veto, and approving a pre-tombstone proposal
       // would resurrect it (flip rejected → formalized). Same rule as
@@ -1720,11 +1721,11 @@ app.post("/api/article/:slug", async (c) => {
     }
     if (posted.base_version !== row.version) {
       return c.json(
-        { error: "stale", version: row.version, annotations: isBot ? strictJsonParse(row.annotations) : editorItems(strictJsonParse(row.annotations) as AnnRecord[]) },
+        { error: "stale", version: row.version, annotations: isBot ? JSON.parse(row.annotations) : editorItems(JSON.parse(row.annotations) as AnnRecord[]) },
         409,
       );
     }
-    const stored = strictJsonParse(row.annotations) as AnnRecord[];
+    const stored = JSON.parse(row.annotations) as AnnRecord[];
     const idx = stored.findIndex((a) => a.id === annotationId);
     if (idx === -1) return c.json({ error: "annotation not found" }, 404);
     const priorProvenance = stored[idx].provenance ?? null;
@@ -1794,7 +1795,7 @@ app.post("/api/article/:slug", async (c) => {
   const postedJson = JSON.stringify(posted.annotations);
   const validationErr = validateAnnotations(c, posted.annotations, postedJson);
   if (validationErr) return validationErr;
-  const postedAnnotations = restorePrivateMetadata(strictJsonParse(row.annotations) as AnnRecord[], posted.annotations as AnnRecord[]);
+  const postedAnnotations = restorePrivateMetadata(JSON.parse(row.annotations) as AnnRecord[], posted.annotations as AnnRecord[]);
   if (row.schemaVersion === NATIVE_SCHEMA_VERSION) {
     if (posted.annotations.some(a => !isNativeItem(a))) return c.json({ ok: false, error: "native article requires native work items" }, 400);
   } else if (posted.annotations.some(isNativeItem) || posted.schema_version === NATIVE_SCHEMA_VERSION) {
@@ -1806,11 +1807,6 @@ app.post("/api/article/:slug", async (c) => {
   // attach run metadata for the revision log.
   let postedRevid: number | null = null;
   let metaJson: string | null = null;
-  if (!isBot && row.schemaVersion === NATIVE_SCHEMA_VERSION && posted.revid !== undefined) {
-    if (!["patroller", "admin"].includes(user.role)) return c.json({ ok: false, error: "source revision changes require a moderator" }, 403);
-    if (typeof posted.base_version !== "number" || !Number.isSafeInteger(posted.revid) || Number(posted.revid) <= 0) return c.json({ ok: false, error: "source revision change requires revid and base_version" }, 400);
-    postedRevid = posted.revid as number;
-  }
   if (isBot) {
     if (typeof posted.base_version !== "number") {
       return c.json({ ok: false, error: "base_version required for pipeline writes" }, 400);
@@ -1836,16 +1832,12 @@ app.post("/api/article/:slug", async (c) => {
   // session saves only — bearer writes were required to send it above).
   if (typeof posted.base_version === "number" && posted.base_version !== row.version) {
     return c.json(
-      { error: "stale", version: row.version, annotations: isBot ? strictJsonParse(row.annotations) : editorItems(strictJsonParse(row.annotations) as AnnRecord[]) },
+      { error: "stale", version: row.version, annotations: isBot ? JSON.parse(row.annotations) : editorItems(JSON.parse(row.annotations) as AnnRecord[]) },
       409,
     );
   }
 
-  if (row.schemaVersion === NATIVE_SCHEMA_VERSION) {
-    const errors = validateNativeItems(postedAnnotations, { wikipediaTitle: row.wikipediaTitle, revid: postedRevid ?? row.revid });
-    if (errors.length) return c.json({ ok: false, error: "invalid native annotations", problems: errors.slice(0, 20) }, 400);
-  }
-  const stored = strictJsonParse(row.annotations) as AnnRecord[];
+  const stored = JSON.parse(row.annotations) as AnnRecord[];
   let finalAnnotations: AnnRecord[];
   if (isBot) {
     // Human-preservation assertion (server-side _preserve_human twin): a bot
@@ -2181,22 +2173,18 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
   // a malformed historical row can't be re-promoted to current.
   let revAnnotations: unknown;
   try {
-    revAnnotations = strictJsonParse(rev.annotations);
+    revAnnotations = JSON.parse(rev.annotations);
   } catch {
     return c.json({ ok: false, error: "corrupt revision" }, 400);
   }
   if (!Array.isArray(revAnnotations)) return c.json({ ok: false, error: "corrupt revision" }, 400);
-  const nativeRestore = row.schemaVersion === NATIVE_SCHEMA_VERSION || rev.schemaVersion === NATIVE_SCHEMA_VERSION;
-  if (nativeRestore && rev.sourceRevid === null) {
-    return c.json({ ok: false, error: "historical source revision is unknown" }, 409);
+  // Old history keeps a NULL source pin and legacy items by design; a native
+  // article restores only snapshots that know their source revision.
+  if (row.schemaVersion === NATIVE_SCHEMA_VERSION && (rev.sourceRevid === null || (revAnnotations as AnnRecord[]).some(a => !isNativeItem(a)))) {
+    return c.json({ ok: false, error: "historical snapshot predates native storage" }, 409);
   }
   const restoreRevid = rev.sourceRevid ?? row.revid;
-  const restoreSchemaVersion = nativeRestore ? NATIVE_SCHEMA_VERSION : (rev.schemaVersion ?? row.schemaVersion);
-  if (nativeRestore && (revAnnotations as AnnRecord[]).some(a => !isNativeItem(a))) {
-    try {
-      revAnnotations = migrateLegacyItems(revAnnotations as AnnRecord[], { wikipediaTitle: row.wikipediaTitle, revid: restoreRevid }).items;
-    } catch (error) { return c.json({ ok: false, error: "historical snapshot cannot be migrated", detail: String(error) }, 409); }
-  }
+  const restoreSchemaVersion = row.schemaVersion;
   const restoreJson = JSON.stringify(revAnnotations);
   const revValidationErr = validateAnnotations(c, revAnnotations as unknown[], restoreJson, { wikipediaTitle: row.wikipediaTitle, revid: restoreRevid });
   if (revValidationErr) return revValidationErr;
@@ -2235,7 +2223,7 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
     // differ — they can't key an event row.
     ...eventInsertStatements(
       db,
-      eventRowsFromChanges(diffAnnotations(strictJsonParse(row.annotations) as AnnRecord[], revAnnotations as AnnRecord[]), {
+      eventRowsFromChanges(diffAnnotations(JSON.parse(row.annotations) as AnnRecord[], revAnnotations as AnnRecord[]), {
         revisionId: newRevisionId(slug),
         slug,
         actorType: "human",
@@ -2385,7 +2373,7 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
       const below = revs.filter((r) => r.id < earliest);
       preRev = below.length > 0 ? below[below.length - 1] : undefined;
     }
-    let preAnnotations: AnnRecord[] = preRev ? (strictJsonParse(preRev.annotations) as AnnRecord[]) : [];
+    const preAnnotations: AnnRecord[] = preRev ? (JSON.parse(preRev.annotations) as AnnRecord[]) : [];
 
     // Current article state (for CAS + the by-id event diff).
     const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
@@ -2396,17 +2384,12 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
       skipped.push({ slug, reason: "conflict" });
       continue;
     }
-    const current = strictJsonParse(row.annotations) as AnnRecord[];
-    const nativeRestore = row.schemaVersion === NATIVE_SCHEMA_VERSION || preRev?.schemaVersion === NATIVE_SCHEMA_VERSION;
-    if (nativeRestore && preRev && preRev.sourceRevid === null) {
+    const current = JSON.parse(row.annotations) as AnnRecord[];
+    if (row.schemaVersion === NATIVE_SCHEMA_VERSION && preRev && (preRev.sourceRevid === null || preAnnotations.some(a => !isNativeItem(a)))) {
       skipped.push({ slug, reason: "unknown-source-revision" }); continue;
     }
     const restoreRevid = preRev?.sourceRevid ?? row.revid;
-    const restoreSchemaVersion = nativeRestore ? NATIVE_SCHEMA_VERSION : (preRev?.schemaVersion ?? row.schemaVersion);
-    if (nativeRestore && preAnnotations.some(a => !isNativeItem(a))) {
-      try { preAnnotations = migrateLegacyItems(preAnnotations, { wikipediaTitle: row.wikipediaTitle, revid: restoreRevid }).items; }
-      catch { skipped.push({ slug, reason: "invalid-historical-snapshot" }); continue; }
-    }
+    const restoreSchemaVersion = row.schemaVersion;
     const preAnnJson = JSON.stringify(preAnnotations);
     if (validateAnnotations(c, preAnnotations, preAnnJson, { wikipediaTitle: row.wikipediaTitle, revid: restoreRevid })) {
       skipped.push({ slug, reason: "invalid-historical-snapshot" }); continue;
@@ -2994,7 +2977,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   if (!row) return c.notFound();
   const base = await renderArticleBase(c.env, row);
   const user = await getUser(c);
-  const annotations = strictJsonParse(row.annotations) as Annotation[];
+  const annotations = JSON.parse(row.annotations) as Annotation[];
   // P3: look up the viewer's watch state for this slug so the ★ Watch toggle
   // renders with the correct initial state (no client roundtrip on first paint).
   let isWatching = false;

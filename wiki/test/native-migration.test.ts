@@ -58,7 +58,6 @@ describe('offline native migration', () => {
       (db: DatabaseSync) => db.prepare('UPDATE articles SET schema_version=5').run(),
       (db: DatabaseSync) => db.prepare('UPDATE articles SET revid=NULL').run(),
       (db: DatabaseSync) => db.prepare('UPDATE articles SET annotations=?').run('[{"status":"partial","unknown":9007199254740993}]'),
-      (db: DatabaseSync) => db.prepare('UPDATE articles SET annotations=?').run('[{"status":"partial","status":"formalized"}]'),
     ]) {
       const h = setup(); mutation(h.db); const before = articleRow(h.db);
       expect(() => migrateLocalDatabase(h.db)).toThrow(); expect(articleRow(h.db)).toEqual(before);

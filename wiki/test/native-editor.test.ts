@@ -6,7 +6,7 @@ const sandbox: Record<string,any> = { URL };
 vm.runInNewContext(source.split('// ---- editor runtime ----')[0], sandbox);
 const model=sandbox.createCompanionEditorModel();
 const sourceUri='https://en.wikipedia.org/w/index.php?title=Test&oldid=1';
-const base=()=>({id:'aaaaaaaaaaaa',status:'partial',links:[{id:'first',base_uri:'https://example.net/shards/a.json',annotation:{source:{type:'pdf',uri:'../paper.pdf',extensions:{sourceApp:[42]}},target:'../formal.html#One',location:{page:2,rect:[0,0,0.5,0.5]},id:'external-id',extensions:{opaque:{a:['kept',null,true]}}}},{id:'second',annotation:{source:{type:'generic',uri:sourceUri},target:'urn:two',location:{profile:'urn:wikilean:anchor:v3',anchor:{section:'(lead)',snippet:'sample',extra:'kept'},custom:{color:'blue'}}}}],unlinked:[{source:{type:'html',uri:'https://example.net/article'},location:{css:'#theorem'}}],legacy:{original:'private'},review:{decision:'retained'}});
+const base=()=>({id:'aaaaaaaaaaaa',status:'partial',links:[{id:'first',base_uri:'https://example.net/shards/a.json',annotation:{source:{type:'pdf',uri:'../paper.pdf',extensions:{sourceApp:[42]}},target:'../formal.html#One',location:{page:2,rect:[0,0,0.5,0.5]},id:'external-id',extensions:{opaque:{a:['kept',null,true]}}}},{id:'second',annotation:{source:{type:'html',uri:sourceUri},target:'urn:two',location:{profile:'urn:wikilean:anchor:v3',anchor:{section:'(lead)',snippet:'sample',extra:'kept'},custom:{color:'blue'}}}}],unlinked:[{source:{type:'html',uri:'https://example.net/article'},location:{css:'#theorem'}}],legacy:{original:'private'},review:{decision:'retained'}});
 let id=0; const newId=()=>String(++id);
 describe('native editor preservation',()=>{
   it('round-trips unedited records and preserves extensions, bases, IDs and unrelated links on target edits',()=>{
@@ -34,12 +34,12 @@ describe('native editor preservation',()=>{
     expect(after.links[0].annotation.extensions).toEqual(base().links[0].annotation.extensions);
     expect(after.links[1]).toEqual(base().links[1]); expect(after.unlinked).toEqual(base().unlinked);
   });
-  it('edits anchors on html sources and on generic ones written before the profile form',()=>{
-    for(const type of ['html','generic']){
-      const item={links:[],unlinked:[{source:{type,uri:sourceUri},location:{profile:'urn:wikilean:anchor:v3',anchor:{snippet:'old'}}}]};
-      expect(model.anchor(model.entries(item)[0],sourceUri)).toEqual({snippet:'old'});
-      expect(model.edit(item,'unlinked:0',{anchor:{snippet:'new'}},newId).item.unlinked[0].location.anchor).toEqual({snippet:'new'});
-    }
+  it('edits anchors on html sources only',()=>{
+    const item={links:[],unlinked:[{source:{type:'html',uri:sourceUri},location:{profile:'urn:wikilean:anchor:v3',anchor:{snippet:'old'}}}]};
+    expect(model.anchor(model.entries(item)[0],sourceUri)).toEqual({snippet:'old'});
+    expect(model.edit(item,'unlinked:0',{anchor:{snippet:'new'}},newId).item.unlinked[0].location.anchor).toEqual({snippet:'new'});
+    const generic={links:[],unlinked:[{source:{type:'generic',uri:sourceUri},location:{profile:'urn:wikilean:anchor:v3',anchor:{snippet:'old'}}}]};
+    expect(model.anchor(model.entries(generic)[0],sourceUri)).toBeNull();
   });
   it('preserves unknown selector details on ordinary range edits',()=>{
     const after=model.edit(base(),'link:second',{anchor:{section:'New',snippet:'text'}},newId).item;

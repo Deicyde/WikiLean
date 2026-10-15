@@ -71,50 +71,6 @@ export function mathlibTarget(module: string, decl: string): LinkTarget {
   };
 }
 
-/** Strict transport decoding before schema checks. JSON.parse alone silently
- * discards duplicate members and rounds oversized integer tokens. This scanner
- * uses JSON.parse for grammar/string decoding, not a second annotation schema. */
-export function strictJsonParse(text: string): unknown {
-  const parsed: unknown = JSON.parse(text);
-  let at = 0;
-  const whitespace = () => { while (at < text.length && /[\t\n\r ]/.test(text[at])) at++; };
-  const string = (): string => {
-    const start = at++;
-    while (at < text.length) {
-      if (text[at] === '\\') { at += 2; continue; }
-      if (text[at++] === '"') return JSON.parse(text.slice(start, at)) as string;
-    }
-    throw new Error('unterminated JSON string');
-  };
-  const value = (): void => {
-    whitespace();
-    if (text[at] === '{') {
-      at++; whitespace(); const keys = new Set<string>();
-      if (text[at] === '}') { at++; return; }
-      while (at < text.length) {
-        whitespace(); const key = string();
-        if (keys.has(key)) throw new Error(`duplicate JSON member ${JSON.stringify(key)}`);
-        keys.add(key); whitespace(); at++; value(); whitespace();
-        if (text[at++] === '}') return;
-      }
-    } else if (text[at] === '[') {
-      at++; whitespace(); if (text[at] === ']') { at++; return; }
-      while (at < text.length) { value(); whitespace(); if (text[at++] === ']') return; }
-    } else if (text[at] === '"') { string(); }
-    else {
-      const start = at;
-      while (at < text.length && !/[\t\n\r ,}\]]/.test(text[at])) at++;
-      const token = text.slice(start, at);
-      if (/^-?\d/.test(token)) {
-        if (!Number.isFinite(Number(token))) throw new Error('nonfinite JSON number');
-        if (/^-?\d+$/.test(token) && (BigInt(token) > 9007199254740991n || BigInt(token) < -9007199254740991n)) throw new Error('integer exceeds lossless JavaScript storage range');
-      }
-    }
-  };
-  value();
-  return parsed;
-}
-
 // Native matching uses the entire first occurrence, not legacy snippet heuristics.
 // Python site/native_annotations.py uses this same code-point key ordering.
 function compareKeys(a: string, b: string): number {
@@ -189,10 +145,9 @@ export function legacyAnchorOccurrences(item: JsonObject, context?: SourceContex
   const occurrences = [...item.links.map(link => ({ ...link.annotation, base_uri: link.base_uri })), ...item.unlinked];
   return occurrences.map(occurrence => {
     if (!sourceMatches(occurrence.source, context, occurrence.base_uri)) return null;
-    if (!('location' in occurrence) && ['html', 'generic'].includes(occurrence.source.type)) return { type: 'whole_resource' };
+    if (!('location' in occurrence) && occurrence.source.type === 'html') return { type: 'whole_resource' };
     const loc = occurrence.location;
-    // Written as html since the profile form exists; generic records predate it.
-    if (!['html', 'generic'].includes(occurrence.source.type) || !isObject(loc)) return null;
+    if (occurrence.source.type !== 'html' || !isObject(loc)) return null;
     if (loc.profile === ANCHOR_PROFILE && isObject(loc.anchor)) return wellFormedAnchor(loc.anchor);
     if ('profile' in loc) return null;
     // A built-in Literature Links location. WikiLean's own records keep the
