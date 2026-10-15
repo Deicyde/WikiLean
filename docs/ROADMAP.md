@@ -4,6 +4,76 @@
 > agents + 2 adversarial verifiers, cross-checked against the codebase). Update statuses
 > as work lands; do not re-litigate the binding decisions below without new evidence.
 
+## Waiting on Jack (updated 2026-10-13)
+
+Decisions only. Each lists its evidence and the options on the table, with no
+recommendation. Remove an item once its decision is recorded below.
+
+1. **P1C: release B and the rollback drill.** All P1C items after release A are unchecked.
+   Release B is a new build at current `main`; PR #45 puts that chain at about 5.5 hours.
+   Because current `main` is not release-neutral relative to `2eb31baa` (it changed
+   `brain/tools/semantic_diff.py` and `reproducibility_gate.py`), release A also cannot be
+   re-promoted from it after a rollback; roll-forward would use `wrangler rollback` to the
+   recorded candidate version. Options: run P1C now, defer it, or drop the drill and rely on
+   the documented manual rollback.
+2. **Public-release source policy for the live manifest.** The last committed record
+   (2026-09-26 queue below) says every private/public source decision is pending. PR #41's
+   approval covered private local replay only. Production has served manifest `fa645b2b…`
+   since 2026-10-04 with no committed public-policy record. Options: run
+   `brain/tools/review_source_policy.py` against it and record the decisions, record an
+   explicit exception, or record where an off-repo approval lives.
+3. **Curation ADR** ([BRAIN-SQLITE-CURATION-DECISION.md](BRAIN-SQLITE-CURATION-DECISION.md),
+   "Status: Proposed", 2026-09-08). Options: accept, revise, or reject.
+4. **Brain scope versus the End goal (open question, not yet asked or recorded).** All 30
+   PRs merged from 2026-08-29 to 2026-10-08 (#16–#45) are Brain or release work, and the End
+   goal below does not mention the Brain. The Bridge report v3.1 (2026-08-18) found that
+   tools beat no tools (+27 ± 14 points grounded typecheck, p=0.0004) while the preregistered
+   factorial's join effect was null (+3 ± 12 points, p=0.65); it concludes the join's measured
+   value is "verification and routing, not content". Remaining Brain phases: P1C, P0-R
+   residuals, P2B–P2D, P3A–P3D, Phase 4. Options: amend the End goal to make the Brain and
+   agent API a co-equal product, gate Brain P2B–P4 behind written triggers the way the
+   product's "P3 — Deferred" items are gated, or continue the plan as written.
+5. **User acquisition (open question, not yet asked or recorded).** Every one of the 23 human revisions in the 778 article histories
+   (2026-05-29 to 2026-08-06) comes from one account. `/stats` (2026-10-13) shows 0 human
+   events in the last 30 days, 0 endorsements, 0 rejections, and 0 patrolled edits. The
+   roadmap has no outreach item. Options: add an outreach or announcement item (for example
+   to the Lean community or WikiProject Mathematics on Wikidata), or keep the wiki
+   unannounced.
+6. **newtags on or off (mission op 1).** The 03:10 job was committed on 2026-07-03 and has
+   not run as a routine since: `/stats` still shows 7 `new` runs in total (the 2026-08-04
+   token memo calls them one-offs), the last `ai-create` revisions are from 2026-07-03, and
+   the corpus has been 778 articles since 2026-07-08. The memo treats loading the LaunchAgent
+   as an open decision; whether it was ever loaded on the nightly host is not recorded.
+   [token_budget.md](token_budget.md) §3 sizes the backlog drain. Options: load the
+   LaunchAgent at `WIKILEAN_NEWTAGS_LIMIT` (40 in `nightly.env`), run one supervised batch
+   first, or leave it off.
+7. **Review cadence.** `WIKILEAN_REVIEW_LIMIT` is 15/night; token_budget.md §4 computes
+   ≈26/night for 30-day freshness. No AI review revision has posted since 2026-09-17 (status
+   log), so this matters only once reviews post again. Options: 15, ≈26, or another
+   value.
+8. **Worker-only hotfix path.** Under PR #45's rule, Worker source, `wiki/scripts/`,
+   lockfiles and site assets are release-affecting, so any Worker fix (including a cache-key
+   bump or the `/about` copy, which still promises human approval of AI proposals on human
+   annotations) rides a new release, a fresh P1B, and a promotion. No hotfix path is
+   documented. Options: define one, or accept that every Worker change rides a release.
+9. **`annotation_events.actor_type` literal.** AI decisions record `'pipeline'`, not `'ai'`
+    (flagged 2026-08-07; binding decisions above). Options: keep `'pipeline'`, or rebuild the
+    table to allow `'ai'`.
+10. **P2 privacy.** Stop storing better-auth session `ip_address`, and file an IRB exemption
+    before any paper (P2 below). Options: do either or both now, or defer until a paper is
+    planned.
+11. **`WIKILEAN_BRAIN_AGENTS`.** It is 0 in `site/ops/nightly.env` ("OFF until Jack flips
+    it"). Options: enable the propose-only agent team, or keep it off.
+12. **mathlib4 #42608 (`@[wikidata]` batch 7).** Open since 2026-08-10 and labelled
+    `merge-conflict` (last updated 2026-09-28). Upstream contact is human-gated. Options: ask
+    a mathlib maintainer to review once the branch is rebuilt, close it, or wait.
+13. **Wikifunctions.** The verification project moved to `Deicyde/wikifunctions` on
+    2026-07-02 (last push 2026-07-10). The in-repo data pipeline's last change is
+    2026-07-05, and `/wikifunctions` still serves. Options: mark it paused, retire it, or
+    resume it.
+14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
+    flags. Options: triage them now, or let them wait.
+
 ## End goal (verbatim from Jack)
 
 A complete interface mapping Wikipedia statements to their formal implementation in
@@ -139,7 +209,9 @@ never independent semantic writers.
 - [ ] **Phase 1 production activation and rollback drill (P1A–P1C below)** — review one shadow
   result, enable one production release from a clean `main`, measure CDN/isolate
   convergence, deliberately exercise the documented rollback path, and record
-  the observed recovery time before claiming a rollback SLO.
+  the observed recovery time before claiming a rollback SLO. **Release A promoted
+  2026-10-04** ([activation record](BRAIN-ACTIVATION-2026-10-04.md)). Its attempt was
+  reconciled on 2026-10-08; release B and the rollback drill are not done.
 - [x] **SQLite v2 hardening** — landed 2026-08-31. Stable base/projection/release
   identities, distinct logical and raw-file digests, pinned-source/race checks,
   durable atomic publication, persisted planner statistics, indexed bounded
@@ -157,13 +229,35 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
-### Current Brain execution queue (updated 2026-09-26)
+### Current Brain execution queue (updated 2026-10-13)
 
-The current operational checkpoint is
-[`BRAIN-SQLITE-HANDOFF-2026-09-26.md`](BRAIN-SQLITE-HANDOFF-2026-09-26.md), with the
-retained pack/source details in the [September 23 handoff](BRAIN-SQLITE-HANDOFF-2026-09-23.md).
+**Production state (2026-10-13).** Since 2026-10-04 the selector has named release
+`sha256:8305822b…` (manifest `fa645b2b…`, profile `brain-offline-replay-v1`, authority
+`2eb31baa`, offline pack `sha256:294b1fc7…`); the [activation record](BRAIN-ACTIVATION-2026-10-04.md)
+has the full IDs. Most of the 2026-09-26 "immediate queue" below was worked through in PRs
+#35–#43: the inventory landed and the baseline was frozen, the seven-stage legacy baseline ran
+(PR #41: every difference was provenance representation), the private replay gate passed
+(PR #43), and the release was built at `2eb31baa` from a new pack (`294b1fc7…`) and promoted.
+No refresh of the exact-ID private policy decisions is recorded.
+The promoter's canary failed on `/brain` because Cloudflare Web Analytics injects a script into
+`text/html` responses (fixed in PR #44). The attempt was journaled `manual_intervention_required`
+and reconciled on 2026-10-08 (`deployed_reconciled`), so no incomplete attempt blocks the next
+promotion.
+
+**Immediate queue:** (1) copy the remaining journal-only values into the activation record;
+(2) decide P1C (release B is a new build at current `main`); (3) record the public-release source-policy decision
+for the live manifest; (4) decide what produces the next replay release. The nightly still
+freezes the compatibility profile, so the Brain data and its search indexes stay frozen at
+this release's inputs until then.
+
+The paragraphs from here to the P1A heading are the 2026-09-26 record, kept as history; their
+"production selector absent" statements predate the promotion. P1A–P1C below are current.
+
+The 2026-09-26 operational checkpoint is
+[`BRAIN-SQLITE-HANDOFF-2026-09-26.md`](archive/BRAIN-SQLITE-HANDOFF-2026-09-26.md), with the
+retained pack/source details in the [September 23 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md).
 The SQLite stack and PRs #32–#34 merged on 2026-09-21. Earlier handoffs and the
-[review map](BRAIN-SQLITE-PR-REVIEW.md) preserve implementation history; their missing-store,
+[review map](archive/BRAIN-SQLITE-PR-REVIEW.md) preserve implementation history; their missing-store,
 pending-merge, live-process, and quota instructions are no longer the current queue.
 
 The September 26 continuation fixes a publication mismatch: the verified replay
@@ -171,8 +265,8 @@ producer emits `brain-offline-replay-v1`, while public staging previously accept
 only `brain-current-v1`. Staging now validates both profiles with shared Python/TypeScript
 conformance cases, preserves replay bindings and exact manifest bytes, and retains
 the independent full-release verification gates. PR #35's prepared 2,699-file public
-inventory was rehashed and its required payload/index closure rechecked. Production
-still serves the August 28 snapshot; its release selector is absent. Full-corpus
+inventory was rehashed and its required payload/index closure rechecked. On 2026-09-26
+production still served the August 28 snapshot with no release selector. Full-corpus
 execution remains pending storage, final-commit binding, and the recorded source-policy
 and semantic decisions.
 
@@ -214,7 +308,8 @@ The corrected normative preflight passed with zero compilation blockers and an e
 Replay needs additional storage beyond compilation. Source/publication readiness remains false;
 source policies are still restricted.
 
-**Immediate queue:** (1) provide native replay storage headroom: 30 GiB free on the host
+**Immediate queue as of 2026-09-26** (items 1, 2, 4 and 5 done per PRs #35–#43; item 3's new
+pack was used, but no policy refresh is recorded): (1) provide native replay storage headroom: 30 GiB free on the host
 after pack creation and 25 GiB in the guest is the recorded operational allowance;
 (2) review/land the tested code and prepared asset inventory as main commit C, then freeze
 the unchanged non-Brain tree against C; (3) rebind/qualify the runtime and independently
@@ -229,7 +324,7 @@ P1B evidence and P1C activation/rollback remain separate reviewed operations fro
 `main`. No candidate, fixture, index build, merge, or runtime descriptor supplies production
 approval. P2B and later remain blocked on P0-R; Phase 3 follows the reviewed Phase 2 genesis.
 
-#### P1A — exact frozen-release promotion `[IMPLEMENTED 2026-09-02; NOT ACTIVATED]`
+#### P1A — exact frozen-release promotion `[IMPLEMENTED 2026-09-02; USED 2026-10-04]`
 
 - [x] Add `site/ops/brain-promote-release.sh <release-id> --release-root <absolute-path>`,
   where `<release-id>` is the complete `sha256:<64hex>` identity. It must never run
@@ -276,7 +371,14 @@ rollback is not implemented; recovery is manual and independently approved. The 
 `WIKILEAN_BRAIN_DEPLOY=1` nightly path and its deployment code are deleted because it rebuilt
 before deployment.
 
-#### P1B — activation evidence bundle `[TOOLING IMPLEMENTED; PREP; NO PRODUCTION]`
+#### P1B — activation evidence bundle `[BUNDLE STEPS DONE FOR RELEASE A, 2026-10-04]`
+
+At `2eb31baa`, the promoter refuses `--execute` without a verified activation bundle
+(`execution requires --activation-bundle-id …`), so the 2026-10-04 promotion implies the
+bundle steps below ran for release A; those boxes are checked. The promotion does not show
+who authorized the host context or how it was provisioned, so those two boxes stay open
+until the journal is read. The bundle, baseline and dry-run IDs and the approval texts are in
+the operator journal, not in Git (activation record, "Operator must fill").
 
 - [x] Implement `site/ops/brain_activation_ci.py`. It runs the exact `npm ci`,
   `npm run test:ci`, and `PYTHON=<selected> ./scripts/ci-python.sh` gates in the clean
@@ -310,13 +412,13 @@ before deployment.
   same launch context used by the job, including the external retained-dry-run and
   activation-bundle stores and the approved absolute Git/Node/npm/Python executables. Keep
   agents and deploy disabled.
-- [ ] At the reviewed tip, run activation-bundle `freeze` from the clean promotion
+- [x] At the reviewed tip, run activation-bundle `freeze` from the clean promotion
   checkout with the approved Git, Node, npm, and Python executables. The freezer itself
   executes and retains the exact Worker and Python CI evidence; standalone or hand-written
   summaries are not freeze inputs.
-- [ ] Run the shadow nightly in an isolated build worktree/output context so its
+- [x] Run the shadow nightly in an isolated build worktree/output context so its
   timestamp-bearing generated files cannot dirty the clean promotion checkout.
-- [ ] Build all non-Brain Worker assets once (including declaration/suffix/premise indexes
+- [x] Build all non-Brain Worker assets once (including declaration/suffix/premise indexes
   and shell files generated by `site/export_wikidata_rdf.py` followed by
   `site/build_static_pages.py`), render `brain_public_baseline.py attest` into the fixed
   `wiki/public-asset-source-attestation.json`, review and commit that exact inventory, then
@@ -328,10 +430,11 @@ before deployment.
   2026-09-23. An explicit verified D1 membership mode now removes the concepts export's
   dependency on ignored rendered article files. The complete 2,699-file tree and canonical
   attestation are now prepared and independently checked, including an audit of actual
-  public fields and source provenance. Review/landing, the resulting
-  main authority commit, and freeze remain outstanding; preserve every prepared byte.
+  public fields and source provenance. The inventory landed in `ba40b9f6` (PR #35) and is
+  tracked at the release authority `2eb31baa`; the baseline was frozen for release A (ID in
+  the journal; PR #44 cites `sha256:0ee63469…`).
   A bootstrap Brain release is unnecessary for this direct non-Brain assembly.
-- [ ] Freeze or identify a complete trusted semantic pre-activation comparison bundle, and
+- [x] Freeze or identify a complete trusted semantic pre-activation comparison bundle, and
   store the release/store/public metrics plus JSON from this command:
 
   ```bash
@@ -341,18 +444,19 @@ before deployment.
     > <review-bundle>/semantic-diff.json
   ```
 
-  The v2 semantic report must completely compare the seven compatibility paths:
+  The semantic report (`semantic-diff/v3` since PR #45; release A's bundle used v2) must
+  completely compare the seven compatibility paths:
   `nodes.jsonl`, `edges.jsonl`, `edges_links.jsonl`, `cells.jsonl`, `synapses.jsonl`,
   `frontier.jsonl`, and `frontier_graph.json`. The activation bundle separately verifies
   the complete candidate/baseline release manifests, including SQLite and release-coupled
   static artifacts. A sealed `brain/data` comparison is partial supplemental evidence only;
   it cannot satisfy activation-bundle freeze or P0-R semantic parity.
-- [ ] Run the exact promoter through local verification and transport dry-run with
+- [x] Run the exact promoter through local verification and transport dry-run with
   `--retain-dry-run-store`, adding `--allow-first-deploy-without-selector` only while the
   production selector is absent. P1B dry-run forbids a first-deploy approval string. Review
   its proposed intent and retain the referenced content-addressed execution-artifact root
   without invoking a mutating Wrangler command.
-- [ ] Generate the verified two-worktree context, assemble all 11 evidence files, freeze
+- [x] Generate the verified two-worktree context, assemble all 11 evidence files, freeze
   them under `WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE`, and independently run
   `brain_activation_bundle.py verify` with both the expected bundle ID and reviewed prior
   release ID on the resulting immutable bundle.
@@ -361,14 +465,21 @@ before deployment.
 the referenced retained promoter artifacts) are ready, all automated checks pass, and
 production has not changed.
 
-#### P1C — production activation and rollback drill `[JACK GATE]`
+#### P1C — production activation and rollback drill `[JACK GATE; RELEASE A PROMOTED 2026-10-04]`
 
 - [ ] Jack approves the exact release A ID, manifest digest, baseline and activation-bundle
   IDs/roots, exclusive deployment window, journal location, and (only if applicable) the
   first-deploy missing-selector exception. This approval is supplied only at execution,
-  after P1B review, and is fsynced before Wrangler can mutate production.
+  after P1B review, and is fsynced before Wrangler can mutate production. **Pending the
+  journal:** the 2026-10-04 promotion ran, and at `2eb31baa` execution requires a non-empty
+  `--approval-note` and `--first-deploy-approval`, but their text, the window and the journal
+  location are journal items (activation record).
 - [ ] Promote release A through the manual-only recovery path and record end-to-end canary
   convergence. A first compatibility deployment does not by itself prove rollback.
+  **PARTIAL:** release A was promoted on 2026-10-04, but the promoter's canary failed on
+  `/brain` (Web Analytics injection, fixed in PR #44), and no convergence time was recorded.
+  The attempt was reconciled on 2026-10-08: its `final_state` is `deployed_reconciled`, which
+  the promoter records only after the candidate's release canary passes.
 - [ ] Build and review exact release B. Jack separately approves B's exact ID and promotion
   window before it is promoted.
 - [ ] Jack separately approves the rollback action/window; manually roll B back to the
@@ -393,8 +504,9 @@ explicit approval.
   curated Git trees, the complete multi-file reducer DAG, `offline_pack_id`,
   `source_set_root`, and required-versus-absent optional inputs. The v2 document shapes are
   validation-ready and the fixture replay path is implemented. The v2 fixture path remains
-  supported. The first real v3 pack is now compiled and independently verified; full-corpus
-  replay and its pack-bound release remain pending. The v1 compatibility profile remains
+  supported. The first real v3 pack is now compiled and independently verified. A
+  full-corpus replay release (`brain-offline-replay-v1`, pack `294b1fc7…`) has served
+  production since 2026-10-04; this box's remaining items are unchanged. The v1 compatibility profile remains
   available for legacy comparison.
 - [x] **Repair declared input-inventory closure.** Replaced the ineffective Python brace glob
   `catalog/data/external/*_{pages,links}.jsonl` with explicit page/link patterns; added
@@ -457,7 +569,7 @@ explicit approval.
     - [x] Capture and independently verify a fresh canonical production bundle. The
       2026-09-08 read captured 778 articles and zero community edges/nodes; the private
       bundle and receipt/lineage identities are recorded in
-      `BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
+      `docs/archive/BRAIN-SQLITE-CONTINUATION-2026-09-08.md`. It performed no production writes.
     - [x] Bind the retained receipt/lineage and exact normalized annotation/community
       outputs into the complete private candidate source plan on 2026-09-23. The exporter
       preserves original capture evidence and derives sidecars without ambient cache
@@ -690,14 +802,15 @@ explicit approval.
     release, or deployment readiness.
   - [x] Compile and independently verify the first real v3 pack. The September 23 result
     contains 113 sources and 90,410 files totaling 7.408 GB; exact IDs and full SHA/evidence
-    verification are retained in the current handoff and private `full-pack-attempt-02`.
+    verification are retained in the [September 23 handoff](archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md)
+    and private `full-pack-attempt-02`.
   - [ ] Bind the final authority generation's verified `offline_pack_id` and
     `source_set_root` into build-attestation/v2 and release verification.
     Pack-bound release production/verification is implemented in the continuation:
     `brain-offline-replay-v1` hashes the exact replay roots and generation, requires
     build-attestation/v2, and freezes all outputs plus two sealed provenance inputs.
-    The first actual pack exists; the final C-bound generation, full replay, and release
-    remain outstanding.
+    The first actual pack exists. A full replay release built at `2eb31baa` from pack
+    `294b1fc7…` has served production since 2026-10-04 (activation record).
   - [ ] Before repeated full-corpus builds, derive the candidate identity before materializing
     duplicate bytes so a verified same-ID pack can be reused without another full staging
     copy; add a safe shared-CAS/reflink strategy if cross-pack storage pressure warrants it.
@@ -717,8 +830,9 @@ explicit approval.
   readable data input and use a separate writable output mount, then require byte-identical
   JSON/JSONL/static output plus equal base snapshot, projection, semantic, and release IDs.
   `brain/tools/reproducibility_gate.py` owns the two real launcher subprocesses and
-  frozen releases, with no imported-success CLI. Its 26 focused tests pass. Actual
-  full-corpus execution is still required by the completion criteria below.
+  frozen releases, with no imported-success CLI. Its 26 focused tests pass. The private
+  replay gate ran on the full corpus and passed on `bbdd3d38` (PR #43); the completion
+  criteria below are not recorded as signed off.
 - [ ] **Prove compatibility, not only repeatability.** Compare the clean-room result with
   the approved pre-refactor baseline and require zero graph/topology/content changes. Since
   replacing mtime/date pins intentionally changes provenance, require either a documented
@@ -924,7 +1038,7 @@ file ownership) + adversarial integration review + live smoke test.
   against). Secret scan run pre-commit: no values, only env-var name references.
 - [x] **GitHub Actions Node 24 migration** — all official actions across CI, D1 backup,
   and the Wikidata poller are pinned to exact current Node-24 release commits; configured
-  project Node versions are 22. The expanded 87-command Python job has a 45-minute bound,
+  project Node versions are 22. The expanded 90-command Python job has a 45-minute bound,
   while required CI still aggregates only the hermetic Worker and Python gates.
 
 **P0 asset pipeline note:** canonical sources are `site/assets/{script.js,review.css,
@@ -1016,10 +1130,12 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## P2 — Experiment instrumentation + contribution UX
 
-- [ ] **One revisions migration:** kind (edit|revert|seed|contribution|pipeline),
+- [x] **One revisions migration:** kind (edit|revert|seed|contribution|pipeline),
   meta TEXT (run_id, model, tokens, cost, mathlib_sha, auth_mode), parent_id, run_id.
   Backfill (comment LIKE 'revert to #%' → revert; user_id IS NULL → seed) BEFORE
-  first bearer write.
+  first bearer write. DONE 2026-06-10 in `wiki/migrations/0004_p1_loop.sql`: `kind`,
+  `meta` (which carries `run_id`) and `parent_id`, plus both backfills (949 seed / 15 edit
+  verified; status log, 2026-06-10).
 - [x] **annotation_events table** — DONE 2026-06-12 (Wave D, migration 0005).
   Field-level diffs by annotation id on every write path; event types add|modify|
   delete|endorse|reject|revert_restore; actor session-vs-bearer. Endorse is now an
@@ -1059,8 +1175,12 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   (__WL_MATCHED__ distinguishes true rot from overlap-suppressed highlights —
   the latter get truthful copy and NO Re-anchor). REMAINING: in-place body swap
   (deliberate refactor with initAnnotations(), NOT a line item).
-- [ ] **Propose-then-approve: AI may propose updates to human annotations** —
-  designed in [propose-then-approve.md](propose-then-approve.md), awaiting Jack's
+- [x] **Propose-then-approve: AI may propose updates to human annotations**: LIVE
+  2026-08-06 ([propose-then-approve.md](propose-then-approve.md): `/proposals` queue and
+  inline editor surface). The human-approval gate was then superseded by the
+  Human-at-boundaries policy (binding decisions above; built 2026-08-07): the nightly
+  auto-decides proposals. Original design note follows. Designed in
+  [propose-then-approve.md](propose-then-approve.md), awaiting Jack's
   UX pick (§5) before build. Foundation already exists (dormant
   `moderation_state.proposal` column + F14 `moderation_flag` harvest + `endorse`
   template); the agent never mutates a human annotation — it proposes, Jack
@@ -1130,6 +1250,60 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-10-13: **Mission operations audit.** A scan of all 778 `/<slug>/history` pages (4,302
+  revisions) puts the newest `ai-moderate:review` revision at **2026-09-17 09:05 UTC**
+  (Generalized_hypergeometric_function). Stage-0 `wp-update` re-pins keep posting through
+  2026-10-13, so the nightly runs, but no review has changed an article since 2026-09-17. The
+  review step itself still runs, but it has failed on every article since
+  2026-09-18, so no review tokens have been spent since. Review
+  revisions by month: June 256, July 187, August 284, September 144, October 0. **newtags has
+  not run as a routine:** the 03:10 job was committed on 2026-07-03, `/stats` still shows 7
+  `new` runs (355 articles, 302 errors), the 55 `ai-create` revisions span 2026-06-17 to
+  2026-07-03, and every article's first revision is on or before 2026-07-08 (778 articles
+  since). Every one of the 23 human revisions is from one
+  account. `/stats` on 2026-10-13: 778 articles, 37,936 annotations (27.9% formalized, 14.1%
+  partial), 198 review-fresh (≤30 d; this count includes stage-0 re-pin saves), 457 drifted.
+
+- 2026-10-08: **Canary fix, attempt reconciled, release-neutral merges (PRs #44, #45).** #44: the canary no
+  longer advertises `text/html`, and the patched canary passed read-only against production
+  (ok on attempt 1, 40 requests, 12 s). #45: the promoter and bundle freezer accept a clean
+  `main` past a release's authority commit when every changed path is release-neutral
+  (`site/ops/brain_release_authority.py`). Pin-only edge changes aggregate in
+  `semantic-diff/v3` (28.8 MB instead of 668 MB). #45's own `brain/tools` changes make current
+  `main` non-neutral relative to the live release. Between the two merges, the 2026-10-04
+  attempt was reconciled: the deployment journal's `final_state` at 06:58:30Z has outcome
+  `deployed_reconciled` (Worker deployment `499ba4bf…`, version `63b11a7e…`), so no
+  incomplete attempt blocks promotion.
+
+- 2026-10-04: **First production Brain release promoted.** The selector names release
+  `sha256:8305822b…` (manifest `fa645b2b…`, `brain-offline-replay-v1`, authority `2eb31baa` =
+  PR #43, offline pack `sha256:294b1fc7…`), `audited_at` 17:25:04Z. The promoter's canary failed
+  for 300 s on `/brain`: production served the frozen page plus 367 bytes, because Cloudflare
+  Web Analytics injects a beacon script into responses for requests whose `Accept` includes
+  `text/html`. Attempt `20261004T172504Z-8305822b0083-27c7c461cb` was journaled
+  `manual_intervention_required` (reconciled 2026-10-08; see that entry). The selector has no
+  previous release. Preceded by Jack's acceptance of refreshed
+  tool generations (2026-10-02, PRs #38/#39) and the private-scope provenance exception
+  (2026-10-03, PR #41). Record: [BRAIN-ACTIVATION-2026-10-04.md](BRAIN-ACTIVATION-2026-10-04.md).
+
+- 2026-09-21: **Brain SQLite and immutable-release stack merged.** PRs #17–#34 merged on
+  one day (the authority Phase 0 contracts had landed in #16 on 2026-08-29). PR #35
+  (2026-09-26) added the verified migration pack preparation and replay-profile staging.
+  Production was unchanged until 2026-10-04.
+
+- 2026-08-24: **Site review fixes, PR CI, bot batch-7 recovery.** PR #6 fixed review
+  security and consistency findings, serialized concurrent proposal decisions, and guarded
+  bot proposal-queue reconciliation. PR #7 added hermetic pull-request validation CI. The bot
+  recovered batch 7 from a clobber (2e094298) and made its last poll-state commit
+  (a99ec678). This is the last non-Brain Worker source change.
+
+- 2026-08-18: **Bridge report v3.1: the preregistered factorial.** The 2×2 factorial
+  (join × verifier, 400 interleaved capped runs) found both main effects null: **join +3 ± 12
+  points, p=0.65**; verifier +5 ± 8 points, p=0.23 (95% confidence). Tools beat no tools
+  (+27 ± 14 points grounded typecheck, p=0.0004), but between tool packages nothing favors
+  the join; the report concludes the join's measured value is "verification and routing, not
+  content" ([BRIDGE-REPORT.md](research/BRIDGE-REPORT.md) §4.4).
 
 - 2026-08-06 — **Decl-existence sweep applied to production; first proposals
   filed.** Three-agent adjudication of all 337 missing decls (321 renames — 261

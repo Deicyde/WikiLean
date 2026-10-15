@@ -177,17 +177,21 @@ def classify_failure_mode(note, suggested_qid, suggested_decl, orig_decl):
 
 def harvest(pr, repo=REPO):
     """Return a list of correction records for the PR (no I/O)."""
+    maint = set(settle.MAINTAINERS)
     records = []
     for c in settle.gh_list(repo, f"issues/{pr}/comments"):
         login = (c.get("user") or {}).get("login", "")
+        assoc = c.get("author_association")
         body = c.get("body", "") or ""
         if login in settle.BOTS:
             continue
         if "## WikiLean review" not in body and not re.search(r"##\s*WikiLean review", body):
             continue
 
-        # Maintainer only if on settle's explicit list (not GitHub's association).
-        is_maint = settle.is_maintainer(login)
+        # Maintainer if org-role association OR on the allowlist.
+        is_maint = (assoc in settle.ORG_ROLES) or (login in settle.MAINTAINERS)
+        if is_maint:
+            maint.add(login)
 
         per_qid = settle.parse_pasted(body)     # {qid: {status, note}}
         line_meta = parse_line_meta(body)       # {qid: {label, file}}

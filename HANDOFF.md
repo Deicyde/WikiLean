@@ -15,20 +15,23 @@
    session opens from real current state instead of a stale doc. Add `--live` for site-200 +
    bot-gate checks.
 
-3. **The memory system** —
-   `~/.claude/projects/-Users-jackmccarthy-projects-WikiLean/memory/`.
-   `MEMORY.md` is the index (loaded each session); the individual notes hold the evolving
-   operational detail — pipeline internals, deploy setup, the `/review` tool, the Wikidata
-   property proposal, the `manage/` control plane, and Jack's working preferences.
+3. **Evolving facts live in `docs/`**: the `docs/ROADMAP.md` status log and its "Waiting on
+   Jack" list, `docs/BRAIN-ACTIVATION-2026-10-04.md` for production Brain state, and the
+   Brain checkpoint named by `docs/BRAIN-SQLITE-HANDOFF.md`. Agent memory
+   (`~/.claude/projects/<checkout-path>/memory/`) is per-host and may hold few or no notes on
+   a given machine, so treat it as a cache, not a source of truth. Deploy setup is in
+   `docs/BRAIN-RELEASE-RUNBOOK.md`; the Wikidata property is P14534
+   (`docs/wikidata_property_proposal.md`).
 
 4. **`docs/ROADMAP.md`** — the canonical plan (phases, binding decisions, status log). Read
-   before proposing what to build next. For the current Brain/SQLite branch state and exact
-   continuation commands, also read `docs/BRAIN-SQLITE-HANDOFF.md`. Companion:
-   `docs/research-plan.md` (RQ1–RQ8).
+   before proposing what to build next. For production Brain state read
+   `docs/BRAIN-ACTIVATION-2026-10-04.md`; for the Brain/SQLite checkpoint history,
+   `docs/BRAIN-SQLITE-HANDOFF.md`. Companion: `docs/research-plan.md` (RQ1–RQ8).
 
-**Why the split:** live state → `status.py`, evolving facts → memory, durable conventions →
-`CLAUDE.md`, the plan → `ROADMAP.md`, and the operational loop runs itself (nightly launchd +
-bot Actions). No single conversation or hand-maintained doc is load-bearing anymore.
+**Why the split:** live state → `status.py` and the live site, evolving facts → `docs/`,
+durable conventions → `CLAUDE.md`, the plan → `ROADMAP.md`. The operational loop runs on
+launchd on one operator Mac plus the bot's GitHub Actions. Confirm it is actually producing
+work (the `/stats` pipeline-run rows, recent article history) rather than assuming it is.
 
 *The pre-split deep version of this file is in git history (`git log -- HANDOFF.md`) if ever
 needed.*

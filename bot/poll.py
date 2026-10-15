@@ -4,8 +4,7 @@
 Each tick looks at the current batch PR's GitHub state and acts on it:
   - MERGED                         -> open the next batch (open_batch.py)
   - OPEN + settle gate met         -> trim to greens + triage/queue the rest
-    (>=2 reviewers besides the author,   + post the reviewer table + ready comment
-     incl >=1 listed maintainer)
+    (>=2 reviewers incl >=1 maintainer)   + post the reviewer table + ready comment
   - CLOSED, not merged             -> halt: exit non-zero for a human
   - otherwise                      -> wait (nothing to do)
 A failed GitHub read in decide()/tick() (bad token, error body, empty answer) exits
@@ -91,7 +90,7 @@ def do_settle(pr, branch, mathlib, cls, dry):
     sh([sys.executable, str(HERE / "resolve_concepts.py")])   # fill QIDs the note named but didn't number
     sh([sys.executable, str(HERE / "apply_corrections.py")])
     # The tag table IS the trim/ready notice: ONE idempotent comment carrying the
-    # green-only table + the ready-to-merge + recycled summary, rather than a
+    # green-only table + the ready-for-review header + recycled summary, rather than a
     # separate bare line (template: the trim comment on #40682).
     header = settle.ready_header(cls)
     sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--header", header,
@@ -143,7 +142,7 @@ def master_tip():
 
 def resolve_conflicts(pr, branch, mathlib, dry):
     """Auto-resolve a settled PR that CONFLICTS with master: RE-DERIVE the branch off
-    FRESH master and re-apply the tags it carries, then force-push. @[wikidata] tags are
+    FRESH master and re-apply its green tags, then force-push. @[wikidata] tags are
     purely ADDITIVE, so rebuilding on master is conflict-proof — text-merging master in
     (freshen_master) is what kept hitting unresolvable conflicts on doc-attr PRs."""
     cls = settle.classify(pr, REPO)
@@ -158,14 +157,13 @@ def resolve_conflicts(pr, branch, mathlib, dry):
                    f"cannot rebuild without decl/file per green tag; reconstruct it by "
                    f"hand from the PR diff on the bot-state branch, then re-tick.")
     approved = json.loads(apath.read_text())
-    # Rebuild exactly the tags CURRENTLY on the PR (classify's tags, read from its diff),
-    # not approved minus recycled, which would re-add trimmed tags, and not the green set:
-    # trimming belongs to the settle (triage, requeue, table), and a tag that recycles
-    # without the gate being met must not silently vanish here. decl/file from approved.
-    green_qids = set(cls["tags"])
+    # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
+    # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
+    # minus recycled, which would wrongly re-add the trimmed tags). decl/file from approved.
+    green_qids = {g["qid"] for g in cls["green"]}
     green = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
              "tags": [t for t in approved["tags"] if t["qid"] in green_qids]}
-    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with the {len(green['tags'])} tags it carries")
+    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with {len(green['tags'])} green tags")
     if dry:
         return
     sh(["git", "-C", str(mathlib), "fetch", "origin", branch], check=True)       # --force-with-lease base

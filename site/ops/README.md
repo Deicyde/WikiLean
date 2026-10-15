@@ -13,7 +13,8 @@ user's login keychain — a cloud cron can't reach it).
   it once on next wake. It runs **flush → wp-update → review**, logs to
   `site/cache/cron/moderate-<ts>.log`, and accepts the documented limit overrides.
 - `newtags-nightly.sh` — NEW-article tagging @ 03:10 (own lock; see the script
-  header).
+  header). It has not run as a routine job: `/stats` still shows 7 `new` runs in total and
+  the last `ai-create` revisions are from 2026-07-03. Loading its plist is Jack's decision.
 - `brain-nightly.sh` — the BRAIN refresh @ 02:20 (see below).
 
 ## Brain nightly (org.wikilean.brain @ 02:20)
@@ -87,13 +88,14 @@ Run the focused nightly shell suite after changing this gate:
 python3 site/ops/test_brain_nightly.py
 ```
 
-P1B activation-review tooling is implemented but has not been run operationally.
+P1B activation-review tooling has run operationally for the 2026-10-04 promotion of
+release `sha256:8305822b…` ([activation record](../../docs/BRAIN-ACTIVATION-2026-10-04.md)).
 Promoter dry-run can retain its exact sealed public/Worker/config inputs and raw read-only
 production probes in an external content-addressed store. `brain_activation_bundle.py
 context|freeze|verify` runs the exact Node 22/Python 3.12 Worker and Python CI gates itself
 with explicit absolute Git/Node/npm/Python tools and no caller `PATH`,
 binds the candidate and semantic-baseline releases, immutable public baseline and source
-attestation, release/shadow metrics, complete seven-path semantic-diff v2 report, promoter
+attestation, release/shadow metrics, complete seven-path semantic-diff v3 report, promoter
 dry-run, two-worktree context, and CI receipt into exactly 11 canonical evidence files in
 the external `WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE`. It freezes a fresh fixed-setting
 SQLite measurement, requires an externally anchored non-self semantic baseline, and
@@ -104,9 +106,11 @@ For an absent production selector, the P1B dry-run records the explicit
 `--allow-first-deploy-without-selector` topology exception but forbids an approval string.
 Jack supplies `--first-deploy-approval` only during P1C execution, after reviewing the
 frozen evidence IDs and deployment window.
-P1A is merged on `main`. Generating the first real bundle remains blocked until Jack
-authorizes the launch-context Mathlib checkout, Wikidata observation plan, interpreter
-paths, and external evidence stores; see the release runbook.
+P1A is merged on `main`. A selector has existed since 2026-10-04, so later promotions omit
+the first-deploy exception. The 2026-10-04 attempt was reconciled on 2026-10-08 (journal
+outcome `deployed_reconciled`), so no incomplete attempt blocks the next promotion. Each new
+bundle still needs Jack to authorize the launch-context Mathlib checkout, Wikidata observation
+plan, interpreter paths, and external evidence stores; see the release runbook.
 
 ## Install the three nightly jobs
 ```sh
