@@ -1,0 +1,19 @@
+-- Scrub flags.ip_hash. Until this release the column held an unsalted sha256
+-- hex of CF-Connecting-IP, which is reversible for IPv4 by enumerating 2^32
+-- addresses. No code path ever read it (the per-target cap counts open flags,
+-- and FLAG_LIMITER keys on the raw IP, which the binding does not persist), so
+-- the Worker now stores NULL and this clears every existing value.
+--
+-- Unconditional and idempotent: safe to run any time, before or after the new
+-- Worker is live, since no Worker version reads the column. Run it (again)
+-- once the new Worker is live, because until then the old Worker keeps
+-- writing the unsalted hash; and again after any rollback to an older Worker
+-- version or a D1 restore to a point before the scrub, for the same reason.
+--
+-- This reaches only the live table. Copies taken before it runs (D1 Time
+-- Travel history, `wrangler d1 export` backups) keep the legacy values until
+-- they expire or are deleted.
+--
+-- NB deploy: remote migration tracking is out of sync — apply remote via
+--   wrangler d1 execute wikilean --remote --file=migrations/0013_flags_ip_hash_scrub.sql
+UPDATE flags SET ip_hash = NULL WHERE ip_hash IS NOT NULL;

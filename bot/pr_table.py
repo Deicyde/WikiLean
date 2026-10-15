@@ -22,7 +22,7 @@ def reviews_cell(verdicts):
         return "—"
     parts = []
     for login, status in verdicts.items():
-        mark = "\\*" if settle.is_maintainer(login) else ""  # maintainer marked with *
+        mark = "\\*" if login in settle.MAINTAINERS else ""  # maintainer marked with *
         parts.append(f"{EMO.get(status, '·')} @{login}{mark}")
     return " · ".join(parts)
 

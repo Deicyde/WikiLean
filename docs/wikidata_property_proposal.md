@@ -1,5 +1,18 @@
 # Wikidata property proposal — "Mathlib declaration"
 
+> **Status: created as [P14534 "Mathlib Declaration ID"](https://www.wikidata.org/wiki/Property:P14534)
+> on 2026-06-17.** The proposal page,
+> [Wikidata:Property proposal/Mathlib declaration ID](https://www.wikidata.org/wiki/Wikidata:Property_proposal/Mathlib_declaration_ID),
+> was created on 2026-06-09 and marked done ("created as P14534") on 2026-06-17 at
+> 21:57 UTC. The live property differs from this draft in its label ("Mathlib Declaration
+> ID"), its formatter URL (P1630), which is the Mathlib docs search
+> `https://leanprover-community.github.io/mathlib4_docs/find/?pattern=$1#doc` rather than the
+> WikiLean `/decl/$1` resolver argued for below, and its format regex (P1793)
+> `[\p{L}_][\p{L}\p{N}_'.!?]*`. **Current numbers (Wikidata Query Service, 2026-10-13):**
+> 115 P14534 statements on 115 items. `bot/export_property_seed.py` writes P14534 statements
+> for the QuickStatements seed. The rest of this file is the pre-submission draft, kept as
+> the record of the design argument.
+
 Draft for *Wikidata:Property proposal/Natural science*. **Modeled directly on
 the accepted [Metamath statement ID (P12888)](https://www.wikidata.org/wiki/Property:P12888)**
 (proposed as "Metamath statement label", created 2024-07-10) — the closest
@@ -10,10 +23,10 @@ the family of math-reference external IDs: ProofWiki ID (P6781), nLab ID
 The field layout below matches the Metamath proposal so it can be pasted into
 the `{{Property proposal}}` template with minimal editing.
 
-> **Pre-submission checklist** (do these before posting on-wiki):
+> **Pre-submission checklist** (historical; the proposal was posted on 2026-06-09):
 > - [ ] **Human-review the seed mappings** — REFRAMED 2026-07-02: the seed batch is
->   now the ~126 tags already **merged into mathlib master** (each passed ≥2 human
->   reviewers incl. a maintainer, plus CI) rather than the 815 AI mappings.
+>   now the ~126 tags already **merged into mathlib master** (each merged into Mathlib
+>   by a maintainer after Mathlib CI) rather than the 815 AI mappings.
 >   Sign-off artifacts (from `bot/export_property_seed.py`):
 >   `bot/data/property_seed.tsv` (126 rows with PR provenance),
 >   `property_seed_quickstatements.csv` (119 ready rows, `PXXXX` placeholder),

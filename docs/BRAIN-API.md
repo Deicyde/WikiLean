@@ -568,11 +568,14 @@ bench **WP arm** (W + `brain_premises`) against the frozen pre-tool W rows.
 
 **Every** Brain API/MCP response carries both `release_id` and `snapshot:
 {generated_at, pin}`. `release_id` is the immutable identity of the complete
-published Brain release; `snapshot` is human-readable provenance from
-`cells/manifest.json` (`_meta.generated_at` plus the Mathlib `pin`). A held-out
-evaluation is dishonest without both. If release selection or immutable
-manifest validation fails, the request returns 503 with `release_id: null` and
-`snapshot: null`. `?rev=` time-travel over archived snapshots comes later.
+published Brain release; `snapshot` copies two values from
+`cells/manifest.json`. `generated_at` and `pin` are opaque provenance values of
+the release's inputs: compare them for equality, never parse them, and do not
+read them as a build time or a Mathlib revision. A held-out evaluation should
+record `release_id`, which identifies the release that answered. If release
+selection or immutable manifest validation fails, the request returns 503 with
+`release_id: null` and `snapshot: null`. `?rev=` time-travel over archived
+snapshots comes later.
 
 ### Related routes
 
