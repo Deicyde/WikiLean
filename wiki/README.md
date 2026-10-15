@@ -148,9 +148,12 @@ Production deploys go only through the exact Brain release promoter,
 `site/ops/brain-promote-release.sh`, following
 [`docs/BRAIN-RELEASE-RUNBOOK.md`](../docs/BRAIN-RELEASE-RUNBOOK.md). Since 2026-10-04 production
 serves an immutable Brain release ([activation record](../docs/BRAIN-ACTIVATION-2026-10-04.md)).
-Do **not** run plain `npm run deploy` (`wrangler deploy`) against production: it uploads the local
-`public/` directory and replaces the live Brain selector and the whole asset tree, without the
-journal or canary. Worker source changes are release-affecting and ship only in a new release.
+`npm run deploy` refuses and points to the promoter. Never run `wrangler deploy` directly: it
+uploads the Worker built from the local `src/` and the whole local `public/` directory outside the
+promoter, replacing the live Brain selector and the whole asset tree without the journal or canary.
+Worker source changes are release-affecting and ship only in a new release. The only emergency
+lever is `wrangler rollback` to a recorded version, per the runbook's "Wrangler rollback" section.
+There is no forward hotfix path; one, if ever wanted, would be a journaled promoter mode.
 
 ```sh
 npm run tail          # follow Worker logs
