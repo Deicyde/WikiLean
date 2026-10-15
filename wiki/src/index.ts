@@ -728,9 +728,8 @@ app.get("/stats", async (c) => {
 
   // AI review passes, counted apart from the stamp above. last_reviewed_at is
   // stamped by EVERY bot save and bot create (AI review, Wikipedia re-pin,
-  // unchanged no-op),
-  // so it cannot show a review outage. A review that changed annotations
-  // leaves a pipeline revision commented `ai-moderate:review:<runId>`
+  // unchanged no-op), so it cannot show a review outage. A review that changed
+  // annotations leaves a pipeline revision commented `ai-moderate:review:<runId>`
   // (site/moderate.py); a review that changed nothing writes no revision and
   // is not counted here. kind='pipeline' keeps session edits, whose comment
   // is free text, out of the count.
@@ -807,8 +806,8 @@ app.get("/stats", async (c) => {
     .groupBy(pipelineRuns.kind)
     .orderBy(pipelineRuns.kind);
 
-  // The last 10 run reports, notes re-redacted (same rows GET /api/runs serves).
-  const recentRuns = (await recentRunRows(db, null, 10)).map((r) => ({ ...r, notes: redactRunNotes(r.notes, c.env) }));
+  // The last 10 run reports (the same rows GET /api/runs serves).
+  const recentRuns = await recentRunRows(db, null, 10);
 
   // Propose-then-approve outcomes (the AI-precision measure): counts by
   // status, acceptance rate, and mean time-to-decision — from the proposals
@@ -2683,40 +2682,9 @@ app.get("/api/work", async (c) => {
 const RUN_ID_RE = /^[0-9a-f]{8}$/;
 const RUN_KINDS = new Set(["review", "wp-update", "new", "all"]);
 
-// Run notes are runner-sanitized (tokens, emails, home paths, control bytes)
-// before POST, and they become public through GET /api/runs and /stats, so
-// they are re-redacted here as defense in depth and capped at MAX_TEXT_LEN:
-// the Worker's own secrets verbatim, auth-scheme credentials, known token
-// shapes, high-entropy runs (32+ alphanumerics with a digit, the runner's rule),
-// emails (Unicode-aware), and home directories.
-const NOTE_REDACTIONS: Array<[RegExp, string]> = [
-  [/(?<![a-z])(?:bearer|basic)(?:[ \t]+|%20)[^\s"',;]+/gi, "[redacted]"],
-  [/sk-ant-[\w-]+/g, "[redacted]"],
-  [/gh[pousr]_[A-Za-z0-9]{20,}/g, "[redacted]"],
-  [/github_pat_\w+/g, "[redacted]"],
-  [/(?<![A-Za-z0-9])(?=[A-Za-z0-9]*\d)[A-Za-z0-9]{32,}/g, "[redacted]"],
-  [/[\p{L}\p{N}._%+-]+@[\p{L}\p{N}-]+(?:\.[\p{L}\p{N}-]+)*\.\p{L}{2,}/gu, "[redacted]"],
-  [/\/(?:Users|home)\/[^/\s]+/g, "~"],
-];
-
-function redactRunNotes(notes: string | null, env: Env): string | null {
-  if (notes === null) return null;
-  let out = notes.replace(/[\u0000-\u0008\u000b-\u001f\u007f]/g, "");
-  for (const secret of [
-    env.PIPELINE_TOKEN,
-    env.BETTER_AUTH_SECRET,
-    env.GITHUB_CLIENT_SECRET,
-    env.GOOGLE_CLIENT_SECRET,
-    env.GITHUB_API_TOKEN,
-    env.REVIEW_GITHUB_CLIENT_SECRET,
-    env.REVIEW_POSTING_PAT,
-  ]) {
-    if (secret && secret.length >= 8) out = out.split(secret).join("[redacted]");
-  }
-  for (const [re, replacement] of NOTE_REDACTIONS) out = out.replace(re, replacement);
-  return out.slice(0, MAX_TEXT_LEN);
-}
-
+// Newest first by server receipt time: started_at/finished_at are
+// runner-reported and unbounded, so one bad timestamp must not pin the top row.
+// Counts only; notes stay in D1, read with wrangler or on the host.
 async function recentRunRows(db: DrizzleDB, kind: string | null, limit: number) {
   return db
     .select({
@@ -2730,16 +2698,15 @@ async function recentRunRows(db: DrizzleDB, kind: string | null, limit: number) 
       cost: pipelineRuns.costUsdEquiv,
       model: pipelineRuns.model,
       promptSha: pipelineRuns.promptSha,
-      notes: pipelineRuns.notes,
     })
     .from(pipelineRuns)
     .where(kind === null ? undefined : eq(pipelineRuns.kind, kind))
-    .orderBy(desc(pipelineRuns.startedAt), desc(pipelineRuns.createdAt), desc(pipelineRuns.runId))
+    .orderBy(desc(pipelineRuns.createdAt), desc(pipelineRuns.runId))
     .limit(limit);
 }
 
 // GET /api/runs — public, read-only per-run reports (newest first), so the
-// session-start status check can read run errors without a bearer token.
+// session-start status check can read run error counts without a bearer token.
 // ?kind filters on the run's own kind (one of RUN_KINDS; 'all' is a run kind,
 // the full nightly, not a wildcard); omit it for every kind. ?limit 1..50,
 // default 10. Unknown kind or a bad limit → 400 (no clamping).
@@ -2764,7 +2731,6 @@ app.get("/api/runs", async (c) => {
         cost_usd_equiv: r.cost,
         model: r.model,
         prompt_sha: r.promptSha,
-        notes: redactRunNotes(r.notes, c.env),
       })),
     },
     200,

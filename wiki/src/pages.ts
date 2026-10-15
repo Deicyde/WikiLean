@@ -632,14 +632,13 @@ export interface StatsData {
     tokens: number;
     cost: number | null;
   }>;
-  // The last 10 run reports, newest first; notes already re-redacted.
+  // The last 10 run reports, newest reported first; counts only (no notes).
   recentRuns: Array<{
     kind: string;
     startedAt: number;
     articles: number;
     errors: number;
     tokens: number;
-    notes: string | null;
   }>;
   // Propose-then-approve lifecycle (the AI-precision measure): acceptance
   // rate = approved / (approved + rejected); stale = target vanished before a
@@ -761,11 +760,10 @@ export function statsPage(d: StatsData): string {
         .map(
           (r) =>
             `<tr><td style="white-space:nowrap">${isoPrefix(r.startedAt, 16)?.replace("T", " ") ?? '<span class="muted">—</span>'}</td>` +
-            `<td>${htmlEscape(r.kind, false)}</td>${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}` +
-            `<td>${r.notes ? `<code style="overflow-wrap:anywhere">${htmlEscape(r.notes, false)}</code>` : '<span class="muted">—</span>'}</td></tr>`,
+            `<td>${htmlEscape(r.kind, false)}</td>${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}</tr>`,
         )
         .join("")
-    : `<tr><td colspan="6" class="muted">No run reports yet.</td></tr>`;
+    : `<tr><td colspan="5" class="muted">No run reports yet.</td></tr>`;
 
   const body =
     `<h1>Stats</h1>` +
@@ -788,13 +786,13 @@ export function statsPage(d: StatsData): string {
     `<h2 class="wl-stats-h">Pipeline runs</h2>` +
     statTable(`<th>Kind</th><th>Runs</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Cost</th><th>Feeds</th>`, runsRows) +
     `<h2 class="wl-stats-h">Recent pipeline runs</h2>` +
-    statTable(`<th>Started (UTC)</th><th>Kind</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Notes</th>`, recentRunRows) +
-    `<p class="muted" style="font-size:.82rem">The last 10 run reports, newest first; notes are the runner&#x27;s ` +
-    `sanitized summary (also at <a href="/api/runs">/api/runs</a>).</p>` +
+    statTable(`<th>Started (UTC)</th><th>Kind</th><th>Articles</th><th>Errors</th><th>Tokens</th>`, recentRunRows) +
+    `<p class="muted" style="font-size:.82rem">The last 10 run reports, newest reported first ` +
+    `(also at <a href="/api/runs">/api/runs</a>).</p>` +
     `<h2 class="wl-stats-h">AI proposals (propose-then-approve)</h2>` +
     statTable(
       metricHead,
-      statRow("Pending (awaiting a human)", d.proposals.pending, "RQ2") +
+      statRow("Pending (undecided)", d.proposals.pending, "RQ2") +
         statRow("Approved", d.proposals.approved, "RQ1 RQ2") +
         statRow("Rejected", d.proposals.rejected, "RQ1 RQ2") +
         statRow("Decided by AI (auto-resolve)", d.proposals.decidedByAi, "RQ1 RQ2") +
