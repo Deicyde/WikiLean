@@ -70,7 +70,10 @@ class NativeContract(unittest.TestCase):
                         lambda a: a['subject'][0].update(type='pdf', location={'page': 1, 'rect': [.9, 0, .2, 1]}),
                         lambda a: a.update(object=[{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY, 'location': {'module': 'M', 'lines': [9, 2]}}]),
                         lambda a: a.update(object=[{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY, 'location': {'declaration': 'x', 'lines': [2]}}]),
-                        lambda a: a.update(junk=[]), lambda a: a.update(status={'value': 'partial'})):
+                        lambda a: a.update(status={'value': 'partial'}),
+                        # Junk values belong to an end; on the record they are an unknown field.
+                        lambda a: a.update(junk=['x / 0 = 0']), lambda a: a['object'][0].update(junk=[]),
+                        lambda a: a['object'][0].update(junk=['']), lambda a: a['subject'][0].update(junk='x / 0 = 0')):
             work = item(); patcher(work['links'][0]['annotation'])
             with self.subTest(work=work), self.assertRaises(n.NativeAnnotationError):
                 n.validate_items([work])
@@ -112,8 +115,9 @@ class NativeContract(unittest.TestCase):
     def test_lean_objects_relations_and_foreign_records_validate(self):
         work = item(kind='theorem', note='why', match_kind='exact')
         work['links'][0]['annotation']['object'] = [{**n.mathlib_end('Mathlib.Group', 'Group.identity'), 'version': 'a' * 40}]
-        foreign = {'id': 'their-id', 'relation': 'closeMatch', 'junk': ['x / 0 = 0'], 'status': 'partial',
-                   'subject': [{'type': 'pdf', 'uri': '../paper.pdf', 'title': 'Their title'}], 'object': formal('urn:formal:b'),
+        foreign = {'id': 'their-id', 'relation': 'closeMatch', 'status': 'partial',
+                   'subject': [{'type': 'pdf', 'uri': '../paper.pdf', 'title': 'Their title'}],
+                   'object': [{'type': 'generic', 'uri': 'urn:formal:b', 'junk': ['x / 0 = 0']}],
                    'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1}}}
         absence = {'subject': [occurrence()], 'object': [{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY, 'version': 'a' * 40}],
                    'relation': 'noMatch'}
@@ -141,6 +145,25 @@ class NativeContract(unittest.TestCase):
         work = item(links=[], unlinked=[occurrence(extensions={'org.wikilean': {'anchor': {'snippet': 'key'}}})])
         promoted = n.preserve_native_items([work], [item()])[0]
         self.assertEqual(promoted['links'][0]['annotation']['subject'], work['unlinked'])
+
+    def test_end_junk_travels_with_its_end_through_agent_edits(self):
+        original = item()
+        original['links'][0]['annotation']['subject'][0]['junk'] = ['the order of an infinite group is 0']
+        original['links'][0]['annotation']['object'][0]['junk'] = ['Nat.card of an infinite type is 0']
+        original['unlinked'] = [occurrence('Other', junk=['0 / 0 = 0'])]
+        n.validate_items([original], title=TITLE, revid=42)
+        # An echoed end keeps the junk values the agent left out.
+        restored = n.preserve_native_items([original], [item(unlinked=[occurrence('Other')])])[0]
+        self.assertEqual(restored['links'], original['links'])
+        self.assertEqual(restored['unlinked'], original['unlinked'])
+        # An end that selects something else is a different end, and the old junk stays behind.
+        produced = item(unlinked=[occurrence('Other')])
+        produced['links'][0]['annotation']['subject'] = [occurrence('A finite group has')]
+        produced['links'][0]['annotation']['object'] = formal('https://formal.example/Groups.html#other')
+        changed = n.preserve_native_items([original], [produced])[0]['links'][0]['annotation']
+        self.assertNotIn('junk', changed['subject'][0])
+        self.assertNotIn('junk', changed['object'][0])
+        self.assertNotIn('junk', changed)
 
     def test_native_to_legacy_or_dropped_link_is_never_a_roundtrip(self):
         for output in ([old_item()], [item(links=[])], []):

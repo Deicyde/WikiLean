@@ -63,8 +63,11 @@ link itself rather than only in the private archive. A `noMatch` link, a checked
 absence, is stored only when every object end has the `version` that was
 searched. The editor shows a Mathlib declaration as its docs page; a docs page
 entered there becomes a `lean` end, and any other reference a `generic` end. A
-changed reference replaces the object and drops the stored `relation` and
-`junk`, which described the old one.
+changed reference replaces the object ends, and the junk values each of them
+listed go with them; it also drops the stored `relation`, which described the
+old object. Junk values belong to an end (Literature Links rejects a
+record-level `junk`). WikiLean writes none itself and keeps those on imported
+ends.
 
 The review item stays the editable authority for its facts. When a record leaves
 WikiLean (`companionAnnotation` and `unlinkedAnnotation` in
@@ -82,7 +85,7 @@ WikiLean (`companionAnnotation` and `unlinkedAnnotation` in
 - a subject end on the article's pinned revision is written with the article's
   readable URL as `uri`, the `oldid` as `version`, a CSL `webpage` citation whose
   `URL` is the pinned revision, and `identifiers.wikidata` when the article has
-  a QID;
+  a QID; every end keeps its own `junk`;
 - `provenance`, and a `match_kind` that the relation does not name alone
   (`related`, `invocation`, or one with no relation), go under
   `extensions["org.wikilean"]`. Stored extensions are kept.

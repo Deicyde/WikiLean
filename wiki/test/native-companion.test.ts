@@ -53,14 +53,19 @@ describe('canonical native companion records', () => {
   it('rejects invalid core shapes without discarding arbitrary valid generic location data', () => {
     for (const bad of [{ ...core(), version: 2 }, core('generic', { location: null as never }), core('html', { location: { css: 'x', fragment: 'y' } }),
       { ...core(), subject: [] }, { ...core(), object: [{ uri: 'urn:x' }] }, { source: { type: 'generic', uri: 'urn:x' }, target: 'urn:y' },
-      { ...core(), status: { value: 'partial' } }, { ...core(), status: '' }, { ...core(), kind: 1 }, { ...core(), junk: [] }]) {
+      { ...core(), status: { value: 'partial' } }, { ...core(), status: '' }, { ...core(), kind: 1 }]) {
       expect(validateLinkRecord(bad)).not.toEqual([]);
+    }
+    // Junk values belong to an end; on the record they are an unknown field.
+    expect(validateLinkRecord({ ...core(), junk: ['x / 0 = 0'] })).toEqual(['/: must NOT have additional properties']);
+    for (const junk of [[], [''], 'x / 0 = 0', [1]]) {
+      expect(validateLinkRecord({ ...core(), object: [{ type: 'generic', uri: 'urn:target', junk }] }).join()).toContain('/object/0/junk');
     }
     expect(validateLinkRecord(core('generic', { location: { profile: 'unknown', arbitrary: [1, null] } }))).toEqual([]);
   });
   it('accepts relations, versions and facts; a link still needs an object end', () => {
-    const facts: LinkRecord = { ...core(), relation: 'broadMatch', junk: ['x / 0 = 0'], status: 'partial', kind: 'theorem', id: 'subject-1', note: 'checked by hand',
-      object: [{ ...mathlibEnd('Mathlib.X', 'x'), version: commit }] };
+    const facts: LinkRecord = { ...core(), relation: 'broadMatch', status: 'partial', kind: 'theorem', id: 'subject-1', note: 'checked by hand',
+      object: [{ ...mathlibEnd('Mathlib.X', 'x'), version: commit, junk: ['x / 0 = 0'] }] };
     expect(validateLinkRecord(facts)).toEqual([]);
     expect(validateNativeItems([item(facts)])).toEqual([]);
     const unlinked: LinkRecord = { subject: [end('html')], object: [], status: 'not_formalized' };
@@ -102,6 +107,24 @@ describe('canonical native companion records', () => {
     expect(work).toEqual(before);
     for (const record of [first.annotation, second.annotation]) expect(validateLinkRecord(record)).toEqual([]);
     expect(companionAnnotation({ status: 'partial', links: [], unlinked: [] }, { id: 'x', annotation: local }).subject[0].uri).toBe(wikipediaSourceUri(context));
+  });
+  it('exports each end with its own junk values and none on the record', () => {
+    const subject: LinkEnd = { type: 'html', uri: wikipediaSourceUri(context), location: { fragment: 'Statement' }, junk: ['the order of an infinite group is 0'] };
+    const lagrange = { ...mathlibEnd('Mathlib.GroupTheory.Coset.Card', 'Subgroup.card_subgroup_dvd_card'), junk: ['Nat.card of an infinite type is 0'] };
+    const index = { ...mathlibEnd('Mathlib.GroupTheory.Index', 'Subgroup.index_mul_card'), junk: ['Subgroup.index is 0 for an infinite index'] };
+    const work: NativeItem = { id: 'aaaaaaaaaaaa', status: 'formalized', match_kind: 'exact',
+      links: [{ id: 'one', annotation: { subject: [subject], object: [lagrange, index] } }], unlinked: [{ ...subject, location: { fragment: 'Proof' } }] };
+    const before = structuredClone(work);
+    const [linked, unlinked] = storedCompanionRecords([work], context);
+    expect(linked.annotation).not.toHaveProperty('junk'); expect(unlinked.annotation).not.toHaveProperty('junk');
+    expect(linked.annotation.object).toEqual([lagrange, index]);
+    expect(linked.annotation.subject[0]).toMatchObject({ uri: 'https://en.wikipedia.org/wiki/Test_Article', version: '12345', junk: subject.junk });
+    expect(unlinked.annotation.subject[0].junk).toEqual(subject.junk);
+    for (const record of [linked, unlinked]) expect(validateLinkRecord(record.annotation)).toEqual([]);
+    expect(validateNativeItems([work], context)).toEqual([]);
+    expect(work).toEqual(before);
+    linked.annotation.object[0].junk!.push('changed'); linked.annotation.subject[0].junk!.push('changed');
+    expect(work).toEqual(before);
   });
   it('maps match_kind to a relation and keeps the tokens a relation does not name alone', () => {
     const link = { id: 'one', annotation: core() };
