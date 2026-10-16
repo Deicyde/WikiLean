@@ -93,8 +93,9 @@ function createCompanionEditorModel() {
     const occ = entry.occurrence;
     if (change.anchor) {
       if (change.reanchorSource) {
-        // The end now selects article text. What described the old document goes.
-        for (const field of ["version", "sha256", "citation", "identifiers"]) delete occ[field];
+        // The end now selects article text. What described the old document goes,
+        // its title too, so the export labels the end from the item.
+        for (const field of ["version", "sha256", "citation", "identifiers", "title"]) delete occ[field];
         occ.type = "html"; occ.uri = change.reanchorSource;
         placeAnchor(occ, change.anchor, locate, false);
       } else {
