@@ -117,9 +117,9 @@ node scripts/generate-companion-validator.mjs
 node scripts/generate-companion-validator.mjs --check
 ```
 
-The adapter also checks the reference PDF rectangle and line-order rules in every end.
-HTTP writes and migration input use a strict JSON decoder that rejects duplicate
-object keys, including differently escaped spellings of the same key.
+The adapter also checks the reference PDF rectangle and line-order rules in every end,
+and rejects strings with an unpaired UTF-16 surrogate. HTTP writes and migration
+input use the platform JSON parsers, which keep the last of duplicated object keys.
 Validation never retrieves a schema, source URI, or formal target. Arbitrary
 lexically valid opaque references retain their exact strings.
 

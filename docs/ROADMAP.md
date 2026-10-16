@@ -101,7 +101,9 @@ These resolved real conflicts between competing proposals. Build each thing **on
   `proposal-decided-ai` + proposals.decided_by. Recording literally 'ai'
   would need a D1 table rebuild to relabel a synonym; flagged to Jack
   2026-08-07 — say the word if the literal enum value matters.
-- **Schema v4 (multi-library `formalizations[]`) is deferred** and must be **bundled
+- *Superseded by the native companion direction below: D1 `schema_version` 4 now
+  means native Literature Links work items, where several formal ends are several
+  links.* **Schema v4 (multi-library `formalizations[]`) is deferred** and must be **bundled
   into the annotation-ID backfill migration** (one corpus rewrite, not two). Written
   trigger: CSLib covers a typical undergrad algorithms course. Wikidata property
   proposal stays Mathlib-only (one external-ID property per library is the Wikidata
@@ -116,8 +118,9 @@ proposal is not an additional authoritative representation to build alongside it
 `docs/COMPANION-NATIVE.md` is the runbook for the storage, editor, pipeline,
 history and renderer changes and for the copied-database cutover.
 
-Targetless coverage/review items remain separate application data. The shared
-annotation schema continues to describe exactly one informal–formal link.
+Each link is one Literature Links 2.0 record. A work item with no formal end
+keeps its source selections in its `unlinked` list, and they leave WikiLean as
+records with `"object": []`.
 
 ---
 
@@ -1091,7 +1094,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 |---|---|
 | jobs/contributions/api_tokens queue + validation gauntlet + trust ladder (design is written — see audit; atomic claim via single UPDATE…RETURNING) | First real compute donor asks |
 | GitHub Actions donation fork template; Batches-API path for tool-free Agent 1 (50% cost) | First donor on the Actions path |
-| Schema v4 `formalizations[]` + libraries registry (write docs/schema_v4.md anytime) | CSLib covers a typical undergrad algorithms course; bundle migration with ID backfill if still pending |
+| Libraries registry (schema v4 `formalizations[]` is superseded: native items hold several links, `docs/COMPANION-NATIVE.md`) | CSLib covers a typical undergrad algorithms course |
 | Mass-revert: offline admin script over revision snapshots (NOT a deployed endpoint; D1 Time Travel is whole-DB and not a substitute) | First vandalism spree |
 | Re-anchoring stages 1-2 (fuzzy + AI semantic) | Anchor-rot telemetry shows stage-0 clears <90% |
 | WikiProject CS corpus ingestion, Agent 2 multi-checkout, library picker UI | With schema v4 trigger |
