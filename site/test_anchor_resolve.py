@@ -118,6 +118,17 @@ class Resolving(unittest.TestCase):
         self.assertEqual((location, how), ({'css': 'img[alt="{\\\\displaystyle |G|}"]'}, 'css'))
         self.assertEqual(ar.resolve({'type': 'math_alttext', 'value': 'missing'}, HTML), (None, 'no_match'))
 
+    def test_formula_selector_names_the_decoded_alt_text(self):
+        src = ('<p><span class="mwe-math-element"><span class="mwe-math-mathml-inline mwe-math-mathml-a11y" style="display: none;">'
+               '<math alttext="{\\displaystyle x&amp;y&lt;0}"><semantics><mrow><mi>x</mi></mrow></semantics></math></span>'
+               '<img src="f.svg" class="mwe-math-fallback-image-inline" alt="{\\displaystyle x&amp;y&lt;0}"></span> holds.</p>')
+        css = 'img[alt="{\\\\displaystyle x&y<0}"]'
+        for value in ('{\\displaystyle x&amp;y&lt;0}', '{\\displaystyle x&y<0}'):
+            self.assertEqual(ar.resolve({'type': 'math_alttext', 'value': value}, src), ({'css': css}, 'css'))
+        record = {'status': 'formalized', 'provenance': 'ai', 'unlinked': [], 'links': [{'id': 'm', 'annotation': {
+            'subject': [{'type': 'html', 'uri': URI, 'location': {'css': css}}], 'object': [{'type': 'generic', 'uri': 'urn:formal:x'}]}}]}
+        self.assertEqual(render.wrap_annotations(src, [record], source_uri=URI)[1], [True])
+
     def test_theorem_box_quotes_its_text(self):
         location, how = ar.resolve({'type': 'theorem_box', 'value': 'prime order'}, HTML)
         self.assertEqual(location, {'quote': {'exact': 'Theorem 1. Every group of prime order is cyclic.'}})

@@ -195,14 +195,23 @@ def resolve_snippet(src: str, section: str | None, snippet: str, layer=None) -> 
 
 
 def resolve_math(src: str, value: str) -> tuple[dict | None, str]:
-    """Resolve a formula's alt text to a CSS attribute selector when it is unique."""
+    """Resolve a formula's alt text to a CSS attribute selector when it is unique.
+
+    The selector names the decoded attribute value, which is what CSS compares,
+    not its spelling in the HTML source (legacy values may hold `&amp;`)."""
     candidates = {value, htmlmod.escape(value, quote=False), htmlmod.escape(value, quote=True)}
-    images = sum(src.count(f'alt="{candidate}"') for candidate in candidates)
+
+    def matches(attribute: str) -> tuple[int, str | None]:
+        counts = {candidate: src.count(f'{attribute}="{candidate}"') for candidate in candidates}
+        found = next((candidate for candidate, count in counts.items() if count), None)
+        return sum(counts.values()), None if found is None else htmlmod.unescape(found)
+
+    images, image_alt = matches("alt")
     if images == 1:
-        return {"css": f'img[alt="{css_string(value)}"]'}, "css"
-    mathml = sum(src.count(f'alttext="{candidate}"') for candidate in candidates)
+        return {"css": f'img[alt="{css_string(image_alt)}"]'}, "css"
+    mathml, math_alt = matches("alttext")
     if images == 0 and mathml == 1:
-        return {"css": f'math[alttext="{css_string(value)}"]'}, "css"
+        return {"css": f'math[alttext="{css_string(math_alt)}"]'}, "css"
     return None, "ambiguous" if images or mathml else "no_match"
 
 
