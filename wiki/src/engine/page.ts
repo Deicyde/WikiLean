@@ -3,6 +3,8 @@
 // /assets/script.js externally (served as static assets) instead of inlining —
 // the annotation wrapping in <main> is byte-identical to the static site.
 
+import { isNativeItem, legacyAnchorOccurrences } from "../native-companion.js";
+import { formalLinks } from "./formal-links.js";
 import { htmlEscape } from "./html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./searchbox.js";
 import type { Annotation } from "./types.js";
@@ -25,6 +27,7 @@ export function mathlibDocsUrl(module?: string | null, decl?: string | null): st
 }
 
 interface ClientAnno {
+  formal_links?: Array<{target: string; label: string; url?: string}>;
   // Stable annotation id — lets the anonymous flag form target a specific
   // annotation (POST /api/flag/:slug). Inert in rendering.
   id?: string;
@@ -51,6 +54,16 @@ export function buildClientData(annotations: Annotation[]): Array<ClientAnno | n
     // .filter(Boolean)s its lookups anyway. Mirrored in render.py client_data.
     if (a.status === "rejected") {
       out.push(null);
+      continue;
+    }
+    if (isNativeItem(a)) {
+      const item: ClientAnno = { status: a.status, formal_links: formalLinks(a) };
+      for (const key of ["id", "label", "kind", "note", "provenance", "match_kind"] as const)
+        if (typeof a[key] === "string" && a[key]) item[key] = a[key];
+      const first = item.formal_links!.find(link => link.url);
+      if (first) item.mathlib_url = first.url; // Existing alt-click navigation.
+      if (item.formal_links!.length) item.decl = item.formal_links![0].label;
+      out.push(item);
       continue;
     }
     const m = a.mathlib ?? {};
@@ -80,6 +93,7 @@ export interface PageInput {
   slug: string;
   displayTitle: string;
   wikipediaTitle: string;
+  revid?: number | null;
   body: string; // engine-wrapped <main> content
   annotations: Annotation[];
   matched: boolean[];
@@ -117,7 +131,10 @@ export function renderArticlePage(input: PageInput): string {
     // anchor failure") but emit no wrap, so any math element they once
     // covered counts as unannotated again.
     if (annotations[i].status === "rejected") continue;
-    if (matched[i] && annotations[i].anchor?.type === "math_alttext") nDisplayAnnotated += 1;
+    if (isNativeItem(annotations[i])) {
+      if (matched[i]) nDisplayAnnotated += new Set(legacyAnchorOccurrences(annotations[i],
+        { wikipediaTitle, revid: input.revid ?? null }).filter(a => a?.type === "math_alttext").map(a => a!.value)).size;
+    } else if (matched[i] && annotations[i].anchor?.type === "math_alttext") nDisplayAnnotated += 1;
   }
   // Rendered as a header badge only when non-zero — "0 unannotated math" is
   // noise on fully-covered (or math-free) articles (W3 fix #12).
@@ -135,7 +152,15 @@ export function renderArticlePage(input: PageInput): string {
   const descEsc = htmlEscape(desc, true);
   const canonical = `${BASE_URL}/${encodeURIComponent(slug)}`;
   const wpLink = encodeURIComponent(wikipediaTitle.replaceAll(" ", "_"));
-  const data = safeJsonForScript(buildClientData(annotations));
+  const clientData = buildClientData(annotations);
+  const data = safeJsonForScript(clientData);
+  const unresolved = annotations.flatMap((a, i) => !isNativeItem(a) || a.status === "rejected" || matched[i] ? [] : [
+    `<li><strong>${htmlEscape(typeof a.label === "string" && a.label ? a.label : `Annotation ${i + 1}`, false)}</strong>: location not displayed on this page. ` +
+      (clientData[i]?.formal_links ?? []).map(link => link.url
+        ? `<a href="${htmlEscape(link.url, true)}" target="_blank" rel="noopener">${htmlEscape(link.label, false)}</a>`
+        : `<code>${htmlEscape(link.label, false)}</code>`).join(" · ") + `</li>`
+  ]);
+  const unresolvedPanel = unresolved.length ? `<aside class="wl-attribution" aria-label="Other annotation locations"><details><summary>${unresolved.length} annotations with locations not displayed</summary><ul>${unresolved.join("")}</ul></details></aside>` : "";
 
   return `<!doctype html>
 <html lang="en">
@@ -239,6 +264,7 @@ ${SEARCHBOX_CSS}</style>
 <main class="wl-article-body">
 ${body}
 </main>
+${unresolvedPanel}
 <footer class="wl-attribution">
   <p>Article text from <a href="https://en.wikipedia.org/wiki/${wpLink}" target="_blank" rel="noopener">Wikipedia</a>, available under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener">CC BY-SA 4.0</a>.</p>
   <p>WikiLean annotations are released under <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener">CC0</a>.</p>
@@ -280,7 +306,7 @@ document.addEventListener("click",function(e){if(!p.hidden&&!p.contains(e.target
 document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!p.hidden){set(false);b.focus();}});})();
 </script>
 ${SEARCHBOX_SCRIPT}
-<script src="/assets/script.js?v=7"></script>
+<script src="/assets/script.js?v=8"></script>
 </body>
 </html>
 `;

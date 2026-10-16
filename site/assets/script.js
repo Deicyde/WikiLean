@@ -57,10 +57,20 @@
     parts.push(
       '<div class="tt-status ' + escapeHtml(a.status) + '">' + chips.map(escapeHtml).join(" · ") + '</div>'
     );
-    if (a.decl) {
+    if (Array.isArray(a.formal_links)) {
+      a.formal_links.forEach(function (link) {
+        let url;
+        try { const u = new URL(link.url); if (/^https?:$/.test(u.protocol) && !u.username && !u.password) url = u.href; } catch (_) {}
+        const label = escapeHtml(link.label || link.target);
+        parts.push('<div class="tt-row">Formal result: ' + (url
+          ? '<a href="' + escapeHtml(url).replace(/"/g, '&quot;') + '" target="_blank" rel="noopener">' + label + ' ↗</a>'
+          : '<code>' + label + '</code>') + '</div>');
+      });
+    }
+    if (!Array.isArray(a.formal_links) && a.decl) {
       parts.push('<div class="tt-row">Mathlib: <code>' + escapeHtml(a.decl) + "</code></div>");
     }
-    if (a.mathlib_url) {
+    if (!Array.isArray(a.formal_links) && a.mathlib_url) {
       parts.push(
         '<div class="tt-row"><a href="' +
           escapeHtml(a.mathlib_url) +
