@@ -237,7 +237,11 @@ def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
     id or anchor sig) lands in a stored tombstone's section AND its snippet
     contains >50% of the tombstone snippet's word tokens — a near-miss
     resurrection of a human veto. Exact-sig resurrections are already replaced
-    by the stored tombstone; this closes the shifted-anchor bypass."""
+    by the stored tombstone; this closes the shifted-anchor bypass.
+
+    A native anchor equal to a tombstone's on the same source modulo the pin
+    is a resurrection too, snippet or not: a repin moves active items but
+    leaves tombstones on their old pin, and the native sig includes the pin."""
     def candidates(item):
         if not native.is_native(item):
             return [(native.primary_anchor(item), None)]
@@ -253,6 +257,11 @@ def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
         return result
 
     for anc, source in candidates(a):
+        if source is not None and anc and any(
+                source == tomb_source and anc == tanc
+                for tombstone in tombstones
+                for tanc, tomb_source in candidates(tombstone)):
+            return True
         toks = _snippet_tokens(anc.get("snippet"))
         if not toks:
             continue
@@ -289,9 +298,10 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
         provenance — anti-laundering, mirrors the server's session-side rule);
       - a PRODUCED new annotation (no stored counterpart by id or anchor sig)
         that near-misses a stored tombstone — same anchor section AND >50%
-        token containment of the tombstone's snippet — is DROPPED and counted
-        as veto_adjacent_dropped (F6: shifted-anchor resurrections of human
-        vetoes don't reach the wire).
+        token containment of the tombstone's snippet, or for native items the
+        same anchor on the same source modulo the article pin — is DROPPED and
+        counted as veto_adjacent_dropped (F6: shifted-anchor and repinned
+        resurrections of human vetoes don't reach the wire).
     """
     produced = native.preserve_native_items(existing, produced)
     humans = [a for a in existing if a.get("provenance") == "human"]
