@@ -1,7 +1,8 @@
 # Native companion records in WikiLean
 
-WikiLean's native application format stores complete Literature Links annotations
-in D1. Normal native reads and edits use those objects directly.
+WikiLean's native application format stores complete Literature Links 2.0
+annotations in D1. Normal native reads and edits use those objects directly. The
+vendored schema and its pin are in `wiki/src/vendor/literature-links/`.
 The current implementation is available for local testing; no production database
 has been migrated or Worker deployed by this work.
 
@@ -17,42 +18,59 @@ notes and moderation history. Each item contains:
     {
       "id": "aaaaaaaaaaaa:link:0",
       "annotation": {
-        "source": {"type": "generic", "uri": "https://example.org/article"},
-        "target": "https://example.org/formal#theorem"
+        "subject": [{"type": "generic", "uri": "https://example.org/article"}],
+        "object": [{"type": "lean", "uri": "https://github.com/leanprover-community/mathlib4",
+                    "location": {"declaration": "AddCommGroup", "module": "Mathlib.Algebra.Group.Defs"}}]
       }
     }
   ],
-  "unlinked": []
+  "unlinked": [{"type": "generic", "uri": "https://example.org/other-article"}]
 }
 ```
 
-Only the `annotation` value is a Literature Links record. It has no version field. D1's
+Only the `annotation` value is a Literature Links record, and each `unlinked`
+entry is one Literature Links end beside an optional `base_uri`. D1's
 `schema_version=4` identifies WikiLean's internal work-item storage format;
 `articles.version` remains its optimistic concurrency and render-cache counter.
-Neither changes the companion schema. Work items with no formal destination keep
-source/location selections in `unlinked`, without inventing a target. Several
-anchors or formal destinations remain several links within one coverage item.
+Neither changes the companion schema. Work items with no formal end keep their
+source selections in `unlinked`, without inventing an object. Several anchors or
+formal ends remain several links within one coverage item. Every subject end of
+a link and every unlinked end is an occurrence of the item.
 
-A link's `target` is a reference string or an endpoint object `{uri, pin,
-extensions}`. Migration turns the legacy Mathlib module and declaration into a
-`repository` pin on the target (`url`, `module`, `declaration`; no `commit`,
-because legacy items never recorded one), so that information is stored on the
-link itself rather than only in the private archive. A link must have a target;
-the format also allows records without one, and WikiLean keeps those in
-`unlinked`. The editor replaces a pinned target with the plain new reference when
-its destination changes, since the pin cites the old declaration.
+A link's annotation has at least one object end. Migration turns the legacy
+Mathlib module and declaration into a `lean` object end (`uri` the Mathlib
+repository, `location` with `declaration` and `module`, no `version`, because
+legacy items never recorded the commit), so that information is stored on the
+link itself rather than only in the private archive. A `noMatch` link, a checked
+absence, is stored only when every object end has the `version` that was
+searched. The editor shows a Mathlib declaration as its docs page; a docs page
+entered there becomes a `lean` end, and any other reference a `generic` end. A
+changed reference replaces the object and drops the stored `relation` and
+`junk`, which described the old one.
 
 The review item stays the editable authority for its facts. When a record leaves
-WikiLean, those facts fill the format's own fields: item `status`, `kind`,
-`label`, `note` and `id` become the annotation's `status`, `kind`, `label`,
-`note` and `id` (stored values take precedence; `status` is always the item's);
-an occurrence whose source is the article's pinned Wikipedia revision gets a
-`website` pin (`title`, `owner`, `url`, `revision`, `identifiers.wikidata` when
-the article has a QID); `provenance` and `match_kind`, which have no format
-slot, go under `extensions["org.wikilean"]`. Stored extensions are kept. The
-same projection lives in `wiki/src/native-companion.ts` (`companionAnnotation`)
-and `site/native_annotations.py` (`companion_annotation`). No retrieval date is
-emitted: WikiLean stores none per article.
+WikiLean (`companionAnnotation` and `unlinkedAnnotation` in
+`wiki/src/native-companion.ts`), those facts fill the format's own fields:
+
+- item `status`, `kind`, `note` and `id` become the record's (stored values take
+  precedence; `status` is always the item's), and `label` becomes each subject
+  end's `title`;
+- `match_kind` becomes the `relation`: `exact` is `exactMatch`, `generalization`
+  `broadMatch`, `special_case` `narrowMatch`, `close` `closeMatch`, and `related`
+  and `invocation` `relatedMatch`. Without one of these, a stored `relation` is
+  kept, and a stored `noMatch` always is;
+- a subject end on the article's pinned revision is written with the article's
+  readable URL as `uri`, the `oldid` as `version`, a CSL `webpage` citation whose
+  `URL` is the pinned revision, and `identifiers.wikidata` when the article has
+  a QID;
+- `provenance`, and a `match_kind` that the relation does not name alone
+  (`related`, `invocation`, or one with no relation), go under
+  `extensions["org.wikilean"]`. Stored extensions are kept.
+
+Each unlinked selection leaves as a record with `"object": []` and no
+`relation`. WikiLean records no Mathlib commit, so a `not_formalized` item is
+such a record with `"status": "not_formalized"`, not a `noMatch`. No retrieval
+date is emitted: WikiLean stores none per article.
 
 Internal link IDs are unique within an article and remain distinct from optional
 Literature Links IDs. Duplicate Literature Links IDs and identical annotations are preserved as independent
@@ -63,8 +81,8 @@ migration evidence, not editable link authority.
 
 ## Validation and references
 
-All four Literature Links modes—PDF, LaTeX, HTML and generic—are validated and stored. Unknown
-extensions and valid generic locations survive edits. An unsupported location can
+All five end types, `pdf`, `latex`, `html`, `lean` and `generic`, are validated
+and stored. Unknown extensions and valid generic locations survive edits. An unsupported location can
 be displayed as a link without pretending its source passage was resolved.
 Omitting `location` means the whole resource; an unresolved locator is never
 converted to omission.
@@ -79,16 +97,16 @@ node scripts/generate-companion-validator.mjs
 node scripts/generate-companion-validator.mjs --check
 ```
 
-The adapter also checks the reference PDF rectangle and LaTeX line-order rules.
+The adapter also checks the reference PDF rectangle and line-order rules in every end.
 HTTP writes and migration input use a strict JSON decoder that rejects duplicate
 object keys, including differently escaped spellings of the same key.
 Validation never retrieves a schema, source URI, or formal target. Arbitrary
 lexically valid opaque references retain their exact strings.
 
-Relative source, target, or `$schema` references require an absolute `base_uri`
-on their stored link envelope. Unlinked relative source selections need their own
-base. Reads retain that original carrier context; the SQLite filename and API URL
-never become implicit bases. A base may be a file URI, but the Worker never serves
+Relative end or `$schema` references require an absolute `base_uri` on their
+stored link envelope. Unlinked relative ends need their own base. Reads retain
+that original carrier context; the SQLite filename and API URL never become
+implicit bases. A base may be a file URI, but the Worker never serves
 or reads that file.
 
 The JavaScript storage boundary rejects integers outside
@@ -99,13 +117,15 @@ saves retain the existing work-item count, field-length and payload-size limits.
 
 ## Read and write contracts
 
-- `GET /api/article/:slug/companion.jsonl` returns the stored public Literature Links
-  objects, with the item facts and pins projected as above, one per line
-  (`application/x-ndjson`). Rejected items are omitted for every caller.
+- `GET /api/article/:slug/companion.jsonl` returns each active item's links and
+  then its unlinked selections as Literature Links records, projected as above,
+  one per line (`application/x-ndjson`). Rejected items are omitted for every
+  caller.
   It returns 409 whenever a record has an explicit carrier base, including when
   all core references are absolute: an opaque profile may contain relative values.
 - `GET /api/article/:slug/companion-records.json` returns
   `{version, records:[{item_id,id,annotation,base_uri?}]}` for native articles,
+  with `unlinked` (the selection's index) in place of `id` for an unlinked one,
   with the same projection applied to each `annotation`. Nothing stored is
   removed, so the response keeps relative references and bases; it is not an
   annotation file.
