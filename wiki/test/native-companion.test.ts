@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
   validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, parseMathSelector, wikipediaSourceUri,
-  storedCompanionRecords, endReference, mathlibEnd, MATHLIB_REPOSITORY,
+  companionAnnotation, storedCompanionRecords, unlinkedAnnotation, endReference, mathlibEnd, MATHLIB_REPOSITORY,
   type NativeItem, type LinkRecord, type LinkEnd,
 } from '../src/native-companion.js';
 
@@ -86,17 +86,47 @@ describe('canonical native companion records', () => {
     const work: NativeItem = { id: 'aaaaaaaaaaaa', status: 'partial', kind: 'theorem', label: 'Ours', note: 'why partial', provenance: 'ai-moderated', match_kind: 'generalization',
       links: [{ id: 'one', annotation: local }, { id: 'two', annotation: foreign, base_uri: 'https://example.net/shards/a.json' }], unlinked: [] };
     const before = structuredClone(work);
-    const [first, second] = storedCompanionRecords([work, { ...work, id: 'bbbbbbbbbbbb', status: 'rejected' }], context);
+    const [first, second] = storedCompanionRecords([work, { ...work, id: 'bbbbbbbbbbbb', status: 'rejected' }], { ...context, wikidataQid: 'Q1' });
     expect(storedCompanionRecords([work], context)).toHaveLength(2);
-    expect(first.annotation).toEqual({ subject: [{ ...local.subject[0], title: 'Ours' }], object: local.object, status: 'partial', kind: 'theorem',
-      id: 'aaaaaaaaaaaa', note: 'why partial', extensions: { 'org.wikilean': { provenance: 'ai-moderated', match_kind: 'generalization' } } });
-    // Stored id, relation, title and extensions survive.
-    expect(second.annotation).toEqual({ id: 'their-id', relation: 'closeMatch', status: 'partial', kind: 'theorem', note: 'why partial',
+    expect(first.annotation).toEqual({
+      subject: [{ type: 'html', uri: 'https://en.wikipedia.org/wiki/Test_Article', version: '12345', location: local.subject[0].location, title: 'Ours',
+        citation: { id: 'wikipedia-Test_Article', type: 'webpage', title: 'Test Article', 'container-title': 'Wikipedia', URL: wikipediaSourceUri(context) },
+        identifiers: { wikidata: 'Q1' } }],
+      object: local.object, relation: 'broadMatch', status: 'partial', kind: 'theorem', id: 'aaaaaaaaaaaa', note: 'why partial',
+      extensions: { 'org.wikilean': { provenance: 'ai-moderated' } } });
+    // A foreign end gets no article revision; stored id, title and extensions survive, and the item's match_kind decides the relation.
+    expect(second.annotation).toEqual({ id: 'their-id', relation: 'broadMatch', status: 'partial', kind: 'theorem', note: 'why partial',
       subject: foreign.subject, object: foreign.object,
-      extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1, provenance: 'ai-moderated', match_kind: 'generalization' } } });
+      extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1, provenance: 'ai-moderated' } } });
     expect(second).toMatchObject({ item_id: 'aaaaaaaaaaaa', id: 'two', base_uri: 'https://example.net/shards/a.json' });
     expect(work).toEqual(before);
     for (const record of [first.annotation, second.annotation]) expect(validateLinkRecord(record)).toEqual([]);
+    expect(companionAnnotation({ status: 'partial', links: [], unlinked: [] }, { id: 'x', annotation: local }).subject[0].uri).toBe(wikipediaSourceUri(context));
+  });
+  it('maps match_kind to a relation and keeps the tokens a relation does not name alone', () => {
+    const link = { id: 'one', annotation: core() };
+    const relation = (match_kind?: string) => companionAnnotation({ status: 'formalized', match_kind, links: [link], unlinked: [] }, link);
+    expect(relation('exact')).toMatchObject({ relation: 'exactMatch' }); expect(relation('exact').extensions).toBeUndefined();
+    expect(relation('special_case').relation).toBe('narrowMatch');
+    expect(relation('close').relation).toBe('closeMatch');
+    expect(relation('invocation')).toMatchObject({ relation: 'relatedMatch', extensions: { 'org.wikilean': { match_kind: 'invocation' } } });
+    expect(relation('partial')).not.toHaveProperty('relation'); expect(relation('partial').extensions).toEqual({ 'org.wikilean': { match_kind: 'partial' } });
+    expect(relation()).not.toHaveProperty('relation');
+    const absence = { id: 'two', annotation: { subject: [end()], object: [{ type: 'lean' as const, uri: MATHLIB_REPOSITORY, version: commit }], relation: 'noMatch' } };
+    expect(companionAnnotation({ status: 'not_formalized', match_kind: 'exact', links: [absence], unlinked: [] }, absence))
+      .toMatchObject({ relation: 'noMatch', status: 'not_formalized', extensions: { 'org.wikilean': { match_kind: 'exact' } } });
+  });
+  it('exports unlinked selections as records with an empty object and no relation', () => {
+    const selection = { type: 'html' as const, uri: wikipediaSourceUri(context), location: { quote: { exact: 'finite group' } } };
+    const work: NativeItem = { id: 'cccccccccccc', status: 'not_formalized', label: 'Groups', match_kind: 'exact', provenance: 'ai', links: [],
+      unlinked: [selection, { type: 'pdf', uri: 'paper.pdf', base_uri: 'https://example.net/a.json' }] };
+    const records = storedCompanionRecords([work], context);
+    expect(records.map(record => [record.item_id, record.unlinked, record.base_uri])).toEqual([['cccccccccccc', 0, undefined], ['cccccccccccc', 1, 'https://example.net/a.json']]);
+    expect(records[0].annotation).toEqual({ subject: [{ type: 'html', uri: 'https://en.wikipedia.org/wiki/Test_Article', version: '12345', location: selection.location, title: 'Groups',
+      citation: { id: 'wikipedia-Test_Article', type: 'webpage', title: 'Test Article', 'container-title': 'Wikipedia', URL: selection.uri } }],
+      object: [], status: 'not_formalized', id: 'cccccccccccc', extensions: { 'org.wikilean': { provenance: 'ai', match_kind: 'exact' } } });
+    expect(unlinkedAnnotation(work, work.unlinked[1], context).subject).toEqual([{ type: 'pdf', uri: 'paper.pdf', title: 'Groups' }]);
+    for (const record of records) expect(validateLinkRecord(record.annotation)).toEqual([]);
   });
   it('reads built-in locations: the editing key in the end, else the location itself', () => {
     const uri = wikipediaSourceUri(context);

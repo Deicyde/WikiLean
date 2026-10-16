@@ -366,20 +366,45 @@ export function restorePrivateMetadata(stored: JsonObject[], posted: JsonObject[
   });
 }
 
+/** WikiLean's match_kind as a Literature Links relation. The tokens a relation names
+ * alone leave the extension; related and invocation share relatedMatch and stay. */
+export const MATCH_RELATIONS: Record<string, string> = {
+  exact: 'exactMatch', generalization: 'broadMatch', special_case: 'narrowMatch', close: 'closeMatch',
+  related: 'relatedMatch', invocation: 'relatedMatch',
+};
+const NAMED_BY_RELATION = new Set(['exact', 'generalization', 'special_case', 'close']);
 const nonblank = (value: unknown): string | undefined => typeof value === 'string' && value.trim() ? value : undefined;
-/** The portable record for one stored link: the stored annotation plus the review
- * item's facts in the format's own fields (status, kind, id, note, and the label
- * as each subject end's title), and provenance and match_kind under org.wikilean.
- * The item stays the editable authority; stored fields are kept and only absent
- * ones are filled, except status, which is always the item's review status. */
-export function companionAnnotation(item: JsonObject, link: NativeLink, _context?: SourceContext): LinkRecord {
-  const stored = link.annotation;
-  const label = nonblank(item.label);
+/** The article's pinned revision cited as a CSL web page. */
+export function articleCitation(context: SourceContext): JsonObject {
+  return { id: `wikipedia-${context.wikipediaTitle.replaceAll(' ', '_')}`, type: 'webpage', title: context.wikipediaTitle,
+    'container-title': 'Wikipedia', URL: wikipediaSourceUri(context) };
+}
+function subjectEnd(stored: UnlinkedOccurrence, title: string | undefined, context: SourceContext | undefined, base: string | undefined): LinkEnd {
+  const end = copy(stored);
+  delete end.base_uri;
+  if (title !== undefined && end.title === undefined) end.title = title;
+  if (!context || !sourceMatches(end, context, base)) return end;
+  // The article's own revision: its readable URL, with the oldid as the version.
+  const qid = nonblank(context.wikidataQid);
+  const { type, location, citation, identifiers, extensions } = end;
+  const result: LinkEnd = { type, uri: wikipediaArticleUri(context.wikipediaTitle), version: String(context.revid) };
+  if (location !== undefined) result.location = location;
+  if (end.title !== undefined) result.title = end.title;
+  result.citation = citation ?? articleCitation(context);
+  if (qid !== undefined || identifiers !== undefined) result.identifiers = { ...(qid !== undefined ? { wikidata: qid } : {}), ...identifiers };
+  for (const key of ['sha256', 'role'] as const) if (end[key] !== undefined) result[key] = end[key];
+  if (extensions !== undefined) result.extensions = extensions;
+  return result;
+}
+function project(item: JsonObject, stored: LinkRecord, base: string | undefined, context?: SourceContext): LinkRecord {
   const record = {} as LinkRecord;
   if (stored.$schema !== undefined) record.$schema = stored.$schema;
-  record.subject = stored.subject.map(end => end.title === undefined && label !== undefined ? { ...copy(end), title: label } : copy(end));
+  record.subject = stored.subject.map(end => subjectEnd(end, nonblank(item.label), context, base));
   record.object = copy(stored.object);
-  if (stored.relation !== undefined) record.relation = stored.relation;
+  const token = typeof item.match_kind === 'string' ? item.match_kind : undefined;
+  const fromToken = stored.relation !== 'noMatch' && record.object.length > 0 && token !== undefined && token in MATCH_RELATIONS;
+  if (fromToken) record.relation = MATCH_RELATIONS[token!];
+  else if (stored.relation !== undefined) record.relation = stored.relation;
   if (stored.junk !== undefined) record.junk = copy(stored.junk);
   if (typeof item.status === 'string' && item.status) record.status = item.status;
   else if (stored.status !== undefined) record.status = stored.status;
@@ -387,14 +412,37 @@ export function companionAnnotation(item: JsonObject, link: NativeLink, _context
   const id = stored.id ?? (typeof item.id === 'string' && item.id ? item.id : undefined); if (id !== undefined) record.id = id;
   const note = stored.note ?? nonblank(item.note); if (note !== undefined) record.note = note;
   const wikilean: JsonObject = isObject(stored.extensions?.['org.wikilean']) ? { ...stored.extensions['org.wikilean'] } : {};
-  for (const key of ['provenance', 'match_kind'] as const) if (typeof item[key] === 'string' && item[key]) wikilean[key] = item[key];
+  if (typeof item.provenance === 'string' && item.provenance) wikilean.provenance = item.provenance;
+  if (token && !(fromToken && NAMED_BY_RELATION.has(token))) wikilean.match_kind = token;
   if (Object.keys(wikilean).length) record.extensions = { ...(stored.extensions ? copy(stored.extensions) : {}), 'org.wikilean': wikilean };
   else if (stored.extensions !== undefined) record.extensions = copy(stored.extensions);
   return record;
 }
-export interface CompanionRecord { item_id?: string; id: string; annotation: LinkRecord; base_uri?: string }
+/** The portable record for one stored link: the stored annotation plus the review
+ * item's facts in the format's own fields (status, kind, id, note, the label as
+ * each subject end's title, match_kind as the relation), the article's revision
+ * on an article-local subject end, and provenance under org.wikilean. The item
+ * stays the editable authority; stored fields are kept and only absent ones are
+ * filled, except status and a relation from match_kind, which are the item's. */
+export function companionAnnotation(item: JsonObject, link: NativeLink, context?: SourceContext): LinkRecord {
+  return project(item, link.annotation, link.base_uri, context);
+}
+/** An unlinked selection as a record with an empty object: the passage, with the item's facts. */
+export function unlinkedAnnotation(item: JsonObject, occurrence: UnlinkedOccurrence, context?: SourceContext): LinkRecord {
+  const { base_uri, ...end } = occurrence;
+  return project(item, { subject: [end], object: [] }, base_uri, context);
+}
+export interface CompanionRecord { item_id?: string; id?: string; unlinked?: number; annotation: LinkRecord; base_uri?: string }
+/** Every active item's links, then its unlinked selections, projected; rejected items are omitted. */
 export function storedCompanionRecords(items: JsonObject[], context?: SourceContext): CompanionRecord[] {
-  return items.flatMap(item => isNativeItem(item) && item.status !== 'rejected'
-    ? item.links.map(link => ({ id: link.id, annotation: companionAnnotation(item, link, context),
-      ...(link.base_uri !== undefined ? { base_uri: link.base_uri } : {}), ...(typeof item.id === 'string' ? { item_id: item.id } : {}) })) : []);
+  return items.flatMap(item => {
+    if (!isNativeItem(item) || item.status === 'rejected') return [];
+    const owner = typeof item.id === 'string' ? { item_id: item.id } : {};
+    return [
+      ...item.links.map(link => ({ id: link.id, annotation: companionAnnotation(item, link, context),
+        ...(link.base_uri !== undefined ? { base_uri: link.base_uri } : {}), ...owner })),
+      ...item.unlinked.map((occurrence, index) => ({ unlinked: index, annotation: unlinkedAnnotation(item, occurrence, context),
+        ...(occurrence.base_uri !== undefined ? { base_uri: occurrence.base_uri } : {}), ...owner })),
+    ];
+  });
 }
