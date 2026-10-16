@@ -246,7 +246,7 @@ def _veto_adjacent(a: dict, tombstones: list[dict]) -> bool:
         for span, anchor in zip(native.occurrences(item), native.anchors(item)):
             if anchor is not None:
                 try:
-                    uri = urljoin(span.get("base_uri", ""), span["source"]["uri"])
+                    uri = urljoin(span.get("base_uri", ""), span["uri"])
                 except ValueError:
                     continue
                 result.append((anchor, _pin_free(uri)))

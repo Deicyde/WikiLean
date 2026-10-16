@@ -26,8 +26,8 @@ describe('offline native migration', () => {
     expect(native.map(item => item.id)).toEqual(old.map(item => item.id));
     expect(native[0].provenance).toBe('human'); expect(native[2].status).toBe('rejected');
     expect(native[0].legacy).toEqual(old[0]); expect(validateNativeItems(native)).toEqual([]);
-    expect((native[0] as unknown as NativeItem).links[0].annotation.target).toEqual({ uri: expect.stringContaining('/Mathlib/Algebra/Group/Defs.html#AddCommGroup'),
-      pin: { type: 'repository', url: 'https://github.com/leanprover-community/mathlib4', module: 'Mathlib.Algebra.Group.Defs', declaration: 'AddCommGroup' } });
+    expect((native[0] as unknown as NativeItem).links[0].annotation.object).toEqual([{ type: 'lean', uri: 'https://github.com/leanprover-community/mathlib4',
+      location: { declaration: 'AddCommGroup', module: 'Mathlib.Algebra.Group.Defs' } }]);
     expect(h.db.prepare('SELECT source_revid FROM revisions WHERE id=1').get()).toMatchObject({ source_revid: null });
     expect(h.db.prepare('SELECT source_revid,schema_version FROM revisions WHERE id=2').get()).toMatchObject({ source_revid: REVID, schema_version: 3 });
     expect(h.db.prepare('SELECT source_revid,schema_version FROM revisions WHERE id=3').get()).toMatchObject({ source_revid: REVID, schema_version: 4 });

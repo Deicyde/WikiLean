@@ -25,14 +25,18 @@ HTML = '<h2><span id="Statement">Statement</span></h2><p>A finite group has an i
 
 
 def occurrence(snippet='A finite group', **extras):
-    return {'source': {'type': 'html', 'uri': URI},
+    return {'type': 'html', 'uri': URI,
             'location': {'profile': n.ANCHOR_PROFILE, 'anchor': {'section': 'Statement', 'snippet': snippet},
                          'resolution': 'not_attempted'}, **extras}
 
 
+def formal(uri):
+    return [{'type': 'generic', 'uri': uri}]
+
+
 def item(**extras):
     return {'id': 'aabbccddeeff', 'status': 'formalized', 'provenance': 'ai', 'label': 'Fixture',
-            'links': [{'id': 'association:1', 'annotation': {**occurrence(), 'target': 'https://formal.example/Groups.html#identity'}}],
+            'links': [{'id': 'association:1', 'annotation': {'subject': [occurrence()], 'object': formal('https://formal.example/Groups.html#identity')}}],
             'unlinked': [], **extras}
 
 
@@ -46,11 +50,13 @@ def old_item(**extras):
 class NativeContract(unittest.TestCase):
     def test_native_all_modes_and_unknown_values_survive(self):
         locations = {'pdf': {'page': 1, 'rect': [0, 0, 1, 1]}, 'latex': {'lines': [1, 2]},
-                     'html': {'fragment': 'α'}, 'generic': {'unknown': {'list': [None, True, 1.25]}}}
+                     'html': {'fragment': 'α'}, 'generic': {'unknown': {'list': [None, True, 1.25]}},
+                     'lean': {'module': 'Mathlib.Group', 'lines': [4]}}
         work = item()
         work['links'] = [{'id': mode, 'base_uri': 'file:///tmp/shards/one.json',
-                          'annotation': {'source': {'type': mode, 'uri': '../source', 'extensions': {'owner': {'unknown': 5}}},
-                                         'target': '../formal#target', 'id': 'same-record-id', 'location': loc,
+                          'annotation': {'subject': [{'type': mode, 'uri': '../source', 'location': loc,
+                                                      'extensions': {'owner': {'unknown': 5}}}],
+                                         'object': formal('../formal#target'), 'id': 'same-record-id',
                                          'extensions': {'custom': {'z': [3, 2, 1]}}}}
                          for mode, loc in locations.items()]
         before = deepcopy(work)
@@ -59,15 +65,18 @@ class NativeContract(unittest.TestCase):
         self.assertEqual(work, before)
 
     def test_core_version_null_locations_and_numeric_invariants_rejected(self):
-        for patcher in (lambda a: a.update(version=2), lambda a: a.update(location=None),
-                        lambda a: a.update(source={'type': 'latex', 'uri': URI}, location={'lines': [9, 2]}),
-                        lambda a: a.update(source={'type': 'pdf', 'uri': URI}, location={'page': 1, 'rect': [.9, 0, .2, 1]})):
+        for patcher in (lambda a: a.update(version=2), lambda a: a['subject'][0].update(location=None),
+                        lambda a: a['subject'][0].update(type='latex', location={'lines': [9, 2]}),
+                        lambda a: a['subject'][0].update(type='pdf', location={'page': 1, 'rect': [.9, 0, .2, 1]}),
+                        lambda a: a.update(object=[{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY, 'location': {'module': 'M', 'lines': [9, 2]}}]),
+                        lambda a: a.update(object=[{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY, 'location': {'declaration': 'x', 'lines': [2]}}]),
+                        lambda a: a.update(junk=[]), lambda a: a.update(status={'value': 'partial'})):
             work = item(); patcher(work['links'][0]['annotation'])
             with self.subTest(work=work), self.assertRaises(n.NativeAnnotationError):
                 n.validate_items([work])
 
     def test_profile_locations_and_double_sum_rectangles(self):
-        record = lambda mode, location: {'source': {'type': mode, 'uri': URI}, 'target': 'urn:x', 'location': location}
+        record = lambda mode, location: {'subject': [{'type': mode, 'uri': URI, 'location': location}], 'object': formal('urn:x')}
         # The bound is a double sum, so a width computed as 1 - x fits.
         n.validate_link_record(record('pdf', {'page': 1, 'rect': [.9, 0, .10000000000000002, 1]}))
         # A profile makes the location application-defined in every mode.
@@ -77,15 +86,11 @@ class NativeContract(unittest.TestCase):
         with self.assertRaises(n.NativeAnnotationError):
             n.validate_link_record(record('pdf', {'page': 1, 'rect': [0, 0, 1, 1], 'quote': {'exact': 'a group'}}))
 
-    def test_normalize_gives_one_shape(self):
-        value = {'source': {'type': 'html', 'uri': URI}, 'target': 'urn:x', 'status': 'partial'}
-        self.assertEqual(n.normalize(value), {'source': value['source'], 'target': {'uri': 'urn:x'}, 'status': {'value': 'partial'}})
-        self.assertEqual(n.normalize(n.normalize(value)), n.normalize(value))
-        try:
-            from literature_links.companion import normalize
-        except ImportError:
-            return
-        self.assertEqual(n.normalize(value), normalize(value))
+    def test_vendored_schema_is_the_pinned_upstream_copy(self):
+        import hashlib
+        provenance = json.loads((n.SCHEMA_PATH.parent / 'provenance.json').read_text(encoding='utf-8'))
+        self.assertEqual(hashlib.sha256(n.SCHEMA_PATH.read_bytes()).hexdigest(), provenance['sha256'])
+        self.assertEqual(provenance['version'], '2.0.0')
 
     def test_native_shape_internal_identity_and_base_are_checked(self):
         broken = []
@@ -93,36 +98,49 @@ class NativeContract(unittest.TestCase):
             work = item(); del work[key]; broken.append(work)
         work=item(anchor={}); broken.append(work)
         work=item(); work['links'].append(deepcopy(work['links'][0])); broken.append(work)
-        work=item(); work['links'][0]['annotation']['target']='../formal'; broken.append(work)
-        work=item(); work['links'][0]['annotation']['target']={'uri': '../formal'}; broken.append(work)
-        work=item(); work['links'][0]['annotation']['target']={}; broken.append(work)
-        work=item(); del work['links'][0]['annotation']['target']; broken.append(work)
+        work=item(); work['links'][0]['annotation']['object']=formal('../formal'); broken.append(work)
+        work=item(); work['links'][0]['annotation']['object']=[{'uri': 'urn:formal'}]; broken.append(work)
+        work=item(); work['links'][0]['annotation']['object']=[]; broken.append(work)
+        work=item(); del work['links'][0]['annotation']['object']; broken.append(work)
+        work=item(); work['links'][0]['annotation'].update(object=[{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY}], relation='noMatch'); broken.append(work)
+        work=item(); work['unlinked']=[occurrence(unknown=1)]; broken.append(work)
+        work=item(); work['unlinked']=[{**occurrence(), 'uri': 'relative'}]; broken.append(work)
         work=item(); work['links'][0]['annotation']['extensions']={'exact': 2**53}; broken.append(work)
         for work in broken:
             with self.subTest(work=work), self.assertRaises(n.NativeAnnotationError): n.validate_items([work])
 
-    def test_endpoint_targets_and_pins_validate(self):
+    def test_lean_objects_relations_and_foreign_records_validate(self):
         work = item(kind='theorem', note='why', match_kind='exact')
-        pinned = {'uri': 'https://formal.example/Groups.html#identity',
-                  'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY, 'module': 'Mathlib.Group', 'declaration': 'Group.identity'}}
-        work['links'][0]['annotation']['target'] = pinned
-        foreign = {'id': 'their-id', 'label': 'Their label', 'source': {'type': 'pdf', 'uri': '../paper.pdf'},
-                   'target': {'uri': 'urn:formal:b'}, 'status': {'pin': {'type': 'repository', 'url': n.MATHLIB_REPOSITORY}},
+        work['links'][0]['annotation']['object'] = [{**n.mathlib_end('Mathlib.Group', 'Group.identity'), 'version': 'a' * 40}]
+        foreign = {'id': 'their-id', 'relation': 'closeMatch', 'junk': ['x / 0 = 0'], 'status': 'partial',
+                   'subject': [{'type': 'pdf', 'uri': '../paper.pdf', 'title': 'Their title'}], 'object': formal('urn:formal:b'),
                    'extensions': {'org.example': {'kept': True}, 'org.wikilean': {'imported': 1}}}
-        work['links'].append({'id': 'foreign', 'base_uri': 'https://example.net/shards/a.json', 'annotation': foreign})
+        absence = {'subject': [occurrence()], 'object': [{'type': 'lean', 'uri': n.MATHLIB_REPOSITORY, 'version': 'a' * 40}],
+                   'relation': 'noMatch'}
+        work['links'] += [{'id': 'foreign', 'base_uri': 'https://example.net/shards/a.json', 'annotation': foreign},
+                          {'id': 'absence', 'annotation': absence}]
         n.validate_items([work], title=TITLE, revid=42)
-        self.assertEqual(n.formal_links(work)[0]['label'], 'Group.identity')
-        n.validate_link_record({'source': {'type': 'html', 'uri': URI}, 'status': 'not_formalized'})
+        self.assertEqual(n.formal_links(work), [
+            {'target': 'https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#Group.identity',
+             'label': 'Group.identity', 'url': 'https://leanprover-community.github.io/mathlib4_docs/Mathlib/Group.html#Group.identity'},
+            {'target': 'urn:formal:b', 'label': 'urn:formal:b'}])
+        n.validate_link_record({'subject': [occurrence()], 'object': [], 'status': 'not_formalized'})
 
     def test_opaque_extension_fields_survive_agent_partial_updates(self):
         original = item(private={'audit': [1, 2]})
         original['links'][0]['annotation']['extensions'] = {'custom': {'opaque': 1}}
-        original['links'][0]['annotation']['source']['extensions'] = {'source': ['untouched']}
-        produced = item(note='edited')
+        original['links'][0]['annotation']['subject'][0]['extensions'] = {'org.wikilean': {'anchor': {'snippet': 'key'}}}
+        original['unlinked'] = [occurrence('Other', extensions={'source': ['untouched']}, base_uri='https://example.net/a.json')]
+        produced = item(note='edited', unlinked=[occurrence('Other', base_uri='https://example.net/a.json')])
         restored = n.preserve_native_items([original], [produced])[0]
         self.assertEqual(restored['private'], original['private'])
         self.assertEqual(restored['links'], original['links'])
+        self.assertEqual(restored['unlinked'], original['unlinked'])
         self.assertEqual(restored['note'], 'edited')
+        # A selection the agent promotes into a link keeps what its unlinked end carried.
+        work = item(links=[], unlinked=[occurrence(extensions={'org.wikilean': {'anchor': {'snippet': 'key'}}})])
+        promoted = n.preserve_native_items([work], [item()])[0]
+        self.assertEqual(promoted['links'][0]['annotation']['subject'], work['unlinked'])
 
     def test_native_to_legacy_or_dropped_link_is_never_a_roundtrip(self):
         for output in ([old_item()], [item(links=[])], []):
@@ -148,7 +166,7 @@ class NativeContract(unittest.TestCase):
     def test_relative_source_pin_and_schema_hint_application_constraints(self):
         work=item(); link=work['links'][0]
         link['base_uri']='https://en.wikipedia.org/w/records.json'
-        link['annotation']['source']['uri']='index.php?title=Synthetic_Article&oldid=41'
+        link['annotation']['subject'][0]['uri']='index.php?title=Synthetic_Article&oldid=41'
         with self.assertRaises(n.NativeAnnotationError): n.validate_items([work],title=TITLE,revid=42)
         work['status']='rejected'
         n.validate_items([work],title=TITLE,revid=42)
@@ -161,7 +179,7 @@ class NativeContract(unittest.TestCase):
         human = item(provenance='human', status='rejected', legacy={'secret': 'private'})
         posted, _ = moderate.finalize_for_post([human], [])
         self.assertEqual(posted, [human])
-        changed = deepcopy(human); changed['links'][0]['annotation']['target']='urn:changed'
+        changed = deepcopy(human); changed['links'][0]['annotation']['object']=formal('urn:changed')
         posted, _ = moderate.finalize_for_post([human], [changed])
         self.assertEqual(posted, [human])
 
@@ -169,12 +187,13 @@ class NativeContract(unittest.TestCase):
         tomb=item(status='rejected',provenance='human',links=[],unlinked=[occurrence('Different premise'),occurrence()])
         proposal=item(id='001122334455',links=[],unlinked=[occurrence('Irrelevant prose'),occurrence('A finite group has identity')])
         self.assertTrue(moderate._veto_adjacent(proposal,[tomb]))
-        for span in proposal['unlinked']: span['source']['uri']='https://other.example/book'
+        for span in proposal['unlinked']: span['uri']='https://other.example/book'
         self.assertFalse(moderate._veto_adjacent(proposal,[tomb]))
 
     def test_native_anchor_signature_uses_raw_source_location_and_base(self):
         first = item(); second = deepcopy(first)
         second['links'][0]['annotation']['extensions']={'unrelated': 1}
+        second['links'][0]['annotation']['subject'][0]['extensions']={'org.wikilean': {'anchor': {'snippet': 'x'}}}
         self.assertEqual(n.anchor_sig(first), n.anchor_sig(second))
         second['links'][0]['base_uri']='file:///different/base'
         self.assertNotEqual(n.anchor_sig(first), n.anchor_sig(second))
@@ -197,24 +216,24 @@ class Rendering(unittest.TestCase):
         self.assertEqual(render.wrap_annotations(HTML,[work],source_uri=URI)[1],[False])
 
     def test_absent_location_selects_whole_resource_but_empty_does_not(self):
-        work=item(); del work['links'][0]['annotation']['location']
+        work=item(); del work['links'][0]['annotation']['subject'][0]['location']
         self.assertEqual(render.wrap_annotations(HTML,[work],source_uri=URI)[1],[True])
-        work['links'][0]['annotation']['location']={}
+        work['links'][0]['annotation']['subject'][0]['location']={}
         self.assertEqual(render.wrap_annotations(HTML,[work],source_uri=URI)[1],[False])
 
     def test_unknown_modes_and_malformed_generic_locations_remain_unresolved(self):
         for mode,loc in (('pdf',{'page':1}),('latex',{'label':'x'}),('html',{'css':'#x'}),
                          ('generic',{'profile':n.ANCHOR_PROFILE,'anchor':{'type':'math_alttext','value':7}})):
-            work=item(); work['links'][0]['annotation'].update(source={'type':mode,'uri':URI},location=loc)
+            work=item(); work['links'][0]['annotation']['subject'][0].update(type=mode,location=loc)
             before=deepcopy(work)
             self.assertEqual(render.wrap_annotations(HTML,[work],source_uri=URI)[1],[False])
             self.assertEqual(work,before)
 
     def test_public_links_are_safe_and_private_review_data_is_absent(self):
         work=item(note='a public note',proof_note='secret',legacy={'secret':True},private='secret')
-        work['links'] += [{'id':'bad','annotation':{**occurrence(),'target':'javascript:alert(1)'}},
-                          {'id':'credentials','annotation':{**occurrence(),'target':'https://user:pass@example.org/'}},
-                          {'id':'relative','annotation':{**occurrence(),'target':'../formal#α'},'base_uri':'https://example.org/shards/one.json'}]
+        work['links'] += [{'id':'bad','annotation':{'subject':[occurrence()],'object':formal('javascript:alert(1)')}},
+                          {'id':'credentials','annotation':{'subject':[occurrence()],'object':formal('https://user:pass@example.org/')}},
+                          {'id':'relative','annotation':{'subject':[occurrence()],'object':formal('../formal#α')},'base_uri':'https://example.org/shards/one.json'}]
         public=render.build_client_data([work,item(status='rejected')])
         self.assertIsNone(public[1]); self.assertNotIn('secret',json.dumps(public))
         self.assertEqual(public[0]['note'],'a public note')
@@ -252,19 +271,19 @@ class Pipeline(unittest.TestCase):
             result=drift.process_slug(None,'http://unused','Synthetic_Article',SimpleNamespace(force_revid=None,dry_run=False),'run',lambda:'test')
         self.assertEqual(result['outcome'],'repinned')
         payload=posted.call_args.args[-1]
-        self.assertEqual(payload['annotations'][0]['links'][0]['annotation']['source']['uri'],n.wikipedia_source_uri(TITLE,43))
+        self.assertEqual(payload['annotations'][0]['links'][0]['annotation']['subject'][0]['uri'],n.wikipedia_source_uri(TITLE,43))
         self.assertEqual(payload['meta']['native_source_repin'][0]['from'],URI)
-        self.assertEqual(original['links'][0]['annotation']['source']['uri'],URI)
+        self.assertEqual(original['links'][0]['annotation']['subject'][0]['uri'],URI)
 
     def test_relative_article_source_repins_with_its_original_value_in_audit(self):
         work=item(); link=work['links'][0]
-        link['annotation']['source']['uri']='index.php?title=Synthetic_Article&oldid=42'
+        link['annotation']['subject'][0]['uri']='index.php?title=Synthetic_Article&oldid=42'
         link['base_uri']='https://en.wikipedia.org:443/w/records.json'
         self.assertEqual(render.wrap_annotations(HTML,[work],source_uri=URI)[1],[True])
         result,audit=n.repin_items([work],title=TITLE,old_revid=42,new_revid=43)
-        self.assertEqual(audit[0]['from'],link['annotation']['source']['uri'])
+        self.assertEqual(audit[0]['from'],link['annotation']['subject'][0]['uri'])
         self.assertEqual(result[0]['links'][0]['base_uri'],link['base_uri'])
-        self.assertEqual(result[0]['links'][0]['annotation']['source']['uri'],n.wikipedia_source_uri(TITLE,43))
+        self.assertEqual(result[0]['links'][0]['annotation']['subject'][0]['uri'],n.wikipedia_source_uri(TITLE,43))
 
     def test_native_human_tombstone_keeps_historical_pin(self):
         tombstone=item(provenance='human',status='rejected')
@@ -280,7 +299,7 @@ class Pipeline(unittest.TestCase):
         self.assertEqual(result['outcome'],'repinned')
         payload=posted.call_args.args[-1]
         self.assertEqual(payload['annotations'][0]['provenance'],'human')
-        self.assertEqual(payload['annotations'][0]['links'][0]['annotation']['source']['uri'],n.wikipedia_source_uri(TITLE,43))
+        self.assertEqual(payload['annotations'][0]['links'][0]['annotation']['subject'][0]['uri'],n.wikipedia_source_uri(TITLE,43))
         self.assertEqual(payload['meta']['native_source_repin'][0]['to'],n.wikipedia_source_uri(TITLE,43))
 
     def test_veto_guard_ignores_the_article_pin(self):
@@ -290,7 +309,9 @@ class Pipeline(unittest.TestCase):
 
     def test_only_article_local_occurrences_gate_a_repin(self):
         import update_from_upstream as drift
-        work=item(); work['links'].append({'id':'pdf','annotation':{'source':{'type':'pdf','uri':'https://example.net/paper.pdf'},'target':'urn:formal:pdf','location':{'page':2}}})
+        work=item(); work['links'].append({'id':'pdf','annotation':{'subject':[{'type':'pdf','uri':'https://example.net/paper.pdf','location':{'page':2}}],'object':formal('urn:formal:pdf')}})
+        # A link whose subject runs over the article and a PDF is gated by its article end only.
+        work['links'].append({'id':'joint','annotation':{'subject':[occurrence(),{'type':'pdf','uri':'https://example.net/paper.pdf','location':{'page':3}}],'object':formal('urn:formal:joint')}})
         article={'annotations':[work],'wikipedia_title':TITLE,'revid':42,'latest_revid':43,'version':7}
         with patch.object(drift,'get_article',return_value=article),patch.object(drift.render,'fetch_article_html',return_value=HTML),patch.object(drift,'post_repin',return_value=(200,{})) as posted:
             result=drift.process_slug(None,'http://unused','Synthetic_Article',SimpleNamespace(force_revid=None,dry_run=False),'run',lambda:'test')

@@ -279,14 +279,16 @@ def process_slug(s: requests.Session, base: str, slug: str, args,
         if not native.is_native(item) or item.get("status") == "rejected":
             continue
 
-        def local(span: dict) -> bool:
-            source = span.get("source")
-            return (isinstance(source, dict)
-                    and native.resolved_web_uri(source.get("uri", ""), span.get("base_uri")) == source_uri)
-        probe = {**item,
-                 "links": [link for link in item["links"] if isinstance(link, dict)
-                           and local({**link.get("annotation", {}), "base_uri": link.get("base_uri")})],
-                 "unlinked": [span for span in item["unlinked"] if isinstance(span, dict) and local(span)]}
+        def local(end: dict, base: str | None) -> bool:
+            return (isinstance(end, dict) and isinstance(end.get("uri"), str)
+                    and native.resolved_web_uri(end["uri"], base) == source_uri)
+        links = []
+        for link in item["links"]:
+            subject = [end for end in link["annotation"]["subject"] if local(end, link.get("base_uri"))]
+            if subject:
+                links.append({**link, "annotation": {**link["annotation"], "subject": subject}})
+        probe = {**item, "links": links,
+                 "unlinked": [span for span in item["unlinked"] if local(span, span.get("base_uri"))]}
         if not probe["links"] and not probe["unlinked"]:
             matched_flags[index] = True
             continue

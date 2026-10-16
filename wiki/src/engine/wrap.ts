@@ -9,7 +9,7 @@
 // boundaries.
 
 import { isNativeItem, legacyAnchorOccurrences, type SourceContext } from "../native-companion.js";
-import { formalTargetLabel } from "./formal-links.js";
+import { formalLinks } from "./formal-links.js";
 import { htmlEscape, htmlUnescape } from "./html.js";
 import type { Annotation, Anchor, WrapperTag } from "./types.js";
 
@@ -825,7 +825,7 @@ export function wrapAnnotations(bodyHtml: string, annotations: Annotation[], con
     let decl: string | null = null;
     for (const i of indices) {
       const a = annotations[i];
-      const d = isNativeItem(a) ? (a.links[0] ? formalTargetLabel(a.links[0].annotation) : null) : (a.mathlib && a.mathlib.decl) || a.decl;
+      const d = isNativeItem(a) ? formalLinks(a)[0]?.label ?? null : (a.mathlib && a.mathlib.decl) || a.decl;
       if (d) {
         decl = d;
         break;

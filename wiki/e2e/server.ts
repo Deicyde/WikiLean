@@ -29,10 +29,10 @@ const GENERATED_ASSET_FIXTURES = new Map<string, { body: string; contentType: st
 const harness = setup();
 const nativeSeed = migrateLegacyItems(SEED_ANNOTATIONS, { wikipediaTitle: "Native Article", revid: REVID }).items;
 nativeSeed[0].links.push({ id: "pdf-companion", base_uri: "https://example.net/annotations/group.json", annotation: {
-  source: { type: "pdf", uri: "../group.pdf", extensions: { publisher: { retained: true } } },
-  target: "../lean.html#External", location: { page: 2 }, extensions: { custom: { nested: [1, "keep", null] } }
+  subject: [{ type: "pdf", uri: "../group.pdf", location: { page: 2 }, extensions: { publisher: { retained: true } } }],
+  object: [{ type: "generic", uri: "../lean.html#External" }], extensions: { custom: { nested: [1, "keep", null] } },
 } });
-nativeSeed[1].unlinked.push({ source: { type: "html", uri: "https://example.net/narrative.html" }, location: { fragment: "result" } });
+nativeSeed[1].unlinked.push({ type: "html", uri: "https://example.net/narrative.html", location: { fragment: "result" } });
 harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,4,1,?,?)")
   .run("Native_Article", "Native Article", "Native Article", REVID, JSON.stringify(nativeSeed), Date.now(), Date.now());
 await harness.wpHtml.put(`wp:Native_Article:${REVID}`, WP_FIXTURE);

@@ -2,29 +2,53 @@
 // and regression tests exercise the same preservation logic.
 function createCompanionEditorModel() {
   const profile = "urn:wikilean:anchor:v3";
+  const mathlib = "https://github.com/leanprover-community/mathlib4";
+  const docs = "https://leanprover-community.github.io/mathlib4_docs/";
   const clone = value => JSON.parse(JSON.stringify(value));
   const native = item => !!item && ("links" in item || "unlinked" in item);
+  // The source locations of an item: each subject end of each link, then each unlinked end.
   function entries(item) {
-    return item.links.map((link, index) => ({ key: "link:" + link.id, kind: "link", index, occurrence: link.annotation, base: link.base_uri }))
-      .concat(item.unlinked.map((occurrence, index) => ({ key: "unlinked:" + index, kind: "unlinked", index, occurrence, base: occurrence.base_uri })));
+    const linked = [];
+    item.links.forEach((link, index) => link.annotation.subject.forEach((occurrence, end) => linked.push({
+      key: end ? "link-end:" + end + ":" + link.id : "link:" + link.id, kind: "link", index, end, link, occurrence, base: link.base_uri })));
+    return linked.concat(item.unlinked.map((occurrence, index) => ({ key: "unlinked:" + index, kind: "unlinked", index, occurrence, base: occurrence.base_uri })));
   }
   function selected(item, key) { return entries(item).find(entry => entry.key === key); }
-  // A target is a reference string or an endpoint object {uri, pin, extensions}.
-  function targetOf(occurrence) {
-    const target = occurrence && occurrence.target;
-    if (typeof target === "string") return target;
-    return target && typeof target === "object" && typeof target.uri === "string" ? target.uri : "";
+  function docsUri(module, declaration) {
+    return docs + module.split(".").map(encodeURIComponent).join("/") + ".html#" + encodeURIComponent(declaration);
   }
-  // The WikiLean editing key (section + snippet, or a typed anchor) stored
-  // beside a built-in Literature Links location.
+  // The reference shown for a formal end: a Mathlib declaration's docs page, else the end's uri.
+  function referenceOf(end) {
+    const loc = end.location || {};
+    if (end.type === "lean" && end.uri === mathlib && typeof loc.declaration === "string" && typeof loc.module === "string"
+      && !("lines" in loc) && !("profile" in loc)) return docsUri(loc.module, loc.declaration);
+    return end.uri;
+  }
+  // A typed reference as a formal end. A Mathlib docs page becomes its declaration in the repository.
+  function endOf(reference) {
+    const match = reference.startsWith(docs) ? /^([^#?]+)\.html#([^#]+)$/.exec(reference.slice(docs.length)) : null;
+    if (match) {
+      try {
+        const end = { type: "lean", uri: mathlib, location: { declaration: decodeURIComponent(match[2]), module: match[1].split("/").map(decodeURIComponent).join(".") } };
+        if (referenceOf(end) === reference) return end;
+      } catch (_) { /* not a docs page this editor writes */ }
+    }
+    return { type: "generic", uri: reference };
+  }
+  // The formal references of a link entry, separated by spaces; none for an unlinked one.
+  function targetOf(entry) {
+    return entry && entry.kind === "link" ? entry.link.annotation.object.map(referenceOf).join(" ") : "";
+  }
+  // The WikiLean editing key (section + snippet, or a typed anchor) stored in
+  // the end's extensions beside a built-in Literature Links location.
   function editingKey(occ) {
     const wikilean = occ.extensions && occ.extensions["org.wikilean"];
     return wikilean && wikilean.anchor && typeof wikilean.anchor === "object" ? wikilean.anchor : null;
   }
-  // Wikipedia text on an html source: the anchor profile, or a built-in
+  // Wikipedia text on an html end: the anchor profile, or a built-in
   // location with the editing key beside it.
   function wikipediaText(occ) {
-    if (occ.source.type !== "html" || !occ.location) return false;
+    if (occ.type !== "html" || !occ.location) return false;
     return occ.location.profile === profile || (!("profile" in occ.location) && !!editingKey(occ));
   }
   // Store the editing key beside a built-in location, or remove it when the
@@ -36,7 +60,7 @@ function createCompanionEditorModel() {
     if (Object.keys(wikilean).length) extensions["org.wikilean"] = wikilean; else delete extensions["org.wikilean"];
     if (Object.keys(extensions).length) occ.extensions = extensions; else delete occ.extensions;
   }
-  // Write an anchor into an occurrence: as a built-in quotation when the page
+  // Write an anchor into an end: as a built-in quotation when the page
   // can locate the text (locate returns {quote: {...}}), else in the profile form.
   function placeAnchor(occ, anchor, locate, keepProfileDetails) {
     const location = locate ? locate(anchor) : null;
@@ -51,7 +75,7 @@ function createCompanionEditorModel() {
   }
   function makeItem(source, anchor, locate) {
     if (!source) throw new Error("The article has no pinned source revision. A source revision is required before adding a location.");
-    const occurrence = { source: { type: "html", uri: source } };
+    const occurrence = { type: "html", uri: source };
     placeAnchor(occurrence, anchor, locate, false);
     return { links: [], unlinked: [occurrence] };
   }
@@ -59,7 +83,7 @@ function createCompanionEditorModel() {
     if (!entry || !source) return null;
     const occ = entry.occurrence;
     let uri;
-    try { uri = entry.base ? new URL(occ.source.uri, entry.base).href : new URL(occ.source.uri).href; } catch (_) { return null; }
+    try { uri = entry.base ? new URL(occ.uri, entry.base).href : new URL(occ.uri).href; } catch (_) { return null; }
     if (uri !== source || !wikipediaText(occ)) return null;
     return occ.location.profile === profile ? occ.location.anchor || null : editingKey(occ);
   }
@@ -69,35 +93,36 @@ function createCompanionEditorModel() {
     const occ = entry.occurrence;
     if (change.anchor) {
       if (change.reanchorSource) {
-        occ.source = { type: "html", uri: change.reanchorSource };
+        // The end now selects article text. What described the old document goes.
+        for (const field of ["version", "sha256", "citation", "identifiers"]) delete occ[field];
+        occ.type = "html"; occ.uri = change.reanchorSource;
         placeAnchor(occ, change.anchor, locate, false);
       } else {
         if (!wikipediaText(occ))
           throw new Error("This location cannot be edited as Wikipedia text. Use a new article selection to replace it explicitly.");
-        placeAnchor(occ, { ...anchor(entry, new URL(occ.source.uri, entry.base || undefined).href) || {}, ...clone(change.anchor) }, locate, true);
+        placeAnchor(occ, { ...anchor(entry, new URL(occ.uri, entry.base || undefined).href) || {}, ...clone(change.anchor) }, locate, true);
       }
     }
-    if ("target" in change && change.target !== targetOf(occ)) {
+    if ("target" in change && change.target !== targetOf(entry)) {
       const target = change.target.trim();
       if (target && /\s/.test(target)) throw new Error("The formal reference must not contain spaces; use an encoded URI.");
       if (entry.kind === "link") {
-        // A new destination replaces the old one entirely: a pin cites the
-        // previous declaration and would be false for the new reference.
-        if (target) occ.target = target;
-        else {
-          const unlinked = { source: clone(occ.source) };
-          if ("location" in occ) unlinked.location = clone(occ.location);
-          if ("extensions" in occ) unlinked.extensions = clone(occ.extensions);
-          if (entry.base) unlinked.base_uri = entry.base;
-          next.unlinked.push(unlinked);
+        const annotation = entry.link.annotation;
+        if (target) {
+          // A new destination replaces the old one entirely: a version, relation
+          // or junk values describe the previous object and would be false here.
+          annotation.object = [endOf(target)];
+          delete annotation.relation; delete annotation.junk;
+        } else {
+          // Without a formal end, every subject end of the link returns to unlinked work.
+          const moved = annotation.subject.map(end => entry.base ? { ...end, base_uri: entry.base } : end);
+          next.unlinked.push(...moved);
           next.links.splice(entry.index, 1);
-          return { item: next, key: "unlinked:" + (next.unlinked.length - 1) };
+          return { item: next, key: "unlinked:" + (next.unlinked.length - moved.length + entry.end) };
         }
       } else if (target) {
-        const annotation = { source: clone(occ.source), target };
-        if ("location" in occ) annotation.location = clone(occ.location);
-        if ("extensions" in occ) annotation.extensions = clone(occ.extensions);
-        const link = { id: newId(), annotation };
+        const end = clone(occ); delete end.base_uri;
+        const link = { id: newId(), annotation: { subject: [end], object: [endOf(target)] } };
         if (entry.base) link.base_uri = entry.base;
         next.links.push(link);
         next.unlinked.splice(entry.index, 1);
@@ -110,11 +135,9 @@ function createCompanionEditorModel() {
     if (!target || /\s/.test(target)) throw new Error("Enter a formal reference without spaces.");
     const next = clone(item), entry = selected(next, key);
     if (!entry) throw new Error("Choose the source location for the additional link.");
-    const annotation = { source: clone(entry.occurrence.source), target };
-    if ("location" in entry.occurrence) annotation.location = clone(entry.occurrence.location);
-    // Another link at the same place shares the editing key, not the first link's other data.
-    if (editingKey(entry.occurrence)) annotation.extensions = { "org.wikilean": { anchor: clone(editingKey(entry.occurrence)) } };
-    const link = { id: newId(), annotation };
+    // Another link at the same place shares the end, not the first link's record.
+    const end = clone(entry.occurrence); delete end.base_uri;
+    const link = { id: newId(), annotation: { subject: [end], object: [endOf(target)] } };
     if (entry.base) link.base_uri = entry.base;
     next.links.push(link);
     return { item: next, key: "link:" + link.id };
@@ -128,7 +151,7 @@ function createCompanionEditorModel() {
     const promoted = edited && edited.kind === "unlinked" && after.unlinked.length === before.unlinked.length - 1;
     return "unlinked:" + (requested.index - (promoted && edited.index < requested.index ? 1 : 0));
   }
-  return { clone, native, entries, selected, targetOf, makeItem, anchor, edit, add, selectionAfterEdit, editingKey };
+  return { clone, native, entries, selected, targetOf, referenceOf, endOf, makeItem, anchor, edit, add, selectionAfterEdit, editingKey };
 }
 // ---- editor runtime ----
 // WikiLean live-wiki editor. Injected on article pages for logged-in users by
@@ -1375,7 +1398,7 @@ function createCompanionEditorModel() {
     if (companions.native(a)) {
       const entry = companions.entries(a)[0];
       const anchor = companions.anchor(entry, sourceUri);
-      return anchor ? anchor.snippet || anchor.value || anchor.from || entry.occurrence.source.uri : entry ? entry.occurrence.source.uri : "No source location";
+      return anchor ? anchor.snippet || anchor.value || anchor.from || entry.occurrence.uri : entry ? entry.occurrence.uri : "No source location";
     }
     const anc = a.anchor || {};
     return anc.snippet || anc.value || anc.from || "(" + (anc.section || "?") + ")";
@@ -1398,14 +1421,14 @@ function createCompanionEditorModel() {
     entries.forEach(function (entry, index) {
       const option = document.createElement("option");
       option.value = entry.key;
-      option.textContent = (index + 1) + ". " + (entry.kind === "link" ? companions.targetOf(entry.occurrence) : "No formal link yet");
+      option.textContent = (index + 1) + ". " + (entry.kind === "link" ? companions.targetOf(entry) : "No formal link yet");
       select.appendChild(option);
     });
     if (!entries.some(entry => entry.key === nativeKey)) nativeKey = entries[0] ? entries[0].key : "";
     select.value = nativeKey;
     const entry = companions.selected(nativeDraft, nativeKey);
-    $("wlr-f-target").value = entry && entry.kind === "link" ? companions.targetOf(entry.occurrence) : "";
-    $("wlr-source-info").textContent = entry ? entry.occurrence.source.type + " · " + entry.occurrence.source.uri : "No source location. Select article text and use Re-anchor to add one.";
+    $("wlr-f-target").value = entry && entry.kind === "link" ? companions.targetOf(entry) : "";
+    $("wlr-source-info").textContent = entry ? entry.occurrence.type + " · " + entry.occurrence.uri : "No source location. Select article text and use Re-anchor to add one.";
     const anchor = companions.anchor(entry, sourceUri);
     populateAnchorFields(anchor || { type: "source location retained; select article text to replace" });
     nativeAnchorBaseline = JSON.stringify([$("wlr-f-anchor-section").value, $("wlr-f-anchor-snippet").value]);

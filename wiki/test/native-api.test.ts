@@ -5,7 +5,7 @@ import {
 } from './helpers/harness.js';
 import { migrateLocalDatabase } from '../scripts/migrate-native.js';
 import { app } from '../src/index.js';
-import { editorItems, wikipediaSourceUri, type NativeItem, type LinkRecord } from '../src/native-companion.js';
+import { editorItems, wikipediaSourceUri, type NativeItem, type LinkRecord, type LinkEnd } from '../src/native-companion.js';
 
 blockNetwork();
 function nativeSetup() { const h = setup(); migrateLocalDatabase(h.db); return h; }
@@ -15,17 +15,19 @@ function repin(items: NativeItem[], revid: number) {
   const output = echo(items);
   for (const item of output) {
     if (item.status === 'rejected') continue;
-    for (const link of item.links) link.annotation.source.uri = wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid });
-    for (const occ of item.unlinked) occ.source.uri = wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid });
+    for (const link of item.links) for (const end of link.annotation.subject) end.uri = wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid });
+    for (const occ of item.unlinked) occ.uri = wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid });
   }
   return output;
 }
-const core = (type: LinkRecord['source']['type']): LinkRecord => ({ source: { type, uri: 'urn:source' }, target: 'urn:target', extensions: { 'urn:opaque': { deep: [null, 'α', 1] } } });
+const core = (type: LinkEnd['type'], location?: Record<string, unknown>): LinkRecord => ({ subject: [{ type, uri: 'urn:source', ...(location ? { location } : {}) }],
+  object: [{ type: 'generic', uri: 'urn:target' }], extensions: { 'urn:opaque': { deep: [null, 'α', 1] } } });
+const formal = (uri: string): LinkEnd[] => [{ type: 'generic', uri }];
 
 describe('native canonical API and lifecycle', () => {
   it('defaults new articles to native storage, records source context, and cannot mint human provenance', async () => {
     const h = setup();
-    const items = [{ id: 'aaaaaaaaaaaa', status: 'formalized', provenance: 'human', links: ['pdf', 'html', 'latex', 'generic'].map((type, index) => ({ id: `link-${index}`, annotation: core(type as LinkRecord['source']['type']) })), unlinked: [] }];
+    const items = [{ id: 'aaaaaaaaaaaa', status: 'formalized', provenance: 'human', links: ['pdf', 'html', 'latex', 'generic'].map((type, index) => ({ id: `link-${index}`, annotation: core(type as LinkEnd['type']) })), unlinked: [] }];
     const result = await put(h.env, '/api/article/Native_New', { wikipedia_title: 'Native New', revid: REVID, annotations: items }, { bearer: PIPELINE_TOKEN });
     expect(result.status).toBe(201);
     expect(articleRow(h.db, 'Native_New')?.schema_version).toBe(4);
@@ -43,12 +45,12 @@ describe('native canonical API and lifecycle', () => {
   });
   it('serves stored associations verbatim, preserves duplicate IDs and records with their bases', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
-    const value: LinkRecord = { source: { type: 'pdf', uri: '../paper.pdf' }, target: '../formal.lean#x', id: 'shared', location: { page: 2 }, extensions: { 'urn:custom': ['keep', { a: true }] } };
+    const value: LinkRecord = { subject: [{ type: 'pdf', uri: '../paper.pdf', location: { page: 2 } }], object: formal('../formal.lean#x'), id: 'shared', extensions: { 'urn:custom': ['keep', { a: true }] } };
     items[0].links = [{ id: 'one', annotation: value, base_uri: 'file:///papers/shards/a.json' }, { id: 'two', annotation: echo(value), base_uri: 'file:///other/shards/b.json' }];
     const saved = await botSave(h.env, { annotations: items, base_version: 2 });
     expect(saved.status).toBe(200);
     const response = await get(h.env, `/api/article/${SLUG}/companion-records.json`);
-    const projected = { ...value, status: 'formalized', kind: 'definition', label: 'Abelian group',
+    const projected = { ...value, subject: [{ ...value.subject[0], title: 'Abelian group' }], status: 'formalized', kind: 'definition',
       extensions: { ...value.extensions, 'org.wikilean': { provenance: 'ai', match_kind: 'exact' } } };
     expect(await response.json()).toEqual({ version: 3, records: items[0].links.map(link => ({ ...link, annotation: projected, item_id: items[0].id })) });
     expect((await get(h.env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
@@ -61,16 +63,17 @@ describe('native canonical API and lifecycle', () => {
   });
   it('keeps an explicit carrier for opaque profile references even when core references are absolute', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
-    items[0].links[0].annotation.location = { profile: 'urn:custom', relative_part: '../part.json' };
+    items[0].links[0].annotation.subject[0].location = { profile: 'urn:custom', relative_part: '../part.json' };
     items[0].links[0].base_uri = 'https://example.org/shards/original.json';
     expect((await botSave(h.env, { annotations: items, base_version: 2 })).status).toBe(200);
     expect((await get(h.env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
     const lossless = await (await get(h.env, `/api/article/${SLUG}/companion-records.json`)).json() as { records: unknown[] };
-    expect(lossless.records[0]).toMatchObject(items[0].links[0]);
+    expect(lossless.records[0]).toMatchObject({ id: items[0].links[0].id, base_uri: items[0].links[0].base_uri,
+      annotation: { subject: [{ location: items[0].links[0].annotation.subject[0].location }], object: items[0].links[0].annotation.object } });
   });
   it('round-trips unsupported modes and extensions through an ordinary human save', async () => {
     const h = nativeSetup(); const items = nativeItems(h);
-    items[0].links.push({ id: 'external', annotation: { ...core('html'), location: { css: '.arbitrary' } } });
+    items[0].links.push({ id: 'external', annotation: core('html', { css: '.arbitrary' }) });
     expect((await botSave(h.env, { annotations: items, base_version: 2 })).status).toBe(200);
     const posted = editorItems(nativeItems(h)); posted[0].label = 'Human label';
     expect((await save(h.env, { annotations: posted, base_version: 3 }, { user: 'u-human' })).status).toBe(200);
@@ -114,7 +117,7 @@ describe('native canonical API and lifecycle', () => {
   it('preserves human links and tombstones against bot bulk changes', async () => {
     const h = nativeSetup(); const items = editorItems(nativeItems(h)); items[0].status = 'rejected';
     expect((await save(h.env, { annotations: items, base_version: 2 }, { user: 'u-human' })).status).toBe(200);
-    const changed = nativeItems(h); changed[0].links[0].annotation.target = 'urn:changed';
+    const changed = nativeItems(h); changed[0].links[0].annotation.object = formal('urn:changed');
     expect((await botSave(h.env, { annotations: changed, base_version: 3 })).status).toBe(422);
     expect(await (await get(h.env, `/api/article/${SLUG}/companion.jsonl`, { bearer: PIPELINE_TOKEN })).text()).toBe('');
   });
@@ -129,7 +132,7 @@ describe('native canonical API and lifecycle', () => {
   it('applies native proposals with authenticated provenance and retains old incompatible proposals for explicit rebase', async () => {
     const h = nativeSetup();
     expect((await save(h.env, { action: 'endorse', annotation_id: 'aaaaaaaaaaaa', base_version: 2 }, { user: 'u-human' })).status).toBe(200);
-    const items = nativeItems(h); const links = echo(items[0].links); links[0].annotation.target = 'urn:replacement';
+    const items = nativeItems(h); const links = echo(items[0].links); links[0].annotation.object = formal('urn:replacement');
     expect((await botSave(h.env, { annotations: items, base_version: 3, meta: { ladder: { proposals: [{ annotationId: items[0].id, fields: { links }, reason: 'replace target' }] } } })).status).toBe(200);
     const pending = JSON.parse((h.db.prepare('SELECT proposal FROM moderation_state WHERE slug=?').get(SLUG) as { proposal: string }).proposal);
     expect((await botSave(h.env, { action: 'approve_proposal', proposal_id: pending[0].proposalId, base_version: 3 })).status).toBe(200);
@@ -141,7 +144,7 @@ describe('native canonical API and lifecycle', () => {
   });
   it('requires every active local span to resolve when advancing the pin', async () => {
     const h = nativeSetup(); const items = repin(nativeItems(h), NEW_REVID);
-    const bad = echo(items[0].links[0]); bad.id = 'missing-span'; bad.annotation.location = { profile: 'urn:wikilean:anchor:v3', anchor: { section: '(lead)', snippet: 'absent text' } };
+    const bad = echo(items[0].links[0]); bad.id = 'missing-span'; bad.annotation.subject[0].location = { profile: 'urn:wikilean:anchor:v3', anchor: { section: '(lead)', snippet: 'absent text' } };
     items[0].links.push(bad);
     expect((await botSave(h.env, { annotations: items, revid: NEW_REVID, base_version: 2 })).status).toBe(422);
     expect(articleRow(h.db)?.revid).toBe(REVID);
@@ -170,7 +173,7 @@ describe('native canonical API and lifecycle', () => {
     expect(articleRow(h.db)?.revid).toBe(NEW_REVID);
     const human = nativeItems(h)[0];
     expect(human.provenance).toBe('human');
-    expect(human.links[0].annotation.source.uri).toBe(wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid: NEW_REVID }));
+    expect(human.links[0].annotation.subject[0].uri).toBe(wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid: NEW_REVID }));
   });
   it('restores native source pins and rejects unresolved legacy history', async () => {
     const h = nativeSetup(); const before = nativeItems(h); const rev = latestRevision(h.db).id;

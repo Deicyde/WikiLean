@@ -21,16 +21,15 @@ test('native editor updates one retained link and preserves other occurrences th
   await page.getByRole('button',{name:'Save',exact:true}).click();
   const result=await saved;expect(result.status()).toBe(200);expect(await result.json()).toMatchObject({ok:true});
   const records=await (await page.request.get('/api/article/Native_Article/companion-records.json')).json();
-  expect(records.records).toHaveLength(2);
+  expect(records.records.map((record:any)=>record.id)).toEqual(['aaaaaaaaaaaa:link:0','pdf-companion']);
   const external=records.records.find((record:any)=>record.id==='pdf-companion');
   expect(external).toMatchObject({base_uri:'https://example.net/annotations/group.json',annotation:{
-    source:{type:'pdf',uri:'../group.pdf',extensions:{publisher:{retained:true}}},
-    target:'urn:formal:changed',location:{page:2},extensions:{custom:{nested:[1,'keep',null]}}
+    subject:[{type:'pdf',uri:'../group.pdf',location:{page:2},extensions:{publisher:{retained:true}}}],
+    object:[{type:'generic',uri:'urn:formal:changed'}],extensions:{custom:{nested:[1,'keep',null]}}
   }});
-  const migrated=records.records.find((record:any)=>record.id!=='pdf-companion').annotation;
-  expect(migrated.target.uri).toContain('#AddCommGroup');
-  expect(migrated.target.pin).toMatchObject({type:'repository',declaration:'AddCommGroup'});
-  expect(migrated).toMatchObject({status:'formalized',source:{pin:{type:'website',revision:'12345'}}});
+  const migrated=records.records[0].annotation;
+  expect(migrated.object).toEqual([{type:'lean',uri:'https://github.com/leanprover-community/mathlib4',location:{declaration:'AddCommGroup',module:'Mathlib.Algebra.Group.Defs'}}]);
+  expect(migrated).toMatchObject({status:'formalized',subject:[{type:'html',title:'Abelian group'}],extensions:{'org.wikilean':{match_kind:'exact'}}});
   expect(errors).toEqual([]);
 });
 
@@ -50,6 +49,6 @@ test('selecting the second targetless location after linking the first keeps the
   const data=await (await page.request.get('/api/article/Native_Article.json')).json();
   const item=data.annotations.find((value:any)=>value && value.id==='bbbbbbbbbbbb');
   expect(item.links).toHaveLength(2);expect(item.unlinked).toHaveLength(0);
-  expect(item.links[0].annotation.target).toBe('urn:formal:first-selection');
-  expect(item.links[1].annotation).toMatchObject({source:{type:'html',uri:'https://example.net/narrative.html'},target:'urn:formal:second-selection',location:{fragment:'result'}});
+  expect(item.links[0].annotation.object).toEqual([{type:'generic',uri:'urn:formal:first-selection'}]);
+  expect(item.links[1].annotation).toEqual({subject:[{type:'html',uri:'https://example.net/narrative.html',location:{fragment:'result'}}],object:[{type:'generic',uri:'urn:formal:second-selection'}]});
 });

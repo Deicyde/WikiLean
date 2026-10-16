@@ -3,117 +3,133 @@ import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import {
   validateLinkRecord, validateNativeItems, migrateLegacyItems, nativeAnchorSig, legacyAnchorOccurrences, parseMathSelector, wikipediaSourceUri,
-  targetUri, targetPin, normalize, companionAnnotation, storedCompanionRecords, MATHLIB_REPOSITORY,
-  type NativeItem, type LinkRecord,
+  storedCompanionRecords, endReference, mathlibEnd, MATHLIB_REPOSITORY,
+  type NativeItem, type LinkRecord, type LinkEnd,
 } from '../src/native-companion.js';
 
 const context = { wikipediaTitle: 'Test Article', revid: 12345 };
-const core = (mode: LinkRecord['source']['type'] = 'generic'): LinkRecord => ({ source: { type: mode, uri: 'urn:source' }, target: 'urn:target' });
+const end = (type: LinkEnd['type'] = 'generic', extra: Partial<LinkEnd> = {}): LinkEnd => ({ type, uri: 'urn:source', ...extra });
+const core = (type: LinkEnd['type'] = 'generic', extra: Partial<LinkEnd> = {}): LinkRecord => ({ subject: [end(type, extra)], object: [{ type: 'generic', uri: 'urn:target' }] });
 const item = (annotation = core()): NativeItem => ({ id: 'aaaaaaaaaaaa', status: 'partial', links: [{ id: 'record-1', annotation }], unlinked: [] });
+const commit = 'a'.repeat(40);
 
 describe('canonical native companion records', () => {
   it('vendors exactly the pinned reference schema', () => {
     const bytes = readFileSync(new URL('../src/vendor/literature-links/companion.schema.json', import.meta.url));
     const provenance = JSON.parse(readFileSync(new URL('../src/vendor/literature-links/provenance.json', import.meta.url), 'utf8'));
     expect(createHash('sha256').update(bytes).digest('hex')).toBe(provenance.sha256);
+    expect(provenance).toMatchObject({ repository: 'https://github.com/mathlib-initiative/literature-links', branch: 'format-2.0', version: '2.0.0' });
+    expect(provenance.commit).toMatch(/^[0-9a-f]{40}$/);
     const license = readFileSync(new URL('../src/vendor/literature-links/LICENSE', import.meta.url));
     expect(createHash('sha256').update(license).digest('hex')).toBe(provenance.license_sha256);
   });
-  it.each(['generic', 'pdf', 'html', 'latex'] as const)('accepts whole-resource %s annotations with opaque extensions', mode => {
-    const annotation = { ...core(mode), id: 'duplicate is okay', extensions: { 'urn:test': [null, { unknown: '🧮' }] } };
+  it.each(['generic', 'pdf', 'html', 'latex', 'lean'] as const)('accepts whole-resource %s ends with opaque extensions', type => {
+    const annotation = { ...core(type, { extensions: { 'urn:end': [1] } }), id: 'duplicate is okay', extensions: { 'urn:test': [null, { unknown: '🧮' }] } };
     expect(validateLinkRecord(annotation)).toEqual([]);
     const a = item(annotation); a.links.push({ id: 'record-2', annotation: structuredClone(annotation) });
     expect(validateNativeItems([a])).toEqual([]);
   });
-  it('enforces the reference semantic checks and preserves lexical references', () => {
-    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.2, 1] } })).not.toEqual([]);
-    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.1, 1] } })).toEqual([]);
+  it('enforces the reference semantic checks in every end and preserves lexical references', () => {
+    expect(validateLinkRecord(core('pdf', { location: { page: 1, rect: [0.9, 0, 0.2, 1] } }))).not.toEqual([]);
+    expect(validateLinkRecord(core('pdf', { location: { page: 1, rect: [0.9, 0, 0.1, 1] } }))).toEqual([]);
     // The bound is a double sum, so a width computed as 1 - x fits.
-    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0.9, 0, 0.10000000000000002, 1] } })).toEqual([]);
-    expect(validateLinkRecord({ ...core('latex'), location: { lines: [3, 1] } })).not.toEqual([]);
-    // A profile makes the location application-defined in every mode.
-    expect(validateLinkRecord({ ...core('pdf'), location: { profile: 'urn:x', rect: [0.9, 0, 0.2, 1] } })).toEqual([]);
-    expect(validateLinkRecord({ ...core('latex'), location: { profile: 'urn:x', lines: [3, 1] } })).toEqual([]);
-    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, quote: { exact: 'a group' } } })).toEqual([]);
-    expect(validateLinkRecord({ ...core('pdf'), location: { page: 1, rect: [0, 0, 1, 1], quote: { exact: 'a group' } } })).not.toEqual([]);
+    expect(validateLinkRecord(core('pdf', { location: { page: 1, rect: [0.9, 0, 0.10000000000000002, 1] } }))).toEqual([]);
+    expect(validateLinkRecord(core('latex', { location: { lines: [3, 1] } }))).not.toEqual([]);
+    expect(validateLinkRecord(core('latex', { location: { lines: [3] } }))).toEqual([]);
+    // Object ends are checked too: Lean lines need a module and must be ordered.
+    const lean = (location: Record<string, unknown>): LinkRecord => ({ subject: [end()], object: [{ type: 'lean', uri: MATHLIB_REPOSITORY, location }] });
+    expect(validateLinkRecord(lean({ module: 'Mathlib.X', lines: [9, 2] })).join()).toContain('/object/0/location/lines');
+    expect(validateLinkRecord(lean({ declaration: 'x', lines: [2, 9] }))).not.toEqual([]);
+    expect(validateLinkRecord(lean({ declaration: 'x', module: 'Mathlib.X', lines: [2, 9] }))).toEqual([]);
+    // A profile makes the location application-defined in every type.
+    expect(validateLinkRecord(core('pdf', { location: { profile: 'urn:x', rect: [0.9, 0, 0.2, 1] } }))).toEqual([]);
+    expect(validateLinkRecord(core('latex', { location: { profile: 'urn:x', lines: [3, 1] } }))).toEqual([]);
+    expect(validateLinkRecord(core('pdf', { location: { page: 1, quote: { exact: 'a group' } } }))).toEqual([]);
+    expect(validateLinkRecord(core('pdf', { location: { page: 1, rect: [0, 0, 1, 1], quote: { exact: 'a group' } } }))).not.toEqual([]);
     for (const uri of ['https://[oops', 'file:foo', 'urn:opaque:α%2f#']) {
-      expect(validateNativeItems([item({ source: { type: 'generic', uri }, target: uri })])).toEqual([]);
+      expect(validateNativeItems([item({ subject: [{ type: 'generic', uri }], object: [{ type: 'generic', uri }] })])).toEqual([]);
     }
   });
   it('rejects invalid core shapes without discarding arbitrary valid generic location data', () => {
-    for (const bad of [{ ...core(), version: 2 }, { ...core(), location: null }, { ...core('html'), location: { css: 'x', fragment: 'y' } }, { ...core(), target: '' },
-      { ...core(), target: {} }, { ...core(), target: { uri: 'urn:x', pin: { type: 'repository', bogus: 1 } } }, { ...core(), status: '' }, { ...core(), kind: 1 }]) {
+    for (const bad of [{ ...core(), version: 2 }, core('generic', { location: null as never }), core('html', { location: { css: 'x', fragment: 'y' } }),
+      { ...core(), subject: [] }, { ...core(), object: [{ uri: 'urn:x' }] }, { source: { type: 'generic', uri: 'urn:x' }, target: 'urn:y' },
+      { ...core(), status: { value: 'partial' } }, { ...core(), status: '' }, { ...core(), kind: 1 }, { ...core(), junk: [] }]) {
       expect(validateLinkRecord(bad)).not.toEqual([]);
     }
-    expect(validateLinkRecord({ ...core(), location: { profile: 'unknown', arbitrary: [1, null] } })).toEqual([]);
+    expect(validateLinkRecord(core('generic', { location: { profile: 'unknown', arbitrary: [1, null] } }))).toEqual([]);
   });
-  it('accepts endpoint targets, typed pins and facts; a link still needs a formal destination', () => {
-    const pinned: LinkRecord = { ...core(), kind: 'theorem', label: 'Lagrange', note: 'checked by hand',
-      status: { value: 'partial', pin: { type: 'repository', url: MATHLIB_REPOSITORY, commit: 'a'.repeat(40) } },
-      target: { uri: 'urn:x', pin: { type: 'repository', url: MATHLIB_REPOSITORY, module: 'Mathlib.X', declaration: 'x' } } };
-    expect(validateLinkRecord(pinned)).toEqual([]);
-    expect(targetUri(pinned)).toBe('urn:x'); expect(targetPin(pinned)?.declaration).toBe('x');
-    expect(normalize({ ...core(), status: 'partial' })).toEqual({ source: core().source, target: { uri: 'urn:target' }, status: { value: 'partial' } });
-    expect(normalize(pinned)).toEqual(pinned);
-    expect(validateNativeItems([item(pinned)])).toEqual([]);
-    const absent: LinkRecord = { source: { type: 'html', uri: 'urn:source' }, status: 'not_formalized' };
-    expect(validateLinkRecord(absent)).toEqual([]);
-    expect(targetUri(absent)).toBeUndefined();
-    expect(validateNativeItems([item(absent)]).join()).toContain('requires a formal target');
-    const relative = item({ ...core(), target: { uri: '../formal.lean#x' } });
+  it('accepts relations, versions and facts; a link still needs an object end', () => {
+    const facts: LinkRecord = { ...core(), relation: 'broadMatch', junk: ['x / 0 = 0'], status: 'partial', kind: 'theorem', id: 'subject-1', note: 'checked by hand',
+      object: [{ ...mathlibEnd('Mathlib.X', 'x'), version: commit }] };
+    expect(validateLinkRecord(facts)).toEqual([]);
+    expect(validateNativeItems([item(facts)])).toEqual([]);
+    const unlinked: LinkRecord = { subject: [end('html')], object: [], status: 'not_formalized' };
+    expect(validateLinkRecord(unlinked)).toEqual([]);
+    expect(validateNativeItems([item(unlinked)]).join()).toContain('requires an object end');
+    const relative = item({ ...core(), object: [{ type: 'generic', uri: '../formal.lean#x' }] });
     expect(validateNativeItems([relative]).join()).toContain('base_uri');
     relative.links[0].base_uri = 'file:///shards/a.json';
     expect(validateNativeItems([relative])).toEqual([]);
   });
+  it('stores a checked absence only with the version that was searched', () => {
+    const absence: LinkRecord = { subject: [end('html')], object: [{ type: 'lean', uri: MATHLIB_REPOSITORY }], relation: 'noMatch' };
+    expect(validateLinkRecord(absence)).toEqual([]);
+    expect(validateNativeItems([item(absence)]).join()).toContain('noMatch');
+    absence.object[0].version = commit;
+    expect(validateNativeItems([item(absence)])).toEqual([]);
+  });
   it('projects the review item onto each stored link without changing what is stored', () => {
-    const local = { source: { type: 'html' as const, uri: wikipediaSourceUri(context) }, target: 'urn:formal:a', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
-    const foreign: LinkRecord = { id: 'their-id', label: 'Their label', source: { type: 'pdf', uri: '../paper.pdf' }, target: { uri: 'urn:formal:b' },
-      status: { pin: { type: 'repository', url: MATHLIB_REPOSITORY } }, extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1 } } };
+    const local: LinkRecord = { subject: [{ type: 'html', uri: wikipediaSourceUri(context), location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } }],
+      object: [mathlibEnd('Mathlib.Algebra.Group.Defs', 'AddCommGroup')] };
+    const foreign: LinkRecord = { id: 'their-id', relation: 'closeMatch', subject: [{ type: 'pdf', uri: '../paper.pdf', title: 'Their title' }],
+      object: [{ type: 'generic', uri: 'urn:formal:b' }], extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1 } } };
     const work: NativeItem = { id: 'aaaaaaaaaaaa', status: 'partial', kind: 'theorem', label: 'Ours', note: 'why partial', provenance: 'ai-moderated', match_kind: 'generalization',
       links: [{ id: 'one', annotation: local }, { id: 'two', annotation: foreign, base_uri: 'https://example.net/shards/a.json' }], unlinked: [] };
     const before = structuredClone(work);
-    const [first, second] = storedCompanionRecords([work, { ...work, id: 'bbbbbbbbbbbb', status: 'rejected' }], { ...context, wikidataQid: 'Q1' });
+    const [first, second] = storedCompanionRecords([work, { ...work, id: 'bbbbbbbbbbbb', status: 'rejected' }], context);
     expect(storedCompanionRecords([work], context)).toHaveLength(2);
-    expect(first.annotation).toEqual({ id: 'aaaaaaaaaaaa', kind: 'theorem', label: 'Ours', status: 'partial',
-      source: { ...local.source, pin: { type: 'website', title: 'Test Article', owner: 'Wikipedia', url: local.source.uri, revision: '12345', identifiers: { wikidata: 'Q1' } } },
-      location: local.location, target: 'urn:formal:a', note: 'why partial',
-      extensions: { 'org.wikilean': { provenance: 'ai-moderated', match_kind: 'generalization' } } });
-    // A foreign source gets no article pin; stored id, label, extensions and the status pin survive.
-    expect(second.annotation).toEqual({ id: 'their-id', kind: 'theorem', label: 'Their label', status: { value: 'partial', pin: { type: 'repository', url: MATHLIB_REPOSITORY } },
-      source: foreign.source, target: foreign.target, note: 'why partial',
+    expect(first.annotation).toEqual({ subject: [{ ...local.subject[0], title: 'Ours' }], object: local.object, status: 'partial', kind: 'theorem',
+      id: 'aaaaaaaaaaaa', note: 'why partial', extensions: { 'org.wikilean': { provenance: 'ai-moderated', match_kind: 'generalization' } } });
+    // Stored id, relation, title and extensions survive.
+    expect(second.annotation).toEqual({ id: 'their-id', relation: 'closeMatch', status: 'partial', kind: 'theorem', note: 'why partial',
+      subject: foreign.subject, object: foreign.object,
       extensions: { 'org.example': { kept: true }, 'org.wikilean': { imported: 1, provenance: 'ai-moderated', match_kind: 'generalization' } } });
-    expect(second.item_id).toBe('aaaaaaaaaaaa'); expect(second.base_uri).toBe('https://example.net/shards/a.json');
+    expect(second).toMatchObject({ item_id: 'aaaaaaaaaaaa', id: 'two', base_uri: 'https://example.net/shards/a.json' });
     expect(work).toEqual(before);
     for (const record of [first.annotation, second.annotation]) expect(validateLinkRecord(record)).toEqual([]);
-    expect(companionAnnotation({ status: 'partial', links: [], unlinked: [] }, { id: 'x', annotation: local }).source).not.toHaveProperty('pin');
   });
-  it('reads built-in locations: the editing key beside them, else the location itself', () => {
+  it('reads built-in locations: the editing key in the end, else the location itself', () => {
     const uri = wikipediaSourceUri(context);
-    const keyed = item({ source: { type: 'html', uri }, target: 'urn:x', location: { quote: { exact: 'finite group' } }, extensions: { 'org.wikilean': { anchor: { section: '(lead)', snippet: 'finite group' } } } });
-    expect(legacyAnchorOccurrences(keyed, context)).toEqual([{ section: '(lead)', snippet: 'finite group' }]);
-    const quoted = item({ source: { type: 'html', uri }, target: 'urn:x', location: { quote: { exact: 'finite group', prefix: 'A ' } } });
-    expect(legacyAnchorOccurrences(quoted, context)).toEqual([{ type: 'quote', exact: 'finite group', prefix: 'A ' }]);
-    const math = item({ source: { type: 'html', uri }, target: 'urn:x', location: { css: 'img[alt="{\\\\displaystyle |G|}"]' } });
-    expect(legacyAnchorOccurrences(math, context)).toEqual([{ type: 'math_alttext', value: '{\\displaystyle |G|}' }]);
+    const at = (location: Record<string, unknown>, extensions?: Record<string, unknown>) => item({ subject: [{ type: 'html', uri, location, ...(extensions ? { extensions } : {}) }], object: [end()] });
+    expect(legacyAnchorOccurrences(at({ quote: { exact: 'finite group' } }, { 'org.wikilean': { anchor: { section: '(lead)', snippet: 'finite group' } } }), context))
+      .toEqual([{ section: '(lead)', snippet: 'finite group' }]);
+    expect(legacyAnchorOccurrences(at({ quote: { exact: 'finite group', prefix: 'A ' } }), context)).toEqual([{ type: 'quote', exact: 'finite group', prefix: 'A ' }]);
+    expect(legacyAnchorOccurrences(at({ css: 'img[alt="{\\\\displaystyle |G|}"]' }), context)).toEqual([{ type: 'math_alttext', value: '{\\displaystyle |G|}' }]);
     expect(parseMathSelector('article > p')).toBeNull();
     expect(parseMathSelector('img[alt="x\\\\a y"]')).toBe('x\\a y');
-    const heading = item({ source: { type: 'html', uri }, target: 'urn:x', location: { fragment: 'Statement' } });
-    expect(legacyAnchorOccurrences(heading, context)).toEqual([{ type: 'fragment', value: 'Statement' }]);
-    const other = item({ source: { type: 'html', uri }, target: 'urn:x', location: { css: 'article > p' } });
-    expect(legacyAnchorOccurrences(other, context)).toEqual([null]);
-    // An unlinked selection may carry the editing key too.
-    const work: NativeItem = { status: 'not_formalized', links: [], unlinked: [{ source: { type: 'html', uri }, location: { quote: { exact: 'finite group' } }, extensions: { 'org.wikilean': { anchor: { snippet: 'finite group' } } } }] };
+    expect(legacyAnchorOccurrences(at({ fragment: 'Statement' }), context)).toEqual([{ type: 'fragment', value: 'Statement' }]);
+    expect(legacyAnchorOccurrences(at({ css: 'article > p' }), context)).toEqual([null]);
+    // Every subject end of a link is an occurrence, and an unlinked selection may carry the editing key too.
+    const joint = at({ fragment: 'Statement' }); joint.links[0].annotation.subject.push({ type: 'pdf', uri: 'paper.pdf', location: { page: 2 } });
+    expect(legacyAnchorOccurrences(joint, context)).toEqual([{ type: 'fragment', value: 'Statement' }, null]);
+    const work: NativeItem = { status: 'not_formalized', links: [], unlinked: [{ type: 'html', uri, location: { quote: { exact: 'finite group' } }, extensions: { 'org.wikilean': { anchor: { snippet: 'finite group' } } } }] };
     expect(validateNativeItems([work], context)).toEqual([]);
     expect(legacyAnchorOccurrences(work, context)).toEqual([{ snippet: 'finite group' }]);
   });
   it('requires carrier bases for relative references and schema hints', () => {
-    const a = item({ ...core(), target: '../formal.lean#x', $schema: '../schema.json' });
+    const a = item({ ...core(), object: [{ type: 'generic', uri: '../formal.lean#x' }], $schema: '../schema.json' });
     expect(validateNativeItems([a])).not.toEqual([]);
     a.links[0].base_uri = 'file:///original/shards/a.json';
     expect(validateNativeItems([a])).toEqual([]);
+    const unlinked: NativeItem = { status: 'partial', links: [], unlinked: [{ type: 'pdf', uri: 'paper.pdf' }] };
+    expect(validateNativeItems([unlinked]).join()).toContain('base_uri');
+    unlinked.unlinked[0].base_uri = 'https://example.net/a.json';
+    expect(validateNativeItems([unlinked])).toEqual([]);
+    unlinked.unlinked[0].base_uri = 'relative/a.json';
+    expect(validateNativeItems([unlinked]).join()).toContain('absolute');
   });
   it('checks every relative article occurrence against its pinned revision', () => {
-    const a = item({ source: { type: 'generic', uri: '?title=Test_Article&oldid=1' }, target: 'urn:x' });
+    const a = item({ subject: [{ type: 'generic', uri: '?title=Test_Article&oldid=1' }], object: [end()] });
     a.links[0].base_uri = 'https://en.wikipedia.org/w/index.php';
     expect(validateNativeItems([a], context).join()).toContain('source revision');
     a.status = 'rejected';
@@ -122,7 +138,7 @@ describe('canonical native companion records', () => {
   it('rejects unsafe numeric storage and unpaired surrogates, including opaque values', () => {
     const a = item({ ...core(), extensions: { 'urn:test': Number.MAX_SAFE_INTEGER + 1 } });
     expect(validateNativeItems([a]).join()).toContain('lossless');
-    expect(validateLinkRecord({ ...core(), extensions: { 'urn:test': '\ud800' } })).not.toEqual([]);
+    expect(validateLinkRecord({ ...core(), extensions: { 'urn:test': String.fromCharCode(0xd800) } })).not.toEqual([]);
     a.links[0].annotation.extensions = { 'urn:test': Number.MAX_SAFE_INTEGER };
     expect(validateNativeItems([a])).toEqual([]);
   });
@@ -141,15 +157,17 @@ describe('canonical native companion records', () => {
     const result = migrateLegacyItems(legacy, context);
     expect(result.items).toHaveLength(3);
     expect(result.items[0].links).toHaveLength(2);
-    expect(targetUri(result.items[0].links[0].annotation)).toContain('Mathlib/%C3%9C%25X.html#x');
-    expect(targetPin(result.items[0].links[0].annotation)).toEqual({ type: 'repository', url: MATHLIB_REPOSITORY, module: 'Mathlib.Ü%X', declaration: 'x' });
+    const annotation = result.items[0].links[0].annotation;
+    expect(annotation.object).toEqual([{ type: 'lean', uri: MATHLIB_REPOSITORY, location: { declaration: 'x', module: 'Mathlib.Ü%X' } }]);
+    expect(endReference(annotation.object[0])).toContain('Mathlib/%C3%9C%25X.html#x');
     expect(result.items[0].legacy).toEqual(legacy[0]);
     expect(result.items[0].provenance).toBe('human');
     expect(result.items[0]).not.toHaveProperty('mathlib');
     expect(result.items[0].match_kind).toBe('exact');
     // The anchor profile marks an application-defined location on the article's HTML.
-    expect(result.items[0].links[0].annotation.source.type).toBe('html');
+    expect(annotation.subject).toEqual([{ type: 'html', uri: wikipediaSourceUri(context), location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' }, resolution: 'not_attempted' } }]);
     expect(result.items[1].unlinked).toHaveLength(1);
+    expect(result.items[1].unlinked[0]).toMatchObject({ type: 'html', uri: wikipediaSourceUri(context) });
     expect(result.items[2].unlinked).toHaveLength(1);
     expect(result.diagnostics.map(d => d.code)).toEqual(expect.arrayContaining(['STATUS_TARGET_CONFLICT', 'MISSING_ANCHOR', 'INVALID_ANCHOR']));
   });
@@ -159,26 +177,31 @@ describe('canonical native companion records', () => {
     expect(result.items.map(item => item.links.length)).toEqual([1, 1, 0, 0]);
     expect(result.diagnostics).toEqual([{ item: 0, code: 'MISSING_ANCHOR' }, { item: 2, anchor: 0, code: 'INVALID_ANCHOR' }, { item: 3, anchor: 0, code: 'INVALID_ANCHOR' }]);
   });
-  it('does not resolve unsupported modes, wrong sources, malformed selectors, or missing context', () => {
-    const a = item({ source: { type: 'html', uri: wikipediaSourceUri(context) }, target: 'urn:x' });
+  it('does not resolve unsupported types, wrong sources, malformed selectors, or missing context', () => {
+    const a = item({ subject: [{ type: 'html', uri: wikipediaSourceUri(context) }], object: [end()] });
+    const subject = () => a.links[0].annotation.subject[0];
     expect(legacyAnchorOccurrences(a)).toEqual([null]);
     expect(legacyAnchorOccurrences(a, context)).toEqual([{ type: 'whole_resource' }]);
-    a.links[0].annotation.location = { css: '#x' };
+    subject().location = { css: '#x' };
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
-    a.links[0].annotation = { source: { type: 'html', uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 1 } } };
+    subject().location = { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 1 } };
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
-    a.links[0].annotation = { source: { type: 'html', uri: wikipediaSourceUri(context) }, target: 'urn:x', location: { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } } };
+    subject().location = { profile: 'urn:wikilean:anchor:v3', anchor: { snippet: 'x' } };
     expect(legacyAnchorOccurrences(a, context)).toEqual([{ snippet: 'x' }]);
-    // Only html sources carry Wikipedia text; another mode is left to its own reader.
-    a.links[0].annotation.source.type = 'generic';
+    // Only html ends carry Wikipedia text; another type is left to its own reader.
+    subject().type = 'generic';
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
-    a.links[0].annotation.source.type = 'pdf';
+    subject().type = 'pdf';
     expect(legacyAnchorOccurrences(a, context)).toEqual([null]);
   });
   it('uses a cross-language exact numeric signature without number/string collisions', () => {
-    const a = item({ ...core('pdf'), location: { page: 1, rect: [0, 0.1, 0.2, 0.3] } });
+    const a = item(core('pdf', { location: { page: 1, rect: [0, 0.1, 0.2, 0.3] } }));
     expect(nativeAnchorSig(a)).toContain('#3fb999999999999a');
-    const before = nativeAnchorSig(a); a.links[0].annotation.location = { page: '1' };
+    const before = nativeAnchorSig(a); a.links[0].annotation.subject[0].location = { page: '1' };
     expect(nativeAnchorSig(a)).not.toBe(before);
+    // The end's extensions, such as the editing key, are not part of the selection.
+    const keyed = structuredClone(a); keyed.links[0].annotation.subject[0].extensions = { 'org.wikilean': { anchor: { snippet: 'x' } } };
+    expect(nativeAnchorSig(keyed)).toBe(nativeAnchorSig(a));
+    expect(nativeAnchorSig({ status: 'partial', links: [], unlinked: [] })).toBe('["native",null,null,null]');
   });
 });
