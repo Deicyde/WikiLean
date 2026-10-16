@@ -21,7 +21,8 @@ test('native editor updates one retained link and preserves other occurrences th
   await page.getByRole('button',{name:'Save',exact:true}).click();
   const result=await saved;expect(result.status()).toBe(200);expect(await result.json()).toMatchObject({ok:true});
   const records=await (await page.request.get('/api/article/Native_Article/companion-records.json')).json();
-  expect(records.records.map((record:any)=>record.id)).toEqual(['aaaaaaaaaaaa:link:0','pdf-companion']);
+  // Two links of the first item, then the two unlinked selections of the second.
+  expect(records.records.map((record:any)=>record.id ?? 'unlinked:'+record.unlinked)).toEqual(['aaaaaaaaaaaa:link:0','pdf-companion','unlinked:0','unlinked:1']);
   const external=records.records.find((record:any)=>record.id==='pdf-companion');
   expect(external).toMatchObject({base_uri:'https://example.net/annotations/group.json',annotation:{
     subject:[{type:'pdf',uri:'../group.pdf',location:{page:2},extensions:{publisher:{retained:true}}}],
@@ -29,7 +30,8 @@ test('native editor updates one retained link and preserves other occurrences th
   }});
   const migrated=records.records[0].annotation;
   expect(migrated.object).toEqual([{type:'lean',uri:'https://github.com/leanprover-community/mathlib4',location:{declaration:'AddCommGroup',module:'Mathlib.Algebra.Group.Defs'}}]);
-  expect(migrated).toMatchObject({status:'formalized',subject:[{type:'html',title:'Abelian group'}],extensions:{'org.wikilean':{match_kind:'exact'}}});
+  expect(migrated).toMatchObject({status:'formalized',relation:'exactMatch',subject:[{type:'html',version:'12345',citation:{type:'webpage'}}]});
+  expect(records.records[2].annotation).toMatchObject({object:[],status:'partial'});
   expect(errors).toEqual([]);
 });
 

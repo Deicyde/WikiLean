@@ -50,9 +50,17 @@ describe('native canonical API and lifecycle', () => {
     const saved = await botSave(h.env, { annotations: items, base_version: 2 });
     expect(saved.status).toBe(200);
     const response = await get(h.env, `/api/article/${SLUG}/companion-records.json`);
-    const projected = { ...value, subject: [{ ...value.subject[0], title: 'Abelian group' }], status: 'formalized', kind: 'definition',
-      extensions: { ...value.extensions, 'org.wikilean': { provenance: 'ai', match_kind: 'exact' } } };
-    expect(await response.json()).toEqual({ version: 3, records: items[0].links.map(link => ({ ...link, annotation: projected, item_id: items[0].id })) });
+    // The stored record keeps its own id; the item fills its facts, its label as the end's title and match_kind as the relation.
+    const projected = { ...value, subject: [{ ...value.subject[0], title: 'Abelian group' }], relation: 'exactMatch', status: 'formalized', kind: 'definition',
+      extensions: { ...value.extensions, 'org.wikilean': { provenance: 'ai' } } };
+    const body = await response.json() as { version: number; records: unknown[] };
+    expect(body.version).toBe(3);
+    expect(body.records.slice(0, 2)).toEqual(items[0].links.map(link => ({ ...link, annotation: projected, item_id: items[0].id })));
+    // The other item has no formal end yet: its selection is a record with an empty object, on the article's revision.
+    expect(body.records.slice(2)).toEqual([{ item_id: 'bbbbbbbbbbbb', unlinked: 0, annotation: { subject: [{ type: 'html', uri: 'https://en.wikipedia.org/wiki/Test_Article',
+      version: String(REVID), location: items[1].unlinked[0].location, title: 'Fundamental theorem of finite abelian groups',
+      citation: { id: 'wikipedia-Test_Article', type: 'webpage', title: 'Test Article', 'container-title': 'Wikipedia', URL: wikipediaSourceUri({ wikipediaTitle: 'Test Article', revid: REVID }) } }],
+      object: [], status: 'partial', kind: 'theorem', id: 'bbbbbbbbbbbb', extensions: { 'org.wikilean': { provenance: 'ai' } } } }]);
     expect((await get(h.env, `/api/article/${SLUG}/companion.jsonl`)).status).toBe(409);
   });
   it('retains relative schema hints in record reads and refuses to change their carrier silently', async () => {
@@ -119,7 +127,9 @@ describe('native canonical API and lifecycle', () => {
     expect((await save(h.env, { annotations: items, base_version: 2 }, { user: 'u-human' })).status).toBe(200);
     const changed = nativeItems(h); changed[0].links[0].annotation.object = formal('urn:changed');
     expect((await botSave(h.env, { annotations: changed, base_version: 3 })).status).toBe(422);
-    expect(await (await get(h.env, `/api/article/${SLUG}/companion.jsonl`, { bearer: PIPELINE_TOKEN })).text()).toBe('');
+    // The rejected item is gone from the export; the other item's unlinked selection remains.
+    const exported = jsonl(await (await get(h.env, `/api/article/${SLUG}/companion.jsonl`, { bearer: PIPELINE_TOKEN })).text()) as LinkRecord[];
+    expect(exported.map(record => [record.id, record.object])).toEqual([['bbbbbbbbbbbb', []]]);
   });
   it('endorses native items and makes a stale edit fail without mutation', async () => {
     const h = nativeSetup();
