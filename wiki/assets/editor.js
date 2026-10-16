@@ -102,6 +102,8 @@ function createCompanionEditorModel() {
           throw new Error("This location cannot be edited as Wikipedia text. Use a new article selection to replace it explicitly.");
         placeAnchor(occ, { ...anchor(entry, new URL(occ.uri, entry.base || undefined).href) || {}, ...clone(change.anchor) }, locate, true);
       }
+      // The junk values an end lists belong to what it selected before.
+      delete occ.junk;
     }
     if ("target" in change && change.target !== targetOf(entry)) {
       const target = change.target.trim();
@@ -109,10 +111,11 @@ function createCompanionEditorModel() {
       if (entry.kind === "link") {
         const annotation = entry.link.annotation;
         if (target) {
-          // A new destination replaces the old one entirely: a version, relation
-          // or junk values describe the previous object and would be false here.
+          // A new destination replaces the old one entirely: the old object ends
+          // go with their versions and junk values, and the relation described
+          // them and would be false here.
           annotation.object = [endOf(target)];
-          delete annotation.relation; delete annotation.junk;
+          delete annotation.relation;
         } else {
           // Without a formal end, every subject end of the link returns to unlinked work.
           const moved = annotation.subject.map(end => entry.base ? { ...end, base_uri: entry.base } : end);
