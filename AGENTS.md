@@ -157,6 +157,9 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen
   release, not mutable `site/out`.
 - `index.html` / `sitemap.xml` are served dynamically from D1 — deliberately NOT copied to public.
+- **Migration 0014 before any deploy:** a Worker built from a commit containing
+  `wiki/migrations/0014_native_companions.sql` answers 500 on every save, revert and create
+  until 0014 is on D1. Back up, apply and verify it first (`docs/COMPANION-NATIVE.md`).
 
 ## How Jack works
 - Lead dev + product owner. **Consult each session; surface trade-offs (a recommendation, not a
