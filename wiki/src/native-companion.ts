@@ -18,6 +18,8 @@ export interface LinkEnd {
   identifiers?: Record<string, string>;
   title?: string;
   role?: string;
+  /** The junk values this end assigns where the other side is undefined; they never change the relation. */
+  junk?: string[];
   extensions?: JsonObject;
 }
 /** A Literature Links 2.0 annotation: the subject ends, usually the passage, and the object ends. */
@@ -25,7 +27,6 @@ export interface LinkRecord {
   subject: LinkEnd[];
   object: LinkEnd[];
   relation?: string;
-  junk?: string[];
   status?: string;
   kind?: string;
   id?: string;
@@ -394,6 +395,7 @@ function subjectEnd(stored: UnlinkedOccurrence, title: string | undefined, conte
   result.citation = citation ?? articleCitation(context);
   if (qid !== undefined || identifiers !== undefined) result.identifiers = { ...(qid !== undefined ? { wikidata: qid } : {}), ...identifiers };
   for (const key of ['sha256', 'role'] as const) if (end[key] !== undefined) result[key] = end[key];
+  if (end.junk !== undefined) result.junk = end.junk;
   if (extensions !== undefined) result.extensions = extensions;
   return result;
 }
@@ -408,7 +410,6 @@ function project(item: JsonObject, stored: LinkRecord, base: string | undefined,
   const fromToken = stored.relation !== 'noMatch' && record.object.length > 0 && token !== undefined && Object.hasOwn(MATCH_RELATIONS, token) && !unstated;
   if (fromToken) record.relation = MATCH_RELATIONS[token!];
   else if (stored.relation !== undefined) record.relation = stored.relation;
-  if (stored.junk !== undefined) record.junk = copy(stored.junk);
   if (typeof item.status === 'string' && item.status) record.status = item.status;
   else if (stored.status !== undefined) record.status = stored.status;
   const kind = stored.kind ?? nonblank(item.kind); if (kind !== undefined) record.kind = kind;
