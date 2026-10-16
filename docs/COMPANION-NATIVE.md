@@ -56,8 +56,10 @@ WikiLean (`companionAnnotation` and `unlinkedAnnotation` in
   precedence; `status` is always the item's), and `label` becomes each subject
   end's `title`;
 - `match_kind` becomes the `relation`: `exact` is `exactMatch`, `generalization`
-  `broadMatch`, `special_case` `narrowMatch`, `close` `closeMatch`, and `related`
-  and `invocation` `relatedMatch`. Without one of these, a stored `relation` is
+  `broadMatch`, `close` `closeMatch`, and `related` and `invocation`
+  `relatedMatch`. `special_case` gives none, because the tags use it in both
+  directions. For an item whose `status` is `not_formalized`, only
+  `relatedMatch` is written. Without one of these, a stored `relation` is
   kept, and a stored `noMatch` always is;
 - a subject end on the article's pinned revision is written with the article's
   readable URL as `uri`, the `oldid` as `version`, a CSL `webpage` citation whose

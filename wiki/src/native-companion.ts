@@ -367,12 +367,13 @@ export function restorePrivateMetadata(stored: JsonObject[], posted: JsonObject[
 }
 
 /** WikiLean's match_kind as a Literature Links relation. The tokens a relation names
- * alone leave the extension; related and invocation share relatedMatch and stay. */
+ * alone leave the extension; related and invocation share relatedMatch and stay.
+ * special_case has no relation: the tags use it in both directions. */
 export const MATCH_RELATIONS: Record<string, string> = {
-  exact: 'exactMatch', generalization: 'broadMatch', special_case: 'narrowMatch', close: 'closeMatch',
+  exact: 'exactMatch', generalization: 'broadMatch', close: 'closeMatch',
   related: 'relatedMatch', invocation: 'relatedMatch',
 };
-const NAMED_BY_RELATION = new Set(['exact', 'generalization', 'special_case', 'close']);
+const NAMED_BY_RELATION = new Set(['exact', 'generalization', 'close']);
 const nonblank = (value: unknown): string | undefined => typeof value === 'string' && value.trim() ? value : undefined;
 /** The article's pinned revision cited as a CSL web page. */
 export function articleCitation(context: SourceContext): JsonObject {
@@ -402,7 +403,9 @@ function project(item: JsonObject, stored: LinkRecord, base: string | undefined,
   record.subject = stored.subject.map(end => subjectEnd(end, nonblank(item.label), context, base));
   record.object = copy(stored.object);
   const token = typeof item.match_kind === 'string' ? item.match_kind : undefined;
-  const fromToken = stored.relation !== 'noMatch' && record.object.length > 0 && token !== undefined && token in MATCH_RELATIONS;
+  // An item that is not formalized has no declaration that states it: its links get relatedMatch or nothing.
+  const unstated = item.status === 'not_formalized' && token !== undefined && MATCH_RELATIONS[token] !== 'relatedMatch';
+  const fromToken = stored.relation !== 'noMatch' && record.object.length > 0 && token !== undefined && Object.hasOwn(MATCH_RELATIONS, token) && !unstated;
   if (fromToken) record.relation = MATCH_RELATIONS[token!];
   else if (stored.relation !== undefined) record.relation = stored.relation;
   if (stored.junk !== undefined) record.junk = copy(stored.junk);
