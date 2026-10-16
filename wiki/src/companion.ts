@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { articles } from "./db/schema.js";
 import type { Env } from "./env.js";
 import {
-  NATIVE_SCHEMA_VERSION, storedCompanionRecords, validateNativeItems, isAbsoluteReference, targetUri, type JsonObject,
+  NATIVE_SCHEMA_VERSION, storedCompanionRecords, validateNativeItems, isAbsoluteReference, type JsonObject,
 } from "./native-companion.js";
 
 /** Each annotation on its own line; an empty list is an empty document. */
@@ -15,7 +15,7 @@ export function toJsonl(annotations: unknown[]): string {
 }
 
 export function registerCompanionRoutes(app: Hono<{ Bindings: Env }>): void {
-  // The stored records of a native article; nothing is fetched or normalized.
+  // The stored records of a native article, projected; nothing is fetched.
   const nativeRecords = async (env: Env, slug: string) => {
     const db = drizzle(env.DB);
     const row = (await db.select().from(articles).where(eq(articles.slug, slug)).limit(1))[0];
@@ -37,8 +37,9 @@ export function registerCompanionRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/api/article/:slug/companion.jsonl", async (c) => {
     const result = await nativeRecords(c.env, c.req.param("slug"));
     if ("status" in result) return c.json(result.body, result.status);
-    if (result.records.some(record => record.base_uri !== undefined || !isAbsoluteReference(record.annotation.source.uri)
-      || !isAbsoluteReference(targetUri(record.annotation) ?? "") || (record.annotation.$schema !== undefined && !isAbsoluteReference(record.annotation.$schema)))) {
+    if (result.records.some(({ base_uri, annotation }) => base_uri !== undefined
+      || [...annotation.subject, ...annotation.object].some(end => !isAbsoluteReference(end.uri))
+      || (annotation.$schema !== undefined && !isAbsoluteReference(annotation.$schema)))) {
       return c.json({ ok: false, error: "relative records require their original carrier bases",
         records_url: `/api/article/${encodeURIComponent(result.row.slug)}/companion-records.json` }, 409);
     }

@@ -125,21 +125,21 @@ NATIVE_ITEM_GUIDANCE = """
 Use WikiLean's native review-item format. Each item retains id, kind, label,
 status, note, provenance and other review metadata, and REQUIRES two arrays:
   links: [{"id":"<stable internal link id>", "annotation":{
-    "source":{"type":"html","uri":"<supplied pinned article URI>"},
-    "location":{"profile":"urn:wikilean:anchor:v3","anchor":{
-      "section":"<heading>","snippet":"<verbatim phrase>"},"resolution":"not_attempted"},
-    "target":{"uri":"<explicit formal resource URI>","pin":{"type":"repository",
-      "url":"https://github.com/leanprover-community/mathlib4",
-      "module":"<Mathlib module>","declaration":"<declaration>"}}}, "base_uri":"<only if needed>"}]
-  unlinked: [{"source":{...},"location":{...}}]
-Every annotation in links is one independent Literature Links record with ONE
-informal source and ONE formal target. A target may also be a plain URI string;
-the repository pin names the Mathlib module and declaration the URI points at.
-No root mathlib/decl/module/anchor/anchors. Write every WikiLean anchor in this
+    "subject":[{"type":"html","uri":"<supplied pinned article URI>",
+      "location":{"profile":"urn:wikilean:anchor:v3","anchor":{
+        "section":"<heading>","snippet":"<verbatim phrase>"},"resolution":"not_attempted"}}],
+    "object":[{"type":"lean","uri":"https://github.com/leanprover-community/mathlib4",
+      "location":{"declaration":"<declaration>","module":"<Mathlib module>"}}]},
+    "base_uri":"<only if needed>"}]
+  unlinked: [{"type":"html","uri":"<supplied pinned article URI>","location":{...}}]
+Every annotation in links is one Literature Links 2.0 record: its subject is
+the informal source selection and its object the formal end. No root
+mathlib/decl/module/anchor/anchors. Write every WikiLean anchor in this
 profile form; the pipeline resolves it against the pinned article afterwards.
-An unlinked source selection has no formal target; never invent a URI to fill it.
-PDF, LaTeX, HTML and generic imported links may be opaque: retain them exactly.
-Preserve ALL incoming IDs, source URIs, base_uri values, legacy archives,
+An unlinked source selection is one end with no formal object; never invent an
+object to fill it. PDF, LaTeX, HTML and generic imported ends may be opaque:
+retain them exactly.
+Preserve ALL incoming IDs, URIs, base_uri values, legacy archives,
 unfamiliar JSON/extension fields, existing links and review items. Use rejected
 status for a rejected item rather than dropping it. Never translate native data
 back into the legacy shape. Human items must be echoed byte-for-byte; proposed
@@ -153,25 +153,23 @@ statement per review item. For new statements use status not_formalized,
 provenance ai, links [], and unlinked source selections using the supplied
 pinned article URI. The WikiLean anchor can be section+snippet,
 theorem_box/value, math_alttext/value or prose_range. Keep all occurrences as
-separate selections. Do not guess formal targets. Review existing selections
+separate selections. Do not guess formal objects. Review existing selections
 without discarding existing links or unknown data.
 """ + NATIVE_ITEM_GUIDANCE
 
 NATIVE_AGENT2_SYSTEM = """Search the local Mathlib checkout to classify each
 supplied review item as formalized, partial or not_formalized. Keep all items
 in order. Only add links after verifying an explicit module and declaration.
-The Mathlib target URI is https://leanprover-community.github.io/mathlib4_docs/
-followed by individually percent-encoded dotted module segments separated by
-slashes, then .html# and the percent-encoded declaration. Give the target as
-{"uri": <that URI>, "pin": {"type": "repository", "url":
-"https://github.com/leanprover-community/mathlib4", "module": <dotted module>,
-"declaration": <declaration>}}. The target is the sole formal-link authority;
-do not add mathlib/decl/module fields to the review item. Reuse each source
-selection unchanged, including its location, to create one Literature Links record per
-selection and formal target. Use <item-id>:link:<ordinal> for new internal link
-IDs and preserve existing internal link IDs. Move a newly linked selection out
-of unlinked; retain genuinely unlinked selections there. No target means no
-link, even for a review item with a partial status. Keep a short review note.
+Give the object as [{"type": "lean", "uri":
+"https://github.com/leanprover-community/mathlib4", "location":
+{"declaration": <declaration>, "module": <dotted module>}}]. The object is the
+sole formal-link authority; do not add mathlib/decl/module fields to the
+review item. Reuse each unlinked selection unchanged, including its location,
+as the subject of one Literature Links record per selection and declaration.
+Use <item-id>:link:<ordinal> for new internal link IDs and preserve existing
+internal link IDs. Move a newly linked selection out of unlinked; retain
+genuinely unlinked selections there. No declaration means no link, even for a
+review item with a partial status. Keep a short review note.
 """ + NATIVE_ITEM_GUIDANCE
 
 

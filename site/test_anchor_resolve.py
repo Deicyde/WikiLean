@@ -35,13 +35,13 @@ HTML = (
 def native(anchor, **extras):
     """A native item as the SQLite migration writes it: the profile form, one link per anchor."""
     item = {'id': 'aabbccddeeff', 'status': 'formalized', 'provenance': 'ai', 'links': [], 'unlinked': [], **extras}
-    selection = {'source': {'type': 'html', 'uri': URI},
+    selection = {'type': 'html', 'uri': URI,
                  'location': {'profile': n.ANCHOR_PROFILE, 'anchor': anchor, 'resolution': 'not_attempted'}}
     if item['status'] == 'not_formalized':
         item['unlinked'].append(selection)
     else:
         item['links'].append({'id': item['id'] + ':link:0',
-                              'annotation': {**selection, 'target': n.mathlib_target('Mathlib.Group', 'Group.identity')}})
+                              'annotation': {'subject': [selection], 'object': [n.mathlib_end('Mathlib.Group', 'Group.identity')]}})
     return item
 
 
@@ -135,15 +135,17 @@ class StoredRecords(unittest.TestCase):
                  native({'type': 'prose_range', 'section': 'Statement', 'from': 'The'}, id='ccddeeff0011'),
                  native({'section': 'Statement', 'snippet': 'absent text'}, id='ddeeff001122')]
         _, diagnostics = n.resolve_locations(items, HTML)
-        first = items[0]['links'][0]['annotation']
-        self.assertEqual(first['source'], {'type': 'html', 'uri': URI})
+        first = items[0]['links'][0]['annotation']['subject'][0]
+        self.assertEqual({key: first[key] for key in ('type', 'uri')}, {'type': 'html', 'uri': URI})
         self.assertIn('quote', first['location'])
         self.assertEqual(first['extensions']['org.wikilean']['anchor'],
                          {'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'})
-        self.assertEqual(items[1]['links'][0]['annotation']['location'], {'css': 'img[alt="{\\\\displaystyle |G|}"]'})
-        self.assertEqual(items[2]['links'][0]['annotation']['location']['resolution'], 'unsupported')
-        self.assertEqual(items[3]['links'][0]['annotation']['location']['resolution'], 'unresolved')
-        self.assertEqual([(d['item'], d['reason']) for d in diagnostics], [(2, 'unsupported'), (3, 'no_match')])
+        self.assertEqual(items[0]['links'][0]['annotation']['object'], [n.mathlib_end('Mathlib.Group', 'Group.identity')])
+        self.assertEqual(items[1]['links'][0]['annotation']['subject'][0]['location'], {'css': 'img[alt="{\\\\displaystyle |G|}"]'})
+        self.assertEqual(items[2]['links'][0]['annotation']['subject'][0]['location']['resolution'], 'unsupported')
+        self.assertEqual(items[3]['links'][0]['annotation']['subject'][0]['location']['resolution'], 'unresolved')
+        self.assertEqual([(d['item'], d.get('link'), d.get('end'), d['reason']) for d in diagnostics],
+                         [(2, 0, 0, 'unsupported'), (3, 0, 0, 'no_match')])
         n.validate_items(items, title=TITLE, revid=REVID)
 
     def test_renderers_read_built_in_locations(self):
@@ -156,16 +158,19 @@ class StoredRecords(unittest.TestCase):
         self.assertIn('class="anno anno-formalized"', wrapped)
         # A record from elsewhere has no editing key; the quotation itself is read.
         foreign = {'status': 'formalized', 'provenance': 'ai', 'links': [{'id': 'f', 'annotation': {
-            'source': {'type': 'html', 'uri': URI}, 'target': 'urn:formal:x',
-            'location': {'quote': {'exact': 'The order of a subgroup divides the order of the group.', 'suffix': ' It really does.'}}}}], 'unlinked': []}
+            'subject': [{'type': 'html', 'uri': URI, 'location': {'quote': {
+                'exact': 'The order of a subgroup divides the order of the group.', 'suffix': ' It really does.'}}}],
+            'object': [{'type': 'generic', 'uri': 'urn:formal:x'}]}}], 'unlinked': []}
+        at = lambda location: {**foreign, 'links': [{'id': 'm', 'annotation': {
+            'subject': [{'type': 'html', 'uri': URI, 'location': location}], 'object': [{'type': 'generic', 'uri': 'urn:formal:x'}]}}]}
         self.assertEqual(n.anchors(foreign), [{'type': 'quote', 'exact': 'The order of a subgroup divides the order of the group.', 'suffix': ' It really does.'}])
         wrapped, matched = render.wrap_annotations(HTML, [foreign], source_uri=URI)
         self.assertEqual(matched, [True])
         self.assertIn('divides the order of the group.</span> It really does.', wrapped.replace('</span></span>', '</span>'))
-        math = {**foreign, 'links': [{'id': 'm', 'annotation': {**foreign['links'][0]['annotation'], 'location': {'css': 'img[alt="{\\\\displaystyle |G|}"]'}}}]}
+        math = at({'css': 'img[alt="{\\\\displaystyle |G|}"]'})
         self.assertEqual(n.anchors(math), [{'type': 'math_alttext', 'value': '{\\displaystyle |G|}'}])
         self.assertEqual(render.wrap_annotations(HTML, [math], source_uri=URI)[1], [True])
-        heading = {**foreign, 'links': [{'id': 'h', 'annotation': {**foreign['links'][0]['annotation'], 'location': {'fragment': 'Statement'}}}]}
+        heading = at({'fragment': 'Statement'})
         self.assertEqual(n.anchors(heading), [{'type': 'fragment', 'value': 'Statement'}])
         self.assertEqual(render.wrap_annotations(HTML, [heading], source_uri=URI)[1], [True])
         self.assertEqual(render.find_fragment(HTML, 'nowhere'), None)
@@ -174,7 +179,7 @@ class StoredRecords(unittest.TestCase):
         items = [native({'section': 'Statement', 'snippet': 'The order of a subgroup divides the order of the group.'}, status='not_formalized')]
         n.resolve_locations(items, HTML)
         span = items[0]['unlinked'][0]
-        self.assertEqual(set(span), {'source', 'location', 'extensions'})
+        self.assertEqual(set(span), {'type', 'uri', 'location', 'extensions'})
         self.assertIn('quote', span['location'])
         n.validate_items(items, title=TITLE, revid=REVID)
         self.assertEqual(n.anchors(items[0])[0]['section'], 'Statement')
@@ -204,7 +209,7 @@ class ResolveSqlite(unittest.TestCase):
             db = sqlite3.connect(str(db_path))
             stored, version = db.execute("SELECT annotations, version FROM articles WHERE slug='synthetic'").fetchone()
             self.assertEqual(version, 5)
-            location = json.loads(stored)[0]['links'][0]['annotation']['location']
+            location = json.loads(stored)[0]['links'][0]['annotation']['subject'][0]['location']
             self.assertIn('quote', location)
             revision, meta = db.execute("SELECT annotations, meta FROM revisions WHERE slug='synthetic' AND kind='native-migration'").fetchone()
             self.assertEqual(json.loads(revision), json.loads(stored))

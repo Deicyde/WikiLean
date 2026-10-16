@@ -1,7 +1,8 @@
-"""Native WikiLean review items containing lossless, single-record Literature Links annotations.
+"""Native WikiLean review items whose links hold lossless Literature Links 2.0 annotations.
 
-The review item is application data. Only each link's ``annotation`` is a Literature Links
-record. Legacy conversion is explicit; read helpers never rewrite stored data.
+The review item is application data. Each link's ``annotation`` is one Literature Links
+record, and each unlinked selection is one end. Legacy conversion is explicit; read
+helpers never rewrite stored data.
 """
 from __future__ import annotations
 
@@ -23,6 +24,7 @@ STATUSES = frozenset({"formalized", "partial", "not_formalized", "rejected"})
 MATHLIB_REPOSITORY = "https://github.com/leanprover-community/mathlib4"
 MATHLIB_DOCS = "https://leanprover-community.github.io/mathlib4_docs/"
 _JS_SAFE = "-_.!~*'()"
+_SIDES = ("subject", "object")
 
 
 class NativeAnnotationError(ValueError):
@@ -33,42 +35,24 @@ def is_native(item: Any) -> bool:
     return isinstance(item, dict) and ("links" in item or "unlinked" in item)
 
 
-def normalize(annotation: dict) -> dict:
-    """literature_links.companion.normalize, mirrored so this pipeline needs no package.
-
-    A copy with a string target as {"uri": ...} and a string status as
-    {"value": ...}, so readers handle one shape.
-    """
-    if not isinstance(annotation, dict):
-        raise TypeError("normalize takes one annotation object")
-    result = deepcopy(annotation)
-    if isinstance(result.get("target"), str):
-        result["target"] = {"uri": result["target"]}
-    if isinstance(result.get("status"), str):
-        result["status"] = {"value": result["status"]}
-    return result
+def mathlib_end(module: str, decl: str) -> dict:
+    """A Mathlib declaration as a lean end: the repository, and the declaration with its module."""
+    return {"type": "lean", "uri": MATHLIB_REPOSITORY, "location": {"declaration": decl, "module": module}}
 
 
-def _target(annotation: Any) -> dict:
-    target = normalize(annotation).get("target") if isinstance(annotation, dict) else None
-    return target if isinstance(target, dict) else {}
+def mathlib_docs_uri(module: str, decl: str) -> str:
+    return (MATHLIB_DOCS + "/".join(quote(part, safe=_JS_SAFE) for part in module.split("."))
+            + ".html#" + quote(decl, safe=_JS_SAFE))
 
 
-def target_uri(annotation: Any) -> str | None:
-    """The formal reference of a record; None when it has no target."""
-    uri = _target(annotation).get("uri")
-    return uri if isinstance(uri, str) else None
-
-
-def target_pin(annotation: Any) -> dict | None:
-    pin = _target(annotation).get("pin")
-    return pin if isinstance(pin, dict) and isinstance(pin.get("type"), str) else None
-
-
-def mathlib_target(module: str, decl: str) -> dict:
-    """WikiLean's explicit module+declaration link: the docs URL plus a repository pin."""
-    uri = MATHLIB_DOCS + "/".join(quote(part, safe=_JS_SAFE) for part in module.split(".")) + ".html#" + quote(decl, safe=_JS_SAFE)
-    return {"uri": uri, "pin": {"type": "repository", "url": MATHLIB_REPOSITORY, "module": module, "declaration": decl}}
+def end_reference(end: dict) -> str:
+    """The reference a reader follows for a formal end: the docs page of a Mathlib declaration, else its uri."""
+    location = end.get("location") if isinstance(end.get("location"), dict) else {}
+    if (end.get("type") == "lean" and end.get("uri") == MATHLIB_REPOSITORY and "lines" not in location
+            and "profile" not in location and isinstance(location.get("declaration"), str)
+            and isinstance(location.get("module"), str)):
+        return mathlib_docs_uri(location["module"], location["declaration"])
+    return end["uri"]
 
 
 def _strict_json(value: Any) -> None:
@@ -99,24 +83,25 @@ def _validator():
 
 
 def validate_link_record(annotation: Any) -> None:
-    """Validate the vendored reference schema and its two numeric invariants."""
+    """Validate the vendored reference schema and its two numeric invariants in every end."""
     _strict_json(annotation)
     problem = next(_validator().iter_errors(annotation), None)
     if problem is not None:
         raise NativeAnnotationError(f"Literature Links {problem.json_path}: {problem.message}")
-    location = annotation.get("location", {})
-    if "profile" in location:
-        return  # Application-defined in every mode; the built-in checks do not apply.
-    mode = annotation["source"]["type"]
-    if mode == "pdf" and "rect" in location:
-        # Double sums, as the specification says, so every language agrees.
-        x, y, width, height = (float(value) for value in location["rect"])
-        if width <= 0 or height <= 0 or x + width > 1 or y + height > 1:
-            raise NativeAnnotationError("Literature Links PDF rectangle has invalid extents or bounds")
-    if mode == "latex" and "lines" in location:
-        start, end = location["lines"]
-        if start > end:
-            raise NativeAnnotationError("Literature Links LaTeX line interval is reversed")
+    for side in _SIDES:
+        for index, end in enumerate(annotation[side]):
+            location = end.get("location")
+            if location is None or "profile" in location:
+                continue  # Application-defined in every type; the built-in checks do not apply.
+            if end["type"] == "pdf" and "rect" in location:
+                # Double sums, as the specification says, so every language agrees.
+                x, y, width, height = (float(value) for value in location["rect"])
+                if width <= 0 or height <= 0 or x + width > 1 or y + height > 1:
+                    raise NativeAnnotationError(f"Literature Links $.{side}[{index}]: PDF rectangle has invalid extents or bounds")
+            elif end["type"] in ("latex", "lean") and len(location.get("lines", ())) == 2:
+                start, last = location["lines"]
+                if last < start:
+                    raise NativeAnnotationError(f"Literature Links $.{side}[{index}]: line interval is reversed")
 
 
 def _absolute(uri: Any) -> bool:
@@ -174,22 +159,27 @@ def validate_items(items: Any, *, title: str | None = None, revid: int | None = 
             link_ids.add(identity)
             annotation = link.get("annotation")
             validate_link_record(annotation)
-            uri = target_uri(annotation)
-            # A link is an occurrence with a formal destination; a record without one belongs in unlinked.
-            if uri is None:
-                raise NativeAnnotationError("native link annotation requires a formal target; keep targetless selections in unlinked")
-            references = [annotation["source"]["uri"], uri]
+            # A link is an occurrence with a formal end; a selection without one belongs in unlinked.
+            if not annotation["object"]:
+                raise NativeAnnotationError("native link annotation requires an object end; keep targetless selections in unlinked")
+            # A checked absence names what was searched; without a version it says no more than not_formalized.
+            if annotation.get("relation") == "noMatch" and any("version" not in end for end in annotation["object"]):
+                raise NativeAnnotationError("a noMatch object end requires the version that was searched; "
+                                            "keep the selection in unlinked with status not_formalized")
+            references = [end["uri"] for side in _SIDES for end in annotation[side]]
             if "$schema" in annotation:
                 references.append(annotation["$schema"])
             _validate_base(link, references)
-            _validate_pin(annotation["source"]["uri"], link.get("base_uri"), None if item["status"] == "rejected" else title, revid)
+            for end in annotation["subject"]:
+                _validate_pin(end["uri"], link.get("base_uri"), None if item["status"] == "rejected" else title, revid)
         for span in item["unlinked"]:
             _safe_storage_numbers(span)
-            if not isinstance(span, dict) or set(span) - {"source", "location", "base_uri", "extensions"}:
+            if not isinstance(span, dict):
                 raise NativeAnnotationError("invalid unlinked source selection")
-            validate_link_record({key: value for key, value in span.items() if key != "base_uri"})
-            _validate_base(span, [span["source"]["uri"]])
-            _validate_pin(span["source"]["uri"], span.get("base_uri"), None if item["status"] == "rejected" else title, revid)
+            end = {key: value for key, value in span.items() if key != "base_uri"}
+            validate_link_record({"subject": [end], "object": []})
+            _validate_base(span, [end["uri"]])
+            _validate_pin(end["uri"], span.get("base_uri"), None if item["status"] == "rejected" else title, revid)
 
 
 def _validate_pin(uri: str, base: str | None, title: str | None, revid: int | None) -> None:
@@ -208,18 +198,32 @@ def _validate_pin(uri: str, base: str | None, title: str | None, revid: int | No
         raise NativeAnnotationError("article occurrence source revision differs from article pin")
 
 
-def occurrences(item: dict) -> list[dict]:
-    """Return native source selections, retaining base and explicit absence."""
-    spans = []
+def _ends(item: dict):
+    """The stored source selections of an item, in place: each subject end of each link
+    with the link's base, then each unlinked end with its own."""
     for link in item.get("links", []):
         if not isinstance(link, dict) or not isinstance(link.get("annotation"), dict):
             continue
-        annotation = link["annotation"]
-        span = {key: annotation[key] for key in ("source", "location", "extensions") if key in annotation}
-        if "base_uri" in link:
-            span["base_uri"] = link["base_uri"]
+        subject = link["annotation"].get("subject")
+        for end in subject if isinstance(subject, list) else []:
+            if isinstance(end, dict):
+                yield end, link
+    for span in item.get("unlinked", []):
+        if isinstance(span, dict):
+            yield span, span
+
+
+def occurrences(item: dict) -> list[dict]:
+    """Return native source selections as ends with their carrier base, retaining explicit absence."""
+    spans = []
+    for end, carrier in _ends(item):
+        if end is carrier:
+            spans.append(end)
+            continue
+        span = dict(end)
+        if "base_uri" in carrier:
+            span["base_uri"] = carrier["base_uri"]
         spans.append(span)
-    spans.extend(item.get("unlinked", []))
     return spans
 
 
@@ -231,17 +235,16 @@ def anchors(item: dict, *, source_uri: str | None = None,
         return [span if isinstance(span, dict) else None for span in raw]
     result = []
     for span in occurrences(item):
-        source = span.get("source", {})
         location = span.get("location")
         if require_source:
-            actual = resolved_web_uri(source.get("uri", ""), span.get("base_uri")) if isinstance(source, dict) else None
+            actual = resolved_web_uri(span["uri"], span.get("base_uri")) if isinstance(span.get("uri"), str) else None
             if source_uri is None or actual != source_uri:
                 result.append(None)
                 continue
-        if "location" not in span and isinstance(source, dict) and source.get("type") == "html":
+        if "location" not in span and span.get("type") == "html":
             result.append({"type": "whole_resource"})
             continue
-        if not (isinstance(source, dict) and source.get("type") == "html" and isinstance(location, dict)):
+        if not (span.get("type") == "html" and isinstance(location, dict)):
             result.append(None)
             continue
         if location.get("profile") == ANCHOR_PROFILE and isinstance(location.get("anchor"), dict):
@@ -249,8 +252,8 @@ def anchors(item: dict, *, source_uri: str | None = None,
         elif "profile" in location:
             result.append(None)
         else:
-            # A built-in Literature Links location. WikiLean's own records keep the
-            # editing key beside it; any other record is read from the location.
+            # A built-in Literature Links location. WikiLean's own ends keep the
+            # editing key beside it; any other end is read from the location.
             editing_key = _anchor_extension(span)
             result.append(_well_formed_anchor(editing_key) if isinstance(editing_key, dict) else derive_anchor(location))
     return result
@@ -266,8 +269,8 @@ def _well_formed_anchor(anchor: dict) -> dict | None:
     return None if malformed else anchor
 
 
-def _anchor_extension(record: dict) -> Any:
-    extensions = record.get("extensions")
+def _anchor_extension(end: dict) -> Any:
+    extensions = end.get("extensions")
     wikilean = extensions.get("org.wikilean") if isinstance(extensions, dict) else None
     return wikilean.get("anchor") if isinstance(wikilean, dict) else None
 
@@ -295,11 +298,11 @@ def derive_anchor(location: dict) -> dict | None:
 def resolve_locations(items: list[dict], html: str) -> tuple[dict[str, int], list[dict]]:
     """Replace WikiLean profile locations by built-in ones resolved against the pinned article HTML.
 
-    The editing key moves to ``extensions["org.wikilean"]["anchor"]``, so the
-    editor and the renderers keep working from it, while any Literature Links
-    reader can follow the stored quotation or selector. A location that cannot be
-    resolved keeps the profile form with ``resolution`` set to why. Mutates
-    ``items`` in place; returns per-outcome counts and one diagnostic per
+    The editing key moves to the end's ``extensions["org.wikilean"]["anchor"]``,
+    so the editor and the renderers keep working from it, while any Literature
+    Links reader can follow the stored quotation or selector. A location that
+    cannot be resolved keeps the profile form with ``resolution`` set to why.
+    Mutates ``items`` in place; returns per-outcome counts and one diagnostic per
     unresolved occurrence.
     """
     from anchor_resolve import resolve, text_layer
@@ -309,15 +312,17 @@ def resolve_locations(items: list[dict], html: str) -> tuple[dict[str, int], lis
     for index, item in enumerate(items):
         if not is_native(item):
             continue
-        records = [("link", k, link.get("annotation")) for k, link in enumerate(item.get("links", []))
-                   if isinstance(link, dict)]
-        records += [("unlinked", k, span) for k, span in enumerate(item.get("unlinked", []))]
-        for kind, position, record in records:
-            if not isinstance(record, dict):
+        ends = []
+        for k, link in enumerate(item.get("links", [])):
+            annotation = link.get("annotation") if isinstance(link, dict) else None
+            subject = annotation.get("subject") if isinstance(annotation, dict) else None
+            ends += [({"link": k, "end": n}, end) for n, end in enumerate(subject if isinstance(subject, list) else [])]
+        ends += [({"unlinked": k}, span) for k, span in enumerate(item.get("unlinked", []))]
+        for position, end in ends:
+            if not isinstance(end, dict):
                 continue
-            source, location = record.get("source"), record.get("location")
-            if (not isinstance(source, dict) or source.get("type") != "html"
-                    or not isinstance(location, dict) or location.get("profile") != ANCHOR_PROFILE
+            location = end.get("location")
+            if (end.get("type") != "html" or not isinstance(location, dict) or location.get("profile") != ANCHOR_PROFILE
                     or not isinstance(location.get("anchor"), dict)):
                 continue
             anchor = location["anchor"]
@@ -325,13 +330,13 @@ def resolve_locations(items: list[dict], html: str) -> tuple[dict[str, int], lis
             counts[how] = counts.get(how, 0) + 1
             if resolved is None:
                 location["resolution"] = "unsupported" if how == "unsupported" else "unresolved"
-                diagnostics.append({"item": index, kind: position, "code": "LOCATION_UNRESOLVED", "reason": how})
+                diagnostics.append({"item": index, **position, "code": "LOCATION_UNRESOLVED", "reason": how})
                 continue
-            record["location"] = resolved
-            extensions = record.get("extensions") if isinstance(record.get("extensions"), dict) else {}
+            end["location"] = resolved
+            extensions = end.get("extensions") if isinstance(end.get("extensions"), dict) else {}
             wikilean = dict(extensions["org.wikilean"]) if isinstance(extensions.get("org.wikilean"), dict) else {}
             wikilean["anchor"] = deepcopy(anchor)
-            record["extensions"] = {**extensions, "org.wikilean": wikilean}
+            end["extensions"] = {**extensions, "org.wikilean": wikilean}
     return counts, diagnostics
 
 
@@ -358,27 +363,34 @@ def resolved_web_uri(reference: str, base: str | None = None) -> str | None:
 
 
 def formal_links(item: dict) -> list[dict]:
-    """Public link labels with navigation restricted to HTTP(S)."""
+    """Public labels of the formal ends an item links to, with navigation restricted to HTTP(S).
+
+    A checked absence (``noMatch``) names no formal result.
+    """
     result = []
     for link in item.get("links", []):
-        annotation = link.get("annotation", {}) if isinstance(link, dict) else {}
-        target = target_uri(annotation)
-        if target is None:
+        annotation = link.get("annotation") if isinstance(link, dict) else None
+        if not isinstance(annotation, dict) or annotation.get("relation") == "noMatch":
             continue
-        pin = target_pin(annotation)
-        fragment = target.partition("#")[2]
-        if pin and isinstance(pin.get("declaration"), str) and pin["declaration"]:
-            label = pin["declaration"]
-        else:
-            try:
-                label = unquote(fragment, errors="strict") if fragment else target
-            except UnicodeError:
-                label = fragment
-        record = {"target": target, "label": label}
-        url = resolved_web_uri(target, link.get("base_uri"))
-        if url:
-            record["url"] = url
-        result.append(record)
+        for end in annotation.get("object") or []:
+            if not isinstance(end, dict) or not isinstance(end.get("uri"), str):
+                continue
+            target = end_reference(end)
+            location = end.get("location") if isinstance(end.get("location"), dict) else {}
+            declaration = location.get("declaration") if end.get("type") == "lean" else None
+            fragment = target.partition("#")[2]
+            if isinstance(declaration, str) and declaration:
+                label = declaration
+            else:
+                try:
+                    label = unquote(fragment, errors="strict") if fragment else target
+                except UnicodeError:
+                    label = fragment
+            record = {"target": target, "label": label}
+            url = resolved_web_uri(target, link.get("base_uri"))
+            if url:
+                record["url"] = url
+            result.append(record)
     return result
 
 def primary_anchor(item: dict) -> dict:
@@ -411,7 +423,8 @@ def anchor_sig(item: dict) -> str:
     if is_native(item):
         spans = occurrences(item)
         first = spans[0] if spans else {}
-        return stable_native(["native", first.get("source"), first.get("location"), first.get("base_uri")])
+        source = {"type": first.get("type"), "uri": first.get("uri")} if spans else None
+        return stable_native(["native", source, first.get("location"), first.get("base_uri")])
     anchor = primary_anchor(item)
     return json.dumps([anchor.get(key) for key in ("type", "section", "snippet", "value", "from")], sort_keys=True)
 
@@ -438,6 +451,18 @@ def preserve_native_items(existing: list[dict], produced: list[dict]) -> list[di
             return {**deepcopy(old), **{key: overlay(old.get(key), value) for key, value in new.items()}}
         return deepcopy(new)
 
+    def overlay_ends(old: Any, new: Any, carrier: tuple = ()) -> Any:
+        # Ends are matched by what they select, so an echoed end keeps the
+        # extensions (such as the editing key) and other fields it left out.
+        if not isinstance(old, list) or not isinstance(new, list):
+            return new
+        key = lambda end: stable_native([end.get(k) for k in ("type", "uri", "location", *carrier)])
+        previous: dict[str, Any] = {}
+        for end in old:
+            if isinstance(end, dict):
+                previous.setdefault(key(end), end)
+        return [overlay(previous.get(key(end)), end) if isinstance(end, dict) else end for end in new]
+
     result, seen = [], set()
     for fresh in produced:
         key = identity(fresh)
@@ -462,12 +487,24 @@ def preserve_native_items(existing: list[dict], produced: list[dict]) -> list[di
             raise NativeAnnotationError("agent dropped a native link; retain it or reject the review item")
         merged = overlay(old, fresh)
         merged["links"] = [overlay(old_links.get(link.get("id")), link) for link in fresh_links]
+        # A selection promoted from unlinked keeps what its unlinked end carried.
+        promoted = [{key: value for key, value in span.items() if key != "base_uri"} for span in old["unlinked"]]
+        for link in merged["links"]:
+            previous = old_links.get(link.get("id"))
+            annotation = link.get("annotation")
+            if not isinstance(annotation, dict):
+                continue
+            for side in _SIDES:
+                if side in annotation:
+                    before = previous["annotation"].get(side) if isinstance(previous, dict) else promoted if side == "subject" else None
+                    annotation[side] = overlay_ends(before, annotation[side])
+        merged["unlinked"] = overlay_ends(old["unlinked"], merged.get("unlinked"), ("base_uri",))
         # Unlinked selections have no internal link identity. Agents must keep
         # their full source selection, either unlinked or copied into a link.
         # Explicit location edits belong to the editor/proposal flow; a model
         # dropping an opaque PDF/LaTeX/generic selection must not delete it.
-        # A selection is its source, location and base; the editing key beside a
-        # built-in location travels with it but is not part of the comparison.
+        # A selection is its end and base; the end's extensions, such as the
+        # editing key, travel with it but are not part of the comparison.
         selection = lambda span: {key: value for key, value in span.items() if key != "extensions"}
         current_spans = [selection(span) for span in occurrences(merged)]
         for old_span in old["unlinked"]:
@@ -498,12 +535,11 @@ def repin_items(items: list[dict], *, title: str, old_revid: int, new_revid: int
     for index, item in enumerate(result):
         if not is_native(item) or item.get("status") == "rejected":
             continue
-        for span_index, span in enumerate(occurrences(item)):
-            source = span.get("source", {})
-            previous = source.get("uri")
-            if resolved_web_uri(previous, span.get("base_uri")) != old_uri:
+        for span_index, (end, carrier) in enumerate(_ends(item)):
+            previous = end.get("uri")
+            if not isinstance(previous, str) or resolved_web_uri(previous, carrier.get("base_uri")) != old_uri:
                 continue
-            source["uri"] = new_uri
+            end["uri"] = new_uri
             changes.append({"item": item.get("id", index), "occurrence": span_index, "from": previous, "to": new_uri})
     validate_items(result, title=title, revid=new_revid)
     return result, changes
