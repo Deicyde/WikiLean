@@ -557,6 +557,8 @@ The P1A `--dry-run` calls read-only Wrangler status/history commands and Wrangle
 in that mode. The promoter never invokes a mutating deploy in `--dry-run` and has no
 automatic rollback path.
 
+When the promotion commit contains `wiki/migrations/0014_native_companions.sql`, both modes refuse unless a read-only `wrangler d1 execute wikilean --remote` query finds `source_revid` and `schema_version` on `revisions`: apply 0014 to D1 first (docs/COMPANION-NATIVE.md).
+
 Before staging, the script fetches the production `/assets/brain/current.json`. If production names a prior qualified release, its exact frozen directory must still exist and independently verify locally. This prevents a deployment-disabled shadow run from accidentally becoming the retained `previous` release. Immediately before the deploy, the selector must still be byte-identical and the Worker version must remain stable across the status/selector/status sandwich.
 
 The deploy path invokes exactly one strict, tagged `wrangler deploy` using the sealed
