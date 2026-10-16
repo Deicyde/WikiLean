@@ -6,6 +6,24 @@ vendored schema and its pin are in `wiki/src/vendor/literature-links/`.
 The current implementation is available for local testing; no production database
 has been migrated or Worker deployed by this work.
 
+## Before any deploy from this commit on
+
+This Worker reads and writes `revisions.source_revid` and
+`revisions.schema_version` on every save, revert and create, legacy (schema 3)
+articles included; without those columns each of them answers 500. So before
+any Worker deploy or Brain promotion of a release built from a commit that
+contains `wiki/migrations/0014_native_companions.sql`:
+
+1. Back up D1: `cd wiki && npm run backup:d1` (see `docs/BACKUP.md`).
+2. Apply 0014 once (it is not idempotent):
+   `cd wiki && npx wrangler d1 execute wikilean --remote --file=migrations/0014_native_companions.sql`.
+3. Check that `SELECT name FROM pragma_table_info('revisions')` lists
+   `source_revid` and `schema_version`, and that `companion_migrations` exists.
+
+0014 converts no article: schema-3 articles stay legacy until the migration
+below. Workers built before it ignore the new columns, so it can be applied
+ahead of the release.
+
 An article still owns review items with stable IDs, coverage status, provenance,
 notes and moderation history. Each item contains:
 
@@ -185,7 +203,8 @@ article's item, link and unlinked counts and diagnostics, including status/targe
 contradictions, missing targets and unresolved legacy anchors.
 Only application schemas 3 and 4 are recognized; unknown formats fail closed.
 
-The additive SQL migration is `wiki/migrations/0014_native_companions.sql`. The
+The additive SQL migration is `wiki/migrations/0014_native_companions.sql`; D1
+gets it separately, before any deploy (see above). The
 rehearsal applies it to an older copied database when needed, then performs all
 article conversions in one transaction. For every converted article it:
 
