@@ -225,7 +225,7 @@ describe("save-path lazy heal", () => {
     const stored = storedAnnotations(db);
     expect(stored.slice(0, 2)).toEqual(afterHuman); // humans byte-identical, ids intact
     expect(stored[2].id).toMatch(ANNOTATION_ID_RE);
-    expect(stripId(stored[2])).toEqual(NEW_ANNOTATION);
+    expect(stripId(stored[2])).toEqual({ ...NEW_ANNOTATION, provenance: "ai" }); // bot cannot mint human ownership
 
     // Echo-verbatim is enforced: a bot that drops a stored human annotation's
     // id fails deep-equality → 422.

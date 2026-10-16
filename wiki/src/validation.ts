@@ -2,6 +2,7 @@
 // hardening, P1 pipeline loop). Exported so other code (engine, sibling
 // features) imports the single source of truth instead of re-declaring the
 // status vocabulary.
+import { isNativeItem, nativeAnchorSig } from './native-companion.js';
 
 // Allowed annotation `status` values. `rejected` is reserved as a tombstone for
 // a sibling feature and is intentionally allowed now to avoid re-touching the
@@ -57,6 +58,7 @@ function annId(a: AnnRecord): string | number | undefined {
 // fall through to the anchors[]-then-all-null path.
 // sort_keys is moot — entries are scalars.
 export function anchorSig(a: AnnRecord): string {
+  if (isNativeItem(a)) return nativeAnchorSig(a);
   let anc: AnnRecord = {};
   if (isPlainObject(a.anchor)) {
     anc = a.anchor;

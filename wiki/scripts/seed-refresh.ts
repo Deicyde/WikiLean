@@ -43,7 +43,7 @@ const userEdited = new Set<string>(
 );
 console.log(`slugs with user edits: ${userEdited.size}  (skipped if their content differs)`);
 
-const remoteRows = wranglerJson("SELECT slug, annotations FROM articles") as Array<{
+const remoteRows = wranglerJson("SELECT slug, annotations FROM articles WHERE schema_version=3") as Array<{
   slug: string;
   annotations: string;
 }>;
@@ -63,11 +63,12 @@ for (const r of local) {
   }
   updates.push(
     `UPDATE articles SET annotations=${q(r.annotations)}, version=version+1, updated_at=${now}, ` +
-      `revid=COALESCE(revid, ${r.revid ?? "NULL"}) WHERE slug=${q(r.slug)};`,
+      `revid=COALESCE(revid, ${r.revid ?? "NULL"}) WHERE slug=${q(r.slug)} AND schema_version=3;`,
   );
   updates.push(
-    `INSERT INTO revisions (slug, user_id, annotations, comment, created_at) VALUES (` +
-      `${q(r.slug)}, NULL, ${q(r.annotations)}, 'pipeline refresh', ${now});`,
+    `INSERT INTO revisions (slug, user_id, annotations, comment, created_at) ` +
+      `SELECT ${q(r.slug)}, NULL, ${q(r.annotations)}, 'pipeline refresh', ${now} ` +
+      `WHERE EXISTS (SELECT 1 FROM articles WHERE slug=${q(r.slug)} AND schema_version=3 AND annotations=${q(r.annotations)} AND updated_at=${now});`,
   );
 }
 
