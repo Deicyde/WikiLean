@@ -107,11 +107,15 @@ describe('canonical native companion records', () => {
     const link = { id: 'one', annotation: core() };
     const relation = (match_kind?: string) => companionAnnotation({ status: 'formalized', match_kind, links: [link], unlinked: [] }, link);
     expect(relation('exact')).toMatchObject({ relation: 'exactMatch' }); expect(relation('exact').extensions).toBeUndefined();
-    expect(relation('special_case').relation).toBe('narrowMatch');
+    expect(relation('special_case')).not.toHaveProperty('relation'); expect(relation('special_case').extensions).toEqual({ 'org.wikilean': { match_kind: 'special_case' } });
     expect(relation('close').relation).toBe('closeMatch');
     expect(relation('invocation')).toMatchObject({ relation: 'relatedMatch', extensions: { 'org.wikilean': { match_kind: 'invocation' } } });
     expect(relation('partial')).not.toHaveProperty('relation'); expect(relation('partial').extensions).toEqual({ 'org.wikilean': { match_kind: 'partial' } });
     expect(relation()).not.toHaveProperty('relation');
+    const unstated = (match_kind: string) => companionAnnotation({ status: 'not_formalized', match_kind, links: [link], unlinked: [] }, link);
+    expect(unstated('exact')).toMatchObject({ status: 'not_formalized', extensions: { 'org.wikilean': { match_kind: 'exact' } } });
+    expect(unstated('exact')).not.toHaveProperty('relation'); expect(unstated('generalization')).not.toHaveProperty('relation');
+    expect(unstated('related')).toMatchObject({ relation: 'relatedMatch', status: 'not_formalized' });
     const absence = { id: 'two', annotation: { subject: [end()], object: [{ type: 'lean' as const, uri: MATHLIB_REPOSITORY, version: commit }], relation: 'noMatch' } };
     expect(companionAnnotation({ status: 'not_formalized', match_kind: 'exact', links: [absence], unlinked: [] }, absence))
       .toMatchObject({ relation: 'noMatch', status: 'not_formalized', extensions: { 'org.wikilean': { match_kind: 'exact' } } });
