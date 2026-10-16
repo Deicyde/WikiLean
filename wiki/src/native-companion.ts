@@ -375,6 +375,8 @@ export const MATCH_RELATIONS: Record<string, string> = {
   related: 'relatedMatch', invocation: 'relatedMatch',
 };
 const NAMED_BY_RELATION = new Set(['exact', 'generalization', 'close']);
+/** The relations a link of a not_formalized item may carry: no declaration states the item. */
+const UNFORMALIZED_RELATIONS = new Set(['relatedMatch', 'noMatch']);
 const nonblank = (value: unknown): string | undefined => typeof value === 'string' && value.trim() ? value : undefined;
 /** The article's pinned revision cited as a CSL web page. */
 export function articleCitation(context: SourceContext): JsonObject {
@@ -405,13 +407,16 @@ function project(item: JsonObject, stored: LinkRecord, base: string | undefined,
   record.subject = stored.subject.map(end => subjectEnd(end, nonblank(item.label), context, base));
   record.object = copy(stored.object);
   const token = typeof item.match_kind === 'string' ? item.match_kind : undefined;
-  // An item that is not formalized has no declaration that states it: its links get relatedMatch or nothing.
-  const unstated = item.status === 'not_formalized' && token !== undefined && MATCH_RELATIONS[token] !== 'relatedMatch';
-  const fromToken = stored.relation !== 'noMatch' && record.object.length > 0 && token !== undefined && Object.hasOwn(MATCH_RELATIONS, token) && !unstated;
-  if (fromToken) record.relation = MATCH_RELATIONS[token!];
-  else if (stored.relation !== undefined) record.relation = stored.relation;
-  if (typeof item.status === 'string' && item.status) record.status = item.status;
-  else if (stored.status !== undefined) record.status = stored.status;
+  // An item that is not formalized has no declaration that states it: its links get
+  // relatedMatch, a checked absence or nothing, whether from match_kind or stored.
+  const status = typeof item.status === 'string' && item.status ? item.status : stored.status;
+  const allowed = (relation: string) => status !== 'not_formalized' || UNFORMALIZED_RELATIONS.has(relation);
+  const derived = stored.relation !== 'noMatch' && record.object.length > 0 && token !== undefined && Object.hasOwn(MATCH_RELATIONS, token)
+    ? MATCH_RELATIONS[token] : undefined;
+  const fromToken = derived !== undefined && allowed(derived);
+  if (fromToken) record.relation = derived;
+  else if (stored.relation !== undefined && allowed(stored.relation)) record.relation = stored.relation;
+  if (status !== undefined) record.status = status;
   const kind = stored.kind ?? nonblank(item.kind); if (kind !== undefined) record.kind = kind;
   const id = stored.id ?? (typeof item.id === 'string' && item.id ? item.id : undefined); if (id !== undefined) record.id = id;
   const note = stored.note ?? nonblank(item.note); if (note !== undefined) record.note = note;
@@ -427,7 +432,8 @@ function project(item: JsonObject, stored: LinkRecord, base: string | undefined,
  * each subject end's title, match_kind as the relation), the article's revision
  * on an article-local subject end, and provenance under org.wikilean. The item
  * stays the editable authority; stored fields are kept and only absent ones are
- * filled, except status and a relation from match_kind, which are the item's. */
+ * filled, except status and a relation from match_kind, which are the item's, and a
+ * not_formalized item's links carry no relation but relatedMatch or noMatch. */
 export function companionAnnotation(item: JsonObject, link: NativeLink, context?: SourceContext): LinkRecord {
   return project(item, link.annotation, link.base_uri, context);
 }

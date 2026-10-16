@@ -143,6 +143,32 @@ describe('canonical native companion records', () => {
     expect(companionAnnotation({ status: 'not_formalized', match_kind: 'exact', links: [absence], unlinked: [] }, absence))
       .toMatchObject({ relation: 'noMatch', status: 'not_formalized', extensions: { 'org.wikilean': { match_kind: 'exact' } } });
   });
+  it('writes no relation but relatedMatch or noMatch for an unformalized item, stored on the link or not', () => {
+    const stored = (relation: string, status = 'not_formalized', match_kind?: string) => {
+      const link = { id: 'one', annotation: { ...core(), relation } };
+      const work: NativeItem = { id: 'aaaaaaaaaaaa', status, ...(match_kind ? { match_kind } : {}), links: [link], unlinked: [] };
+      const [record] = storedCompanionRecords([work]);
+      expect(validateLinkRecord(record.annotation)).toEqual([]);
+      expect(work.links[0].annotation.relation).toBe(relation);
+      return record.annotation;
+    };
+    for (const relation of ['exactMatch', 'broadMatch', 'closeMatch', 'narrowMatch', 'hasPart', 'urn:example:states']) {
+      expect(stored(relation)).not.toHaveProperty('relation');
+      expect(stored(relation, 'formalized').relation).toBe(relation);
+      expect(stored(relation, 'partial').relation).toBe(relation);
+    }
+    expect(stored('relatedMatch').relation).toBe('relatedMatch');
+    // The token still decides when it may; withheld, it stays under org.wikilean.
+    expect(stored('exactMatch', 'not_formalized', 'invocation')).toMatchObject({ relation: 'relatedMatch', extensions: { 'org.wikilean': { match_kind: 'invocation' } } });
+    expect(stored('relatedMatch', 'not_formalized', 'exact')).toMatchObject({ relation: 'relatedMatch', extensions: { 'org.wikilean': { match_kind: 'exact' } } });
+    const withheld = stored('closeMatch', 'not_formalized', 'exact');
+    expect(withheld).not.toHaveProperty('relation'); expect(withheld.extensions).toEqual({ 'org.wikilean': { match_kind: 'exact' } });
+    expect(stored('closeMatch', 'not_formalized', 'special_case')).not.toHaveProperty('relation');
+    // The record's status is the item's, or the stored one when the item has none.
+    const link = { id: 'one', annotation: { ...core(), relation: 'exactMatch', status: 'not_formalized' } };
+    expect(companionAnnotation({ links: [link], unlinked: [] }, link)).toEqual({ ...core(), status: 'not_formalized' });
+    expect(companionAnnotation({ status: 'formalized', links: [link], unlinked: [] }, link)).toMatchObject({ relation: 'exactMatch', status: 'formalized' });
+  });
   it('exports unlinked selections as records with an empty object and no relation', () => {
     const selection = { type: 'html' as const, uri: wikipediaSourceUri(context), location: { quote: { exact: 'finite group' } } };
     const work: NativeItem = { id: 'cccccccccccc', status: 'not_formalized', label: 'Groups', match_kind: 'exact', provenance: 'ai', links: [],
