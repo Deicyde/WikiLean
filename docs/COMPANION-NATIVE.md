@@ -67,7 +67,7 @@ changed reference replaces the object ends, and the junk values each of them
 listed go with them; it also drops the stored `relation`, which described the
 old object. Junk values belong to an end (Literature Links rejects a
 record-level `junk`). WikiLean writes none itself and keeps those on imported
-ends.
+ends, except that a source selection moved to other text drops its own.
 
 The review item stays the editable authority for its facts. When a record leaves
 WikiLean (`companionAnnotation` and `unlinkedAnnotation` in

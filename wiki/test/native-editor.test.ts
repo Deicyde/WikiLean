@@ -49,6 +49,27 @@ describe('native editor preservation',()=>{
     expect(rest).toEqual(restBefore);
     expect(after.links[1]).toEqual(base().links[1]); expect(after.unlinked).toEqual(base().unlinked);
   });
+  it('keeps junk values with their end: a replaced object takes its own along and a re-anchored end drops its own',()=>{
+    const withJunk=()=>{const item:any=base();
+      item.links[0].annotation.subject[0].junk=['pdf junk']; item.links[0].annotation.object[0].junk=['first object junk'];
+      item.links[1].annotation.subject[0].junk=['article junk']; item.links[1].annotation.object[0].junk=['Nat.card of an infinite type is 0'];
+      return item;};
+    expect(model.edit(withJunk(),'link:second',{target:docs},newId).item).toEqual(withJunk());
+    const retargeted=model.edit(withJunk(),'link:second',{target:'urn:changed'},newId).item.links[1].annotation;
+    expect(retargeted.object).toEqual([{type:'generic',uri:'urn:changed'}]); expect(retargeted).not.toHaveProperty('junk');
+    expect(retargeted.subject).toEqual(withJunk().links[1].annotation.subject);
+    // A range edit and an explicit re-anchor each drop only the selected end's junk.
+    const ranged=model.edit(withJunk(),'link:second',{anchor:{section:'New',snippet:'text'}},newId).item;
+    expect(ranged.links[1].annotation.subject[0]).not.toHaveProperty('junk');
+    expect(ranged.links[1].annotation.object).toEqual(withJunk().links[1].annotation.object);
+    expect(ranged.links[0]).toEqual(withJunk().links[0]);
+    const reanchored=model.edit(withJunk(),'link:first',{anchor:{section:'New',snippet:'text'},reanchorSource:sourceUri},newId).item;
+    expect(reanchored.links[0].annotation.subject[0]).not.toHaveProperty('junk');
+    expect(reanchored.links[0].annotation.object).toEqual(withJunk().links[0].annotation.object);
+    // Unlinking leaves the subject end as it was, its junk included.
+    const unlinked=model.edit(withJunk(),'link:second',{target:''},newId).item;
+    expect(unlinked.unlinked[1]).toEqual(withJunk().links[1].annotation.subject[0]);
+  });
   it('edits anchors on html ends only',()=>{
     const item={links:[],unlinked:[{type:'html',uri:sourceUri,location:{profile:'urn:wikilean:anchor:v3',anchor:{snippet:'old'}}}]};
     expect(model.anchor(model.entries(item)[0],sourceUri)).toEqual({snippet:'old'});
