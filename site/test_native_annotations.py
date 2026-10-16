@@ -307,6 +307,23 @@ class Pipeline(unittest.TestCase):
         fresh,_=n.repin_items([item()],title=TITLE,old_revid=42,new_revid=43)
         self.assertTrue(moderate._veto_adjacent(fresh[0],[tombstone]))
 
+    def test_repinned_formula_and_theorem_anchors_cannot_resurrect_a_veto(self):
+        def end(anchor, revid, css=None):
+            span={'type':'html','uri':n.wikipedia_source_uri(TITLE,revid),'location':{'profile':n.ANCHOR_PROFILE,'anchor':anchor}}
+            if css: span.update(location={'css':css},extensions={'org.wikilean':{'anchor':anchor}})
+            return span
+        cases=[({'type':'theorem_box','value':'Theorem 1'},None),({'type':'math_alttext','value':'x^2+1'},None),
+               ({'type':'math_alttext','value':'x^2+1'},'img[alt="x^2+1"]')]
+        for anchor,css in cases:
+            tomb=item(provenance='human',status='rejected',links=[],unlinked=[end(anchor,42,css)])
+            for revid in (42,43):
+                fresh=item(links=[],unlinked=[end(anchor,revid,css)]); del fresh['id']
+                posted,_=moderate.finalize_for_post([tomb],[fresh])
+                self.assertEqual(posted,[tomb],(anchor,css,revid))
+            other=item(links=[],unlinked=[end({**anchor,'value':'Other'},43)]); del other['id']
+            posted,stats=moderate.finalize_for_post([tomb],[other])
+            self.assertEqual((len(posted),stats['veto_adjacent_dropped']),(2,0),anchor)
+
     def test_only_article_local_occurrences_gate_a_repin(self):
         import update_from_upstream as drift
         work=item(); work['links'].append({'id':'pdf','annotation':{'subject':[{'type':'pdf','uri':'https://example.net/paper.pdf','location':{'page':2}}],'object':formal('urn:formal:pdf')}})
