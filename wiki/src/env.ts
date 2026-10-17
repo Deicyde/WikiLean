@@ -5,7 +5,9 @@ export interface Env {
   // Optional dedicated namespace for /review GitHub user tokens (review.ts
   // reviewTokenStore). Unbound, the tokens stay in RENDER_CACHE. Not in
   // wrangler.jsonc: the maintainer creates it and adds the binding
-  // (docs/SECRETS.md, "Review tokens in their own KV namespace").
+  // (docs/SECRETS.md, "P1: seal review tokens and give them their own KV
+  // namespace"). KV access is account-wide, so REVIEW_TOKEN_KEY, not the
+  // namespace, is what keeps a KV reader from the tokens.
   REVIEW_TOKENS?: KVNamespace;
   ASSETS: Fetcher;
   EDIT_LIMITER: {
@@ -85,4 +87,10 @@ export interface Env {
   // submitter must be connected AS the PAT account — so this public endpoint can't
   // post through it on anyone else's behalf. Comments appear from the PAT owner.
   REVIEW_POSTING_PAT?: string;
+  // Seals /review GitHub user tokens at rest (review.ts sealReviewTok): with it
+  // set, a stored token is AES-GCM ciphertext bound to its cookie id, under a
+  // KV key that is a digest of the cookie id. At least 32 characters
+  // (`openssl rand -base64 48`). Unset, tokens stay plaintext JSON. Rotating it
+  // signs reviewers out of /review posting (their stored tokens no longer open).
+  REVIEW_TOKEN_KEY?: string;
 }

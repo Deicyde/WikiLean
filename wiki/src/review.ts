@@ -76,34 +76,129 @@ async function ghTokenExchange(c: Ctx, params: Record<string, string>): Promise<
   }
 }
 
-// Where reviewer GitHub tokens are stashed. They are live credentials, so they
-// belong in a namespace of their own (the REVIEW_TOKENS binding) rather than in
-// RENDER_CACHE, which the nightly host writes with ambient wrangler credentials.
-// Until the maintainer binds REVIEW_TOKENS (docs/SECRETS.md), RENDER_CACHE stays
-// the store, so nothing changes for a Worker without the binding.
+// Where reviewer GitHub tokens are stashed: the REVIEW_TOKENS namespace when it
+// is bound, else RENDER_CACHE. A namespace of their own keeps them out of the
+// cache the nightly host rewrites, but it is not access isolation: Cloudflare
+// grants KV access per account, so any credential that can write RENDER_CACHE
+// (the nightly host's `wrangler login` included) can read REVIEW_TOKENS too.
+// REVIEW_TOKEN_KEY is the protection at rest (sealReviewTok below).
 export function reviewTokenStore(env: Pick<Env, "REVIEW_TOKENS" | "RENDER_CACHE">): KVNamespace {
   return env.REVIEW_TOKENS ?? env.RENDER_CACHE;
 }
 
-const reviewTokKey = (id: string) => `reviewtok:${id}`;
+// Plaintext record under the cookie id itself: the only form without
+// REVIEW_TOKEN_KEY, and the form written before the key existed.
+const plainTokKey = (id: string) => `reviewtok:${id}`;
 
-// A token stashed in RENDER_CACHE before REVIEW_TOKENS was bound is still read
-// (it expires on its own 12 h TTL), so binding the namespace signs nobody out;
-// every new or refreshed token is written only to the dedicated store.
+const enc = new TextEncoder();
+const SEALED_VALUE_PREFIX = "rt1.";
+const MIN_REVIEW_TOKEN_KEY_CHARS = 32;
+
+function b64url(bytes: Uint8Array): string {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function fromB64url(text: string): Uint8Array {
+  const bin = atob(text.replace(/-/g, "+").replace(/_/g, "/"));
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+// The AES-256-GCM key, derived (HKDF-SHA-256) from the REVIEW_TOKEN_KEY secret,
+// or null when the secret is unset. A secret under 32 characters is refused.
+async function reviewSealKey(env: Pick<Env, "REVIEW_TOKEN_KEY">): Promise<CryptoKey | null> {
+  const secret = env.REVIEW_TOKEN_KEY;
+  if (!secret) return null;
+  if (secret.length < MIN_REVIEW_TOKEN_KEY_CHARS) {
+    throw new Error(`REVIEW_TOKEN_KEY must be at least ${MIN_REVIEW_TOKEN_KEY_CHARS} characters`);
+  }
+  const material = await crypto.subtle.importKey("raw", enc.encode(secret), "HKDF", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "HKDF", hash: "SHA-256", salt: new Uint8Array(0), info: enc.encode("wikilean/review-token/aes-gcm/v1") },
+    material,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+
+// Sealed records live under a digest of the cookie id, so listing the
+// namespace reveals no live cookie value.
+async function sealedTokKey(id: string): Promise<string> {
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(id)));
+  return `reviewtok:s1:${[...digest].map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+}
+
+// AES-GCM with a fresh 96-bit IV; the cookie id is the additional data, so a
+// sealed value copied to another session's key does not open.
+async function sealReviewTok(key: CryptoKey, id: string, json: string): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: enc.encode(plainTokKey(id)) }, key, enc.encode(json)),
+  );
+  return `${SEALED_VALUE_PREFIX}${b64url(iv)}.${b64url(ct)}`;
+}
+
+// The JSON a sealed value holds, or null when it does not open (another key,
+// another cookie id, or tampering): the reviewer simply reconnects.
+async function openReviewTok(key: CryptoKey, id: string, sealed: string): Promise<string | null> {
+  if (!sealed.startsWith(SEALED_VALUE_PREFIX)) return null;
+  const [iv, ct] = sealed.slice(SEALED_VALUE_PREFIX.length).split(".");
+  if (!iv || !ct) return null;
+  try {
+    const plain = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: fromB64url(iv), additionalData: enc.encode(plainTokKey(id)) },
+      key,
+      fromB64url(ct),
+    );
+    return new TextDecoder().decode(plain);
+  } catch {
+    return null;
+  }
+}
+
+async function putReviewTok(env: Env, id: string, json: string): Promise<void> {
+  const store = reviewTokenStore(env);
+  const key = await reviewSealKey(env);
+  if (key) {
+    await store.put(await sealedTokKey(id), await sealReviewTok(key, id, json), { expirationTtl: REVIEW_TOK_TTL });
+    await store.delete(plainTokKey(id));
+  } else {
+    await store.put(plainTokKey(id), json, { expirationTtl: REVIEW_TOK_TTL });
+  }
+  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(plainTokKey(id));
+}
+
+// A sealed record first (with the key), then a plaintext one: the dedicated
+// store, then RENDER_CACHE from before REVIEW_TOKENS was bound. A plaintext
+// record found while the key is set is re-written sealed and its plaintext
+// copies deleted, so setting the key signs nobody out and leaves no
+// plaintext behind past the next read (or the 12 h TTL).
 async function readReviewTok(env: Env, id: string): Promise<string | null> {
-  const raw = await reviewTokenStore(env).get(reviewTokKey(id));
-  if (raw !== null || !env.REVIEW_TOKENS) return raw;
-  return env.RENDER_CACHE.get(reviewTokKey(id));
+  const store = reviewTokenStore(env);
+  const key = await reviewSealKey(env);
+  if (key) {
+    const sealed = await store.get(await sealedTokKey(id));
+    if (sealed !== null) return openReviewTok(key, id, sealed);
+  }
+  let plain = await store.get(plainTokKey(id));
+  if (plain === null && env.REVIEW_TOKENS) plain = await env.RENDER_CACHE.get(plainTokKey(id));
+  if (plain !== null && key) await putReviewTok(env, id, plain);
+  return plain;
 }
 
 async function writeReviewTok(env: Env, id: string, tok: ReviewTok): Promise<void> {
-  await reviewTokenStore(env).put(reviewTokKey(id), JSON.stringify(tok), { expirationTtl: REVIEW_TOK_TTL });
-  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(reviewTokKey(id));
+  await putReviewTok(env, id, JSON.stringify(tok));
 }
 
 async function deleteReviewTok(env: Env, id: string): Promise<void> {
-  await reviewTokenStore(env).delete(reviewTokKey(id));
-  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(reviewTokKey(id));
+  const store = reviewTokenStore(env);
+  await store.delete(plainTokKey(id));
+  await store.delete(await sealedTokKey(id));
+  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(plainTokKey(id));
 }
 
 // The connected reviewer's GitHub token + login, from the cookie→KV mapping. If

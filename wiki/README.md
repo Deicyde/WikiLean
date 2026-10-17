@@ -175,6 +175,8 @@ Optional:
 - `RESEARCH_EXPORT_SALT` — salt for the research export's user pseudonyms. Unset, the export
   falls back to `PIPELINE_TOKEN` (the historical salt), so existing pseudonyms stay stable;
   setting it rotates every pseudonym once and decouples them from the bearer.
+- `REVIEW_TOKEN_KEY` — at least 32 characters; seals `/review` GitHub tokens at rest in KV.
+  Unset, they are stored as plaintext JSON (see `docs/SECRETS.md`, P1).
 
 ## Edit-safety guarantees
 
