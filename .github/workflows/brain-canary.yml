@@ -1,0 +1,113 @@
+# Scheduled, read-only canary for the live Brain release.
+#
+# Reads the live release selector (/assets/brain/current.json) and runs
+# site/ops/brain-canary.py, the promoter's own convergence check, against the
+# release it names. The run fails unless every public surface serves that one
+# release: the immutable manifest (its bytes hash to the selector's
+# manifest_sha256 and its self-identity holds), the cell manifest and a shard,
+# /brain and /brain.html, the Brain API and a cursor page, the MCP brain_filter
+# tool, and the mutable compatibility aliases.
+#
+# It checks that production is consistent with the release production selects;
+# it does not pin which release that should be. The frozen public-asset
+# baseline check (--public-baseline-*) needs a private baseline store, so it is
+# not run here.
+#
+# Read-only by construction: unauthenticated GETs plus, per canary attempt, one
+# MCP tools/call of brain_filter (a read). No secrets, no deployments, no writes,
+# and the token is contents: read. Pull requests that change the canary run it too, so a change
+# is checked against production before it merges.
+
+name: Brain canary
+
+on:
+  schedule:
+    # Daily at 09:41 UTC. Schedules are best-effort and GitHub disables them
+    # after 60 days without repository activity.
+    - cron: "41 9 * * *"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/brain-canary.yml
+      - site/ops/brain-canary.py
+      - site/ops/brain_http.py
+      - site/ops/brain_public_baseline.py
+      - requirements-ci.txt
+
+permissions:
+  contents: read
+
+concurrency:
+  group: brain-canary-${{ github.event.pull_request.number || github.ref }}
+  # A new push supersedes a PR run; a manual run never cancels a scheduled one.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_URL: https://wikilean.jackmccarthy.org
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+      PYTHONUNBUFFERED: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      # The canary's HTTPS transport takes its CA bundle from certifi; install the
+      # version CI pins rather than an unpinned latest.
+      - name: Install pinned certifi
+        run: python -m pip install --constraint requirements-ci.txt certifi
+
+      - name: Read the live release selector
+        id: selector
+        run: |
+          python - <<'PY'
+          import json, os, re, sys
+          sys.path.insert(0, "site/ops")
+          from brain_http import probe_selector
+
+          # The promoter's selector probe: cache-busting nonce, size cap, trusted TLS.
+          probe = probe_selector(os.environ["BASE_URL"])
+          if probe.missing:
+              sys.exit("live release selector is missing (HTTP 404)")
+          body = probe.body
+          selector = json.loads(body)
+          if not isinstance(selector, dict):
+              selector = {}
+          release_id = selector.get("release_id")
+          manifest = selector.get("manifest_sha256")
+          if (
+              selector.get("schema") != "wikilean.release-selector/v2"
+              or not isinstance(release_id, str)
+              or re.fullmatch(r"sha256:[0-9a-f]{64}", release_id) is None
+              or not isinstance(manifest, str)
+              or re.fullmatch(r"[0-9a-f]{64}", manifest) is None
+          ):
+              sys.exit("live selector is not a v2 selector naming a release and manifest: "
+                       + body[:500].decode("utf-8", "replace"))
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"release_id={release_id}\nmanifest_sha256={manifest}\n")
+          print(f"live selector: {release_id} manifest {manifest}")
+          PY
+
+      # --timeout rides out a transient edge error; a real deviation still fails
+      # after it. A promotion landing between the two steps also fails the run.
+      - name: Run the Brain release canary
+        env:
+          RELEASE_ID: ${{ steps.selector.outputs.release_id }}
+          MANIFEST_SHA256: ${{ steps.selector.outputs.manifest_sha256 }}
+        run: |
+          python site/ops/brain-canary.py \
+            --base-url "$BASE_URL" \
+            --expected-release-id "$RELEASE_ID" \
+            --expected-manifest-sha256 "$MANIFEST_SHA256" \
+            --timeout 120 \
+            --interval 10
