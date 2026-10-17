@@ -469,4 +469,5 @@ release B or later, where `/api/work` serves wp-update up to 1000 rows (review s
 attempt each night, and the first such night runs one long wp-update sweep over the
 whole backlog, at zero model tokens. The moderate log warns when `/api/work` returns a
 full page, and this script warns once a single wp-update run reaches 800 articles,
-because past 1000 the same failures hold the head again.
+because past 1000 the same failures hold the head again. A sweep stops after 10 errors
+in a row (a dead Worker, network or Wikipedia), and the next run retries.
