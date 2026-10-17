@@ -720,7 +720,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v5"; // v5: AI-decided proposals row (Human-at-boundaries)
+  const cacheKey = "page:stats:v6"; // v6: AI-review freshness rows + recent pipeline runs table
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -740,6 +740,23 @@ app.get("/stats", async (c) => {
       })
       .from(articles)
       .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
+  )[0];
+
+  // AI review passes, counted apart from the stamp above. last_reviewed_at is
+  // stamped by EVERY bot save and bot create (AI review, Wikipedia re-pin,
+  // unchanged no-op), so it cannot show a review outage. A review that changed
+  // annotations leaves a pipeline revision commented `ai-moderate:review:<runId>`
+  // (site/moderate.py); a review that changed nothing writes no revision and
+  // is not counted here. kind='pipeline' keeps session edits, whose comment
+  // is free text, out of the count.
+  const aiReview = (
+    await db
+      .select({
+        fresh: sql<number>`COUNT(DISTINCT CASE WHEN ${revisions.createdAt} >= ${cutoff} THEN ${revisions.slug} END)`,
+        latest: sql<number | null>`MAX(${revisions.createdAt})`,
+      })
+      .from(revisions)
+      .where(and(eq(revisions.kind, "pipeline"), sql`${revisions.comment} LIKE 'ai-moderate:review:%'`))
   )[0];
 
   // Annotation totals by status from the count columns (NOT a blob parse —
@@ -805,6 +822,9 @@ app.get("/stats", async (c) => {
     .groupBy(pipelineRuns.kind)
     .orderBy(pipelineRuns.kind);
 
+  // The last 10 run reports (the same rows GET /api/runs serves).
+  const recentRuns = await recentRunRows(db, null, 10);
+
   // Propose-then-approve outcomes (the AI-precision measure): counts by
   // status, acceptance rate, and mean time-to-decision — from the proposals
   // lifecycle table. Zero-denominator guards live in statsPage.
@@ -824,13 +844,14 @@ app.get("/stats", async (c) => {
   )[0];
 
   const html = statsPage({
-    articles: review,
+    articles: { ...review, aiReviewedFresh: aiReview.fresh, aiReviewLatest: aiReview.latest },
     annotations: ann,
     events,
     flags: flagAgg,
     revisions: revByKind,
     patrol,
     runs,
+    recentRuns,
     proposals: proposalAgg,
   });
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
@@ -2745,11 +2766,68 @@ app.get("/api/work", async (c) => {
 });
 
 // ---- pipeline-run registry (P2a; cross-agent contract RUNS-API) -------------
+// GET /api/runs (public read, below) serves the stored reports.
 // POST /api/runs — bot bearer only. The runner reports each invocation once,
 // after it finishes; retries are idempotent on run_id (duplicate → 200
 // {ok:true, duplicate:true}, first-report row wins and is never overwritten).
 const RUN_ID_RE = /^[0-9a-f]{8}$/;
 const RUN_KINDS = new Set(["review", "wp-update", "new", "all"]);
+
+// Newest first by server receipt time: started_at/finished_at are
+// runner-reported and unbounded, so one bad timestamp must not pin the top row.
+// Counts only; notes stay in D1, read with wrangler or on the host.
+async function recentRunRows(db: DrizzleDB, kind: string | null, limit: number) {
+  return db
+    .select({
+      runId: pipelineRuns.runId,
+      kind: pipelineRuns.kind,
+      startedAt: pipelineRuns.startedAt,
+      finishedAt: pipelineRuns.finishedAt,
+      articles: pipelineRuns.articlesProcessed,
+      errors: pipelineRuns.errors,
+      tokens: pipelineRuns.tokens,
+      cost: pipelineRuns.costUsdEquiv,
+      model: pipelineRuns.model,
+      promptSha: pipelineRuns.promptSha,
+    })
+    .from(pipelineRuns)
+    .where(kind === null ? undefined : eq(pipelineRuns.kind, kind))
+    .orderBy(desc(pipelineRuns.createdAt), desc(pipelineRuns.runId))
+    .limit(limit);
+}
+
+// GET /api/runs — public, read-only per-run reports (newest first), so the
+// session-start status check can read run error counts without a bearer token.
+// ?kind filters on the run's own kind (one of RUN_KINDS; 'all' is a run kind,
+// the full nightly, not a wildcard); omit it for every kind. ?limit 1..50,
+// default 10. Unknown kind or a bad limit → 400 (no clamping).
+app.get("/api/runs", async (c) => {
+  const kindRaw = c.req.query("kind");
+  if (kindRaw !== undefined && !RUN_KINDS.has(kindRaw)) return c.json({ ok: false, error: "bad kind" }, 400);
+  const limitRaw = c.req.query("limit") ?? "10";
+  if (!/^[0-9]{1,2}$/.test(limitRaw) || Number(limitRaw) < 1 || Number(limitRaw) > 50) {
+    return c.json({ ok: false, error: "bad limit" }, 400);
+  }
+  const rows = await recentRunRows(drizzle(c.env.DB), kindRaw ?? null, Number(limitRaw));
+  return c.json(
+    {
+      runs: rows.map((r) => ({
+        run_id: r.runId,
+        kind: r.kind,
+        started_at: r.startedAt,
+        finished_at: r.finishedAt,
+        articles_processed: r.articles,
+        errors: r.errors,
+        tokens: r.tokens,
+        cost_usd_equiv: r.cost,
+        model: r.model,
+        prompt_sha: r.promptSha,
+      })),
+    },
+    200,
+    { "Cache-Control": "public, max-age=300" },
+  );
+});
 
 app.post("/api/runs", async (c) => {
   const originErr = checkOrigin(c);
