@@ -4,7 +4,7 @@
 > agents + 2 adversarial verifiers, cross-checked against the codebase). Update statuses
 > as work lands; do not re-litigate the binding decisions below without new evidence.
 
-## Waiting on Jack (updated 2026-10-16)
+## Waiting on Jack (updated 2026-10-17)
 
 Decisions only. Each lists its evidence and the options on the table, with no
 recommendation. Remove an item once its decision is recorded below.
@@ -96,8 +96,39 @@ recommendation. Remove an item once its decision is recorded below.
       kind. Options: keep both, or choose other relations.
     - WikiLean records no Mathlib commit per link, so it exports no `noMatch`. Options:
       record one, or keep exporting none.
+16. **Formalization atlas (docs/ATLAS.md, built on branch `claude/formalization-atlas`).**
+    A read-only data plane for the locate pipeline's sealed record sets: a store builder,
+    `/atlas` pages and APIs behind an optional R2 binding `ATLAS` (unbound: every atlas
+    route answers 503), a per-request summary box on article pages, and a feedback table
+    (migration 0015). Open choices (docs/ATLAS.md §14):
+    - The End-goal amendment above. Options: ratify, revise, or reject.
+    - Store backend. `src/wikipedia.ts` records that R2 was not enabled on the account.
+      Options: enable R2, use KV, or ship the store as static assets with each release.
+    - Who uploads a built store, and from which machine. Options: the operator Mac with a
+      bucket-scoped token, or another named host.
+    - Public licence wording: the pages state the mapping as CC0 and quote fields as
+      CC BY-SA 4.0 (proposal §10). Options: confirm, or change it.
+    - Whether the bearer-only feedback export may carry readers' free-text notes. Options:
+      keep them, or drop them as the research export does.
+    - Absence feedback ("this is formalized, here" against a "not found"). Options: build
+      it next, or later.
 
 ## End goal (verbatim from Jack)
+
+### Proposed amendment — PROPOSED 2026-10-17, pending Jack's ratification
+
+> Determine what parts of WikiProject Mathematics have been formalized in Lean and where,
+> then build a knowledge graph from it.
+
+These are Jack's words, recorded 2026-10-17; they are not yet ratified. If ratified, they
+become the End goal: "where" means the library (Mathlib, Lean core and Batteries, TauCeti,
+the FormalFrontier libraries and others), the declaration and the commit, and the knowledge
+graph is built from those located passages. The first deliverable is the read-only
+formalization atlas (docs/ATLAS.md), fed by the formal-companion skill's locate pipeline.
+The three routine operations and the human+AI moderation experiment below would serve that
+goal rather than define it. Ratification (or rejection) is recorded in the status log and
+closes Waiting on Jack item 16. Nothing below is deleted; the End goal as stated on
+2026-06-10 follows unchanged.
 
 A complete interface mapping Wikipedia statements to their formal implementation in
 Mathlib (and eventually CSLib, PhysLib, etc.). Primarily AI-moderated via three routine
@@ -1288,6 +1319,11 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
+  (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
+  release. Not deployed, and no store has been uploaded. The End-goal amendment and the
+  plane's choices are Waiting on Jack item 16.
 
 - 2026-10-17: **Agent sandbox cohort boundary (branch `claude/security-hardening`, not yet
   merged or deployed).** From the first moderation run on a commit with
