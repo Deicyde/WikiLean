@@ -123,6 +123,16 @@ class PerTagRuleTest(PollFixture):
                           issue_comments=[AUTHOR_REJECTS_SET])
         self.assertEqual(self.verdict(r)[0], "recycle")
 
+    def test_a_thumbs_up_that_contradicts_the_maintainer_s_later_written_verdict_recycles(self):
+        # The override needs the listed maintainer's written verdict after the author's
+        # reject to be the one they still hold. Here they wrote reject, then reacted 👍:
+        # the 👍 is their latest verdict, but no written approve backs it.
+        r = self.classify(comments=[written_verdict("kbuzzard", "Q36161", "reject"),
+                                    crossref_comment(101, "Q36161", plus=1)],
+                          reactions={101: [reaction("kbuzzard", "+1", LATER)]},
+                          issue_comments=[AUTHOR_REJECTS_SET])
+        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
+
     def test_the_author_s_reject_never_drops_another_maintainer_s_objection(self):
         # A listed maintainer's written approve comes after the author's reject, but
         # another maintainer objects too: a listed one by 👎, a listed MEMBER in writing
