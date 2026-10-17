@@ -36,10 +36,22 @@ NEUTRAL_DIRECTORIES: tuple[str, ...] = (
     "wiki/test",
     "wikifunctions",
 )
-# Paths inside a neutral directory, or matching a neutral name rule, that the
-# nightly's own release-affecting source check (site/ops/brain-nightly.sh) treats
-# as release-affecting; the two policies must agree.
+# Paths inside a neutral directory, or matching a neutral name rule, that are
+# release-affecting anyway: the nightly's own build script and tunables,
+# site/test_frontier_page.py, and the reducer's curated inputs under bot/state/
+# (declared in brain/authority/reducer-inputs-v*.json; the tests keep that list
+# complete). brain-nightly.sh's uncommitted-source check is a different set. It
+# covers all of wiki/, so it also refuses local edits to Worker tests and
+# wiki/README.md, and it still names site/ops/brain-canary.py, which the nightly
+# stopped running in afdf3a67 (the promoter runs it now); none of those reach
+# release bytes. It names no curated input, so it never looks at bot/state/ or
+# catalog/data/.
 AFFECTING_EXCEPTIONS: tuple[str, ...] = (
+    "bot/state/brain_queue.json",
+    "bot/state/cut_log.json",
+    "bot/state/pool_candidates.json",
+    "bot/state/recycle_queue.json",
+    "bot/state/seed_queue.json",
     "site/ops/brain-nightly.sh",
     "site/ops/nightly.env",
     "site/test_frontier_page.py",

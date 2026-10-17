@@ -141,6 +141,10 @@ protection does not cover:
         bot/data/corrections.jsonl bot/data/tagged_in_master.txt bot/data/tagged_pairs.txt
       git diff --cached    # review, commit, open a PR
 
+  A fold that changes any of the four Brain-build files above is release-affecting
+  (`site/ops/brain_release_authority.py`): the next promotion then needs a Brain
+  release built at or after the fold.
+
 - To fix the state by hand (for example after a clobber), commit on `bot-state`,
   never on `main`, and push while no poller run is in progress. A push during a
   run makes that run's save fail rather than overwrite your edit; dispatch again
