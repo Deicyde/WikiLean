@@ -82,6 +82,26 @@ class PostQueueTest(unittest.TestCase):
         self.assertEqual(token, TOKEN)
         self.assertEqual(payload["items"][0]["qid"], "Q7")
 
+    def test_token_flag_is_rejected(self):
+        # A --token value would sit in this process's argv, readable with ps.
+        argv = ["publish_queue.py", "--dry-run", "--token", TOKEN]
+        with mock.patch.object(sys, "argv", argv), mock.patch.object(publish_queue, "post_queue") as post, \
+                mock.patch("sys.stderr"), self.assertRaises(SystemExit) as raised:
+            publish_queue.main()
+        self.assertEqual(raised.exception.code, 2)  # argparse: unrecognized arguments
+        post.assert_not_called()
+
+    def test_missing_token_message_does_not_suggest_argv(self):
+        argv = ["publish_queue.py", "--wiki", "https://wiki.example"]
+        with mock.patch.object(sys, "argv", argv), mock.patch.dict(os.environ, {}, clear=True), \
+                mock.patch.object(publish_queue, "DEV_VARS", Path("/nonexistent/.dev.vars")), \
+                mock.patch.object(publish_queue, "wikidata_labels", return_value={}), \
+                self.assertRaises(SystemExit) as raised:
+            publish_queue.main()
+        message = str(raised.exception.code)
+        self.assertIn("WIKILEAN_API_TOKEN", message)
+        self.assertNotIn("--token", message)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,7 +6,9 @@ Sources (any/all):
   --recycle FILE       triage output (recycle_queue.json) -> recycled items
   --brain FILE         bot/brain_queue.py output -> Brain-suggested items
   --candidates FILE    pool.py output -> unreviewed items
-Auth: --token or $PIPELINE_TOKEN. --dry-run prints the payload instead of POSTing.
+Auth: $WIKILEAN_API_TOKEN, $PIPELINE_TOKEN, or PIPELINE_TOKEN= in wiki/.dev.vars.
+There is no --token flag: a process's argv is visible to every local user.
+--dry-run prints the payload instead of POSTing.
 """
 import argparse, json, os, subprocess, sys, tempfile
 from pathlib import Path
@@ -100,10 +102,9 @@ def main():
     ap.add_argument("--brain", type=Path)
     ap.add_argument("--candidates", type=Path)
     ap.add_argument("--exclude", default="", help="comma-separated qids to omit from the published queue")
-    ap.add_argument("--token", default="")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
-    token = args.token or find_token()
+    token = find_token()
     exclude = {q.strip() for q in args.exclude.split(",") if q.strip()}
 
     items = []
@@ -155,7 +156,8 @@ def main():
     if args.dry_run:
         print(json.dumps(payload, indent=1)); return
     if not token:
-        sys.exit("no token: set WIKILEAN_API_TOKEN, pass --token, or add PIPELINE_TOKEN= to wiki/.dev.vars")
+        sys.exit("no token: export WIKILEAN_API_TOKEN (from a 0600 file, never on a command line) "
+                 "or add PIPELINE_TOKEN= to wiki/.dev.vars")
     r = post_queue(args.wiki + "/api/queue", token, payload)
     print(r.stdout or r.stderr)
 
