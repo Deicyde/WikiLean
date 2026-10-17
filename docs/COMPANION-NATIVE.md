@@ -3,8 +3,8 @@
 WikiLean's native application format stores complete Literature Links 2.0
 annotations in D1. Normal native reads and edits use those objects directly. The
 vendored schema and its pin are in `wiki/src/vendor/literature-links/`.
-The current implementation is available for local testing; no production database
-has been migrated or Worker deployed by this work.
+No production database has been migrated, and no Worker built from this code
+has been deployed.
 
 ## Before any deploy from this commit on
 
@@ -93,8 +93,8 @@ WikiLean (`companionAnnotation` and `unlinkedAnnotation` in
   `extensions["org.wikilean"]`. Stored extensions are kept.
 
 Each unlinked selection leaves as a record with `"object": []` and no
-`relation`. WikiLean records no Mathlib commit, so a `not_formalized` item is
-such a record with `"status": "not_formalized"`, not a `noMatch`. No retrieval
+`relation`. WikiLean records no Mathlib commit, so it writes no `noMatch` of
+its own: a `not_formalized` selection leaves as such a record. No retrieval
 date is emitted: WikiLean stores none per article.
 
 Internal link IDs are unique within an article and remain distinct from optional
@@ -236,10 +236,11 @@ pinned Wikipedia HTML:
 python3 site/resolve_sqlite.py /absolute/path/native.sqlite --report /absolute/path/resolution.json
 ```
 
-It rewrites `articles.annotations` and the unserved `native-migration` revision
-only, leaves `version` unchanged, and re-checks the Worker's save limits on the
-resolved snapshot: an article that would exceed them keeps its profile
-locations and is reported as skipped.
+It fetches each pinned revision from Wikipedia through `render.py`'s cache
+(`--cache` for another directory). It rewrites `articles.annotations` and the
+unserved `native-migration` revision only, leaves `version` unchanged, and
+re-checks the Worker's save limits on the resolved snapshot: an article that
+would exceed them keeps its profile locations and is reported as skipped.
 
 Repeated migration of an already native database validates it and leaves its
 article versions and history unchanged. The library entry point

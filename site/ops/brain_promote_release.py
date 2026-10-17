@@ -73,6 +73,15 @@ MAX_COMMAND_EVIDENCE_BYTES = 4 * 1024 * 1024
 MAX_NODE_MODULE_OBJECTS = 100_000
 MAX_NODE_MODULE_BYTES = 2 * 1024 * 1024 * 1024
 PRODUCTION_ORIGIN = "https://wikilean.jackmccarthy.org"
+D1_DATABASE = "wikilean"
+# D1 migrations are applied by hand. A Worker built from a commit that contains one
+# of these files writes the listed columns, so the remote table must have them first.
+D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
+    "wiki/migrations/0014_native_companions.sql": (
+        "revisions",
+        ("source_revid", "schema_version"),
+    ),
+}
 
 
 class PromotionError(RuntimeError):
@@ -1322,6 +1331,24 @@ def parse_deployment_status(output: bytes) -> DeploymentState:
     return DeploymentState(deployment_id, version_id, sha256_bytes(output))
 
 
+def parse_d1_column_names(output: bytes) -> set[str]:
+    value = extract_last_json_value(output, "Wrangler D1 query")
+    if (
+        not isinstance(value, list)
+        or len(value) != 1
+        or not isinstance(value[0], dict)
+        or value[0].get("success") is not True
+        or not isinstance(value[0].get("results"), list)
+    ):
+        raise PromotionError("Wrangler D1 query did not return one successful result")
+    names: set[str] = set()
+    for row in value[0]["results"]:
+        if not isinstance(row, dict) or not isinstance(row.get("name"), str):
+            raise PromotionError("Wrangler D1 query returned a malformed row")
+        names.add(row["name"])
+    return names
+
+
 def parse_candidate_version(output: bytes) -> str | None:
     matches = re.findall(
         rb"(?m)^\s*Current Version ID:\s*"
@@ -2023,6 +2050,35 @@ class BrainPromoter:
         )
         return parse_deployment_status(result.stdout), result
 
+    def _require_d1_schema(self, commit: str) -> None:
+        """Refuse a commit whose hand-applied D1 migrations are not on the remote database."""
+        for migration, (table, columns) in D1_REQUIRED_COLUMNS.items():
+            if self._git_text("ls-tree", "--name-only", commit, "--", migration) != migration:
+                continue
+            names = ",".join(f"'{column}'" for column in columns)
+            result = self._require_command(
+                self._wrangler_command(
+                    "d1",
+                    "execute",
+                    D1_DATABASE,
+                    "--remote",
+                    "--json",
+                    "--command",
+                    f"SELECT name FROM pragma_table_info('{table}') WHERE name IN ({names})",
+                ),
+                cwd=self.wiki,
+                label="Wrangler D1 schema check",
+                timeout=120,
+                env=self._reviewed_node_environment(include_cloudflare=True),
+            )
+            present = parse_d1_column_names(result.stdout)
+            missing = [column for column in columns if column not in present]
+            if missing:
+                raise PromotionError(
+                    f"{migration} is not applied to remote D1 {D1_DATABASE}: {table} lacks "
+                    f"{', '.join(missing)}; apply it first (docs/COMPANION-NATIVE.md)"
+                )
+
     def _wrangler_version_annotations(
         self, version_id: str, config: Path | None = None
     ) -> tuple[dict[str, str], RunResult]:
@@ -2652,6 +2708,7 @@ class BrainPromoter:
             or reviewed_worker.get("wrangler_version") != wrangler_version
         ):
             raise PromotionError("toolchain differs from the reviewed activation")
+        self._require_d1_schema(promotion_commit)
 
         retained = verify_retained_dry_run_artifacts(
             activation.retained.root,
@@ -2833,6 +2890,7 @@ class BrainPromoter:
         wrangler_installation = self._wrangler_installation_identity()
         self._bind_node_executables(node_executables)
         node_version, wrangler_version = self._verify_toolchain()
+        self._require_d1_schema(promotion_commit)
 
         initial_probe, trust_source = self._probe_selector("initial")
         selector = selector_from_probe(
