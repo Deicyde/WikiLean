@@ -1129,6 +1129,73 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
             self.assertEqual(evidence[key]["bytes"], len(raw[key]))
 
+    def test_commit_with_0014_requires_its_columns_on_remote_d1(self):
+        migration = "wiki/migrations/0014_native_companions.sql"
+        tools = node_executables_identity(self.base)
+
+        class D1Runner(promote.CommandRunner):
+            def __init__(inner, *, listed: bool, d1: promote.RunResult | None = None):
+                inner.listed = listed
+                inner.d1 = d1
+                inner.calls = []
+
+            def run(inner, args, *, cwd, timeout=None, env=None):
+                del timeout
+                command = tuple(str(value) for value in args)
+                inner.calls.append((command, cwd, dict(env or {})))
+                if command[:4] == ("git", "-C", str(self.repo), "ls-tree"):
+                    self.assertEqual(command[4:], ("--name-only", COMMIT, "--", migration))
+                    output = (migration + "\n").encode() if inner.listed else b""
+                    return promote.RunResult(command, 0, output, b"")
+                if inner.d1 is None:
+                    raise AssertionError(command)
+                return inner.d1
+
+        def rows(*names: str, success: bool = True) -> promote.RunResult:
+            body = [{"results": [{"name": name} for name in names], "success": success}]
+            return promote.RunResult((), 0, json.dumps(body, indent=2).encode(), b"")
+
+        def check(runner: D1Runner) -> None:
+            instance = self.promoter(runner=runner)
+            instance._bind_node_executables(tools)
+            instance._require_d1_schema(COMMIT)
+
+        without = D1Runner(listed=False)
+        check(without)
+        self.assertEqual(len(without.calls), 1)
+
+        applied = D1Runner(listed=True, d1=rows("schema_version", "source_revid"))
+        with mock.patch.dict(os.environ, {"CLOUDFLARE_API_TOKEN": "token"}):
+            check(applied)
+        command, cwd, env = applied.calls[1]
+        self.assertEqual(
+            command,
+            (
+                tools["node"]["path"],
+                tools["wrangler"]["path"],
+                "d1",
+                "execute",
+                "wikilean",
+                "--remote",
+                "--json",
+                "--command",
+                "SELECT name FROM pragma_table_info('revisions') "
+                "WHERE name IN ('source_revid','schema_version')",
+            ),
+        )
+        self.assertEqual(cwd, self.repo / "wiki")
+        self.assertEqual(env["CLOUDFLARE_API_TOKEN"], "token")
+
+        for d1, message in (
+            (rows("source_revid"), "0014_native_companions.sql is not applied.*lacks schema_version;"),
+            (rows(), "lacks source_revid, schema_version;"),
+            (rows("source_revid", "schema_version", success=False), "one successful result"),
+            (promote.RunResult((), 1, b"", b"Authentication error"), "D1 schema check returned 1"),
+        ):
+            with self.subTest(message=message):
+                with self.assertRaisesRegex(promote.PromotionError, message):
+                    check(D1Runner(listed=True, d1=d1))
+
     def test_selector_404_requires_explicit_exception(self):
         probe = selector_probe(status=404, body=b"missing")
         with self.assertRaisesRegex(promote.PromotionError, "selector is absent"):
@@ -1328,6 +1395,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 (selector_probe(RELEASE_A), "fixture-ca"),
             ]
         )
+        d1_checked = []
 
         class RacePromoter(promote.BrainPromoter):
             def _verify_release(
@@ -1351,6 +1419,9 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
             def _verify_toolchain(inner):
                 return "v22.0.0", "4.120.0"
+
+            def _require_d1_schema(inner, commit):
+                d1_checked.append(commit)
 
             def _wrangler_installation_identity(inner):
                 return node_modules_identity(self.base)
@@ -1407,6 +1478,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
         with mock.patch.object(promote, "verify_public_baseline", return_value=baseline):
             with self.assertRaisesRegex(promote.PromotionError, "selector changed"):
                 instance.prepare()
+        self.assertEqual(d1_checked, [candidate.authority_commit])
 
 
 class BrainPromotionJournalFlowTest(unittest.TestCase):
@@ -2281,6 +2353,8 @@ class BrainPromotionDryRunTest(unittest.TestCase):
                 retained,
             )
 
+            d1_checked = []
+
             class ReviewedPromoter(promote.BrainPromoter):
                 def _verify_release(
                     inner,
@@ -2315,6 +2389,9 @@ class BrainPromotionDryRunTest(unittest.TestCase):
 
                 def _verify_toolchain(inner):
                     return prepared.node_version, prepared.wrangler_version
+
+                def _require_d1_schema(inner, commit):
+                    d1_checked.append(commit)
 
                 def _wrangler_installation_identity(inner):
                     return prepared.wrangler_installation
@@ -2351,6 +2428,7 @@ class BrainPromotionDryRunTest(unittest.TestCase):
             self.assertEqual(executable.deploy_config, retained.config)
             self.assertEqual(executable.activation, activation)
             self.assertEqual(instance.attempt_id, prepared.attempt_id)
+            self.assertEqual(d1_checked, [COMMIT])
 
     def test_retained_publication_failure_removes_candidate_and_preserves_recreated_source(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -64,8 +64,8 @@ const now = Date.now();
 const lines: string[] = [];
 for (const r of newRows) {
   lines.push(
-    "INSERT INTO articles (slug, wikipedia_title, display_title, wikidata_qid, revid, annotations, version, created_at, updated_at) VALUES (" +
-      `${q(r.slug)}, ${q(r.wikipedia_title)}, ${q(r.display_title)}, ${q(r.wikidata_qid)}, ${r.revid ?? "NULL"}, ${q(r.annotations)}, 1, ${now}, ${now});`,
+    "INSERT INTO articles (slug, wikipedia_title, display_title, wikidata_qid, revid, annotations, schema_version, version, created_at, updated_at) VALUES (" +
+      `${q(r.slug)}, ${q(r.wikipedia_title)}, ${q(r.display_title)}, ${q(r.wikidata_qid)}, ${r.revid ?? "NULL"}, ${q(r.annotations)}, 3, 1, ${now}, ${now});`,
   );
   lines.push(
     "INSERT INTO revisions (slug, user_id, annotations, comment, created_at) VALUES (" +

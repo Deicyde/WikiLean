@@ -634,6 +634,7 @@ describe("GET /api/article/:slug.json (pipeline read path)", () => {
       slug: SLUG,
       wikipedia_title: "Test Article",
       display_title: "Test Article",
+      wikidata_qid: null,
       version: 1,
       revid: REVID,
       latest_revid: null,

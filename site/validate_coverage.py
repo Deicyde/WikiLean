@@ -17,6 +17,8 @@ import re
 import sys
 from pathlib import Path
 
+import native_annotations as native
+
 ROOT = Path(__file__).resolve().parent
 CACHE = ROOT / "cache"
 ANNOT = ROOT / "annotations"
@@ -57,8 +59,10 @@ def main() -> int:
     snippets = set()
     theorem_box_values = set()
     for a in annotations:
-        anchors = a.get("anchors") or [a.get("anchor", {})]
+        anchors = native.anchors(a)
         for anc in anchors:
+            if anc is None:
+                continue
             if anc.get("type") == "theorem_box":
                 theorem_box_values.add(_normalize(anc.get("value", "")))
             snippet = anc.get("snippet", "")

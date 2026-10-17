@@ -69,9 +69,11 @@ function wranglerJson(sql: string): unknown[] {
 }
 
 function main(): void {
-  const rows = wranglerJson("SELECT slug, annotations FROM articles") as Array<{
+  const rows = wranglerJson("SELECT slug, annotations, version, schema_version FROM articles") as Array<{
     slug: string;
     annotations: string;
+    version: number;
+    schema_version: number;
   }>;
   rows.sort((a, b) => a.slug.localeCompare(b.slug));
   console.log(`articles read from D1 : ${rows.length}`);
@@ -96,7 +98,7 @@ function main(): void {
     totalRejected += anns.length - c.n_formalized - c.n_partial - c.n_not_formalized;
     statements.push(
       `UPDATE articles SET n_formalized=${c.n_formalized}, n_partial=${c.n_partial}, ` +
-        `n_not_formalized=${c.n_not_formalized} WHERE slug=${q(r.slug)};`,
+        `n_not_formalized=${c.n_not_formalized} WHERE slug=${q(r.slug)} AND version=${r.version} AND schema_version=${r.schema_version};`,
     );
   }
 

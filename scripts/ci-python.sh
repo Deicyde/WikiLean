@@ -26,6 +26,9 @@ run_check() {
 
 "$PYTHON_BIN" -c 'import sys; assert sys.version_info[:2] == (3, 12), f"Python 3.12 required, found {sys.version.split()[0]}"'
 
+run_check "Every tracked test file runs here or is corpus-only" "$PYTHON_BIN" scripts/check_ci_python_tests.py
+run_check "native annotation lifecycle tests" "$PYTHON_BIN" site/test_native_annotations.py
+run_check "anchor resolution tests" "$PYTHON_BIN" site/test_anchor_resolve.py
 run_check "moderation unit tests" "$PYTHON_BIN" site/test_moderate.py
 run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
@@ -71,6 +74,7 @@ run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikida
 run_check "Wikidata crossref source evidence tests" "$PYTHON_BIN" brain/test_wikidata_crossref_sources.py
 run_check "Shared Wikidata observation tests" "$PYTHON_BIN" brain/test_wikidata_observation.py
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
+run_check "Local D1 backup fail-closed tests" "$PYTHON_BIN" wiki/scripts/test_backup_d1.py
 run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
@@ -111,6 +115,7 @@ run_check "Brain release canary tests" "$PYTHON_BIN" site/ops/test_brain_canary.
 run_check "Brain deployment journal tests" "$PYTHON_BIN" site/ops/test_brain_deploy_journal.py
 run_check "Brain public asset baseline tests" "$PYTHON_BIN" site/ops/test_brain_public_baseline.py
 run_check "Brain exact-release promoter tests" "$PYTHON_BIN" site/ops/test_brain_promote_release.py
+run_check "Release-neutral path policy tests" "$PYTHON_BIN" site/ops/test_brain_release_authority.py
 run_check "Brain activation CI evidence tests" "$PYTHON_BIN" site/ops/test_brain_activation_ci.py
 run_check "Brain activation evidence bundle tests" "$PYTHON_BIN" site/ops/test_brain_activation_bundle.py
 run_check "Brain activation evidence integration test" "$PYTHON_BIN" site/ops/test_brain_activation_bundle_integration.py

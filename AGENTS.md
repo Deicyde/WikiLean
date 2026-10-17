@@ -101,7 +101,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   decide proposals (approve/reject), and an AI approve that changes human bytes re-labels
   them `ai-moderated` — **AI-changed bytes are never left marked `human`, and bots never
   mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
-- **Render-cache keys are manually versioned + load-bearing** (currently `render:v17:`,
+- **Render-cache keys are manually versioned + load-bearing** (currently `render:v18:`,
   `page:home:v10`, `page:articles:v3`, `page:articles-index:v1`, `page:about:v2`,
   `page:sitemap:v4`, `page:stats:v5`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
@@ -185,6 +185,9 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen
   release, not mutable `site/out`.
 - `index.html` / `sitemap.xml` are served dynamically from D1 — deliberately NOT copied to public.
+- **Migration 0014 before any deploy:** a Worker built from a commit containing
+  `wiki/migrations/0014_native_companions.sql` answers 500 on every save, revert and create
+  until 0014 is on D1. Back up, apply and verify it first (`docs/COMPANION-NATIVE.md`).
 
 ## How Jack works
 - Lead dev + product owner. **Consult each session; surface trade-offs (a recommendation, not a
