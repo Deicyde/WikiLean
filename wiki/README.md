@@ -100,7 +100,8 @@ npm test
 For local development without real OAuth:
 
 ```sh
-AUTH_MODE=dev               # accepts a cookie stub instead of real OAuth
+AUTH_MODE=dev               # accepts a cookie stub instead of real OAuth (exactly "dev";
+                            # any value other than dev/oauth disables login entirely)
 BETTER_AUTH_SECRET=$(openssl rand -base64 32)
 BETTER_AUTH_URL=http://localhost:8787
 ```
