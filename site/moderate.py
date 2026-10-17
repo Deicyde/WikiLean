@@ -806,6 +806,22 @@ def _http_get(url: str, token: str | None = None):
 # whole drifted set, review one 100-row page. A Worker that predates the
 # wp-update cap raise still returns at most 100 rows there.
 WORK_LIMIT_CAP = {"review": 100, "wp-update": 1000}
+# What /api/work served per mode, whatever the limit, before the Worker raised
+# wp-update's cap: a runner can meet that Worker while a release rolls out.
+OLD_WORKER_PAGE = 100
+# Consecutive wp-update errors (a dead Worker, network or Wikipedia) before the
+# sweep stops. Each failing article costs ~19.5 s of retries and pacing, so a
+# 1000-row sweep could otherwise run for hours, past nightly-moderate.sh's 4h
+# stale-lock recovery; a short blip of a few errors still doesn't stop it.
+WP_UPDATE_ABORT_AFTER = 10
+
+
+def wp_update_page_full(n_jobs: int, limit: int) -> bool:
+    """Whether /api/work may have left drifted articles out: it filled the page
+    asked for, or returned exactly the OLD_WORKER_PAGE rows an older Worker
+    serves whatever the limit."""
+    return n_jobs > 0 and (n_jobs >= min(limit, WORK_LIMIT_CAP["wp-update"])
+                           or n_jobs == OLD_WORKER_PAGE < limit)
 
 
 def fetch_work(api_base: str, token: str, mode: str, limit: int) -> list[dict]:
@@ -1320,9 +1336,9 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     jobs = fetch_work(args.api_base, token, "wp-update", args.limit)
     print(f"wp-update: {len(jobs)} drifted article(s) from /api/work"
           f"{'  [DRY RUN]' if args.dry_run else ''}")
-    if jobs and len(jobs) >= min(args.limit, WORK_LIMIT_CAP["wp-update"]):
-        print(f"warning: /api/work returned a full page of {len(jobs)}; drifted "
-              "articles past it were not attempted this run")
+    if wp_update_page_full(len(jobs), args.limit):
+        print(f"warning: /api/work returned a full page of {len(jobs)} (asked for "
+              f"{args.limit}); drifted articles past it were not attempted this run")
     if not jobs:
         return 0, zero_stats()
     s = ufu.make_session()
@@ -1331,6 +1347,7 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     wctx = SimpleNamespace(run_id=args.run_id, mode="wp-update",
                            model=None, prompt_sha=None)
     results: list[dict] = []
+    consec_err, aborted = 0, False
     for i, job in enumerate(jobs):
         slug = job["slug"]
         print(f"  [{i + 1}/{len(jobs)}] {slug}", flush=True)
@@ -1344,6 +1361,12 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
         results.append(rec)
         append_decision(decision_line(wctx, rec))  # P2c: one line per article
         print(f"      {rec['outcome']}", flush=True)
+        consec_err = consec_err + 1 if decision_outcome(rec) == "error" else 0
+        if consec_err >= WP_UPDATE_ABORT_AFTER:
+            aborted = True
+            print(f"  ⚠ aborting the wp-update sweep after {consec_err} consecutive "
+                  f"errors (last: {str(rec['outcome'])[:80]}); the next run retries", flush=True)
+            break
         if i + 1 < len(jobs):
             # Pace every article, as update_from_upstream's own loop does: the
             # write pace after a re-pin (EDIT_LIMITER), a light pace otherwise
@@ -1356,8 +1379,9 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     n_err = sum(1 for r in results if decision_outcome(r) in ("error", "422"))
     print(f"wp-update: {len(results)} processed — {n_repinned} re-pinned, "
           f"{n_needs} need stage-1/2 (recorded in {ufu.REPORT_PATH})")
-    return 0, {"processed": len(results), "errors": n_err,
-               "tokens": 0, "cost": 0.0}
+    # 3 = aborted, as for review: 'all' mode then skips the remaining modes.
+    return (3 if aborted else 0), {"processed": len(results), "errors": n_err,
+                                   "tokens": 0, "cost": 0.0}
 
 
 # ---------------------------------------------------------------------------
