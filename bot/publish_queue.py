@@ -8,7 +8,7 @@ Sources (any/all):
   --candidates FILE    pool.py output -> unreviewed items
 Auth: --token or $PIPELINE_TOKEN. --dry-run prints the payload instead of POSTing.
 """
-import argparse, json, os, subprocess, sys
+import argparse, json, os, subprocess, sys, tempfile
 from pathlib import Path
 
 DEV_VARS = Path(__file__).resolve().parent.parent / "wiki" / ".dev.vars"
@@ -68,6 +68,28 @@ def queue_item(src, status):
         if field in src and src[field] is not None:
             item[field] = src[field]
     return item
+
+
+def post_queue(url, token, payload):
+    """POST the payload with curl, keeping the bearer off every argv.
+
+    A process's argv is world-readable (`ps`, /proc/<pid>/cmdline), so the
+    Authorization header reaches curl on stdin (`-H @-`) and the body comes
+    from a 0600 file in a private temporary directory (`--data-binary @file`),
+    removed when the call returns."""
+    if "\n" in token or "\r" in token:
+        sys.exit("token contains a line break; refusing to send it as a header")
+    with tempfile.TemporaryDirectory(prefix="wikilean-queue-") as tmp:
+        body = Path(tmp) / "payload.json"
+        fd = os.open(body, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(json.dumps(payload))
+        return subprocess.run(["curl", "-sS", "-X", "POST", url,
+                               "-H", "@-",
+                               "-H", "Content-Type: application/json",
+                               "--data-binary", f"@{body}"],
+                              input=f"Authorization: Bearer {token}\n",
+                              capture_output=True, text=True)
 
 
 def main():
@@ -134,10 +156,7 @@ def main():
         print(json.dumps(payload, indent=1)); return
     if not token:
         sys.exit("no token: set WIKILEAN_API_TOKEN, pass --token, or add PIPELINE_TOKEN= to wiki/.dev.vars")
-    r = subprocess.run(["curl", "-sS", "-X", "POST", args.wiki + "/api/queue",
-                        "-H", "Authorization: Bearer " + token,
-                        "-H", "Content-Type: application/json", "-d", json.dumps(payload)],
-                       capture_output=True, text=True)
+    r = post_queue(args.wiki + "/api/queue", token, payload)
     print(r.stdout or r.stderr)
 
 
