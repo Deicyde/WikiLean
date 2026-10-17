@@ -17,13 +17,15 @@
 #       gh variable set BACKUP_AGE_RECIPIENTS --repo Deicyde/WikiLean
 #
 # ── Required repo secrets ─────────────────────────────────────────────────
-#   CLOUDFLARE_API_TOKEN — a Cloudflare API token with D1 read/export scope
-#   (D1:Read on the WikiLean account). Add it under:
+#   CLOUDFLARE_API_TOKEN — a Cloudflare API token with D1 Edit on the WikiLean
+#   account. D1 Read is not enough: `wrangler d1 export` starts the export job
+#   with a POST (docs/ROADMAP.md, "P0 manual follow-ups"). Add it under:
 #       repo Settings → Secrets and variables → Actions → New repository secret
 #   Name it exactly CLOUDFLARE_API_TOKEN. Without it, the workflow will fail
-#   at the export step. The Cloudflare account id is read from wiki/wrangler.jsonc
-#   and exported below as CLOUDFLARE_ACCOUNT_ID so wrangler targets the right
-#   account non-interactively.
+#   at the export step. The Cloudflare account id is hardcoded as
+#   CLOUDFLARE_ACCOUNT_ID in the export step below (the same value as
+#   account_id in wiki/wrangler.jsonc, which this workflow does not read; keep
+#   the two in sync) so wrangler targets the right account non-interactively.
 #
 #   PIPELINE_TOKEN — the Worker's pipeline bearer secret (same value as the
 #   `wrangler secret` of that name; see wiki/.dev.vars). Used by the research-
