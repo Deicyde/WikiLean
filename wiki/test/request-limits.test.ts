@@ -194,7 +194,8 @@ describe("/api/queue guards", () => {
     expect(res.status).toBe(403);
     // An oversized body from a caller who may not publish is refused as
     // forbidden (403), not as too large (413), and is never read.
-    for (const headers of [{}, { Cookie: "wl_dev_user=u-human" }]) {
+    const callers: Array<Record<string, string>> = [{}, { Cookie: "wl_dev_user=u-human" }];
+    for (const headers of callers) {
       const { stream, sent } = streamOf(MAX_QUEUE_BODY_BYTES * 2);
       const refused = await rawPost(h, "/api/queue", stream, headers);
       expect(refused.status).toBe(403);
