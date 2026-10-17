@@ -49,6 +49,12 @@ describe('native editor preservation',()=>{
     expect(rest).toEqual(restBefore);
     expect(after.links[1]).toEqual(base().links[1]); expect(after.unlinked).toEqual(base().unlinked);
   });
+  it('re-anchoring to article text drops what described the old document, its title included',()=>{
+    const described:any=base();
+    Object.assign(described.links[0].annotation.subject[0],{title:'Lemma 2',version:'v2',sha256:'0'.repeat(64),citation:{type:'article'},identifiers:{doi:'10.1000/x'}});
+    const change={anchor:{section:'New',snippet:'text'},reanchorSource:sourceUri};
+    expect(model.edit(described,'link:first',change,newId).item).toEqual(model.edit(base(),'link:first',change,newId).item);
+  });
   it('keeps junk values with their end: a replaced object takes its own along and a re-anchored end drops its own',()=>{
     const withJunk=()=>{const item:any=base();
       item.links[0].annotation.subject[0].junk=['pdf junk']; item.links[0].annotation.object[0].junk=['first object junk'];

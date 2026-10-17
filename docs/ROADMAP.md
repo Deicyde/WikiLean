@@ -4,13 +4,15 @@
 > agents + 2 adversarial verifiers, cross-checked against the codebase). Update statuses
 > as work lands; do not re-litigate the binding decisions below without new evidence.
 
-## Waiting on Jack (updated 2026-10-13)
+## Waiting on Jack (updated 2026-10-16)
 
 Decisions only. Each lists its evidence and the options on the table, with no
 recommendation. Remove an item once its decision is recorded below.
 
 1. **P1C: release B and the rollback drill.** All P1C items after release A are unchecked.
    Release B is a new build at current `main`; PR #45 puts that chain at about 5.5 hours.
+   Current `main` contains migration 0014, so apply it to D1 first
+   (docs/COMPANION-NATIVE.md); the promoter refuses otherwise.
    Because current `main` is not release-neutral relative to `2eb31baa` (it changed
    `brain/tools/semantic_diff.py` and `reproducibility_gate.py`), release A also cannot be
    re-promoted from it after a rollback; roll-forward would use `wrangler rollback` to the
@@ -73,6 +75,27 @@ recommendation. Remove an item once its decision is recorded below.
     resume it.
 14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
     flags. Options: triage them now, or let them wait.
+15. **Native companion cutover (#64, merged 2026-10-16).** `main` stores native Literature
+    Links items, D1 still holds schema-3 rows, and 0014 is not applied. Open choices:
+    - Runbook: docs/COMPANION-NATIVE.md covers only the copied-database rehearsal. It has no
+      write freeze (the nightly moderate job and the drift cron), no way to get the migrated
+      copy into D1, and no concrete rollback.
+    - Item 51 of `site/annotations/Students_t-distribution.json` has status `not_applicable`,
+      which stops the migration batch. Options: change its status, or remove the item.
+    - Legacy `mathlib.decl` readers with no native branch, which find nothing once native rows
+      are mirrored (Brain citation edges, the declaration sweeps, the editor's autocomplete
+      index): `bench/generate_tasks.py`, `brain/build_common.py`, `catalog/build_graph_v2.py`,
+      `catalog/derived_graph_adapters.py`, `catalog/ingest_theorem_graph.py`,
+      `manage/apply_decl_sweep.py`, `manage/apply_sweep_verdicts.py`,
+      `manage/decl_existence_sweep.py`, `site/build_decl_citations.py`,
+      `site/eval_moderation.py`, `site/export_w3c.py`, `site/export_wikidata_rdf.py`,
+      `site/ops/fix_decl.py`, `site/resolve_proposals.py` and
+      `wiki/scripts/build-mathlib-index.ts`. Options: port them before the cutover, or after.
+    - Relations: `special_case` exports no relation, because the tags use it in both
+      directions, and `partial` items export `exactMatch` or `broadMatch` from their match
+      kind. Options: keep both, or choose other relations.
+    - WikiLean records no Mathlib commit per link, so it exports no `noMatch`. Options:
+      record one, or keep exporting none.
 
 ## End goal (verbatim from Jack)
 
@@ -181,9 +204,9 @@ These resolved real conflicts between competing proposals. Build each thing **on
 
 ### Native companion direction (2026-10-06)
 
-Jack requests that WikiLean use the unversioned, single-link companion format
-natively rather than maintain a permanent conversion/export layer. The target
-link representation is the shared Literature Links record; the earlier deferred `formalizations[]`
+Jack requests that WikiLean store Literature Links records natively rather than
+maintain a permanent conversion/export layer. The target link representation is
+the shared Literature Links record; the earlier deferred `formalizations[]`
 proposal is not an additional authoritative representation to build alongside it.
 `docs/COMPANION-NATIVE.md` is the runbook for the storage, editor, pipeline,
 history and renderer changes and for the copied-database cutover.
@@ -1217,7 +1240,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 | Libraries registry (schema v4 `formalizations[]` is superseded: native items hold several links, `docs/COMPANION-NATIVE.md`) | CSLib covers a typical undergrad algorithms course |
 | Mass-revert: offline admin script over revision snapshots (NOT a deployed endpoint; D1 Time Travel is whole-DB and not a substitute) | First vandalism spree |
 | Re-anchoring stages 1-2 (fuzzy + AI semantic) | Anchor-rot telemetry shows stage-0 clears <90% |
-| WikiProject CS corpus ingestion, Agent 2 multi-checkout, library picker UI | With schema v4 trigger |
+| WikiProject CS corpus ingestion, Agent 2 multi-checkout, library picker UI | With the libraries registry (CSLib trigger above) |
 | physlib evaluation (its "informal definition" stubs must NOT count as formalized — needs a distinct match_kind) | When physlib registration is proposed |
 | **/review posting via least-privilege GitHub App — CODE SHIPPED 2026-06-20 (review.ts: no-scope authorize w/ Iv-prefix sniff for zero-downtime, refresh-token-aware reviewToken, installUrl on 403).** Replaces the `public_repo` OAuth app (write to ALL the reviewer's public repos) with a GitHub App scoped to **Pull requests: write**; **user-to-server** tokens still post *as the reviewer* (preserving settle.py's maintainer-by-author gate). REMAINING (Jack): register the GitHub App (perms Pull requests + Issues: R&W; callback /review/auth/callback), set REVIEW_GITHUB_CLIENT_ID/SECRET to it + REVIEW_GITHUB_APP_SLUG. Then an **org owner must INSTALL** it on leanprover-community to actually post there — GitHub Apps do NOT bypass org approval (researched: user-to-server write needs the app installed). **DONE 2026-06-20 + cutover live (client_id Iv23…, no scope).** **ALSO shipped option A (REVIEW_POSTING_PAT):** a classic `public_repo` PAT used to post ONLY for its owner (the submitter must be connected AS the PAT account — public-endpoint-safe), so Jack can post his own reviews to mathlib **today, no install** (classic PATs are exempt from OAuth-App restrictions). The App stays the least-privilege *multi-reviewer* end-state; Copy review is the always-works fallback. | App install on lean-community (org owner) only when reviewers beyond Jack want one-click posting |
 
@@ -1265,6 +1288,10 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-10-16: **Native companions merged (#64, merge commit `786a388e`).** Migration 0014 is
+  not yet applied to D1, and no Worker built from `main` has been deployed. Cutover choices
+  are Waiting on Jack item 15.
 
 - 2026-10-13: **Mission operations audit.** A scan of all 778 `/<slug>/history` pages (4,302
   revisions) puts the newest `ai-moderate:review` revision at **2026-09-17 09:05 UTC**
