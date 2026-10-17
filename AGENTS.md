@@ -144,7 +144,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   agent calls. Its `required` job aggregates the hermetic `worker`, `python` and `browser` gates.
 - The Playwright `browser` job runs on every CI trigger and has been required since #72. Failures
   upload `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts` for 7
-  days. Its loopback server renders `/brain` by running `site/build_brain_page.py` with the
+  days. Its loopback server builds `/brain` by importing `site/build_brain_page.py` with the
   `python3` on PATH (3.10 or newer), so a local `npm run test:e2e` needs one too.
 - `.dev.vars` is gitignored and holds secrets — never commit, never print values; set Worker
   secrets via `wrangler secret put` / `gh secret set`.

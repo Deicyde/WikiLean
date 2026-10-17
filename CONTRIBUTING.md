@@ -109,7 +109,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The loopback server builds the `/brain` page by running `site/build_brain_page.py` with the `python3` on your PATH, which must be Python 3.10 or newer. Linux CI uses `npx playwright install --with-deps chromium` to install system dependencies too. Failures retain traces and screenshots under `wiki/test-results/`; CI also writes the HTML report under `wiki/playwright-report/` and uploads both directories as the seven-day `browser-failure-artifacts` artifact.
+The loopback server builds the `/brain` page by importing `site/build_brain_page.py` with the `python3` on your PATH, which must be Python 3.10 or newer. Linux CI uses `npx playwright install --with-deps chromium` to install system dependencies too. Failures retain traces and screenshots under `wiki/test-results/`; CI also writes the HTML report under `wiki/playwright-report/` and uploads both directories as the seven-day `browser-failure-artifacts` artifact.
 
 The browser job runs on every CI trigger and is **required**: the aggregate `required` job covers the Worker, Python and browser jobs, and branch protection requires only that aggregate.
 
