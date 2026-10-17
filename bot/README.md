@@ -29,8 +29,6 @@ Each run does two phases:
 
 - A bare **note/comment = "defer to the other reviewer"** → ignored.
 - A **maintainer's explicit approve/reject/revise/flag trumps** everything.
-- Except: the **PR author's reject/revise/flag** stands unless a maintainer listed
-  in `MAINTAINERS` writes a verdict on that tag after it (a 👍/👎 alone does not).
 - Otherwise: any **reject/revise/flag → recycle**; else **≥1 approve → green**;
   else (no review) → recycle.
 

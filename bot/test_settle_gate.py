@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Per-tag rule in settle.classify(): the PR author's latest reject/revise/flag
-stands unless a LISTED maintainer (settle.MAINTAINERS) wrote a verdict on that
-tag after it, and every listed maintainer counts as one whatever GitHub's
-author_association says. The gate itself is unchanged."""
+"""Per-tag rule in settle.classify(): every listed maintainer (settle.MAINTAINERS)
+counts as one whatever GitHub's author_association says, and the PR author gets no
+more say than any other reviewer: a maintainer's verdict beats theirs whenever and
+however it was given. The gate itself is unchanged."""
 from __future__ import annotations
 
 import contextlib
@@ -63,9 +63,41 @@ class PerTagRuleTest(PollFixture):
         tag = next(t for t in r["green"] + r["recycle"] if t["qid"] == qid)
         return ("green" if tag in r["green"] else "recycle"), tag["reason"]
 
-    def test_a_maintainer_s_thumbs_down_after_the_author_s_reject_is_not_green(self):
+    def test_a_maintainer_s_approve_beats_the_author_s_reject(self):
+        # The author is reviewed like anyone else: a maintainer's approve wins whether
+        # it came before or after the author's reject, as a 👍 or written, and whether
+        # the maintainer is listed or recognised by association.
+        collaborator = [review("SnirBroshi", assoc="COLLABORATOR")]
+        shapes = {
+            "collaborator 👍 earlier": dict(
+                reviews=collaborator, comments=[crossref_comment(101, "Q36161", plus=1)],
+                reactions={101: [reaction("SnirBroshi")]}),
+            "listed 👍 later": dict(
+                comments=[crossref_comment(101, "Q36161", plus=1)],
+                reactions={101: [reaction("jcommelin", "+1", LATER)]}),
+            "listed written approve earlier": dict(
+                comments=[written_verdict("jcommelin", "Q36161", "approve", at=APPROVE_AT)]),
+            "collaborator written approve later": dict(
+                reviews=collaborator,
+                comments=[written_verdict("SnirBroshi", "Q36161", "approve", at=LATER,
+                                          assoc="COLLABORATOR")]),
+        }
+        for name, shape in shapes.items():
+            with self.subTest(shape=name):
+                r = self.classify(**shape, issue_comments=[AUTHOR_REJECTS_SET])
+                self.assertEqual(self.verdict(r), ("green", "maintainer approved"))
+
+    def test_a_listed_maintainer_s_reaction_needs_no_org_probe(self):
+        fake = FakeGh(comments=[crossref_comment(101, "Q36161", plus=1)],
+                      reactions={101: [reaction("jcommelin", "+1", LATER)]},
+                      issue_comments=[AUTHOR_REJECTS_SET])
+        r = self.run_with(fake, settle.classify, PR, REPO)
+        self.assertEqual(self.verdict(r), ("green", "maintainer approved"))
+        self.assertFalse([c for c in fake.calls if c[1] == "api" and c[2].startswith("orgs/")])
+
+    def test_a_maintainer_s_later_thumbs_down_replaces_their_written_approve(self):
         # Written approve, then the author's written reject, then the maintainer's 👎:
-        # both now reject, so the tag recycles, with or without a blanket approval.
+        # the maintainer now rejects, so the tag recycles, with or without a blanket approval.
         for blanket in ([], [review("SnirBroshi", "APPROVED")]):
             with self.subTest(blanket=bool(blanket)):
                 r = self.classify(
@@ -74,70 +106,18 @@ class PerTagRuleTest(PollFixture):
                               crossref_comment(101, "Q36161", minus=1)],
                     reactions={101: [reaction("jcommelin", "-1", LATER)]},
                     issue_comments=[AUTHOR_REJECTS_SET])
-                self.assertEqual(self.verdict(r)[0], "recycle")
+                self.assertEqual(self.verdict(r), ("recycle", "maintainer rejected/revised"))
 
-    def test_a_collaborator_s_thumbs_up_before_the_author_s_reject_recycles(self):
-        r = self.classify(reviews=[review("SnirBroshi", assoc="COLLABORATOR")],
-                          comments=[crossref_comment(101, "Q36161", plus=1)],
-                          reactions={101: [reaction("SnirBroshi")]},
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
-
-    def test_a_listed_maintainer_s_thumbs_up_before_the_author_s_reject_recycles(self):
-        r = self.classify(comments=[crossref_comment(101, "Q36161", plus=1)],
-                          reactions={101: [reaction("jcommelin")]},
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
-
-    def test_a_listed_maintainer_s_reaction_alone_never_overrides_the_author(self):
-        fake = FakeGh(comments=[crossref_comment(101, "Q36161", plus=1)],
-                      reactions={101: [reaction("jcommelin", "+1", LATER)]},
-                      issue_comments=[AUTHOR_REJECTS_SET])
-        r = self.run_with(fake, settle.classify, PR, REPO)
-        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
-        self.assertFalse([c for c in fake.calls if c[1] == "api" and c[2].startswith("orgs/")])
-
-    def test_a_maintainer_s_earlier_written_approve_loses_to_the_author_s_later_reject(self):
-        r = self.classify(comments=[written_verdict("jcommelin", "Q36161", "approve", at=APPROVE_AT)],
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
-
-    def test_a_listed_maintainer_s_written_approve_after_the_author_s_reject_is_green(self):
+    def test_listed_maintainers_match_whatever_the_login_case_or_membership(self):
         for login in ("jcommelin", "JCommelin", "grunweg"):  # grunweg's membership is private
             with self.subTest(login=login):
                 r = self.classify(comments=[written_verdict(login, "Q36161", "approve")],
                                   issue_comments=[AUTHOR_REJECTS_SET])
                 self.assertEqual(self.verdict(r), ("green", "maintainer approved"))
 
-    def test_a_same_meaning_reaction_after_that_written_approve_keeps_it_green(self):
-        r = self.classify(comments=[written_verdict("jcommelin", "Q36161", "approve"),
-                                    crossref_comment(101, "Q36161", plus=1)],
-                          reactions={101: [reaction("jcommelin", "+1", LATER)]},
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("green", "maintainer approved"))
-
-    def test_a_thumbs_down_after_that_written_approve_recycles(self):
-        r = self.classify(comments=[written_verdict("jcommelin", "Q36161", "approve"),
-                                    crossref_comment(101, "Q36161", minus=1)],
-                          reactions={101: [reaction("jcommelin", "-1", LATER)]},
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r)[0], "recycle")
-
-    def test_a_thumbs_up_that_contradicts_the_maintainer_s_later_written_verdict_recycles(self):
-        # The override needs the listed maintainer's written verdict after the author's
-        # reject to be the one they still hold. Here they wrote reject, then reacted 👍:
-        # the 👍 is their latest verdict, but no written approve backs it.
-        r = self.classify(comments=[written_verdict("kbuzzard", "Q36161", "reject"),
-                                    crossref_comment(101, "Q36161", plus=1)],
-                          reactions={101: [reaction("kbuzzard", "+1", LATER)]},
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
-
-    def test_the_author_s_reject_never_drops_another_maintainer_s_objection(self):
-        # A listed maintainer's written approve comes after the author's reject, but
-        # another maintainer objects too: a listed one by 👎, a listed MEMBER in writing
-        # before the author, or a collaborator by 👎. Each recycles, as it does when the
-        # author never rejected.
+    def test_any_maintainer_s_objection_recycles_whatever_the_author_says(self):
+        # A listed maintainer's written approve, but another maintainer objects: a listed
+        # one by 👎, a listed MEMBER in writing earlier, or a collaborator by 👎.
         approve_after = written_verdict("jcommelin", "Q36161", "approve")
         shapes = {
             "listed 👎 later": dict(
@@ -158,26 +138,13 @@ class PerTagRuleTest(PollFixture):
                                       issue_comments=[AUTHOR_REJECTS_SET] if author_rejects else [])
                     self.assertEqual(self.verdict(r), ("recycle", "maintainer rejected/revised"))
 
-    def test_an_author_with_an_org_role_keeps_a_maintainer_s_objection(self):
-        # Unchanged: if GitHub shows the author as a collaborator, their reject is a
-        # maintainer's, and not even a listed maintainer's later written approve lifts it.
+    def test_an_author_with_an_org_role_is_a_maintainer_like_anyone_else(self):
+        # If GitHub shows the author as a collaborator, their reject is a maintainer's,
+        # and one maintainer's objection recycles the tag whoever approves it.
         r = self.classify(reviews=[review(AUTHOR, assoc="COLLABORATOR")],
                           comments=[written_verdict("jcommelin", "Q36161", "approve")],
                           issue_comments=[AUTHOR_REJECTS_SET])
         self.assertEqual(self.verdict(r), ("recycle", "maintainer rejected/revised"))
-
-    def test_an_association_only_maintainer_does_not_override_the_author(self):
-        r = self.classify(reviews=[review("SnirBroshi", assoc="COLLABORATOR")],
-                          comments=[written_verdict("SnirBroshi", "Q36161", "approve", at=LATER,
-                                                    assoc="COLLABORATOR")],
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
-
-    def test_the_author_retracting_lifts_the_objection(self):
-        r = self.classify(comments=[crossref_comment(101, "Q36161", plus=1)],
-                          reactions={101: [reaction(AUTHOR, "+1", LATER)]},
-                          issue_comments=[AUTHOR_REJECTS_SET])
-        self.assertEqual(self.verdict(r), ("green", "approved (>=1 review, no objection)"))
 
     def test_a_private_listed_maintainer_s_reject_beats_a_collaborator_s_thumbs_up(self):
         # grunweg's org membership is private, so GitHub shows CONTRIBUTOR and the
@@ -189,9 +156,9 @@ class PerTagRuleTest(PollFixture):
         self.assertEqual(self.verdict(r), ("recycle", "maintainer rejected/revised"))
         self.assertEqual(r["maintainer_reviewers"], ["SnirBroshi", "grunweg"])
 
-    def test_a_collaborator_s_thumbs_up_still_overrides_a_non_author_s_reject(self):
-        # Unchanged: an association-only maintainer trumps everyone but the PR author,
-        # and the gate still opens on the author plus that collaborator.
+    def test_a_collaborator_s_thumbs_up_overrides_a_reject_and_opens_the_gate_with_the_author(self):
+        # Unchanged: an association-only maintainer trumps every non-maintainer, and the
+        # gate still opens on the author plus that collaborator.
         r = self.classify(reviews=[review("SnirBroshi", assoc="COLLABORATOR")],
                           comments=[crossref_comment(101, "Q36161", plus=1),
                                     written_verdict("someone", "Q36161", "reject")],
@@ -222,11 +189,14 @@ DIFF_42608 = "".join(f"+++ b/Mathlib/F{i}.lean\n+@[wikidata {q}]\n" for i, q in 
 
 
 class Pr42608ReplayTest(PollFixture):
-    def test_set_and_partial_order_recycle_and_the_rest_stay_green(self):
+    def test_every_tag_stays_green(self):
         # mathlib4#42608's verdict shape: a Mathlib reviewer (association COLLABORATOR)
         # approved three tags (as 👍 here) before the author's pasted WikiLean review,
-        # which approved seven and rejected Set and PartialOrder.
-        approved = ["Q166154", "Q994399", "Q124247109", "Q24743362", "Q332791", "Q1474074", "Q1070472"]
+        # which approved seven and rejected Set and PartialOrder. The reviewer's 👍 is a
+        # maintainer's verdict, so it beats the author's rejects.
+        tags = ["Q166154", "Q994399", "Q124247109", "Q24743362", "Q332791", "Q36161", "Q474715",
+                "Q1474074", "Q1070472"]
+        approved = [q for q in tags if q not in ("Q36161", "Q474715")]
         thumbs = {"Q24743362": 101, "Q36161": 102, "Q474715": 103}
         r = self.run_with(FakeGh(
             diff=DIFF_42608,
@@ -237,12 +207,11 @@ class Pr42608ReplayTest(PollFixture):
                                                    "Q36161": "reject", "Q474715": "reject"})]),
             settle.classify, PR, REPO)
         self.assertTrue(r["gate"])  # the gate is unchanged: author + a collaborator
-        self.assertEqual([g["qid"] for g in r["green"]], approved)
-        self.assertEqual([(t["qid"], t["reason"]) for t in r["recycle"]],
-                         [("Q36161", "objection (reject/revise)"), ("Q474715", "objection (reject/revise)")])
+        self.assertEqual([g["qid"] for g in r["green"]], tags)
+        self.assertEqual(r["recycle"], [])
         h = settle.ready_header(r)
-        self.assertIn("**7** `@[wikidata]` tags", h)
-        self.assertIn("2 recycled to the next batch.", h)
+        self.assertIn("**9** `@[wikidata]` tags", h)
+        self.assertNotIn("recycled", h)
 
 
 class ConflictRebuildTest(PollFixture):
