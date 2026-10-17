@@ -182,7 +182,7 @@ on the VSCode-extension setup. Instead, fire it yourself in one command when you
 see you're near reset with capacity left:
 
 ```sh
-bash site/ops/run-now.sh        # detached; reviews up to 100 (WIKILEAN_REVIEW_LIMIT)
+bash site/ops/run-now.sh        # detached; reviews up to 100 (WIKILEAN_REVIEW_LIMIT), wp-update capped at 100
 # or alias the absolute path of this checkout's site/ops/run-now.sh
 ```
 It runs in your login context (Max auth, no FDA needed), detaches (survives

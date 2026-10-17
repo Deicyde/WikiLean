@@ -2420,6 +2420,138 @@ def test_review_failures_file_roundtrip_and_corruption():
         assert out["c"]["n"] == 2, out
 
 
+def test_fetch_work_clamps_limit_per_mode():
+    """wp-update may ask for the whole drifted set; review stays one page."""
+    import io
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        with _patched_get(200, {"jobs": []}) as gets:
+            m.fetch_work("http://api.test", "tok", "wp-update", 5000)
+            m.fetch_work("http://api.test", "tok", "wp-update", 300)
+            m.fetch_work("http://api.test", "tok", "review", 500)
+    assert [u.rsplit("?", 1)[1] for u in gets] == [
+        "mode=wp-update&limit=1000", "mode=wp-update&limit=300",
+        "mode=review&limit=100"], gets
+    assert out.getvalue().splitlines() == [
+        "note: /api/work caps wp-update at 1000",
+        "note: /api/work caps review at 100"], out.getvalue()
+
+
+def test_wp_update_sweeps_the_whole_limit_and_paces_every_article():
+    """The nightly asks for up to 1000 drifted articles; a sweep that long
+    must pace read-only articles too, not just re-pins, and say when /api/work
+    filled the page."""
+    import io
+    import tempfile
+    outcomes = ["needs-work", "repinned", "up-to-date", "needs-work"]
+    fake_ufu = types.ModuleType("update_from_upstream")
+    fake_ufu.WRITE_PACE_SECONDS, fake_ufu.GET_PACE_SECONDS = 2.1, 0.5
+    fake_ufu.REPORT_PATH = Path("report.jsonl")
+    fake_ufu.make_session = lambda: None
+    fake_ufu.process_slug = lambda s, base, slug, ns, run_id, tok: {
+        "slug": slug, "outcome": outcomes[int(slug[1:])], "matched": None,
+        "total": None, "old_revid": None, "new_revid": None}
+    asked, sleeps = [], []
+
+    def fake_fetch(api_base, token, mode, limit):
+        asked.append((mode, limit))
+        return [{"slug": f"s{i}"} for i in range(len(outcomes))]
+
+    saved = (sys.modules.get("update_from_upstream"), m.fetch_work, m.time.sleep,
+             m.DECISIONS_LOG)
+    with tempfile.TemporaryDirectory() as td:
+        sys.modules["update_from_upstream"] = fake_ufu
+        m.fetch_work, m.time.sleep = fake_fetch, sleeps.append
+        m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+        try:
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                rc, stats = m.run_wp_update(SimpleNamespace(
+                    api_base="http://api.test", limit=1000, dry_run=False,
+                    run_id="0000bbbb"), "tok")
+            first_sleeps = list(sleeps)
+            full = io.StringIO()  # a limit the fake fills: a full page
+            with contextlib.redirect_stdout(full):
+                m.run_wp_update(SimpleNamespace(
+                    api_base="http://api.test", limit=len(outcomes), dry_run=False,
+                    run_id="0000cccc"), "tok")
+        finally:
+            if saved[0] is None:
+                sys.modules.pop("update_from_upstream", None)
+            else:
+                sys.modules["update_from_upstream"] = saved[0]
+            m.fetch_work, m.time.sleep, m.DECISIONS_LOG = saved[1:]
+    assert asked == [("wp-update", 1000), ("wp-update", 4)], asked
+    assert rc == 0 and stats["processed"] == 4, (rc, stats)
+    assert first_sleeps == [0.5, 2.1, 0.5], first_sleeps  # none after the last article
+    assert "full page" not in out.getvalue(), out.getvalue()
+    assert "warning: /api/work returned a full page of 4" in full.getvalue(), full.getvalue()
+
+
+def test_wp_update_page_full_covers_an_older_worker_s_100_row_page():
+    """An older Worker serves 100 rows whatever the limit, so exactly 100 rows
+    below the requested limit is a full page too."""
+    full = m.wp_update_page_full
+    assert not full(0, 1000) and not full(4, 1000) and not full(99, 1000)
+    assert not full(101, 1000)
+    assert full(4, 4) and full(1000, 1000) and full(1000, 5000)
+    assert full(100, 1000) and full(100, 100)
+
+
+def _sweep(outcomes, limit=1000):
+    """Run run_wp_update over len(outcomes) fake drifted articles whose stage-0
+    results are `outcomes`; returns (rc, stats, printed, slugs processed)."""
+    import io
+    import tempfile
+    fake_ufu = types.ModuleType("update_from_upstream")
+    fake_ufu.WRITE_PACE_SECONDS, fake_ufu.GET_PACE_SECONDS = 2.1, 0.5
+    fake_ufu.REPORT_PATH = Path("report.jsonl")
+    fake_ufu.make_session = lambda: None
+    seen = []
+
+    def process(s, base, slug, ns, run_id, tok):
+        seen.append(slug)
+        return {"slug": slug, "outcome": outcomes[int(slug[1:])], "matched": None,
+                "total": None, "old_revid": None, "new_revid": None}
+
+    fake_ufu.process_slug = process
+    saved = (sys.modules.get("update_from_upstream"), m.fetch_work, m.time.sleep,
+             m.DECISIONS_LOG)
+    out = io.StringIO()
+    with tempfile.TemporaryDirectory() as td:
+        sys.modules["update_from_upstream"] = fake_ufu
+        m.fetch_work = lambda api_base, token, mode, lim: [
+            {"slug": f"s{i}"} for i in range(len(outcomes))]
+        m.time.sleep = lambda secs: None
+        m.DECISIONS_LOG = Path(td) / "dec.jsonl"
+        try:
+            with contextlib.redirect_stdout(out):
+                rc, stats = m.run_wp_update(SimpleNamespace(
+                    api_base="http://api.test", limit=limit, dry_run=False,
+                    run_id="0000dddd"), "tok")
+        finally:
+            if saved[0] is None:
+                sys.modules.pop("update_from_upstream", None)
+            else:
+                sys.modules["update_from_upstream"] = saved[0]
+            m.fetch_work, m.time.sleep, m.DECISIONS_LOG = saved[1:]
+    return rc, stats, out.getvalue(), seen
+
+
+def test_wp_update_stops_after_consecutive_errors():
+    """A dead Worker or network fails every article; the sweep stops after
+    WP_UPDATE_ABORT_AFTER errors in a row instead of grinding through them all."""
+    n = m.WP_UPDATE_ABORT_AFTER
+    rc, stats, printed, seen = _sweep(["fetch-error (503)"] * (n + 20))
+    assert rc == 3 and len(seen) == n and stats["processed"] == n, (rc, len(seen), stats)
+    assert "aborting the wp-update sweep after" in printed, printed
+    # Errors broken up by successes never reach the threshold.
+    pattern = (["http-503"] * (n - 1) + ["up-to-date"]) * 3
+    rc, stats, printed, seen = _sweep(pattern)
+    assert rc == 0 and len(seen) == len(pattern), (rc, len(seen))
+    assert "aborting" not in printed, printed
+
+
 class _Nights:
     """Drive run_mode('review') night after night with fakes for the Worker
     and the agents; `fail` maps slug -> error for the next night."""
@@ -2493,6 +2625,17 @@ def test_review_mode_rotates_past_article_specific_failures():
         assert sorted(n.reviewed[0]) == ["h0", "h1", "h2"], n.reviewed
         assert sorted(n.reviewed[1]) == ["h3", "h4", "h5"], n.reviewed
         assert rc == 0 and stats["errors"] == 0
+
+
+def test_review_mode_over_fetch_stays_within_the_review_cap():
+    """98 + 5 recent failures asks for 100, review's cap, not wp-update's."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as td, _Nights(Path(td)) as n:
+        n.fail = {f"h{i}": "fetch_failed" for i in range(5)}
+        n.night(limit=98)
+        n.fail = {}
+        n.night(limit=98)
+        assert n.calls == [98, 100], n.calls
 
 
 def test_review_mode_does_not_rotate_on_account_wide_failures():
