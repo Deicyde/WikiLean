@@ -459,10 +459,14 @@ script says the sample is too small instead of judging the trigger.
 It also lists the slugs that failed every attempt in the window, most-retried first.
 `/api/work` orders wp-update's drifted articles flagged first, then those with the drift
 flag set, then human-edited, then oldest review stamp, and a failed re-pin stamps
-nothing. A Worker older than release B hands out at most 100 of them, so those slugs
-hold the head of the queue night after night. From release B, `/api/work` serves
-wp-update up to 1000 rows (review stays at 100) and the nightly asks for 1000
-(`WIKILEAN_WPUPDATE_LIMIT`), so every drifted article gets a stage-0 attempt each night;
-the first night after release B runs one long wp-update sweep over the whole backlog, at
-zero model tokens. The script warns once a single wp-update run reaches 800 articles,
+nothing. A Worker older than release B hands out at most 100 of them, and the nightly
+host's current runner asks for at most 100, so those slugs hold the head of the queue
+night after night. The full sweep starts only when both halves are live: a Worker from
+release B or later, where `/api/work` serves wp-update up to 1000 rows (review stays at
+100), and a nightly host checkout that contains this change, whose runner asks for 1000
+(`WIKILEAN_WPUPDATE_LIMIT`). Promoting a release doesn't move the host's checkout
+(updating it is covered above). From then on every drifted article gets a stage-0
+attempt each night, and the first such night runs one long wp-update sweep over the
+whole backlog, at zero model tokens. The moderate log warns when `/api/work` returns a
+full page, and this script warns once a single wp-update run reaches 800 articles,
 because past 1000 the same failures hold the head again.
