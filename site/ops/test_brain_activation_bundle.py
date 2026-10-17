@@ -1372,6 +1372,15 @@ class BrainActivationBundleTests(unittest.TestCase):
         with self.assertRaisesRegex(bundle.BundleValidationError, "non-Brain public tree"):
             self.fixture.freeze()
 
+    def test_accepts_build_generated_headers_beside_the_retained_baseline(self):
+        # build-public writes _headers into every promotion public tree; it is
+        # bound by the retained public_tree inventory, not by the baseline.
+        public_dir = Path(self.fixture.public_result["public_dir"])
+        (public_dir / "_headers").write_bytes(b"/*\n  X-Content-Type-Options: nosniff\n")
+        self.fixture._attach_retained_artifacts()
+        self.fixture.sync()
+        self.fixture.freeze()
+
     def test_rejects_incomplete_metrics_checks_and_queries(self):
         self.fixture.metrics["checks"].pop("integrity_check")
         self.fixture.metrics["queries"] = {}

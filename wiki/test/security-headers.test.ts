@@ -2,14 +2,24 @@
 // (HTML page, KV-cache hit, JSON API, 404, redirect) carries HSTS, nosniff,
 // the enforced framing ban, Referrer-Policy, and the Report-Only CSP; the CSP
 // allows what the pages actually load; the headers never enter RENDER_CACHE
-// bytes (so no render-cache key bump); and the /api/csp-report sink logs both
-// report shapes and caps its input.
+// bytes (so no render-cache key bump); the /api/csp-report sink logs both
+// report shapes and caps its input; and the static-asset `_headers` file that
+// build-public generates applies the same set to assets the Worker never sees.
 
 import { afterEach, describe, it, expect, vi } from "vitest";
 import { setup, get, blockNetwork, ORIGIN } from "./helpers/harness.js";
 import { Hono } from "hono";
 import { app } from "../src/index.js";
-import { CSP_REPORT_ONLY, SECURITY_HEADERS, parseCspReports, registerSecurityHeaders } from "../src/security.js";
+import {
+  CSP_REPORT_ONLY,
+  SAME_ORIGIN_FRAMED_ASSET_PATHS,
+  SECURITY_HEADERS,
+  STATIC_HEADERS_MAX_LINE_LENGTH,
+  STATIC_HEADERS_MAX_RULES,
+  parseCspReports,
+  registerSecurityHeaders,
+  staticAssetHeadersFile,
+} from "../src/security.js";
 import type { Env } from "../src/env.js";
 
 blockNetwork();
@@ -218,5 +228,89 @@ describe("POST /api/csp-report", () => {
     expect(parsed).toHaveLength(20);
     expect(parsed[0].blocked!.length).toBe(300);
     expect(parseCspReports({ unrelated: true })).toEqual([]);
+  });
+});
+
+// The static-asset `_headers` file (build-public writes it). This mirrors the
+// Workers Static Assets parser and applier (workers-shared parseHeaders and
+// attachCustomHeaders, as bundled in miniflare): path lines start with "/",
+// "# " lines are comments, "! Name" detaches a header an earlier matching rule
+// set, and a header set again by a later matching rule is appended to.
+function applyStaticHeaders(file: string, pathname: string): Headers {
+  const rules: Array<{ pattern: RegExp; set: Array<[string, string]>; unset: string[] }> = [];
+  for (const raw of file.split("\n")) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    if (/^([^\s]+:\/\/|\/)/.test(line)) {
+      const pattern = new RegExp(
+        "^" + line.split("*").map((part) => part.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$",
+      );
+      rules.push({ pattern, set: [], unset: [] });
+      continue;
+    }
+    const rule = rules[rules.length - 1];
+    expect(rule, `header line before any path: ${line}`).toBeDefined();
+    if (!line.includes(":")) {
+      expect(line.startsWith("! "), `not a header or unset line: ${line}`).toBe(true);
+      rule.unset.push(line.slice(2));
+      continue;
+    }
+    const at = line.indexOf(":");
+    const name = line.slice(0, at).trim();
+    expect(name).not.toContain(" ");
+    rule.set.push([name.toLowerCase(), line.slice(at + 1).trim()]);
+  }
+  const headers = new Headers();
+  const seen = new Set<string>();
+  for (const rule of rules.filter((r) => r.pattern.test(pathname))) {
+    for (const name of rule.unset) headers.delete(name);
+    for (const [name, value] of rule.set) {
+      if (seen.has(name)) headers.append(name, value);
+      else {
+        headers.set(name, value);
+        seen.add(name);
+      }
+    }
+  }
+  return headers;
+}
+
+describe("static asset _headers", () => {
+  it("applies the Worker's header set to every static asset path", () => {
+    const file = staticAssetHeadersFile();
+    for (const path of ["/", "/concepts", "/robots.txt", "/404.html", "/assets/brain/current.json", "/assets/style.css"]) {
+      const headers = applyStaticHeaders(file, path);
+      expectSecurityHeaders(new Response(null, { headers }));
+      expect([...headers.keys()].sort()).toEqual(Object.keys(SECURITY_HEADERS).map((k) => k.toLowerCase()).sort());
+    }
+  });
+
+  it("lets only the Brain page be framed, and only by this origin", () => {
+    const file = staticAssetHeadersFile();
+    expect(SAME_ORIGIN_FRAMED_ASSET_PATHS).toEqual(["/brain", "/brain.html"]);
+    for (const path of SAME_ORIGIN_FRAMED_ASSET_PATHS) {
+      const headers = applyStaticHeaders(file, path);
+      expect(headers.get("X-Frame-Options")).toBe("SAMEORIGIN");
+      expect(headers.get("Content-Security-Policy")).toBe("frame-ancestors 'self'");
+      // Everything else is the shared set, with no appended duplicates.
+      expect(headers.get("Content-Security-Policy-Report-Only")).toBe(CSP_REPORT_ONLY);
+      expect(headers.get("Strict-Transport-Security")).toBe(SECURITY_HEADERS["Strict-Transport-Security"]);
+      expect(headers.get("X-Content-Type-Options")).toBe("nosniff");
+    }
+    for (const path of ["/brain/", "/brainstorm", "/assets/brain/brain.html"]) {
+      expect(applyStaticHeaders(file, path).get("X-Frame-Options")).toBe("DENY");
+    }
+  });
+
+  it("stays within the static-assets parser limits and never changes the dynamic CSP", () => {
+    const file = staticAssetHeadersFile();
+    expect(file.endsWith("\n")).toBe(true);
+    const lines = file.split("\n").filter((line) => line.trim() && !line.trim().startsWith("#"));
+    const paths = lines.filter((line) => line.startsWith("/"));
+    expect(paths.length).toBeLessThanOrEqual(STATIC_HEADERS_MAX_RULES);
+    for (const line of file.split("\n")) expect(line.length).toBeLessThanOrEqual(STATIC_HEADERS_MAX_LINE_LENGTH);
+    // Same Report-Only policy as Worker responses: not a stricter invented one.
+    expect(file).toContain(`  Content-Security-Policy-Report-Only: ${CSP_REPORT_ONLY}\n`);
+    expect(file.match(/Content-Security-Policy-Report-Only:/g)).toHaveLength(1);
   });
 });

@@ -185,7 +185,9 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
   `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen
-  release, not mutable `site/out`.
+  release, not mutable `site/out`. build-public also writes `_headers` (the static-asset copy of
+  `SECURITY_HEADERS` in `wiki/src/security.ts`; static assets never reach the Worker middleware).
+  It is build output, never public-baseline payload.
 - `index.html` / `sitemap.xml` are served dynamically from D1 — deliberately NOT copied to public.
 - **Migration 0014 before any deploy:** a Worker built from a commit containing
   `wiki/migrations/0014_native_companions.sql` answers 500 on every save, revert and create
