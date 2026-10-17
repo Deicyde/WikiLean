@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import fnmatch
+import json
 import sys
 import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 
 import brain_release_authority as authority  # noqa: E402
@@ -18,7 +21,9 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             "README.md",
             "brain/README.md",
             "wiki/README.md",
+            "AGENTS.md",
             "CLAUDE.md",
+            "CONTRIBUTING.md",
             ".gitignore",
             ".github/workflows/ci.yml",
             "scripts/ci-python.sh",
@@ -54,6 +59,8 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             "site/ops/brain-nightly.sh",
             "site/test_frontier_page.py",
             "brain/SCHEMA.md",
+            "brain/AGENTS.md",
+            "wiki/src/CONTRIBUTING.md",
             "docs.md",
             "wiki/src/NOTES.md",
             "wiki/src/index.ts",
@@ -68,6 +75,34 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
         ):
             with self.subTest(path=path):
                 self.assertFalse(authority.is_release_neutral(path))
+
+    def test_neutral_files_are_outside_the_nightly_source_check(self):
+        # brain-nightly.sh refuses to freeze a release while a path it watches is
+        # uncommitted, so no explicitly neutral file may sit inside that list.
+        script = (REPO / "site/ops/brain-nightly.sh").read_text(encoding="utf-8")
+        lines = script.splitlines()
+        start = next(i for i, line in enumerate(lines) if "status --porcelain --" in line)
+        command = []
+        for line in lines[start:]:
+            command.append(line.rstrip().removesuffix("\\"))
+            if not line.rstrip().endswith("\\"):
+                break
+        words = " ".join(command).split("status --porcelain --", 1)[1].split(')"', 1)[0].split()
+        watched = [word.strip("'\"") for word in words]
+        self.assertIn("$REDUCER_SCOPE", watched)
+        self.assertIn("site/ops/brain-nightly.sh", watched)
+        self.assertIn('"$REPO/brain/authority/reducer-inputs-v1.json"', script)
+        inventory = json.loads((REPO / "brain/authority/reducer-inputs-v1.json").read_text(encoding="utf-8"))
+        watched = [entry.rstrip("/") for entry in watched if entry != "$REDUCER_SCOPE"] + inventory["scope"]
+        for path in authority.NEUTRAL_FILES:
+            for entry in watched:
+                with self.subTest(path=path, entry=entry):
+                    self.assertFalse(
+                        entry in {"", "."}
+                        or path == entry
+                        or path.startswith(entry + "/")
+                        or fnmatch.fnmatchcase(path, entry)
+                    )
 
     def test_odd_spellings_are_never_neutral(self):
         for path in ("", "/docs/x.md", "docs//x.md", "docs/../brain/x.md", "./docs/x.md", "docs/./x.md", 7):
