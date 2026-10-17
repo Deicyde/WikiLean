@@ -115,6 +115,19 @@ describe("security headers", () => {
 });
 
 describe("POST /api/csp-report", () => {
+  it("answers 429 and logs nothing once the per-IP limit is spent", async () => {
+    const h = setup({ flagLimiterAllows: false });
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    const body = JSON.stringify({
+      "csp-report": { "document-uri": `${ORIGIN}/Test_Article`, "effective-directive": "img-src", "blocked-uri": "https://evil.example/p.png", disposition: "report" },
+    });
+    const res = await postReport(h.env, body, "application/csp-report");
+    expect(res.status).toBe(429);
+    expectSecurityHeaders(res);
+    expect(log).not.toHaveBeenCalled();
+    log.mockRestore();
+  });
+
   it("logs a legacy report-uri body and answers 204", async () => {
     const h = setup();
     const log = vi.spyOn(console, "log").mockImplementation(() => {});

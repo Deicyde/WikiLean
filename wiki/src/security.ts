@@ -15,7 +15,9 @@
 // media inside article bodies, OAuth avatars on profiles, GitHub-rendered
 // comment media and the JuliaMono webfont (jsDelivr) on /review, and the
 // Cloudflare Web Analytics beacon that Cloudflare injects into text/html
-// responses. Tighten it, then enforce it, once /api/csp-report stays quiet.
+// responses. It allows inline scripts, so enforcing it as written would add
+// little XSS protection; the reports show what a stricter policy, with the
+// inline scripts moved out first, would break.
 //
 // A Report-Only frame-ancestors only reports, so the framing ban rides a
 // separate, enforced Content-Security-Policy header (alongside the legacy
@@ -156,9 +158,13 @@ export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
 
   // Log-only sink: at most one structured line per request (Workers
   // observability), no storage. Unauthenticated by necessity (browsers send
-  // the reports), so the body is byte-capped and the violations per line are
-  // capped.
+  // the reports), so the body is byte-capped, the violations per line are
+  // capped, and each IP gets 5 reports a minute: FLAG_LIMITER's budget under
+  // its own csp:<ip> keys, checked before the body is read.
   app.post(CSP_REPORT_PATH, async (c) => {
+    const ip = c.req.header("CF-Connecting-IP") ?? "";
+    const { success: allowed } = await c.env.FLAG_LIMITER.limit({ key: `csp:${ip}` });
+    if (!allowed) return c.json({ ok: false, error: "rate limited" }, 429);
     const declared = Number(c.req.header("Content-Length"));
     if (Number.isFinite(declared) && declared > MAX_REPORT_BYTES) {
       return c.json({ ok: false, error: "report too large" }, 413);
