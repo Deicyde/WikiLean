@@ -38,7 +38,7 @@ AUTH_BODY = ('{"message":"Bad credentials","documentation_url":'
 
 def pull(state="open", title="doc: add wikidata attributes (batch 7)", merged=False):
     return {"number": PR, "state": state, "merged": merged, "merged_at": None,
-            "title": title, "created_at": "2026-08-10T11:00:00Z", "user": {"login": "Deicyde"},
+            "title": title, "created_at": "2026-08-10T11:00:00Z",
             "head": {"sha": "c" * 40}}
 
 
@@ -413,8 +413,6 @@ class ReadyHeaderTest(PollFixture):
         self.assertIn("Only a per-tag verdict or 👍/👎 from a Mathlib maintainer listed in the bot or someone "
                       "GitHub shows the bot as a mathlib4 owner, member or collaborator overrides the others", h)
         self.assertIn("a GitHub PR approval never does", h)
-        self.assertIn("The PR author's own reject/revise/flag on a tag is overridden only by a written verdict "
-                      "a listed maintainer gives on that tag after it.", h)
         self.assertNotIn("jcommelin", h)  # the list is in the bot, not the header
         self.assertNotIn("faenuccio", h)
         self.assertIn("Reviews recorded from: `Deicyde`, `SnirBroshi`.", h)
