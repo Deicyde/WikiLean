@@ -77,6 +77,7 @@ run_check "Shared Wikidata observation tests" "$PYTHON_BIN" brain/test_wikidata_
 run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_annotations.py
 run_check "Local D1 backup fail-closed tests" "$PYTHON_BIN" wiki/scripts/test_backup_d1.py
 run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
+run_check "Formalization atlas store builder tests" "$PYTHON_BIN" scripts/atlas/test_build_store.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
