@@ -88,7 +88,8 @@ runs inside launchd itself.
    launchctl print "gui/$(id -u)/org.wikilean.moderate" > "$J"
    grep -E 'state =|program =|stdout path|stderr path|runs =|last exit code' "$J"
    sed -n '/arguments = {/,/}/p' "$J"
-   sed -n '/environment = {/,/}/p' "$J"
+   # values of TOKEN/KEY/SECRET/PASSWORD-like names are masked
+   sed -n '/environment = {/,/}/p' "$J" | sed -E 's/^([[:space:]]*[A-Za-z0-9_]*(TOKEN|KEY|SECRET|PASSWORD)[A-Za-z0-9_]* => ).*/\1(masked)/'
    rm -f "$J"
    ```
 
@@ -141,8 +142,7 @@ runs inside launchd itself.
    - the distinct errors with counts and example slugs;
    - the fastest failing article's `elapsed_s`. On a checkout without PR #52 that clock
      starts before an article waits for one of the run's concurrency slots, so queued
-     articles also count the wait (`site/batch_annotate.py:449-450`); PR #52 starts it
-     once the slot is acquired;
+     articles also count the wait; PR #52 starts it once the slot is acquired;
    - a likely cause from the table below.
 
    It also lists the slugs that failed in more than one run, and the drift trigger (last
@@ -188,7 +188,9 @@ runs inside launchd itself.
    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
    <plist version="1.0"><dict>
      <key>Label</key><string>org.wikilean.probe</string>
+     <key>ProcessType</key><string>Background</string>
      <key>ProgramArguments</key><array>
+       <string>/bin/bash</string><string>-c</string><string>"\$0" "\$@"; echo "exit \$?"</string>
        <string>$B</string><string>-p</string><string>Reply with the single word ok</string>
        <string>--model</string><string>claude-opus-4-7</string>
        <string>--max-turns</string><string>1</string>
@@ -202,8 +204,15 @@ runs inside launchd itself.
    launchctl bootstrap "gui/$(id -u)" /tmp/org.wikilean.probe.plist
    launchctl kickstart "gui/$(id -u)/org.wikilean.probe"
    sleep 60; cat ~/Library/Logs/WikiLean/probe.out.log ~/Library/Logs/WikiLean/probe.err.log
+   launchctl print "gui/$(id -u)/org.wikilean.probe" | grep -E 'runs =|last exit code'
    launchctl bootout "gui/$(id -u)/org.wikilean.probe"
    ```
+
+   Like the nightly's plist (`site/ops/launchd-plist.template`), the probe runs as a
+   `Background` process with `/bin/bash` as its parent. The trailing `echo` keeps bash
+   alive as the CLI's parent, as it is for the nightly, so macOS judges disk and keychain
+   access the same way. `runs = 0` means launchd never started the probe: check the plist
+   and `probe.err.log`. A `last exit code` of 126 is the Full Disk Access case (outcome table).
 
    Run it once with the screen unlocked and once locked if the nightly fires while the
    screen is locked.
@@ -214,19 +223,18 @@ runs inside launchd itself.
    the token the same way, or they can't confirm that fix. For the Terminal call:
 
    ```bash
-   REPO="$C"; . "$C/site/ops/nightly.local.env"   # exports CLAUDE_CODE_OAUTH_TOKEN
-   env -i HOME="$HOME" USER="$USER" LOGNAME="$USER" PATH="$JOBPATH" \
-     CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
-     "$B" -p 'Reply with the single word ok' --model claude-opus-4-7 --max-turns 1 --output-format json
+   ( REPO="$C"; . "$C/site/ops/nightly.local.env"   # a subshell: the token stays out of this Terminal
+     env -i HOME="$HOME" USER="$USER" LOGNAME="$USER" PATH="$JOBPATH" \
+       CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN" \
+       "$B" -p 'Reply with the single word ok' --model claude-opus-4-7 --max-turns 1 --output-format json )
    ```
 
    For the launchd check, have the probe load the file itself rather than putting the
    token in the plist, whose environment `launchctl print` shows. Write the probe with
-   these two lines in place of the first `ProgramArguments` line:
+   this `-c` line in place of the default one:
 
    ```xml
-       <string>/bin/bash</string><string>-c</string><string>REPO="$C"; . "$C/site/ops/nightly.local.env"; exec "\$0" "\$@"</string>
-       <string>$B</string><string>-p</string><string>Reply with the single word ok</string>
+       <string>/bin/bash</string><string>-c</string><string>REPO="$C"; . "$C/site/ops/nightly.local.env"; "\$0" "\$@"; echo "exit \$?"</string>
    ```
 
    If the error text in step 4 says `fetch_failed`, also probe Wikipedia the way review
@@ -268,9 +276,14 @@ runs inside launchd itself.
    `CLAUDE_CODE_OAUTH_TOKEN="$CLAUDE_CODE_OAUTH_TOKEN"` as in step 5; without it this
    run tests the stored login, not the token. This is a production write:
    - it first flushes any checkpointed writes from earlier runs;
-   - on success it saves the article as an `ai-moderate:review:<run_id>` revision and
-     registers a run, so `/stats` review tokens rise and `/recent-changes` lists the
-     revision.
+   - it registers a run whether or not the article succeeds, so `/stats` shows the
+     attempt either way;
+   - on success it also saves the article as an `ai-moderate:review:<run_id>` revision,
+     so `/stats` review tokens rise and `/recent-changes` lists the revision.
+
+   The real confirmation is the job itself: `launchctl kickstart -k
+   "gui/$(id -u)/org.wikilean.moderate"` runs it now, or wait for 03:20. A new review run
+   with nonzero tokens on `/stats` confirms the fix.
 
 ## What each outcome means
 
@@ -279,9 +292,9 @@ moderate log). The "Likely cause" column is what `manage/nightly_health.py` prin
 
 | Error text contains | Likely cause | Meaning | Fix |
 |---|---|---|---|
-| `extract_failed`, or `No such file or directory: 'python3'` | python3 on the job's PATH | `extract_sections.py` could not run under the `python3` the job's PATH finds. | Make step 5's first command succeed: `xcode-select --install` or `sudo xcodebuild -license accept` if `/usr/bin/python3` is the one found, or install a Python 3 earlier on the job's PATH. |
+| `extract_failed` on every article, or `No such file or directory: 'python3'` | python3 on the job's PATH | `extract_sections.py` could not run under the `python3` the job's PATH finds. | Make step 5's first command succeed: `xcode-select --install` or `sudo xcodebuild -license accept` if `/usr/bin/python3` is the one found, or install a Python 3 earlier on the job's PATH. |
 | `Working directory does not exist` (a mathlib4 path) | Mathlib checkout path | Agent 2's working directory is gone. Agent 1 runs first, so it used Max quota, although `/stats` records 0 tokens. | Restore the checkout or point `WIKILEAN_MATHLIB` at a readable mathlib4 checkout. Never edit that checkout. |
-| `Credit balance is too low` | API-key credential | The CLI authenticated with an API key instead of the Max login. The environment variable can't be the source: `site/batch_annotate.py:35-37` removes `ANTHROPIC_API_KEY` at import, and `site/moderate.py:639-645` keeps it removed under the default `--auth subscription`. | Look at the CLI's own credentials: an API-key (Console) login stored by `claude`, `primaryApiKey` in `~/.claude.json`, or an `env` or `apiKeyHelper` entry in `~/.claude/settings.json`. Log in again with the Max account. |
+| `Credit balance is too low` | API-key credential | The CLI authenticated with an API key instead of the Max login. The environment variable can't be the source: `site/batch_annotate.py:35-37` removes `ANTHROPIC_API_KEY` at import, and `_import_ba` in `site/moderate.py` keeps it removed under the default `--auth subscription`. | Look at the CLI's own credentials: an API-key (Console) login stored by `claude`, `primaryApiKey` in `~/.claude.json`, or an `env` or `apiKeyHelper` entry in `~/.claude/settings.json`. Log in again with the Max account. |
 | `Not logged in`, `Invalid API key`, `Please run /login`, `Failed to authenticate`, `OAuth`, `401`, `authentication` | Claude login | The CLI the job runs has no usable Claude login, or its token expired or was revoked. | Log in with the CLI the job runs: start `"$B"` from step 5 in the desktop session and type `/login` with the Max account; confirm the plan is active on claude.ai. Re-run both step 5 checks, then step 7. For a login that doesn't depend on the keychain, `claude setup-token` prints a long-lived token for headless use; export it as `CLAUDE_CODE_OAUTH_TOKEN` from the gitignored `site/ops/nightly.local.env`, which only the current wrapper reads, so an older checkout needs the fresh checkout below first. Never put it in git or in a plist (`launchctl print` shows a plist's environment). Steps 5 and 7 must then run with the token (step 5 shows how). |
 | `hit your limit`, `weekly limit`, `usage limit`, `resets` | plan or usage limit | The Max allowance is used up. | Check usage in the CLI (`/status`). On a checkout with b079500b, five such errors in a row stop the run within 7 errors, and the wrapper retries a 5-hour-window limit once. 15 of 15 with this text means the checkout predates b079500b (step 2). |
 | `issue with the selected model`, `not_found_error` | model id | The plan or account cannot use the pinned model (`claude-opus-4-7`, `site/batch_annotate.py:57`). | Set `WIKILEAN_AGENT_MODEL` to a model the plan offers, exported from `site/ops/nightly.local.env` (current wrapper) or the plist's `EnvironmentVariables` (older wrapper). Re-run step 5 with that `--model`. |
@@ -289,7 +302,9 @@ moderate log). The "Likely cause" column is what `manage/nightly_health.py` prin
 | `Command failed with exit code`, `Claude Code not found`, `error result`, a JSON decode error | claude CLI | The CLI did not start, crashed, or reported an error without text. | Run `"$B" --version` (step 5). A bundled CLI too old for the service needs a newer `claude-agent-sdk` in the job's venv (see `catalog/requirements.txt`); a broken install needs a reinstall of the same version. |
 | `Control request timeout: initialize` | claude CLI startup timeout | The CLI process started but did not answer the agent SDK's `initialize` request within the SDK's limit (60 s by default), so that agent never got its prompt. | Run step 5's checks, the launchd one included; a CLI that hangs there reproduces it. A hang only under launchd points at access the LaunchAgent lacks, such as the keychain or a checkout under `~/Desktop` (`site/ops/README.md`, Full Disk Access). If startup is only slow, export `CLAUDE_CODE_STREAM_CLOSE_TIMEOUT` (milliseconds) from `site/ops/nightly.local.env` to raise the SDK's limit. |
 | `API Error: Stream idle timeout` | API stream timeout | The CLI's streamed response from the API stopped arriving partway through, and the CLI gave up on that agent call. | Usually transient. If every article shows it, check the host's network path to the API (proxy, VPN, sleep settings) and re-run step 5's one-call check. |
-| `fetch_failed` | Wikipedia fetch | Review could not fetch the article's pinned revision. It swallows the exception, so the text says nothing more. | Run step 5's Wikipedia probe and read the status and body. |
+| `fetch_failed` on every article | Wikipedia fetch | Review could not fetch the article's pinned revision. It swallows the exception, so the text says nothing more. | Run step 5's Wikipedia probe and read the status and body. |
+| `extract_failed` or `fetch_failed` on only some articles | article-specific | Those articles' sections or pinned revisions failed, not the host. PR #52's rotation moves such articles behind the rest of the review queue. | Read those articles' records; no host fix is needed. |
+| `Operation not permitted`, `exit 126` | Full Disk Access | macOS TCC shields a checkout or Mathlib path under `~/Desktop` from launchd jobs, so the job can't start or read it while Terminal checks still pass. | Grant Full Disk Access to `/bin/bash` (`site/ops/README.md`, "Conditional one-time permission"), or move the path under `~/projects` and rerun `nightly-launchd.py install`. |
 | `get_failed_<code>` | Worker read | The Worker refused or failed the article read. | wp-update makes the same read; compare with its section of the same log. |
 | `agent1_no_json`, `agent2_no_json`, `render_failed`, `final_read_failed` | agent output | The agents ran but their output could not be used. | Read that article's records; if every article shows it, run step 5's one-call check and read the result text. |
 | `job_crashed: <exception>` | unclassified | A Python exception escaped the per-article code. | The exception names the cause; it may be a bug to fix in `site/moderate.py`. |
@@ -303,6 +318,13 @@ the handoffs say to preserve, so prefer a fresh checkout of `main`. Configure it
 then switch the LaunchAgent with `launchctl bootout` and `launchctl bootstrap`. Without
 `--job moderate`, `nightly-launchd.py` covers all three jobs and requires the Brain
 job's Mathlib and Wikidata inputs too.
+
+A fresh clone has none of the old checkout's untracked state. Recreate `wiki/.dev.vars`
+(`site/moderate.py` falls back to its `PIPELINE_TOKEN`), a Python 3.12+ venv at `.venv` or
+`catalog/.venv` from `catalog/requirements.txt` (where `nightly-runtime.sh` looks), and
+`npm ci` in `wiki/` (the job's cache purge runs `npx wrangler`). The old checkout's
+`site/cache` history (`.moderate_run.log`, `.decisions.jsonl`, `.wp_update_report.jsonl`)
+stays behind unless you copy it, and this runbook's summary script reads only that history.
 
 ## The review outage that began on 2026-09-18
 
@@ -325,20 +347,20 @@ job's Mathlib and Wikidata inputs too.
    `tokens` only on its success path (`site/batch_annotate.py:612-616`). Its error
    returns (`:453-460`, `:499-502`, `:549-551`, `:596-598`, `:617-618`) leave it unset,
    even when one or both agents already ran. Failures after `annotate_one` succeeds (the
-   final read, or the Worker POST at `site/moderate.py:947-997`) keep the agents' tokens,
+   final read, or the Worker POST in `site/moderate.py`'s `_write_article`) keep the agents' tokens,
    and `run_jobs` adds them up. Flat tokens therefore mean all 15 articles failed during
    fetch, extract, an agent call, or render, never at the save.
 2. **The abort and retry rules narrow the error text.**
    - `run_jobs` aborts on the first error containing `credit balance` or
      `authentication`, and after five *consecutive* errors containing `error result`,
-     `rate`, `limit` or `overloaded` (`site/moderate.py:1200-1219`). These are substring
+     `rate`, `limit` or `overloaded` (`run_jobs` in `site/moderate.py`). These are substring
      matches, so `rate` also matches "moderate".
-   - Since b079500b (on `main` since 2026-08-04), `_AbortingSem`
-     (`site/moderate.py:139-163`) stops queued jobs, so an aborted run records at most
+   - Since b079500b (on `main` since 2026-08-04), `_AbortingSem` in `site/moderate.py`
+     stops queued jobs, so an aborted run records at most
      `ABORT_AFTER` + concurrency = 7 errors.
    - Before that commit the flag was set but every queued job still ran, which is how
      limit nights "burned 15/15" (b079500b's message).
-   - Either way an abort exits 3 (`site/moderate.py:1243`). The wrapper reruns only on
+   - Either way an abort exits 3 (`run_jobs`). The wrapper reruns only on
      exit 3 with `hit your limit`, `usage limit`, `resets <digit>` or `rate_limited_429`
      in the log tail (`site/ops/retry-lib.sh:50-55`; the older inline copy lacked the
      last one).
@@ -366,7 +388,7 @@ job's Mathlib and Wikidata inputs too.
      User-Agent, every exception collapsed to `fetch_failed` (`:171-214`, `:453-455`).
      wp-update fetches the latest revision through `render.fetch_article_html`.
 4. **The review command itself starts.** The run registers, so `batch_annotate` (and
-   with it `claude_agent_sdk`) imported (`site/moderate.py:1376`) and `GET /api/work`
+   with it `claude_agent_sdk`) imported (`_import_ba` in `site/moderate.py`) and `GET /api/work`
    answered.
 5. **The host most likely runs the older wrapper.** The current wrapper reached `main`
    on 2026-09-21, after the outage began, and the handoffs call the checkout "older
@@ -457,7 +479,10 @@ script measures it from the host's logs over the last 30 days (`--days N` to cha
 
 Dry runs (`wp-update --dry-run`) are left out, because their needs-work lines look
 like real ones in `.decisions.jsonl`. With fewer than 20 distinct drifted slugs the
-script says the sample is too small instead of judging the trigger.
+script says the sample is too small instead of judging the trigger. While no wp-update
+run in the window took more than 100 articles, the attempts come from the stuck head of
+the queue (below), which over-represents articles whose re-pins keep failing, so the
+script says to read the clear rate as a lower bound.
 
 It also lists the slugs that failed every attempt in the window, most-retried first.
 `/api/work` orders wp-update's drifted articles flagged first, then those with the drift
@@ -466,7 +491,7 @@ nothing. A Worker older than release B hands out at most 100 of them, and the ni
 host's current runner asks for at most 100, so those slugs hold the head of the queue
 night after night. The full sweep starts only when both halves are live: a Worker from
 release B or later, where `/api/work` serves wp-update up to 1000 rows (review stays at
-100), and a nightly host checkout that contains this change, whose runner asks for 1000
+100), and a nightly host checkout that contains #63, whose runner asks for 1000
 (`WIKILEAN_WPUPDATE_LIMIT`). Promoting a release doesn't move the host's checkout
 (updating it is covered above). From then on every drifted article gets a stage-0
 attempt each night, and the first such night runs one long wp-update sweep over the
