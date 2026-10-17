@@ -157,6 +157,17 @@ describe("limit clamp", () => {
     expect((await work(h, "?limit=2")).length).toBe(2);
   });
 
+  it("wp-update serves up to 1000 drifted rows; review stays capped at 100", async () => {
+    const h = setup();
+    // Inserted in reverse so a stable slug order is not just insertion order.
+    for (let i = 149; i >= 0; i--) insertArticle(h.db, `Drift_${String(i).padStart(3, "0")}`, { revid: 1, latestRevid: 2 });
+    const drifted = await work(h, "?mode=wp-update&limit=1000");
+    expect(drifted.length).toBe(150);
+    // One tier, all never reviewed: the slug tiebreak decides the order.
+    expect(drifted.map((j) => j.slug)).toEqual(Array.from({ length: 150 }, (_, i) => `Drift_${String(i).padStart(3, "0")}`));
+    expect((await work(h, "?mode=review&limit=1000")).length).toBe(100);
+  });
+
   it("limit truncates from the back: the top of the ladder always survives", async () => {
     const h = setup();
     seedMany(h, 5);

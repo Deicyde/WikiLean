@@ -2676,7 +2676,12 @@ app.get("/api/work", async (c) => {
     return c.json({ ok: false, error: "unknown mode" }, 400);
   }
   const limitRaw = parseInt(c.req.query("limit") ?? "50", 10);
-  const limit = Math.min(Math.max(Number.isNaN(limitRaw) ? 50 : limitRaw, 1), 100);
+  // wp-update is zero-token stage-0 and a failed re-pin writes nothing, so a
+  // 100-row page lets the same failures hold its head every night; serve the
+  // whole drifted set instead (the corpus is under 1000). Review stays at 100.
+  // If the drifted set nears 1000, wp-update needs real rotation instead.
+  const cap = mode === "wp-update" ? 1000 : 100;
+  const limit = Math.min(Math.max(Number.isNaN(limitRaw) ? 50 : limitRaw, 1), cap);
 
   const db = drizzle(c.env.DB);
   const humanEdited = sql<number>`CASE WHEN ${moderationState.lastReviewedVersion} IS NOT NULL AND ${articles.version} > ${moderationState.lastReviewedVersion} THEN 1 ELSE 0 END`;
@@ -2714,6 +2719,8 @@ app.get("/api/work", async (c) => {
       // never-reviewed articles beats re-reviewing old ones. (Roadmap text
       // update is on the lead.)
       sql`${moderationState.lastReviewedAt} ASC NULLS FIRST`,
+      // Ties (e.g. every never-reviewed article) come back in a stable order.
+      articles.slug,
     )
     .limit(limit);
 

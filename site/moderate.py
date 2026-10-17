@@ -839,11 +839,18 @@ def _http_get(url: str, token: str | None = None):
     return requests.get(url, headers=headers, timeout=60)
 
 
+# GET /api/work's per-mode row cap (wiki/src/index.ts): wp-update serves the
+# whole drifted set, review one 100-row page. A Worker that predates the
+# wp-update cap raise still returns at most 100 rows there.
+WORK_LIMIT_CAP = {"review": 100, "wp-update": 1000}
+
+
 def fetch_work(api_base: str, token: str, mode: str, limit: int) -> list[dict]:
-    """GET /api/work (bearer-only). Server caps limit at 100."""
-    if limit > 100:
-        print("note: /api/work caps limit at 100")
-        limit = 100
+    """GET /api/work (bearer-only). Server caps limit per mode (WORK_LIMIT_CAP)."""
+    cap = WORK_LIMIT_CAP.get(mode, 100)
+    if limit > cap:
+        print(f"note: /api/work caps {mode} at {cap}")
+        limit = cap
     r = _http_get(f"{api_base}/api/work?mode={mode}&limit={limit}", token)
     if r.status_code != 200:
         sys.exit(f"GET /api/work?mode={mode} failed: {r.status_code} {r.text[:200]}")
@@ -1384,8 +1391,13 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
         results.append(rec)
         append_decision(decision_line(wctx, rec))  # P2c: one line per article
         print(f"      {rec['outcome']}", flush=True)
-        if rec["outcome"] == "repinned" and i + 1 < len(jobs):
-            time.sleep(ufu.WRITE_PACE_SECONDS)  # stay under EDIT_LIMITER
+        if i + 1 < len(jobs):
+            # Pace every article, as update_from_upstream's own loop does: the
+            # write pace after a re-pin (EDIT_LIMITER), a light pace otherwise
+            # so a long run of read-only articles (the sweep covers the whole
+            # drifted set) doesn't burst Cloudflare's per-IP limit.
+            time.sleep(ufu.WRITE_PACE_SECONDS if rec["outcome"] == "repinned"
+                       else ufu.GET_PACE_SECONDS)
     n_repinned = sum(1 for r in results if r["outcome"] == "repinned")
     n_needs = sum(1 for r in results if r["outcome"] == "needs-work")
     n_err = sum(1 for r in results if decision_outcome(r) in ("error", "422"))
@@ -1537,7 +1549,7 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
             # move behind the rest without shrinking the run.
             n_recent = len(recently_failed(failures, now_ms))
             jobs = fetch_work(args.api_base, token, "review",
-                              min(100, args.limit + n_recent))
+                              min(WORK_LIMIT_CAP["review"], args.limit + n_recent))
             jobs, deferred = defer_recent_failures(jobs, failures, args.limit, now_ms)
             print(f"review: {len(jobs)} jobs from /api/work")
             if deferred:
@@ -1587,7 +1599,8 @@ def main() -> int:
                     help="flush = re-POST checkpointed payloads from prior runs "
                          "whose write failed transiently (zero agent tokens)")
     ap.add_argument("--limit", type=int, default=10,
-                    help="max articles per mode (default 10; /api/work caps at 100)")
+                    help="max articles per mode (default 10; /api/work caps "
+                         "review at 100, wp-update at 1000)")
     ap.add_argument("--concurrency", type=int, default=2)
     ap.add_argument("--budget-tokens", type=int, default=None,
                     help="abort the run once cumulative tokens reach this")
