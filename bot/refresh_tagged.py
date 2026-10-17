@@ -23,7 +23,14 @@ def main():
     g = ["git", "-C", str(args.mathlib)]
 
     print(f"fetching {UPSTREAM} master (shallow)…")
-    f = subprocess.run(g + ["fetch", "--depth=1", UPSTREAM, "master"], text=True, capture_output=True)
+    # --refetch skips negotiation, so the pack carries every blob in master's tree.
+    # Without it the server leaves out blobs it assumes this clone already has from
+    # its own commits, which a --filter=blob:none clone (the CI poller's) does not,
+    # and the git grep below then fetches each missing blob from the fork one at a
+    # time: 18 to 30+ minutes per batch open in 2026-08. Needs Git 2.36 or newer;
+    # an older git fails the fetch, and the refresh fails closed.
+    f = subprocess.run(g + ["fetch", "--depth=1", "--refetch", UPSTREAM, "master"],
+                       text=True, capture_output=True)
     if f.returncode != 0:
         sys.exit(f"git fetch failed: {f.stderr[:300]}")
     # Exclude the attribute's own file: its docstring example (`@[wikidata Q12345

@@ -126,5 +126,6 @@ run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_pa
 run_check "Bot poller fail-closed tests" "$PYTHON_BIN" bot/test_poll.py
 run_check "Bot settle per-tag rule tests" "$PYTHON_BIN" bot/test_settle_gate.py
 run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
+run_check "Bot tag refresh fetch tests" "$PYTHON_BIN" bot/test_refresh_tagged.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"
