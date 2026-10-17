@@ -576,6 +576,33 @@ cd "$REPO" || exit 1
   export WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE
   echo "(shared Wikidata generation GREEN: $WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE)"
 
+  # ---- 0. CURATED INPUTS (checked before this run writes any) -----------------
+  # Curated reducer inputs (class curated_git_input in reducer-inputs-v1.json) are
+  # read from this working tree, and a release claims Git authority for them.
+  # Record any that already differ from HEAD, or exist while ignored (such as
+  # bot/state/pool_candidates.json), before ingest and fold run; section 4 then
+  # refuses to publish. The proposal fold's own writes come later and are not
+  # flagged here.
+  CURATED_DIRTY=""
+  if CURATED_INPUTS="$("$PYTHON_BIN" - "$REPO/brain/authority/reducer-inputs-v1.json" <<'PY'
+import json
+import sys
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+inputs = value.get("inputs") if isinstance(value, dict) else None
+paths = [item.get("path") for item in inputs or []
+         if isinstance(item, dict) and item.get("class") == "curated_git_input"]
+if not paths or not all(isinstance(path, str) and path for path in paths):
+    raise SystemExit("invalid reducer inventory curated inputs")
+print("\n".join(paths))
+PY
+)"; then
+    CURATED_DIRTY="$(git -C "$REPO" status --ignored=matching --porcelain -- $CURATED_INPUTS)" \
+      || CURATED_DIRTY="(git status failed for the curated reducer inputs)"
+  else
+    CURATED_DIRTY="(the reducer inventory's curated inputs are invalid)"
+  fi
+  # ---- end of curated inputs check ----
+
   # ---- 1. INGEST (per-source cadence; each adapter fail-soft) ----------------
   echo "=== ingest: daily sources ==="
   py_soft "nlab ingest"        "$REPO/brain/ingest/nlab.py"
@@ -830,7 +857,7 @@ PY
       brain/authority/reducer-inputs-v1.json \
       $REDUCER_SCOPE \
       site/test_frontier_page.py \
-      site/ops/brain-nightly.sh site/ops/brain-canary.py site/ops/nightly.env)"; then
+      site/ops/brain-nightly.sh site/ops/nightly.env)"; then
     echo "!!! RELEASE ABORTED: could not inspect release-affecting source status"
     PUBLISH_OK=0
   fi
@@ -841,6 +868,10 @@ PY
   elif [ "$PUBLISH_OK" = "1" ] && [ -n "$DIRTY" ]; then
     echo "!!! RELEASE ABORTED: release-affecting source is uncommitted; the Git authority would be false:"
     echo "$DIRTY"
+    PUBLISH_OK=0
+  elif [ "$PUBLISH_OK" = "1" ] && [ -n "${CURATED_DIRTY:-}" ]; then
+    echo "!!! RELEASE ABORTED: curated reducer inputs had local changes before this run; the Git authority would be false:"
+    echo "$CURATED_DIRTY"
     PUBLISH_OK=0
   elif [ "$PUBLISH_OK" = "1" ] && { [ ! -f "$REPO/brain/tools/build_release.py" ] || [ ! -f "$REPO/wiki/scripts/brain-release-public.ts" ]; }; then
     echo "!!! RELEASE ABORTED: release builder or public staging module is missing"

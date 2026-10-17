@@ -109,15 +109,12 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertFalse(authority.is_release_neutral(path))
 
-    def test_the_canary_is_the_only_nightly_watched_file_left_neutral(self):
-        # The nightly's uncommitted-source check still names the canary, which it no
-        # longer runs, and committed canary changes never reach release bytes. Among
-        # the files the nightly names explicitly (its directories, like wiki/, also
-        # hold neutral tests and a README), any other the policy calls neutral is a
-        # disagreement.
+    def test_every_file_the_nightly_names_is_release_affecting(self):
+        # Among the files the nightly's uncommitted-source check names explicitly (its
+        # directories, like wiki/, also hold neutral tests and a README), one the
+        # policy calls neutral is a disagreement to resolve.
         watched = [entry for entry in _nightly_watched() if entry != "$REDUCER_SCOPE"]
-        self.assertEqual([entry for entry in watched if authority.is_release_neutral(entry)],
-                         ["site/ops/brain-canary.py"])
+        self.assertEqual([entry for entry in watched if authority.is_release_neutral(entry)], [])
 
     def test_neutral_files_are_outside_the_nightly_source_check(self):
         # brain-nightly.sh refuses to freeze a release while a path it watches is
