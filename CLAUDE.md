@@ -103,7 +103,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
 - **Render-cache keys are manually versioned + load-bearing** (currently `render:v18:`,
   `page:home:v10`, `page:articles:v3`, `page:articles-index:v1`, `page:about:v2`,
-  `page:sitemap:v4`, `page:stats:v5`, `page:wikifunctions:v3`,
+  `page:sitemap:v4`, `page:stats:v6`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
   prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset
   changes need `?v=` bumps.

@@ -16,6 +16,13 @@ function fmtDate(ms: number): string {
   return new Date(ms).toISOString().slice(0, 16).replace("T", " ") + " UTC";
 }
 
+// ISO prefix of a stored ms timestamp, or null when it is not a valid Date
+// (runner-reported times are unbounded integers; toISOString would throw).
+function isoPrefix(ms: number, len: number): string | null {
+  const d = new Date(ms);
+  return Number.isFinite(d.getTime()) ? d.toISOString().slice(0, len) : null;
+}
+
 // Compact relative age ("4m ago", "3h ago", "2d ago") for the flags queue,
 // where recency matters more than the exact timestamp.
 function fmtAge(ms: number): string {
@@ -605,9 +612,14 @@ export interface StatsEventCell {
 export interface StatsData {
   articles: {
     total: number;
+    // neverReviewed/fresh/stale read moderation_state.last_reviewed_at, which
+    // every bot save and bot create stamps (AI review, Wikipedia re-pin,
+    // unchanged no-op). AI proposal decisions and revert-runs do not stamp it.
     neverReviewed: number;
-    fresh: number; // reviewed within the last 30d
-    stale: number; // reviewed, but >30d ago
+    fresh: number; // bot-save stamp within the last 30d
+    stale: number; // bot-save stamp >30d old
+    aiReviewedFresh: number; // distinct articles with an ai-moderate:review revision ≤30d
+    aiReviewLatest: number | null; // newest ai-moderate:review revision (ms), null if none
     drifted: number; // moderation_state.wp_drifted = 1
     parked: number; // state in (moved, deleted, needs_human)
   };
@@ -626,6 +638,14 @@ export interface StatsData {
     errors: number;
     tokens: number;
     cost: number | null;
+  }>;
+  // The last 10 run reports, newest reported first; counts only (no notes).
+  recentRuns: Array<{
+    kind: string;
+    startedAt: number;
+    articles: number;
+    errors: number;
+    tokens: number;
   }>;
   // Propose-then-approve lifecycle (the AI-precision measure): acceptance
   // rate = approved / (approved + rejected); stale = target vanished before a
@@ -664,9 +684,13 @@ export function statsPage(d: StatsData): string {
 
   const reviewRows =
     statRow("Articles", d.articles.total, "RQ8") +
-    statRow("Never reviewed by the pipeline", d.articles.neverReviewed, "RQ5") +
-    statRow("Review fresh (≤30d)", d.articles.fresh, "RQ5") +
-    statRow("Review stale (>30d)", d.articles.stale, "RQ5") +
+    statRow("No bot-save stamp", d.articles.neverReviewed, "RQ5") +
+    statRow("Bot-save stamp ≤30d (any pipeline save or create, incl. Wikipedia re-pins and unchanged saves)", d.articles.fresh, "RQ5") +
+    statRow("Bot-save stamp >30d old", d.articles.stale, "RQ5") +
+    statRow("AI-reviewed ≤30d (articles an AI review changed; reviews that changed nothing are not counted)", d.articles.aiReviewedFresh, "RQ5") +
+    `<tr><td>Most recent AI review revision (UTC date)</td><td class="wl-stat-num">${
+      (d.articles.aiReviewLatest === null ? null : isoPrefix(d.articles.aiReviewLatest, 10)) ?? '<span class="muted">none</span>'
+    }</td>${rqCell("RQ5")}</tr>` +
     statRow("Drifted from pinned Wikipedia revision", d.articles.drifted, "RQ8") +
     statRow("Parked (moved / deleted / needs human)", d.articles.parked, "RQ4");
 
@@ -738,6 +762,15 @@ export function statsPage(d: StatsData): string {
     `<tr><td>${htmlEscape(label, false)}</td>${statNum(r.runs)}${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}${fmtCost(r.cost)}${rqCell("RQ8")}</tr>`;
   const runsRows =
     d.runs.map((r) => runRow(r.kind, r)).join("") + runRow("all runs", runTotal);
+  const recentRunRows = d.recentRuns.length
+    ? d.recentRuns
+        .map(
+          (r) =>
+            `<tr><td style="white-space:nowrap">${isoPrefix(r.startedAt, 16)?.replace("T", " ") ?? '<span class="muted">—</span>'}</td>` +
+            `<td>${htmlEscape(r.kind, false)}</td>${statNum(r.articles)}${statNum(r.errors)}${statNum(r.tokens)}</tr>`,
+        )
+        .join("")
+    : `<tr><td colspan="5" class="muted">No run reports yet.</td></tr>`;
 
   const body =
     `<h1>Stats</h1>` +
@@ -759,10 +792,14 @@ export function statsPage(d: StatsData): string {
     statTable(metricHead, revisionRows) +
     `<h2 class="wl-stats-h">Pipeline runs</h2>` +
     statTable(`<th>Kind</th><th>Runs</th><th>Articles</th><th>Errors</th><th>Tokens</th><th>Cost</th><th>Feeds</th>`, runsRows) +
+    `<h2 class="wl-stats-h">Recent pipeline runs</h2>` +
+    statTable(`<th>Started (UTC)</th><th>Kind</th><th>Articles</th><th>Errors</th><th>Tokens</th>`, recentRunRows) +
+    `<p class="muted" style="font-size:.82rem">The last 10 run reports, newest reported first ` +
+    `(also at <a href="/api/runs">/api/runs</a>).</p>` +
     `<h2 class="wl-stats-h">AI proposals (propose-then-approve)</h2>` +
     statTable(
       metricHead,
-      statRow("Pending (awaiting a human)", d.proposals.pending, "RQ2") +
+      statRow("Pending (undecided)", d.proposals.pending, "RQ2") +
         statRow("Approved", d.proposals.approved, "RQ1 RQ2") +
         statRow("Rejected", d.proposals.rejected, "RQ1 RQ2") +
         statRow("Decided by AI (auto-resolve)", d.proposals.decidedByAi, "RQ1 RQ2") +
@@ -778,8 +815,11 @@ export function statsPage(d: StatsData): string {
             : "—"
         }</td>${rqCell("RQ4")}</tr>`,
     ) +
-    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 in any row ` +
-    `means that instrumentation is broken, not that nothing happened — investigate before celebrating. ` +
+    `<p class="wl-stats-foot"><b>Reading a zero:</b> every instrument on this page has shipped, so a 0 where ` +
+    `activity is expected (event, revision and run counts) means the instrumentation or the pipeline is broken, ` +
+    `not that nothing happened — investigate before celebrating. Some rows are 0 by design (wp-update spends no ` +
+    `tokens; errors, open flags and parked articles are best at 0), and windowed rows (≤30d, last 30d) can ` +
+    `legitimately read 0; a 0 in AI-reviewed ≤30d means the AI review has stopped changing articles. ` +
     `Median time-to-first-human-touch is omitted: it needs a per-annotation pipeline-event × human-event self-join ` +
     `that is not a cheap single SQL pass on D1. RQ3 (AI dissent / ladder blocks) is measured in the runner&#x27;s ` +
     `decision sidecars, not in this database; RQ6 (inter-generation agreement) and RQ7 (confidence calibration) ` +

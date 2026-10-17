@@ -87,7 +87,7 @@ interface EndpointRow {
 //   resolve  requireRole(['patroller','admin'])
 //   /api/flags requireRole(['patroller','admin'])
 //   /api/work  requireRole(['bot'])
-//   /api/runs  requireRole(['bot'])  (P2a RUNS-API)
+//   POST /api/runs  requireRole(['bot'])  (P2a RUNS-API); GET /api/runs is public (counts only)
 //   patrol     requireRole(['patroller','admin'])  (P2a)
 //   export     requireRole(['bot','admin'])  (P2a research export)
 //   reads    public (article JSON, home, sitemap, diff, /stats)
@@ -148,6 +148,11 @@ const ENDPOINTS: EndpointRow[] = [
         opts,
       ),
     expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+  },
+  {
+    name: "GET /api/runs (public counts)",
+    request: (h, opts) => get(h.env, "/api/runs", opts),
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
   },
   {
     name: "POST /api/admin/revert-run/:runId",

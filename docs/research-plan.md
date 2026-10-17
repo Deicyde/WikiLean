@@ -18,12 +18,12 @@ have shipped. Every source below is live; counts are from
 | `annotation_events` (D1) | **LIVE** (migration 0005, 2026-06-12) | Field-level diffs by annotation id on every write path; `actor_type` `human\|pipeline`. 13,063 events all-time, 184 in the last 30 days. Left-truncated: annotations created before 0005 have no `add` event. |
 | `revisions.kind` + `meta` (D1) | **LIVE** (migration 0004) | Kinds seen: `seed` 949, `pipeline` 3,309, `edit` 32, `proposal-approved` 6, `proposal-decided-ai` 6. Pipeline `meta` carries run_id, model, tokens, cost, ladder, and id stats. |
 | `flags` (D1) | **LIVE** (migration 0005) | 2 open, 0 resolved. |
-| `moderation_state` (D1) | **LIVE** (migration 0004) | `last_reviewed_at` is stamped by every bot save, including zero-token stage-0 re-pins, so `/stats` "Review fresh" overstates AI review coverage. |
+| `moderation_state` (D1) | **LIVE** (migration 0004) | `last_reviewed_at` is stamped by every bot save, including zero-token stage-0 re-pins, so `/stats` "Review fresh" overstates AI review coverage. From the release that carries #50, `/stats` labels that row "Bot-save stamp ≤30d" and adds "AI-reviewed ≤30d", which counts only articles an AI review changed. |
 | Stable annotation ids | **LIVE** (backfilled 2026-06-11) | Lazy-heal plus runner echo-validation keep identity continuity. |
 | `pipeline_runs` (D1) + `POST /api/runs` | **LIVE** (migration 0006) | 227 runs: review 118, new 7, wp-update 102. |
 | Revision patrol marks | **LIVE** (migration 0006) | 0 of the 32 `edit` revisions patrolled. Those 32 include `system` import revisions, not only human edits. |
 | `proposals` lifecycle table (D1) | **LIVE** (migration 0009; propose-then-approve, 2026-08-06) | 12 approved, 3 rejected, 6 decided by AI, 1 pending; mean 19.0 h to decision. |
-| `/stats` page | **LIVE** (cache key `page:stats:v5`) | RQ-labelled rows; footer explains what a zero means. |
+| `/stats` page | **LIVE** (cache key `page:stats:v5`; `v6` from the release that carries #50) | RQ-labelled rows; footer explains what a zero means. |
 | Research export | **LIVE** endpoint | `GET /api/research/export.jsonl` (bot bearer or admin), pseudonymized. A nightly artifact step rides the D1 backup workflow and needs the `PIPELINE_TOKEN` repo secret. |
 | `site/cache/.decisions.jsonl` sidecar | **LIVE, host-local** | Written by `site/moderate.py` on the nightly host; gitignored, not in this repo. RQ3's ladder data lives here. |
 | Per-annotation `confidence` | **NO**, deferred | Gates RQ7. |
