@@ -21,7 +21,7 @@
 // separate, enforced Content-Security-Policy header (alongside the legacy
 // X-Frame-Options for older browsers).
 
-import type { Hono } from "hono";
+import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 
 export const CSP_REPORT_PATH = "/api/csp-report";
@@ -113,6 +113,17 @@ export function parseCspReports(payload: unknown): CspViolation[] {
   return out.slice(0, MAX_REPORTS_LOGGED);
 }
 
+// CSRF guard for session-authenticated writes: a browser request whose Origin
+// is another site is refused. Requests without an Origin (the pipeline's
+// curl/requests clients) pass; a same-origin fetch always sends one.
+export function checkOrigin(c: Context<{ Bindings: Env }>): Response | null {
+  const origin = c.req.header("Origin");
+  if (origin && origin !== new URL(c.req.url).origin) {
+    return c.json({ ok: false, error: "cross-origin request rejected" }, 403);
+  }
+  return null;
+}
+
 // Reads at most `max` bytes of the body, counting bytes as they stream, so a
 // chunked request without Content-Length cannot buffer an unbounded body.
 // null = over the cap.
@@ -140,6 +151,15 @@ async function readCapped(req: Request, max: number): Promise<string | null> {
   return new TextDecoder().decode(buf);
 }
 
+// The request body as text, or null when it is over `max` bytes: refused
+// up front on a declared Content-Length, else counted as it streams. Callers
+// answer null with a 413.
+export async function readBodyCapped(req: Request, max: number): Promise<string | null> {
+  const declared = Number(req.headers.get("Content-Length"));
+  if (Number.isFinite(declared) && declared > max) return null;
+  return readCapped(req, max);
+}
+
 // Register FIRST, before any route: Hono runs middleware in registration
 // order, and a route registered earlier answers without reaching it.
 export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
@@ -159,11 +179,7 @@ export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
   // the reports), so the body is byte-capped and the violations per line are
   // capped.
   app.post(CSP_REPORT_PATH, async (c) => {
-    const declared = Number(c.req.header("Content-Length"));
-    if (Number.isFinite(declared) && declared > MAX_REPORT_BYTES) {
-      return c.json({ ok: false, error: "report too large" }, 413);
-    }
-    const text = await readCapped(c.req.raw, MAX_REPORT_BYTES);
+    const text = await readBodyCapped(c.req.raw, MAX_REPORT_BYTES);
     if (text === null) return c.json({ ok: false, error: "report too large" }, 413);
     let payload: unknown;
     try {

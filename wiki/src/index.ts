@@ -50,7 +50,7 @@ import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
-import { registerSecurityHeaders } from "./security.js";
+import { checkOrigin, registerSecurityHeaders } from "./security.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -357,16 +357,9 @@ function validateAnnotations(
   return null;
 }
 
-// Cheap CSRF defense-in-depth: block cross-site browser POSTs. Requests with no
-// Origin header (non-browser/script clients, same-origin GETs) pass. Returns a
-// 403 response to send, or null to proceed.
-function checkOrigin(c: Context<{ Bindings: Env }>): Response | null {
-  const origin = c.req.header("Origin");
-  if (origin && origin !== new URL(c.req.url).origin) {
-    return c.json({ ok: false, error: "cross-origin request rejected" }, 403);
-  }
-  return null;
-}
+// Cheap CSRF defense-in-depth: checkOrigin (security.ts) blocks cross-site
+// browser writes. Requests with no Origin header (non-browser/script clients,
+// same-origin GETs) pass. It returns a 403 response to send, or null to proceed.
 
 type DrizzleDB = ReturnType<typeof drizzle>;
 
@@ -1024,6 +1017,8 @@ app.get("/u/:id", async (c) => {
 // POST adds (idempotent — duplicate rows would 1555 in SQLite; OR IGNORE keeps
 // the round-trip a single insert), DELETE removes.
 app.post("/api/watch/:slug", async (c) => {
+  const bad = checkOrigin(c);
+  if (bad) return bad;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const slug = c.req.param("slug");
@@ -1039,6 +1034,8 @@ app.post("/api/watch/:slug", async (c) => {
   return c.json({ ok: true, watching: true });
 });
 app.delete("/api/watch/:slug", async (c) => {
+  const bad = checkOrigin(c);
+  if (bad) return bad;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const slug = c.req.param("slug");

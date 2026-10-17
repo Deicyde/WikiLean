@@ -34,6 +34,7 @@ import {
   SYNAPSE_KINDS_CSV,
   type ApiResult,
 } from "./brain-api.js";
+import { readBodyCapped } from "./security.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -361,6 +362,11 @@ function rpcError(id: unknown, code: number, message: string): Record<string, un
 
 type Limiter = { limit: (opts: { key: string }) => Promise<{ success: boolean }> };
 
+// One JSON-RPC message per POST. The largest real one is a tools/call with a
+// prose query or 16 decl names, a few KB at most; 64 KiB leaves wide headroom
+// while keeping an anonymous client from making the Worker buffer megabytes.
+export const MAX_MCP_BODY_BYTES = 64 * 1024;
+
 export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
   // Browsers get the human documentation page; MCP clients probing with GET
   // (e.g. opening an SSE stream, which this stateless server does not offer)
@@ -396,9 +402,13 @@ export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
       return c.json(rpcError(null, -32000, "rate limited (120 requests/min per IP) — slow down"), 429);
     }
 
+    const text = await readBodyCapped(c.req.raw, MAX_MCP_BODY_BYTES);
+    if (text === null) {
+      return c.json(rpcError(null, -32600, `request body too large (max ${MAX_MCP_BODY_BYTES} bytes)`), 413);
+    }
     let msg: unknown;
     try {
-      msg = await c.req.json();
+      msg = JSON.parse(text);
     } catch {
       return c.json(rpcError(null, -32700, "parse error: request body is not valid JSON"), 400);
     }
