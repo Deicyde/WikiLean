@@ -142,7 +142,7 @@ def master_tip():
 
 def resolve_conflicts(pr, branch, mathlib, dry):
     """Auto-resolve a settled PR that CONFLICTS with master: RE-DERIVE the branch off
-    FRESH master and re-apply its green tags, then force-push. @[wikidata] tags are
+    FRESH master and re-apply the tags it carries, then force-push. @[wikidata] tags are
     purely ADDITIVE, so rebuilding on master is conflict-proof — text-merging master in
     (freshen_master) is what kept hitting unresolvable conflicts on doc-attr PRs."""
     cls = settle.classify(pr, REPO)
@@ -151,19 +151,20 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     if not apath.exists():
         # An ADOPTED batch (open_batch adopt guard) heals bot_state but cannot
         # conjure the approved file another runner assembled. Without it we can't
-        # map green qids back to decl/file, so we cannot rebuild — halt (a red run)
+        # map the PR's qids back to decl/file, so we cannot rebuild — halt (a red run)
         # for a human; a green 'wait' here would hide the stall.
         raise Halt(f"RESOLVE-CONFLICT #{pr}: {apath.name} MISSING (adopted batch?) — "
-                   f"cannot rebuild without decl/file per green tag; reconstruct it by "
+                   f"cannot rebuild without decl/file per tag; reconstruct it by "
                    f"hand from the PR diff on the bot-state branch, then re-tick.")
     approved = json.loads(apath.read_text())
-    # The green set = tags CURRENTLY on the PR (post-trim the recycled are already gone,
-    # so classify(pr).recycle is empty — reconstruct from classify.green, not approved
-    # minus recycled, which would wrongly re-add the trimmed tags). decl/file from approved.
-    green_qids = {g["qid"] for g in cls["green"]}
-    green = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
-             "tags": [t for t in approved["tags"] if t["qid"] in green_qids]}
-    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with {len(green['tags'])} green tags")
+    # Rebuild exactly the tags CURRENTLY on the PR (classify's tags, read from its diff),
+    # not approved minus recycled, which would re-add trimmed tags, and not the green set:
+    # trimming belongs to the settle (triage, requeue, table), and a tag that recycles
+    # while the gate is closed must not silently vanish here. decl/file from approved.
+    pr_qids = set(cls["tags"])
+    carried = {"branch": branch, "title": approved.get("title", "doc: add wikidata attributes"),
+               "tags": [t for t in approved["tags"] if t["qid"] in pr_qids]}
+    print(f"  RESOLVE-CONFLICT #{pr}: rebuild off fresh master with the {len(carried['tags'])} tags it carries")
     if dry:
         return
     sh(["git", "-C", str(mathlib), "fetch", "origin", branch], check=True)       # --force-with-lease base
@@ -175,27 +176,27 @@ def resolve_conflicts(pr, branch, mathlib, dry):
     # foundational modules (it ran 80m+ on #40861 before timing out). The original build
     # already proved which files need the CrossRefAttribute import; re-add exactly those
     # and let mathlib CI do the compile check.
-    green_files = {t["file"] for t in green["tags"]}
+    carried_files = {t["file"] for t in carried["tags"]}
     gr = subprocess.run(["git", "-C", str(mathlib), "grep", "-l", "Mathlib.Tactic.CrossRefAttribute",
                          f"origin/{branch}", "--", "Mathlib"], capture_output=True, text=True).stdout.split()
-    green["import_files"] = sorted({f.split(":", 1)[1] for f in gr if ":" in f} & green_files)
+    carried["import_files"] = sorted({f.split(":", 1)[1] for f in gr if ":" in f} & carried_files)
     # Record the master we rebuild ONTO *before* the fallible push, so a failed rebuild
     # doesn't re-loop every tick at the same master — it retries only when master advances.
     stt = json.loads(STATE.read_text()); stt["conflict_sha"] = rebuilt; stt.pop("retriggered_pr", None)
     STATE.write_text(json.dumps(stt, indent=1))
     gpath = HERE / "state" / "reapply_green.json"
-    gpath.write_text(json.dumps(green, indent=1))
+    gpath.write_text(json.dumps(carried, indent=1))
     sh(["git", "-C", str(mathlib), "checkout", "-B", branch, "FETCH_HEAD"], check=True)
     sh([sys.executable, str(HERE / "open_batch_pr.py"), "--approved", str(gpath),
         "--mathlib", str(mathlib), "--repo", REPO, "--base", "master",
         "--apply", "--check", "--reapply"], check=True)   # NO --build — CI compile-checks
-    # The force-push shrank the diff to the green set; this path otherwise never re-runs
-    # pr_table, so the table comment AND the body count would both go stale. Refresh the
-    # trimmed table, then sync the body to the KNOWN green count (passed explicitly, so no
+    # The force-push rewrote the branch; this path otherwise never re-runs pr_table, so
+    # the table comment AND the body count would both go stale. Refresh the table, then
+    # sync the body to the KNOWN tag count (passed explicitly, so no
     # `gh pr diff` and no GitHub diff-recompute lag right after the force-push).
     import pr_table
     sh([sys.executable, str(HERE / "pr_table.py"), str(pr), "--repo", REPO, "--post", "--no-body-sync"], check=False)
-    pr_table.sync_body_count(pr, REPO, n=len(green["tags"]))
+    pr_table.sync_body_count(pr, REPO, n=len(carried["tags"]))
 
 
 def do_open(mathlib, dry):

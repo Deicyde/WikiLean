@@ -11,9 +11,10 @@ Each run does two phases:
 
 1. **Settle** the current PR (`settle.py`, deterministic):
    - **Gate:** ≥2 distinct people with a recorded verdict on the PR, **counting the
-     PR author**, at least one of them a "maintainer": `jcommelin`, `faenuccio`, or
-     anyone GitHub lists as an owner, member or collaborator of mathlib4 (which
-     includes Mathlib reviewers). No minimum PR age is checked.
+     PR author**, at least one of them a "maintainer": a Mathlib maintainer listed
+     in `settle.py` (`MAINTAINERS`), or anyone GitHub lists as an owner, member or
+     collaborator of mathlib4 (which includes Mathlib reviewers). No minimum PR age
+     is checked.
    - When the gate is open, classify each tag and **split** the PR down to its
      green tags (`split.py`, force-push), then post the tag table under a header
      stating the rule applied and "Ready for a maintainer's review" (`settle.ready_header`).
@@ -246,14 +247,15 @@ Steps:
 
 - What the bot does: when the settled PR is `CONFLICTING` and Mathlib master has
   moved since its last rebuild (`conflict_sha` in `bot_state.json`), the next tick
-  rebuilds the branch from fresh master, re-applies the green tags (no build;
+  rebuilds the branch from fresh master, re-applies every tag it carries (no build;
   Mathlib CI compiles), force-pushes, and refreshes the tag table and PR body. The
-  log says `RESOLVE-CONFLICT #N: rebuild off fresh master with K green tags`.
+  log says `RESOLVE-CONFLICT #N: rebuild off fresh master with the K tags it carries`.
+  Trimming recycled tags stays with the settle.
 - It records the master it rebuilt onto before pushing, so it tries at most once
   per master commit. Master moves many times a day, so a failed rebuild is retried
   on a later tick; to retry now, dispatch the workflow.
 - The run fails with `batchN_approved.json MISSING (adopted batch?)` → the rebuild needs the decl
-  and file of every green tag. Reconstruct `bot/state/batchN_approved.json` from
+  and file of every tag on the PR. Reconstruct `bot/state/batchN_approved.json` from
   the PR diff on `bot-state`, then dispatch.
 - After a clean rebuild, read the new diff before asking anyone to review it.
 

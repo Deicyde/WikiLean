@@ -22,7 +22,7 @@ def reviews_cell(verdicts):
         return "—"
     parts = []
     for login, status in verdicts.items():
-        mark = "\\*" if login in settle.MAINTAINERS else ""  # maintainer marked with *
+        mark = "\\*" if settle.is_maintainer(login) else ""  # maintainer marked with *
         parts.append(f"{EMO.get(status, '·')} @{login}{mark}")
     return " · ".join(parts)
 
@@ -88,8 +88,8 @@ def post(pr, repo, body):
 def sync_body_count(pr, repo, n=None):
     """Keep the PR body's 'adds a batch of N `@[wikidata]` attributes' line in sync with
     the tags ACTUALLY in the PR's current diff. That line is written once at open; the
-    settle-trim (split.py) and the conflict-rebuild (poll.resolve_conflicts) both shrink
-    the diff but never touch the body, so without this it overstates after a trim.
+    settle-trim (split.py) shrinks the diff and the conflict-rebuild (poll.resolve_conflicts)
+    re-derives it, but neither touches the body, so without this it overstates after a trim.
 
     n defaults to a fresh count of @[wikidata] attribute occurrences in `gh pr diff`:
     anchored to `@[` so a QID mentioned in added prose isn't counted, and via findall so a
