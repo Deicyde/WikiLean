@@ -1,7 +1,8 @@
 // /stats (P2a): the public experiment-instrumentation dashboard. Pins the
-// SQL aggregates against seeded fixtures (review states, count columns,
+// SQL aggregates against seeded fixtures (review states, AI-review freshness
+// split from the bot-save stamp, the recent-runs table, count columns,
 // event_type × actor_type cells, flags, revisions/patrol, pipeline_runs),
-// the RQ labels, the KV cache (page:stats:v5, TTL 300), and the
+// the RQ labels, the KV cache (page:stats:v6, TTL 300), and the
 // zero-means-broken footnote.
 
 import { describe, it, expect } from "vitest";
@@ -9,6 +10,10 @@ import {
   setup,
   post,
   get,
+  botSaveRun,
+  echo,
+  SEED_ANNOTATIONS,
+  EXTRA_ANNOTATION,
   insertArticle,
   insertModState,
   insertRevision,
@@ -20,6 +25,10 @@ import {
 blockNetwork();
 
 const DAY = 24 * 3600 * 1000;
+const FRESH_LABEL = "Bot-save stamp ≤30d (any pipeline save or create, incl. Wikipedia re-pins and unchanged saves)";
+const AI_LABEL = "AI-reviewed ≤30d (articles an AI review changed; reviews that changed nothing are not counted)";
+const LATEST_LABEL = "Most recent AI review revision (UTC date)";
+const utcDate = (ms: number): string => new Date(ms).toISOString().slice(0, 10);
 
 function insertEvent(
   h: Harness,
@@ -44,7 +53,7 @@ function setCounts(h: Harness, slug: string, f: number, p: number, n: number): v
 // One fully-populated fixture world. Layout (5 articles incl. the harness
 // seed): Test_Article never-reviewed/counts-pending; Fresh_A fresh; Stale_B
 // stale; Drift_C fresh+drifted; Parked_D fresh+parked.
-async function seedWorld(h: Harness): Promise<void> {
+async function seedWorld(h: Harness): Promise<number> {
   const now = Date.now();
   insertArticle(h.db, "Fresh_A");
   insertModState(h.db, "Fresh_A", { lastReviewedAt: now - 1000 });
@@ -80,6 +89,16 @@ async function seedWorld(h: Harness): Promise<void> {
   // more edit (then patrol it) and one pipeline revision.
   const editId = insertRevision(h.db, "Test_Article", { userId: "u-human", kind: "edit" });
   insertRevision(h.db, "Test_Article", { userId: "pipeline", kind: "pipeline" });
+  // AI review revisions: Fresh_A reviewed twice in the window (counts once),
+  // Stale_B reviewed 40 days ago (outside), Drift_C only re-pinned (not a
+  // review), and a session edit whose free-text comment mimics the review
+  // shape (not a pipeline revision, so not counted).
+  const review = { userId: "pipeline", kind: "pipeline" };
+  insertRevision(h.db, "Fresh_A", { ...review, comment: "ai-moderate:review:9abcf468", createdAt: now - 2000 });
+  insertRevision(h.db, "Fresh_A", { ...review, comment: "ai-moderate:review:9abcf469", createdAt: now - 1000 });
+  insertRevision(h.db, "Stale_B", { ...review, comment: "ai-moderate:review:00000001", createdAt: now - 40 * DAY });
+  insertRevision(h.db, "Drift_C", { ...review, comment: "wp-update:stage0:9abcf468", createdAt: now - 1000 });
+  insertRevision(h.db, "Parked_D", { userId: "u-human", kind: "edit", comment: "ai-moderate:review:fake" });
   const patrolRes = await post(h.env, `/api/revision/${editId}/patrol`, {}, { user: "u-patroller" });
   expect(patrolRes.status).toBe(200);
 
@@ -111,21 +130,25 @@ async function seedWorld(h: Harness): Promise<void> {
   propIns.run("aaaa11112222", "Fresh_A", "aaaaaaaaaaaa", "{}", "sig-a", "approved", 1000, 2000, "pipeline");
   propIns.run("bbbb11112222", "Fresh_A", "aaaaaaaaaaaa", "{}", "sig-b", "rejected", 1000, 3000, "u-patroller");
   propIns.run("cccc11112222", "Fresh_A", "aaaaaaaaaaaa", "{}", "sig-c", "pending", 1000, null, null);
+  return now;
 }
 
 describe("GET /stats", () => {
   it("renders every aggregate from the seeded fixtures", async () => {
     const h = setup();
-    await seedWorld(h);
+    const now = await seedWorld(h);
     const res = await get(h.env, "/stats");
     expect(res.status).toBe(200);
     const html = await res.text();
 
     // Articles by review state.
     expect(html).toContain('<td>Articles</td><td class="wl-stat-num">5</td>');
-    expect(html).toContain('<td>Never reviewed by the pipeline</td><td class="wl-stat-num">1</td>');
-    expect(html).toContain('<td>Review fresh (≤30d)</td><td class="wl-stat-num">3</td>');
-    expect(html).toContain('<td>Review stale (&gt;30d)</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>No bot-save stamp</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain(`<td>${FRESH_LABEL}</td><td class="wl-stat-num">3</td>`);
+    expect(html).toContain('<td>Bot-save stamp &gt;30d old</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain(`<td>${AI_LABEL}</td><td class="wl-stat-num">1</td>`);
+    expect(html).toContain(`<td>${LATEST_LABEL}</td><td class="wl-stat-num">${utcDate(now - 1000)}</td>`);
+    expect(html).not.toContain("Review fresh");
     expect(html).toContain('<td>Drifted from pinned Wikipedia revision</td><td class="wl-stat-num">1</td>');
     expect(html).toContain('<td>Parked (moved / deleted / needs human)</td><td class="wl-stat-num">1</td>');
 
@@ -153,16 +176,16 @@ describe("GET /stats", () => {
     expect(html).toContain('<td>Resolved: dismissed</td><td class="wl-stat-num">0</td>');
 
     // Revisions by kind + patrol split (seed edit unpatrolled, second edit patrolled).
-    expect(html).toContain('<td>Revisions: edit</td><td class="wl-stat-num">2</td>');
-    expect(html).toContain('<td>Revisions: pipeline</td><td class="wl-stat-num">1</td>');
-    expect(html).toContain('<td>Human edits awaiting patrol</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>Revisions: edit</td><td class="wl-stat-num">3</td>');
+    expect(html).toContain('<td>Revisions: pipeline</td><td class="wl-stat-num">5</td>');
+    expect(html).toContain('<td>Human edits awaiting patrol</td><td class="wl-stat-num">2</td>');
     expect(html).toContain('<td>Human edits patrolled</td><td class="wl-stat-num">1</td>');
 
     // Proposals: the AI-decided count is pinned NONZERO (extreme-minority
     // rule — a broken subquery rendering 0 forever would stay green on a
     // label-only assertion) and the human decision does NOT count.
     expect(html).toContain('<td>Decided by AI (auto-resolve)</td><td class="wl-stat-num">1</td>');
-    expect(html).toContain('<td>Pending (awaiting a human)</td><td class="wl-stat-num">1</td>');
+    expect(html).toContain('<td>Pending (undecided)</td><td class="wl-stat-num">1</td>');
 
     // Pipeline runs: per-kind row + the all-runs total, cost rendered in $.
     expect(html).toContain(
@@ -184,8 +207,102 @@ describe("GET /stats", () => {
     expect(res.status).toBe(200);
     const html = await res.text();
     expect(html).toContain("Reading a zero:");
-    expect(html).toContain("instrumentation is broken");
+    expect(html).toContain("means the instrumentation or the pipeline is broken");
+    // The windowed AI-review row reading 0 is the outage signal, not a bug,
+    // and design-zero rows are named.
+    expect(html).toContain("windowed rows (≤30d, last 30d) can legitimately read 0");
+    expect(html).toContain("wp-update spends no tokens");
     expect(html).toContain("Median time-to-first-human-touch is omitted");
+  });
+
+  it("a review outage shows: re-pins keep articles bot-touched while AI-reviewed drops to 0", async () => {
+    const h = setup();
+    const now = Date.now();
+    insertArticle(h.db, "Repinned_E");
+    insertModState(h.db, "Repinned_E", { lastReviewedAt: now - 1000 }); // stamped by the re-pin
+    insertRevision(h.db, "Repinned_E", { userId: "pipeline", kind: "pipeline", comment: "ai-moderate:review:0000aaaa", createdAt: now - 45 * DAY });
+    insertRevision(h.db, "Repinned_E", { userId: "pipeline", kind: "pipeline", comment: "wp-update:stage0:0000bbbb", createdAt: now - 1000 });
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain(`<td>${FRESH_LABEL}</td><td class="wl-stat-num">1</td>`);
+    expect(html).toContain(`<td>${AI_LABEL}</td><td class="wl-stat-num">0</td>`);
+    expect(html).toContain(`<td>${LATEST_LABEL}</td><td class="wl-stat-num">${utcDate(now - 45 * DAY)}</td>`);
+  });
+
+  it("counts a real bearer review save that changes annotations, but not an unchanged review", async () => {
+    const h = setup();
+    const changed = await botSaveRun(
+      h.env,
+      { annotations: [...echo(SEED_ANNOTATIONS), echo(EXTRA_ANNOTATION)], base_version: 1 },
+      "0000cccc",
+    );
+    expect(changed.status).toBe(200);
+    // A second review pass that changes nothing is a no-op save: stamp only.
+    const noop = await botSaveRun(
+      h.env,
+      { annotations: [...echo(SEED_ANNOTATIONS), echo(EXTRA_ANNOTATION)], base_version: 2 },
+      "0000dddd",
+    );
+    expect(noop.status).toBe(200);
+    expect((await noop.json()) as { noop?: boolean }).toMatchObject({ noop: true });
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain(`<td>${AI_LABEL}</td><td class="wl-stat-num">1</td>`);
+    const n = h.db
+      .prepare("SELECT COUNT(*) AS n FROM revisions WHERE comment LIKE 'ai-moderate:review:%'")
+      .get() as { n: number };
+    expect(n.n).toBe(1);
+  });
+
+  it("lists recent runs newest reported first, counts only (notes are not shown)", async () => {
+    const h = setup();
+    const report = (runId: string, startedAt: number, notes: string) =>
+      post(
+        h.env,
+        "/api/runs",
+        { run_id: runId, kind: "review", started_at: startedAt, finished_at: startedAt + 1, articles_processed: 15, errors: 15, tokens: 0, notes },
+        { bearer: PIPELINE_TOKEN, origin: null },
+      );
+    const t = Date.UTC(2026, 9, 12, 7, 20);
+    expect((await report("0000aaa1", t - DAY, "older run")).status).toBe(200);
+    expect((await report("0000aaa2", t, "15/15 errors: RuntimeError sample")).status).toBe(200);
+    // Pin receipt order (the table's sort key) so a same-millisecond pair
+    // cannot fall back to the run_id tie-break.
+    h.db.prepare("UPDATE pipeline_runs SET created_at = 1 WHERE run_id = '0000aaa1'").run();
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain("<h2 class=\"wl-stats-h\">Recent pipeline runs</h2>");
+    expect(html).toContain(
+      '<tr><td style="white-space:nowrap">2026-10-12 07:20</td><td>review</td><td class="wl-stat-num">15</td><td class="wl-stat-num">15</td>' +
+        '<td class="wl-stat-num">0</td></tr>',
+    );
+    expect(html).not.toContain("<th>Notes</th>");
+    expect(html).not.toContain("older run");
+    expect(html).not.toContain("RuntimeError sample");
+    expect(html.indexOf("2026-10-12 07:20")).toBeLessThan(html.indexOf("2026-10-11 07:20"));
+  });
+
+  it("an out-of-range runner timestamp renders as — instead of taking /stats down", async () => {
+    const h = setup();
+    const res = await post(
+      h.env,
+      "/api/runs",
+      { run_id: "0000eee9", kind: "review", started_at: Number.MAX_SAFE_INTEGER, finished_at: Number.MAX_SAFE_INTEGER, articles_processed: 1, errors: 0, tokens: 0 },
+      { bearer: PIPELINE_TOKEN, origin: null },
+    );
+    expect(res.status).toBe(200);
+    const page = await get(h.env, "/stats");
+    expect(page.status).toBe(200);
+    expect(await page.text()).toContain('<tr><td style="white-space:nowrap"><span class="muted">—</span></td><td>review</td>');
+  });
+
+  it("an empty run registry renders a placeholder row", async () => {
+    const h = setup();
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain('<td colspan="5" class="muted">No run reports yet.</td>');
+  });
+
+  it("no AI review revision at all renders the latest-review cell as none", async () => {
+    const h = setup();
+    const html = await (await get(h.env, "/stats")).text();
+    expect(html).toContain(`<td>${LATEST_LABEL}</td><td class="wl-stat-num"><span class="muted">none</span></td>`);
   });
 
   it("a runs table with no $ figures renders cost as — (unknown ≠ $0)", async () => {
@@ -211,10 +328,11 @@ describe("GET /stats", () => {
     expect(html).toContain('<span class="muted">—</span>');
   });
 
-  it("is KV-cached under page:stats:v5 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:stats:v6 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/stats")).text();
-    expect(h.renderCache.store.has("page:stats:v5")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v6")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v5")).toBe(false);
     // Mutate the DB; the cached page must still serve unchanged.
     insertArticle(h.db, "After_Cache");
     const second = await (await get(h.env, "/stats")).text();
