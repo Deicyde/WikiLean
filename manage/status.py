@@ -46,6 +46,12 @@ LOW_POOL_BATCHES = 3.0     # generate more tags below this
 STALE_DIGEST_HOURS = 36    # nightly refresh should keep it under a day
 BATCH_PR_STALE_DAYS = 30   # a batch PR open longer than this needs a nudge
 POLL_STALE_HOURS = 12      # the poll cron completes a run every few hours in practice
+POLL_RUNS_LISTED = 20      # runs read per check; skipped and early-cancelled ones are passed over
+# A cancelled run that lasted this long hit the job's time limit in
+# wikidata-poll.yml (30 minutes, since raised to 60), not the concurrency group
+# dropping a queued run:
+# 209 of the poller's 210 cancelled runs to 2026-10 lasted 30 minutes or more.
+POLL_TIMEOUT_MINUTES = 25
 REVIEW_STALE_HOURS = 36    # the review runs once a night
 # One bulk copy of the catalog and annotations leaves their mtimes seconds apart
 # (4 s on 2026-08-19); only a gap longer than this means the graph is stale.
@@ -238,22 +244,42 @@ def _decision(text: str | None) -> str | None:
     return m[-1] if m else None
 
 
+def _minutes(run: dict) -> float | None:
+    """How long a run took: startedAt (when this attempt was queued) to updatedAt."""
+    try:
+        start, end = (datetime.fromisoformat(str(run.get(k) or "").replace("Z", "+00:00"))
+                      for k in ("startedAt", "updatedAt"))
+        return (end - start).total_seconds() / 60
+    except (ValueError, TypeError):
+        return None
+
+
+def _timed_out(run: dict) -> bool:
+    return run.get("conclusion") == "cancelled" and (_minutes(run) or 0) >= POLL_TIMEOUT_MINUTES
+
+
 def ci_gate() -> tuple[str | None, str, list[str]]:
     """The latest finished wikidata-poll run on main, via gh. Only CI's decision
     is shown: a local decide reads this checkout's copy of the bot state, which
     the poller stops updating once it keeps state on the bot-state branch.
-    Cancelled runs are skipped: concurrency cancels them."""
+    Skipped runs and short cancelled ones are passed over; a run cancelled after
+    POLL_TIMEOUT_MINUTES timed out and counts as a failed run."""
     out, err = _run_err(["gh", "run", "list", "--repo", POLL_REPO, "--workflow", POLL_WORKFLOW,
-                         "--branch", "main", "--status", "completed", "-L", "5",
-                         "--json", "databaseId,createdAt,conclusion"], timeout=30)
+                         "--branch", "main", "--status", "completed", "-L", str(POLL_RUNS_LISTED),
+                         "--json", "databaseId,createdAt,startedAt,updatedAt,conclusion"],
+                        timeout=30)
     try:
         runs = json.loads(out)
     except (TypeError, ValueError):
         return None, "CI ?", [f"could not list wikidata-poll runs ({_first_line(err)}); "
                               f"the gate is unknown"]
-    run = next((r for r in runs if r.get("conclusion") not in ("cancelled", "skipped")), None)
+    run = next((r for r in runs if r.get("conclusion") not in ("cancelled", "skipped")
+                or _timed_out(r)), None)
     if run is None:
-        return None, "CI ?", []
+        why = (f"the last {len(runs)} were all skipped or cancelled early" if runs
+               else "gh listed none")
+        return None, "CI ?", [f"no finished wikidata-poll run on main ({why}); "
+                              f"the gate is unknown"]
     age = _hours_since(run.get("createdAt", ""))
     alerts = []
     if age is not None and age > POLL_STALE_HOURS:
@@ -271,6 +297,9 @@ def ci_gate() -> tuple[str | None, str, list[str]]:
         dec = dec or "error"
         alerts.append(f"wikidata-poll run {run['databaseId']} reported POLL_ERROR: "
                       f"{err.group(1)[:160]}")
+    elif _timed_out(run):
+        alerts.append(f"wikidata-poll run {run['databaseId']} timed out (cancelled after "
+                      f"{_minutes(run):.0f} min)")
     elif run.get("conclusion") != "success":
         alerts.append(f"wikidata-poll run {run['databaseId']} ended '{run.get('conclusion')}'")
     when = f"{age:.0f}h ago" if age is not None else "?"
@@ -285,11 +314,19 @@ def gate_section() -> tuple[list[str], list[str]]:
 def ci_bot_state() -> tuple[dict | None, str | None]:
     """The poller's live state from the bot-state branch: (state, None);
     (None, None) when there is no such branch (HTTP 404); (None, reason) when
-    the read failed for any other reason."""
+    the read failed for any other reason, a branch without the file included."""
     out, err = _run_err(["gh", "api",
                          f"repos/{POLL_REPO}/contents/bot/state/bot_state.json?ref=bot-state",
                          "--jq", ".content"], timeout=30)
     if out is None:
+        if "(HTTP 404)" not in err:
+            return None, _first_line(err)
+        # The 404 is either no branch or a branch without the file: ask which.
+        name, err = _run_err(["gh", "api", f"repos/{POLL_REPO}/branches/bot-state",
+                              "--jq", ".name"], timeout=30)
+        if name is not None:
+            return None, ("the branch has no bot/state/bot_state.json, so every poller run "
+                          "fails at restore; see bot/README.md, 'Restore failed'")
         return None, (None if "(HTTP 404)" in err else _first_line(err))
     try:
         st = json.loads(base64.b64decode(out))
@@ -299,12 +336,15 @@ def ci_bot_state() -> tuple[dict | None, str | None]:
 
 
 def batch_pr(pr, source: str = "local") -> tuple[list[str], list[str]]:
-    out = _run(["gh", "pr", "view", str(pr), "--repo", MATHLIB_REPO,
-                "--json", "state,mergeable,createdAt,labels,title"], timeout=30)
+    out, err = _run_err(["gh", "pr", "view", str(pr), "--repo", MATHLIB_REPO,
+                         "--json", "state,mergeable,createdAt,labels,title"], timeout=30)
     try:
         d = json.loads(out)
     except (TypeError, ValueError):
-        return [f"  batch PR   #{pr}: gh unavailable"], []
+        d = None
+    if not isinstance(d, dict):
+        return ([f"  batch PR   #{pr} ? (could not be read)"],
+                [f"could not read batch PR #{pr} ({_first_line(err)}); its merge state is unknown"])
     state = d.get("state", "?")
     # mathlib merges through Bors, which closes the PR (mergedAt stays null) and
     # prefixes its title "[Merged by Bors] - "; only the merge button gives MERGED.
@@ -360,6 +400,10 @@ def live_section(batch: dict) -> tuple[list[str], list[str]]:
         alerts.append(f"could not read the poller's state from the bot-state branch "
                       f"({failed}); the batch PR was not checked")
         return lines, alerts
+    if ci_state is None:
+        alerts.append("there is no bot-state branch, so every wikidata-poll run fails at "
+                      "restore: seed it with the one-time bootstrap_state dispatch only if it "
+                      "never existed, otherwise recreate it (bot/README.md, 'Restore failed')")
     state, source = ((ci_state, "bot-state branch") if ci_state is not None
                      else (batch, "local snapshot; no bot-state branch"))
     if state.get("current_pr"):

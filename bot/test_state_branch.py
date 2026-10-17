@@ -289,6 +289,12 @@ class WorkflowWiringTest(unittest.TestCase):
         for step in self.steps:
             self.assertNotIn("git push", step.get("run", ""), step.get("name"))
 
+    def test_long_steps_time_out_before_the_job_does(self):
+        # A step that hits its own timeout fails the run; the job limit cancels it.
+        job = yaml.safe_load(WORKFLOW.read_text())["jobs"]["poll"]["timeout-minutes"]
+        for prefix in ("Install pinned Claude CLI", "Clone mathlib4", "Poll tick"):
+            self.assertLess(self.steps[self.index(prefix)].get("timeout-minutes", job), job, prefix)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -63,6 +63,12 @@ def _iso_ago(hours: float) -> str:
     return (datetime.now(timezone.utc) - timedelta(hours=hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
+def _ci_run(run_id: int, conclusion: str, hours_ago: float, minutes: float = 0.4) -> dict:
+    """A `gh run list` row for a run queued hours_ago that took minutes."""
+    return {"databaseId": run_id, "conclusion": conclusion, "createdAt": _iso_ago(hours_ago),
+            "startedAt": _iso_ago(hours_ago), "updatedAt": _iso_ago(hours_ago - minutes / 60)}
+
+
 def _api_runs(*runs) -> str:
     """GET /api/runs body; each run is (hours_ago, articles, errors, tokens, notes)."""
     now_ms = time.time() * 1000
@@ -81,7 +87,9 @@ class FakeNet:
         self.ci_runs = kw.get("ci_runs", [{"databaseId": 38435564796, "createdAt": _iso_ago(2),
                                            "conclusion": "success"}])   # None = gh fails
         self.ci_log = kw.get("ci_log", POLL_LOG)    # None = gh fails
-        self.ci_state = kw.get("ci_state")          # None = no bot-state branch; "fail" = gh fails
+        # None = no bot-state branch; "fail" = gh fails; "no-file" = branch without
+        # bot_state.json; "branch-fail" = no file, and the branch read fails
+        self.ci_state = kw.get("ci_state")
         self.pr = kw.get("pr", {"state": "OPEN", "mergeable": "CONFLICTING",
                                 "createdAt": _iso_ago(64 * 24)})
         self.calls = []
@@ -108,11 +116,19 @@ class FakeNet:
             return json.dumps(self.ci_runs), ""
         if cmd[:3] == ["gh", "run", "view"]:
             return (self.ci_log, "") if self.ci_log is not None else (None, "HTTP 410: Gone")
+        if cmd[:2] == ["gh", "api"] and cmd[2].endswith("/branches/bot-state"):
+            if self.ci_state is None:
+                return None, "gh: Branch not found (HTTP 404)"
+            if self.ci_state == "branch-fail":
+                return None, "gh: Server Error (HTTP 502)"
+            return "bot-state", ""
         if cmd[:2] == ["gh", "api"]:
             if self.ci_state is None:
                 return None, "gh: No commit found for the ref bot-state (HTTP 404)"
             if self.ci_state == "fail":
                 return None, "gh: Bad credentials (HTTP 401)"
+            if self.ci_state in ("no-file", "branch-fail"):
+                return None, "gh: Not Found (HTTP 404)"
             return base64.b64encode(json.dumps(self.ci_state).encode()).decode(), ""
         if cmd[:3] == ["gh", "pr", "view"]:
             return (json.dumps(self.pr), "") if self.pr != "fail" else (None, "HTTP 502")
@@ -296,14 +312,41 @@ def test_decision_ignores_the_echoed_grep_command():
 
 
 def test_ci_gate_reads_the_latest_finished_run_on_main():
-    runs = [{"databaseId": 9, "createdAt": _iso_ago(1), "conclusion": "cancelled"},
+    runs = [_ci_run(10, "cancelled", 1, minutes=2), _ci_run(9, "cancelled", 1.5, minutes=24.9),
             {"databaseId": 8, "createdAt": _iso_ago(2), "conclusion": "success"}]
     net = FakeNet(ci_runs=runs)
     with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
         dec, text, alerts = status.ci_gate()
     assert dec == "wait" and text == "CI wait (run 8, 2h ago)" and alerts == [], (dec, text, alerts)
     (listing,) = [c for c in net.calls if c[:3] == ["gh", "run", "list"]]
-    assert "--branch main" in " ".join(listing), listing
+    assert "--branch main" in " ".join(listing) and "-L 20" in " ".join(listing), listing
+    fields = listing[listing.index("--json") + 1].split(",")
+    assert {"startedAt", "updatedAt"} <= set(fields), listing
+
+
+def test_ci_gate_counts_a_long_cancelled_run_as_a_timeout():
+    """The job's time limit cancels a tick that runs too long; five of them
+    used to fill the listing and leave a silent 'CI ?'."""
+    runs = [_ci_run(10, "cancelled", 0.5, minutes=2)]
+    runs += [_ci_run(9 - i, "cancelled", 1 + 4 * i, minutes=31 - i) for i in range(5)]
+    runs += [_ci_run(4, "success", 22)]
+    net = FakeNet(ci_runs=runs, ci_log="poll\tDecide\t2026-10-14T01:00:00.1Z POLL_DECISION=act\n")
+    with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
+        dec, text, alerts = status.ci_gate()
+    assert dec == "act" and text == "CI act (run 9, 1h ago)", (dec, text)
+    assert alerts == ["wikidata-poll run 9 timed out (cancelled after 31 min)"], alerts
+    assert any(c[:4] == ["gh", "run", "view", "9"] for c in net.calls), net.calls
+
+
+def test_ci_gate_alerts_when_no_listed_run_finished():
+    for runs, why in (([_ci_run(9, "cancelled", 1, minutes=2), _ci_run(8, "skipped", 2)],
+                       "the last 2 were all skipped or cancelled early"),
+                      ([], "gh listed none")):
+        with tempfile.TemporaryDirectory() as td, patched(FakeNet(ci_runs=runs), Path(td)):
+            dec, text, alerts = status.ci_gate()
+        assert (dec, text) == (None, "CI ?"), (dec, text)
+        assert alerts == [f"no finished wikidata-poll run on main ({why}); "
+                          f"the gate is unknown"], alerts
 
 
 def test_ci_gate_alerts_on_poll_error_failure_and_staleness():
@@ -385,7 +428,9 @@ def test_batch_pr_alerts_by_state():
             assert "#42608 MERGED (Bors) · UNKNOWN" in lines[0], lines
     with tempfile.TemporaryDirectory() as td, patched(FakeNet(pr="fail"), Path(td)):
         lines, alerts = status.batch_pr(42608)
-    assert "gh unavailable" in lines[0] and alerts == []
+    assert lines == ["  batch PR   #42608 ? (could not be read)"], lines
+    assert alerts == ["could not read batch PR #42608 (HTTP 502); "
+                      "its merge state is unknown"], alerts
 
 
 def test_live_section_prefers_the_bot_state_branch():
@@ -395,14 +440,21 @@ def test_live_section_prefers_the_bot_state_branch():
     pr_line = [ln for ln in lines if "batch PR" in ln][0]
     assert "#99999" in pr_line and "(state: bot-state branch)" in pr_line, lines
     with tempfile.TemporaryDirectory() as td, patched(FakeNet(), Path(td)):
-        lines, _ = status.live_section({"current_pr": 42608})
+        lines, alerts = status.live_section({"current_pr": 42608})
     assert any("#42608" in ln and "(state: local snapshot; no bot-state branch)" in ln
                for ln in lines), lines
+    missing = [a for a in alerts if "no bot-state branch" in a]
+    assert len(missing) == 1 and "every wikidata-poll run fails at restore" in missing[0], alerts
+    assert "bootstrap_state" in missing[0] and "'Restore failed'" in missing[0], missing
 
 
 def test_live_section_alerts_when_the_bot_state_branch_cannot_be_read():
     for ci_state, why in (("fail", "gh: Bad credentials (HTTP 401)"),
-                          ([42608], "bot_state.json is not a JSON object")):
+                          ([42608], "bot_state.json is not a JSON object"),
+                          ("no-file", "the branch has no bot/state/bot_state.json, so every "
+                                      "poller run fails at restore; see bot/README.md, "
+                                      "'Restore failed'"),
+                          ("branch-fail", "gh: Server Error (HTTP 502)")):
         net = FakeNet(ci_state=ci_state)
         with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
             lines, alerts = status.live_section({"current_pr": 42608})

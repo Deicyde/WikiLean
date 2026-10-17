@@ -177,6 +177,11 @@ Before this, an expired token kept every run green and the bot blind from
 - `Restore bot state` failed → see [Restore failed](#restore-failed).
 - `Commit poll state` failed → someone pushed to `bot-state` mid-run. Read the
   log and dispatch again.
+- `has timed out after N minutes` → that step ran past its limit (no
+  `POLL_ERROR`; its log stops short). `Commit poll state` still ran. Read the
+  last line the step printed before dispatching again. If it is
+  `refresh_tagged.py`'s `fetching … master (shallow)…`, a batch open's refresh
+  ran long and another dispatch only repeats it.
 
 ### Restore failed
 
