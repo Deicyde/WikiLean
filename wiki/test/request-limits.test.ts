@@ -141,9 +141,10 @@ describe("/api/queue guards", () => {
     const res = await rawPost(h, "/api/queue", "{nope", { Authorization: `Bearer ${PIPELINE_TOKEN}` });
     expect(res.status).toBe(400);
     expect(await res.json()).toEqual({ ok: false, error: "bad json (expect {items:[…]})" });
-    const empty = await rawPost(h, "/api/queue", "null", { Authorization: `Bearer ${PIPELINE_TOKEN}` });
-    expect(empty.status).toBe(200);
-    expect(await empty.json()).toMatchObject({ count: 0 });
+    // JSON null is still "bad json" (it never reached the stored queue before either).
+    const nil = await rawPost(h, "/api/queue", "null", { Authorization: `Bearer ${PIPELINE_TOKEN}` });
+    expect(nil.status).toBe(400);
+    expect(await h.renderCache.get("wikidata:queue")).toBeNull();
   });
 });
 

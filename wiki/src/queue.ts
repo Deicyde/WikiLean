@@ -239,8 +239,8 @@ export function registerQueueRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     let items: QueueItem[];
     try {
-      const body = JSON.parse(text) as { items?: QueueItem[] } | null;
-      items = Array.isArray(body?.items) ? body.items : [];
+      const body = JSON.parse(text) as { items?: QueueItem[] };
+      items = Array.isArray(body.items) ? body.items : [];
     } catch {
       return c.json({ ok: false, error: "bad json (expect {items:[…]})" }, 400);
     }
