@@ -47,7 +47,7 @@ function reviewBaseUrl(c: Ctx): string {
 // App: user access tokens may expire (~8h) and carry a refresh token (~6mo). A
 // plain OAuth app instead returns a long-lived token (refresh_token/expires_at
 // absent) — both shapes are handled, so swapping the app type needs no migration.
-type ReviewTok = { token?: string; login?: string; refresh_token?: string; expires_at?: number };
+type ReviewTok = { token?: string; login?: string | null; refresh_token?: string; expires_at?: number };
 
 // Exchange a `code` (callback) or a `refresh_token` for a user access token.
 // SAME endpoint for OAuth apps and GitHub Apps — a GitHub App additionally returns
@@ -75,6 +75,36 @@ async function ghTokenExchange(c: Ctx, params: Record<string, string>): Promise<
   }
 }
 
+// Where reviewer GitHub tokens are stashed. They are live credentials, so they
+// belong in a namespace of their own (the REVIEW_TOKENS binding) rather than in
+// RENDER_CACHE, which the nightly host writes with ambient wrangler credentials.
+// Until the maintainer binds REVIEW_TOKENS (docs/SECRETS.md), RENDER_CACHE stays
+// the store, so nothing changes for a Worker without the binding.
+export function reviewTokenStore(env: Pick<Env, "REVIEW_TOKENS" | "RENDER_CACHE">): KVNamespace {
+  return env.REVIEW_TOKENS ?? env.RENDER_CACHE;
+}
+
+const reviewTokKey = (id: string) => `reviewtok:${id}`;
+
+// A token stashed in RENDER_CACHE before REVIEW_TOKENS was bound is still read
+// (it expires on its own 12 h TTL), so binding the namespace signs nobody out;
+// every new or refreshed token is written only to the dedicated store.
+async function readReviewTok(env: Env, id: string): Promise<string | null> {
+  const raw = await reviewTokenStore(env).get(reviewTokKey(id));
+  if (raw !== null || !env.REVIEW_TOKENS) return raw;
+  return env.RENDER_CACHE.get(reviewTokKey(id));
+}
+
+async function writeReviewTok(env: Env, id: string, tok: ReviewTok): Promise<void> {
+  await reviewTokenStore(env).put(reviewTokKey(id), JSON.stringify(tok), { expirationTtl: REVIEW_TOK_TTL });
+  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(reviewTokKey(id));
+}
+
+async function deleteReviewTok(env: Env, id: string): Promise<void> {
+  await reviewTokenStore(env).delete(reviewTokKey(id));
+  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(reviewTokKey(id));
+}
+
 // The connected reviewer's GitHub token + login, from the cookie→KV mapping. If
 // the (GitHub App) access token is at/near expiry and we hold a refresh token,
 // transparently mint a fresh one and re-stash on a rolling TTL so an active
@@ -82,7 +112,7 @@ async function ghTokenExchange(c: Ctx, params: Record<string, string>): Promise<
 async function reviewToken(c: Ctx): Promise<ReviewTok> {
   const id = getCookie(c, REVIEW_COOKIE);
   if (!id) return {};
-  const raw = await c.env.RENDER_CACHE.get(`reviewtok:${id}`);
+  const raw = await readReviewTok(c.env, id);
   if (!raw) return {};
   let tok: ReviewTok;
   try {
@@ -94,7 +124,7 @@ async function reviewToken(c: Ctx): Promise<ReviewTok> {
     const fresh = await ghTokenExchange(c, { grant_type: "refresh_token", refresh_token: tok.refresh_token });
     if (fresh.token) {
       tok = { token: fresh.token, login: tok.login, refresh_token: fresh.refresh_token ?? tok.refresh_token, expires_at: fresh.expires_at };
-      await c.env.RENDER_CACHE.put(`reviewtok:${id}`, JSON.stringify(tok), { expirationTtl: REVIEW_TOK_TTL });
+      await writeReviewTok(c.env, id, tok);
     }
   }
   return tok;
@@ -1269,11 +1299,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!ex.token) return c.text("GitHub token exchange failed — try again.", 502);
     const login = await ghLogin(ex.token);
     const id = crypto.randomUUID();
-    await c.env.RENDER_CACHE.put(
-      `reviewtok:${id}`,
-      JSON.stringify({ token: ex.token, login, refresh_token: ex.refresh_token, expires_at: ex.expires_at }),
-      { expirationTtl: REVIEW_TOK_TTL },
-    );
+    await writeReviewTok(c.env, id, { token: ex.token, login, refresh_token: ex.refresh_token, expires_at: ex.expires_at });
     setCookie(c, REVIEW_COOKIE, id, {
       path: "/",
       httpOnly: true,
@@ -1287,7 +1313,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
   // Disconnect: drop the stored token + cookie.
   app.get("/review/auth/logout", async (c) => {
     const id = getCookie(c, REVIEW_COOKIE);
-    if (id) await c.env.RENDER_CACHE.delete(`reviewtok:${id}`);
+    if (id) await deleteReviewTok(c.env, id);
     deleteCookie(c, REVIEW_COOKIE, { path: "/" });
     return c.redirect(internalReturnPath(c.req.query("returnTo"), "/review"));
   });

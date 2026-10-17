@@ -2,6 +2,11 @@ export interface Env {
   DB: D1Database;
   RENDER_CACHE: KVNamespace;
   WP_HTML: KVNamespace;
+  // Optional dedicated namespace for /review GitHub user tokens (review.ts
+  // reviewTokenStore). Unbound, the tokens stay in RENDER_CACHE. Not in
+  // wrangler.jsonc: the maintainer creates it and adds the binding
+  // (docs/SECRETS.md, "Review tokens in their own KV namespace").
+  REVIEW_TOKENS?: KVNamespace;
   ASSETS: Fetcher;
   EDIT_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
