@@ -1298,7 +1298,9 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   (Generalized_hypergeometric_function). Stage-0 `wp-update` re-pins keep posting through
   2026-10-13, so the nightly runs, but no review has changed an article since 2026-09-17. The
   review step itself still runs, but it has failed on every article since
-  2026-09-18, so no review tokens have been spent since. Review
+  2026-09-18, so no review tokens have been spent since: `/stats`' review row read 117 runs /
+  1,761 articles / 843 errors on 2026-10-12 and 118 / 1,776 / 858 on 2026-10-13, with tokens
+  flat at 26,345,645 (diagnosis: `docs/OPERATIONS.md`, #56). Review
   revisions by month: June 256, July 187, August 284, September 144, October 0. **newtags has
   not run as a routine:** the 03:10 job was committed on 2026-07-03, `/stats` still shows 7
   `new` runs (355 articles, 302 errors), the 55 `ai-create` revisions span 2026-06-17 to

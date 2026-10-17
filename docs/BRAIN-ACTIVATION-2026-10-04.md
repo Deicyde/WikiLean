@@ -44,8 +44,9 @@ The REST API reports the same release: `GET /api/brain/search?q=group` returns
 generation ID) and `snapshot.pin` `sha256:9dbb5d68…` (a source digest). MCP tool responses
 carry the same `release_id` field (`wiki/src/mcp.ts`); no MCP response was captured for this
 record. Under this profile the
-snapshot echo carries digests, not the build time and Mathlib revision that the MCP
-instructions (`wiki/src/mcp.ts`) and `docs/BRAIN-API.md` describe.
+snapshot echo carries digests. The MCP instructions (`wiki/src/mcp.ts`) and `docs/BRAIN-API.md`
+describe both fields as opaque provenance values, compared for equality and never read as a build
+time or a Mathlib revision.
 
 ## Timeline
 
@@ -156,8 +157,8 @@ What that means for this release:
    asset tree with whatever the local `wiki/public` holds, outside the promoter. Production
    Worker and asset changes go through `site/ops/brain-promote-release.sh` and the
    [release runbook](BRAIN-RELEASE-RUNBOOK.md). The only emergency lever is `wrangler rollback`
-   (Rollback above); a forward hotfix path, if one is ever wanted, would be a journaled promoter
-   mode.
+   (Rollback above). There is no forward hotfix path; whether to add one is open (ROADMAP
+   Waiting item 8).
 
 ## Frozen inputs
 
@@ -187,10 +188,11 @@ journal and stores; do not reconstruct them.
 | Full public baseline ID and root (PR #44 cites the prefix `sha256:0ee63469…`) | |
 | Activation bundle ID and root | |
 | Retained promoter dry-run root | |
-| Semantic baseline release ID and manifest SHA-256 | release ID `bfcfc912…`, manifest `8328d804…` (PR #45 cites the manifest) |
+| Semantic baseline release ID and manifest SHA-256 | manifest `8328d804…` (PR #45 cites it); copy the release ID from the journal |
 | Predeploy Worker version ID (from the intent record) | |
 | Candidate Worker version and deployment IDs | version `63b11a7e…`, deployment `499ba4bf…` (2026-10-08 `final_state` record) |
-| Canonical operator host: the machine holding the receipt root, the `fa645b2b…` release store, the baseline and bundle stores, offline pack `294b1fc7…`, and the replay runtime | recorded in the private deployment journal |
-| Receipt roots on other hosts that are non-canonical | recorded in the private deployment journal |
-| Backups of the receipt root and stores, and the last restore check | recorded in the private deployment journal |
+| Canonical operator host: the machine holding the receipt root, the `fa645b2b…` release store, the baseline and bundle stores, offline pack `294b1fc7…`, and the replay runtime | not published here; the operator keeps it privately (the promoter journal does not record it) |
+| Receipt roots on other hosts that are non-canonical | not published here; the operator keeps them privately (the promoter journal does not record them) |
+| Backups of the receipt root and stores, and the last restore check | not published here; the operator confirms both before the next promotion (the promoter journal does not record them) |
+| Whether the 2026-10-04 promotion's host context was authorized (the P1B host-context box) | |
 | Public-release source-policy record for manifest `fa645b2b…`, or "none" | |

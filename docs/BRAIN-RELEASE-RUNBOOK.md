@@ -487,8 +487,8 @@ Do not delete or relocate either root after review.
 > the attempt's intent byte for byte (see "If an attempt is incomplete"). `npm run deploy`
 > refuses. Never run `wrangler deploy` directly: it uploads the Worker built from local
 > `wiki/src` and the local `wiki/public` outside the promoter, replacing the selector and the
-> whole asset tree. The only emergency lever is "Wrangler rollback" below; a forward hotfix
-> path, if one is ever wanted, would be a journaled promoter mode.
+> whole asset tree. The only emergency lever is "Wrangler rollback" below. There is no forward
+> hotfix path; whether to add one is open (ROADMAP Waiting item 8).
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.

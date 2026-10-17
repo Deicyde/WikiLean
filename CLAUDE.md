@@ -177,8 +177,8 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   `site/*.py` and site assets are release-affecting; `site/ops/brain_release_authority.py` is
   the exact list. A change there ships only in
   a new release built at the new commit, with a fresh P1B and Jack's approval; no Worker-only
-  hotfix path exists (one, if ever wanted, would be a journaled promoter mode, not a hand-run
-  deploy). Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
+  hotfix path exists (whether to add one is open: ROADMAP Waiting item 8). Nightly jobs never
+  deploy: the 02:20 Brain job is shadow-only and
   rejects nonzero `WIKILEAN_BRAIN_DEPLOY`.
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
