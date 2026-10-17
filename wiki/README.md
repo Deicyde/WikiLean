@@ -78,6 +78,7 @@ public/              static assets served by the Worker (`ASSETS` binding)
 | GET | `/:slug` *(or `.html`)* | Render article — injects sign-in CTA when anon, editor + full annotation model when signed in |
 | POST | `/api/article/:slug` | Save edited annotations (requires auth, rate-limited) |
 | POST | `/api/article/:slug/revert/:revid` | Revert to a previous revision (auth + rate-limited) |
+| GET | `/api/runs` | Public per-run pipeline counts, newest received first (`created_at`, then `run_id`), as `{runs: [...]}`. `?kind=` is `review`, `wp-update`, `new` or `all` (`all` is the full-nightly run kind, not a wildcard; omit `kind` for every kind). `?limit=` is 1..50, default 10. An unknown kind or an out-of-range limit returns 400 (no clamping). Fields: `run_id`, `kind`, `started_at`, `finished_at`, `articles_processed`, `errors`, `tokens`, `cost_usd_equiv`, `model`, `prompt_sha`; no notes. `Cache-Control: public, max-age=300`. |
 
 ## Local dev
 
