@@ -55,7 +55,8 @@ LIBRARIES = [
     {"id": "mathlib", "brain_lib": "Mathlib", "display_name": "Mathlib",
      "repo": "https://github.com/leanprover-community/mathlib4", "roots": ["Mathlib"],
      "licence": {"spdx": "Apache-2.0"}},
-    # display_name differs from the registry's "Lean core": the universe wins.
+    # display_name differs from the registry's "Lean core": for a seeded repository
+    # the registry's name wins, so a universe cannot relabel a library.
     {"id": "lean-core", "brain_lib": "Lean", "display_name": "Lean 4 core (Init, Std, Lean)",
      "repo": "https://github.com/leanprover/lean4", "roots": ["Init", "Std", "Lean"],
      "licence": {"spdx": "Apache-2.0"}, "src_dir": "src"},

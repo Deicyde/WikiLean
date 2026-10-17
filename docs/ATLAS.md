@@ -91,9 +91,10 @@ The layout follows the proposal §11.1 and the skill's `references/locate-docume
 ```
 
 `universe.json`: `id`, `frozen` (YYYY-MM-DD), `universe_sha256`, `libraries` (each with
-`id`, `repo` (https), `commit` (40 hex), and optionally `display_name`, `brain_lib`,
-`toolchain`, `roots`, `licence: {spdx}`, `src_dir`, `blob_url_template`), and
-`excluded` (each `{id, reason, repo?}`), as in proposal §2.3.
+`id`, `repo` (an https repository URL), `commit` (40 hex), and optionally `display_name`,
+`brain_lib`, `toolchain`, `roots`, `licence: {spdx}` and `src_dir`), and `excluded` (each
+`{id, reason, repo?}`), as in proposal §2.3. `display_name` and `src_dir` are WikiLean
+additions (contract note 6).
 
 `sources.jsonl`: `source_id` (`enwiki-<pageid>-<revision>`), `pageid`, `revision`, `title`,
 `wikidata`, `html_sha256`, `layer_sha256`, `renderer`, and `assessment: {class, importance}`
@@ -108,9 +109,15 @@ any of these fails:
    sha256; no unlisted file, symlink or unsafe path is present. Receipts are named by
    their own sha256, and every receipt is referenced.
 2. **Universe.** Its id and `universe_sha256` equal the seal's; library ids and
-   repositories are unique; commits are 40-hex.
+   repositories are unique; each repository is an https URL with a dotted host and one to
+   four path segments, none of them `.` or `..`; commits are 40-hex. A
+   `blob_url_template` is refused (contract note 6). A `universe.yaml` that does not parse,
+   or repeats a key, is refused like duplicate-key JSON.
 3. **Sources.** `source_id` agrees with `pageid` and `revision`; there is one revision per
-   page per set; every source has a records file, and every records file has a source.
+   page per set, and one page per title (two titles with the same `title_key`, such as
+   `Widget lemma` and `Widget_lemma`, are refused, because the index and the article box
+   find a page by its title key); every source has a records file, and every records file
+   has a source.
 4. **Schema.** Every record passes the vendored Literature Links schema and its numeric
    checks, through the checker WikiLean already uses: `site/native_annotations.validate_link_record`
    on `wiki/src/vendor/literature-links/companion.schema.json`, whose sha256 is checked
@@ -118,8 +125,11 @@ any of these fails:
 5. **Records (proposal §2.7).** Each record carries the `org.mathlib-initiative.formal-companion.locate`
    extension with `item` (`In-text #<8-16 hex>`), the set's universe id and sha, and a
    `challenge` value; `id` is `<source_id>::<item>`. The subject is one `html` end at the
-   source's revision, with `pageid` and `html_sha256` matching `sources.jsonl` and a quote
-   within the export caps (12 words of `exact`, 32 characters of prefix and of suffix).
+   source's revision: its `uri` is an `https://en.wikipedia.org/w/index.php` (or `/wiki/`)
+   link whose parsed query has exactly one `oldid`, equal to the revision (so `oldid=20029`
+   does not pass for revision 2002), and its `version` is the revision. Its `pageid` and
+   `html_sha256` match `sources.jsonl`, and its quote is within the export caps (12 words
+   of `exact`, 32 characters of prefix and of suffix, all strings).
    - A **location** (relation `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch`,
      `hasPart` or `relatedMatch`) has one `lean` end at its library's repo and commit, with
      `declaration`, `module`, a safe `.lean` `path`, `1 <= line <= end_line`, a
@@ -133,13 +143,24 @@ any of these fails:
      relation.
 6. **Passages (proposal §2.6).** The records of one passage agree on kind, quote and status.
    A passage has at most one absence and at most 5 locations, with distinct ranks. An
-   absence sits only beside `relatedMatch` locations. The derived status meets its
-   necessary conditions: a formalized theorem has an exact, close or broad match to a
-   `proved` declaration; a formalized definition has an exact or close match to a
-   `definition`; `statement_only` has an exact, close or broad match; `partial` has a
-   hasPart, narrow or broad match; `not_formalized` has a checked absence. The builder
-   checks these conditions and never recomputes the status. Computing it is the
-   producer's job.
+   absence sits only beside `relatedMatch` locations, and `not_formalized` needs one.
+   **The builder recomputes the derived status** of every located passage from its
+   kind and its locations' relations and proof statuses (`derive_status`), and refuses
+   the set when the stamped status differs, in either direction: a sorry-backed match
+   stamped `formalized` is refused, and so is a proved exact match stamped
+   `statement_only` or `partial`. The table's rows are read first-match, top to bottom:
+
+   | kind | `formalized` | else `statement_only` | else `partial` |
+   |---|---|---|---|
+   | theorem, conjecture | an exact, close or broad match to a `proved` declaration | an exact, close or broad match to a `statement_only`, `wanted` or `axiom_dependent` declaration, or an exact or close match to a `definition` (a Prop-valued definition) | a `hasPart` or `narrowMatch` |
+   | definition | an exact or close match to a `definition` | an exact or close match to a `statement_only`, `wanted` or `axiom_dependent` declaration | a `hasPart` or `narrowMatch`, or a broad match to a `definition` |
+   | example, construction, notation, other | either of the two rules above for `formalized` | an exact, close or broad match to a `statement_only`, `wanted` or `axiom_dependent` declaration | a `hasPart` or `narrowMatch`, or a broad match to a `definition` |
+
+   Where the table admits two readings the builder accepts either (contract note 7), and a
+   passage the table gives no status (only `relatedMatch` locations, or a definition
+   passage matched only to proved theorems) is refused. The location that justifies the
+   status, the highest-ranked one meeting the row, is stored as the passage's `basis`, so
+   the page names it rather than whichever location ranks first.
 
 ### Contract notes for formal-companion
 
@@ -162,7 +183,27 @@ needs the skill's agreement before real record sets arrive:
    and unique. It does not recompute either, because the formulas belong to the producer
    (`location_key` uses the skill's private `clean()`).
 5. **One revision per page per set.** The store is keyed by page id, so a set carrying two
-   revisions of one page is refused.
+   revisions of one page is refused. For the same reason, two pages with one title key are
+   refused.
+6. **Library naming and source links come from WikiLean, not from the set.** A library's
+   `display_name` is shown only for a repository the registry does not seed
+   (`wiki/src/libraries.ts`), and never when it would name a seeded library, so a
+   universe cannot relabel a repository as Mathlib. `blob_url_template` is not part of the
+   contract: every "Source @sha7" link is built from GitHub's blob scheme for the
+   library's own `github.com/<owner>/<repo>`, and a non-GitHub repository gets no source
+   link. A set carrying a template is refused, so a producer learns it is unsupported.
+   `src_dir` (the directory a record's `path` is relative to) stays, and must be a safe
+   relative path.
+7. **WikiLean recomputes the derived status** (section 3, check 6) and needs the skill to
+   agree on three readings the proposal leaves open:
+   - kinds the §2.6 table does not name (`example`, `construction`, `notation`, `other`)
+     take the theorem and definition rules together, as in the table above;
+   - for a theorem passage, a broad match to a `definition` is both a Prop-valued
+     definition (`statement_only`) and the partial row's "broadMatch to a definition", so
+     either status is accepted;
+   - for a definition passage, a broad match to an unfinished declaration is accepted as
+     `statement_only` or `partial`.
+   A located passage the table gives no status is refused rather than guessed.
 
 ## 4. The store (v1)
 
@@ -180,17 +221,24 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   libraries}`, `record_set` (the SEAL's sha256), `records_sha256`, `summary` (passages,
   locations, related, by status, by library, by proof status, by relation) and
   `passages`. Each passage has `item`, `kind`, `section`, `prominence`, `quote`,
-  `subject_uri`, `outcome` (located, absent or unresolved), `status`, and `locations`,
+  `subject_uri`, `outcome` (located, absent or unresolved), `status`, `basis` (the
+  `location_key` of the location that justifies the status, or null), and `locations`,
   each with `library, repo, commit, declaration, module, path, line, end_line, relation,
   proof_status, rank, confidence, challenge, location_key, note`. A passage also carries
   `absence {universe, universe_sha256, libraries, receipt, challenge}` or `unresolved
   {challenge}`. A `relatedMatch` states something else (proposal §2.6), so it is counted
-  in `related` and never as a location.
+  in `related` and never as a location. `summary.by_library` (and `current.json`'s
+  `counts.by_library`) splits each library's `locations` into `complete` (proved
+  declarations and definitions) and `incomplete` (`statement_only`, `wanted`,
+  `axiom_dependent`), so a library that only states results is never counted as one
+  that proves them.
 - **Index shards.** The key is the first hex digit of `sha256(title_key)`, which gives 16
   shards. `title_key` is the NFC title with underscores and Unicode spaces collapsed to
   one space and trimmed, the same in Python (`title_key`) and TypeScript (`titleKey`). A
   test in each language pins the same shards. Rows are arrays named by the shard's
-  `fields` list. A shard over 1 MiB is refused; a wider key would be a v2 store.
+  `fields` list, so a field can be appended within v1; the last one, `libraries`, lists
+  the ids of the libraries that hold a location for the article, in universe order. A
+  shard over 1 MiB is refused; a wider key would be a v2 store.
 - **Determinism.** Output is canonical JSON (sorted keys, compact, UTF-8, newline) in a
   stable order: passages in record order, locations by rank, index rows by title.
   `built_at` defaults to SEAL's `created`, so the same set always builds the same bytes.
@@ -203,9 +251,14 @@ python3 scripts/atlas/build_store.py --record-set <set> --out <store> --check   
 python3 scripts/atlas/build_store.py --record-set <set> --out <store> --replace  # rebuild in place
 ```
 
-Exit codes: 0 is success, 1 means `--check` found differences, and 2 means the record set
-was refused (the reasons go to stderr). The tree is staged next to `--out` and moved into
-place, so a failed build leaves nothing half-written. `--built-at <ISO-Z>` overrides the
+Exit codes: 0 is success, 1 means `--check` found differences, 2 means the record set
+was refused (the reasons go to stderr), and 3 means the builder itself failed (a bug;
+nothing was written). Every check runs before any view is computed, so a malformed set is
+always a 2, never a crash that could be read as "`--check` found differences". The tree
+is staged next to `--out` and moved into place, and the previous store is moved back if
+that fails, so a failed build leaves nothing half-written. `--out` is the store directory
+itself: `--replace` refuses a directory that holds anything besides `atlas/v1/`, so
+pointing it one level too high (at `wiki/public`, say) cannot delete unrelated files. `--built-at <ISO-Z>` overrides the
 build time (pass the same value to `--check`). `scripts/` is release-neutral, so the
 builder can change without a release.
 
@@ -448,7 +501,11 @@ Each decision below comes with a recommendation.
 
 - `scripts/atlas/test_build_store.py` (in `scripts/ci-python.sh`) checks fixture
   reproducibility, schema validity, the golden store, determinism, the manifest, the view
-  model, title shards, 12 refusal cases, a YAML universe and the CLI.
+  model (including each passage's basis and the per-library proof split), title shards,
+  the §2.6 recomputation in both directions and its two-reading cases, the other refusal
+  cases (oldid, title keys, templates, dot-segment repos, malformed or duplicate-key
+  YAML, unknown statuses, non-string affixes), a YAML universe, and the CLI (exit codes
+  2 and 3, and `--replace` refusing foreign content).
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
   pages on the fixture store, 404s, escaping, feedback auth, origin, validation, size cap,
   rate limit and missing table, the export, the article box with its cache isolation, the

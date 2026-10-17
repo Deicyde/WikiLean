@@ -22,7 +22,8 @@ Usage (Python 3.12, standard library plus the CI's pinned jsonschema):
 
 The build is a pure function of the record set's bytes (and of --built-at, which
 defaults to SEAL.json's `created`), so --check rebuilds in memory and compares
-byte for byte. Nothing here touches the network, D1 or any Worker binding;
+byte for byte. Exit codes: 0 success, 1 --check found differences, 2 the record
+set was refused, 3 the builder itself failed (a bug; the store is untouched). Nothing here touches the network, D1 or any Worker binding;
 uploading the tree is a separate operator action (docs/ATLAS.md, "Publishing").
 """
 from __future__ import annotations
@@ -39,6 +40,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import parse_qs, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 VENDOR = ROOT / "wiki" / "src" / "vendor" / "literature-links"
@@ -58,14 +60,21 @@ BUILDER = "scripts/atlas/build_store.py/1"
 # changing it is a v2 store.
 INDEX_HEX = 1
 MAX_INDEX_SHARD_BYTES = 1024 * 1024
+# Readers look fields up by name, so a field may be appended within v1.
 INDEX_FIELDS = ["title", "pageid", "revision", "passages", "formalized", "statement_only",
-                "partial", "not_formalized", "unresolved", "importance"]
+                "partial", "not_formalized", "unresolved", "importance", "libraries"]
 
 # Vocabularies of the locate proposal (§2.2, §2.4, §2.6, §2.7, §5).
 KINDS = frozenset({"definition", "theorem", "conjecture", "example", "construction", "notation", "other"})
 PROMINENCES = frozenset({"subject", "central", "supporting"})
 LOCATION_RELATIONS = ("exactMatch", "closeMatch", "broadMatch", "narrowMatch", "hasPart", "relatedMatch")
+STRONG_RELATIONS = frozenset({"exactMatch", "closeMatch", "broadMatch"})
+PART_RELATIONS = frozenset({"hasPart", "narrowMatch"})
 PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "wanted", "definition"})
+# Proof statuses that state something without a finished proof (proposal §2.6's statement_only row).
+UNPROVED = frozenset({"statement_only", "wanted", "axiom_dependent"})
+# A library location counts as complete when its declaration is proved or is a definition.
+COMPLETE = frozenset({"proved", "definition"})
 CHALLENGES = frozenset({"survived", "downgraded", "not_required", "sampled_out"})
 CONFIDENCES = frozenset({"high", "medium", "low"})
 STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
@@ -85,6 +94,8 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 # Whitespace for title keys, spelled out so wiki/src/atlas.ts matches it exactly.
 TITLE_SPACE = re.compile(r"[ \t\n\r\f\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000_]+")
 WORD_SPACE = re.compile(r"\s+")
+# A library repository: https, a dotted host, one to four path segments, none of them "." or "..".
+REPO_RE = re.compile(r"^https://[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:/[A-Za-z0-9_.~-]{1,100}){1,4}$")
 
 
 class AtlasError(Exception):
@@ -139,6 +150,52 @@ def safe_relative(path: str) -> bool:
 
 def is_https(uri: Any) -> bool:
     return isinstance(uri, str) and re.match(r"^https://[A-Za-z0-9.-]+(?::[0-9]+)?/\S*$", uri) is not None
+
+
+def is_repo_url(uri: Any) -> bool:
+    """A repository URL the Worker can name and link: no dot segments, no query, no fragment."""
+    return (isinstance(uri, str) and REPO_RE.match(uri) is not None
+            and all(part not in {".", ".."} for part in uri.split("/")[3:]))
+
+
+def names_revision(uri: Any, revision: int) -> bool:
+    """True when `uri` is an en.wikipedia.org permanent link whose only oldid is exactly `revision`."""
+    if not isinstance(uri, str):
+        return False
+    try:
+        parts = urlsplit(uri)
+    except ValueError:
+        return False
+    if parts.scheme != "https" or parts.netloc != "en.wikipedia.org":
+        return False
+    if parts.path != "/w/index.php" and not parts.path.startswith("/wiki/"):
+        return False
+    return parse_qs(parts.query, keep_blank_values=True).get("oldid") == [str(revision)]
+
+
+def _yaml_load(text: str) -> Any:
+    """yaml.safe_load, but a mapping with a repeated key is an error (as strict_json makes it for JSON)."""
+    import yaml  # PyYAML is pinned in requirements-ci.txt
+
+    class StrictLoader(yaml.SafeLoader):
+        pass
+
+    def mapping(loader: yaml.SafeLoader, node: yaml.MappingNode, deep: bool = False) -> dict:
+        loader.flatten_mapping(node)
+        seen: set = set()
+        for key_node, _ in node.value:
+            key = loader.construct_object(key_node, deep=True)
+            try:
+                repeated = key in seen
+            except TypeError:  # an unhashable key; construct_mapping reports it
+                continue
+            if repeated:
+                raise yaml.constructor.ConstructorError(None, None, f"duplicate key {key!r}", key_node.start_mark)
+            seen.add(key)
+        return yaml.SafeLoader.construct_mapping(loader, node, deep=deep)
+
+    StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
+    return yaml.load(text, Loader=StrictLoader)  # noqa: S506 - a SafeLoader subclass
 
 
 def schema_validator():
@@ -254,7 +311,10 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             import yaml  # PyYAML is pinned in requirements-ci.txt
         except ImportError as exc:  # pragma: no cover - the CI environment has it
             raise AtlasError("universe.yaml needs PyYAML; export universe.json instead") from exc
-        raw = yaml.safe_load(files["universe.yaml"].decode("utf-8"))
+        try:
+            raw = _yaml_load(files["universe.yaml"].decode("utf-8"))
+        except (UnicodeDecodeError, yaml.YAMLError) as exc:
+            raise AtlasError(f"universe.yaml: not valid YAML ({exc})") from exc
     where = "universe.json" if has_json else "universe.yaml"
     if not isinstance(raw, dict):
         raise AtlasError(f"{where}: not an object")
@@ -284,8 +344,8 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             continue
         if lib_id in seen_ids:
             problems.add(at, f"duplicate library id {lib_id!r}")
-        if not is_https(repo):
-            problems.add(at, "repo must be an https URL")
+        if not is_repo_url(repo):
+            problems.add(at, "repo must be an https repository URL (host and path segments, no '.' or '..')")
         elif repo in seen_repos:
             problems.add(at, f"repo {repo} appears twice (one library per repository)")
         if not isinstance(commit, str) or not HEX40.match(commit):
@@ -294,7 +354,13 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
         if isinstance(repo, str):
             seen_repos.add(repo)
         entry = {"id": lib_id, "repo": repo, "commit": commit}
-        for key in ("display_name", "brain_lib", "toolchain", "src_dir", "blob_url_template"):
+        # Source links are built only from GitHub's blob scheme for the library's own
+        # repository (wiki/src/libraries.ts), so a producer-supplied URL template could
+        # only point a "Source" link somewhere else. It is refused, not ignored.
+        if "blob_url_template" in lib:
+            problems.add(at, "blob_url_template is not supported: the Worker builds every source link "
+                             "from the repository itself (docs/ATLAS.md, contract note 6)")
+        for key in ("display_name", "brain_lib", "toolchain", "src_dir"):
             value = lib.get(key)
             if value is None:
                 continue
@@ -304,10 +370,6 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
                 entry[key] = value
         if "src_dir" in entry and not safe_relative(entry["src_dir"]):
             problems.add(at, "src_dir must be a safe relative path")
-        template = entry.get("blob_url_template")
-        if template is not None and (not template.startswith("https://") or "{commit}" not in template
-                                     or "{path}" not in template):
-            problems.add(at, "blob_url_template must be https and name {commit} and {path}")
         if isinstance(lib.get("roots"), list) and all(isinstance(r, str) for r in lib["roots"]):
             entry["roots"] = list(lib["roots"])
         licence = lib.get("licence")
@@ -320,7 +382,7 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             problems.add(f"{where}: excluded[{index}]", "must be {id, reason}")
             continue
         entry = {"id": item["id"], "reason": item["reason"]}
-        if is_https(item.get("repo")):
+        if is_repo_url(item.get("repo")):
             entry["repo"] = item["repo"]
         excluded.append(entry)
     return {"schema": UNIVERSE_SCHEMA, "id": raw.get("id"), "sha256": raw.get("universe_sha256"),
@@ -333,6 +395,7 @@ def load_sources(files: dict[str, bytes], problems: Problems) -> list[dict]:
     sources: list[dict] = []
     seen_ids: set[str] = set()
     seen_pages: set[int] = set()
+    seen_titles: dict[str, int] = {}
     for number, line in enumerate(files["sources.jsonl"].decode("utf-8").splitlines(), 1):
         at = f"sources.jsonl:{number}"
         if not line.strip():
@@ -361,6 +424,11 @@ def load_sources(files: dict[str, bytes], problems: Problems) -> list[dict]:
         if not isinstance(title, str) or not title_key(title) or len(title) > 512:
             problems.add(at, "title must be a non-empty string")
             continue
+        # The index and the article-page box look a page up by title key, so two pages
+        # with one key would make one of them unreachable by title.
+        other = seen_titles.setdefault(title_key(title), pageid)
+        if other != pageid:
+            problems.add(at, f"title {title!r} has the same title key as page {other} (one page per title)")
         for key in ("html_sha256", "layer_sha256"):
             if not HEX64.match(str(row.get(key, ""))):
                 problems.add(at, f"{key} must be 64 hex")
@@ -418,7 +486,10 @@ def _quote_problems(quote: Any) -> list[str]:
     if len(WORD_SPACE.split(quote["exact"].strip())) > QUOTE_MAX_WORDS:
         found.append(f"quote.exact exceeds {QUOTE_MAX_WORDS} words (proposal §2.7 cap)")
     for affix in ("prefix", "suffix"):
-        if len(quote.get(affix, "")) > AFFIX_MAX_CHARS:
+        value = quote.get(affix, "")
+        if not isinstance(value, str):
+            found.append(f"quote.{affix} must be a string")
+        elif len(value) > AFFIX_MAX_CHARS:
             found.append(f"quote.{affix} exceeds {AFFIX_MAX_CHARS} characters (proposal §2.7 cap)")
     return found
 
@@ -463,16 +534,18 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
         return None
     end = subjects[0]
     uri = end.get("uri", "")
-    if not uri.startswith("https://en.wikipedia.org/") or f"oldid={source['revision']}" not in uri \
-            or end.get("version") != str(source["revision"]):
-        problems.add(at, "subject must name the source's revision (uri oldid and version)")
+    if not names_revision(uri, source["revision"]) or end.get("version") != str(source["revision"]):
+        problems.add(at, "subject must name the source's revision: an en.wikipedia.org permanent link whose "
+                         "oldid is exactly the revision, and version equal to it")
     subject_ext = _locate_ext(end) or {}
     if subject_ext.get("pageid") != source["pageid"] or subject_ext.get("html_sha256") != source["html_sha256"]:
         problems.add(at, "subject extension pageid and html_sha256 must match sources.jsonl")
-    quote = (end.get("location") or {}).get("quote")
-    for message in _quote_problems(quote):
+    location = end.get("location")
+    quote = location.get("quote") if isinstance(location, dict) else None
+    messages = _quote_problems(quote)
+    for message in messages:
         problems.add(at, message)
-    if not isinstance(quote, dict):
+    if messages:
         return None
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
@@ -533,6 +606,7 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
     status = record.get("status")
     if status not in STATUSES:
         problems.add(at, f"a location record carries a derived status, one of {list(STATUSES)}")
+        return None
     if len(objects) != 1:
         problems.add(at, "a location record has exactly one lean end")
         return None
@@ -581,25 +655,102 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
     }}
 
 
-def _status_problems(kind: str, status: str, locations: list[dict]) -> list[str]:
-    """Necessary conditions of proposal §2.6's derived status; the producer computes it, we sanity-check."""
-    rel = lambda allowed: [loc for loc in locations if loc["relation"] in allowed]
-    strong = rel({"exactMatch", "closeMatch", "broadMatch"})
-    if status == "formalized":
-        if kind in ("theorem", "conjecture") and not any(loc["proof_status"] == "proved" for loc in strong):
-            return ["formalized theorem passage needs an exact/close/broad match to a proved declaration"]
-        if kind == "definition" and not any(loc["proof_status"] == "definition"
-                                            for loc in rel({"exactMatch", "closeMatch"})):
-            return ["formalized definition passage needs an exact/close match to a definition"]
-        if not strong:
-            return ["formalized passage needs an exact, close or broad match"]
-    if status == "statement_only" and not strong:
-        return ["statement_only passage needs an exact, close or broad match"]
-    if status == "partial" and not rel({"hasPart", "narrowMatch", "broadMatch"}):
-        return ["partial passage needs a hasPart, narrowMatch or broadMatch location"]
-    if status == "not_formalized":
-        return ["not_formalized needs a checked absence (noMatch record)"]
+def _rank_key(loc: dict) -> int:
+    # A malformed rank is already a reported problem; sort it last rather than crash.
+    return loc["rank"] if type(loc["rank"]) is int else 99
+
+
+def _by_rank(locations: list[dict], relations: frozenset[str], proofs: frozenset[str] | None = None) -> list[dict]:
+    return [loc for loc in locations if loc["relation"] in relations
+            and (proofs is None or loc["proof_status"] in proofs)]
+
+
+def derive_status(kind: str, locations: list[dict]) -> list[tuple[str, dict]]:
+    """Proposal §2.6's derived status of a located passage, recomputed from its locations.
+
+    `locations` are in rank order. Returns the acceptable (status, basis) pairs: the
+    status the table gives and the highest-ranked location that justifies it. The
+    table's rows are read first-match, top to bottom (formalized, statement_only,
+    partial). Two pairs come back only where the table admits both readings, and an
+    empty list means the table gives this passage no status. Kinds the table does not
+    name (example, construction, notation, other) follow WikiLean's reading in
+    docs/ATLAS.md contract note 7: the theorem and definition rules together.
+    """
+    strong = STRONG_RELATIONS
+    if kind in ("theorem", "conjecture"):
+        proved = _by_rank(locations, strong, frozenset({"proved"}))
+        if proved:
+            return [("formalized", proved[0])]
+        # "the best such location is statement_only, wanted or axiom_dependent, or is a
+        # Prop-valued definition stating a theorem passage"
+        stated = [loc for loc in _by_rank(locations, strong, UNPROVED | {"definition"})
+                  if not (loc["relation"] == "broadMatch" and loc["proof_status"] == "definition")]
+        if stated:
+            return [("statement_only", stated[0])]
+        # A broadMatch to a definition is both a more general Prop-valued definition
+        # (statement_only) and the partial row's "broadMatch to a definition".
+        broad_def = _by_rank(locations, frozenset({"broadMatch"}), frozenset({"definition"}))
+        parts = sorted(_by_rank(locations, PART_RELATIONS) + broad_def, key=_rank_key)
+        if broad_def:
+            return [("statement_only", broad_def[0]), ("partial", parts[0])]
+        if parts:
+            return [("partial", parts[0])]
+        return []
+    if kind == "definition":
+        defined = _by_rank(locations, frozenset({"exactMatch", "closeMatch"}), frozenset({"definition"}))
+        if defined:
+            return [("formalized", defined[0])]
+        stated = _by_rank(locations, frozenset({"exactMatch", "closeMatch"}), UNPROVED)
+        if stated:
+            return [("statement_only", stated[0])]
+        broad_def = _by_rank(locations, frozenset({"broadMatch"}), frozenset({"definition"}))
+        parts = sorted(_by_rank(locations, PART_RELATIONS) + broad_def, key=_rank_key)
+        broad_unproved = _by_rank(locations, frozenset({"broadMatch"}), UNPROVED)
+        if broad_unproved:
+            # A more general declaration that is itself unfinished: both rows apply.
+            return [("statement_only", broad_unproved[0]),
+                    ("partial", sorted(parts + broad_unproved, key=_rank_key)[0])]
+        if parts:
+            return [("partial", parts[0])]
+        return []
+    # The other kinds take the theorem rule and the definition rule together: a proved
+    # exact, close or broad match, or an exact or close match to a definition.
+    complete = sorted(_by_rank(locations, strong, frozenset({"proved"}))
+                      + _by_rank(locations, frozenset({"exactMatch", "closeMatch"}), frozenset({"definition"})),
+                      key=_rank_key)
+    if complete:
+        return [("formalized", complete[0])]
+    stated = _by_rank(locations, strong, UNPROVED)
+    if stated:
+        return [("statement_only", stated[0])]
+    parts = sorted(_by_rank(locations, PART_RELATIONS)
+                   + _by_rank(locations, frozenset({"broadMatch"}), frozenset({"definition"})), key=_rank_key)
+    if parts:
+        return [("partial", parts[0])]
     return []
+
+
+def _shape(locations: list[dict]) -> str:
+    shown = [f"{loc['relation']} to {loc['proof_status']}" for loc in locations if loc["relation"] != "relatedMatch"]
+    return ", ".join(shown) or "relatedMatch only"
+
+
+def status_problems(kind: str, status: str, locations: list[dict]) -> tuple[list[str], dict | None]:
+    """Compare a located passage's stamped status with the recomputed one; returns (problems, basis)."""
+    if status == "not_formalized":
+        return ["not_formalized needs a checked absence (noMatch record)"], None
+    if kind not in KINDS:
+        return [], None  # already reported by classify_record
+    derived = derive_status(kind, locations)
+    if not derived:
+        return [f"proposal §2.6 gives a {kind} passage with {_shape(locations)} no status "
+                f"(docs/ATLAS.md, contract note 7)"], None
+    for candidate, basis in derived:
+        if candidate == status:
+            return [], basis
+    expected = " or ".join(candidate for candidate, _ in derived)
+    return [f"the records say {status}, but proposal §2.6 derives {expected} for a {kind} passage "
+            f"with {_shape(locations)}"], None
 
 
 def build_passages(classified: list[dict], source: dict, problems: Problems) -> list[dict]:
@@ -618,7 +769,7 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         unresolved = [r for r in records if r["type"] == "unresolved"]
         absences = [r for r in records if r["type"] == "absence"]
         locations = sorted((r["location"] for r in records if r["type"] == "location"),
-                           key=lambda loc: (loc["rank"] if type(loc["rank"]) is int else 99, loc["library"]))
+                           key=lambda loc: (_rank_key(loc), loc["library"]))
         statuses = {r.get("status") for r in records if r["type"] != "unresolved"}
         if unresolved and len(records) > 1:
             problems.add(at, "an unresolved passage has exactly one record")
@@ -638,10 +789,12 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             outcome = "absent"
             if any(loc["relation"] != "relatedMatch" for loc in locations):
                 problems.add(at, "an absence may sit beside relatedMatch locations only")
-        else:
+        basis = None
+        if not unresolved and not absences:
             outcome = "located"
             if status is not None:
-                for message in _status_problems(first["kind"], status, locations):
+                found, basis = status_problems(first["kind"], status, locations)
+                for message in found:
                     problems.add(at, message)
         absence = None
         if absences:
@@ -651,6 +804,9 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             "id": pid, "item": first["item"], "kind": first["kind"], "section": first["section"],
             "prominence": first["prominence"], "quote": first["quote"], "subject_uri": first["subject_uri"],
             "outcome": outcome, "status": status, "locations": locations, "absence": absence,
+            # The location that justifies the status (derive_status), so a page names it
+            # rather than whichever location ranks first.
+            "basis": basis["location_key"] if basis else None,
             "unresolved": {"challenge": unresolved[0]["challenge"]} if unresolved else None,
         })
     return passages
@@ -665,6 +821,7 @@ def _status_counts() -> dict[str, int]:
 
 def article_view(source: dict, passages: list[dict], universe: dict, seal: dict, seal_sha: str,
                  records_sha: str) -> dict:
+    """The article's view model. Runs only on a set that passed every check."""
     by_status = _status_counts()
     by_library: dict[str, dict[str, int]] = {}
     by_proof = Counter()
@@ -679,12 +836,15 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
         for loc in passage["locations"]:
             # A relatedMatch "states something else" (proposal §2.6): it is counted
             # apart, so "where is this formalized" never counts it as a location.
-            entry = by_library.setdefault(loc["library"], {"locations": 0, "passages": 0, "related": 0})
+            entry = by_library.setdefault(loc["library"], {"locations": 0, "complete": 0, "incomplete": 0,
+                                                           "passages": 0, "related": 0})
             if loc["relation"] == "relatedMatch":
                 entry["related"] += 1
                 n_related += 1
             else:
                 entry["locations"] += 1
+                # complete: proved or a definition; incomplete: stated without a finished proof.
+                entry["complete" if loc["proof_status"] in COMPLETE else "incomplete"] += 1
                 n_locations += 1
                 if loc["library"] not in seen_here:
                     entry["passages"] += 1
@@ -721,7 +881,7 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
         raise AtlasError("--built-at must be an ISO 8601 UTC time ending in Z")
 
     ctx = Context(universe=universe, files=files, validate=validate, schema_error=schema_error)
-    articles: list[dict] = []
+    built: list[tuple[dict, list[dict]]] = []
     for source in sources:
         path = f"records/{source['source_id']}.jsonl"
         classified = []
@@ -743,14 +903,17 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
             reduced = classify_record(record, source, ctx, at, problems)
             if reduced is not None:
                 classified.append(reduced)
-        passages = build_passages(classified, source, problems)
-        articles.append(article_view(source, passages, universe, seal, seal_sha, sha256_hex(files[path])))
+        built.append((source, build_passages(classified, source, problems)))
     for receipt in sorted(p for p in files if p.startswith("receipts/")):
         if receipt not in ctx.receipts_used:
             problems.add(receipt, "receipt referenced by no absence record")
         elif receipt != f"receipts/{sha256_hex(files[receipt])}.json":
             problems.add(receipt, "a receipt's file name is the sha256 of its bytes")
+    # Every check has run: a refused set never reaches the view code, which assumes the contract.
     problems.raise_if_any()
+    articles = [article_view(source, passages, universe, seal, seal_sha,
+                             sha256_hex(files[f"records/{source['source_id']}.jsonl"]))
+                for source, passages in built]
 
     tree: dict[str, bytes] = {}
     prefix = STORE_PREFIX + "/"
@@ -764,9 +927,12 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
         tree[f"{prefix}records/{pageid}.jsonl"] = files[f"records/{article['source_id']}.jsonl"]
         summary = article["summary"]
         importance = (article["assessment"] or {}).get("importance")
+        # Libraries holding a location (not only a related declaration), in universe order.
+        located_in = [lib["id"] for lib in universe["libraries"]
+                      if summary["by_library"].get(lib["id"], {}).get("passages")]
         shards.setdefault(title_shard(article["title"]), []).append(
             [article["title"], pageid, article["revision"], summary["passages"],
-             *[summary["by_status"][s] for s in SUMMARY_STATUSES], importance])
+             *[summary["by_status"][s] for s in SUMMARY_STATUSES], importance, located_in])
         totals["passages"] += summary["passages"]
         totals["locations"] += summary["locations"]
         totals["related"] += summary["related"]
@@ -774,11 +940,10 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
             totals["by_status"][status] += count
         for lib, counts in summary["by_library"].items():
             entry = totals["by_library"].setdefault(lib, {"articles": 0, "passages": 0, "locations": 0,
-                                                          "related": 0})
+                                                          "complete": 0, "incomplete": 0, "related": 0})
             entry["articles"] += 1 if counts["passages"] else 0
-            entry["passages"] += counts["passages"]
-            entry["locations"] += counts["locations"]
-            entry["related"] += counts["related"]
+            for key in ("passages", "locations", "complete", "incomplete", "related"):
+                entry[key] += counts[key]
         bucket = totals["by_importance"].setdefault(importance or "unknown",
                                                     {"articles": 0, "passages": 0, "by_status": _status_counts()})
         bucket["articles"] += 1
@@ -811,23 +976,45 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
 
 
 def write_tree(out: Path, tree: dict[str, bytes], replace: bool) -> None:
-    """Write the tree into a fresh directory, then move it into place (never a half-written store)."""
+    """Write the tree into a fresh directory, then move it into place (never a half-written store).
+
+    --out is the store directory itself: it holds atlas/v1/ and nothing else. --replace
+    refuses a directory holding anything more, so pointing --out one level too high
+    (wiki/public, a fixtures directory) cannot delete unrelated files.
+    """
     if out.exists():
-        if not replace and any(out.iterdir()):
+        if not out.is_dir() or out.is_symlink():
+            raise AtlasError(f"{out} is not a directory")
+        entries = sorted(p.name for p in out.iterdir())
+        if entries and not replace:
             raise AtlasError(f"{out} exists and is not empty; pass --replace or --check")
+        atlas = out / "atlas"
+        foreign = [name for name in entries if name != "atlas"]
+        if not foreign and atlas.exists():
+            foreign = [f"atlas/{p.name}" for p in atlas.iterdir() if p.name != "v1"] if atlas.is_dir() else ["atlas"]
+        if foreign:
+            raise AtlasError(f"{out} holds more than an atlas store ({', '.join(foreign[:5])}); "
+                             "--replace replaces only a directory that holds atlas/v1/ alone")
     out.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".atlas-store-", dir=out.parent))
+    retired = None
     try:
         for relative, data in tree.items():
             target = staging / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(data)
         if out.exists():
-            shutil.rmtree(out)
+            retired = Path(tempfile.mkdtemp(prefix=".atlas-retired-", dir=out.parent)) / "store"
+            out.rename(retired)
         staging.rename(out)
     except BaseException:
         shutil.rmtree(staging, ignore_errors=True)
+        if retired is not None and retired.exists() and not out.exists():
+            retired.rename(out)  # put the previous store back
         raise
+    finally:
+        if retired is not None:
+            shutil.rmtree(retired.parent, ignore_errors=True)
 
 
 def check_tree(out: Path, tree: dict[str, bytes]) -> list[str]:
@@ -867,6 +1054,9 @@ def main(argv: list[str] | None = None) -> int:
     except AtlasError as exc:
         print(f"atlas: refusing the record set:\n{exc}", file=sys.stderr)
         return 2
+    except Exception as exc:  # noqa: BLE001 - a builder bug must not look like "--check differs" (1)
+        print(f"atlas: internal error, nothing was written ({type(exc).__name__}: {exc})", file=sys.stderr)
+        return 3
     print(f"atlas: wrote {len(tree)} files under {args.out / STORE_PREFIX}")
     return 0
 

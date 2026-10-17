@@ -133,11 +133,20 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(absent["absence"]["universe"], "u-fixture")
         self.assertEqual(absent["locations"][0]["relation"], "relatedMatch")
         self.assertEqual(article["passages"][3]["unresolved"], {"challenge": "not_required"})
+        # The basis is the location that justifies the status; absent and unresolved have none.
+        self.assertEqual([p["basis"] for p in article["passages"]],
+                         [first["locations"][0]["location_key"], article["passages"][1]["locations"][0]["location_key"],
+                          None, None])
         summary = article["summary"]
         self.assertEqual(summary["by_status"], {"formalized": 1, "statement_only": 1, "partial": 0,
                                                 "not_formalized": 1, "unresolved": 1})
-        self.assertEqual(summary["by_library"]["batteries"], {"locations": 0, "passages": 0, "related": 1})
-        self.assertEqual(summary["by_library"]["mathlib"], {"locations": 1, "passages": 1, "related": 0})
+        self.assertEqual(summary["by_library"]["batteries"],
+                         {"locations": 0, "complete": 0, "incomplete": 0, "passages": 0, "related": 1})
+        self.assertEqual(summary["by_library"]["mathlib"],
+                         {"locations": 1, "complete": 1, "incomplete": 0, "passages": 1, "related": 0})
+        # A statement-only location is a location, but not a complete one.
+        self.assertEqual(summary["by_library"]["tauceti"],
+                         {"locations": 1, "complete": 0, "incomplete": 1, "passages": 1, "related": 0})
         # The small article follows proposal §2.7 exactly: no section or prominence.
         gadget = json.loads(build_store.build(RECORDSET)["atlas/v1/articles/1003.json"])
         self.assertIsNone(gadget["passages"][0]["section"])
@@ -153,8 +162,15 @@ class BuildTests(unittest.TestCase):
         current = json.loads(tree["atlas/v1/current.json"])
         self.assertEqual(current["index"], {"hex": 1, "shards": ["1", "8"], "entries": 2})
         shard = json.loads(tree["atlas/v1/index/1.json"])
-        self.assertEqual(shard["articles"], [["Widget lemma", 1001, 2002, 4, 1, 1, 0, 1, 1, "high"]])
+        # The last field lists the libraries holding a location, in universe order
+        # (Batteries holds only a related declaration).
+        self.assertEqual(shard["articles"], [["Widget lemma", 1001, 2002, 4, 1, 1, 0, 1, 1, "high",
+                                              ["mathlib", "tauceti", "ff-widgets"]]])
         self.assertEqual(shard["fields"][0:3], ["title", "pageid", "revision"])
+        self.assertEqual(shard["fields"][-1], "libraries")
+        totals = current["counts"]["by_library"]
+        self.assertEqual(totals["tauceti"], {"articles": 1, "passages": 1, "locations": 1, "complete": 0,
+                                             "incomplete": 1, "related": 0})
 
 
 class RefusalTests(unittest.TestCase):
@@ -226,7 +242,135 @@ class RefusalTests(unittest.TestCase):
             for row in rows[:2]:
                 row["object"][0]["extensions"][LOCATE]["proof_status"] = "statement_only"
         self.edit_widget(edit)
-        self.refuse("needs an exact/close/broad match to a proved declaration")
+        self.refuse("the records say formalized, but proposal §2.6 derives statement_only for a theorem passage")
+
+    def _first_passage(self, edit) -> None:
+        """Edit the two records of the first Widget passage (Mathlib rank 1, FormalFrontier rank 2)."""
+        self.edit_widget(lambda rows: edit(rows[0], rows[1]))
+
+    def test_formalized_example_needs_a_complete_match(self):
+        # Any kind, not only theorem and definition: a sorry-backed match never formalizes.
+        def edit(a, b):
+            for row in (a, b):
+                row["kind"] = "example"
+                row["object"][0]["extensions"][LOCATE]["proof_status"] = "statement_only"
+        self._first_passage(edit)
+        self.refuse("the records say formalized, but proposal §2.6 derives statement_only for a example passage")
+
+    def test_formalized_construction_via_a_wanted_declaration(self):
+        def edit(a, b):
+            for row in (a, b):
+                row["kind"] = "construction"
+                row["relation"] = "broadMatch"
+                row.pop("note", None)
+                row["object"][0]["extensions"][LOCATE]["proof_status"] = "wanted"
+        self._first_passage(edit)
+        self.refuse("derives statement_only for a construction passage with broadMatch to wanted")
+
+    def test_example_with_a_proved_match_is_formalized(self):
+        def edit(a, b):
+            for row in (a, b):
+                row["kind"] = "example"
+        self._first_passage(edit)
+        article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+        self.assertEqual(article["passages"][0]["status"], "formalized")
+
+    def test_understated_status_is_refused(self):
+        # A theorem with a proved exact match is formalized, not statement_only.
+        self._first_passage(lambda a, b: [row.update(status="statement_only") for row in (a, b)])
+        self.refuse("the records say statement_only, but proposal §2.6 derives formalized")
+
+    def test_partial_beside_a_proved_exact_match_is_refused(self):
+        def edit(a, b):
+            b["relation"] = "hasPart"
+            b.pop("note", None)
+            for row in (a, b):
+                row["status"] = "partial"
+        self._first_passage(edit)
+        self.refuse("the records say partial, but proposal §2.6 derives formalized")
+
+    def test_located_passage_with_only_related_matches_has_no_status(self):
+        def edit(a, b):
+            for row in (a, b):
+                row["relation"] = "relatedMatch"
+                row.pop("note", None)
+                row["status"] = "partial"
+        self._first_passage(edit)
+        self.refuse("gives a theorem passage with relatedMatch only no status")
+
+    def test_broad_match_to_a_definition_admits_both_readings(self):
+        # Proposal §2.6 lists it under statement_only (a Prop-valued definition) and under partial.
+        for status in ("statement_only", "partial"):
+            with self.subTest(status=status):
+                self.tearDown()
+                self.setUp()
+
+                def edit(a, b, status=status):
+                    for row in (a, b):
+                        row["relation"] = "broadMatch"
+                        row.pop("note", None)
+                        row["status"] = status
+                        row["object"][0]["extensions"][LOCATE]["proof_status"] = "definition"
+                self._first_passage(edit)
+                article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+                self.assertEqual(article["passages"][0]["status"], status)
+
+    def test_basis_is_the_location_that_justifies_the_status(self):
+        # Rank 1 states it without proof, rank 2 proves a more general result:
+        # the passage is formalized, and the basis is rank 2, not rank 1.
+        def edit(a, b):
+            a["object"][0]["extensions"][LOCATE]["proof_status"] = "statement_only"
+            b["relation"] = "broadMatch"
+            b.pop("note", None)
+        self._first_passage(edit)
+        article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+        passage = article["passages"][0]
+        self.assertEqual(passage["status"], "formalized")
+        self.assertEqual(passage["basis"], passage["locations"][1]["location_key"])
+        self.assertEqual(passage["locations"][1]["library"], "ff-widgets")
+
+    def test_unknown_status_is_a_refusal_not_a_crash(self):
+        self.edit_widget(lambda rows: [row.update(status="disputed") for row in rows[:2]])
+        self.refuse("a location record carries a derived status")
+
+    def test_non_string_affix_is_a_refusal_not_a_crash(self):
+        def edit(rows):
+            for row in rows:
+                row["subject"][0]["location"] = {"profile": "https://example.org/p",
+                                                 "quote": {"exact": "a widget", "prefix": 5}}
+        self.edit_widget(edit)
+        self.refuse("quote.prefix must be a string")
+
+    def test_subject_uri_must_name_exactly_the_revision(self):
+        def edit(rows):
+            for row in rows:
+                row["subject"][0]["uri"] = row["subject"][0]["uri"].replace("oldid=2002", "oldid=20029")
+        self.edit_widget(edit)
+        self.refuse("oldid is exactly the revision")
+
+    def test_two_pages_with_one_title_key(self):
+        path = self.set / "sources.jsonl"
+        rows = read_jsonl(path)
+        rows[1]["title"] = "Widget_lemma"
+        write_jsonl(path, rows)
+        reseal(self.set)
+        self.refuse("has the same title key as page 1001")
+
+    def edit_universe(self, edit) -> None:
+        path = self.set / "universe.json"
+        universe = json.loads(path.read_text())
+        edit(universe)
+        path.write_text(make_fixture.dumps(universe) + "\n")
+        reseal(self.set)
+
+    def test_blob_url_template_is_refused(self):
+        self.edit_universe(lambda u: u["libraries"][0].update(
+            blob_url_template="https://phish.example/login?next={commit}{path}"))
+        self.refuse("blob_url_template is not supported")
+
+    def test_repo_with_dot_segments_is_refused(self):
+        self.edit_universe(lambda u: u["libraries"][4].update(repo="https://github.com/../.."))
+        self.refuse("repo must be an https repository URL")
 
     def test_receipt_with_too_few_queries(self):
         receipts = list((self.set / "receipts").glob("*.json"))
@@ -249,6 +393,22 @@ class RefusalTests(unittest.TestCase):
         path.write_text(make_fixture.dumps(universe) + "\n")
         reseal(self.set)
         self.refuse("universe_sha256 differs from SEAL.json")
+
+    def write_yaml(self, text: str) -> None:
+        (self.set / "universe.json").unlink()
+        (self.set / "universe.yaml").write_text(text)
+        reseal(self.set)
+
+    def test_malformed_yaml_is_a_refusal(self):
+        self.write_yaml("id: u-fixture\nlibraries: [\n")
+        self.refuse("universe.yaml: not valid YAML")
+
+    def test_duplicate_yaml_keys_are_refused(self):
+        import yaml
+        universe = json.loads((self.set / "universe.json").read_text())
+        text = yaml.safe_dump(universe, sort_keys=True)
+        self.write_yaml(text + "frozen: '2026-10-18'\n")
+        self.refuse("duplicate key 'frozen'")
 
     def test_universe_yaml_is_accepted(self):
         import yaml
@@ -289,6 +449,41 @@ class CliTests(unittest.TestCase):
         self.assertIn("differs: atlas/v1/articles/1001.json", err)
         self.assertEqual(self.run_main("--record-set", str(RECORDSET), "--out", str(out), "--replace")[0], 0)
         self.assertEqual(self.run_main("--record-set", str(RECORDSET), "--out", str(out), "--check")[0], 0)
+
+    def test_replace_refuses_a_directory_holding_more_than_a_store(self):
+        out = self.tmp / "public"
+        self.assertEqual(self.run_main("--record-set", str(RECORDSET), "--out", str(out / "store"))[0], 0)
+        (out / "precious.txt").write_text("keep me\n")
+        code, err = self.run_main("--record-set", str(RECORDSET), "--out", str(out), "--replace")
+        self.assertEqual(code, 2)
+        self.assertIn("holds more than an atlas store (precious.txt, store)", err)
+        self.assertEqual((out / "precious.txt").read_text(), "keep me\n")
+        self.assertTrue((out / "store/atlas/v1/current.json").is_file())
+        (out / "store/atlas/v0").mkdir()
+        code, err = self.run_main("--record-set", str(RECORDSET), "--out", str(out / "store"), "--replace")
+        self.assertEqual(code, 2)
+        self.assertIn("(atlas/v0)", err)
+
+    def test_unknown_status_exits_2_not_1(self):
+        broken = self.tmp / "set"
+        shutil.copytree(RECORDSET, broken)
+        path = broken / "records/enwiki-1003-2004.jsonl"
+        path.write_text(path.read_text().replace('"status":"formalized"', '"status":"disputed"'))
+        reseal(broken)
+        code, err = self.run_main("--record-set", str(broken), "--out", str(STORE), "--check")
+        self.assertEqual(code, 2)
+        self.assertIn("a location record carries a derived status", err)
+
+    def test_internal_error_exits_3(self):
+        original = build_store.build
+        build_store.build = lambda *args, **kwargs: {}["boom"]
+        try:
+            code, err = self.run_main("--record-set", str(RECORDSET), "--out", str(self.tmp / "o"))
+        finally:
+            build_store.build = original
+        self.assertEqual(code, 3)
+        self.assertIn("internal error, nothing was written (KeyError", err)
+        self.assertFalse((self.tmp / "o").exists())
 
     def test_refused_set_exits_2_without_writing(self):
         broken = self.tmp / "set"
