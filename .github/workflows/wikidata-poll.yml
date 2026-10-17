@@ -63,14 +63,16 @@ jobs:
     runs-on: ubuntu-latest
     # Heavy ticks (open / settle / conflict-resolve) do NO Lean build anymore — the open
     # adds the CrossRefAttribute import deterministically and lets mathlib CI compile
-    # (commit 80a4741), so a heavy tick is git-clone + apply + gh + the triage LLM =
-    # minutes. 30m is generous headroom; no-op (decide=wait) ticks still exit in ~12s.
+    # (commit 80a4741). Settle and conflict ticks take minutes, but a batch open spends
+    # most of its time in bot/refresh_tagged.py: in 2026-08 the old 30m job limit
+    # cancelled 200 of 221 batch-open ticks while still in it, and the 21 that got past
+    # it spent 19-30 min in the tick step. No-op (decide=wait) ticks still exit in ~12s.
     # The long steps carry shorter timeouts of their own. A step that hits its
     # timeout fails, so a hang reports as a failed run; hitting this job limit
     # instead ends the run as cancelled, which is easy to read as harmless. The
     # steps before them take about a minute, so a timed-out step still leaves
     # time for Commit poll state inside this limit.
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       PYTHONUNBUFFERED: "1"        # stream poll/open_batch print()s live (no 40m of silence)
       REPO: leanprover-community/mathlib4
@@ -169,7 +171,7 @@ jobs:
 
       - name: Poll tick (apply)
         if: steps.decide.outputs.act == 'true'
-        timeout-minutes: 20
+        timeout-minutes: 50                # a batch open's refresh can pass 30 min (job comment)
         env:
           GH_TOKEN: ${{ secrets.MATHLIB_FORK_PAT }}
           WIKILEAN_API_TOKEN: ${{ secrets.PIPELINE_TOKEN }}
