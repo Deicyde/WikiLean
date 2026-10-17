@@ -22,6 +22,7 @@
 
 import type { Context, Hono } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, internalReturnPath } from "./auth.js";
 
@@ -1079,12 +1080,9 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       );
     }
 
-    let body: { decisions?: Record<string, { status?: string; notes?: string; was?: string }> };
-    try {
-      body = await c.req.json();
-    } catch {
-      return c.json({ ok: false, error: "bad json" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.reviewPost);
+    if (!read.ok) return read.response;
+    const body = read.value as { decisions?: Record<string, { status?: string; notes?: string; was?: string }> };
     const decisions = body.decisions ?? {};
 
     // Resolve qid → (file, line) + head sha + already-posted markers from the PR.

@@ -50,7 +50,7 @@ import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
-import { checkOrigin, registerSecurityHeaders } from "./security.js";
+import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders } from "./security.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -1360,11 +1360,9 @@ app.put("/api/article/:slug", async (c) => {
     comment?: unknown;
     meta?: unknown;
   };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.article);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (!posted || typeof posted !== "object" || Array.isArray(posted)) return c.json({ ok: false, error: "expected JSON object" }, 400);
   if (
     typeof posted.wikipedia_title !== "string" ||
@@ -1520,11 +1518,9 @@ app.post("/api/article/:slug", async (c) => {
     annotation_id?: unknown;
     proposal_id?: unknown;
   };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.article);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (!posted || typeof posted !== "object" || Array.isArray(posted)) return c.json({ ok: false, error: "expected JSON object" }, 400);
 
   // ---- endorse (D-C2): {action:'endorse', annotation_id, base_version} ----
@@ -2516,11 +2512,9 @@ app.post("/api/flag/:slug", async (c) => {
   const slug = c.req.param("slug");
 
   let posted: { annotation_id?: unknown; reason?: unknown; comment?: unknown };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.flag);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (typeof posted.reason !== "string" || !FLAG_REASON_SET.has(posted.reason)) {
     return c.json({ ok: false, error: "bad reason" }, 400);
   }
@@ -2607,11 +2601,9 @@ app.post("/api/flag/:id/resolve", async (c) => {
   const id = parseInt(c.req.param("id"), 10);
   if (Number.isNaN(id)) return c.json({ ok: false, error: "bad flag id" }, 400);
   let posted: { resolution?: unknown };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.flagResolve);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (posted.resolution !== "fixed" && posted.resolution !== "dismissed") {
     return c.json({ ok: false, error: "bad resolution" }, 400);
   }
@@ -2851,11 +2843,9 @@ app.post("/api/runs", async (c) => {
   const user = await requireRole(c, ["bot"]);
   if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
   let posted: Record<string, unknown>;
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.runs);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (typeof posted.run_id !== "string" || !RUN_ID_RE.test(posted.run_id)) {
     return c.json({ ok: false, error: "bad run_id" }, 400);
   }

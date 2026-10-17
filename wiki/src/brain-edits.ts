@@ -11,6 +11,7 @@
 import type { Context, Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
 import { and, eq, or, inArray } from "drizzle-orm";
+import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
@@ -1125,12 +1126,9 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
-    let body: Record<string, unknown>;
-    try {
-      body = (await c.req.json()) as Record<string, unknown>;
-    } catch {
-      return c.json({ ok: false, error: "bad JSON body" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.quickstatements, "bad JSON body");
+    if (!read.ok) return read.response;
+    const body = read.value as Record<string, unknown>;
     const release = await resolveBrainRelease(c);
     if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
     const actor = actorTypeFor(bearer, body);
@@ -1189,12 +1187,9 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
-    let body: Record<string, unknown>;
-    try {
-      body = (await c.req.json()) as Record<string, unknown>;
-    } catch {
-      return c.json({ ok: false, error: "bad JSON body" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.brainEdge, "bad JSON body");
+    if (!read.ok) return read.response;
+    const body = read.value as Record<string, unknown>;
     // Normalize atom-id endpoints (cell:<anchor> → <anchor>) BEFORE validation
     // and insert: the /brain search picker submits cell ids, and stored
     // endpoints must stay in the v2 id grammar the overlay string-matches on.
@@ -1353,12 +1348,9 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
       : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
-    let body: Record<string, unknown>;
-    try {
-      body = (await c.req.json()) as Record<string, unknown>;
-    } catch {
-      return c.json({ ok: false, error: "bad JSON body" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.brainNode, "bad JSON body");
+    if (!read.ok) return read.response;
+    const body = read.value as Record<string, unknown>;
     const qid = str(body.qid) || str(body.id);
     let actorType: "human" | "ai";
     if (bearer) {

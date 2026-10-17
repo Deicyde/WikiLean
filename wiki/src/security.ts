@@ -199,6 +199,52 @@ export async function readBodyCapped(req: Request, max: number): Promise<string 
   return readCapped(req, max);
 }
 
+// Byte caps for every JSON request body the Worker reads (readJsonCapped).
+// Each is sized well above its largest legitimate payload:
+//   flag / flagResolve: a reason, an annotation id and a comment of at most
+//     MAX_FLAG_COMMENT_LEN characters (the anonymous route; FLAG_LIMITER keys per IP);
+//   article: annotations of at most MAX_ANNOTATIONS_BYTES serialized plus
+//     MAX_META_BYTES of meta, with room for escaped non-ASCII and whitespace;
+//   runs: a pipeline run report (notes up to MAX_TEXT_LEN);
+//   brainEdge / brainNode: one edge or node with short bounded fields;
+//   quickstatements: up to 200,000 characters of pasted TSV, or 100 rows;
+//   repos: at most 50 repository rows;
+//   reviewPost: one PR's reviewer decisions with free-text notes.
+export const MAX_JSON_BODY_BYTES = {
+  flag: 16 * 1024,
+  flagResolve: 16 * 1024,
+  article: 4 * 1024 * 1024,
+  runs: 64 * 1024,
+  brainEdge: 64 * 1024,
+  brainNode: 64 * 1024,
+  quickstatements: 1024 * 1024,
+  repos: 256 * 1024,
+  reviewPost: 1024 * 1024,
+} as const;
+
+export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };
+
+// The request body parsed as JSON, read through readBodyCapped so neither a
+// declared nor a streamed body past `max` bytes is buffered. Over the cap:
+// 413 {ok:false, error:"request body too large (max N bytes)"}. Malformed
+// JSON: 400 with the route's own error text, so each route keeps its answer.
+// Call it after the route's auth and rate-limit checks, as c.req.json() was.
+export async function readJsonCapped(
+  c: Context<{ Bindings: Env }>,
+  max: number,
+  badJson = "bad json",
+): Promise<JsonBody> {
+  const text = await readBodyCapped(c.req.raw, max);
+  if (text === null) {
+    return { ok: false, response: c.json({ ok: false, error: `request body too large (max ${max} bytes)` }, 413) };
+  }
+  try {
+    return { ok: true, value: JSON.parse(text) as unknown };
+  } catch {
+    return { ok: false, response: c.json({ ok: false, error: badJson }, 400) };
+  }
+}
+
 // Register FIRST, before any route: Hono runs middleware in registration
 // order, and a route registered earlier answers without reaching it.
 export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
