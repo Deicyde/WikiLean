@@ -107,7 +107,7 @@ jobs:
 
   required:
     if: always()
-    needs: [worker, python]
+    needs: [worker, python, browser]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -115,9 +115,10 @@ jobs:
         env:
           WORKER_RESULT: ${{ needs.worker.result }}
           PYTHON_RESULT: ${{ needs.python.result }}
+          BROWSER_RESULT: ${{ needs.browser.result }}
         run: |
-          if [[ "$WORKER_RESULT" != "success" || "$PYTHON_RESULT" != "success" ]]; then
-            echo "Required CI failed: worker=$WORKER_RESULT python=$PYTHON_RESULT"
+          if [[ "$WORKER_RESULT" != "success" || "$PYTHON_RESULT" != "success" || "$BROWSER_RESULT" != "success" ]]; then
+            echo "Required CI failed: worker=$WORKER_RESULT python=$PYTHON_RESULT browser=$BROWSER_RESULT"
             exit 1
           fi
-          echo "Required CI passed: worker=$WORKER_RESULT python=$PYTHON_RESULT"
+          echo "Required CI passed: worker=$WORKER_RESULT python=$PYTHON_RESULT browser=$BROWSER_RESULT"

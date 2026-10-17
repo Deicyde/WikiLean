@@ -1,0 +1,413 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/mathlib-initiative/literature-links/v2.0.0/schema/companion.schema.json",
+  "title": "Literature Links annotation",
+  "description": "One Literature Links annotation. The specification (docs/companion.md) defines every field.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "$ref": "#/$defs/reference"
+    },
+    "subject": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/end"
+      }
+    },
+    "object": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/end"
+      }
+    },
+    "relation": {
+      "$ref": "#/$defs/text"
+    },
+    "status": {
+      "$ref": "#/$defs/text"
+    },
+    "kind": {
+      "$ref": "#/$defs/text"
+    },
+    "id": {
+      "$ref": "#/$defs/text"
+    },
+    "note": {
+      "$ref": "#/$defs/text"
+    },
+    "extensions": {
+      "$ref": "#/$defs/extensions"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "subject",
+    "object"
+  ],
+  "$defs": {
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?:[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f\\u2066-\\u2069\\u3000\\ufeff\\ufffe\\uffff%]|%[0-9A-Fa-f]{2})+(?![\\s\\S])"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1
+    },
+    "extensions": {
+      "type": "object",
+      "patternProperties": {
+        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f\\u2066-\\u2069\\u3000\\ufeff\\ufffe\\uffff]+(?![\\s\\S])": true
+      },
+      "additionalProperties": false
+    },
+    "end": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "pdf",
+            "latex",
+            "html",
+            "lean",
+            "generic"
+          ]
+        },
+        "uri": {
+          "$ref": "#/$defs/reference"
+        },
+        "location": {
+          "type": "object",
+          "properties": {
+            "profile": {
+              "$ref": "#/$defs/reference"
+            }
+          }
+        },
+        "version": {
+          "$ref": "#/$defs/text"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "citation": {
+          "$ref": "#/$defs/citation"
+        },
+        "identifiers": {
+          "$ref": "#/$defs/identifiers"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "role": {
+          "$ref": "#/$defs/text"
+        },
+        "junk": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "extensions": {
+          "$ref": "#/$defs/extensions"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "uri"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "pdf"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "location": {
+                "if": {
+                  "required": [
+                    "profile"
+                  ]
+                },
+                "else": {
+                  "$ref": "#/$defs/pdf_location"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "latex"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "location": {
+                "if": {
+                  "required": [
+                    "profile"
+                  ]
+                },
+                "else": {
+                  "$ref": "#/$defs/latex_location"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "html"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "location": {
+                "if": {
+                  "required": [
+                    "profile"
+                  ]
+                },
+                "else": {
+                  "$ref": "#/$defs/html_location"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "lean"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "properties": {
+              "location": {
+                "if": {
+                  "required": [
+                    "profile"
+                  ]
+                },
+                "else": {
+                  "$ref": "#/$defs/lean_location"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pdf_location": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "rect": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "items": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "quote": {
+          "$ref": "#/$defs/quote"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "page"
+      ],
+      "not": {
+        "required": [
+          "rect",
+          "quote"
+        ]
+      }
+    },
+    "latex_location": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "$ref": "#/$defs/text"
+        },
+        "lines": {
+          "$ref": "#/$defs/lines"
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "label"
+          ]
+        },
+        {
+          "required": [
+            "lines"
+          ]
+        }
+      ]
+    },
+    "html_location": {
+      "type": "object",
+      "properties": {
+        "fragment": {
+          "type": "string",
+          "pattern": "^[^#\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000][^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000]*(?![\\s\\S])"
+        },
+        "css": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quote": {
+          "$ref": "#/$defs/quote"
+        }
+      },
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "fragment"
+          ]
+        },
+        {
+          "required": [
+            "css"
+          ]
+        },
+        {
+          "required": [
+            "quote"
+          ]
+        }
+      ]
+    },
+    "lean_location": {
+      "type": "object",
+      "properties": {
+        "declaration": {
+          "$ref": "#/$defs/text"
+        },
+        "module": {
+          "$ref": "#/$defs/text"
+        },
+        "lines": {
+          "$ref": "#/$defs/lines"
+        }
+      },
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "declaration"
+          ]
+        },
+        {
+          "required": [
+            "module"
+          ]
+        }
+      ],
+      "if": {
+        "required": [
+          "lines"
+        ]
+      },
+      "then": {
+        "required": [
+          "module"
+        ]
+      }
+    },
+    "quote": {
+      "type": "object",
+      "properties": {
+        "exact": {
+          "type": "string",
+          "minLength": 1
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "suffix": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "exact"
+      ]
+    },
+    "lines": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])"
+    },
+    "identifiers": {
+      "type": "object",
+      "patternProperties": {
+        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f\\u2066-\\u2069\\u3000\\ufeff\\ufffe\\uffff]+(?![\\s\\S])": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "additionalProperties": false
+    },
+    "citation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "type": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ]
+    }
+  }
+}

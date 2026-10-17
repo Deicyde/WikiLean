@@ -47,7 +47,9 @@ AFFECTING_EXCEPTIONS: tuple[str, ...] = (
 NEUTRAL_FILES: tuple[str, ...] = (
     ".gitattributes",
     ".gitignore",
+    "AGENTS.md",
     "CLAUDE.md",
+    "CONTRIBUTING.md",
     "HANDOFF.md",
     "LICENSE",
 )

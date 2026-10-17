@@ -1,6 +1,7 @@
 // Server-rendered chrome for the live wiki: the auth bar + editor injection on
 // article pages, plus the History and Recent-changes pages.
 
+import { editorItems, wikipediaSourceUri } from "./native-companion.js";
 import { htmlEscape } from "./engine/html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
 import { docsUrlFor } from "./decl.js";
@@ -35,6 +36,8 @@ export function injectAuthAndEditor(
   page: string,
   opts: {
     slug: string;
+    wikipediaTitle?: string;
+    schemaVersion?: number;
     user: AuthUser | null;
     annotations: Annotation[];
     version?: number;
@@ -51,6 +54,8 @@ export function injectAuthAndEditor(
   },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
+  let sourceUri: string | null = null;
+  try { sourceUri = wikipediaSourceUri({ wikipediaTitle: opts.wikipediaTitle ?? opts.slug, revid: opts.revid ?? null }); } catch { /* Unknown pin: new native locations stay unavailable. */ }
   let inject: string;
   if (opts.user) {
     inject =
@@ -62,7 +67,9 @@ export function injectAuthAndEditor(
       `window.__WL_VERSION__=${safeJson(opts.version ?? 0)};` +
       `window.__WL_WATCHING__=${safeJson(Boolean(opts.isWatching))};` +
       `window.__WL_PROPOSALS__=${safeJson(opts.proposals ?? [])};` +
-      `window.__WL_FULL_ANNOS__=${safeJson({ annotations: opts.annotations })};</script>\n` +
+      `window.__WL_SCHEMA_VERSION__=${safeJson(opts.schemaVersion ?? 3)};` +
+      `window.__WL_SOURCE__=${safeJson(sourceUri)};` +
+      `window.__WL_FULL_ANNOS__=${safeJson({ annotations: editorItems(opts.annotations) })};</script>\n` +
       // v=4: warm-palette editor chrome + sticky bar offsets (W3 fixes #5/#6d).
       // v=5: anchor-editing fieldset styles (highlight-range box + Use-selection btn).
       `<link rel="stylesheet" href="/assets/review.css?v=5">\n` +
@@ -74,7 +81,7 @@ export function injectAuthAndEditor(
       // v=16: save-UX niceties — kind/match_kind <select>s (unknown stored
       // values preserved), comment cleared after save, label-based panel
       // titles, alt-click → Mathlib docs, orphaned-anchor Re-anchor flow.
-      `<script src="/assets/editor.js?v=17"></script>\n`;
+      `<script src="/assets/editor.js?v=19"></script>\n`;
   } else {
     inject =
       `<a id="wl-signin" href="/login?returnTo=${ret}" ` +

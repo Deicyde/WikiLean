@@ -88,7 +88,9 @@ export function botSave(env: Env, body: Record<string, unknown>): Promise<Respon
 }
 
 export function botCreate(env: Env, slug: string, body: Record<string, unknown>): Promise<Response> {
-  return put(env, `/api/article/${slug}`, body, { bearer: PIPELINE_TOKEN, origin: null });
+  // Historical suites explicitly exercise the supported legacy writer. Native
+  // creation tests use put() or pass schema_version:4 to this helper.
+  return put(env, `/api/article/${slug}`, { schema_version: 3, ...body as object }, { bearer: PIPELINE_TOKEN, origin: null });
 }
 
 // Bot save that stamps a pipeline run: meta.run_id = runId + a run-shaped

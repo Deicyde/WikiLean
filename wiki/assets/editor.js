@@ -1,3 +1,163 @@
+// Pure, immutable editor operations. Kept in this served asset so the browser
+// and regression tests exercise the same preservation logic.
+function createCompanionEditorModel() {
+  const profile = "urn:wikilean:anchor:v3";
+  const mathlib = "https://github.com/leanprover-community/mathlib4";
+  const docs = "https://leanprover-community.github.io/mathlib4_docs/";
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const native = item => !!item && ("links" in item || "unlinked" in item);
+  // The source locations of an item: each subject end of each link, then each unlinked end.
+  function entries(item) {
+    const linked = [];
+    item.links.forEach((link, index) => link.annotation.subject.forEach((occurrence, end) => linked.push({
+      key: end ? "link-end:" + end + ":" + link.id : "link:" + link.id, kind: "link", index, end, link, occurrence, base: link.base_uri })));
+    return linked.concat(item.unlinked.map((occurrence, index) => ({ key: "unlinked:" + index, kind: "unlinked", index, occurrence, base: occurrence.base_uri })));
+  }
+  function selected(item, key) { return entries(item).find(entry => entry.key === key); }
+  function docsUri(module, declaration) {
+    return docs + module.split(".").map(encodeURIComponent).join("/") + ".html#" + encodeURIComponent(declaration);
+  }
+  // The reference shown for a formal end: a Mathlib declaration's docs page, else the end's uri.
+  function referenceOf(end) {
+    const loc = end.location || {};
+    if (end.type === "lean" && end.uri === mathlib && typeof loc.declaration === "string" && typeof loc.module === "string"
+      && !("lines" in loc) && !("profile" in loc)) return docsUri(loc.module, loc.declaration);
+    return end.uri;
+  }
+  // A typed reference as a formal end. A Mathlib docs page becomes its declaration in the repository.
+  function endOf(reference) {
+    const match = reference.startsWith(docs) ? /^([^#?]+)\.html#([^#]+)$/.exec(reference.slice(docs.length)) : null;
+    if (match) {
+      try {
+        const end = { type: "lean", uri: mathlib, location: { declaration: decodeURIComponent(match[2]), module: match[1].split("/").map(decodeURIComponent).join(".") } };
+        if (referenceOf(end) === reference) return end;
+      } catch (_) { /* not a docs page this editor writes */ }
+    }
+    return { type: "generic", uri: reference };
+  }
+  // The formal references of a link entry, separated by spaces; none for an unlinked one.
+  function targetOf(entry) {
+    return entry && entry.kind === "link" ? entry.link.annotation.object.map(referenceOf).join(" ") : "";
+  }
+  // The WikiLean editing key (section + snippet, or a typed anchor) stored in
+  // the end's extensions beside a built-in Literature Links location.
+  function editingKey(occ) {
+    const wikilean = occ.extensions && occ.extensions["org.wikilean"];
+    return wikilean && wikilean.anchor && typeof wikilean.anchor === "object" ? wikilean.anchor : null;
+  }
+  // Wikipedia text on an html end: the anchor profile, or a built-in
+  // location with the editing key beside it.
+  function wikipediaText(occ) {
+    if (occ.type !== "html" || !occ.location) return false;
+    return occ.location.profile === profile || (!("profile" in occ.location) && !!editingKey(occ));
+  }
+  // Store the editing key beside a built-in location, or remove it when the
+  // location itself carries the anchor again.
+  function setEditingKey(occ, anchor) {
+    const extensions = { ...(occ.extensions || {}) };
+    const wikilean = { ...(extensions["org.wikilean"] || {}) };
+    if (anchor) wikilean.anchor = clone(anchor); else delete wikilean.anchor;
+    if (Object.keys(wikilean).length) extensions["org.wikilean"] = wikilean; else delete extensions["org.wikilean"];
+    if (Object.keys(extensions).length) occ.extensions = extensions; else delete occ.extensions;
+  }
+  // Write an anchor into an end: as a built-in quotation when the page
+  // can locate the text (locate returns {quote: {...}}), else in the profile form.
+  function placeAnchor(occ, anchor, locate, keepProfileDetails) {
+    const location = locate ? locate(anchor) : null;
+    if (location) {
+      occ.location = clone(location);
+      setEditingKey(occ, anchor);
+    } else {
+      const previous = keepProfileDetails && occ.location && occ.location.profile === profile ? occ.location : {};
+      occ.location = { ...previous, profile, anchor: clone(anchor) };
+      setEditingKey(occ, null);
+    }
+  }
+  function makeItem(source, anchor, locate) {
+    if (!source) throw new Error("The article has no pinned source revision. A source revision is required before adding a location.");
+    const occurrence = { type: "html", uri: source };
+    placeAnchor(occurrence, anchor, locate, false);
+    return { links: [], unlinked: [occurrence] };
+  }
+  function anchor(entry, source) {
+    if (!entry || !source) return null;
+    const occ = entry.occurrence;
+    let uri;
+    try { uri = entry.base ? new URL(occ.uri, entry.base).href : new URL(occ.uri).href; } catch (_) { return null; }
+    if (uri !== source || !wikipediaText(occ)) return null;
+    return occ.location.profile === profile ? occ.location.anchor || null : editingKey(occ);
+  }
+  function edit(item, key, change, newId, locate) {
+    const next = clone(item), entry = selected(next, key);
+    if (!entry) throw new Error("Choose a source location first.");
+    const occ = entry.occurrence;
+    if (change.anchor) {
+      if (change.reanchorSource) {
+        // The end now selects article text. What described the old document goes,
+        // its title too, so the export labels the end from the item.
+        for (const field of ["version", "sha256", "citation", "identifiers", "title"]) delete occ[field];
+        occ.type = "html"; occ.uri = change.reanchorSource;
+        placeAnchor(occ, change.anchor, locate, false);
+      } else {
+        if (!wikipediaText(occ))
+          throw new Error("This location cannot be edited as Wikipedia text. Use a new article selection to replace it explicitly.");
+        placeAnchor(occ, { ...anchor(entry, new URL(occ.uri, entry.base || undefined).href) || {}, ...clone(change.anchor) }, locate, true);
+      }
+      // The junk values an end lists belong to what it selected before.
+      delete occ.junk;
+    }
+    if ("target" in change && change.target !== targetOf(entry)) {
+      const target = change.target.trim();
+      if (target && /\s/.test(target)) throw new Error("The formal reference must not contain spaces; use an encoded URI.");
+      if (entry.kind === "link") {
+        const annotation = entry.link.annotation;
+        if (target) {
+          // A new destination replaces the old one entirely: the old object ends
+          // go with their versions and junk values, and the relation described
+          // them and would be false here.
+          annotation.object = [endOf(target)];
+          delete annotation.relation;
+        } else {
+          // Without a formal end, every subject end of the link returns to unlinked work.
+          const moved = annotation.subject.map(end => entry.base ? { ...end, base_uri: entry.base } : end);
+          next.unlinked.push(...moved);
+          next.links.splice(entry.index, 1);
+          return { item: next, key: "unlinked:" + (next.unlinked.length - moved.length + entry.end) };
+        }
+      } else if (target) {
+        const end = clone(occ); delete end.base_uri;
+        const link = { id: newId(), annotation: { subject: [end], object: [endOf(target)] } };
+        if (entry.base) link.base_uri = entry.base;
+        next.links.push(link);
+        next.unlinked.splice(entry.index, 1);
+        return { item: next, key: "link:" + link.id };
+      }
+    }
+    return { item: next, key };
+  }
+  function add(item, key, target, newId) {
+    if (!target || /\s/.test(target)) throw new Error("Enter a formal reference without spaces.");
+    const next = clone(item), entry = selected(next, key);
+    if (!entry) throw new Error("Choose the source location for the additional link.");
+    // Another link at the same place shares the end, not the first link's record.
+    const end = clone(entry.occurrence); delete end.base_uri;
+    const link = { id: newId(), annotation: { subject: [end], object: [endOf(target)] } };
+    if (entry.base) link.base_uri = entry.base;
+    next.links.push(link);
+    return { item: next, key: "link:" + link.id };
+  }
+  function selectionAfterEdit(before, editedKey, requestedKey, after, resultKey) {
+    if (requestedKey === editedKey) return resultKey;
+    const requested = selected(before, requestedKey), edited = selected(before, editedKey);
+    if (!requested || requested.kind === "link") return requestedKey;
+    // Promoting an unlinked occurrence removes one array entry. Preserve the
+    // source the contributor selected, including identical duplicate sources.
+    const promoted = edited && edited.kind === "unlinked" && after.unlinked.length === before.unlinked.length - 1;
+    return "unlinked:" + (requested.index - (promoted && edited.index < requested.index ? 1 : 0));
+  }
+  return { clone, native, entries, selected, targetOf, referenceOf, endOf, makeItem, anchor, edit, add, selectionAfterEdit, editingKey };
+}
+// ---- editor runtime ----
 // WikiLean live-wiki editor. Injected on article pages for logged-in users by
 // the Worker (window.__WL_SLUG__, __WL_USER__, __WL_FULL_ANNOS__ are set first).
 // Adapted from site/assets/review.js — same interaction model, but saves to the
@@ -18,6 +178,11 @@
   const user = window.__WL_USER__ || { name: "you" };
   const model = window.__WL_FULL_ANNOS__ || { annotations: [] };
   const annos = model.annotations;
+  const companions = createCompanionEditorModel();
+  const nativeMode = window.__WL_SCHEMA_VERSION__ === 4 || annos.some(companions.native);
+  let nativeDraft = null, nativeKey = "", nativeAnchorBaseline = "";
+  const sourceUri = window.__WL_SOURCE__;
+
   if (!slug) return;
 
   let editingIndex = null;
@@ -63,7 +228,7 @@
   const orphanIdxs = [];
   const suppressedIdxs = [];
   annos.forEach(function (a, i) {
-    if (!a || a.status === "rejected" || wrappedIdxs.has(i)) return;
+    if (!a || a.status === "rejected" || (wrappedIdxs.has(i) && !(companions.native(a) && Array.isArray(matchedArr) && matchedArr[i] === false))) return;
     if (Array.isArray(matchedArr) && matchedArr[i] === true) suppressedIdxs.push(i);
     else orphanIdxs.push(i);
   });
@@ -82,7 +247,7 @@
     // re-anchored from a fresh selection (save-UX e).
     (orphanIdxs.length
       ? '<button id="wlr-orphans" type="button" title="These annotations&#39; anchor text no longer matches the article, so they render no highlight — open one, select the right text in the article, and click Re-anchor">' +
-        orphanIdxs.length + " orphaned" + "</button>"
+        orphanIdxs.length + " locations not displayed" + "</button>"
       : "") +
     // Suppressed = anchor healthy, highlight dropped by overlap protection.
     // Reachable for editing, but with truthful copy and no Re-anchor.
@@ -90,7 +255,7 @@
       ? '<button id="wlr-suppressed" type="button" title="These annotations&#39; anchors match, but their highlights overlap another annotation&#39;s and were not drawn — the annotation itself is intact and editable">' +
         suppressedIdxs.length + " hidden by overlap" + "</button>"
       : "") +
-    '<span style="opacity:.85">click a highlight to edit · select text to add · alt-click a highlight opens its Mathlib docs</span>' +
+    '<span style="opacity:.85">click a highlight to edit · select text to add · alt-click a highlight opens its formal reference</span>' +
     '<span class="wlr-spacer"></span>' +
     // P3: name links to /u/<id> when the id is known (older cached pages
     // without __WL_USER__.id fall back to plain text).
@@ -292,6 +457,16 @@
     <button id="wlr-close" type="button" title="Close (Esc)" aria-label="Close editor">×</button>
     <h3 id="wlr-title">Edit annotation</h3>
     <div class="wlr-quote" id="wlr-quote"></div>
+    <fieldset id="wlr-companions" hidden>
+      <legend>Formal links</legend>
+      <label for="wlr-f-occurrence">Source location</label>
+      <select id="wlr-f-occurrence"></select>
+      <small id="wlr-source-info" class="wlr-help"></small>
+      <label for="wlr-f-target">Formal reference</label>
+      <input id="wlr-f-target" placeholder="https://… or another formal URI" autocomplete="off">
+      <small class="wlr-help">Each link connects this source location to one formal reference. Clearing the reference keeps the source location as work still to do.</small>
+      <button id="wlr-add-link" type="button">Add another link at this location</button>
+    </fieldset>
     <fieldset id="wlr-f-anchor-set" class="wlr-anchor-set">
       <legend>Highlight range
         <button type="button" id="wlr-f-anchor-pick" title="Replace this annotation's range with whatever text is currently selected in the article">Use selection</button>
@@ -305,7 +480,7 @@
       <small id="wlr-f-anchor-locked" class="wlr-help wlr-anchor-locked-msg" style="display:none">This annotation uses a typed anchor (<span id="wlr-f-anchor-type"></span>) — direct re-anchoring isn't supported in the editor yet. Delete and recreate to change its range.</small>
     </fieldset>
     <label for="wlr-f-status">Status</label>
-    <small class="wlr-help">Does Mathlib4 capture this statement?</small>
+    <small class="wlr-help">Does the formal result capture this statement?</small>
     <select id="wlr-f-status">
       <option value="formalized">formalized</option>
       <option value="partial">partial</option>
@@ -324,6 +499,7 @@
     <label for="wlr-f-label">Label</label>
     <small class="wlr-help">Short display name shown at the top of the tooltip.</small>
     <input id="wlr-f-label" placeholder="e.g. Abelianization of a group">
+    <div id="wlr-legacy-formal">
     <label for="wlr-f-decl">Mathlib decl</label>
     <small class="wlr-help">Type 2+ chars for autocomplete (full Mathlib index; decls already used on WikiLean rank first). Picking a suggestion auto-fills the module.</small>
     <input id="wlr-f-decl" placeholder="e.g. Ideal.IsPrime" list="wlr-decl-options" autocomplete="off">
@@ -332,8 +508,9 @@
     <label for="wlr-f-module">Mathlib module</label>
     <small class="wlr-help">Dotted path, auto-filled from the decl autocomplete.</small>
     <input id="wlr-f-module" placeholder="e.g. Mathlib.RingTheory.Ideal.Prime">
+    </div>
     <label for="wlr-f-match">match_kind</label>
-    <small class="wlr-help">How the Mathlib decl relates to the statement.</small>
+    <small class="wlr-help">How the formal result relates to the statement.</small>
     <select id="wlr-f-match">
       <option value="">—</option>
       <option value="exact">exact</option>
@@ -488,6 +665,7 @@
     overlay.innerHTML =
       '<div class="card">' +
       "<h2>Welcome to the WikiLean editor</h2>" +
+      (nativeMode ? "<p>A review item can contain several source locations and formal links. Choose a source location before editing its formal reference.</p><ul><li><b>Formal reference</b> — the address or URI of one formal result. Add another link when the same source relates to several results.</li><li><b>Source location</b> — the selected part of an informal resource. Locations this viewer cannot display are retained. Re-anchor deliberately replaces the selected location with article text.</li><li><b>Status</b> — your assessment of how fully the formal results capture this statement.</li></ul>" :
       "<p>Each annotation links a Wikipedia statement to a " +
       '<a href="https://leanprover-community.github.io/mathlib4_docs/" target="_blank" rel="noopener">Mathlib4</a> ' +
       "declaration. Key fields:</p>" +
@@ -499,7 +677,7 @@
       "Type 2+ chars to autocomplete from the full Mathlib index; picking one fills the module field.</li>" +
       "<li><b>match_kind</b> — how the decl relates: <code>exact</code> · <code>generalization</code> · " +
       "<code>special_case</code> · <code>invocation</code>.</li>" +
-      "</ul>" +
+      "</ul>") +
       '<p class="footer">Every save flips this annotation\'s provenance to ' +
       '<span style="color:#266844">✓ human-curated</span> — readers see that you\'ve reviewed it. ' +
       "The <b>✓ Mark reviewed</b> button does the same without changing any field.</p>" +
@@ -841,6 +1019,81 @@
     }
   });
 
+  // ---- built-in locations -----------------------------------------------
+  // A new or edited WikiLean anchor is stored as a Literature Links quotation
+  // found in this page's text layer (the specification's: text without script,
+  // style and template, White_Space collapsed, trimmed), with the editing key
+  // kept beside it. When the text cannot be found the profile form is used.
+  const WS_RE = /[\t\n\v\f\r \u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/g;
+  function collapseWs(text) { return text.replace(WS_RE, " ").replace(/^ | $/g, ""); }
+  function layerText(root) {
+    if (!root) return "";
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function (node) {
+        for (let el = node.parentElement; el && el !== root; el = el.parentElement) {
+          if (/^(SCRIPT|STYLE|TEMPLATE)$/.test(el.tagName)) return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const parts = [];
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) parts.push(node.nodeValue);
+    return collapseWs(parts.join(""));
+  }
+  function findAll(hay, needle) {
+    const found = [];
+    for (let p = hay.indexOf(needle); p !== -1; p = hay.indexOf(needle, p + 1)) found.push(p);
+    return found;
+  }
+  // The approximate text-layer offset of the current selection, so an anchor
+  // that occurs several times resolves to the occurrence the contributor chose.
+  let selectionHint = null;
+  function rememberSelectionHint(sel) {
+    try {
+      const range = document.createRange();
+      range.setStart(articleBody, 0);
+      range.setEnd(sel.anchorNode, sel.anchorOffset);
+      selectionHint = { text: collapseWs(sel.toString()), offset: collapseWs(range.toString()).length };
+    } catch (_) { selectionHint = null; }
+  }
+  function locateInArticle(anchor) {
+    if (!articleBody || !anchor || anchor.type || typeof anchor.snippet !== "string") return null;
+    const text = layerText(articleBody);
+    const key = collapseWs(anchor.snippet);
+    if (!key) return null;
+    let hits = findAll(text, key), exact = key;
+    if (!hits.length) {
+      const lowered = text.toLowerCase();
+      if (lowered.length === text.length) {
+        hits = findAll(lowered, key.toLowerCase());
+        if (hits.length) exact = text.substr(hits[0], key.length);
+      }
+    }
+    if (!hits.length) return null;
+    let chosen = hits[0];
+    if (hits.length > 1 && selectionHint && selectionHint.text === key) {
+      chosen = hits.reduce(function (best, hit) { return Math.abs(hit - selectionHint.offset) < Math.abs(best - selectionHint.offset) ? hit : best; }, hits[0]);
+      exact = text.substr(chosen, key.length);
+    }
+    if (hits.length === 1 && exact.length >= 20) return { quote: { exact: exact } };
+    const after = chosen + exact.length;
+    const widths = [24, 48, 96, 192];
+    for (let w = 0; w < widths.length; w++) {
+      const width = widths[w];
+      let prefix = text.slice(Math.max(0, chosen - width), chosen);
+      if (chosen - width > 0 && prefix.indexOf(" ") !== -1) prefix = prefix.slice(prefix.indexOf(" "));
+      let suffix = text.slice(after, after + width);
+      if (after + width < text.length && suffix.indexOf(" ") !== -1) suffix = suffix.slice(0, suffix.lastIndexOf(" ") + 1);
+      if (findAll(text, prefix + exact + suffix).length === 1) {
+        const quote = { exact: exact };
+        if (prefix) quote.prefix = prefix;
+        if (suffix) quote.suffix = suffix;
+        return { quote: quote };
+      }
+    }
+    return null;
+  }
+
   // Cached article-body element — selections must live inside this to count as
   // an "annotate this prose" gesture. Outside (top bar, edit panel, intro
   // overlay, page footer, etc.) selecting text should never pop the FAB.
@@ -866,6 +1119,7 @@
     ) {
       return { outside: true };
     }
+    rememberSelectionHint(sel);
     return { text: text, section: nearestSection(sel.anchorNode) };
   }
 
@@ -966,6 +1220,10 @@
       // unsaved change (and the 409 draft-restore captures it).
       anchorSection: $("wlr-f-anchor-section").value,
       anchorSnippet: $("wlr-f-anchor-snippet").value,
+      nativeDraft: nativeDraft, nativeKey: nativeKey,
+      nativeTarget: $("wlr-f-target").value,
+      nativeReanchor: panel.dataset.reanchor === "1",
+      nativeAnchorBaseline: nativeAnchorBaseline,
     };
   }
 
@@ -1014,6 +1272,16 @@
     setSelectValue($("wlr-f-match"), d.match || "");
     $("wlr-f-note").value = d.note || "";
     $("wlr-f-comment").value = d.comment || "";
+    if (nativeMode && d.nativeDraft) {
+      nativeDraft = d.nativeDraft;
+      nativeKey = d.nativeKey;
+      populateNative();
+      $("wlr-f-target").value = d.nativeTarget || "";
+      nativeAnchorBaseline = d.nativeAnchorBaseline || nativeAnchorBaseline;
+      if (d.nativeReanchor) { populateAnchorFields({}); panel.dataset.reanchor = "1"; }
+    }
+    if (typeof d.anchorSection === "string") $("wlr-f-anchor-section").value = d.anchorSection;
+    if (typeof d.anchorSnippet === "string") $("wlr-f-anchor-snippet").value = d.anchorSnippet;
     return true;
   }
 
@@ -1044,6 +1312,7 @@
     setSelectValue($("wlr-f-match"), m.match_kind || a.match_kind || "");
     $("wlr-f-note").value = a.note || "";
     populateAnchorFields(a.anchor || {});
+    beginNative(a);
     setDeclCheck("", true);
     $("wlr-del").style.display = "";
     // Show the one-click endorsement only when there's something to flip.
@@ -1053,12 +1322,12 @@
     delete panel.dataset.reanchor;
     const isOrphan = orphanIdxs.indexOf(idx) !== -1;
     const isSuppressed = suppressedIdxs.indexOf(idx) !== -1;
-    $("wlr-f-anchor-reanchor").style.display = isOrphan ? "" : "none";
+    $("wlr-f-anchor-reanchor").style.display = (isOrphan || nativeDraft) && sourceUri ? "" : "none";
     $("wlr-status-msg").textContent =
       a.status === "rejected"
         ? "This annotation is rejected (hidden from readers). Pick another status and save to restore it."
         : isOrphan
-          ? "⚠ This annotation's anchor no longer matches the article text, so it renders no highlight. Select the correct text in the article, then click Re-anchor."
+          ? "One or more source locations are not displayed here. Choose a location to inspect it. To replace it, select article text and use Re-anchor."
           : isSuppressed
             ? "This annotation's anchor matches, but its highlight overlaps another annotation's and is not drawn. The annotation itself is intact — no re-anchoring needed."
             : "";
@@ -1089,6 +1358,7 @@
     // New annotations always use the section+snippet anchor type, so the
     // fields are editable from the start.
     populateAnchorFields({ section, snippet: text });
+    beginNative(null, { section, snippet: text });
     setDeclCheck("", true);
     $("wlr-del").style.display = "none";
     // New annotations become human-curated on save, so nothing to mark separately.
@@ -1129,9 +1399,87 @@
   $("wlr-close").addEventListener("click", requestClose);
 
   function quoteOf(a) {
+    if (companions.native(a)) {
+      const entry = companions.entries(a)[0];
+      const anchor = companions.anchor(entry, sourceUri);
+      return anchor ? anchor.snippet || anchor.value || anchor.from || entry.occurrence.uri : entry ? entry.occurrence.uri : "No source location";
+    }
     const anc = a.anchor || {};
     return anc.snippet || anc.value || anc.from || "(" + (anc.section || "?") + ")";
   }
+
+  function beginNative(item, anchor) {
+    nativeDraft = null; nativeKey = "";
+    $("wlr-companions").hidden = !nativeMode;
+    $("wlr-legacy-formal").hidden = nativeMode;
+    if (!nativeMode) return;
+    try { nativeDraft = item ? companions.clone(item) : companions.makeItem(sourceUri, anchor, locateInArticle); }
+    catch (error) { $("wlr-status-msg").textContent = error.message; return; }
+    populateNative();
+  }
+  function populateNative() {
+    if (!nativeDraft) return;
+    const entries = companions.entries(nativeDraft);
+    const select = $("wlr-f-occurrence");
+    select.replaceChildren();
+    entries.forEach(function (entry, index) {
+      const option = document.createElement("option");
+      option.value = entry.key;
+      option.textContent = (index + 1) + ". " + (entry.kind === "link" ? companions.targetOf(entry) : "No formal link yet");
+      select.appendChild(option);
+    });
+    if (!entries.some(entry => entry.key === nativeKey)) nativeKey = entries[0] ? entries[0].key : "";
+    select.value = nativeKey;
+    const entry = companions.selected(nativeDraft, nativeKey);
+    $("wlr-f-target").value = entry && entry.kind === "link" ? companions.targetOf(entry) : "";
+    $("wlr-source-info").textContent = entry ? entry.occurrence.type + " · " + entry.occurrence.uri : "No source location. Select article text and use Re-anchor to add one.";
+    const anchor = companions.anchor(entry, sourceUri);
+    populateAnchorFields(anchor || { type: "source location retained; select article text to replace" });
+    nativeAnchorBaseline = JSON.stringify([$("wlr-f-anchor-section").value, $("wlr-f-anchor-snippet").value]);
+    delete panel.dataset.reanchor;
+  }
+  function flushNative() {
+    if (!nativeMode) return;
+    if (!nativeDraft) throw new Error("A pinned article source is required before creating this annotation.");
+    const change = { target: $("wlr-f-target").value.trim() };
+    const section = $("wlr-f-anchor-section").value, snippet = $("wlr-f-anchor-snippet").value;
+    const reanchor = panel.dataset.reanchor === "1";
+    if (reanchor || JSON.stringify([section, snippet]) !== nativeAnchorBaseline) {
+      change.anchor = { section, snippet };
+      if (reanchor) {
+        if (!sourceUri) throw new Error("A pinned article source is required to replace a location.");
+        change.reanchorSource = sourceUri;
+      }
+    }
+    if (!nativeKey) {
+      if (!reanchor && change.target) throw new Error("Select article text and use Re-anchor before adding a formal reference.");
+      if (!reanchor) return; // An empty work item is valid and remains empty on metadata edits.
+      nativeDraft.unlinked.push(companions.makeItem(sourceUri, change.anchor, locateInArticle).unlinked[0]);
+      nativeKey = "unlinked:" + (nativeDraft.unlinked.length - 1);
+    }
+    const result = companions.edit(nativeDraft, nativeKey, change, newLinkId, locateInArticle);
+    nativeDraft = result.item; nativeKey = result.key;
+  }
+  function newLinkId() { return "link:" + crypto.randomUUID(); }
+  $("wlr-f-occurrence").addEventListener("change", function () {
+    const nextKey = this.value;
+    try {
+      const before = nativeDraft, editedKey = nativeKey;
+      flushNative();
+      nativeKey = companions.selectionAfterEdit(before, editedKey, nextKey, nativeDraft, nativeKey);
+      populateNative();
+    }
+    catch (error) { this.value = nativeKey; $("wlr-status-msg").textContent = error.message; }
+  });
+  $("wlr-add-link").addEventListener("click", function () {
+    try {
+      flushNative();
+      const target = prompt("Formal reference for the additional link:");
+      if (target === null) return;
+      const result = companions.add(nativeDraft, nativeKey, target.trim(), newLinkId);
+      nativeDraft = result.item; nativeKey = result.key; populateNative();
+    } catch (error) { $("wlr-status-msg").textContent = error.message; }
+  });
 
   // Populate the Section/Snippet inputs from an anchor. Section+snippet anchors
   // (the dominant case — ~99% of annotations) become editable; typed anchors
@@ -1334,6 +1682,7 @@
   }
 
   function save() {
+    if (nativeMode) { saveNative(); return; }
     const built = {
       status: $("wlr-f-status").value,
       kind: $("wlr-f-kind").value.trim() || undefined,
@@ -1388,6 +1737,26 @@
       annos[editingIndex] = { ...prev, ...built };
       // The merge creates a new object — carry over never-persisted tracking.
       if (unsavedNew.delete(prev)) unsavedNew.add(annos[editingIndex]);
+    }
+    persist("saved");
+  }
+
+  function saveNative() {
+    try { flushNative(); } catch (error) { $("wlr-status-msg").textContent = error.message; return; }
+    const built = { ...nativeDraft,
+      status: $("wlr-f-status").value,
+      kind: $("wlr-f-kind").value.trim() || undefined,
+      label: $("wlr-f-label").value.trim() || undefined,
+      note: $("wlr-f-note").value.trim(),
+      match_kind: $("wlr-f-match").value.trim() || undefined,
+      provenance: "human",
+    };
+    if (editingIndex == null) {
+      built.id = newAnnotationId(); unsavedNew.add(built); annos.push(built);
+      editingIndex = annos.length - 1;
+    } else {
+      const prev = annos[editingIndex]; annos[editingIndex] = built;
+      if (unsavedNew.delete(prev)) unsavedNew.add(built);
     }
     persist("saved");
   }
