@@ -241,7 +241,8 @@ routine schedule.
    ```bash
    OLD=/path/to/old.key NEW=/path/to/backup-recipients.txt
    if out=$(age -R "$NEW" -o /dev/null </dev/null 2>&1) && [ -z "$out" ]; then
-     for f in wikilean-*.sql.age; do
+     for f in wikilean-*.sql.age wikilean-*.sql.gz.age; do
+       [ -f "$f" ] || continue   # a pattern that matched nothing
        if ( set -o pipefail; age -d -i "$OLD" "$f" | age -R "$NEW" -o "$f.new" ); then
          mv "$f.new" "$f"
        else
@@ -315,22 +316,36 @@ Decrypt and restore its output exactly like a workflow artifact. For a cron
 job, keep the recipients in a file and read it on each run, as in the script's
 header. Then rotating keys means updating that file.
 
-Dumps made by older versions of the script are plaintext `wikilean-<ts>.sql`
-files in `wiki/backups/`. From the repository root, with
-`BACKUP_AGE_RECIPIENTS` exported as above, encrypt them in place (or delete
-them). The same recipient check as above runs first, and nothing changes if it
-fails:
+Dumps made by older versions of the script are plaintext files in
+`wiki/backups/`: `wikilean-<ts>.sql`, or gzip-compressed `wikilean-<ts>.sql.gz`
+(the May–June 2026 dumps are the compressed kind). From the repository root,
+with `BACKUP_AGE_RECIPIENTS` exported as above, encrypt both kinds in place (or
+delete them). The same recipient check as above runs first, and nothing
+changes if it fails. A plaintext file is removed only after its `.age` file is
+written and starts with the age header; on any failure the plaintext stays and
+the partial `.age` file is removed:
 
 ```bash
 cd wiki/backups
 if out=$(age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o /dev/null </dev/null 2>&1) && [ -z "$out" ]; then
-  for f in wikilean-*.sql; do
-    age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" && rm "$f"
+  for f in wikilean-*.sql wikilean-*.sql.gz; do
+    [ -f "$f" ] || continue   # a pattern that matched nothing
+    if age -R <(printf '%s\n' "$BACKUP_AGE_RECIPIENTS") -o "$f.age" "$f" \
+        && [ "$(head -n 1 "$f.age")" = "age-encryption.org/v1" ]; then
+      rm "$f"
+    else
+      rm -f "$f.age"; echo "left unchanged: $f" >&2
+    fi
   done
+  left=$(ls wikilean-*.sql wikilean-*.sql.gz 2>/dev/null || true)
+  if [ -n "$left" ]; then printf 'still plaintext:\n%s\n' "$left" >&2; else echo "no plaintext dumps left"; fi
 else
   printf '%s\n' "$out" >&2; echo "fix BACKUP_AGE_RECIPIENTS first; nothing changed" >&2
 fi
 ```
+
+A compressed dump becomes `wikilean-<ts>.sql.gz.age`. Decrypt it like any
+other `.age` file, then `gunzip wikilean-<ts>.sql.gz` before the restore drill.
 
 This reaches only the files in `wiki/backups/`. Copies of the plaintext that
 Time Machine, iCloud or another backup tool already took cannot be encrypted

@@ -162,9 +162,13 @@ There is no forward hotfix path; one, if ever wanted, would be a journaled promo
 npm run tail          # follow Worker logs
 ```
 
-Worker secrets needed in production:
+Worker secrets needed in production (the complete inventory, with holders and rotation, is
+[`docs/SECRETS.md`](../docs/SECRETS.md); rotate with `wrangler versions secret put`, which rides
+the next promotion, not `wrangler secret put`, which deploys immediately):
 - `BETTER_AUTH_SECRET` — random 32-byte secret (already set)
 - `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` — GitHub OAuth app (already set)
+- `PIPELINE_TOKEN`, `GITHUB_API_TOKEN`, `REVIEW_GITHUB_CLIENT_ID`, `REVIEW_GITHUB_CLIENT_SECRET`,
+  `REVIEW_GITHUB_APP_SLUG`, `REVIEW_POSTING_PAT` — see `docs/SECRETS.md`
 
 Optional:
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — adds Google sign-in (not currently set)

@@ -139,6 +139,9 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   v3 source authority until its evidence is explicitly bound into a reviewed source plan.
 
 **Security / credentials**
+- **`docs/SECRETS.md` is the credential inventory** (every secret name, holder, scope, rotation,
+  expiry) and lists the P0 production steps only the maintainer runs. Add a row there with any
+  new secret; never write a value anywhere.
 - `.github/workflows/ci.yml` is validation only: read-only repository permissions, checkout
   credentials disabled, no secrets, no deployments, no production writes, and no token-consuming
   agent calls. Its `required` job aggregates the hermetic `worker` and `python` gates and the
@@ -146,8 +149,12 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - The Playwright `browser` job runs on every CI trigger and has been required since PR #72.
   Failures upload `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts`
   for 7 days.
-- `.dev.vars` is gitignored and holds secrets — never commit, never print values; set Worker
-  secrets via `wrangler secret put` / `gh secret set`.
+- `.dev.vars` is gitignored and holds secrets — never commit, never print values. Rotate a Worker
+  secret with `wrangler versions secret put` (value on stdin; rides the next promotion), not
+  `wrangler secret put`, which deploys outside the promoter (`docs/SECRETS.md`). Actions secrets:
+  `gh secret set` at the prompt. Never put a token on a command line (curl takes `-H @-`).
+- Pipeline agents run only through `site/agent_sandbox.py`: positive `tools=` sets, never
+  `bypassPermissions`, cwd outside the repository (`site/test_agent_sandbox.py` enforces it).
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
 - Never take custody of others' API keys. Never edit the mathlib4 checkout; do Lean work in a
