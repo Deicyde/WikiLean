@@ -100,17 +100,21 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
         for name in sorted((REPO / "brain/authority").glob("reducer-inputs-v*.json")):
             inventory = json.loads(name.read_text(encoding="utf-8"))
             paths.update(inventory["scope"])
-            paths.update(entry["path"] for entry in inventory["inputs"] if entry["class"] == "curated_git_input")
+            # Curated inputs, and any other input the inventory roots in the repository
+            # (v2 and later say so with "root": "repo").
+            paths.update(entry["path"] for entry in inventory["inputs"] if "path" in entry and (
+                entry["class"] == "curated_git_input" or entry.get("root") == "repo"))
         self.assertIn("bot/state/cut_log.json", paths)
         for path in sorted(paths):
             with self.subTest(path=path):
                 self.assertFalse(authority.is_release_neutral(path))
 
     def test_the_canary_is_the_only_nightly_watched_file_left_neutral(self):
-        # The nightly's uncommitted-source check also covers the canary it runs, but
-        # committed canary changes never reach release bytes. Among the files the
-        # nightly names explicitly (its directories, like wiki/, also hold neutral
-        # tests and READMEs), any other the policy calls neutral is a disagreement.
+        # The nightly's uncommitted-source check still names the canary, which it no
+        # longer runs, and committed canary changes never reach release bytes. Among
+        # the files the nightly names explicitly (its directories, like wiki/, also
+        # hold neutral tests and a README), any other the policy calls neutral is a
+        # disagreement.
         watched = [entry for entry in _nightly_watched() if entry != "$REDUCER_SCOPE"]
         self.assertEqual([entry for entry in watched if authority.is_release_neutral(entry)],
                          ["site/ops/brain-canary.py"])
