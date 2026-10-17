@@ -38,7 +38,7 @@ AUTH_BODY = ('{"message":"Bad credentials","documentation_url":'
 
 def pull(state="open", title="doc: add wikidata attributes (batch 7)", merged=False):
     return {"number": PR, "state": state, "merged": merged, "merged_at": None,
-            "title": title, "created_at": "2026-08-10T11:00:00Z",
+            "title": title, "created_at": "2026-08-10T11:00:00Z", "user": {"login": "Deicyde"},
             "head": {"sha": "c" * 40}}
 
 
@@ -67,7 +67,7 @@ class FakeGh:
 
     def __init__(self, *, pr_json=None, state="OPEN", mergeable=("MERGEABLE",),
                  master=MASTER, diff=DIFF, reviews=(), comments=(), issue_comments=(),
-                 checks=(0, CHECKS_GREEN, ""), edits=None, fail=None):
+                 checks=(0, CHECKS_GREEN, ""), edits=None, reactions=None, fail=None):
         self.pr_json = pr_json if pr_json is not None else pull()
         self.state = state
         self.mergeable = list(mergeable)
@@ -78,6 +78,7 @@ class FakeGh:
         self.issue_comments = list(issue_comments)
         self.checks = checks
         self.edits = edits or {}
+        self.reactions = reactions or {}  # {crossref comment id: [reaction, ...]}
         self.fail = fail
         self.calls = []
 
@@ -118,6 +119,8 @@ class FakeGh:
                 return 0, lines(self.comments), ""
             if path == f"repos/{REPO}/issues/{PR}/comments":
                 return 0, lines(self.issue_comments), ""
+            if path.startswith(f"repos/{REPO}/pulls/comments/") and path.endswith("/reactions"):
+                return 0, lines(self.reactions.get(int(path.split("/")[-2]), [])), ""
             if path.startswith("orgs/"):
                 return 1, "", "gh: Not Found (HTTP 404)\n"
         raise AssertionError(f"unrouted gh call: {cmd}")
@@ -314,7 +317,7 @@ class TickTest(PollFixture):
         out = io.StringIO()
         with contextlib.redirect_stdout(out):
             self.run_with(fake, poll.tick, Path("/unused"), True)
-        self.assertIn("RESOLVE-CONFLICT #42608: rebuild off fresh master with 2 green tags", out.getvalue())
+        self.assertIn("RESOLVE-CONFLICT #42608: rebuild off fresh master with the 2 tags it carries", out.getvalue())
 
     def test_auth_failure_raises(self):
         self.write_state(settled_pr=PR)
@@ -407,9 +410,13 @@ class ReadyHeaderTest(PollFixture):
         self.assertIn("no reject/revise/flag recorded by this bot that a maintainer's verdict did not override", h)
         self.assertIn('GitHub "Request changes" reviews and free-text comments are not counted', h)
         self.assertIn("the PR author's own or a single 👍 reaction", h)
-        self.assertIn("Only a per-tag verdict or 👍/👎 from `jcommelin`, `faenuccio` or someone GitHub shows "
-                      "the bot as a mathlib4 owner, member or collaborator overrides the others", h)
+        self.assertIn("Only a per-tag verdict or 👍/👎 from a Mathlib maintainer listed in the bot or someone "
+                      "GitHub shows the bot as a mathlib4 owner, member or collaborator overrides the others", h)
         self.assertIn("a GitHub PR approval never does", h)
+        self.assertIn("The PR author's own reject/revise/flag on a tag is overridden only by a written verdict "
+                      "a listed maintainer gives on that tag after it.", h)
+        self.assertNotIn("jcommelin", h)  # the list is in the bot, not the header
+        self.assertNotIn("faenuccio", h)
         self.assertIn("Reviews recorded from: `Deicyde`, `SnirBroshi`.", h)
         self.assertIn("1 recycled to the next batch.", h)
         self.assertNotRegex(h, r"@\w")  # names, not pings
