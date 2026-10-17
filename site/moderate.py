@@ -1320,6 +1320,9 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     jobs = fetch_work(args.api_base, token, "wp-update", args.limit)
     print(f"wp-update: {len(jobs)} drifted article(s) from /api/work"
           f"{'  [DRY RUN]' if args.dry_run else ''}")
+    if jobs and len(jobs) >= min(args.limit, WORK_LIMIT_CAP["wp-update"]):
+        print(f"warning: /api/work returned a full page of {len(jobs)}; drifted "
+              "articles past it were not attempted this run")
     if not jobs:
         return 0, zero_stats()
     s = ufu.make_session()

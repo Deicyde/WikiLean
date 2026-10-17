@@ -2439,7 +2439,8 @@ def test_fetch_work_clamps_limit_per_mode():
 
 def test_wp_update_sweeps_the_whole_limit_and_paces_every_article():
     """The nightly asks for up to 1000 drifted articles; a sweep that long
-    must pace read-only articles too, not just re-pins."""
+    must pace read-only articles too, not just re-pins, and say when /api/work
+    filled the page."""
     import io
     import tempfile
     outcomes = ["needs-work", "repinned", "up-to-date", "needs-work"]
@@ -2463,19 +2464,28 @@ def test_wp_update_sweeps_the_whole_limit_and_paces_every_article():
         m.fetch_work, m.time.sleep = fake_fetch, sleeps.append
         m.DECISIONS_LOG = Path(td) / "dec.jsonl"
         try:
-            with contextlib.redirect_stdout(io.StringIO()):
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
                 rc, stats = m.run_wp_update(SimpleNamespace(
                     api_base="http://api.test", limit=1000, dry_run=False,
                     run_id="0000bbbb"), "tok")
+            first_sleeps = list(sleeps)
+            full = io.StringIO()  # a limit the fake fills: a full page
+            with contextlib.redirect_stdout(full):
+                m.run_wp_update(SimpleNamespace(
+                    api_base="http://api.test", limit=len(outcomes), dry_run=False,
+                    run_id="0000cccc"), "tok")
         finally:
             if saved[0] is None:
                 sys.modules.pop("update_from_upstream", None)
             else:
                 sys.modules["update_from_upstream"] = saved[0]
             m.fetch_work, m.time.sleep, m.DECISIONS_LOG = saved[1:]
-    assert asked == [("wp-update", 1000)], asked
+    assert asked == [("wp-update", 1000), ("wp-update", 4)], asked
     assert rc == 0 and stats["processed"] == 4, (rc, stats)
-    assert sleeps == [0.5, 2.1, 0.5], sleeps  # none after the last article
+    assert first_sleeps == [0.5, 2.1, 0.5], first_sleeps  # none after the last article
+    assert "full page" not in out.getvalue(), out.getvalue()
+    assert "warning: /api/work returned a full page of 4" in full.getvalue(), full.getvalue()
 
 
 class _Nights:
