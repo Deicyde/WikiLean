@@ -47,7 +47,7 @@ from claude_agent_sdk import (
     query,
 )
 
-from agent_sandbox import sandboxed_options
+from agent_sandbox import SANDBOX_VERSION, sandboxed_options  # noqa: F401 (SANDBOX_VERSION: moderate.get_prompt_sha)
 
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / "cache"

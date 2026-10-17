@@ -815,7 +815,8 @@ def get_mathlib_sha() -> str | None:
 
 def get_prompt_sha(ba_mod, mode: str) -> str:
     """First 12 hex of sha256 over the system prompts the mode uses (Agent 1's
-    mode-specific prompt + the shared Agent 2 prompt)."""
+    mode-specific prompt + the shared Agent 2 prompt) and the agents' sandbox
+    version (site/agent_sandbox.py SANDBOX_VERSION)."""
     if ba_mod is None:
         return "unavailable"
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
@@ -824,6 +825,11 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
     # move prompt_sha when enabled (else the two cohorts look identical in research).
     if mode == "review" and getattr(ba_mod, "_PROPOSALS", False):
         parts += "\n" + getattr(ba_mod, "AGENT2_PROPOSAL_GUIDANCE", "")
+    # The sandbox changed what the agents see (tools, settings, CLAUDE.md, hooks,
+    # cwd) with no prompt text moving; its version marks that cohort boundary.
+    sandbox = getattr(ba_mod, "SANDBOX_VERSION", "")
+    if sandbox:
+        parts += "\n" + sandbox
     return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
 
 
