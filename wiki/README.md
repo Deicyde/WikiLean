@@ -73,6 +73,7 @@ public/              static assets served by the Worker (`ASSETS` binding)
 | GET | `/login` | Sign in (better-auth UI) |
 | GET | `/api/auth/get-session` | Current session (null when anon) |
 | GET | `/api/auth/*` | better-auth's OAuth callbacks etc. |
+| GET | `/api/version` | Live Worker version and Brain release: public, no D1, always 200, `Cache-Control: no-store`. `worker.version_id`, `version_tag` and `uploaded_at` come from the `version_metadata` binding and are null without it. `brain_release` (`release_id`, `manifest_sha256`, and `git_commit`, the WikiLean commit the release was built from) is null when the release can't be resolved. A `brain-<release hex12>-<attempt>` tag is evidence of a promoter deploy, not proof: any credentialed `wrangler deploy --tag` can set it. |
 | GET | `/recent-changes` | Feed of recent edits |
 | GET | `/:slug/history` | Revisions for one article |
 | GET | `/:slug` *(or `.html`)* | Render article — injects sign-in CTA when anon, editor + full annotation model when signed in |
