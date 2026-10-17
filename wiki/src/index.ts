@@ -2707,8 +2707,9 @@ async function recentRunRows(db: DrizzleDB, kind: string | null, limit: number) 
 
 // GET /api/runs — public, read-only per-run reports (newest first), so the
 // session-start status check can read run error counts without a bearer token.
-// ?kind filters on the run's own kind (one of RUN_KINDS; 'all' is a run kind,
-// the full nightly, not a wildcard); omit it for every kind. ?limit 1..50,
+// ?kind filters on the run's own kind (one of RUN_KINDS; 'all' is the kind a
+// combined `moderate.py all` run records, not a wildcard; the nightly posts
+// separate wp-update and review rows); omit it for every kind. ?limit 1..50,
 // default 10. Unknown kind or a bad limit → 400 (no clamping).
 app.get("/api/runs", async (c) => {
   const kindRaw = c.req.query("kind");
