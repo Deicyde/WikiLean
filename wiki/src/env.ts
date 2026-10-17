@@ -41,6 +41,12 @@ export interface Env {
   // second token-holder exists.
   PIPELINE_TOKEN?: string;
 
+  // Salt for the research export's user pseudonyms (GET
+  // /api/research/export.jsonl). Optional secret: when unset the export falls
+  // back to PIPELINE_TOKEN, which keeps the pseudonyms already published stable.
+  // Setting it rotates every pseudonym once (docs/SECRETS.md).
+  RESEARCH_EXPORT_SALT?: string;
+
   // better-auth (used when AUTH_MODE === "oauth")
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;

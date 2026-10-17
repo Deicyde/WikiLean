@@ -387,8 +387,17 @@ function statusCounts(annotations: AnnRecord[]): {
   return counts;
 }
 
+// The research export's pseudonym salt. A dedicated secret keeps the salt
+// out of the hands of every PIPELINE_TOKEN holder (who could otherwise
+// recompute sha256(user_id + token) for the public user ids) and lets the
+// bearer rotate without re-keying research pseudonyms. Falls back to
+// PIPELINE_TOKEN so existing pseudonyms stay stable until the secret is set.
+function researchExportSalt(env: Pick<Env, "RESEARCH_EXPORT_SALT" | "PIPELINE_TOKEN">): string {
+  return env.RESEARCH_EXPORT_SALT || env.PIPELINE_TOKEN || "";
+}
+
 // Plain SHA-256 hex. The research export salts its pseudonyms with
-// PIPELINE_TOKEN before hashing.
+// researchExportSalt() before hashing.
 async function sha256Hex(s: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
@@ -2929,15 +2938,18 @@ app.post("/api/runs", async (c) => {
 // JSON object per annotation_events row (id-ascending, joined to its
 // revision), paged through D1 so the response never materializes in memory.
 // Privacy contract: NO emails, IPs, names, or free-text comments — the only
-// user-linked field is `pseudonym`, sha256(user_id + PIPELINE_TOKEN-as-salt)
-// truncated to 12 hex (stable across exports while the secret is stable;
-// rotating PIPELINE_TOKEN rotates pseudonyms, which is acceptable — it
-// unlinks, never re-identifies). Pipeline events carry pseudonym null.
+// user-linked field is `pseudonym`, sha256(user_id + salt) truncated to 12 hex.
+// The salt is researchExportSalt(): the dedicated RESEARCH_EXPORT_SALT secret
+// when set, else PIPELINE_TOKEN, so pseudonyms stay stable until the
+// maintainer sets the new secret (docs/SECRETS.md). Pseudonyms are stable
+// across exports while the salt is stable; changing it rotates them, which is
+// acceptable — it unlinks, never re-identifies. Pipeline events carry
+// pseudonym null.
 app.get("/api/research/export.jsonl", async (c) => {
   const user = await requireRole(c, ["bot", "admin"]);
   if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
   const db = drizzle(c.env.DB);
-  const salt = c.env.PIPELINE_TOKEN ?? "";
+  const salt = researchExportSalt(c.env);
   const pseudoCache = new Map<string, string>();
   const pseudonymFor = async (userId: string): Promise<string> => {
     let p = pseudoCache.get(userId);

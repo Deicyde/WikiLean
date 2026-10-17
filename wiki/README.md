@@ -168,6 +168,9 @@ Worker secrets needed in production:
 
 Optional:
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` — adds Google sign-in (not currently set)
+- `RESEARCH_EXPORT_SALT` — salt for the research export's user pseudonyms. Unset, the export
+  falls back to `PIPELINE_TOKEN` (the historical salt), so existing pseudonyms stay stable;
+  setting it rotates every pseudonym once and decouples them from the bearer.
 
 ## Edit-safety guarantees
 
