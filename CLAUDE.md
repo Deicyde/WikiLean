@@ -54,7 +54,7 @@ cd wiki && npm ci
 cd wiki && npm run test:ci         # typecheck + hermetic Worker tests
 ./scripts/ci-python.sh             # deterministic Python checks (run at repo root)
 
-# Browser soak (Chromium; local loopback only, no external requests)
+# Browser tests, required in CI (Chromium; local loopback only, no external requests)
 cd wiki && npx playwright install chromium
 cd wiki && npm run test:e2e
 
@@ -141,11 +141,11 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 **Security / credentials**
 - `.github/workflows/ci.yml` is validation only: read-only repository permissions, checkout
   credentials disabled, no secrets, no deployments, no production writes, and no token-consuming
-  agent calls. Its `required` job aggregates only the `worker` and `python` hermetic gates.
-- The separate Playwright `browser` job is a non-required soak on every CI trigger. Failures upload
-  `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts` for 7 days.
-  Promote it into `required` only through a reviewed workflow change after stable run history; there
-  is no automatic threshold.
+  agent calls. Its `required` job aggregates the hermetic `worker`, `python` and `browser` gates.
+- The Playwright `browser` job runs on every CI trigger and has been required since #72. Failures
+  upload `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts` for 7
+  days. Its loopback server renders `/brain` by running `site/build_brain_page.py` with the
+  `python3` on PATH (3.10 or newer), so a local `npm run test:e2e` needs one too.
 - `.dev.vars` is gitignored and holds secrets — never commit, never print values; set Worker
   secrets via `wrangler secret put` / `gh secret set`.
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
