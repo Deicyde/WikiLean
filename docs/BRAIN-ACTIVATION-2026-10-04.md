@@ -123,15 +123,15 @@ intent record byte for byte, so do not change either between a P1C `--execute` a
 `site/ops/brain_release_authority.py` lets the promoter and bundle freezer run from a clean
 `main` that has moved past a release's authority commit, but only if `main` descends from it
 and every changed path is release-neutral. The neutral set is `docs/`, every `README.md`,
-`test_*.py`, `.github/`, `.claude/`, `scripts/`, `bench/`, `bot/` (except the reducer's curated
-inputs `bot/state/{brain_queue,cut_log,pool_candidates,recycle_queue,seed_queue}.json`),
-`manage/`, `wikifunctions/`, `wiki/test/`, `wiki/e2e/`, `brain/authority/fixtures/`, `site/ops/`
-(except `nightly.env` and `brain-nightly.sh`), `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`,
-`HANDOFF.md`, `LICENSE`, `.gitignore`, and `.gitattributes`, with one more exception:
-`site/test_frontier_page.py` is release-affecting. Everything else is release-affecting by
-default, including Worker source and configuration, `wiki/scripts/` (other than `test_*.py`),
-lockfiles, non-test `site/*.py`, site assets, reducer code and its curated inputs, and Markdown
-outside those paths. The module itself is the authority for this list.
+`test_*.py`, `.github/`, `.claude/`, `scripts/`, `bench/`, `bot/`, `manage/`,
+`wikifunctions/`, `wiki/test/`, `wiki/e2e/`, `brain/authority/fixtures/`, `site/ops/` (except
+`nightly.env` and `brain-nightly.sh`), `CLAUDE.md`, `HANDOFF.md`, `LICENSE`, `.gitignore`,
+and `.gitattributes`, with one exception: `site/test_frontier_page.py` is release-affecting.
+Everything else is release-affecting by default, including Worker source and configuration,
+`wiki/scripts/` (other than `test_*.py`), lockfiles, non-test `site/*.py`, site assets, reducer
+code, and Markdown outside those paths. At `37b7036d`, `AGENTS.md` and `CONTRIBUTING.md` were
+release-affecting; #68 later made them neutral, and #75 made the reducer's curated
+`bot/state/*.json` inputs release-affecting. The module itself is the authority for this list.
 
 What that means for this release:
 
