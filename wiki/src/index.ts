@@ -51,6 +51,7 @@ import {
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
 import { registerSecurityHeaders } from "./security.js";
+import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -138,6 +139,7 @@ registerMcpRoutes(app);
 registerQueueRoutes(app);
 registerRepoRoutes(app);
 registerCompanionRoutes(app);
+registerVersionRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor

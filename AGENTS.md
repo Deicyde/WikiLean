@@ -63,8 +63,8 @@ cd wiki && npm run test:corpus     # renderer/annotation/decl-index corpora
 python3 brain/test_fold_xref.py    # real catalog + private decl cache/Mathlib checkout
 
 # Site (wiki/). Production deploys ONLY via the exact promoter; see docs/BRAIN-RELEASE-RUNBOOK.md.
-# Never plain `npm run deploy` / `wrangler deploy`: it uploads the local wiki/public and
-# replaces the Brain selector and the whole asset tree.
+# `npm run deploy` refuses. Never run `wrangler deploy` directly: it uploads local wiki/src and
+# wiki/public outside the promoter, replacing the Brain selector and the whole asset tree.
 bash site/ops/brain-promote-release.sh sha256:<release-hex> --release-root <abs> ...  # see runbook
 cd wiki && node --experimental-strip-types scripts/build-public.ts \
   --brain-release-manifest ../site/out/brain-releases/<manifest-hex>/release.json \
@@ -167,15 +167,18 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 
 ## Deploy notes
 - **Production deploys go only through `site/ops/brain-promote-release.sh`** and the reviewed
-  release runbook. A plain `npm run deploy` (`wrangler deploy` with `assets.directory`
-  `./public`) uploads whatever the local `wiki/public` holds: it replaces the live Brain
-  selector and the whole asset tree, and it skips the journal and canary. Since 2026-10-04
-  production serves an immutable release (`docs/BRAIN-ACTIVATION-2026-10-04.md`).
+  release runbook. `npm run deploy` refuses and points there. Never run `wrangler deploy`
+  directly: it uploads the Worker built from local `wiki/src` and whatever the local
+  `wiki/public` holds (`assets.directory` `./public`) outside the promoter, replacing the live
+  Brain selector and the whole asset tree with no journal or canary. The only emergency lever is
+  `wrangler rollback` to a recorded version, per the runbook's "Wrangler rollback" section.
+  Since 2026-10-04 production serves an immutable release (`docs/BRAIN-ACTIVATION-2026-10-04.md`).
 - Worker source and config, `wiki/scripts/`, `wiki/package*.json`, lockfiles, non-test
   `site/*.py` and site assets are release-affecting; `site/ops/brain_release_authority.py` is
   the exact list. A change there ships only in
   a new release built at the new commit, with a fresh P1B and Jack's approval; no Worker-only
-  hotfix path exists. Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
+  hotfix path exists (one, if ever wanted, would be a journaled promoter mode, not a hand-run
+  deploy). Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
   rejects nonzero `WIKILEAN_BRAIN_DEPLOY`.
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
