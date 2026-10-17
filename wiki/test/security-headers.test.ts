@@ -10,7 +10,11 @@ import { afterEach, describe, it, expect, vi } from "vitest";
 import { setup, get, blockNetwork, ORIGIN } from "./helpers/harness.js";
 import { Hono } from "hono";
 import { app } from "../src/index.js";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import {
+  BRAIN_CSP_EXTRA_SOURCES,
+  BRAIN_CSP_REPORT_ONLY,
   CSP_REPORT_ONLY,
   SAME_ORIGIN_FRAMED_ASSET_PATHS,
   SECURITY_HEADERS,
@@ -38,8 +42,8 @@ function expectSecurityHeaders(res: Response): void {
   expect(res.headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
 }
 
-function directive(name: string): string[] {
-  const d = CSP_REPORT_ONLY.split("; ").find((part) => part.startsWith(name + " "));
+function directive(name: string, policy = CSP_REPORT_ONLY): string[] {
+  const d = policy.split("; ").find((part) => part.startsWith(name + " "));
   expect(d, `CSP lacks ${name}`).toBeDefined();
   return d!.split(" ").slice(1);
 }
@@ -292,14 +296,45 @@ describe("static asset _headers", () => {
       const headers = applyStaticHeaders(file, path);
       expect(headers.get("X-Frame-Options")).toBe("SAMEORIGIN");
       expect(headers.get("Content-Security-Policy")).toBe("frame-ancestors 'self'");
-      // Everything else is the shared set, with no appended duplicates.
-      expect(headers.get("Content-Security-Policy-Report-Only")).toBe(CSP_REPORT_ONLY);
+      // The Brain's own Report-Only policy replaces (never appends to) the shared one.
+      expect(headers.get("Content-Security-Policy-Report-Only")).toBe(BRAIN_CSP_REPORT_ONLY);
       expect(headers.get("Strict-Transport-Security")).toBe(SECURITY_HEADERS["Strict-Transport-Security"]);
       expect(headers.get("X-Content-Type-Options")).toBe("nosniff");
+      expect(headers.get("Reporting-Endpoints")).toBe(SECURITY_HEADERS["Reporting-Endpoints"]);
     }
     for (const path of ["/brain/", "/brainstorm", "/assets/brain/brain.html"]) {
-      expect(applyStaticHeaders(file, path).get("X-Frame-Options")).toBe("DENY");
+      const headers = applyStaticHeaders(file, path);
+      expect(headers.get("X-Frame-Options")).toBe("DENY");
+      expect(headers.get("Content-Security-Policy-Report-Only")).toBe(CSP_REPORT_ONLY);
     }
+  });
+
+  it("gives the Brain page a Report-Only policy that allows exactly what it loads", () => {
+    // site/build_brain_page.py writes brain.html: an external d3 <script src>
+    // and fetch() calls to Wikipedia and Wikidata. Under the shared policy each
+    // was a violation on every landing view (home.ts frames /brain?embed=1).
+    const builder = readFileSync(fileURLToPath(new URL("../../site/build_brain_page.py", import.meta.url)), "utf8");
+    const origins = (re: RegExp) => [...new Set([...builder.matchAll(re)].map((m) => new URL(m[1]).origin))].sort();
+    const scripts = origins(/<script[^>]*\ssrc="(https:\/\/[^"]+)"/g);
+    const fetches = origins(/fetch\(\s*["'`](https:\/\/[^"'`]+)/g);
+    expect(scripts).toEqual(["https://cdn.jsdelivr.net"]);
+    expect(fetches).toEqual(["https://en.wikipedia.org", "https://www.wikidata.org"]);
+    expect([...BRAIN_CSP_EXTRA_SOURCES["script-src"]].sort()).toEqual(scripts);
+    expect([...BRAIN_CSP_EXTRA_SOURCES["connect-src"]].sort()).toEqual(fetches);
+    for (const origin of scripts) {
+      expect(directive("script-src", BRAIN_CSP_REPORT_ONLY)).toContain(origin);
+      expect(directive("script-src")).not.toContain(origin);
+    }
+    for (const origin of fetches) {
+      expect(directive("connect-src", BRAIN_CSP_REPORT_ONLY)).toContain(origin);
+      expect(directive("connect-src")).not.toContain(origin);
+    }
+    // Otherwise identical to the shared policy.
+    const strip = (policy: string) =>
+      policy
+        .split("; ")
+        .map((d) => d.split(" ").filter((src) => !scripts.includes(src) && !fetches.includes(src)).join(" "));
+    expect(strip(BRAIN_CSP_REPORT_ONLY)).toEqual(strip(CSP_REPORT_ONLY));
   });
 
   it("stays within the static-assets parser limits and never changes the dynamic CSP", () => {
@@ -309,8 +344,11 @@ describe("static asset _headers", () => {
     const paths = lines.filter((line) => line.startsWith("/"));
     expect(paths.length).toBeLessThanOrEqual(STATIC_HEADERS_MAX_RULES);
     for (const line of file.split("\n")) expect(line.length).toBeLessThanOrEqual(STATIC_HEADERS_MAX_LINE_LENGTH);
-    // Same Report-Only policy as Worker responses: not a stricter invented one.
+    // Same Report-Only policy as Worker responses on every path but the Brain
+    // page, whose rule replaces it with BRAIN_CSP_REPORT_ONLY.
+    expect(file).toContain(`/*\n`);
     expect(file).toContain(`  Content-Security-Policy-Report-Only: ${CSP_REPORT_ONLY}\n`);
-    expect(file.match(/Content-Security-Policy-Report-Only:/g)).toHaveLength(1);
+    expect(file.match(/Content-Security-Policy-Report-Only: /g)).toHaveLength(1 + SAME_ORIGIN_FRAMED_ASSET_PATHS.length);
+    expect(file.match(/! Content-Security-Policy-Report-Only\n/g)).toHaveLength(SAME_ORIGIN_FRAMED_ASSET_PATHS.length);
   });
 });
