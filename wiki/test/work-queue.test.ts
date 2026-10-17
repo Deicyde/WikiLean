@@ -159,12 +159,13 @@ describe("limit clamp", () => {
 
   it("wp-update serves up to 1000 drifted rows; review stays capped at 100", async () => {
     const h = setup();
-    // Inserted in reverse so a stable slug order is not just insertion order.
-    for (let i = 149; i >= 0; i--) insertArticle(h.db, `Drift_${String(i).padStart(3, "0")}`, { revid: 1, latestRevid: 2 });
-    const drifted = await work(h, "?mode=wp-update&limit=1000");
-    expect(drifted.length).toBe(150);
+    // One more drifted row than the cap, so the test pins the cap itself, inserted
+    // in reverse so a stable slug order is not just insertion order.
+    for (let i = 1000; i >= 0; i--) insertArticle(h.db, `Drift_${String(i).padStart(4, "0")}`, { revid: 1, latestRevid: 2 });
+    const drifted = await work(h, "?mode=wp-update&limit=5000");
+    expect(drifted.length).toBe(1000);
     // One tier, all never reviewed: the slug tiebreak decides the order.
-    expect(drifted.map((j) => j.slug)).toEqual(Array.from({ length: 150 }, (_, i) => `Drift_${String(i).padStart(3, "0")}`));
+    expect(drifted.map((j) => j.slug)).toEqual(Array.from({ length: 1000 }, (_, i) => `Drift_${String(i).padStart(4, "0")}`));
     expect((await work(h, "?mode=review&limit=1000")).length).toBe(100);
   });
 
