@@ -112,6 +112,39 @@ describe("PIPELINE_TOKEN bearer comparison", () => {
     expect(calls).toEqual([[32, 32]]);
   });
 
+  it("compares a request's bearer through timingSafeEqual, not ===", async () => {
+    // The unit test above calls bearerMatches directly; this pins getUser's
+    // use of it, so reverting the request path to a plain === fails here.
+    const subtle = crypto.subtle as SubtleCrypto & { timingSafeEqual?: unknown };
+    const calls: Array<[number, number]> = [];
+    const fake = vi.fn((a: ArrayBufferView, b: ArrayBufferView) => {
+      calls.push([a.byteLength, b.byteLength]);
+      const x = new Uint8Array(a.buffer, a.byteOffset, a.byteLength);
+      const y = new Uint8Array(b.buffer, b.byteOffset, b.byteLength);
+      return x.length === y.length && x.every((v, i) => v === y[i]);
+    });
+    const had = Object.prototype.hasOwnProperty.call(subtle, "timingSafeEqual");
+    const previous = subtle.timingSafeEqual;
+    Object.defineProperty(subtle, "timingSafeEqual", { value: fake, configurable: true, writable: true });
+    let right: unknown;
+    let wrong: unknown;
+    try {
+      const h = setup();
+      right = await me(h.env, { bearer: PIPELINE_TOKEN });
+      expect(fake).toHaveBeenCalledTimes(1);
+      wrong = await me(h.env, { bearer: PIPELINE_TOKEN + "0" });
+    } finally {
+      if (had) Object.defineProperty(subtle, "timingSafeEqual", { value: previous, configurable: true, writable: true });
+      else delete (subtle as { timingSafeEqual?: unknown }).timingSafeEqual;
+    }
+    expect(right).toMatchObject({ id: "pipeline" });
+    expect(wrong).toBeNull();
+    expect(calls).toEqual([
+      [32, 32],
+      [32, 32],
+    ]);
+  });
+
   it("treats near-miss bearers as anonymous on the API", async () => {
     const h = setup();
     for (const wrong of [PIPELINE_TOKEN.slice(0, -1), PIPELINE_TOKEN + "0", PIPELINE_TOKEN.replace(/.$/, "X")]) {
