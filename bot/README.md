@@ -177,6 +177,9 @@ Before this, an expired token kept every run green and the bot blind from
 - `Restore bot state` failed → see [Restore failed](#restore-failed).
 - `Commit poll state` failed → someone pushed to `bot-state` mid-run. Read the
   log and dispatch again.
+- `has timed out after N minutes` → that step hung (no `POLL_ERROR`; its log
+  stops short). `Commit poll state` still ran. Dispatch again; if it repeats,
+  look at the last lines the step printed.
 
 ### Restore failed
 
