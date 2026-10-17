@@ -15,7 +15,6 @@ if os.environ.pop("ANTHROPIC_API_KEY", None):
 import asyncio
 
 from claude_agent_sdk import (
-    ClaudeAgentOptions,
     AssistantMessage,
     ResultMessage,
     SystemMessage,
@@ -26,6 +25,11 @@ from claude_agent_sdk import (
     ThinkingBlock,
     query,
 )
+
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parent.parent / "site"))
+from agent_sandbox import sandboxed_options  # noqa: E402
 
 MATHLIB = "/Users/jack/Desktop/LEAN/mathlib4"
 
@@ -101,12 +105,11 @@ def short(block) -> str:
 
 
 async def main() -> int:
-    options = ClaudeAgentOptions(
+    options = sandboxed_options(
         model="claude-opus-4-7",
         system_prompt=SYSTEM_PROMPT,
-        allowed_tools=["Read", "Grep", "Glob"],
+        tools=["Read", "Grep", "Glob"],
         cwd=MATHLIB,
-        permission_mode="bypassPermissions",
         max_turns=20,
     )
     final = None

@@ -34,6 +34,8 @@ from claude_agent_sdk import (
 )
 
 HERE = Path(__file__).resolve().parent
+sys.path.append(str(HERE.parent / "site"))
+from agent_sandbox import sandboxed_options  # noqa: E402
 DEFAULT_IN = HERE / "data" / "pilot.jsonl"
 DEFAULT_OUT = HERE / "data" / "pilot_tagged.jsonl"
 LEADS_CACHE = HERE / "data" / ".cache" / "leads.jsonl"
@@ -408,15 +410,16 @@ async def run(
     # concept->decl than name-grep, `decl --live` is an authoritative existence
     # gate against the doc-gen4 index, and `wikidata entity/sitelinks` does the
     # P31/P279 disambiguation raw wbsearchentities skips. The Bash perms are
-    # scoped to `python3 <those two scripts>` (no unrestricted shell).
-    options = ClaudeAgentOptions(
+    # scoped to `python3 <those two scripts>` (no unrestricted shell): the agent
+    # runs sandboxed (site/agent_sandbox.py), so any other command is denied and
+    # Read/Grep/Glob see only the mathlib4 checkout.
+    options = sandboxed_options(
         model=model,
         system_prompt=build_system_prompt(),
-        allowed_tools=["Read", "Grep", "Glob",
-                       f"Bash(python3 {MATHLIB_SEARCH}:*)",
+        tools=["Read", "Grep", "Glob", "Bash"],
+        allowed_tools=[f"Bash(python3 {MATHLIB_SEARCH}:*)",
                        f"Bash(python3 {WIKIDATA_SEARCH}:*)"],
-        cwd=str(MATHLIB),
-        permission_mode="bypassPermissions",
+        cwd=MATHLIB,
         max_turns=max_turns,
     )
     sem = asyncio.Semaphore(concurrency)
