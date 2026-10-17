@@ -25,11 +25,15 @@ def main():
     print(f"fetching {UPSTREAM} master (shallow)…")
     # --refetch skips negotiation, so the pack carries every blob in master's tree.
     # Without it the server leaves out blobs it assumes this clone already has from
-    # its own commits, which a --filter=blob:none clone (the CI poller's) does not,
-    # and the git grep below then fetches each missing blob from the fork one at a
-    # time: 18 to 30+ minutes per batch open in 2026-08. Needs Git 2.36 or newer;
-    # an older git fails the fetch, and the refresh fails closed.
-    f = subprocess.run(g + ["fetch", "--depth=1", "--refetch", UPSTREAM, "master"],
+    # its own commits (the fork's batch branches sit on recent upstream commits),
+    # which a --filter=blob:none clone (the CI poller's) does not, and the git grep
+    # below then fetches each missing blob from the fork one at a time: 18 to 30+
+    # minutes per batch open in 2026-08. --no-auto-maintenance stops the refetch from
+    # forcing a whole-repository repack (it sets gc.autoPackLimit=1 for the post-fetch
+    # gc); ordinary gc --auto still consolidates later. Needs Git 2.36 or newer; an
+    # older git fails the fetch, and the refresh fails closed.
+    f = subprocess.run(g + ["fetch", "--depth=1", "--refetch", "--no-auto-maintenance",
+                            UPSTREAM, "master"],
                        text=True, capture_output=True)
     if f.returncode != 0:
         sys.exit(f"git fetch failed: {f.stderr[:300]}")

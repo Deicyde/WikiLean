@@ -35,7 +35,8 @@ class RefreshTaggedTest(unittest.TestCase):
             refresh_tagged.main()
             self.assertEqual((Path(td) / "tagged.txt").read_text(), "Q42\n")
             self.assertEqual((Path(td) / "pairs.txt").read_text(), "Q42\tMathlib/A.lean\n")
-        self.assertEqual(calls[0][3:], ["fetch", "--depth=1", "--refetch", refresh_tagged.UPSTREAM, "master"])
+        self.assertEqual(calls[0][3:], ["fetch", "--depth=1", "--refetch", "--no-auto-maintenance",
+                                        refresh_tagged.UPSTREAM, "master"])
         self.assertEqual(calls[1][3:5], ["grep", "-IE"])
         self.assertIn("FETCH_HEAD", calls[1])
 
