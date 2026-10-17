@@ -153,8 +153,11 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   secret with `wrangler versions secret put` (value on stdin; rides the next promotion), not
   `wrangler secret put`, which deploys outside the promoter (`docs/SECRETS.md`). Actions secrets:
   `gh secret set` at the prompt. Never put a token on a command line (curl takes `-H @-`).
-- Pipeline agents run only through `site/agent_sandbox.py`: positive `tools=` sets, never
-  `bypassPermissions`, cwd outside the repository (`site/test_agent_sandbox.py` enforces it).
+- Pipeline SDK agents (claude-agent-sdk) run only through `site/agent_sandbox.py`: Read/Grep/Glob
+  at most and never Bash (search CLIs ride validated in-process MCP tools, `site/search_tools.py`),
+  never `bypassPermissions`, cwd outside every checkout. A pipeline `claude` CLI call takes
+  `bot/triage.py`'s tool-less form (`--tools ""`, `--setting-sources ""`, `--strict-mcp-config`).
+  `site/test_agent_sandbox.py` enforces both.
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
 - Never take custody of others' API keys. Never edit the mathlib4 checkout; do Lean work in a
