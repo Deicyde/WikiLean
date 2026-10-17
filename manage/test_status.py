@@ -325,8 +325,8 @@ def test_ci_gate_reads_the_latest_finished_run_on_main():
 
 
 def test_ci_gate_counts_a_long_cancelled_run_as_a_timeout():
-    """The job's time limit cancels a hung tick; five of them used to fill
-    the listing and leave a silent 'CI ?'."""
+    """The job's time limit cancels a tick that runs too long; five of them
+    used to fill the listing and leave a silent 'CI ?'."""
     runs = [_ci_run(10, "cancelled", 0.5, minutes=2)]
     runs += [_ci_run(9 - i, "cancelled", 1 + 4 * i, minutes=31 - i) for i in range(5)]
     runs += [_ci_run(4, "success", 22)]
