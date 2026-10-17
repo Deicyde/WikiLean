@@ -290,8 +290,8 @@ need not stay there. The promoter and the bundle freezer accept a clean `main` c
 a later commit when it descends from the authority and every path that differs is
 release-neutral: `docs/`, README files, `test_*.py` and the `wiki/test` and `wiki/e2e`
 trees, CI definitions, `site/ops/` tooling other than `nightly.env` and
-`brain-nightly.sh`, the bot tree other than the reducer's curated `bot/state/*.json`
-inputs, and the bench, manage and wikifunctions trees (the list is
+`brain-nightly.sh`, the bot tree other than the five `bot/state/` files the reducer
+reads, and the bench, manage and wikifunctions trees (the list is
 `site/ops/brain_release_authority.py`; anything not listed is release-affecting). Reducer
 code and curated inputs, authority contracts and schemas, Worker source and configuration,
 lockfiles, public asset sources and annotation mirrors invalidate the release and require a

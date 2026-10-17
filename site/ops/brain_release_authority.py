@@ -40,10 +40,12 @@ NEUTRAL_DIRECTORIES: tuple[str, ...] = (
 # release-affecting anyway: the nightly's own build script and tunables,
 # site/test_frontier_page.py, and the reducer's curated inputs under bot/state/
 # (declared in brain/authority/reducer-inputs-v*.json; the tests keep that list
-# complete). brain-nightly.sh's uncommitted-source check is a different set: it
-# watches code, not curated inputs, so it also refuses local edits to Worker tests,
-# READMEs and the canary it runs (none of which reach release bytes) but never
-# looks at bot/state/ or catalog/data/.
+# complete). brain-nightly.sh's uncommitted-source check is a different set. It
+# covers all of wiki/, so it also refuses local edits to Worker tests and
+# wiki/README.md, and it still names site/ops/brain-canary.py, which the nightly
+# stopped running in afdf3a67 (the promoter runs it now); none of those reach
+# release bytes. It names no curated input, so it never looks at bot/state/ or
+# catalog/data/.
 AFFECTING_EXCEPTIONS: tuple[str, ...] = (
     "bot/state/brain_queue.json",
     "bot/state/cut_log.json",

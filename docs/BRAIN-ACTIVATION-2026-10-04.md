@@ -130,8 +130,8 @@ and `.gitattributes`, with one exception: `site/test_frontier_page.py` is releas
 Everything else is release-affecting by default, including Worker source and configuration,
 `wiki/scripts/` (other than `test_*.py`), lockfiles, non-test `site/*.py`, site assets, reducer
 code, and Markdown outside those paths. At `37b7036d`, `AGENTS.md` and `CONTRIBUTING.md` were
-release-affecting; #68 later made them neutral, and #75 made the reducer's curated
-`bot/state/*.json` inputs release-affecting. The module itself is the authority for this list.
+release-affecting; #68 later made them neutral, and #75 made the five `bot/state/` files the
+reducer reads release-affecting. The module itself is the authority for this list.
 
 What that means for this release:
 
