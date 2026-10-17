@@ -76,7 +76,7 @@ describe("GET /api/runs", () => {
     const reviews = (await runs(h, "?kind=review")).body.runs!;
     expect(reviews).toHaveLength(6);
     expect(reviews.every((r) => r.kind === "review")).toBe(true);
-    // 'all' names the full-nightly run kind; it is not a wildcard.
+    // 'all' is the kind a combined `moderate.py all` run records; it is not a wildcard.
     const alls = (await runs(h, "?kind=all&limit=50")).body.runs!;
     expect(alls).toHaveLength(6);
     expect(alls.every((r) => r.kind === "all")).toBe(true);
