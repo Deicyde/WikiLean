@@ -96,17 +96,21 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
     def test_reducer_code_and_curated_inputs_are_release_affecting(self):
         # The reducer reads these exact Git bytes, so a commit that changes one must
         # never let main move past a release built before it.
-        inventory = json.loads((REPO / "brain/authority/reducer-inputs-v1.json").read_text(encoding="utf-8"))
-        curated = [entry["path"] for entry in inventory["inputs"] if entry["class"] == "curated_git_input"]
-        self.assertIn("bot/state/cut_log.json", curated)
-        for path in inventory["scope"] + curated:
+        paths = set()
+        for name in sorted((REPO / "brain/authority").glob("reducer-inputs-v*.json")):
+            inventory = json.loads(name.read_text(encoding="utf-8"))
+            paths.update(inventory["scope"])
+            paths.update(entry["path"] for entry in inventory["inputs"] if entry["class"] == "curated_git_input")
+        self.assertIn("bot/state/cut_log.json", paths)
+        for path in sorted(paths):
             with self.subTest(path=path):
                 self.assertFalse(authority.is_release_neutral(path))
 
     def test_the_canary_is_the_only_nightly_watched_file_left_neutral(self):
         # The nightly's uncommitted-source check also covers the canary it runs, but
-        # committed canary changes never reach release bytes. Any other watched file
-        # the policy calls neutral is a disagreement to resolve.
+        # committed canary changes never reach release bytes. Among the files the
+        # nightly names explicitly (its directories, like wiki/, also hold neutral
+        # tests and READMEs), any other the policy calls neutral is a disagreement.
         watched = [entry for entry in _nightly_watched() if entry != "$REDUCER_SCOPE"]
         self.assertEqual([entry for entry in watched if authority.is_release_neutral(entry)],
                          ["site/ops/brain-canary.py"])
