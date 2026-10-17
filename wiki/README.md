@@ -73,6 +73,7 @@ public/              static assets served by the Worker (`ASSETS` binding)
 | GET | `/login` | Sign in (better-auth UI) |
 | GET | `/api/auth/get-session` | Current session (null when anon) |
 | GET | `/api/auth/*` | better-auth's OAuth callbacks etc. |
+| GET | `/api/version` | Live Worker version and Brain release: public, no D1, always 200, `Cache-Control: no-store`. `worker.version_id`, `version_tag` and `uploaded_at` come from the `version_metadata` binding and are null without it. `brain_release` (`release_id`, `manifest_sha256`, and `git_commit`, the WikiLean commit the release was built from) is null when the release can't be resolved. A `brain-<release hex12>-<attempt>` tag is evidence of a promoter deploy, not proof: any credentialed `wrangler deploy --tag` can set it. |
 | GET | `/recent-changes` | Feed of recent edits |
 | GET | `/:slug/history` | Revisions for one article |
 | GET | `/:slug` *(or `.html`)* | Render article — injects sign-in CTA when anon, editor + full annotation model when signed in |
@@ -148,9 +149,12 @@ Production deploys go only through the exact Brain release promoter,
 `site/ops/brain-promote-release.sh`, following
 [`docs/BRAIN-RELEASE-RUNBOOK.md`](../docs/BRAIN-RELEASE-RUNBOOK.md). Since 2026-10-04 production
 serves an immutable Brain release ([activation record](../docs/BRAIN-ACTIVATION-2026-10-04.md)).
-Do **not** run plain `npm run deploy` (`wrangler deploy`) against production: it uploads the local
-`public/` directory and replaces the live Brain selector and the whole asset tree, without the
-journal or canary. Worker source changes are release-affecting and ship only in a new release.
+`npm run deploy` refuses and points to the promoter. Never run `wrangler deploy` directly: it
+uploads the Worker built from the local `src/` and the whole local `public/` directory outside the
+promoter, replacing the live Brain selector and the whole asset tree without the journal or canary.
+Worker source changes are release-affecting and ship only in a new release. The only emergency
+lever is `wrangler rollback` to a recorded version, per the runbook's "Wrangler rollback" section.
+There is no forward hotfix path; one, if ever wanted, would be a journaled promoter mode.
 
 ```sh
 npm run tail          # follow Worker logs

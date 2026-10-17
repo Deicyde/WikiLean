@@ -30,6 +30,11 @@ export interface Env {
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 
+  // Worker Version identity for GET /api/version (src/version.ts), from the
+  // wrangler.jsonc version_metadata binding. Optional: without it (e.g. the
+  // test harness) the route reports nulls.
+  CF_VERSION_METADATA?: WorkerVersionMetadata;
+
   // Shared bearer secret for the moderation pipeline (site/moderate.py).
   // Optional: when unset, the bearer branch in getUser is disabled entirely.
   // Single-token scheme by decision — graduate to an api_tokens table when a
