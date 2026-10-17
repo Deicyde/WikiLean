@@ -40,7 +40,7 @@ Configured night (nightly.env + nightly-moderate.sh defaults):
 | Step                      | budget/limit                | expected tokens             | USD-equiv |
 |---------------------------|-----------------------------|-----------------------------:|----------:|
 | review, 15 articles       | `WIKILEAN_BUDGET_TOKENS` 700k (default) | 15 × 29.6k ≈ **443k** | ~$23.60 |
-| wp-update drift sweep     | limit 300                   | **0** (stage-0)             | $0.00     |
+| wp-update drift sweep     | limit 1000                  | **0** (stage-0)             | $0.00     |
 | formalize backlog drain   | `FORMALIZE_BUDGET` 800k cap | ≤800k while backlog exists (~14–16 art/night); backlog ~25 as of 2026-07-01, essentially drained → **~0 steady-state** | ~$0–43 |
 | brain agents (OFF)        | 500k cap, `AGENTS=0`        | 0                           | $0.00     |
 

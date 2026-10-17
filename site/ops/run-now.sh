@@ -9,8 +9,11 @@
 # spend). The real limiter is window exhaustion: the runner aborts cleanly the
 # moment the Max window is spent, so overshooting the limit is harmless. We also
 # lift the nightly 700k-token budget cap to ~6M here (WIKILEAN_BUDGET_TOKENS) so
-# it can't prematurely halt a deliberate near-reset burn. The single-instance
-# lock in nightly-moderate.sh prevents overlap with the nightly run.
+# it can't prematurely halt a deliberate near-reset burn. The wp-update step that
+# runs before review is capped at 100 (WIKILEAN_WPUPDATE_LIMIT): the nightly already
+# swept the whole drifted set, so a burn shouldn't spend the window repeating it.
+# The single-instance lock in nightly-moderate.sh prevents overlap with the
+# nightly run.
 #
 #   bash site/ops/run-now.sh                              # full burn (review 100)
 #   WIKILEAN_REVIEW_LIMIT=25 bash site/ops/run-now.sh     # smaller burn
@@ -31,6 +34,7 @@ fi
 
 : "${WIKILEAN_REVIEW_LIMIT:=100}"; export WIKILEAN_REVIEW_LIMIT
 : "${WIKILEAN_BUDGET_TOKENS:=6000000}"; export WIKILEAN_BUDGET_TOKENS
+: "${WIKILEAN_WPUPDATE_LIMIT:=100}"; export WIKILEAN_WPUPDATE_LIMIT
 mkdir -p "$HOME/Library/Logs/WikiLean"
 
 nohup /bin/bash "$SCRIPT_DIR/nightly-moderate.sh" >/dev/null 2>&1 &

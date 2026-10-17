@@ -17,7 +17,8 @@ Two reports:
      from docs/OPERATIONS.md.
   2. The ROADMAP P3 trigger for re-anchoring stages 1-2 ("stage-0 clears <90%"),
      over the last D days: re-pinned / (re-pinned + anchors failed), per attempt
-     and per distinct slug, plus the slugs that block the wp-update queue head.
+     and per distinct slug, plus the slugs that block the wp-update queue head,
+     and a warning once one wp-update run nears /api/work's 1000-row cap.
 
 Stdlib only and Python 3.9 compatible, so an older checkout can run the current
 version without updating:
@@ -38,6 +39,8 @@ from pathlib import Path
 
 P3_THRESHOLD = 0.90  # docs/ROADMAP.md: re-anchoring stages 1-2 trigger at "<90%"
 P3_MIN_SLUGS = 20    # fewer distinct drifted slugs than this is too few to judge
+WP_UPDATE_CAP = 1000       # /api/work's wp-update row cap (wiki/src/index.ts)
+WP_UPDATE_WARN_ROWS = 800  # warn when one wp-update run takes this many articles
 
 # Ordered: the first matching pattern names the likely cause, matched against
 # the raw (untruncated) error. The names are the "Likely cause" column of the
@@ -196,12 +199,14 @@ def drift_trigger(decisions: list, report: list, days: int, now: float) -> dict:
     dry = ({d.get("run_id") for d in decisions if d.get("outcome") == "dry-run"}
            | {r.get("run_id") for r in report if r.get("dry_run")})
     repinned, failed, errors = [], [], 0
+    per_run = Counter()
     for d in decisions:
         if d.get("mode") != "wp-update" or d.get("run_id") in dry:
             continue
         ts = d.get("ts")
         if not isinstance(ts, (int, float)) or ts < cutoff:
             continue
+        per_run[d.get("run_id")] += 1
         slug, outcome, anchors = d.get("slug"), d.get("outcome"), d.get("anchors")
         if outcome == "posted":
             repinned.append(slug)
@@ -239,6 +244,7 @@ def drift_trigger(decisions: list, report: list, days: int, now: float) -> dict:
         "never_cleared": len(blocked),
         "report_rows": report_rows,
         "queue_head": head,
+        "largest_run": max(per_run.values(), default=0),
     }
 
 
@@ -289,6 +295,11 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
           f"({drift['distinct_cleared']}/{drift['distinct_slugs']})")
     print(f"  report rows   {drift['report_rows']} in .wp_update_report.jsonl "
           f"(should equal anchors failed)")
+    if drift["largest_run"] >= WP_UPDATE_WARN_ROWS:
+        print(f"  queue size    WARNING: a wp-update run took {drift['largest_run']} "
+              f"articles; /api/work serves at most {WP_UPDATE_CAP}, and past that "
+              f"failed re-pins hold the queue head again (docs/OPERATIONS.md, "
+              f"'Drift: measuring the stage-0 trigger')")
     rate = drift["distinct_clear_rate"]
     if rate is None:
         print("  P3 trigger    no stage-0 attempts in the window")

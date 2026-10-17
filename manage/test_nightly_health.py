@@ -12,6 +12,7 @@ import json
 import sys
 import tempfile
 import time
+from unittest import mock
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -20,6 +21,11 @@ import nightly_health as nh  # noqa: E402
 
 NOW = 1_792_000_000.0  # fixed clock (2026-10)
 MS = 1000
+
+
+def _at_now():
+    """nh.main() takes its drift window from the real clock; pin it to NOW."""
+    return mock.patch.object(nh.time, "time", return_value=NOW)
 
 
 def _write(path: Path, rows: list) -> None:
@@ -261,12 +267,31 @@ def test_drift_trigger_drops_dry_runs():
     assert d["anchors_failed"] == 20 and d["distinct_slugs"] == 9, d
 
 
+def test_report_warns_when_a_wp_update_run_nears_the_cap():
+    with tempfile.TemporaryDirectory() as td:
+        cache = Path(td)
+        _drift_logs(cache)
+        out = io.StringIO()
+        with _at_now(), contextlib.redirect_stdout(out):
+            nh.main(["--cache", str(cache), "--runs", "0"])
+        assert "queue size" not in out.getvalue(), out.getvalue()
+        t = (NOW - 3600) * MS
+        decisions = nh.read_jsonl(cache / ".decisions.jsonl")
+        decisions += [{"ts": t, "run_id": "big", "mode": "wp-update", "slug": f"S{i}",
+                       "outcome": "noop", "anchors": None} for i in range(800)]
+        _write(cache / ".decisions.jsonl", decisions)
+        out = io.StringIO()
+        with _at_now(), contextlib.redirect_stdout(out):
+            nh.main(["--cache", str(cache), "--runs", "0"])
+    assert "WARNING: a wp-update run took 800 articles" in out.getvalue(), out.getvalue()
+
+
 def test_report_withholds_the_trigger_on_a_small_sample():
     with tempfile.TemporaryDirectory() as td:
         cache = Path(td)
         _drift_logs(cache)
         buf = io.StringIO()
-        with contextlib.redirect_stdout(buf):
+        with _at_now(), contextlib.redirect_stdout(buf):
             nh.main(["--cache", str(cache), "--runs", "0"])
     assert "too few drifted slugs to judge (9 < 20)" in buf.getvalue(), buf.getvalue()
 

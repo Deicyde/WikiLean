@@ -839,11 +839,34 @@ def _http_get(url: str, token: str | None = None):
     return requests.get(url, headers=headers, timeout=60)
 
 
+# GET /api/work's per-mode row cap (wiki/src/index.ts): wp-update serves the
+# whole drifted set, review one 100-row page. A Worker that predates the
+# wp-update cap raise still returns at most 100 rows there.
+WORK_LIMIT_CAP = {"review": 100, "wp-update": 1000}
+# What /api/work served per mode, whatever the limit, before the Worker raised
+# wp-update's cap: a runner can meet that Worker while a release rolls out.
+OLD_WORKER_PAGE = 100
+# Consecutive wp-update errors (a dead Worker, network or Wikipedia) before the
+# sweep stops. Each failing article costs ~19.5 s of retries and pacing, so a
+# 1000-row sweep could otherwise run for hours, past nightly-moderate.sh's 4h
+# stale-lock recovery; a short blip of a few errors still doesn't stop it.
+WP_UPDATE_ABORT_AFTER = 10
+
+
+def wp_update_page_full(n_jobs: int, limit: int) -> bool:
+    """Whether /api/work may have left drifted articles out: it filled the page
+    asked for, or returned exactly the OLD_WORKER_PAGE rows an older Worker
+    serves whatever the limit."""
+    return n_jobs > 0 and (n_jobs >= min(limit, WORK_LIMIT_CAP["wp-update"])
+                           or n_jobs == OLD_WORKER_PAGE < limit)
+
+
 def fetch_work(api_base: str, token: str, mode: str, limit: int) -> list[dict]:
-    """GET /api/work (bearer-only). Server caps limit at 100."""
-    if limit > 100:
-        print("note: /api/work caps limit at 100")
-        limit = 100
+    """GET /api/work (bearer-only). Server caps limit per mode (WORK_LIMIT_CAP)."""
+    cap = WORK_LIMIT_CAP.get(mode, 100)
+    if limit > cap:
+        print(f"note: /api/work caps {mode} at {cap}")
+        limit = cap
     r = _http_get(f"{api_base}/api/work?mode={mode}&limit={limit}", token)
     if r.status_code != 200:
         sys.exit(f"GET /api/work?mode={mode} failed: {r.status_code} {r.text[:200]}")
@@ -1363,6 +1386,9 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     jobs = fetch_work(args.api_base, token, "wp-update", args.limit)
     print(f"wp-update: {len(jobs)} drifted article(s) from /api/work"
           f"{'  [DRY RUN]' if args.dry_run else ''}")
+    if wp_update_page_full(len(jobs), args.limit):
+        print(f"warning: /api/work returned a full page of {len(jobs)} (asked for "
+              f"{args.limit}); drifted articles past it were not attempted this run")
     if not jobs:
         return 0, zero_stats()
     s = ufu.make_session()
@@ -1371,6 +1397,7 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
     wctx = SimpleNamespace(run_id=args.run_id, mode="wp-update",
                            model=None, prompt_sha=None)
     results: list[dict] = []
+    consec_err, aborted = 0, False
     for i, job in enumerate(jobs):
         slug = job["slug"]
         print(f"  [{i + 1}/{len(jobs)}] {slug}", flush=True)
@@ -1384,15 +1411,27 @@ def run_wp_update(args, token: str | None) -> tuple[int, dict]:
         results.append(rec)
         append_decision(decision_line(wctx, rec))  # P2c: one line per article
         print(f"      {rec['outcome']}", flush=True)
-        if rec["outcome"] == "repinned" and i + 1 < len(jobs):
-            time.sleep(ufu.WRITE_PACE_SECONDS)  # stay under EDIT_LIMITER
+        consec_err = consec_err + 1 if decision_outcome(rec) == "error" else 0
+        if consec_err >= WP_UPDATE_ABORT_AFTER:
+            aborted = True
+            print(f"  ⚠ aborting the wp-update sweep after {consec_err} consecutive "
+                  f"errors (last: {str(rec['outcome'])[:80]}); the next run retries", flush=True)
+            break
+        if i + 1 < len(jobs):
+            # Pace every article, as update_from_upstream's own loop does: the
+            # write pace after a re-pin (EDIT_LIMITER), a light pace otherwise
+            # so a long run of read-only articles (the sweep covers the whole
+            # drifted set) doesn't burst Cloudflare's per-IP limit.
+            time.sleep(ufu.WRITE_PACE_SECONDS if rec["outcome"] == "repinned"
+                       else ufu.GET_PACE_SECONDS)
     n_repinned = sum(1 for r in results if r["outcome"] == "repinned")
     n_needs = sum(1 for r in results if r["outcome"] == "needs-work")
     n_err = sum(1 for r in results if decision_outcome(r) in ("error", "422"))
     print(f"wp-update: {len(results)} processed — {n_repinned} re-pinned, "
           f"{n_needs} need stage-1/2 (recorded in {ufu.REPORT_PATH})")
-    return 0, {"processed": len(results), "errors": n_err,
-               "tokens": 0, "cost": 0.0}
+    # 3 = aborted, as for review: 'all' mode then skips the remaining modes.
+    return (3 if aborted else 0), {"processed": len(results), "errors": n_err,
+                                   "tokens": 0, "cost": 0.0}
 
 
 # ---------------------------------------------------------------------------
@@ -1537,7 +1576,7 @@ def run_mode(mode: str, args, token: str | None) -> tuple[int, dict]:
             # move behind the rest without shrinking the run.
             n_recent = len(recently_failed(failures, now_ms))
             jobs = fetch_work(args.api_base, token, "review",
-                              min(100, args.limit + n_recent))
+                              min(WORK_LIMIT_CAP["review"], args.limit + n_recent))
             jobs, deferred = defer_recent_failures(jobs, failures, args.limit, now_ms)
             print(f"review: {len(jobs)} jobs from /api/work")
             if deferred:
@@ -1587,7 +1626,8 @@ def main() -> int:
                     help="flush = re-POST checkpointed payloads from prior runs "
                          "whose write failed transiently (zero agent tokens)")
     ap.add_argument("--limit", type=int, default=10,
-                    help="max articles per mode (default 10; /api/work caps at 100)")
+                    help="max articles per mode (default 10; /api/work caps "
+                         "review at 100, wp-update at 1000)")
     ap.add_argument("--concurrency", type=int, default=2)
     ap.add_argument("--budget-tokens", type=int, default=None,
                     help="abort the run once cumulative tokens reach this")
