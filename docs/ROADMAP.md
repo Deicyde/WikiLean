@@ -1335,6 +1335,15 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   the producer table is regenerated at `c165c65` with every answer unchanged, and the
   smoke-2 export built under D1 (`smoke-2-d1`, 331 passages) gives the skill's status for
   every passage.
+  Parity round three: the lead's reading of D1 resolves Q1–Q3. A survived claim counts as
+  one more exactMatch location at its weakest part: formalized on either row when every
+  part is proved or data, statement only when any part is unfinished (a Prop-valued
+  definition included), and an `example` or `other` passage takes the better row.
+  Confirming a claim confirms its parts, so the view model shows a survived claim's
+  `not_required` and `sampled_out` parts as survived. The skill's table (117 cases) is
+  re-pinned and the producer table regenerated at `3225e95` (394 coverage answers changed,
+  none outside a survived claim). The smoke-2 re-export at that commit (`recordset-d1c`,
+  331 passages, no claims) builds with the skill's status for every passage.
 
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
   (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a

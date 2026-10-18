@@ -185,7 +185,8 @@ Records follow proposal §2.7, with these points of the agreement:
   claim is removed (its parts stay `hasPart`), so an exported claim is normally `survived`;
   any other challenge value is accepted and upgrades nothing. `challenge` is never null: a
   claim no challenge has judged yet (owed) upgrades nothing and is not exported, and the
-  producer's `derive_status` refuses one too.
+  producer's `derive_status` refuses one too. Confirming a claim confirms its parts, so a
+  survived claim's part that no challenge judged on its own reads `survived` (check 6).
 
 ### What the builder checks
 
@@ -298,21 +299,36 @@ any of these fails:
      definition (the flag set) still gives statement only, a `broadMatch` to data is still
      partial, and data that rests on `sorry` has `proof_status` `statement_only` and stays
      statement only.
-   - **A survived coverage claim on a theorem or conjecture passage** (and the theorem row
-     of an `example` or `other` passage) gives formalized when every part is `proved`, and
-     statement only when every part is proved or statement-bearing and some part is
-     `statement_only`, `wanted` or `axiom_dependent`. A part is judged by its
-     `proof_status` alone, so a part that is data, or a Prop-valued definition whose
-     `proof_status` is `definition`, upgrades nothing in this row (question Q2, note 11).
-   - **A survived coverage claim on a definition, construction or notation passage** gives
-     formalized when every part is a `definition` or `proved`, so none is `statement_only`,
-     `wanted` or `axiom_dependent`. This row has no statement-only case (question Q3), and
-     the decision names it for these three kinds only, so an `example` or `other` passage's
-     claim is judged by the theorem row alone (question Q1).
+   - **A survived coverage claim** counts, for `derive_status`, exactly as one more
+     `exactMatch` location whose declaration is the weakest of its parts
+     (`coverage_location`). A part is *finished* when it is `proved` or data (a
+     `definition` without the `statement` flag), and *unfinished* when it is
+     `statement_only`, `wanted` or `axiom_dependent`, or a Prop-valued definition (the flag
+     set) whatever its `proof_status`. When every part is finished, that location is
+     `proved` on the theorem row and data on the definition row, so the claim gives
+     formalized on either row; when any part is unfinished, it is a `statement_only`
+     declaration on both rows, so the claim gives statement only. An `example` or `other`
+     passage judges it on both rows, the better winning, as it judges any location. This
+     is the reading of D1 the lead set in parity round three (2026-10-18), derived from
+     the decision, and it resolves the open questions Q1 to Q3 (note 11): an `example` or
+     `other` passage's claim takes both rows (Q1); a data part counts as finished, as an
+     exact match to data formalizes a theorem (Q2); and the definition row has the
+     statement-only case an exact match to an unfinished declaration has (Q3). A
+     Prop-valued-definition part is unfinished on the definition row too, though an exact
+     match to one alone formalizes a definition passage.
+   - **Confirming a claim confirms its parts.** In the view model, a part whose own
+     `challenge` is `not_required` or `sampled_out` (no challenge judged it on its own)
+     reads `survived` once its claim survived (`confirmed_parts`); the records are copied as
+     they are, so a producer that stamps its parts `survived` gives the same view. A part
+     another verdict judged keeps it (`downgraded`, `survived`), as does one still owed a
+     challenge (`challenge_pending`). A part refuted, or downgraded out of `hasPart`, still
+     lapses the claim: a claim naming it is refused (check 5 above) until the producer
+     drops it. The producer's challenge planner keeps a claim and its parts in one task.
    - A claim whose challenge is not `survived` (pending, unjudged, downgraded, or a refuted
-     claim, which is not exported) upgrades nothing: its parts count only as `hasPart`
-     locations, partial each. Precedence is unchanged: the best status over all the
-     evidence wins, and an absence beside a location that counts is still refused.
+     claim, which is not exported) upgrades nothing and confirms no part: its parts count
+     only as `hasPart` locations, partial each. Precedence is unchanged: the best status
+     over all the evidence wins, and an absence beside a location that counts is still
+     refused.
 
    An `example` or `other` passage is judged by both columns and takes the better answer.
    A located passage whose only locations are `relatedMatch`, with no checked absence, has
@@ -326,17 +342,27 @@ any of these fails:
    is preferred. `scripts/atlas/fixtures/producer_derive_status.json` (WikiLean's parity
    table) holds the producer's answers for every one-location case, 300 sampled two- and
    three-location cases, and 959 coverage cases (every kind with every pair of parts under
-   a survived claim, the upgradable pairs under each other challenge value, and 200
-   sampled claims with three parts or with other locations beside the parts). It is
-   generated by `make_producer_table.py` from formal-companion at `c165c65` (branch
-   `locate/d1`, which implements D1; not yet on its master), and the builder is tested
-   against every case. Against the table from the pre-D1 producer (`b4ac86a`), exactly 13
-   answers changed, each a theorem or conjecture with an exact or close match to data.
+   a survived claim, the pairs of four representative parts, two finished and two
+   unfinished, under each other challenge value, and 200 sampled claims with three parts
+   or with other locations beside the parts). It is generated by `make_producer_table.py`
+   from formal-companion at `3225e95` (branch `locate/d1`, which implements D1 as parity
+   round three reads it; not yet on its master), and the builder is tested against every
+   case. Against the table from the pre-D1 producer (`b4ac86a`), exactly 13 answers
+   changed, each a theorem or conjecture with an exact or close match to data. Against the
+   round-two table (`c165c65`), 394 answers changed, every one a coverage case under a
+   survived claim: 363 from partial to statement only (Q2 and Q3, and Q1 for `example` and
+   `other`), 17 from formalized to statement only (a definition, construction or notation
+   passage's claim with a Prop-valued-definition part), and 14 from partial to formalized
+   (data parts on a theorem, conjecture, `example` or `other` passage).
    `scripts/atlas/fixtures/status_parity.json` is the table both sides run: formal-companion's
-   hand-written `tests/data/locate/status-parity.json` at `c165c65`, copied byte for byte
-   (its sha256 is pinned in the test), 97 cases whose expectations were written from the
-   decision's spec, 22 of them refusals. The producer's test runs its `derive_status` over
-   them; WikiLean's runs `derive_passage_status`, which takes the producer's arguments
+   hand-written `tests/data/locate/status-parity.json` at `3225e95`, copied byte for byte
+   (its sha256 is pinned in the test), 117 cases whose expectations were written from the
+   decision's spec and the round-three reading it records under `reading`, 22 of them
+   refusals and 15 marked with the question (Q1 to Q3) they turn on. Four (P01 to P04)
+   carry `expected_challenges`, the challenge each location's exported record carries, and
+   WikiLean's test checks the view model's `confirmed_parts` against them. The producer's
+   test runs its `derive_status` over the cases; WikiLean's runs `derive_passage_status`,
+   which takes the producer's arguments
    (`passage_kind, locations, absent, coverage`) and puts one passage through the builder's
    own checks (above, and check 5's claim shape) and then `derive_status`, so a case the
    builder would refuse in a record set is a refusal there too. The page's fallback
@@ -388,8 +414,9 @@ agreement before real record sets arrive:
    repository root (Lean core's records say `src/Init/...`), so there is no `src_dir`
    either: a set carrying one is refused, and the registry prefixes nothing.
 7. **WikiLean recomputes the derived status** (section 3, check 6) with the producer's
-   rules, as `cflib.vocab.derive_status` implements them at formal-companion `c165c65`,
-   with the maintainer's decision D1 (2026-10-18). That code is not yet on
+   rules, as `cflib.vocab.derive_status` implements them at formal-companion `3225e95`,
+   with the maintainer's decision D1 (2026-10-18) as parity round three reads it (note
+   11). That code is not yet on
    formal-companion's master, and `references/vocabulary.md` §1.11 marks its other
    decisions as conservative, "until the maintainer says otherwise": a construction or
    notation passage is a definition passage, an example or `other` passage takes the
@@ -437,14 +464,15 @@ agreement before real record sets arrive:
     each carries `section`, `prominence` and the status the claim justifies), or none does;
     a passage without a claim has no `coverage` key, never `null`; `challenge` takes the
     records' challenge vocabulary, so `refuted` is refused (a refuted claim is removed, not
-    exported); and `parts` keeps the producer's order, which the page lists. Both sides
-    read the decision literally where the maintainer has not said more, and the skill's
-    `references/vocabulary.md` §1.11 names the three readings as open questions: **Q1**, an
-    `example` or `other` passage's claim is judged by the theorem row only (D1 names the
-    definition row for definition, construction and notation); **Q2**, a theorem row's
-    part is judged by its `proof_status` alone, so a data part or a Prop-valued definition
-    whose `proof_status` is `definition` upgrades nothing; **Q3**, a definition row's claim
-    with an unfinished part upgrades nothing (no statement-only case).
+    exported); and `parts` keeps the producer's order, which the page lists. In rounds one
+    and two both sides read the decision literally where the maintainer had not said more,
+    and the skill's `references/vocabulary.md` §1.11 named three readings as open
+    questions: **Q1**, an `example` or `other` passage's claim judged by the theorem row
+    only (D1 names the definition row for definition, construction and notation); **Q2**, a
+    theorem row's part judged by its `proof_status` alone, so a data part or a Prop-valued
+    definition whose `proof_status` is `definition` upgraded nothing; **Q3**, a definition
+    row's claim with an unfinished part upgrading nothing (no statement-only case). Round
+    three resolves all three (below).
     **Parity, round two (2026-10-18).** Round one ran the shared table and an adversarial
     set through both sides and found them apart on three inputs no export carries, each
     because the producer's `derive_status` took a claim the record format does not: an owed
@@ -457,6 +485,24 @@ agreement before real record sets arrive:
     (cases C14 and X11 to X16), so WikiLean's semantics did not change. WikiLean added the
     pinned copy of that table, `derive_passage_status` to run it through the builder's own
     checks, and a named message for a null `challenge`.
+    **Parity, round three (2026-10-18).** The lead set the reading of D1 that resolves Q1 to
+    Q3, and both sides implement it (check 6; the skill's `references/vocabulary.md` §1.11,
+    commit `3225e95`): a survived claim acts, for the derived status, exactly as one more
+    `exactMatch` location whose declaration is the weakest of its parts. A part is finished
+    when it is `proved` or data, unfinished when it is `statement_only`, `wanted`,
+    `axiom_dependent` or a Prop-valued definition. Every part finished gives formalized on
+    either row, any part unfinished gives statement only on both, an `example` or `other`
+    passage takes the better row, and a claim that has not survived adds nothing. So Q1's
+    claim takes both rows, Q2's data part is finished and its Prop-valued-definition part is
+    not, and Q3's definition row has a statement-only case; the shared table's D04 (a
+    definition passage's claim over data and a Prop-valued definition) moved from formalized
+    to statement only. Confirming a claim confirms its parts: the producer exports a survived
+    claim's `not_required` and `sampled_out` parts as `survived`
+    (`scripts/locate/outcomes.py` `confirm_parts`), a part another verdict judged keeps it,
+    and a part refuted or downgraded out of `hasPart` lapses the claim. WikiLean's view
+    model applies the same rule (`confirmed_parts`) whichever value a part's records carry,
+    so a set exported before round three reads the same, and copies the records verbatim.
+    The store's format did not change.
 
 ## 4. The store (v1)
 
@@ -487,9 +533,11 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   are `relatedMatch`, `challenge` is its rank-1 location's and the locations are kept. A
   passage with a coverage claim (decision D1) carries `coverage {complete, parts,
   challenge, status, basis}`: the claim as exported (`parts` are location keys, in the
-  record's order), `status`, what the claim gives on its own (null when it did not
-  survive or its parts do not qualify), and `basis`, true when the claim rather than one
-  location justifies the passage's status (the passage's `basis` is then null). A
+  record's order), `status`, what the claim gives on its own (formalized or
+  `statement_only` once it survived, null otherwise), and `basis`, true when the claim
+  rather than one location justifies the passage's status (the passage's `basis` is then
+  null). A part of a survived claim whose own `challenge` is `not_required` or
+  `sampled_out` has `challenge: "survived"` in its location (check 6). A
   `relatedMatch` states something else (proposal §2.6), so it is counted
   in `related` and never as a location. `summary.by_library` (and `current.json`'s
   `counts.by_library`) splits each library's `locations` into `complete` (proved
@@ -633,9 +681,11 @@ and the live list filter.
   "Formalized: Mathlib states this exactly (proved).", naming the store's `basis`, not
   simply the rank-1 location. A survived coverage claim (decision D1) adds a line with
   its parts listed in the claim's order (library, declaration, proof status): "Formalized
-  by 2 parts together:", or "Stated by 2 parts together, not all of them proved:", or,
-  when its parts give the passage nothing, "Covered by 2 parts together, not all of which
-  count toward the status:". When the claim is the basis that line is the status sentence;
+  by 2 parts together:" when every part is finished, or "Stated by 2 parts together, not
+  all of them finished:" (check 6). The builder gives every survived claim one of the two;
+  for a store built before parity round three, whose claim may carry no status, the line
+  reads "Covered by 2 parts together, not all of which count toward the status:". A part the
+  claim confirmed says "a challenger checked it" on its card. When the claim is the basis that line is the status sentence;
   otherwise it follows the sentence. A claim that did not survive shows no line, and its
   parts are ordinary "states part" cards. Then the quote with its context, and a link to the passage
   in the pinned Wikipedia revision (a text fragment). The producer's item id
@@ -851,9 +901,11 @@ Each decision below comes with a recommendation.
   `derive_passage_status`, refusals included, and that function against `build()` on every
   fixture passage) and the §1.11 cases,
   decision D1 (exact and close matches to data, broadMatch to data, data on sorry, and the
-  coverage claim: survived against every other challenge value, each row's part cases for
-  theorem, definition, example and `other` passages, the basis and ties, the parts' order,
-  and every refusal of the claim's shape and parts), the `statement` flag, related-only
+  coverage claim: survived against every other challenge value, the round-three reading's
+  part cases, finished and unfinished, data and Prop-valued definitions among them, on
+  every passage kind, the parts' challenge values a survived claim confirms and the ones
+  it leaves, the basis and ties, the parts' order, and every refusal of the claim's shape
+  and parts), the `statement` flag, related-only
   passages, the agreed record-set format (the seal's exact keys, campaign ids and run
   tokens, the token grammar of `set_id` and `sourceset.id`, `byte_budget` kept and
   enforced, the universe's sorted list and exact library and exclusion keys, the `repo`
@@ -878,7 +930,7 @@ Each decision below comes with a recommendation.
   Prop-valued-definition passages, the subject passage's marking and its Subject row, a
   `challenge_pending` location ("not challenged yet"), the coverage claim's line ("Formalized
   by 2 parts together" with the parts listed, only for a survived claim; its wording for a
-  statement-only claim and for one whose parts give nothing; a malformed claim never
+  statement-only claim and for one an older store gives no status; a malformed claim never
   reaching the HTML), the theorem a data declaration formalizes, a location without `end_line`
   ("line 88", `#L88`), a run-token campaign on the pages and
   in feedback (`CAMPAIGN_RE`, the same grammar as the builder's), the producer's truth

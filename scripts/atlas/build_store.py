@@ -102,6 +102,15 @@ MIN_COVERAGE_PARTS = 2
 COVERAGE_SURVIVED = "survived"
 # derive_status's basis when the coverage claim, not one location, justifies the status.
 COVERAGE_BASIS = "coverage"
+# The reading of D1 the lead set in parity round three (2026-10-18), which resolves the open
+# questions Q1-Q3 (docs/ATLAS.md, check 6 and contract note 11; formal-companion
+# references/vocabulary.md §1.11): a survived claim acts, for derive_status, as ONE more location
+# of this relation whose declaration is the weakest of its parts (coverage_location).
+COVERAGE_ACTS_AS = "exactMatch"
+# Confirming a claim confirms its parts: in the view model, a part whose own challenge is one of
+# these (no challenge judged it on its own) reads survived once its claim survived. A part another
+# verdict judged keeps that verdict.
+CONFIRMED_WITH_CLAIM = frozenset({"not_required", "sampled_out"})
 # The challenge verdicts (proposal §2.7 and §5; cflib.vocab CHALLENGE_VERDICTS). The last three
 # are records no challenge judged (CHALLENGE_UNJUDGED), and the Worker reads each as unchallenged:
 # challenge_pending is a record a prominence overturn to subject or central put under a rule
@@ -970,41 +979,42 @@ def location_status(kind: str, loc: dict) -> str | None:
     return min(rows, key=STATUS_RANK.__getitem__) if rows else None
 
 
-def _theorem_coverage(parts: list[dict]) -> str | None:
-    """A survived coverage claim on a theorem or conjecture passage (decision D1).
+def part_finished(part: dict) -> bool:
+    """Whether a coverage claim's part is finished, by the round-three reading of D1.
 
-    Formalized when every part is proved. Statement only when every part is proved or
-    statement-bearing and some part is statement_only, wanted or axiom_dependent. None
-    otherwise. The literal reading, as the producer's cflib.vocab reads it: a part is judged
-    by its proof_status alone, so a part that is data, or a Prop-valued definition whose
-    proof_status is definition, upgrades nothing here (open question Q2, docs/ATLAS.md
-    contract note 11).
+    Finished: proved, or data (a definition without the statement flag). Unfinished:
+    statement_only, wanted or axiom_dependent, or a Prop-valued definition (the flag set),
+    whatever its proof_status: it states a clause and proves none.
     """
-    if all(part["proof_status"] == "proved" for part in parts):
-        return "formalized"
-    if all(part["proof_status"] == "proved" or part["proof_status"] in UNPROVED for part in parts):
-        return "statement_only"
-    return None
+    return part["proof_status"] == "proved" or (part["proof_status"] == "definition" and not part["statement"])
 
 
-def _definition_coverage(parts: list[dict]) -> str | None:
-    """A survived coverage claim on a definition, construction or notation passage (decision D1).
+def coverage_location(row: str, parts: list[dict]) -> dict:
+    """The one exactMatch location a survived claim acts as, on the theorem or definition row.
 
-    Formalized when every part is a definition or proved (so none is statement_only, wanted or
-    axiom_dependent); None otherwise. Decision D1 gives this row no statement_only case.
+    Its declaration is the weakest of the parts (finished above unfinished): when every part is
+    finished it is proved on the theorem row and data (definition, no flag) on the definition
+    row, so the claim formalizes the passage on either row (so a data part counts, as an exact
+    match to data does, Q2; and the definition row has the statement_only case an exact match to
+    an unfinished declaration has, Q3); when any part is unfinished it is a statement_only
+    declaration on both rows.
     """
-    return "formalized" if all(part["proof_status"] in COMPLETE for part in parts) else None
+    if not all(part_finished(part) for part in parts):
+        proof_status = "statement_only"
+    else:
+        proof_status = "proved" if row == "theorem" else "definition"
+    return {"relation": COVERAGE_ACTS_AS, "proof_status": proof_status, "statement": False}
 
 
 def coverage_status(kind: str, claim: dict | None, locations: list[dict]) -> str | None:
     """The status a coverage claim gives a passage of `kind` on its own; None when it gives none.
 
     Only a claim whose challenge is survived counts: one pending, unjudged (not_required,
-    sampled_out) or downgraded upgrades nothing, and a refuted claim is not exported at all.
-    Decision D1 names the theorem row of an example or `other` passage and the definition
-    row of definition, construction and notation passages only, so an example's or `other`
-    passage's claim is judged by the theorem row alone (open question Q1, docs/ATLAS.md
-    contract note 11).
+    sampled_out) or downgraded upgrades nothing, and a refuted claim is not exported at all. A
+    survived claim is judged as its coverage_location on the passage kind's row of the table, an
+    example or `other` passage taking the better of the two rows exactly as for an ordinary
+    location (Q1), so it gives formalized when every part is finished and statement_only
+    otherwise.
     """
     if claim is None or claim["challenge"] != COVERAGE_SURVIVED:
         return None
@@ -1015,11 +1025,10 @@ def coverage_status(kind: str, claim: dict | None, locations: list[dict]) -> str
         return None  # refused by coverage_part_problems; never counted
     rows = []
     if kind in THEOREM_KINDS or kind in EITHER_KINDS:
-        rows.append(_theorem_coverage(parts))
-    if kind in DEFINITION_KINDS:
-        rows.append(_definition_coverage(parts))
-    counted = [row for row in rows if row is not None]
-    return min(counted, key=STATUS_RANK.__getitem__) if counted else None
+        rows.append(_theorem_row(coverage_location("theorem", parts)))
+    if kind in DEFINITION_KINDS or kind in EITHER_KINDS:
+        rows.append(_definition_row(coverage_location("definition", parts)))
+    return min(rows, key=STATUS_RANK.__getitem__) if rows else None
 
 
 def derive_status(kind: str, locations: list[dict], coverage: dict | None = None) -> tuple[str | None, Any]:
@@ -1029,8 +1038,9 @@ def derive_status(kind: str, locations: list[dict], coverage: dict | None = None
     implements references/vocabulary.md §1.11's decisions for the cases the table leaves
     open, decision D1 among them): each location that counts gets a status from its kind's
     row of the table, an example or `other` passage taking the better of the two rows; a
-    survived coverage claim over the passage's hasPart locations gives one more status
-    (coverage_status); and the passage takes the best of them. `locations` are in rank order.
+    survived coverage claim over the passage's hasPart locations counts as one more exactMatch
+    location, to the weakest of its parts (coverage_location, coverage_status); and the passage
+    takes the best of them. `locations` are in rank order.
 
     Returns (status, basis): the one status the producer stamps, and what justifies it: the
     highest-ranked location reaching it, or COVERAGE_BASIS when only the coverage claim
@@ -1133,6 +1143,24 @@ def derive_passage_status(kind: Any, locations: list[dict], absent: bool, covera
     return derive_status(kind, rows, claim)[0]
 
 
+def confirmed_parts(claim: dict, locations: list[dict]) -> list[dict]:
+    """The passage's locations as the view model shows them, its survived claim's parts confirmed.
+
+    Confirming a coverage claim confirms its parts (the round-three reading of D1): a part whose
+    own challenge is not_required or sampled_out (CONFIRMED_WITH_CLAIM) reads survived once the
+    claim survived. A part another verdict judged keeps it (downgraded, survived), as does one
+    still owed a challenge (challenge_pending), and a claim that did not survive confirms nothing.
+    A producer that already stamps its parts survived gets the same view, so the rule is applied
+    here whichever value the part's records carry; the records themselves are copied verbatim.
+    """
+    if claim["challenge"] != COVERAGE_SURVIVED:
+        return locations
+    parts = set(claim["parts"])
+    return [{**loc, "challenge": COVERAGE_SURVIVED}
+            if loc["location_key"] in parts and loc["challenge"] in CONFIRMED_WITH_CLAIM else loc
+            for loc in locations]
+
+
 def build_passages(classified: list[dict], source: dict, problems: Problems) -> list[dict]:
     """Group records by passage id (first-appearance order) and check the outcome rules."""
     groups: dict[str, list[dict]] = {}
@@ -1199,11 +1227,13 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
                     problems.add(at, message)
         coverage = None
         if claim is not None:
-            # The claim as exported, plus what it gives on its own (null when it did not survive
-            # or its parts do not qualify) and whether it is what justifies the passage's status.
+            # The claim as exported, plus what it gives on its own (formalized or statement_only
+            # once it survived, null otherwise) and whether it is what justifies the passage's
+            # status; its parts' challenge values then read as confirmed by it.
             coverage = {**claim, "status": (coverage_status(first["kind"], claim, locations)
                                             if member(first["kind"], KINDS) else None),
                         "basis": basis == COVERAGE_BASIS}
+            locations = confirmed_parts(claim, locations)
         absence = None
         if absences:
             absence = {"universe": None, "universe_sha256": None, "libraries": None,

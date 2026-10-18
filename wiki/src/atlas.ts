@@ -84,8 +84,8 @@ export interface AtlasPassage {
   basis?: string | null;
   // Decision D1's coverage claim: hasPart locations (`parts`, location keys)
   // that together state every clause. It counts only once its challenge is
-  // "survived". `status` is what the claim gives on its own (null when it did
-  // not survive or its parts do not qualify) and `basis` says it, not one
+  // "survived". `status` is what the claim gives on its own (formalized or
+  // statement_only once it survived, null otherwise) and `basis` says it, not one
   // location, justifies the passage's status. Null when the passage has none;
   // absent from stores built before D1.
   coverage?: AtlasCoverage | null;

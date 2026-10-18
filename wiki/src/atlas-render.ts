@@ -339,12 +339,15 @@ function coverageParts(passage: AtlasPassage): AtlasLocation[] {
 }
 
 // "Formalized by N parts together", with the parts listed: shown only for a
-// survived claim. Its words follow what the claim gives on its own.
+// survived claim. Its words follow what the claim gives on its own: formalized
+// when every part is finished (proved, or data), statement only when one is
+// not (build_store.coverage_status, the round-three reading of D1). A store
+// built before that reading could leave a survived claim no status.
 function coverageBlock(passage: AtlasPassage, parts: AtlasLocation[], libs: Map<string, LibraryView>): string {
   const n = parts.length;
   const status = passage.coverage?.status;
   const lead = status === "formalized" ? `Formalized by ${n} parts together`
-    : status === "statement_only" ? `Stated by ${n} parts together, not all of them proved`
+    : status === "statement_only" ? `Stated by ${n} parts together, not all of them finished`
     : `Covered by ${n} parts together, not all of which count toward the status`;
   const items = parts.map((loc) => {
     const info = libs.get(loc.library)?.info ?? libraryInfo(loc.repo, null);

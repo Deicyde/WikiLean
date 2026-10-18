@@ -40,8 +40,10 @@ PROOF_STATUSES = ["proved", "statement_only", "axiom_dependent", "wanted", "defi
 SAMPLE_SEED = 20261017
 SAMPLE_SIZE = 300
 # Coverage cases (decision D1): every kind x every pair of valid part ends under a survived
-# claim, the pairs a survived claim can upgrade under each other challenge value for three
-# kinds, and a fixed sample of claims with three parts or with other locations beside them.
+# claim, the pairs of four representative ends (proved, data, statement_only, a Prop-valued
+# definition: finished and unfinished, as the round-three reading orders them) under each other
+# challenge value for three kinds, and a fixed sample of claims with three parts or with other
+# locations beside them.
 COVERAGE_SEED = 20261018
 COVERAGE_SAMPLE_SIZE = 200
 OTHER_CHALLENGES = ["downgraded", "not_required", "sampled_out", "challenge_pending"]
@@ -69,7 +71,7 @@ def coverage_cases(vocab, valid: list[list]) -> list[list]:
         for pair in pairs:
             claim = {"parts": [0, 1], "challenge": "survived"}
             out.append([kind, [list(e) for e in pair], answer(vocab, kind, pair, claim), claim])
-    # The ends a survived claim can upgrade, under every other challenge value.
+    # Four representative ends (two finished, two unfinished), under every other challenge value.
     upgradable = [end for end in part_ends if end[1:] in (["proved", False], ["definition", False],
                                                            ["statement_only", False], ["definition", True])]
     for kind in ("theorem", "definition", "example"):

@@ -459,8 +459,10 @@ describe("atlas pages with the fixture store", () => {
     expect(block.match(/class="atlas-why"/g)?.length).toBe(1);
     expect(block.indexOf("Gadget.<wbr></span><b>connected</b>")).toBeLessThan(block.indexOf("<b>basepoint_<wbr>degree_<wbr>finite</b>"));
     expect(block).toContain("<span class=\"atlas-muted\">(proved)</span></li>");
-    // Each part is still a card that states part of it.
+    // Each part is still a card that states part of it, and reads as checked: confirming the
+    // claim confirms its parts (round three; build_store.confirmed_parts).
     expect(block.match(/data-relation="hasPart"/g)?.length).toBe(2);
+    expect(block.match(/ · a challenger checked it<\/span>/g)?.length).toBe(2);
     // The theorem an equivalence states is formalized by that one data declaration.
     expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
     expect(html.match(/parts together/g)?.length).toBe(1);
@@ -495,9 +497,10 @@ describe("atlas pages with the fixture store", () => {
         p.locations[1].proof_status = "statement_only";
         Object.assign(p, { status: "statement_only", basis: null });
         Object.assign(p.coverage, { status: "statement_only", basis: true });
-      }, ['<p class="atlas-why">Stated by 2 parts together, not all of them proved:</p>']],
-      ["a claim whose parts give no status", (p) => {
-        p.locations[1].proof_status = "definition";
+      }, ['<p class="atlas-why">Stated by 2 parts together, not all of them finished:</p>']],
+      // The builder gives every survived claim a status (round three); a store built
+      // before that could leave one null, and the page still says what the parts are.
+      ["a survived claim the store gives no status", (p) => {
         Object.assign(p, { status: "partial", basis: p.locations[0].location_key });
         Object.assign(p.coverage, { status: null, basis: false });
       }, ['<p class="atlas-why">Partial: Mathlib states part of this (proved).</p>',
