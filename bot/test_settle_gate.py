@@ -211,7 +211,7 @@ class Pr42608ReplayTest(PollFixture):
         self.assertEqual(r["recycle"], [])
         h = settle.ready_header(r)
         self.assertIn("**9** `@[wikidata]` tags", h)
-        self.assertNotIn("recycled", h)
+        self.assertNotIn("removed in this trim", h)
 
 
 class ConflictRebuildTest(PollFixture):

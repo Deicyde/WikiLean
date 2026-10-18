@@ -313,7 +313,7 @@ def ready_header(cls):
             f"shows the bot as a mathlib4 owner, member or collaborator overrides the others; a GitHub PR "
             f"approval never does. "
             f"Reviews recorded from: {who}. **Ready for a maintainer's review.**"
-            + (f" {len(recycle)} removed from this PR; triage requeues or cuts each." if recycle else "")
+            + (f" {len(recycle)} removed in this trim." if recycle else "")
             + " <!-- wikilean-bot-ready -->")
 
 

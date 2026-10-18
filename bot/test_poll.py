@@ -416,7 +416,7 @@ class ReadyHeaderTest(PollFixture):
         self.assertNotIn("jcommelin", h)  # the list is in the bot, not the header
         self.assertNotIn("faenuccio", h)
         self.assertIn("Reviews recorded from: `Deicyde`, `SnirBroshi`.", h)
-        self.assertIn("1 removed from this PR; triage requeues or cuts each.", h)
+        self.assertIn("1 removed in this trim.", h)
         self.assertNotRegex(h, r"@\w")  # names, not pings
         self.assertNotIn("≥2 reviewers", h)
         self.assertNotIn("unresolved objection", h)

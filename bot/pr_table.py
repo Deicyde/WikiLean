@@ -54,7 +54,7 @@ def table(pr, repo="leanprover-community/mathlib4", header=None, fresh=False):
     return (head + "\n\n| # | Concept | Wikidata | Mathlib declaration | Reviews |\n"
             "|--:|:--|:--|:--|:--|\n" + "\n".join(rows) +
             "\n\n<sub>Reviews: 🟢 approve · 🟡 revise · 🔴 reject · ⚠️ deletion-candidate · 💬 comment. \\* = maintainer. "
-            "Recycled tags: https://wikilean.jackmccarthy.org/queue</sub>"
+            "Requeued tags: https://wikilean.jackmccarthy.org/queue</sub>"
             "\n<!-- wikilean-tag-table -->")
 
 
