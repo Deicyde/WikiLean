@@ -41,12 +41,13 @@ if os.environ.get("WIKILEAN_KEEP_API_KEY") != "1":
 import requests
 from claude_agent_sdk import (
     AssistantMessage,
-    ClaudeAgentOptions,
     ResultMessage,
     TextBlock,
     ToolUseBlock,
     query,
 )
+
+from agent_sandbox import SANDBOX_VERSION, sandboxed_options  # noqa: F401 (SANDBOX_VERSION: moderate.get_prompt_sha)
 
 HERE = Path(__file__).resolve().parent
 CACHE = HERE / "cache"
@@ -309,21 +310,24 @@ def run_script(script: str, slug: str) -> tuple[int, str]:
     return proc.returncode, (proc.stdout + proc.stderr)
 
 
-async def run_agent(system: str, user: str, cwd: Path,
+async def run_agent(system: str, user: str, cwd: Path | None,
                     tools: list[str], max_turns: int,
                     mcp_servers: dict | None = None) -> tuple[dict | None, dict]:
-    """Run one agent via the SDK. Returns (parsed_json_or_None, meta)."""
-    opt_kwargs = dict(
+    """Run one sandboxed agent via the SDK. Returns (parsed_json_or_None, meta).
+
+    `tools` names the built-in tools the agent may see (Read/Grep/Glob) plus the
+    `mcp__…` tools it may call; nothing else is available (agent_sandbox.py).
+    `cwd` is the only directory its read tools can reach; None runs it in the
+    empty sandbox directory (Agent 1 needs no files)."""
+    options = sandboxed_options(
         model=MODEL,
         system_prompt=system,
-        allowed_tools=tools,
-        cwd=str(cwd),
-        permission_mode="bypassPermissions",
+        tools=[t for t in tools if not t.startswith("mcp__")],
+        allowed_tools=[t for t in tools if t.startswith("mcp__")],
+        cwd=cwd,
         max_turns=max_turns,
+        mcp_servers=mcp_servers,
     )
-    if mcp_servers:
-        opt_kwargs["mcp_servers"] = mcp_servers
-    options = ClaudeAgentOptions(**opt_kwargs)
     last_text = ""
     result_obj = None
     n_tool = 0
@@ -589,7 +593,9 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             if native_mode:
                 a1_system = NATIVE_AGENT1_SYSTEM
                 a1_prompt += f"\n\nPinned source URI for NEW selections: {source_uri}"
-            a1, a1_meta = await run_agent(a1_system, a1_prompt, HERE, [], 12)
+            # No tools and the empty sandbox cwd: the article text arrives in the
+            # prompt, and Agent 1 must not see site/ or wiki/.dev.vars.
+            a1, a1_meta = await run_agent(a1_system, a1_prompt, None, [], 12)
             if not a1 or "annotations" not in a1:
                 rec["error"] = "agent1_no_json"
                 return rec

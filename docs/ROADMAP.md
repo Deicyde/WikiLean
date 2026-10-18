@@ -1289,6 +1289,16 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-10-17: **Agent sandbox cohort boundary (branch `claude/security-hardening`, not yet
+  merged or deployed).** From the first moderation run on a commit with
+  `site/agent_sandbox.py`, every agent runs with `setting_sources=[]` (no CLAUDE.md, project
+  allow rules or SessionStart hook output), at most Read/Grep/Glob plus named MCP tools, no
+  Bash, `dontAsk`, and a sandbox or Mathlib cwd. Earlier runs had every built-in tool and the
+  project settings. No prompt text changed, so `get_prompt_sha` now also hashes
+  `SANDBOX_VERSION` (`sandbox-v1`): with default settings `prompt_sha` moves from
+  `7741e5624562` to `fd6e36beabe3` (review) and from `c4796cc897d8` to `f333797c42da` (new).
+  Brain `sync_agents` rows carry no prompt hash; date their cohort by this entry.
+
 - 2026-10-16: **Native companions merged (#64, merge commit `786a388e`).** Migration 0014 is
   not yet applied to D1, and no Worker built from `main` has been deployed. Cutover choices
   are Waiting on Jack item 15.

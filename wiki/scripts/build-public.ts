@@ -16,12 +16,14 @@ import {
   realpathSync,
   rmSync,
   statSync,
+  writeFileSync,
   writeSync,
 } from "node:fs";
 import { createHash } from "node:crypto";
 import { basename, dirname, isAbsolute, posix, relative, resolve, sep } from "node:path";
 import { pathToFileURL } from "node:url";
 import { buildMathlibIndex } from "./build-mathlib-index.ts";
+import { staticAssetHeadersFile } from "../src/security.ts";
 import {
   stageBrainPublicRelease,
   type StageBrainPublicOptions,
@@ -55,6 +57,7 @@ export interface BuildPublicResult {
   max_rss_bytes: number;
 }
 
+export const STATIC_HEADERS_FILE = "_headers";
 const PUBLIC_BASELINE_SCHEMA = "wikilean.public-asset-baseline/v1";
 const PUBLIC_BASELINE_DOMAIN = "wikilean.public-asset-baseline.v1";
 const BASELINE_ID_RE = /^sha256:([0-9a-f]{64})$/;
@@ -663,6 +666,12 @@ export function buildPublic(options: BuildPublicOptions): BuildPublicResult {
     }
     mathlibDeclarations = buildMathlibIndex(site, resolve(pubAssets, "mathlib-index.json"));
   }
+
+  // Static assets are served before the Worker runs, so the security headers
+  // the Worker middleware applies reach them only through this generated
+  // `_headers` file (Wrangler reads it as configuration and does not upload it
+  // as an asset). It is build output, never baseline payload.
+  writeFileSync(resolve(pub, STATIC_HEADERS_FILE), staticAssetHeadersFile(), { mode: 0o644 });
 
   return {
     schema: "wikilean.public-build-result/v1",

@@ -50,7 +50,7 @@ import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
-import { registerSecurityHeaders } from "./security.js";
+import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders } from "./security.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -357,16 +357,9 @@ function validateAnnotations(
   return null;
 }
 
-// Cheap CSRF defense-in-depth: block cross-site browser POSTs. Requests with no
-// Origin header (non-browser/script clients, same-origin GETs) pass. Returns a
-// 403 response to send, or null to proceed.
-function checkOrigin(c: Context<{ Bindings: Env }>): Response | null {
-  const origin = c.req.header("Origin");
-  if (origin && origin !== new URL(c.req.url).origin) {
-    return c.json({ ok: false, error: "cross-origin request rejected" }, 403);
-  }
-  return null;
-}
+// Cheap CSRF defense-in-depth: checkOrigin (security.ts) blocks cross-site
+// browser writes. Requests with no Origin header (non-browser/script clients,
+// same-origin GETs) pass. It returns a 403 response to send, or null to proceed.
 
 type DrizzleDB = ReturnType<typeof drizzle>;
 
@@ -387,8 +380,17 @@ function statusCounts(annotations: AnnRecord[]): {
   return counts;
 }
 
+// The research export's pseudonym salt. A dedicated secret keeps the salt
+// out of the hands of every PIPELINE_TOKEN holder (who could otherwise
+// recompute sha256(user_id + token) for the public user ids) and lets the
+// bearer rotate without re-keying research pseudonyms. Falls back to
+// PIPELINE_TOKEN so existing pseudonyms stay stable until the secret is set.
+function researchExportSalt(env: Pick<Env, "RESEARCH_EXPORT_SALT" | "PIPELINE_TOKEN">): string {
+  return env.RESEARCH_EXPORT_SALT || env.PIPELINE_TOKEN || "";
+}
+
 // Plain SHA-256 hex. The research export salts its pseudonyms with
-// PIPELINE_TOKEN before hashing.
+// researchExportSalt() before hashing.
 async function sha256Hex(s: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
@@ -1015,6 +1017,8 @@ app.get("/u/:id", async (c) => {
 // POST adds (idempotent — duplicate rows would 1555 in SQLite; OR IGNORE keeps
 // the round-trip a single insert), DELETE removes.
 app.post("/api/watch/:slug", async (c) => {
+  const bad = checkOrigin(c);
+  if (bad) return bad;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const slug = c.req.param("slug");
@@ -1030,6 +1034,8 @@ app.post("/api/watch/:slug", async (c) => {
   return c.json({ ok: true, watching: true });
 });
 app.delete("/api/watch/:slug", async (c) => {
+  const bad = checkOrigin(c);
+  if (bad) return bad;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const slug = c.req.param("slug");
@@ -1354,11 +1360,9 @@ app.put("/api/article/:slug", async (c) => {
     comment?: unknown;
     meta?: unknown;
   };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.article);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (!posted || typeof posted !== "object" || Array.isArray(posted)) return c.json({ ok: false, error: "expected JSON object" }, 400);
   if (
     typeof posted.wikipedia_title !== "string" ||
@@ -1514,11 +1518,9 @@ app.post("/api/article/:slug", async (c) => {
     annotation_id?: unknown;
     proposal_id?: unknown;
   };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.article);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (!posted || typeof posted !== "object" || Array.isArray(posted)) return c.json({ ok: false, error: "expected JSON object" }, 400);
 
   // ---- endorse (D-C2): {action:'endorse', annotation_id, base_version} ----
@@ -2510,11 +2512,9 @@ app.post("/api/flag/:slug", async (c) => {
   const slug = c.req.param("slug");
 
   let posted: { annotation_id?: unknown; reason?: unknown; comment?: unknown };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.flag);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (typeof posted.reason !== "string" || !FLAG_REASON_SET.has(posted.reason)) {
     return c.json({ ok: false, error: "bad reason" }, 400);
   }
@@ -2601,11 +2601,9 @@ app.post("/api/flag/:id/resolve", async (c) => {
   const id = parseInt(c.req.param("id"), 10);
   if (Number.isNaN(id)) return c.json({ ok: false, error: "bad flag id" }, 400);
   let posted: { resolution?: unknown };
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.flagResolve);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (posted.resolution !== "fixed" && posted.resolution !== "dismissed") {
     return c.json({ ok: false, error: "bad resolution" }, 400);
   }
@@ -2845,11 +2843,9 @@ app.post("/api/runs", async (c) => {
   const user = await requireRole(c, ["bot"]);
   if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
   let posted: Record<string, unknown>;
-  try {
-    posted = await c.req.json();
-  } catch {
-    return c.json({ ok: false, error: "bad json" }, 400);
-  }
+  const body = await readJsonCapped(c, MAX_JSON_BODY_BYTES.runs);
+  if (!body.ok) return body.response;
+  posted = body.value as typeof posted;
   if (typeof posted.run_id !== "string" || !RUN_ID_RE.test(posted.run_id)) {
     return c.json({ ok: false, error: "bad run_id" }, 400);
   }
@@ -2929,15 +2925,18 @@ app.post("/api/runs", async (c) => {
 // JSON object per annotation_events row (id-ascending, joined to its
 // revision), paged through D1 so the response never materializes in memory.
 // Privacy contract: NO emails, IPs, names, or free-text comments — the only
-// user-linked field is `pseudonym`, sha256(user_id + PIPELINE_TOKEN-as-salt)
-// truncated to 12 hex (stable across exports while the secret is stable;
-// rotating PIPELINE_TOKEN rotates pseudonyms, which is acceptable — it
-// unlinks, never re-identifies). Pipeline events carry pseudonym null.
+// user-linked field is `pseudonym`, sha256(user_id + salt) truncated to 12 hex.
+// The salt is researchExportSalt(): the dedicated RESEARCH_EXPORT_SALT secret
+// when set, else PIPELINE_TOKEN, so pseudonyms stay stable until the
+// maintainer sets the new secret (docs/SECRETS.md). Pseudonyms are stable
+// across exports while the salt is stable; changing it rotates them, which is
+// acceptable — it unlinks, never re-identifies. Pipeline events carry
+// pseudonym null.
 app.get("/api/research/export.jsonl", async (c) => {
   const user = await requireRole(c, ["bot", "admin"]);
   if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
   const db = drizzle(c.env.DB);
-  const salt = c.env.PIPELINE_TOKEN ?? "";
+  const salt = researchExportSalt(c.env);
   const pseudoCache = new Map<string, string>();
   const pseudonymFor = async (userId: string): Promise<string> => {
     let p = pseudoCache.get(userId);

@@ -16,6 +16,7 @@ import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { stageBrainPublicRelease } from "../scripts/brain-release-public";
+import { SECURITY_HEADERS, staticAssetHeadersFile } from "../src/security.js";
 import releaseProfiles from "../../brain/authority/fixtures/release-profile-v1-conformance.json";
 
 const roots: string[] = [];
@@ -874,6 +875,8 @@ describe("buildPublic", () => {
       )),
     );
     expect(JSON.parse(readFileSync(join(wiki, "public", "assets", "mathlib-index.json"), "utf8"))).toEqual([]);
+    // Static assets bypass the Worker middleware; the build carries its headers.
+    expect(readFileSync(join(wiki, "public", "_headers"), "utf8")).toBe(staticAssetHeadersFile());
   });
 
   it.each(["brain-current-v1", "brain-offline-replay-v1"])("builds a fresh external public tree for %s with a fixed selector audit timestamp", (profile) => {
@@ -948,6 +951,12 @@ describe("buildPublic", () => {
       .not.toBe(readFileSync(join(site, "out", "concepts.html"), "utf8"));
     expect(readFileSync(join(wiki, "public", "stale.txt"), "utf8")).toBe("must remain isolated");
     expect(readFileSync(join(publicDir, "brain.html"), "utf8")).toContain("frozen-A");
+    // The generated _headers rides every promotion build, outside the baseline.
+    const headers = readFileSync(join(publicDir, "_headers"), "utf8");
+    expect(headers).toBe(staticAssetHeadersFile());
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) expect(headers).toContain(`  ${name}: ${value}\n`);
+    expect(baseline.contents.has("_headers")).toBe(false);
+    expect(existsSync(join(wiki, "public", "_headers"))).toBe(false);
   });
 
   it("requires a complete immutable baseline for explicit public staging", () => {

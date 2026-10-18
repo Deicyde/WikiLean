@@ -139,6 +139,9 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   v3 source authority until its evidence is explicitly bound into a reviewed source plan.
 
 **Security / credentials**
+- **`docs/SECRETS.md` is the credential inventory** (every secret name, holder, scope, rotation,
+  expiry) and lists the P0 production steps only the maintainer runs. Add a row there with any
+  new secret; never write a value anywhere.
 - `.github/workflows/ci.yml` is validation only: read-only repository permissions, checkout
   credentials disabled, no secrets, no deployments, no production writes, and no token-consuming
   agent calls. Its `required` job aggregates the hermetic `worker` and `python` gates and the
@@ -146,8 +149,15 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - The Playwright `browser` job runs on every CI trigger and has been required since PR #72.
   Failures upload `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts`
   for 7 days.
-- `.dev.vars` is gitignored and holds secrets — never commit, never print values; set Worker
-  secrets via `wrangler secret put` / `gh secret set`.
+- `.dev.vars` is gitignored and holds secrets — never commit, never print values. Rotate a Worker
+  secret with `wrangler versions secret put` (value on stdin; rides the next promotion), not
+  `wrangler secret put`, which deploys outside the promoter (`docs/SECRETS.md`). Actions secrets:
+  `gh secret set` at the prompt. Never put a token on a command line (curl takes `-H @-`).
+- Pipeline SDK agents (claude-agent-sdk) run only through `site/agent_sandbox.py`: Read/Grep/Glob
+  at most and never Bash (search CLIs ride validated in-process MCP tools, `site/search_tools.py`),
+  never `bypassPermissions`, cwd outside every checkout. A pipeline `claude` CLI call takes
+  `bot/triage.py`'s tool-less form (`--tools ""`, `--setting-sources ""`, `--strict-mcp-config`).
+  `site/test_agent_sandbox.py` enforces both.
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
 - Never take custody of others' API keys. Never edit the mathlib4 checkout; do Lean work in a
@@ -185,7 +195,9 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
   `wiki/public/` directly (it's generated + gitignored). `brain.html` is copied from the frozen
-  release, not mutable `site/out`.
+  release, not mutable `site/out`. build-public also writes `_headers` (the static-asset copy of
+  `SECURITY_HEADERS` in `wiki/src/security.ts`; static assets never reach the Worker middleware).
+  It is build output, never public-baseline payload.
 - `index.html` / `sitemap.xml` are served dynamically from D1 — deliberately NOT copied to public.
 - **Migration 0014 before any deploy:** a Worker built from a commit containing
   `wiki/migrations/0014_native_companions.sql` answers 500 on every save, revert and create

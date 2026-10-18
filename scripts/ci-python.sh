@@ -31,6 +31,7 @@ run_check "native annotation lifecycle tests" "$PYTHON_BIN" site/test_native_ann
 run_check "anchor resolution tests" "$PYTHON_BIN" site/test_anchor_resolve.py
 run_check "moderation unit tests" "$PYTHON_BIN" site/test_moderate.py
 run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
+run_check "Agent sandbox tests (no bypassPermissions, positive tool sets)" "$PYTHON_BIN" site/test_agent_sandbox.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
 run_check "Nightly health summary tests" "$PYTHON_BIN" manage/test_nightly_health.py
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py
@@ -126,5 +127,7 @@ run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_pa
 run_check "Bot poller fail-closed tests" "$PYTHON_BIN" bot/test_poll.py
 run_check "Bot settle per-tag rule tests" "$PYTHON_BIN" bot/test_settle_gate.py
 run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
+run_check "Queue publisher keeps the bearer off argv" "$PYTHON_BIN" bot/test_publish_queue.py
+run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" scripts/test_workflow_credentials.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"
