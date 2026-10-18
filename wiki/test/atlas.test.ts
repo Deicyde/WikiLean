@@ -323,6 +323,10 @@ describe("atlas pages with the fixture store", () => {
     expect(html).not.toContain("atlas-section");
     expect(html).toContain('<a href="#p-7d2c9e10">Definition: “a gadget is a widget together with a chosen basepoint”</a>');
     expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
+    // Its prominence was overturned to subject after the challenge ran: challenge_pending,
+    // which reads as unchallenged.
+    expect(html).toContain("high confidence · not challenged yet (a challenge is pending)</span>");
+    expect(html).not.toContain("challenge_pending");
     // One passage is "1 passage", in the strip and in the bar's name.
     expect(html).toContain('aria-label="1 passage: 1 formalized"');
     expect(html).toContain("1 passage checked, 1 Lean location.");

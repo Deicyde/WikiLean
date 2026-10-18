@@ -17,7 +17,9 @@ section and prominence; minimal {type, uri, version} lean ends on the absence;
 and one location (FormalFrontier's) whose index records only `line`, so its lean
 end has no end_line, as atlas's published index gives none. Its closeMatch was
 produced by a challenge downgrade, so its note is the challenger's witness
-sentence. One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
+sentence. The Gadget location is `challenge_pending`: its passage's prominence was
+overturned to subject after the challenge ran, so a challenge is owed and none has
+judged it (read as unchallenged). One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
 ("Contract notes"): every CSL `citation` carries an `id`, which the vendored
 Literature Links schema requires and the proposal's example omits.
 
@@ -256,7 +258,9 @@ def gadget_records() -> list[dict]:
         "library": "mathlib", "declaration": "Gadget",
         "module": "Mathlib.Combinatorics.Widget.Gadget", "path": "Mathlib/Combinatorics/Widget/Gadget.lean",
         "line": 15, "end_line": 28, "proof_status": "definition", "relation": "exactMatch",
-        "rank": 1, "confidence": "high", "challenge": "survived"}, layout)]
+        # Planned under `supporting` and overturned to `subject` after the challenge ran: a
+        # rule now requires a challenge nobody has run, so the record is challenge_pending.
+        "rank": 1, "confidence": "high", "challenge": "challenge_pending"}, layout)]
 
 
 def files() -> dict[str, bytes]:

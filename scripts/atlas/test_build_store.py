@@ -181,6 +181,9 @@ class BuildTests(unittest.TestCase):
         gadget = json.loads(build_store.build(RECORDSET)["atlas/v1/articles/1003.json"])
         self.assertEqual(gadget["passages"][0]["section"], [])
         self.assertEqual(gadget["passages"][0]["prominence"], "subject")
+        # Overturned to subject after the challenge ran: a challenge is owed, none has judged it.
+        self.assertEqual(gadget["passages"][0]["locations"][0]["challenge"], "challenge_pending")
+        self.assertEqual(gadget["passages"][0]["status"], "formalized")
 
     def test_index_and_title_keys(self):
         self.assertEqual(build_store.title_key("Widget_lemma"), "Widget lemma")
@@ -288,6 +291,25 @@ class SetCopyTest(unittest.TestCase):
         seal = json.loads(path.read_text())
         edit(seal)
         path.write_text(json.dumps(seal, sort_keys=True, indent=2) + "\n")
+
+    def replace_everywhere(self, old: str, new: str) -> None:
+        """Replace a JSON string value in every file of the set (universe and records alike), then reseal."""
+        needle, value = json.dumps(old).encode(), json.dumps(new).encode()
+        for path in self.set.rglob("*"):
+            if path.is_file() and path.name != "SEAL.json":
+                path.write_bytes(path.read_bytes().replace(needle, value))
+        reseal(self.set)
+
+    def replace_receipt(self, body: dict, queries: int, candidates: int) -> str:
+        """Swap the absence's receipt for `body`, referenced with the given counts; returns its path."""
+        for old in (self.set / "receipts").glob("*.json"):
+            old.unlink()
+        data = (make_fixture.dumps(body) + "\n").encode()
+        digest = hashlib.sha256(data).hexdigest()
+        (self.set / "receipts" / f"{digest}.json").write_bytes(data)
+        self.edit_widget(lambda rows: rows[3]["extensions"][LOCATE].update(
+            receipt={"sha256": digest, "queries": queries, "candidates": candidates}))
+        return f"receipts/{digest}.json"
 
 
 class RefusalTests(SetCopyTest):
@@ -786,6 +808,130 @@ class AgreedFormatTests(SetCopyTest):
                 self.edit_widget(lambda rows, extra=extra: rows[3]["object"][0].update(extra))
                 self.refuse('a checked absence names each library by a minimal lean end, {"type": "lean", "uri", '
                             '"version"} only')
+
+    def test_every_challenge_verdict_builds_and_challenge_pending_is_one(self):
+        # proposal §2.7: survived, downgraded, not_required, sampled_out, challenge_pending
+        # (cflib.vocab CHALLENGE_VERDICTS); the last three are unjudged, read as unchallenged.
+        self.assertEqual(build_store.CHALLENGES, {"survived", "downgraded", "not_required", "sampled_out",
+                                                  "challenge_pending"})
+        for row in (0, 3, 5):  # a location, the absence, the unresolved record
+            with self.subTest(row=row):
+                self.fresh()
+                self.edit_widget(lambda rows, row=row: rows[row]["extensions"][LOCATE].update(
+                    challenge="challenge_pending"))
+                passages = self.article()["passages"]
+                passage = passages[{0: 0, 3: 2, 5: 3}[row]]
+                got = (passage["locations"][0]["challenge"] if row == 0 else
+                       passage["absence"]["challenge"] if row == 3 else passage["unresolved"]["challenge"])
+                self.assertEqual(got, "challenge_pending")
+        self.fresh()
+        self.edit_widget(lambda rows: rows[0]["extensions"][LOCATE].update(challenge="pending"))
+        self.refuse("challenge must be one of ['challenge_pending', 'downgraded', 'not_required', "
+                    "'sampled_out', 'survived']")
+
+    def test_seal_ids_follow_the_token_grammar(self):
+        for key, value in (("set_id", "smoke-2b"), ("set_id", "tier-a:shard.03"), ("sourceset", "wpm.math-2")):
+            with self.subTest(key=key, value=value):
+                self.fresh()
+                self.edit_seal(lambda seal, key=key, value=value: seal["sourceset"].update(id=value)
+                               if key == "sourceset" else seal.update(set_id=value))
+                record_set = json.loads(build_store.build(self.set)["atlas/v1/current.json"])["record_set"]
+                self.assertEqual(record_set["sourceset"]["id"] if key == "sourceset" else record_set["set_id"], value)
+        rule = "must be a token: a letter or digit, then letters, digits and ._:- (at most 128 characters)"
+        for value in ("smoke+2", "_draft", "smoke 2", "x" * 129, ""):
+            with self.subTest(set_id=value):
+                self.fresh()
+                self.edit_seal(lambda seal, value=value: seal.update(set_id=value))
+                self.refuse(f"SEAL.json: set_id {rule}")
+        for value in ("wpm+math", ".hidden"):
+            with self.subTest(sourceset=value):
+                self.fresh()
+                self.edit_seal(lambda seal, value=value: seal["sourceset"].update(id=value))
+                self.refuse(f"SEAL.json: sourceset.id {rule}")
+
+    def test_receipt_counts_are_the_lengths_of_its_lists(self):
+        # A repeated query stays in the receipt file, so the count is the list's length, not
+        # the number of distinct queries (gate rule 5's floor of 3 is on distinct ones).
+        body = dict(make_fixture.RECEIPT)
+        body["queries"] = [*body["queries"], body["queries"][0]]
+        path = self.replace_receipt(body, queries=4, candidates=2)
+        self.refuse(f"receipt.queries is 4, but {path} lists 5 queries (each count is the length of that list "
+                    "in the receipt file, repeats included)")
+        self.fresh()
+        self.replace_receipt(body, queries=5, candidates=2)
+        self.assertEqual(self.article()["passages"][2]["absence"]["receipt"]["queries"], 5)
+        self.fresh()
+        path = self.replace_receipt(make_fixture.RECEIPT, queries=4, candidates=3)
+        self.refuse(f"receipt.candidates is 3, but {path} lists 2 candidates")
+
+    def test_repository_grammar(self):
+        ff = make_fixture.LIB["ff-widgets"]["repo"]
+        for repo in ("https://gitlab.example.org/group/sub/lean/beta", "https://git.example.org/beta",
+                     "https://github.com/FormalFrontier/Widget_Theory.v2~x"):
+            with self.subTest(accepted=repo):
+                self.fresh()
+                self.replace_everywhere(ff, repo)
+                self.assertEqual(self.article()["passages"][0]["locations"][1]["repo"], repo)
+        rule = ("repo must be an https repository URL: a dotted host with no port, then one to four path segments "
+                "of 1-100 letters, digits and _.~- each, none of them '.' or '..', and no trailing slash, query or "
+                "fragment")
+        for repo in (ff + "/", "https://gitlab.example.org/group/sub/team/lean/beta", "https://github.com",
+                     "https://localhost/beta", "https://github.com:443/FormalFrontier/WidgetTheory",
+                     "http://github.com/FormalFrontier/WidgetTheory", "https://github.com/FormalFrontier//WidgetTheory",
+                     ff + "?tab=readme", ff + "#readme", "https://github.com/FormalFrontier/..",
+                     "https://user@github.com/FormalFrontier/WidgetTheory"):
+            with self.subTest(refused=repo):
+                self.fresh()
+                self.replace_everywhere(ff, repo)
+                self.refuse(f"universe.json: libraries[1]: {rule}")
+
+    def test_universe_string_caps(self):
+        # An exclusion's reason is prose, at most 1000 characters; the real u1's longest is 215.
+        reason = ("excluded because " + "its licence forbids use in evaluation " * 10).strip()
+        self.assertGreater(len(reason), 300)
+        self.edit_universe(lambda u: u["excluded"][0].update(reason=reason))
+        tree = build_store.build(self.set)
+        universe = json.loads(tree[f"atlas/v1/universes/{make_fixture.UNIVERSE_SHA}.json"])
+        self.assertEqual(universe["excluded"][0]["reason"], reason)
+        for value, fragment in (("r" * 1001, "reason is 1001 characters, longer than 1000 (at most 1000 characters)"),
+                                ("  ", "reason must be a non-empty string"), (None, "reason must be a non-empty string")):
+            with self.subTest(reason=value if value is None else len(value)):
+                self.fresh()
+                self.edit_universe(lambda u, value=value: u["excluded"][0].update(reason=value))
+                self.refuse(f"universe.json: excluded[0]: {fragment}")
+        self.fresh()
+        self.edit_universe(lambda u: u["excluded"][0].update(id="atlas lean"))
+        self.refuse("universe.json: excluded[0]: id must be a token: a letter or digit")
+        # A library's brain_lib, toolchain and each root are names, at most 300 characters.
+        for key in ("brain_lib", "toolchain"):
+            with self.subTest(key=key):
+                self.fresh()
+                self.edit_universe(lambda u, key=key: u["libraries"][3].update({key: "M" * 301}))
+                self.refuse(f"universe.json: libraries[3]: {key} is 301 characters, longer than 300")
+                self.fresh()
+                self.edit_universe(lambda u, key=key: u["libraries"][3].update({key: "M" * 300}))
+                build_store.build(self.set)
+        self.fresh()
+        self.edit_universe(lambda u: u["libraries"][3].update(roots=["Mathlib", "M" * 301]))
+        self.refuse("roots must be a non-empty list of module roots, each a non-empty string of at most 300")
+
+    def test_licence_is_never_null(self):
+        self.edit_universe(lambda u: u["libraries"][1].update(licence=None))
+        self.refuse("universe.json: libraries[1]: licence must be {spdx: <SPDX id>}, never null")
+
+    def test_a_location_end_requires_module_path_and_line(self):
+        # Only end_line is optional (test_end_line_is_optional_but_never_null_or_before_line).
+        for edit, fragment in (
+                (lambda end: end["extensions"][LOCATE].pop("path"), "path is missing or null"),
+                (lambda end: end["extensions"][LOCATE].update(path=None), "path is missing or null"),
+                (lambda end: end["extensions"][LOCATE].pop("line"), "line is missing or null"),
+                (lambda end: end["location"].pop("module"),
+                 "the lean end names a declaration and its module (location.declaration and location.module "
+                 "are required)")):
+            with self.subTest(fragment=fragment):
+                self.fresh()
+                self.edit_widget(lambda rows, edit=edit: edit(rows[0]["object"][0]))
+                self.refuse(f"records/enwiki-1001-2002.jsonl:1: {fragment}")
 
 
 class MalformedValueTests(unittest.TestCase):

@@ -96,6 +96,11 @@ belongs).
  "files": {"<relative path>": "<sha256>", ...}}
 ```
 
+- **A token** (`set_id`, `universe.id`, `sourceset.id`, and in `universe.json` each library
+  and exclusion `id`) is a letter or digit, then letters, digits and `._:-`, at most 128
+  characters in all (`^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$`). So `smoke+2`, `_draft` and
+  `wpm+math` are refused. A sourceset id is chosen before any run, so the producer should
+  check it when the sourceset is created.
 - **`campaign` is always a non-empty token**: the campaign id (letters, digits and `._:-`,
   at most 128, not starting `run:`), or for a run outside any campaign
   `run:<run-id>` or `run:<run-id>+<challenge-run-id>` (run ids of letters, digits and
@@ -111,11 +116,29 @@ belongs).
 (YYYY-MM-DD), `libraries` and `excluded`:
 
 - `libraries` is a **list, never a dict**, sorted by `id` (each id once). Each library has
-  exactly `id`, `brain_lib`, `repo` (an https repository URL), `commit` (40 hex),
-  `toolchain`, `roots` (a non-empty list of module roots), `licence: {spdx}`, and
-  optionally `display_name` (absent or null when the producer has none; contract note 6).
-  `index`, `conventions`, `src_dir`, `blob_url_template` and any other key are refused.
-- `excluded` is a list (empty when nothing is excluded) of exactly `{id, reason}`.
+  exactly `id`, `brain_lib`, `repo`, `commit` (40 hex), `toolchain`, `roots` (a non-empty
+  list of module roots), `licence: {spdx}`, and optionally `display_name` (absent or null
+  when the producer has none; contract note 6). `index`, `conventions`, `src_dir`,
+  `blob_url_template` and any other key are refused.
+- **`repo`** is `https://`, a dotted host (no port, no user), then one to four path
+  segments of 1 to 100 letters, digits and `_.~-` each, none of them `.` or `..`, with no
+  trailing slash, query or fragment:
+  `^https://[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+(/[A-Za-z0-9_.~-]{1,100}){1,4}$`. So
+  `https://github.com/<owner>/<repo>` and `https://gitlab.example.org/group/sub/lean/beta`
+  pass, and `https://github.com/<owner>/<repo>/` and a five-segment path do not. The
+  Worker builds names and links from it (contract note 6), which is why it is strict. A
+  repository is pinned when a library joins a universe, so the producer should check it
+  there.
+- **`licence` is `{"spdx": <SPDX id>}`, never null.** A library goes into a sealed
+  universe with its licence known: the universe page shows it, and licences decide
+  exclusions (atlas-lean's forbids ML evaluation use).
+- **Lengths:** `brain_lib`, `toolchain` and each root are at most 300 characters, and an
+  exclusion's `reason` at most 1000 (u1's longest is 215). A longer one is refused with a
+  message giving its length.
+- `display_name`, when present and not null, follows the grammar in check 2, and one that
+  does not is refused, so a producer with no name in that grammar writes null.
+- `excluded` is a list (empty when nothing is excluded) of exactly `{id, reason}`: a token
+  id and a non-empty reason.
 
 `sources.jsonl`: `source_id` (`enwiki-<pageid>-<revision>`), `pageid`, `revision`, `title`,
 `wikidata`, `html_sha256`, `layer_sha256`, `renderer` (a short token such as `web-html/1`,
@@ -127,11 +150,23 @@ Records follow proposal §2.7, with these points of the agreement:
   locate extension: `section` is the heading path (a list of heading strings, `[]` in the
   lead) and `prominence` is `subject`, `central` or `supporting`. The coverage page marks
   the article's subject passages by it.
-- **A location's lean end** carries, in its locate extension, `library`, `path` (relative
-  to the repository root: Lean core's files are `src/Init/...`), `line`, and `end_line`
-  when the library index records one. atlas's published index records only `line`, so
-  `end_line` is then **absent** (never null), and consumers treat it as optional: the view
-  model omits it, the page says "line N", and the source link is `#L<line>`.
+- **A location's lean end** carries `location.declaration` and `location.module`, and in
+  its locate extension `library`, `path` (relative to the repository root: Lean core's
+  files are `src/Init/...`), `line`, and `end_line` when the library index records one.
+  All of these are required except `end_line`: a lean end without a module, path or line
+  is refused, so the producer should refuse such a passage itself, by name, rather than
+  export it. atlas's published index records only `line`, so `end_line` is then
+  **absent** (never null), and consumers treat it as optional: the view model omits it,
+  the page says "line N", and the source link is `#L<line>`.
+- **`challenge`** is one of `survived`, `downgraded`, `not_required`, `sampled_out` and
+  `challenge_pending` (proposal §2.7, `cflib.vocab.CHALLENGE_VERDICTS`). The last three
+  are records no challenge judged, and the pages read each as unchallenged.
+  `challenge_pending` marks a record that a prominence overturn to `subject` or `central`
+  put under a challenge rule after the challenge ran: a challenge is owed and none has
+  judged it. The pages say "not challenged yet (a challenge is pending)".
+- **An absence's receipt counts** are `receipt: {sha256, queries, candidates}`, where
+  `queries` and `candidates` are the lengths of the receipt file's `queries` and
+  `candidates` lists, a repeated entry included (contract note 3).
 - **A `closeMatch` always carries a non-empty `note`**, including one a challenge
   downgrade produced: the challenger's witness sentence becomes the note when the worker
   wrote none. A note-less `closeMatch` is refused.
@@ -145,20 +180,24 @@ Records follow proposal §2.7, with these points of the agreement:
 `scripts/atlas/build_store.py` refuses the whole set, listing every problem it found, when
 any of these fails:
 
-1. **Seal.** `SEAL.json` has exactly the keys above, with the campaign token grammar and
-   a `byte_budget` that is an integer 0 or more; every listed file exists and matches its
+1. **Seal.** `SEAL.json` has exactly the keys above, with the token grammar for `set_id`,
+   `universe.id` and `sourceset.id`, the campaign token grammar and a `byte_budget` that
+   is an integer 0 or more; every listed file exists and matches its
    sha256; no unlisted file, symlink or unsafe path is present. Receipts are named by
    their own sha256, and every receipt is referenced. Hex, token and time values must
    match in full (a trailing newline does not pass).
 2. **Universe.** `universe.json` has exactly the keys above (a `universe.yaml` is refused);
    its id and `universe_sha256` equal the seal's; `libraries` is a list sorted by id, and
-   repositories are unique; each repository is an https URL with a dotted host and one to
-   four path segments, none of them `.` or `..`; commits are 40-hex; `brain_lib` and
-   `toolchain` are non-empty strings, `roots` a non-empty list of them, and `licence`
-   exactly `{spdx}`. A `blob_url_template` or `src_dir` is refused by name (contract note
+   repositories are unique; each repository follows the `repo` grammar above (an https URL
+   with a dotted host and one to four path segments, none of them `.` or `..`, and no
+   trailing slash); commits are 40-hex; `brain_lib` and `toolchain` are non-empty strings
+   of at most 300 characters, `roots` a non-empty list of them, and `licence` exactly
+   `{spdx}`, never null. A `blob_url_template` or `src_dir` is refused by name (contract note
    6), and so is a `display_name` that is not at most 100 printable ASCII letters, digits,
    spaces and `,.()/+:'&_-` or `·` (no zero-width, soft-hyphen or look-alike character).
-   `excluded` is a list of `{id, reason}`.
+   `excluded` is a list of `{id, reason}`: a token id and a non-empty reason of at most
+   1000 characters. Each message names the rule it breaks (a reason that is too long says
+   so, with its length).
 3. **Sources.** `source_id` agrees with `pageid` and `revision`; there is one revision per
    page per set, and one page per title (two titles with the same `title_key`, such as
    `Widget lemma` and `Widget_lemma`, are refused, because the index and the article box
@@ -171,7 +210,9 @@ any of these fails:
    a double (`1e400`, which parses as infinity) or nesting too deep to parse is refused.
 5. **Records (proposal §2.7).** Each record carries the `org.mathlib-initiative.formal-companion.locate`
    extension with `item` (`In-text #<8-16 hex>`), the set's universe id and sha, a
-   `challenge` value, and its passage's `section` and `prominence`; `id` is
+   `challenge` value (`survived`, `downgraded`, `not_required`, `sampled_out` or
+   `challenge_pending`; the last three read as unchallenged), and its passage's `section`
+   and `prominence`; `id` is
    `<source_id>::<item>`. The subject is one `html` end at the
    source's revision: its `uri` is an `https://en.wikipedia.org/w/index.php` (or `/wiki/`)
    link whose parsed query has exactly one `oldid`, equal to the revision (so `oldid=20029`
@@ -181,7 +222,8 @@ any of these fails:
    - A **location** (relation `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch`,
      `hasPart` or `relatedMatch`) has one `lean` end at its library's repo and commit, with
      `declaration`, `module`, a safe repository-relative `.lean` `path`, an integer
-     `line` of at least 1 and, when present, an integer `end_line` of at least `line`, a
+     `line` of at least 1 (all required; a missing or null one is named) and, when
+     present, an integer `end_line` of at least `line`, a
      `proof_status`, a unique 64-hex `location_key`, `rank` 1-5 and a `confidence`. A
      `closeMatch` names its convention difference in a non-empty `note`. The lean end's locate
      extension may carry `statement`, the library index's flag for a Prop-valued
@@ -191,8 +233,9 @@ any of these fails:
      passage that has none (check 6).
    - An **absence** (`noMatch`) has status `not_formalized` and exactly one minimal
      `{type, uri, version}` lean end per universe library, and references its receipt as
-     `receipt: {sha256, queries, candidates}`. The counts must match the receipt file, and
-     the receipt must list at least 3 distinct queries (gate rule 5).
+     `receipt: {sha256, queries, candidates}`. Each count must equal the length of that
+     list in the receipt file, repeats included, and the receipt must list at least 3
+     distinct queries (gate rule 5).
    - An **unresolved** passage is a single record with `object: []`, no status and no
      relation.
 6. **Passages (proposal §2.6).** The records of one passage agree on kind, quote, section,
@@ -252,8 +295,11 @@ agreement before real record sets arrive:
    the article's subject passages. The "Gadget (mathematics)" fixture is a lead passage
    (`section: []`).
 3. **Absence receipts.** The proposal says "referenced by sha256 and count". The builder
-   reads that as `receipt: {sha256, queries, candidates}` and checks both counts against
-   the file.
+   reads that as `receipt: {sha256, queries, candidates}`, where each count is the length
+   of that list in the receipt file. A repeated query stays in the file and is counted, so
+   a producer that writes the number of distinct queries while keeping the repeat is
+   refused (the message gives both numbers). Gate rule 5's floor of 3 is on distinct
+   queries.
 4. **`universe_sha256` and `location_key` are opaque.** The builder checks that SEAL,
    universe and every record agree on the universe sha, and that location keys are 64-hex
    and unique. It does not recompute either, because the formulas belong to the producer
@@ -303,8 +349,17 @@ agreement before real record sets arrive:
     agreement named a field but not its spelling, WikiLean chose: the budget is SEAL's
     `byte_budget` (the name the export's option and report already use), a campaign id may
     not start `run:`, run ids are letters, digits and `._-`, `display_name` is the one
-    optional library key (absent or null), and `section` is `[]` in the lead. Any other
-    key is refused, so a change to the format is a change on both sides at once.
+    optional library key (absent or null), and `section` is `[]` in the lead. Where the
+    agreement named a value but not its grammar, WikiLean's builder states it in section
+    3: the token grammar of `set_id`, `universe.id` and `sourceset.id`, the `repo`
+    grammar, the length caps (300 characters for `brain_lib`, `toolchain` and roots, 1000
+    for an exclusion's reason), a `licence` that is never null, a `display_name` that is
+    null unless it fits the display grammar, `module`, `path` and `line` required on every
+    location's lean end, receipt counts as list lengths, and `challenge_pending` among the
+    challenge values. The producer is asked to enforce each where the value is first
+    chosen (`cf sourceset create`, `cf corpus add`, `cf plan-locate`), so a set is not
+    refused only after every run has been paid for. Any other key is refused, so a change
+    to the format is a change on both sides at once.
 
 ## 4. The store (v1)
 
@@ -375,7 +430,7 @@ builder can change without a release.
 The fixture lives in `scripts/atlas/fixtures/`. `make_fixture.py` writes `recordset/` (two
 synthetic articles that cover every outcome, in exactly the agreed format: a lead
 passage, two subject passages, a location without `end_line`, a closeMatch from a
-challenge downgrade) and `store/` is its built store. The Python
+challenge downgrade, a `challenge_pending` location) and `store/` is its built store. The Python
 test pins both. The Worker tests and the browser harness read that same `store/`.
 
 ## 6. Store backend and publishing
@@ -684,10 +739,14 @@ Each decision below comes with a recommendation.
   the §2.6 recomputation in both directions, its parity with the producer's truth table
   (`producer_derive_status.json`) and the §1.11 cases, the `statement` flag, related-only
   passages, the agreed record-set format (the seal's exact keys, campaign ids and run
-  tokens, `byte_budget` kept and enforced, the universe's sorted list and exact library
-  and exclusion keys, the pre-agreement shapes refused by name, `section` and
-  `prominence` on every record, optional but never null `end_line`, closeMatch notes,
-  minimal absence ends, `universe.yaml` refused), the other refusal cases (oldid, title
+  tokens, the token grammar of `set_id` and `sourceset.id`, `byte_budget` kept and
+  enforced, the universe's sorted list and exact library and exclusion keys, the `repo`
+  grammar, the length caps, a null licence, the pre-agreement shapes refused by name,
+  `section` and `prominence` on every record, every challenge value with
+  `challenge_pending` on a location, an absence and an unresolved record, receipt counts
+  as list lengths, required `module`, `path` and `line`, optional but never null
+  `end_line`, closeMatch notes, minimal absence ends, `universe.yaml` refused), the other
+  refusal cases (oldid, title
   keys, templates, dot-segment repos, display names, renderer, unknown statuses,
   non-string affixes), hostile values in some 75 fields of the records, sources, universe
   and seal (refused, never a crash), and the CLI (exit codes 2 and 3, and `--replace`
@@ -701,7 +760,8 @@ Each decision below comes with a recommendation.
   CSP fit (same-origin loads only, no inline handlers), the article box with its cache
   isolation and revision note, the readers, non-array universe lists, related-only and
   Prop-valued-definition passages, the subject passage's marking and its Subject row, a
-  location without `end_line` ("line 88", `#L88`), a run-token campaign on the pages and
+  `challenge_pending` location ("not challenged yet"), a location without `end_line`
+  ("line 88", `#L88`), a run-token campaign on the pages and
   in feedback (`CAMPAIGN_RE`, the same grammar as the builder's), the producer's truth
   table for the page's fallback rows, and the library registry (seeded names, look-alike
   display names, ignored templates, repository-relative paths, dot segments,

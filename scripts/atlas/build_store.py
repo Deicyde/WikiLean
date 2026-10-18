@@ -86,7 +86,11 @@ DEFINITION_KINDS = frozenset({"definition", "construction", "notation"})
 EITHER_KINDS = frozenset({"example", "other"})
 # A library location counts as complete when its declaration is proved or is a definition.
 COMPLETE = frozenset({"proved", "definition"})
-CHALLENGES = frozenset({"survived", "downgraded", "not_required", "sampled_out"})
+# The challenge verdicts (proposal §2.7 and §5; cflib.vocab CHALLENGE_VERDICTS). The last three
+# are records no challenge judged (CHALLENGE_UNJUDGED), and the Worker reads each as unchallenged:
+# challenge_pending is a record a prominence overturn to subject or central put under a rule
+# after its challenge ran, so a challenge is owed and none has judged it yet.
+CHALLENGES = frozenset({"survived", "downgraded", "not_required", "sampled_out", "challenge_pending"})
 CONFIDENCES = frozenset({"high", "medium", "low"})
 STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
 # Best first, for "the best such location" (cflib.vocab _STATUS_RANK).
@@ -101,7 +105,10 @@ HEX40 = re.compile(r"^[0-9a-f]{40}\Z")
 HEX64 = re.compile(r"^[0-9a-f]{64}\Z")
 ITEM_RE = re.compile(r"^In-text #[0-9a-f]{8,16}\Z")
 SOURCE_ID_RE = re.compile(r"^enwiki-([1-9][0-9]*)-([1-9][0-9]*)\Z")
+# A token (SEAL's set_id, universe.id and sourceset.id, a library or exclusion id): a letter or
+# digit, then letters, digits and ._:-, at most 128 characters in all (docs/ATLAS.md section 3).
 TOKEN_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}\Z")
+TOKEN_RULE = "a token: a letter or digit, then letters, digits and ._:- (at most 128 characters)"
 # SEAL.json's campaign: the campaign id, or for a run outside any campaign
 # "run:<run-id>[+<challenge-run-id>]". A campaign id never starts "run:", and a run id
 # has no ":" or "+", so the two forms cannot be confused. wiki/src/atlas.ts CAMPAIGN_RE
@@ -125,8 +132,17 @@ DATE_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
 # Whitespace for title keys, spelled out so wiki/src/atlas.ts matches it exactly.
 TITLE_SPACE = re.compile(r"[ \t\n\r\f\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000_]+")
 WORD_SPACE = re.compile(r"\s+")
-# A library repository: https, a dotted host, one to four path segments, none of them "." or "..".
+# A library repository: https, a dotted host (no port, no user), then one to four path segments
+# of 1-100 letters, digits and _.~- each, none of them "." or "..", with no trailing slash, query
+# or fragment (docs/ATLAS.md section 3). The Worker builds links from it, so it is strict.
 REPO_RE = re.compile(r"^https://[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:/[A-Za-z0-9_.~-]{1,100}){1,4}\Z")
+REPO_RULE = ("an https repository URL: a dotted host with no port, then one to four path segments of "
+             "1-100 letters, digits and _.~- each, none of them '.' or '..', and no trailing slash, "
+             "query or fragment (e.g. https://github.com/<owner>/<repo>)")
+# Length caps on universe.json strings (docs/ATLAS.md section 3): a library's brain_lib, toolchain
+# and each root are names, and an exclusion's reason is a sentence or two of prose.
+MAX_NAME_CHARS = 300
+MAX_REASON_CHARS = 1000
 # A library's display_name: printable ASCII letters, digits, spaces and a few marks, so no
 # invisible or look-alike character can make it read as another library's name
 # (wiki/src/libraries.ts applies the same pattern and ignores a name that fails it).
@@ -298,7 +314,7 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
     if "schema" in seal and seal["schema"] != SEAL_SCHEMA:
         problems.add("SEAL.json", f"schema must be {SEAL_SCHEMA!r}")
     if "set_id" in seal and (not isinstance(seal["set_id"], str) or not TOKEN_RE.match(seal["set_id"])):
-        problems.add("SEAL.json", "set_id must be a token of letters, digits and ._:- (at most 128)")
+        problems.add("SEAL.json", f"set_id must be {TOKEN_RULE}")
     if "campaign" in seal and (not isinstance(seal["campaign"], str) or not CAMPAIGN_RE.match(seal["campaign"])):
         problems.add("SEAL.json", "campaign must be a non-empty token: the campaign id (letters, digits and "
                                   "._:-, at most 128, not starting 'run:'), or for a run outside any campaign "
@@ -311,7 +327,7 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
         for message in key_problems(universe, SEAL_UNIVERSE_KEYS):
             problems.add("SEAL.json: universe", message)
         if "id" in universe and (not isinstance(universe["id"], str) or not TOKEN_RE.match(universe["id"])):
-            problems.add("SEAL.json", "universe.id must be a token")
+            problems.add("SEAL.json", f"universe.id must be {TOKEN_RULE}")
         if "universe_sha256" in universe and (not isinstance(universe["universe_sha256"], str)
                                               or not HEX64.match(universe["universe_sha256"])):
             problems.add("SEAL.json", "universe.universe_sha256 must be 64 lowercase hex")
@@ -322,7 +338,7 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
         for message in key_problems(sourceset, SEAL_SOURCESET_KEYS):
             problems.add("SEAL.json: sourceset", message)
         if "id" in sourceset and (not isinstance(sourceset["id"], str) or not TOKEN_RE.match(sourceset["id"])):
-            problems.add("SEAL.json", "sourceset.id must be a token")
+            problems.add("SEAL.json", f"sourceset.id must be {TOKEN_RULE}")
         if "manifest_sha256" in sourceset and (not isinstance(sourceset["manifest_sha256"], str)
                                                or not HEX64.match(sourceset["manifest_sha256"])):
             problems.add("SEAL.json", "sourceset.manifest_sha256 must be 64 lowercase hex")
@@ -369,8 +385,13 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
     return seal, sha256_hex(seal_bytes), files
 
 
-def _short_string(value: Any) -> bool:
-    return isinstance(value, str) and bool(value.strip()) and len(value) <= 300
+def _string_problem(value: Any, cap: int) -> str | None:
+    """Why `value` is not a non-empty string of at most `cap` characters, or None when it is."""
+    if not isinstance(value, str) or not value.strip():
+        return "must be a non-empty string"
+    if len(value) > cap:
+        return f"is {len(value)} characters, longer than {cap}"
+    return None
 
 
 def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> dict:
@@ -422,13 +443,13 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             problems.add(at, message)
         lib_id, repo, commit = lib.get("id"), lib.get("repo"), lib.get("commit")
         if not isinstance(lib_id, str) or not TOKEN_RE.match(lib_id):
-            problems.add(at, "id must be a token")
+            problems.add(at, f"id must be {TOKEN_RULE}")
             continue
         if previous_id is not None and lib_id <= previous_id:
             problems.add(at, f"libraries must be sorted by id, each once ({lib_id!r} comes after {previous_id!r})")
         previous_id = lib_id if previous_id is None or lib_id > previous_id else previous_id
         if not is_repo_url(repo):
-            problems.add(at, "repo must be an https repository URL (host and path segments, no '.' or '..')")
+            problems.add(at, f"repo must be {REPO_RULE}")
         elif repo in seen_repos:
             problems.add(at, f"repo {repo} appears twice (one library per repository)")
         else:
@@ -437,18 +458,23 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             problems.add(at, "commit must be a 40-hex commit")
         entry: dict[str, Any] = {"id": lib_id, "repo": repo, "commit": commit}
         for key in ("brain_lib", "toolchain"):
-            if not _short_string(lib.get(key)):
-                problems.add(at, f"{key} must be a non-empty string")
+            message = _string_problem(lib.get(key), MAX_NAME_CHARS)
+            if message:
+                problems.add(at, f"{key} {message} (at most {MAX_NAME_CHARS} characters)")
             else:
                 entry[key] = lib[key]
         roots = lib.get("roots")
-        if not isinstance(roots, list) or not roots or not all(_short_string(root) for root in roots):
-            problems.add(at, "roots must be a non-empty list of module roots (non-empty strings)")
+        if (not isinstance(roots, list) or not roots
+                or any(_string_problem(root, MAX_NAME_CHARS) for root in roots)):
+            problems.add(at, f"roots must be a non-empty list of module roots, each a non-empty string of at "
+                             f"most {MAX_NAME_CHARS} characters")
         else:
             entry["roots"] = list(roots)
         licence = lib.get("licence")
-        if (not isinstance(licence, dict) or set(licence) != {"spdx"} or not _short_string(licence["spdx"])):
-            problems.add(at, "licence must be {spdx: <SPDX id>}")
+        if (not isinstance(licence, dict) or set(licence) != {"spdx"}
+                or _string_problem(licence["spdx"], MAX_NAME_CHARS)):
+            problems.add(at, "licence must be {spdx: <SPDX id>}, never null: a library goes into a sealed "
+                             "universe with its licence known")
         else:
             entry["licence"] = licence["spdx"]
         display = lib.get("display_name")
@@ -471,10 +497,16 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             continue
         for message in key_problems(item, EXCLUDED_KEYS):
             problems.add(at, message)
-        if not isinstance(item.get("id"), str) or not TOKEN_RE.match(item["id"]) or not _short_string(item.get("reason")):
-            problems.add(at, "must be {id, reason}: a token id and a non-empty reason")
-            continue
-        excluded.append({"id": item["id"], "reason": item["reason"]})
+        good = True
+        if not isinstance(item.get("id"), str) or not TOKEN_RE.match(item["id"]):
+            problems.add(at, f"id must be {TOKEN_RULE}")
+            good = False
+        message = _string_problem(item.get("reason"), MAX_REASON_CHARS)
+        if message:
+            problems.add(at, f"reason {message} (at most {MAX_REASON_CHARS} characters)")
+            good = False
+        if good:
+            excluded.append({"id": item["id"], "reason": item["reason"]})
     return {"schema": UNIVERSE_SCHEMA, "id": raw.get("id"), "sha256": raw.get("universe_sha256"),
             "frozen": frozen, "libraries": libraries, "excluded": excluded}
 
@@ -694,8 +726,11 @@ def _absence(record: dict, base: dict, objects: list, ext: dict, ctx: Context, a
     except (ValueError, KeyError, AssertionError, UnicodeDecodeError, TypeError):
         problems.add(path, "a receipt is {queries: [...], candidates: [...]}")
         return None
-    if receipt.get("queries") != len(queries) or receipt.get("candidates") != len(candidates):
-        problems.add(at, "receipt counts differ from the receipt file")
+    # Each count is its list's length in the receipt file, a repeated entry included.
+    for name, items in (("queries", queries), ("candidates", candidates)):
+        if receipt.get(name) != len(items):
+            problems.add(at, f"receipt.{name} is {receipt.get(name)!r}, but {path} lists {len(items)} {name} "
+                             "(each count is the length of that list in the receipt file, repeats included)")
     if len({q for q in queries if isinstance(q, str)}) < MIN_ABSENCE_QUERIES:
         problems.add(path, f"an absence lists at least {MIN_ABSENCE_QUERIES} distinct queries")
     return {**base, "type": "absence", "status": "not_formalized",
@@ -721,7 +756,8 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
     library = next((lib for lib in ctx.universe["libraries"] if lib["id"] == end_ext.get("library")), None)
     if end.get("type") != "lean" or not isinstance(location.get("declaration"), str) \
             or not isinstance(location.get("module"), str):
-        problems.add(at, "the lean end names a declaration and its module")
+        problems.add(at, "the lean end names a declaration and its module (location.declaration and "
+                         "location.module are required)")
         return None
     if library is None:
         problems.add(at, f"library {end_ext.get('library')!r} is not in the universe")
@@ -729,9 +765,16 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
     if end.get("uri") != library["repo"] or end.get("version") != library["commit"]:
         problems.add(at, "the lean end's uri and version must be its library's repo and commit")
     path, line, end_line = end_ext.get("path"), end_ext.get("line"), end_ext.get("end_line")
-    if not isinstance(path, str) or not safe_relative(path) or not path.endswith(".lean"):
+    # library, path and line are required; only end_line is optional (docs/ATLAS.md section 3).
+    if path is None:
+        problems.add(at, "path is missing or null: a location's lean end carries library, path and line, "
+                         "and only end_line is optional")
+    elif not isinstance(path, str) or not safe_relative(path) or not path.endswith(".lean"):
         problems.add(at, "path must be a safe relative .lean path (relative to the repository root)")
-    if type(line) is not int or line < 1:
+    if line is None:
+        problems.add(at, "line is missing or null: a location's lean end carries library, path and line, "
+                         "and only end_line is optional (line must be an integer >= 1)")
+    elif type(line) is not int or line < 1:
         problems.add(at, "line must be an integer >= 1")
         line = None  # malformed values are reported and then dropped, so no later check meets them
     # end_line is there when the library index records one (atlas's published index has

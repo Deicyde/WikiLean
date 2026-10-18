@@ -86,11 +86,15 @@ const PROOF: Record<string, { label: string; phrase: string; alert: boolean }> =
   wanted: { label: "wanted", phrase: "wanted: stated as a goal, with no proof", alert: true },
   axiom_dependent: { label: "axiom-dependent", phrase: "depends on an axiom beyond the standard three", alert: true },
 };
+// The challenge verdicts (proposal §2.7; build_store.CHALLENGES). The last three were judged
+// by no challenge and read as unchallenged: challenge_pending is a record a prominence
+// overturn put under a challenge rule after the challenge ran, so one is owed.
 const CHALLENGE: Record<string, string> = {
   survived: "a challenger checked it",
   downgraded: "a challenger downgraded it",
   not_required: "not challenged",
   sampled_out: "not challenged (sampled out)",
+  challenge_pending: "not challenged yet (a challenge is pending)",
 };
 const IMPORTANCE_ORDER = ["top", "high", "mid", "low", "bottom", "na", "unknown"];
 
