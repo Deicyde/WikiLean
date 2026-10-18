@@ -19,7 +19,9 @@ from __future__ import annotations
 from collections.abc import Callable, Iterable, Sequence
 from pathlib import PurePosixPath
 
-POLICY = "wikilean.release-neutral-paths/v1"
+# v2: AGENTS.md and CONTRIBUTING.md are neutral (#68); the reducer's bot/state
+# inputs are release-affecting (#75).
+POLICY = "wikilean.release-neutral-paths/v2"
 
 # Directories whose contents never feed release, public-asset, or Worker bytes.
 NEUTRAL_DIRECTORIES: tuple[str, ...] = (
@@ -40,12 +42,10 @@ NEUTRAL_DIRECTORIES: tuple[str, ...] = (
 # release-affecting anyway: the nightly's own build script and tunables,
 # site/test_frontier_page.py, and the reducer's curated inputs under bot/state/
 # (declared in brain/authority/reducer-inputs-v*.json; the tests keep that list
-# complete). brain-nightly.sh's uncommitted-source check is a different set. It
+# complete). brain-nightly.sh's uncommitted-source check is a different set: it
 # covers all of wiki/, so it also refuses local edits to Worker tests and
-# wiki/README.md, and it still names site/ops/brain-canary.py, which the nightly
-# stopped running in afdf3a67 (the promoter runs it now); none of those reach
-# release bytes. It names no curated input, so it never looks at bot/state/ or
-# catalog/data/.
+# wiki/README.md, which never reach release bytes. The nightly checks curated
+# inputs separately, exempting the files its own proposal fold rewrites every run.
 AFFECTING_EXCEPTIONS: tuple[str, ...] = (
     "bot/state/brain_queue.json",
     "bot/state/cut_log.json",

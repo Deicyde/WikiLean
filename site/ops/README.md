@@ -45,6 +45,11 @@ automatic rollback is not implemented because Wrangler has no compare-and-swap p
 Ordinary catalog ingest is fail-soft, but Wikidata planning/acquisition/folding and every
 build/release/deploy gate fail closed and log loudly. See
 `docs/BRAIN-RELEASE-RUNBOOK.md` for recovery.
+Before freezing, the nightly refuses to publish when release-affecting source is
+uncommitted, or when a curated reducer input (`curated_git_input` in
+`brain/authority/reducer-inputs-v1.json`) differs from HEAD or exists while ignored, such as
+a stray `bot/state/pool_candidates.json`. The files `brain/fold_proposals.py` rewrites on
+every run are exempt. Commit, revert or remove what the log lists, then rerun.
 Public staging hashes and copies through a fixed 1 MiB buffer, enforces object,
 byte, per-file, and free-space limits from `nightly.env`, and never prunes the
 frozen release store automatically. Machine-readable release, SQLite, and public
