@@ -174,6 +174,16 @@ Records follow proposal §2.7, with these points of the agreement:
   `{"type": "lean", "uri": <repo>, "version": <40 hex>}` and nothing else (no `role`, no
   `extensions`, no `location`). On smoke-2's real set that shrinks an absence from about
   12 KB to about 7 KB with 48 libraries.
+- **A coverage claim** (decision D1, check 6) rides in the record's locate extension as
+  `coverage: {"complete": true, "parts": [<location_key>, ...], "challenge": <challenge
+  value>}`: the passage's `hasPart` locations that together state every clause. It is a
+  passage field, so every record of the passage carries the same claim, or none does; a
+  passage without a claim has no `coverage` key (never null). `parts` names at least two
+  distinct `location_key`s, each of a `hasPart` location of the same passage. The claim
+  carries no note: the locate document's one-sentence note stays in the workspace. In the
+  challenge stage every claim is challenged whatever its passage's prominence, and a refuted
+  claim is removed (its parts stay `hasPart`), so an exported claim is normally `survived`;
+  any other challenge value is accepted and upgrades nothing.
 
 ### What the builder checks
 
@@ -238,10 +248,17 @@ any of these fails:
      distinct queries (gate rule 5).
    - An **unresolved** passage is a single record with `object: []`, no status and no
      relation.
+   - A **coverage claim**, when present, has exactly `complete` (`true`), `parts` (a list of
+     at least 2 distinct 64-hex location keys) and `challenge` (a challenge value above);
+     `null`, a missing or extra key, `complete: false`, one part, a repeated part or a
+     value such as `refuted` is refused, naming the rule.
 6. **Passages (proposal §2.6).** The records of one passage agree on kind, quote, section,
-   prominence and status.
+   prominence, coverage claim and status.
    A passage has at most one absence and at most 5 locations, with distinct ranks. An
-   absence sits only beside `relatedMatch` locations, and `not_formalized` needs one.
+   absence sits only beside `relatedMatch` locations, and `not_formalized` needs one. A
+   coverage claim names only `hasPart` locations of its own passage (a key of another
+   passage, of no location, or of a `narrowMatch` or other location is refused), so a claim
+   on an absence or an unresolved passage is refused too.
    **The builder recomputes the derived status** of every located passage from its
    kind and its locations' relations, proof statuses and `statement` flags
    (`derive_status`), and refuses the set when the stamped status differs, in either
@@ -250,18 +267,50 @@ any of these fails:
    producer's own `cflib.vocab.derive_status` (formal-companion `scripts/cflib/vocab.py`,
    which implements the decisions `references/vocabulary.md` §1.11 makes for the cases the
    proposal's table leaves open), so it accepts exactly the one status the producer
-   stamps. Each location that counts gets a status from its passage kind's row; the
-   passage takes the best of them (formalized, then statement only, then partial), and a
-   `relatedMatch` never counts:
+   stamps. Each location that counts gets a status from its passage kind's row, and a
+   survived coverage claim gives one more (below); the passage takes the best of them
+   (formalized, then statement only, then partial), and a `relatedMatch` never counts:
 
    | location | theorem, conjecture | definition, construction, notation |
    |---|---|---|
    | `hasPart` or `narrowMatch`, to anything | partial | partial |
-   | `broadMatch`, to anything | as an exact match | partial |
+   | `broadMatch` to data (a `definition` without the `statement` flag) | partial | partial |
+   | `broadMatch` to anything else | as an exact match | partial |
    | exact or close match to a `proved` declaration | formalized | partial |
    | exact or close match to a `statement_only`, `wanted` or `axiom_dependent` declaration | statement only | statement only |
    | exact or close match to a `definition` with the `statement` flag (Prop-valued) | statement only | formalized |
-   | exact or close match to any other `definition` (data) | partial | formalized |
+   | exact or close match to any other `definition` (data) | **formalized** (D1) | formalized |
+
+   **The status rules as the maintainer decided them (decision D1, 2026-10-18).**
+   Verbatim: "D1: yes. Formalized when the hasPart locations together cover every clause
+   (challenger confirms coverage), and when an exact/closeMatch is to an equivalence or
+   data declaration that states the theorem (e.g. CRT's RingEquiv). Update vocab and
+   WikiLean's parity table." It replaces two of `references/vocabulary.md` §1.11's
+   conservative decisions: a theorem matched exactly or closely to data was partial, and a
+   conjunction no single declaration states could not be formalized. Exactly:
+
+   - **Data states a theorem.** A theorem or conjecture passage with an `exactMatch` or
+     `closeMatch` to a data declaration (`proof_status` `definition` without the
+     `statement` flag: an equivalence, an isomorphism, a bijection, a structure-valued
+     construction, such as CRT's `RingEquiv`) is formalized (the bold cell). A Prop-valued
+     definition (the flag set) still gives statement only, a `broadMatch` to data is still
+     partial, and data that rests on `sorry` has `proof_status` `statement_only` and stays
+     statement only.
+   - **A survived coverage claim on a theorem or conjecture passage** (and the theorem row
+     of an `example` or `other` passage) gives formalized when every part is `proved`, and
+     statement only when every part is proved or statement-bearing and some part is
+     `statement_only`, `wanted` or `axiom_dependent`. A part is judged by its
+     `proof_status` alone, so a part that is data, or a Prop-valued definition whose
+     `proof_status` is `definition`, upgrades nothing in this row (question Q2, note 11).
+   - **A survived coverage claim on a definition, construction or notation passage** gives
+     formalized when every part is a `definition` or `proved`, so none is `statement_only`,
+     `wanted` or `axiom_dependent`. This row has no statement-only case (question Q3), and
+     the decision names it for these three kinds only, so an `example` or `other` passage's
+     claim is judged by the theorem row alone (question Q1).
+   - A claim whose challenge is not `survived` (pending, unjudged, downgraded, or a refuted
+     claim, which is not exported) upgrades nothing: its parts count only as `hasPart`
+     locations, partial each. Precedence is unchanged: the best status over all the
+     evidence wins, and an absence beside a location that counts is still refused.
 
    An `example` or `other` passage is judged by both columns and takes the better answer.
    A located passage whose only locations are `relatedMatch`, with no checked absence, has
@@ -270,12 +319,19 @@ any of these fails:
    related declarations kept. Such a passage whose records stamp a status is refused. The
    location that justifies the status, the highest-ranked one whose own status is the
    passage's, is stored as the passage's `basis`, so the page names it rather than
-   whichever location ranks first. `scripts/atlas/fixtures/producer_derive_status.json`
-   holds the producer's answers for every one-location case and 300 sampled two- and
-   three-location cases, generated by `make_producer_table.py` from formal-companion at
-   `b4ac86a` (branch `claude/wikiproject-math`, also `locate/foundation`; not yet on its
-   master), and both the builder and the page's fallback (`locationStatus`) are tested
-   against it.
+   whichever location ranks first. When only the coverage claim reaches the passage's
+   status, the basis is null and the claim's own `basis` is true; on a tie the location
+   is preferred. `scripts/atlas/fixtures/producer_derive_status.json` (WikiLean's parity
+   table) holds the producer's answers for every one-location case, 300 sampled two- and
+   three-location cases, and 959 coverage cases (every kind with every pair of parts under
+   a survived claim, the upgradable pairs under each other challenge value, and 200
+   sampled claims with three parts or with other locations beside the parts). It is
+   generated by `make_producer_table.py` from formal-companion at `b33f17f` (branch
+   `locate/d1`, which implements D1; not yet on its master), and the builder is tested
+   against every case. The page's fallback (`locationStatus`) is tested against the cases
+   without a claim, since the store already carries a claim's effect. Against the table
+   from the pre-D1 producer (`b4ac86a`), exactly 13 answers changed, each a theorem or
+   conjecture with an exact or close match to data.
 
 ### Contract notes for formal-companion
 
@@ -322,14 +378,16 @@ agreement before real record sets arrive:
    repository root (Lean core's records say `src/Init/...`), so there is no `src_dir`
    either: a set carrying one is refused, and the registry prefixes nothing.
 7. **WikiLean recomputes the derived status** (section 3, check 6) with the producer's
-   rules, as `cflib.vocab.derive_status` implements them at formal-companion `b4ac86a`.
-   That code is not yet on formal-companion's master, and `references/vocabulary.md` §1.11
-   marks its decisions as conservative, "until the maintainer says otherwise": a
-   construction or notation passage is a definition passage, an example or `other`
-   passage takes the better of the two rows, a theorem passage matched exactly or closely
-   to data is partial (an instance such as `Real.instField` stating "ℝ is a field" reads
-   partial, which §1.11 lists as an open question), and a definition passage matched to a
-   proved theorem is partial. When the producer changes a rule, regenerate
+   rules, as `cflib.vocab.derive_status` implements them at formal-companion `b33f17f`,
+   with the maintainer's decision D1 (2026-10-18). That code is not yet on
+   formal-companion's master, and `references/vocabulary.md` §1.11 marks its other
+   decisions as conservative, "until the maintainer says otherwise": a construction or
+   notation passage is a definition passage, an example or `other` passage takes the
+   better of the two rows, and a definition passage matched to a proved theorem is
+   partial. D1 replaced the decision that a theorem passage matched exactly or closely to
+   data is partial (an equivalence such as CRT's `RingEquiv`, or an instance such as
+   `Real.instField` stating "ℝ is a field", now formalizes it) and added coverage claims.
+   When the producer changes a rule, regenerate
    `producer_derive_status.json` and port the change; the parity test fails until both
    agree. A located passage the table gives no status is unresolved (note 9), never
    guessed.
@@ -360,6 +418,26 @@ agreement before real record sets arrive:
     chosen (`cf sourceset create`, `cf corpus add`, `cf plan-locate`), so a set is not
     refused only after every run has been paid for. Any other key is refused, so a change
     to the format is a change on both sides at once.
+11. **The coverage claim's export** (decision D1, 2026-10-18). The agreed spec puts the
+    claim in "the passage's record extensions[locate].coverage" as `{complete, parts,
+    challenge}`, `parts` as location keys, valid only with at least two parts, each a
+    `hasPart` location of the passage. Where it left the spelling open, WikiLean chose, and
+    asks the producer to confirm: every record of the passage carries the same claim (as
+    each carries `section`, `prominence` and the status the claim justifies), or none does;
+    a passage without a claim has no `coverage` key, never `null`; `challenge` takes the
+    records' challenge vocabulary, so `refuted` is refused (a refuted claim is removed, not
+    exported); and `parts` keeps the producer's order, which the page lists. Both sides
+    read the decision literally where the maintainer has not said more, and the skill's
+    `references/vocabulary.md` §1.11 names the three readings as open questions: **Q1**, an
+    `example` or `other` passage's claim is judged by the theorem row only (D1 names the
+    definition row for definition, construction and notation); **Q2**, a theorem row's
+    part is judged by its `proof_status` alone, so a data part or a Prop-valued definition
+    whose `proof_status` is `definition` upgrades nothing; **Q3**, a definition row's claim
+    with an unfinished part upgrades nothing (no statement-only case).
+    One difference remains in the skill's hand-written parity cases: its `derive_status`
+    takes a claim whose `challenge` is null ("owed") and upgrades nothing, where WikiLean
+    refuses a null `challenge` in an exported record. An owed claim should export as
+    `challenge_pending`, as an owed record does.
 
 ## 4. The store (v1)
 
@@ -378,7 +456,8 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   locations, related, by status, by library, by proof status, by relation) and
   `passages`. Each passage has `item`, `kind`, `section`, `prominence`, `quote`,
   `subject_uri`, `outcome` (located, absent or unresolved), `status`, `basis` (the
-  `location_key` of the location that justifies the status, or null), and `locations`,
+  `location_key` of the location that justifies the status, or null), `coverage` (the
+  coverage claim, below, or null), and `locations`,
   each with `library, repo, commit, declaration, module, path, line, end_line, relation,
   proof_status, statement, rank, confidence, challenge, location_key, note` (`end_line`
   only when the record has one; `statement` is the Prop-valued-definition flag, false
@@ -387,6 +466,11 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   carries `absence {universe, universe_sha256, libraries, receipt, challenge}` or
   `unresolved {challenge}`; for a passage that is unresolved because its only locations
   are `relatedMatch`, `challenge` is its rank-1 location's and the locations are kept. A
+  passage with a coverage claim (decision D1) carries `coverage {complete, parts,
+  challenge, status, basis}`: the claim as exported (`parts` are location keys, in the
+  record's order), `status`, what the claim gives on its own (null when it did not
+  survive or its parts do not qualify), and `basis`, true when the claim rather than one
+  location justifies the passage's status (the passage's `basis` is then null). A
   `relatedMatch` states something else (proposal §2.6), so it is counted
   in `related` and never as a location. `summary.by_library` (and `current.json`'s
   `counts.by_library`) splits each library's `locations` into `complete` (proved
@@ -528,7 +612,13 @@ and the live list filter.
   `is-subject` (an accent frame) and `data-prominence="subject"`. A located passage
   then says in visible text which location gives it its status, for example
   "Formalized: Mathlib states this exactly (proved).", naming the store's `basis`, not
-  simply the rank-1 location. Then the quote with its context, and a link to the passage
+  simply the rank-1 location. A survived coverage claim (decision D1) adds a line with
+  its parts listed in the claim's order (library, declaration, proof status): "Formalized
+  by 2 parts together:", or "Stated by 2 parts together, not all of them proved:", or,
+  when its parts give the passage nothing, "Covered by 2 parts together, not all of which
+  count toward the status:". When the claim is the basis that line is the status sentence;
+  otherwise it follows the sentence. A claim that did not survive shows no line, and its
+  parts are ordinary "states part" cards. Then the quote with its context, and a link to the passage
   in the pinned Wikipedia revision (a text fragment). The producer's item id
   (`In-text #<hex>`) is a `data-item` attribute, not reader-facing text. Passage
   permalinks (`#p-<hex>`) clear the sticky header (`scroll-margin-top`).
@@ -737,7 +827,11 @@ Each decision below comes with a recommendation.
   reproducibility, schema validity, the golden store, determinism, the manifest, the view
   model (including each passage's basis and the per-library proof split), title shards,
   the §2.6 recomputation in both directions, its parity with the producer's truth table
-  (`producer_derive_status.json`) and the §1.11 cases, the `statement` flag, related-only
+  (`producer_derive_status.json`, coverage cases included) and the §1.11 cases,
+  decision D1 (exact and close matches to data, broadMatch to data, data on sorry, and the
+  coverage claim: survived against every other challenge value, each row's part cases for
+  theorem, definition, example and `other` passages, the basis and ties, the parts' order,
+  and every refusal of the claim's shape and parts), the `statement` flag, related-only
   passages, the agreed record-set format (the seal's exact keys, campaign ids and run
   tokens, the token grammar of `set_id` and `sourceset.id`, `byte_budget` kept and
   enforced, the universe's sorted list and exact library and exclusion keys, the `repo`
@@ -760,7 +854,10 @@ Each decision below comes with a recommendation.
   CSP fit (same-origin loads only, no inline handlers), the article box with its cache
   isolation and revision note, the readers, non-array universe lists, related-only and
   Prop-valued-definition passages, the subject passage's marking and its Subject row, a
-  `challenge_pending` location ("not challenged yet"), a location without `end_line`
+  `challenge_pending` location ("not challenged yet"), the coverage claim's line ("Formalized
+  by 2 parts together" with the parts listed, only for a survived claim; its wording for a
+  statement-only claim and for one whose parts give nothing; a malformed claim never
+  reaching the HTML), the theorem a data declaration formalizes, a location without `end_line`
   ("line 88", `#L88`), a run-token campaign on the pages and
   in feedback (`CAMPAIGN_RE`, the same grammar as the builder's), the producer's truth
   table for the page's fallback rows, and the library registry (seeded names, look-alike
@@ -769,7 +866,8 @@ Each decision below comes with a recommendation.
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
-  schemes at desktop width and at 375px, plus the combined filters, feedback, live search,
+  schemes at desktop width and at 375px (the Gadget page with its coverage claim's parts
+  list included), plus the parts list itself, the combined filters, feedback, live search,
   a passage permalink, the Subject row's link and the article box, and runs those flows
   again with the Worker's
   Report-Only CSP enforced, asserting no violation.

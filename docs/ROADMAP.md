@@ -1320,6 +1320,16 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-10-18: **Atlas status rules follow Jack's decision D1** (branch
+  `claude/formalization-atlas`, not deployed). Jack's decision: "Formalized when the hasPart
+  locations together cover every clause (challenger confirms coverage), and when an
+  exact/closeMatch is to an equivalence or data declaration that states the theorem (e.g.
+  CRT's RingEquiv)." The builder reads a passage's coverage claim from its records and
+  refuses a malformed one. The store and the page show a survived claim ("Formalized by 2
+  parts together", with the parts listed). The parity table is regenerated from
+  formal-companion `b33f17f`, the producer commit that implements D1. Three literal
+  readings Jack has not confirmed (Q1–Q3) are listed in docs/ATLAS.md, contract note 11.
+
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
   (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
   release. Not deployed, and no store has been uploaded. The End-goal amendment and the

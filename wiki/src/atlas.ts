@@ -79,8 +79,16 @@ export interface AtlasPassage {
   outcome: "located" | "absent" | "unresolved";
   status: string | null;
   // location_key of the location that justifies the status (build_store
-  // derive_status), or null; absent from stores built before it existed.
+  // derive_status), or null (also when the coverage claim justifies it);
+  // absent from stores built before it existed.
   basis?: string | null;
+  // Decision D1's coverage claim: hasPart locations (`parts`, location keys)
+  // that together state every clause. It counts only once its challenge is
+  // "survived". `status` is what the claim gives on its own (null when it did
+  // not survive or its parts do not qualify) and `basis` says it, not one
+  // location, justifies the passage's status. Null when the passage has none;
+  // absent from stores built before D1.
+  coverage?: AtlasCoverage | null;
   locations: AtlasLocation[];
   absence: {
     universe: string;
@@ -90,6 +98,14 @@ export interface AtlasPassage {
     challenge: string;
   } | null;
   unresolved: { challenge: string } | null;
+}
+
+export interface AtlasCoverage {
+  complete: boolean;
+  parts: string[];
+  challenge: string;
+  status: string | null;
+  basis: boolean;
 }
 
 export interface LibraryCounts {

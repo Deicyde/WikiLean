@@ -86,6 +86,22 @@ DEFINITION_KINDS = frozenset({"definition", "construction", "notation"})
 EITHER_KINDS = frozenset({"example", "other"})
 # A library location counts as complete when its declaration is proved or is a definition.
 COMPLETE = frozenset({"proved", "definition"})
+# The maintainer's decision D1 (2026-10-18; formal-companion references/vocabulary.md §1.11 and
+# docs/ATLAS.md section 3, check 6), verbatim: "D1: yes. Formalized when the hasPart locations
+# together cover every clause (challenger confirms coverage), and when an exact/closeMatch is to
+# an equivalence or data declaration that states the theorem (e.g. CRT's RingEquiv)."
+# The relations whose match to data (a definition without the statement flag) formalizes a theorem:
+DATA_MATCH_RELATIONS = frozenset({"exactMatch", "closeMatch"})
+# A coverage claim: the passage's hasPart locations that together state every clause. In an
+# exported record it is extensions[locate].coverage = {complete: true, parts: [location_key, ...],
+# challenge}, on every record of the passage or on none; it counts only once it survived its
+# challenge, and a claim the challenger refutes is removed, its parts staying hasPart.
+COVERAGE_KEYS = ("complete", "parts", "challenge")
+COVERAGE_RELATION = "hasPart"
+MIN_COVERAGE_PARTS = 2
+COVERAGE_SURVIVED = "survived"
+# derive_status's basis when the coverage claim, not one location, justifies the status.
+COVERAGE_BASIS = "coverage"
 # The challenge verdicts (proposal §2.7 and §5; cflib.vocab CHALLENGE_VERDICTS). The last three
 # are records no challenge judged (CHALLENGE_UNJUDGED), and the Worker reads each as unchallenged:
 # challenge_pending is a record a prominence overturn to subject or central put under a rule
@@ -621,6 +637,60 @@ def _quote_problems(quote: Any) -> list[str]:
     return found
 
 
+COVERAGE_RULE = ('coverage, on a passage with a claim, is {"complete": true, "parts": [<location_key>, ...], '
+                 '"challenge": <challenge value>}, and is absent (never null) on a passage without one')
+
+
+def coverage_claim(ext: dict, at: str, problems: Problems) -> dict | None:
+    """One record's copy of its passage's coverage claim (decision D1), or None when it carries none.
+
+    The claim's own shape is checked here: exactly complete, parts and challenge; complete is
+    true; parts names at least MIN_COVERAGE_PARTS distinct location keys; challenge is a challenge
+    value. That each part is a hasPart location of the same passage is checked over the passage's
+    records (coverage_part_problems). A malformed claim is reported and dropped.
+    """
+    if "coverage" not in ext:
+        return None
+    claim = ext["coverage"]
+    if not isinstance(claim, dict):
+        problems.add(at, COVERAGE_RULE)
+        return None
+    found = [f"coverage: {message}" for message in key_problems(claim, COVERAGE_KEYS)]
+    if "complete" in claim and claim["complete"] is not True:
+        found.append("coverage.complete must be true: the claim is that the parts together state every clause")
+    parts = claim.get("parts")
+    if "parts" in claim:
+        if not isinstance(parts, list) or not all(isinstance(key, str) and HEX64.match(key) for key in parts):
+            found.append("coverage.parts must be a list of location_keys (64 hex), one per hasPart location")
+        elif len(set(parts)) != len(parts):
+            found.append("coverage.parts names one location twice")
+        elif len(parts) < MIN_COVERAGE_PARTS:
+            found.append(f"coverage.parts names {len(parts)} location(s): a coverage claim needs at least "
+                         f"{MIN_COVERAGE_PARTS} hasPart locations")
+    if "challenge" in claim and not member(claim["challenge"], CHALLENGES):
+        found.append(f"coverage.challenge must be one of {sorted(CHALLENGES)} (only survived counts)")
+    for message in found:
+        problems.add(at, message)
+    if found:
+        return None
+    return {"complete": True, "parts": list(parts), "challenge": claim["challenge"]}
+
+
+def coverage_part_problems(claim: dict, locations: list[dict]) -> list[str]:
+    """Why a passage's coverage claim does not name only hasPart locations of that passage."""
+    relation_of = {loc["location_key"]: loc["relation"] for loc in locations if loc["location_key"]}
+    found = []
+    for key in claim["parts"]:
+        relation = relation_of.get(key)
+        if relation is None:
+            found.append(f"coverage names {key}, which is no location of this passage: every part is one of "
+                         f"its {COVERAGE_RELATION} locations")
+        elif relation != COVERAGE_RELATION:
+            found.append(f"coverage names {key}, whose relation is {relation}: every part is a "
+                         f"{COVERAGE_RELATION} location of this passage")
+    return found
+
+
 def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: Problems) -> dict | None:
     """Validate one record (schema, then the locate contract) and reduce it to what the view needs."""
     try:
@@ -659,6 +729,7 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     if not member(prominence, PROMINENCES):
         problems.add(at, f"prominence must be one of {sorted(PROMINENCES)}")
         prominence = None
+    coverage = coverage_claim(ext, at, problems)
 
     subjects = record["subject"]
     if len(subjects) != 1 or subjects[0].get("type") != "html":
@@ -682,7 +753,7 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
             "quote": {key: quote[key] for key in ("exact", "prefix", "suffix") if key in quote},
-            "subject_uri": uri, "challenge": challenge}
+            "subject_uri": uri, "challenge": challenge, "coverage": coverage}
     relation = record.get("relation")
     objects = record["object"]
     if relation is None:
@@ -858,9 +929,11 @@ def _theorem_row(loc: dict) -> str:
         return "formalized"
     if loc["proof_status"] in UNPROVED:
         return "statement_only"
-    # Data: the table's "broadMatch to a definition" is partial, and vocabulary.md §1.11
-    # decides an exact or close match to data the same way.
-    return "partial"
+    # Data (a definition without the statement flag): decision D1 makes an exact or close
+    # match to an equivalence or data declaration that states the theorem formalized (CRT's
+    # RingEquiv); the table's "broadMatch to a definition" stays partial. Data resting on sorry
+    # has proof_status statement_only, above.
+    return "formalized" if loc["relation"] in DATA_MATCH_RELATIONS else "partial"
 
 
 def _definition_row(loc: dict) -> str:
@@ -888,49 +961,112 @@ def location_status(kind: str, loc: dict) -> str | None:
     return min(rows, key=STATUS_RANK.__getitem__) if rows else None
 
 
-def derive_status(kind: str, locations: list[dict]) -> tuple[str | None, dict | None]:
+def _theorem_coverage(parts: list[dict]) -> str | None:
+    """A survived coverage claim on a theorem or conjecture passage (decision D1).
+
+    Formalized when every part is proved. Statement only when every part is proved or
+    statement-bearing and some part is statement_only, wanted or axiom_dependent. None
+    otherwise. The literal reading, as the producer's cflib.vocab reads it: a part is judged
+    by its proof_status alone, so a part that is data, or a Prop-valued definition whose
+    proof_status is definition, upgrades nothing here (open question Q2, docs/ATLAS.md
+    contract note 11).
+    """
+    if all(part["proof_status"] == "proved" for part in parts):
+        return "formalized"
+    if all(part["proof_status"] == "proved" or part["proof_status"] in UNPROVED for part in parts):
+        return "statement_only"
+    return None
+
+
+def _definition_coverage(parts: list[dict]) -> str | None:
+    """A survived coverage claim on a definition, construction or notation passage (decision D1).
+
+    Formalized when every part is a definition or proved (so none is statement_only, wanted or
+    axiom_dependent); None otherwise. Decision D1 gives this row no statement_only case.
+    """
+    return "formalized" if all(part["proof_status"] in COMPLETE for part in parts) else None
+
+
+def coverage_status(kind: str, claim: dict | None, locations: list[dict]) -> str | None:
+    """The status a coverage claim gives a passage of `kind` on its own; None when it gives none.
+
+    Only a claim whose challenge is survived counts: one pending, unjudged (not_required,
+    sampled_out) or downgraded upgrades nothing, and a refuted claim is not exported at all.
+    Decision D1 names the theorem row of an example or `other` passage and the definition
+    row of definition, construction and notation passages only, so an example's or `other`
+    passage's claim is judged by the theorem row alone (open question Q1, docs/ATLAS.md
+    contract note 11).
+    """
+    if claim is None or claim["challenge"] != COVERAGE_SURVIVED:
+        return None
+    by_key = {loc["location_key"]: loc for loc in locations}
+    parts = [by_key.get(key) for key in claim["parts"]]
+    if (len(parts) < MIN_COVERAGE_PARTS or any(part is None or part["relation"] != COVERAGE_RELATION
+                                               for part in parts)):
+        return None  # refused by coverage_part_problems; never counted
+    rows = []
+    if kind in THEOREM_KINDS or kind in EITHER_KINDS:
+        rows.append(_theorem_coverage(parts))
+    if kind in DEFINITION_KINDS:
+        rows.append(_definition_coverage(parts))
+    counted = [row for row in rows if row is not None]
+    return min(counted, key=STATUS_RANK.__getitem__) if counted else None
+
+
+def derive_status(kind: str, locations: list[dict], coverage: dict | None = None) -> tuple[str | None, Any]:
     """Proposal §2.6's derived status of a located passage, recomputed from its locations.
 
     A port of formal-companion's cflib.vocab.derive_status (scripts/cflib/vocab.py, which
     implements references/vocabulary.md §1.11's decisions for the cases the table leaves
-    open): each location that counts gets a status from its kind's row of the table, an
-    example or `other` passage taking the better of the two rows, and the passage takes the
-    best of them. `locations` are in rank order. Returns (status, basis): the one status the
-    producer stamps, and the highest-ranked location reaching it. (None, None) means the
+    open, decision D1 among them): each location that counts gets a status from its kind's
+    row of the table, an example or `other` passage taking the better of the two rows; a
+    survived coverage claim over the passage's hasPart locations gives one more status
+    (coverage_status); and the passage takes the best of them. `locations` are in rank order.
+
+    Returns (status, basis): the one status the producer stamps, and what justifies it: the
+    highest-ranked location reaching it, or COVERAGE_BASIS when only the coverage claim
+    reaches it (a location reaching the same status is preferred). (None, None) means the
     table gives the passage no status: its only locations are relatedMatch.
     test_build_store.py checks this against a truth table generated from the producer.
     """
     best: str | None = None
-    basis: dict | None = None
+    basis: Any = None
     for loc in locations:
         status = location_status(kind, loc)
         if status is not None and (best is None or STATUS_RANK[status] < STATUS_RANK[best]):
             best, basis = status, loc
+    claimed = coverage_status(kind, coverage, locations)
+    if claimed is not None and (best is None or STATUS_RANK[claimed] < STATUS_RANK[best]):
+        best, basis = claimed, COVERAGE_BASIS
     return best, basis
 
 
-def _shape(locations: list[dict]) -> str:
+def _shape(locations: list[dict], coverage: dict | None = None) -> str:
     def declaration(loc: dict) -> str:
         if not loc["statement"]:
             return str(loc["proof_status"])
         return "a Prop-valued definition" + ("" if loc["proof_status"] == "definition" else f" ({loc['proof_status']})")
     shown = [f"{loc['relation']} to {declaration(loc)}" for loc in locations if loc["relation"] != "relatedMatch"]
-    return ", ".join(shown) or "relatedMatch only"
+    text = ", ".join(shown) or "relatedMatch only"
+    if coverage is not None:
+        text += f", and a coverage claim over {len(coverage['parts'])} parts (challenge {coverage['challenge']})"
+    return text
 
 
-def status_problems(kind: str | None, status: str, locations: list[dict]) -> tuple[list[str], dict | None]:
+def status_problems(kind: str | None, status: str, locations: list[dict],
+                    coverage: dict | None = None) -> tuple[list[str], Any]:
     """Compare a located passage's stamped status with the recomputed one; returns (problems, basis)."""
     if status == "not_formalized":
         return ["not_formalized needs a checked absence (noMatch record)"], None
     if not member(kind, KINDS):
         return [], None  # already reported by classify_record
-    derived, basis = derive_status(kind, locations)
+    derived, basis = derive_status(kind, locations, coverage)
     if derived is None:
         return [f"proposal §2.6 gives a {kind} passage with {_shape(locations)} no status: it is unresolved, "
                 f"and its records carry no status (docs/ATLAS.md, contract note 9)"], None
     if derived != status:
-        return [f"the records say {status}, but proposal §2.6 derives {derived} for a {kind} passage "
-                f"with {_shape(locations)}"], None
+        return [f"the records say {status}, but the derived-status rules (proposal §2.6 and vocabulary.md "
+                f"§1.11) derive {derived} for a {kind} passage with {_shape(locations, coverage)}"], None
     return [], basis
 
 
@@ -944,9 +1080,13 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         at = f"records/{source['source_id']}.jsonl: {pid}"
         first = records[0]
         for other in records[1:]:
-            for key in ("kind", "quote", "section", "prominence"):
+            # The coverage claim is a passage field like the rest: every record carries the
+            # same claim, or none does.
+            for key in ("kind", "quote", "section", "prominence", "coverage"):
                 if other[key] != first[key]:
-                    problems.add(at, f"records of one passage disagree on {key}")
+                    problems.add(at, f"records of one passage disagree on {key}"
+                                 + (" (every record of the passage carries the same claim, or none does)"
+                                    if key == "coverage" else ""))
         unresolved = [r for r in records if r["type"] == "unresolved"]
         absences = [r for r in records if r["type"] == "absence"]
         locations = sorted((r["location"] for r in records if r["type"] == "location"),
@@ -967,6 +1107,13 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             problems.add(at, "location ranks are distinct")
         status = next(iter(statuses)) if len(statuses) == 1 else None
         basis = None
+        claim = first["coverage"]
+        if claim is not None:
+            found = coverage_part_problems(claim, locations)
+            for message in found:
+                problems.add(at, message)
+            if found:
+                claim = None  # refused above; the status check below judges the locations alone
         unresolved_info = {"challenge": unresolved[0]["challenge"]} if unresolved else None
         if unresolved:
             outcome, status = "unresolved", None
@@ -983,10 +1130,17 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             unresolved_info = {"challenge": locations[0]["challenge"] if locations else None}
         else:
             outcome = "located"
-            if status is not None:
-                found, basis = status_problems(first["kind"], status, locations)
+            if status is not None and first["coverage"] is claim:  # a refused claim is reported already
+                found, basis = status_problems(first["kind"], status, locations, claim)
                 for message in found:
                     problems.add(at, message)
+        coverage = None
+        if claim is not None:
+            # The claim as exported, plus what it gives on its own (null when it did not survive
+            # or its parts do not qualify) and whether it is what justifies the passage's status.
+            coverage = {**claim, "status": (coverage_status(first["kind"], claim, locations)
+                                            if member(first["kind"], KINDS) else None),
+                        "basis": basis == COVERAGE_BASIS}
         absence = None
         if absences:
             absence = {"universe": None, "universe_sha256": None, "libraries": None,
@@ -996,8 +1150,9 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             "prominence": first["prominence"], "quote": first["quote"], "subject_uri": first["subject_uri"],
             "outcome": outcome, "status": status, "locations": locations, "absence": absence,
             # The location that justifies the status (derive_status), so a page names it
-            # rather than whichever location ranks first.
-            "basis": basis["location_key"] if basis else None,
+            # rather than whichever location ranks first; null when the coverage claim does.
+            "basis": basis["location_key"] if isinstance(basis, dict) else None,
+            "coverage": coverage,
             "unresolved": unresolved_info,
         })
     return passages

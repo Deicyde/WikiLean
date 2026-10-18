@@ -5,6 +5,8 @@ import { CSP_REPORT_ONLY, SECURITY_HEADERS } from "../src/security.js";
 // The formalization atlas pages over the golden fixture store
 // (scripts/atlas/fixtures/store, bound in e2e/server.ts).
 const WIDGET = "/atlas/1001/Widget_lemma";
+// Its two theorems show decision D1: a conjunction covered by two parts, and an equivalence.
+const GADGET = "/atlas/1003/Gadget_(mathematics)";
 
 function collectPageErrors(page: Page): string[] {
   const errors: string[] = [];
@@ -42,6 +44,9 @@ for (const scheme of ["light", "dark"] as const) {
     await expect(page.locator("html")).toHaveAttribute("data-theme", scheme);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Widget lemma");
     await expectNoSeriousViolations(page);
+    await page.goto(GADGET);
+    await expect(page.locator(".atlas-coverage")).toHaveCount(1);
+    await expectNoSeriousViolations(page);
     await page.goto("/atlas");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Formalization atlas");
     await expectNoSeriousViolations(page);
@@ -54,7 +59,7 @@ for (const scheme of ["light", "dark"] as const) {
     const errors = collectPageErrors(page);
     await page.setViewportSize({ width: 375, height: 812 });
     await page.emulateMedia({ colorScheme: scheme });
-    for (const path of [WIDGET, "/atlas", "/atlas/universe/0e6efcaae05b9aee11c90b919b55052636ee2932901127ea571268dc3a8d6a25"]) {
+    for (const path of [WIDGET, GADGET, "/atlas", "/atlas/universe/0e6efcaae05b9aee11c90b919b55052636ee2932901127ea571268dc3a8d6a25"]) {
       await page.goto(path);
       await expectNoSeriousViolations(page);
       const overflow = await page.locator("html").evaluate((root) => root.scrollWidth - root.clientWidth);
@@ -72,6 +77,17 @@ for (const scheme of ["light", "dark"] as const) {
     expect(errors).toEqual([]);
   });
 }
+
+test("a survived coverage claim names its parts under 'Formalized by 2 parts together'", async ({ page }) => {
+  await page.goto(`${GADGET}#p-a41f6c2e`);
+  const passage = page.locator("#p-a41f6c2e");
+  await expect(passage.locator(".atlas-pill")).toContainText("Formalized");
+  const claim = passage.locator(".atlas-coverage");
+  await expect(claim.locator(".atlas-why")).toHaveText("Formalized by 2 parts together:");
+  await expect(claim.getByRole("listitem")).toHaveCount(2);
+  await expect(claim.getByRole("listitem").first()).toContainText("Gadget.connected");
+  await expect(claim.getByRole("listitem").first()).toBeVisible();
+});
 
 test("a passage permalink is not hidden under the sticky header", async ({ page }) => {
   await page.goto(`${WIDGET}#p-5b0e44a1`);

@@ -32,6 +32,8 @@ RECORDSET = HERE / "fixtures" / "recordset"
 STORE = HERE / "fixtures" / "store"
 PRODUCER_TABLE = HERE / "fixtures" / "producer_derive_status.json"
 LOCATE = build_store.LOCATE
+# How a stamped status that differs from the recomputed one is refused.
+DERIVES = "the derived-status rules (proposal §2.6 and vocabulary.md §1.11) derive"
 
 
 def reseal(set_dir: Path) -> None:
@@ -65,7 +67,7 @@ class FixtureTests(unittest.TestCase):
         schema_path = ROOT / "wiki/src/vendor/literature-links/companion.schema.json"
         validator = Draft202012Validator(json.loads(schema_path.read_text(encoding="utf-8")))
         records = [r for p in sorted((RECORDSET / "records").glob("*.jsonl")) for r in read_jsonl(p)]
-        self.assertEqual(len(records), 7)
+        self.assertEqual(len(records), 10)
         for record in records:
             errors = list(validator.iter_errors(record))
             self.assertEqual(errors, [], record["id"])
@@ -84,6 +86,21 @@ class FixtureTests(unittest.TestCase):
         absence = next(r for r in records if r.get("relation") == "noMatch")
         self.assertEqual(len(absence["object"]), 5)
         self.assertTrue(all(set(end) == {"type", "uri", "version"} for end in absence["object"]))
+        # Decision D1's two cases: a conjunction its hasPart locations cover together (a survived
+        # coverage claim on every record of the passage), and a theorem a data declaration states.
+        gadget = read_jsonl(RECORDSET / "records/enwiki-1003-2004.jsonl")
+        covered = [r for r in gadget if "coverage" in r["extensions"][LOCATE]]
+        self.assertEqual([(r["kind"], r["relation"], r["status"]) for r in covered],
+                         [("theorem", "hasPart", "formalized")] * 2)
+        claim = covered[0]["extensions"][LOCATE]["coverage"]
+        self.assertEqual(claim, covered[1]["extensions"][LOCATE]["coverage"])
+        self.assertEqual(claim["parts"], [r["extensions"][LOCATE]["location_key"] for r in covered])
+        self.assertEqual((claim["complete"], claim["challenge"]), (True, "survived"))
+        data = [r for r in gadget if r["kind"] == "theorem" and r["relation"] == "exactMatch"]
+        self.assertEqual(len(data), 1)
+        end = data[0]["object"][0]["extensions"][LOCATE]
+        self.assertEqual((end["proof_status"], end.get("statement"), data[0]["status"]),
+                         ("definition", None, "formalized"))
 
     def test_fixture_is_in_the_agreed_format(self):
         seal = json.loads((RECORDSET / "SEAL.json").read_text(encoding="utf-8"))
@@ -184,6 +201,26 @@ class BuildTests(unittest.TestCase):
         # Overturned to subject after the challenge ran: a challenge is owed, none has judged it.
         self.assertEqual(gadget["passages"][0]["locations"][0]["challenge"], "challenge_pending")
         self.assertEqual(gadget["passages"][0]["status"], "formalized")
+        # No passage of the Widget article carries a coverage claim.
+        self.assertEqual([p["coverage"] for p in article["passages"]], [None] * 4)
+        # Decision D1. The conjunction: each hasPart part alone is partial, and the survived
+        # claim over both formalizes it; the claim, not a location, is the basis.
+        covered = gadget["passages"][1]
+        self.assertEqual((covered["kind"], covered["status"], covered["basis"]), ("theorem", "formalized", None))
+        self.assertEqual([loc["relation"] for loc in covered["locations"]], ["hasPart", "hasPart"])
+        self.assertEqual(covered["coverage"], {
+            "complete": True, "parts": [loc["location_key"] for loc in covered["locations"]],
+            "challenge": "survived", "status": "formalized", "basis": True})
+        # The theorem an equivalence states: an exact match to data, formalized, with that basis.
+        equiv = gadget["passages"][2]
+        self.assertEqual((equiv["kind"], equiv["status"], equiv["coverage"]), ("theorem", "formalized", None))
+        self.assertEqual((equiv["locations"][0]["proof_status"], equiv["locations"][0]["statement"]),
+                         ("definition", False))
+        self.assertEqual(equiv["basis"], equiv["locations"][0]["location_key"])
+        self.assertEqual(gadget["summary"]["by_status"], {"formalized": 3, "statement_only": 0, "partial": 0,
+                                                          "not_formalized": 0, "unresolved": 0})
+        self.assertEqual(gadget["summary"]["by_library"]["mathlib"],
+                         {"locations": 4, "complete": 4, "incomplete": 0, "passages": 3, "related": 0})
 
     def test_index_and_title_keys(self):
         self.assertEqual(build_store.title_key("Widget_lemma"), "Widget lemma")
@@ -217,15 +254,24 @@ class DeriveStatusParityTests(unittest.TestCase):
         self.assertEqual(self.table["producer"]["repository"], "formal-companion")
         self.assertRegex(self.table["producer"]["commit"], r"^[0-9a-f]{40}$")
         cases = self.table["cases"]
-        singles = [case for case in cases if len(case[1]) == 1]
+        plain = [case for case in cases if len(case) == 3]
+        singles = [case for case in plain if len(case[1]) == 1]
         # Every kind x relation x proof status x statement flag, once each.
         self.assertEqual(len(singles), 7 * 6 * 5 * 2)
         self.assertEqual(len({json.dumps(case[:2]) for case in singles}), len(singles))
-        self.assertGreaterEqual(len(cases) - len(singles), 300)
+        self.assertGreaterEqual(len(plain) - len(singles), 300)
+        # Decision D1's coverage claims: every kind x every pair of parts under a survived claim.
+        covered = [case for case in cases if len(case) == 4]
+        survived_pairs = {(case[0], json.dumps(case[1])) for case in covered
+                          if case[3] == {"parts": [0, 1], "challenge": "survived"} and len(case[1]) == 2}
+        self.assertEqual(len(survived_pairs), 7 * 9 * 9)
+        self.assertEqual({case[3]["challenge"] for case in covered}, build_store.CHALLENGES)
+        # The producer the table came from implements D1: a theorem's exact match to data formalizes it.
+        self.assertIn(["theorem", [["exactMatch", "definition", False]], "formalized"], singles)
 
     def test_builder_derives_exactly_the_producers_status(self):
         mismatches = []
-        for kind, ends, expected in self.table["cases"]:
+        for kind, ends, expected, *claimed in self.table["cases"]:
             problems = [build_store.statement_flag(statement, proof_status)[1] for _, proof_status, statement in ends]
             if expected == "refused":
                 if not any(problems):
@@ -235,13 +281,22 @@ class DeriveStatusParityTests(unittest.TestCase):
                 mismatches.append((kind, ends, expected, f"refused: {problems}"))
                 continue
             locations = [{"relation": relation, "proof_status": proof_status, "statement": statement,
-                          "rank": rank, "library": "lib", "location_key": f"key{rank}"}
+                          "rank": rank, "library": "lib", "location_key": hashlib.sha256(b"key%d" % rank).hexdigest()}
                          for rank, (relation, proof_status, statement) in enumerate(ends, 1)]
-            status, basis = build_store.derive_status(kind, locations)
+            claim = None
+            if claimed:  # a coverage case: {parts: [indexes into the locations], challenge}
+                claim = {"complete": True, "challenge": claimed[0]["challenge"],
+                         "parts": [locations[i]["location_key"] for i in claimed[0]["parts"]]}
+                self.assertEqual(build_store.coverage_part_problems(claim, locations), [], (kind, ends, claimed))
+            status, basis = build_store.derive_status(kind, locations, claim)
             if status != expected:
-                mismatches.append((kind, ends, expected, status))
+                mismatches.append((kind, ends, expected, status, claimed))
             elif status is None:
                 self.assertIsNone(basis)
+            elif basis == build_store.COVERAGE_BASIS:
+                # The claim is the basis only when it does better than every location.
+                self.assertEqual(build_store.coverage_status(kind, claim, locations), status)
+                self.assertFalse(any(build_store.location_status(kind, loc) == status for loc in locations))
             else:
                 # The basis is the highest-ranked location that reaches the passage's status.
                 reaching = [loc for loc in locations if build_store.location_status(kind, loc) == status]
@@ -362,7 +417,7 @@ class RefusalTests(SetCopyTest):
             for row in rows[:2]:
                 row["object"][0]["extensions"][LOCATE]["proof_status"] = "statement_only"
         self.edit_widget(edit)
-        self.refuse("the records say formalized, but proposal §2.6 derives statement_only for a theorem passage")
+        self.refuse(f"the records say formalized, but {DERIVES} statement_only for a theorem passage")
 
     def _first_passage(self, edit) -> None:
         """Edit the two records of the first Widget passage (Mathlib rank 1, FormalFrontier rank 2)."""
@@ -375,7 +430,7 @@ class RefusalTests(SetCopyTest):
                 row["kind"] = "example"
                 row["object"][0]["extensions"][LOCATE]["proof_status"] = "statement_only"
         self._first_passage(edit)
-        self.refuse("the records say formalized, but proposal §2.6 derives statement_only for a example passage")
+        self.refuse(f"the records say formalized, but {DERIVES} statement_only for a example passage")
 
     def test_formalized_construction_via_a_wanted_declaration(self):
         # A construction is judged as a definition passage (vocabulary.md §1.11), whose
@@ -387,7 +442,7 @@ class RefusalTests(SetCopyTest):
                 row.pop("note", None)
                 row["object"][0]["extensions"][LOCATE]["proof_status"] = "wanted"
         self._first_passage(edit)
-        self.refuse("derives partial for a construction passage with broadMatch to wanted")
+        self.refuse("derive partial for a construction passage with broadMatch to wanted")
 
     def test_example_with_a_proved_match_is_formalized(self):
         def edit(a, b):
@@ -400,7 +455,7 @@ class RefusalTests(SetCopyTest):
     def test_understated_status_is_refused(self):
         # A theorem with a proved exact match is formalized, not statement_only.
         self._first_passage(lambda a, b: [row.update(status="statement_only") for row in (a, b)])
-        self.refuse("the records say statement_only, but proposal §2.6 derives formalized")
+        self.refuse(f"the records say statement_only, but {DERIVES} formalized")
 
     def test_partial_beside_a_proved_exact_match_is_refused(self):
         def edit(a, b):
@@ -409,7 +464,7 @@ class RefusalTests(SetCopyTest):
             for row in (a, b):
                 row["status"] = "partial"
         self._first_passage(edit)
-        self.refuse("the records say partial, but proposal §2.6 derives formalized")
+        self.refuse(f"the records say partial, but {DERIVES} formalized")
 
     def _related_only(self, a, b, status=None):
         for row in (a, b):
@@ -475,7 +530,7 @@ class RefusalTests(SetCopyTest):
                         row["object"][0]["extensions"][LOCATE]["proof_status"] = "definition"
                 self._first_passage(edit)
                 if refused:
-                    self.refuse("the records say statement_only, but proposal §2.6 derives partial")
+                    self.refuse(f"the records say statement_only, but {DERIVES} partial")
                 else:
                     article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
                     self.assertEqual(article["passages"][0]["status"], "partial")
@@ -488,23 +543,38 @@ class RefusalTests(SetCopyTest):
             row["kind"], row["relation"], row["status"] = kind, relation, status
             if relation != "closeMatch":
                 row.pop("note", None)
+            else:  # a closeMatch always names its convention difference
+                row.setdefault("note", "States it for finite widgets only.")
             end = row["object"][0]["extensions"][LOCATE]
             end["proof_status"] = proof_status
             if statement is not None:
                 end["statement"] = statement
         self.edit_widget(edit)
 
-    def test_theorem_exactly_matched_to_data_is_partial(self):
-        # An instance such as Real.instField stating "R is a field": vocabulary.md §1.11
-        # decides it partial (as the table's broadMatch to a definition is).
-        self._one_location("theorem", "exactMatch", "definition", "partial")
-        self.assertEqual(json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
-                         ["passages"][0]["status"], "partial")
-        self.tearDown()
-        self.setUp()
-        self._one_location("theorem", "exactMatch", "definition", "statement_only")
-        self.refuse("the records say statement_only, but proposal §2.6 derives partial for a theorem passage "
-                    "with exactMatch to definition")
+    def test_theorem_matched_exactly_or_closely_to_data_is_formalized(self):
+        # Decision D1: an exact or close match to an equivalence or data declaration that states
+        # the theorem (CRT's RingEquiv) formalizes it; before D1 vocabulary.md §1.11 said partial.
+        for kind in ("theorem", "conjecture"):
+            for relation in ("exactMatch", "closeMatch"):
+                with self.subTest(kind=kind, relation=relation):
+                    self.fresh()
+                    self._one_location(kind, relation, "definition", "formalized")
+                    passage = self.article()["passages"][0]
+                    self.assertEqual(passage["status"], "formalized")
+                    self.assertEqual(passage["basis"], passage["locations"][0]["location_key"])
+                    self.fresh()
+                    self._one_location(kind, relation, "definition", "partial")
+                    self.refuse(f"the records say partial, but {DERIVES} formalized for a {kind} passage "
+                                f"with {relation} to definition")
+        # A broadMatch to data stays partial (the table's row), and data resting on sorry has
+        # proof_status statement_only, so it stays statement_only.
+        self.fresh()
+        self._one_location("theorem", "broadMatch", "definition", "formalized")
+        self.refuse(f"the records say formalized, but {DERIVES} partial for a theorem passage "
+                    "with broadMatch to definition")
+        self.fresh()
+        self._one_location("theorem", "exactMatch", "statement_only", "formalized")
+        self.refuse(f"the records say formalized, but {DERIVES} statement_only")
 
     def test_prop_valued_definition_states_a_theorem(self):
         # The lean end's statement flag marks a Prop-valued definition: statement_only.
@@ -517,7 +587,7 @@ class RefusalTests(SetCopyTest):
         self.tearDown()
         self.setUp()
         self._one_location("theorem", "exactMatch", "definition", "partial", statement=True)
-        self.refuse("derives statement_only for a theorem passage with exactMatch to a Prop-valued definition")
+        self.refuse("derive statement_only for a theorem passage with exactMatch to a Prop-valued definition")
 
     def test_statement_flag_must_be_a_bool_and_never_on_a_proved_declaration(self):
         self._one_location("theorem", "exactMatch", "definition", "statement_only", statement="yes")
@@ -543,7 +613,7 @@ class RefusalTests(SetCopyTest):
                 self.tearDown()
                 self.setUp()
                 self._one_location(kind, "exactMatch", "proved", "formalized")
-                self.refuse(f"the records say formalized, but proposal §2.6 derives partial for a {kind} passage")
+                self.refuse(f"the records say formalized, but {DERIVES} partial for a {kind} passage")
 
     def test_basis_is_the_location_that_justifies_the_status(self):
         # Rank 1 states it without proof, rank 2 proves a more general result:
@@ -625,6 +695,260 @@ class RefusalTests(SetCopyTest):
         (self.set / "universe.json").unlink()
         reseal(self.set)
         self.refuse("universe.json is missing from the record set")
+
+
+class CoverageTests(SetCopyTest):
+    """Decision D1's coverage claims, on the Gadget article's covered conjunction (rows 1 and 2).
+
+    Row 0 is the Gadget definition, rows 1 and 2 the two hasPart parts (Mathlib, ranks 1 and 2,
+    both proved) carrying the survived claim, row 3 the theorem an equivalence states.
+    """
+
+    GADGET = "records/enwiki-1003-2004.jsonl"
+
+    def edit_gadget(self, edit) -> None:
+        path = self.set / self.GADGET
+        rows = read_jsonl(path)
+        edit(rows)
+        write_jsonl(path, rows)
+        reseal(self.set)
+
+    def edit_parts(self, edit) -> None:
+        """Edit the two records of the covered passage."""
+        self.edit_gadget(lambda rows: edit(rows[1], rows[2]))
+
+    @staticmethod
+    def key(row: dict) -> str:
+        return row["extensions"][LOCATE]["location_key"]
+
+    @staticmethod
+    def claim_of(row: dict) -> dict:
+        return row["extensions"][LOCATE]["coverage"]
+
+    def covered(self) -> dict:
+        return self.article(1003)["passages"][1]
+
+    def shape(self, a_proof, b_proof, status, kind="theorem", a_statement=None, b_statement=None, challenge=None):
+        """Give the covered passage's parts these proof statuses, its kind and its stamped status."""
+        def edit(a, b):
+            for row, proof, statement in ((a, a_proof, a_statement), (b, b_proof, b_statement)):
+                row["kind"], row["status"] = kind, status
+                end = row["object"][0]["extensions"][LOCATE]
+                end["proof_status"] = proof
+                if statement is not None:
+                    end["statement"] = statement
+                if challenge is not None:
+                    self.claim_of(row)["challenge"] = challenge
+        self.edit_parts(edit)
+
+    def test_the_fixture_conjunction_is_formalized_by_its_survived_claim(self):
+        passage = self.covered()
+        self.assertEqual((passage["status"], passage["basis"]), ("formalized", None))
+        self.assertEqual((passage["coverage"]["status"], passage["coverage"]["basis"]), ("formalized", True))
+        # Without the claim (a refuted claim is removed) the parts stay hasPart: partial.
+        self.fresh()
+        self.edit_parts(lambda a, b: [row["extensions"][LOCATE].pop("coverage") for row in (a, b)])
+        self.refuse(f"the records say formalized, but {DERIVES} partial for a theorem passage with hasPart to "
+                    "proved, hasPart to proved")
+        self.fresh()
+        self.edit_parts(lambda a, b: [(row["extensions"][LOCATE].pop("coverage"), row.update(status="partial"))
+                                      for row in (a, b)])
+        passage = self.covered()
+        self.assertEqual((passage["status"], passage["coverage"]), ("partial", None))
+        self.assertEqual(passage["basis"], passage["locations"][0]["location_key"])
+
+    def test_only_a_survived_claim_upgrades(self):
+        # Pending, unjudged (not_required, sampled_out) or downgraded: the claim upgrades nothing.
+        for challenge in ("challenge_pending", "not_required", "sampled_out", "downgraded"):
+            with self.subTest(challenge=challenge):
+                self.fresh()
+                self.shape("proved", "proved", "formalized", challenge=challenge)
+                self.refuse(f"{DERIVES} partial for a theorem passage with hasPart to proved, hasPart to proved, "
+                            f"and a coverage claim over 2 parts (challenge {challenge})")
+                self.fresh()
+                self.shape("proved", "proved", "partial", challenge=challenge)
+                passage = self.covered()
+                self.assertEqual(passage["status"], "partial")
+                self.assertEqual(passage["coverage"]["challenge"], challenge)
+                self.assertEqual((passage["coverage"]["status"], passage["coverage"]["basis"]), (None, False))
+                self.assertEqual(passage["basis"], passage["locations"][0]["location_key"])
+
+    def test_theorem_parts(self):
+        # Every part proved: formalized. Every part proved or statement-bearing and some part
+        # statement_only, wanted or axiom_dependent: statement only. Judged by proof_status alone
+        # (the literal reading, open question Q2): a data part, or a Prop-valued definition
+        # whose proof_status is definition, upgrades nothing; one resting on sorry counts.
+        cases = [
+            (("proved", None), ("statement_only", None), "statement_only"),
+            (("wanted", None), ("proved", None), "statement_only"),
+            (("axiom_dependent", None), ("statement_only", None), "statement_only"),
+            (("proved", None), ("statement_only", True), "statement_only"),
+            (("proved", None), ("definition", True), "partial"),
+            (("statement_only", None), ("definition", True), "partial"),
+            (("proved", None), ("definition", None), "partial"),
+            (("definition", None), ("definition", None), "partial"),
+        ]
+        for kind in ("theorem", "conjecture"):
+            for (a, a_flag), (b, b_flag), expected in cases:
+                with self.subTest(kind=kind, parts=(a, a_flag, b, b_flag)):
+                    self.fresh()
+                    self.shape(a, b, expected, kind=kind, a_statement=a_flag, b_statement=b_flag)
+                    passage = self.covered()
+                    self.assertEqual(passage["status"], expected)
+                    self.assertEqual(passage["coverage"]["status"], None if expected == "partial" else expected)
+                    self.assertEqual(passage["coverage"]["basis"], expected != "partial")
+                    self.fresh()
+                    wrong = "formalized"
+                    self.shape(a, b, wrong, kind=kind, a_statement=a_flag, b_statement=b_flag)
+                    self.refuse(f"the records say formalized, but {DERIVES} {expected} for a {kind} passage")
+
+    def test_definition_parts(self):
+        # Every part a definition or proved: formalized. Decision D1 gives this row no
+        # statement-only case, so an unfinished part leaves the passage partial.
+        cases = [
+            (("definition", None), ("proved", None), "formalized"),
+            (("definition", None), ("definition", True), "formalized"),
+            (("definition", None), ("statement_only", None), "partial"),
+            (("proved", None), ("wanted", None), "partial"),
+            (("axiom_dependent", None), ("definition", True), "partial"),
+        ]
+        for kind in ("definition", "construction", "notation"):
+            for (a, a_flag), (b, b_flag), expected in cases:
+                with self.subTest(kind=kind, parts=(a, a_flag, b, b_flag)):
+                    self.fresh()
+                    self.shape(a, b, expected, kind=kind, a_statement=a_flag, b_statement=b_flag)
+                    self.assertEqual(self.covered()["status"], expected)
+
+    def test_example_and_other_claims_take_the_theorem_row(self):
+        # Decision D1 names an example's or `other` passage's theorem row only (the literal
+        # reading, open question Q1): parts that are definitions upgrade nothing there.
+        cases = [
+            ("proved", "proved", "formalized"),
+            ("proved", "statement_only", "statement_only"),
+            ("definition", "proved", "partial"),
+            ("definition", "definition", "partial"),
+            ("definition", "statement_only", "partial"),
+        ]
+        for kind in ("example", "other"):
+            for a, b, expected in cases:
+                with self.subTest(kind=kind, parts=(a, b)):
+                    self.fresh()
+                    self.shape(a, b, expected, kind=kind)
+                    self.assertEqual(self.covered()["status"], expected)
+
+    def _add_location(self, rows, relation, proof_status, rank=3):
+        """Give the covered passage a third location (Mathlib, a new declaration) of this shape."""
+        row = json.loads(json.dumps(rows[1]))
+        row["relation"] = relation
+        row["object"][0]["location"]["declaration"] = "Gadget.connected_and_finite"
+        row["object"][0]["extensions"][LOCATE]["proof_status"] = proof_status
+        row["extensions"][LOCATE].update(rank=rank, location_key=hashlib.sha256(b"third location").hexdigest())
+        rows.insert(3, row)
+
+    def test_a_location_reaching_the_same_status_is_the_basis(self):
+        # Best status over all evidence; on a tie the one location is named, the claim still shown.
+        self.edit_gadget(lambda rows: self._add_location(rows, "exactMatch", "proved"))
+        passage = self.covered()
+        self.assertEqual(passage["status"], "formalized")
+        self.assertEqual(passage["basis"], passage["locations"][2]["location_key"])
+        self.assertEqual((passage["coverage"]["status"], passage["coverage"]["basis"]), ("formalized", False))
+        # A claim that does better than every location is the basis.
+        self.fresh()
+        self.edit_gadget(lambda rows: self._add_location(rows, "exactMatch", "statement_only"))
+        passage = self.covered()
+        self.assertEqual((passage["status"], passage["basis"], passage["coverage"]["basis"]),
+                         ("formalized", None, True))
+
+    def test_parts_are_kept_in_the_records_order(self):
+        def edit(a, b):
+            for row in (a, b):
+                self.claim_of(row)["parts"].reverse()
+        self.edit_parts(edit)
+        passage = self.covered()
+        self.assertEqual(passage["coverage"]["parts"],
+                         [passage["locations"][1]["location_key"], passage["locations"][0]["location_key"]])
+        self.assertEqual(passage["status"], "formalized")
+
+    def test_a_claim_names_at_least_two_hasPart_locations_of_its_passage(self):
+        def set_parts(parts_of):
+            def edit(rows):
+                parts = parts_of(rows)
+                for row in (rows[1], rows[2]):
+                    self.claim_of(row)["parts"] = parts
+            return edit
+        cases = [
+            (lambda rows: [self.key(rows[1])],
+             "coverage.parts names 1 location(s): a coverage claim needs at least 2 hasPart locations"),
+            (lambda rows: [], "coverage.parts names 0 location(s)"),
+            (lambda rows: [self.key(rows[1]), self.key(rows[1])], "coverage.parts names one location twice"),
+            (lambda rows: [self.key(rows[1]), "0" * 64],
+             f"coverage names {'0' * 64}, which is no location of this passage: every part is one of its hasPart"),
+            # a location of another passage
+            (lambda rows: [self.key(rows[1]), self.key(rows[3])], "which is no location of this passage"),
+            (lambda rows: [self.key(rows[1]), "XYZ"], "coverage.parts must be a list of location_keys (64 hex)"),
+        ]
+        for parts_of, fragment in cases:
+            with self.subTest(fragment=fragment):
+                self.fresh()
+                self.edit_gadget(set_parts(parts_of))
+                self.refuse(fragment)
+        # Every part is a hasPart location: a narrowMatch part is refused, though it also states a part.
+        self.fresh()
+        self.edit_gadget(lambda rows: rows[2].update(relation="narrowMatch", status="formalized"))
+        self.refuse("whose relation is narrowMatch: every part is a hasPart location of this passage")
+
+    def test_the_claim_has_exactly_the_agreed_shape(self):
+        cases = [
+            (None, build_store.COVERAGE_RULE),
+            ([], build_store.COVERAGE_RULE),
+            ({"complete": True, "parts": None, "challenge": "survived"}, "coverage.parts must be a list"),
+            ("extra", "coverage: unexpected 'note'"),
+            ("missing", "coverage: missing 'challenge'"),
+            ("incomplete", "coverage.complete must be true"),
+            ("refuted", "coverage.challenge must be one of ['challenge_pending', 'downgraded', 'not_required', "
+                        "'sampled_out', 'survived'] (only survived counts)"),
+        ]
+        for value, fragment in cases:
+            with self.subTest(value=value):
+                self.fresh()
+
+                def edit(a, b, value=value):
+                    for row in (a, b):
+                        ext = row["extensions"][LOCATE]
+                        if value == "extra":
+                            ext["coverage"]["note"] = "Connectedness and the degree bound are its two clauses."
+                        elif value == "missing":
+                            del ext["coverage"]["challenge"]
+                        elif value == "incomplete":
+                            ext["coverage"]["complete"] = False
+                        elif value == "refuted":
+                            ext["coverage"]["challenge"] = "refuted"
+                        else:
+                            ext["coverage"] = value
+                self.edit_parts(edit)
+                self.refuse(fragment)
+
+    def test_every_record_of_the_passage_carries_the_same_claim(self):
+        self.edit_parts(lambda a, b: b["extensions"][LOCATE].pop("coverage"))
+        self.refuse("records of one passage disagree on coverage (every record of the passage carries the same "
+                    "claim, or none does)")
+        self.fresh()
+        self.edit_parts(lambda a, b: self.claim_of(b).update(challenge="challenge_pending"))
+        self.refuse("records of one passage disagree on coverage")
+
+    def test_a_claim_belongs_to_a_located_passage(self):
+        # On the absence (beside a relatedMatch) and on the unresolved record of the Widget article.
+        claim = {"complete": True, "challenge": "survived", "parts": ["a" * 64, "b" * 64]}
+
+        def on_absence(rows):
+            claim["parts"] = ["a" * 64, rows[4]["extensions"][LOCATE]["location_key"]]
+            for row in (rows[3], rows[4]):
+                row["extensions"][LOCATE]["coverage"] = claim
+        self.edit_widget(on_absence)
+        self.refuse("whose relation is relatedMatch: every part is a hasPart location of this passage")
+        self.fresh()
+        self.edit_widget(lambda rows: rows[5]["extensions"][LOCATE].update(coverage=claim))
+        self.refuse("which is no location of this passage")
 
 
 class AgreedFormatTests(SetCopyTest):
@@ -999,6 +1323,9 @@ class MalformedValueTests(unittest.TestCase):
         targets += [(self.WIDGET, 3, path) for path in (
             ["extensions", LOCATE, "receipt"], ["extensions", LOCATE, "receipt", "sha256"],
             ["extensions", LOCATE, "receipt", "queries"], ["object", 0, "uri"], ["object", 0, "version"])]
+        # A coverage claim's every field, on one record of the Gadget article's covered passage.
+        targets += [("records/enwiki-1003-2004.jsonl", 1, ["extensions", LOCATE, "coverage", *path]) for path in (
+            [], ["parts"], ["parts", 0], ["parts", 1], ["challenge"], ["complete"])]
         targets += [("universe.json", None, path) for path in (
             ["excluded"], ["excluded", 0], ["excluded", 0, "id"], ["excluded", 0, "reason"], ["excluded", 0, "repo"],
             ["libraries"], ["libraries", 0], ["libraries", 0, "id"], ["libraries", 0, "repo"],

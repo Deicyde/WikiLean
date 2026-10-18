@@ -17,9 +17,12 @@ section and prominence; minimal {type, uri, version} lean ends on the absence;
 and one location (FormalFrontier's) whose index records only `line`, so its lean
 end has no end_line, as atlas's published index gives none. Its closeMatch was
 produced by a challenge downgrade, so its note is the challenger's witness
-sentence. The Gadget location is `challenge_pending`: its passage's prominence was
-overturned to subject after the challenge ran, so a challenge is owed and none has
-judged it (read as unchallenged). One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
+sentence. The Gadget definition's location is `challenge_pending`: its passage's
+prominence was overturned to subject after the challenge ran, so a challenge is owed and
+none has judged it (read as unchallenged). Two Gadget theorems show the maintainer's
+decision D1 (docs/ATLAS.md, section 3, check 6): a conjunction formalized by two hasPart
+locations under a survived coverage claim, and a theorem an equivalence (data, like CRT's
+RingEquiv) states exactly. One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
 ("Contract notes"): every CSL `citation` carries an `id`, which the vendored
 Literature Links schema requires and the proposal's example omits.
 
@@ -143,7 +146,7 @@ def passage_ext(item: str, extra: dict, layout: dict) -> dict:
 
 
 def location(source_id: str, item: str, kind: str, quote: dict, status: str, loc: dict,
-             layout: dict) -> dict:
+             layout: dict, coverage: dict | None = None) -> dict:
     lib = LIB[loc["library"]]
     end_ext = {"library": loc["library"], "path": loc["path"], "line": loc["line"],
                "proof_status": loc["proof_status"]}
@@ -160,7 +163,9 @@ def location(source_id: str, item: str, kind: str, quote: dict, status: str, loc
         "relation": loc["relation"], "status": status, "kind": kind,
         "extensions": {LOCATE: passage_ext(item, {
             "location_key": location_key(source_id, item, loc["library"], loc["declaration"]),
-            "rank": loc["rank"], "confidence": loc["confidence"], "challenge": loc["challenge"]}, layout)},
+            "rank": loc["rank"], "confidence": loc["confidence"], "challenge": loc["challenge"],
+            # The passage's coverage claim (decision D1), on every record of the passage.
+            **({"coverage": coverage} if coverage is not None else {})}, layout)},
     }
     if "note" in loc:
         record["note"] = loc["note"]
@@ -254,13 +259,40 @@ def gadget_records() -> list[dict]:
              "prefix": "In combinatorics, ", "suffix": "."}
     # The lead's defining sentence: no heading above it, and the article's subject.
     layout = {"section": [], "prominence": "subject"}
+    module, path = "Mathlib.Combinatorics.Widget.Gadget", "Mathlib/Combinatorics/Widget/Gadget.lean"
+    # A conjunction no one declaration states: two hasPart locations, each proved, which
+    # together state both clauses. The challenger confirmed the coverage claim, so by decision
+    # D1 the passage is formalized (each part alone gives only partial).
+    both = {"exact": "every gadget is connected and its basepoint has finite degree",
+            "prefix": "By construction, ", "suffix": "."}
+    both_item = "In-text #a41f6c2e"
+    both_layout = {"section": ["Properties"], "prominence": "central"}
+    both_parts = [("Gadget.connected", 44, 51, 1, "high"), ("Gadget.basepoint_degree_finite", 53, 58, 2, "medium")]
+    claim = {"complete": True, "challenge": "survived",
+             "parts": [location_key(sid, both_item, "mathlib", name) for name, *_ in both_parts]}
+    # A theorem that a data declaration states: an equivalence, as CRT's RingEquiv states the
+    # Chinese remainder theorem. Its proof_status is definition and it carries no statement flag;
+    # by decision D1 an exact match to it formalizes the theorem.
+    equiv = {"exact": "the gadgets on a widget correspond bijectively to its vertices",
+             "prefix": "Moreover, ", "suffix": "."}
+    equiv_layout = {"section": ["Properties"], "prominence": "supporting"}
     return [location(sid, "In-text #7d2c9e10", "definition", quote, "formalized", {
         "library": "mathlib", "declaration": "Gadget",
-        "module": "Mathlib.Combinatorics.Widget.Gadget", "path": "Mathlib/Combinatorics/Widget/Gadget.lean",
+        "module": module, "path": path,
         "line": 15, "end_line": 28, "proof_status": "definition", "relation": "exactMatch",
         # Planned under `supporting` and overturned to `subject` after the challenge ran: a
         # rule now requires a challenge nobody has run, so the record is challenge_pending.
-        "rank": 1, "confidence": "high", "challenge": "challenge_pending"}, layout)]
+        "rank": 1, "confidence": "high", "challenge": "challenge_pending"}, layout),
+        *[location(sid, both_item, "theorem", both, "formalized", {
+            "library": "mathlib", "declaration": name, "module": module, "path": path,
+            "line": line, "end_line": end_line, "proof_status": "proved", "relation": "hasPart",
+            "rank": rank, "confidence": confidence, "challenge": "survived"}, both_layout, coverage=claim)
+          for name, line, end_line, rank, confidence in both_parts],
+        location(sid, "In-text #c93b0d58", "theorem", equiv, "formalized", {
+            "library": "mathlib", "declaration": "Gadget.equivVertex", "module": module, "path": path,
+            "line": 60, "end_line": 74, "proof_status": "definition", "relation": "exactMatch",
+            "rank": 1, "confidence": "high", "challenge": "survived"}, equiv_layout),
+    ]
 
 
 def files() -> dict[str, bytes]:

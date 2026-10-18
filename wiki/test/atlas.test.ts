@@ -145,8 +145,8 @@ describe("atlas pages with the fixture store", () => {
     expect(res.status).toBe(200);
     const html = await res.text();
     expect(html).toContain("<title>WikiLean · Formalization atlas</title>");
-    expect(html).toContain("2 articles · 5 passages · 4 Lean locations · 1 related declaration");
-    expect(html).toContain('aria-label="5 passages: 2 formalized, 1 statement only, 1 not formalized, 1 undecided"');
+    expect(html).toContain("2 articles · 7 passages · 7 Lean locations · 1 related declaration");
+    expect(html).toContain('aria-label="7 passages: 4 formalized, 1 statement only, 1 not formalized, 1 undecided"');
     // By library, in universe order (by id). Seeded repositories keep the
     // registry's name (the universe's "Lean 4 core (Init, Std, Lean)" is not used).
     const names = ["Batteries", "FormalFrontier · WidgetTheory", "Lean core", "Mathlib", "TauCeti"];
@@ -158,7 +158,7 @@ describe("atlas pages with the fixture store", () => {
     // states its result, so it is never counted like a proved Mathlib row.
     expect(html).toContain('<th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th>');
     expect(html).toMatch(/<th scope="row">TauCeti<\/th><td>.*?<\/td><td class="num">1<\/td><td class="num">1<\/td><td class="num">0<\/td><td class="num">1<\/td><td class="num">0<\/td><\/tr>/);
-    expect(html).toMatch(/<th scope="row">Mathlib<\/th><td>.*?<\/td><td class="num">2<\/td><td class="num">2<\/td><td class="num">2<\/td><td class="num">0<\/td><td class="num">0<\/td><\/tr>/);
+    expect(html).toMatch(/<th scope="row">Mathlib<\/th><td>.*?<\/td><td class="num">2<\/td><td class="num">4<\/td><td class="num">5<\/td><td class="num">0<\/td><td class="num">0<\/td><\/tr>/);
     expect(html).toContain('<code class="atlas-sha">@bcb35bd</code>');
     expect(html).toContain("By WikiProject importance");
     expect(html).toContain('<th scope="row">High</th>');
@@ -181,7 +181,7 @@ describe("atlas pages with the fixture store", () => {
     }
     expect(html).toContain('<a class="wl-navlink" href="/atlas" aria-current="page">Atlas</a>');
     expect(html).toContain('<script src="/assets/atlas.js?v=2"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=3">');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=4">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
   });
 
@@ -320,16 +320,29 @@ describe("atlas pages with the fixture store", () => {
     const h = bound();
     const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
     expect(html).toContain('<span class="atlas-eyebrow">Definition</span><span class="atlas-subject">Subject of the article</span></h3>');
-    expect(html).not.toContain("atlas-section");
+    const lead = html.slice(html.indexOf('id="p-7d2c9e10"'), html.indexOf("</li>", html.indexOf('id="p-7d2c9e10"')));
+    expect(lead.length).toBeGreaterThan(0);
+    expect(lead).not.toContain("atlas-section");
     expect(html).toContain('<a href="#p-7d2c9e10">Definition: “a gadget is a widget together with a chosen basepoint”</a>');
     expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
     // Its prominence was overturned to subject after the challenge ran: challenge_pending,
     // which reads as unchallenged.
     expect(html).toContain("high confidence · not challenged yet (a challenge is pending)</span>");
     expect(html).not.toContain("challenge_pending");
+    expect(html).toContain('aria-label="3 passages: 3 formalized"');
+    expect(html).toContain("3 passages checked, 4 Lean locations.");
     // One passage is "1 passage", in the strip and in the bar's name.
-    expect(html).toContain('aria-label="1 passage: 1 formalized"');
-    expect(html).toContain("1 passage checked, 1 Lean location.");
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${GADGET_PAGEID}.json`)!);
+    article.passages = article.passages.slice(0, 1);
+    Object.assign(article.summary, { passages: 1, locations: 1 });
+    article.summary.by_status.formalized = 1;
+    files.set(`atlas/v1/articles/${GADGET_PAGEID}.json`, JSON.stringify(article));
+    const one = setup();
+    bindAtlas(one.env, files);
+    const single = await (await get(one.env, `/atlas/${GADGET_PAGEID}`)).text();
+    expect(single).toContain('aria-label="1 passage: 1 formalized"');
+    expect(single).toContain("1 passage checked, 1 Lean location.");
   });
 
   it("the status sentence names the location that justifies the status, not rank 1", async () => {
@@ -381,7 +394,7 @@ describe("atlas pages with the fixture store", () => {
     }
     expect(page).toContain("AI pipeline · rank 0 ·");
     expect(page).toContain('data-pageid="0"');
-    expect(dashboard).toContain("0 articles · 5 passages");
+    expect(dashboard).toContain("0 articles · 7 passages");
   });
 
   it("a universe list that is not an array never reaches the HTML and never breaks a page", async () => {
@@ -432,6 +445,102 @@ describe("atlas pages with the fixture store", () => {
     expect(block).toContain("Undecided — the pipeline could not settle");
     expect(block).not.toContain('class="atlas-why"');
     expect(block).not.toContain('<div class="atlas-cards">');
+  });
+
+  it("a survived coverage claim says 'Formalized by N parts together' and lists its parts (decision D1)", async () => {
+    const h = bound();
+    const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
+    const at = html.indexOf('id="p-a41f6c2e"');
+    expect(at).toBeGreaterThan(0);
+    const block = html.slice(at, html.indexOf('id="p-c93b0d58"', at));
+    expect(block).toContain('data-status="formalized"');
+    // The claim is the basis, so its line is the status sentence, with the parts listed in its order.
+    expect(block).toContain('<div class="atlas-coverage" data-coverage-status="formalized"><p class="atlas-why">Formalized by 2 parts together:</p><ol class="atlas-coverage-parts">');
+    expect(block.match(/class="atlas-why"/g)?.length).toBe(1);
+    expect(block.indexOf("Gadget.<wbr></span><b>connected</b>")).toBeLessThan(block.indexOf("<b>basepoint_<wbr>degree_<wbr>finite</b>"));
+    expect(block).toContain("<span class=\"atlas-muted\">(proved)</span></li>");
+    // Each part is still a card that states part of it.
+    expect(block.match(/data-relation="hasPart"/g)?.length).toBe(2);
+    // The theorem an equivalence states is formalized by that one data declaration.
+    expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
+    expect(html.match(/parts together/g)?.length).toBe(1);
+  });
+
+  it("a coverage claim that did not survive shows no parts line and upgrades nothing", async () => {
+    for (const challenge of ["challenge_pending", "not_required", "sampled_out", "downgraded"]) {
+      const h = setup();
+      const files = atlasFixtureFiles();
+      const article = JSON.parse(files.get(`atlas/v1/articles/${GADGET_PAGEID}.json`)!);
+      const passage = article.passages[1];
+      Object.assign(passage, { status: "partial", basis: passage.locations[0].location_key });
+      Object.assign(passage.coverage, { challenge, status: null, basis: false });
+      files.set(`atlas/v1/articles/${GADGET_PAGEID}.json`, JSON.stringify(article));
+      bindAtlas(h.env, files);
+      const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
+      expect(html, challenge).not.toContain("parts together");
+      expect(html, challenge).not.toContain("atlas-coverage");
+      expect(html, challenge).toContain('<p class="atlas-why">Partial: Mathlib states part of this (proved).</p>');
+    }
+  });
+
+  it("a survived claim beside a better or equal location follows the status sentence; a partial claim says so", async () => {
+    const cases: Array<[string, (p: Record<string, any>) => void, string[]]> = [
+      ["a location reaches the same status", (p) => {
+        // A third location, a proved exact match: on a tie the one location is named.
+        p.locations.push({ ...p.locations[1], relation: "exactMatch", rank: 3, location_key: "e".repeat(64) });
+        Object.assign(p, { basis: "e".repeat(64) });
+        p.coverage.basis = false;
+      }, []],
+      ["a statement-only claim", (p) => {
+        p.locations[1].proof_status = "statement_only";
+        Object.assign(p, { status: "statement_only", basis: null });
+        Object.assign(p.coverage, { status: "statement_only", basis: true });
+      }, ['<p class="atlas-why">Stated by 2 parts together, not all of them proved:</p>']],
+      ["a claim whose parts give no status", (p) => {
+        p.locations[1].proof_status = "definition";
+        Object.assign(p, { status: "partial", basis: p.locations[0].location_key });
+        Object.assign(p.coverage, { status: null, basis: false });
+      }, ['<p class="atlas-why">Partial: Mathlib states part of this (proved).</p>',
+        '<p class="atlas-why">Covered by 2 parts together, not all of which count toward the status:</p>']],
+    ];
+    for (const [label, edit, expected] of cases) {
+      const h = setup();
+      const files = atlasFixtureFiles();
+      const article = JSON.parse(files.get(`atlas/v1/articles/${GADGET_PAGEID}.json`)!);
+      edit(article.passages[1]);
+      files.set(`atlas/v1/articles/${GADGET_PAGEID}.json`, JSON.stringify(article));
+      bindAtlas(h.env, files);
+      const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
+      for (const fragment of expected) expect(html, label).toContain(fragment);
+      if (label === "a location reaches the same status") {
+        // The exact match is named, and the claim's line still lists the parts.
+        expect(html, label).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (proved).</p>');
+        expect(html, label).toContain('<p class="atlas-why">Formalized by 2 parts together:</p>');
+      }
+    }
+  });
+
+  it("a malformed coverage claim never breaks the page or reaches the HTML", async () => {
+    const claims: unknown[] = [
+      "<b>x</b>", 5, [], { challenge: "survived", parts: "<i>p</i>", status: "formalized", basis: true },
+      { challenge: "survived", parts: ["<u>k</u>", "<s>k</s>"], status: "formalized", basis: true },
+      { challenge: "survived", parts: [], status: "formalized", basis: true },
+    ];
+    for (const claim of claims) {
+      const h = setup();
+      const files = atlasFixtureFiles();
+      const article = JSON.parse(files.get(`atlas/v1/articles/${GADGET_PAGEID}.json`)!);
+      article.passages[1].coverage = claim;
+      files.set(`atlas/v1/articles/${GADGET_PAGEID}.json`, JSON.stringify(article));
+      bindAtlas(h.env, files);
+      const res = await get(h.env, `/atlas/${GADGET_PAGEID}`);
+      expect(res.status).toBe(200);
+      const html = await res.text();
+      for (const tag of ["<b>x", "<i>p", "<u>k", "<s>k"]) expect(html).not.toContain(tag);
+      expect(html).not.toContain("parts together");
+      // Without a claim to name, the sentence falls back to the store's status alone.
+      expect(html).toContain('<p class="atlas-why">Formalized.</p>');
+    }
   });
 
   it("a Prop-valued definition (the statement flag) is named as one", async () => {
@@ -861,7 +970,7 @@ describe("atlas security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/atlas.css?v=3"]);
+    expect(box.urls).toEqual(["/assets/atlas.css?v=4"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -1079,13 +1188,17 @@ describe("derived status rows", () => {
   // cflib.vocab.derive_status answers (make_producer_table.py). The page's
   // fallback for a store without `basis` must read the table the same way.
   const table = JSON.parse(readFileSync(`${ATLAS_STORE_ROOT}/../producer_derive_status.json`, "utf8")) as {
-    cases: Array<[string, Array<[string, string, boolean]>, string | null]>;
+    cases: Array<[string, Array<[string, string, boolean]>, string | null, unknown?]>;
   };
   const rank: Record<string, number> = { formalized: 0, statement_only: 1, partial: 2 };
 
   it("locationStatus gives the producer's status for every case it does not refuse", () => {
     const wrong: unknown[] = [];
-    for (const [kind, ends, expected] of table.cases) {
+    // A coverage case (a fourth element, decision D1) is decided by the claim, which the
+    // builder folds into the store's status and basis; the page's per-location fallback
+    // never sees one, so only the cases without a claim apply here.
+    const plain = table.cases.filter((c) => c.length === 3);
+    for (const [kind, ends, expected] of plain) {
       if (expected === "refused") continue;
       const statuses = ends
         .map(([relation, proof_status, statement]) => locationStatus(kind, { relation, proof_status, statement } as never))
@@ -1093,7 +1206,9 @@ describe("derived status rows", () => {
       const best = statuses.length ? statuses.reduce((a, b) => (rank[b] < rank[a] ? b : a)) : null;
       if (best !== expected) wrong.push([kind, ends, expected, best]);
     }
-    expect(table.cases.length).toBeGreaterThan(700);
+    expect(plain.length).toBeGreaterThan(700);
+    // The table's producer implements D1: a theorem's exact match to data formalizes it.
+    expect(plain).toContainEqual(["theorem", [["exactMatch", "definition", false]], "formalized"]);
     expect(wrong).toEqual([]);
   });
 });

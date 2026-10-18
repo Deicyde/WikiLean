@@ -21,7 +21,7 @@ import type {
 import { libraryInfo, repoHref, sourceUrl, treeUrl, type LibraryInfo, type UniverseLibrary } from "./libraries.js";
 
 // Asset versions: bump with any change to site/assets/atlas.{css,js}.
-export const ATLAS_CSS = "/assets/atlas.css?v=3";
+export const ATLAS_CSS = "/assets/atlas.css?v=4";
 export const ATLAS_JS = "/assets/atlas.js?v=2";
 const STYLE_CSS = "/assets/style.css?v=9";
 
@@ -99,8 +99,13 @@ const CHALLENGE: Record<string, string> = {
 const IMPORTANCE_ORDER = ["top", "high", "mid", "low", "bottom", "na", "unknown"];
 
 // Proposal §2.6's table per location, as scripts/atlas/build_store.py ports it
-// from formal-companion's cflib.vocab.derive_status (docs/ATLAS.md, check 6).
+// from formal-companion's cflib.vocab.derive_status (docs/ATLAS.md, check 6),
+// with the maintainer's decision D1 (2026-10-18): an exact or close match to
+// data (a definition without the statement flag, such as CRT's RingEquiv)
+// formalizes a theorem. A coverage claim is not a per-location row: the store
+// carries its effect in the passage's status, basis and coverage.
 const PART_RELATIONS = new Set(["hasPart", "narrowMatch"]);
+const DATA_MATCH_RELATIONS = new Set(["exactMatch", "closeMatch"]);
 const UNPROVED = new Set(["statement_only", "wanted", "axiom_dependent"]);
 const THEOREM_KINDS = new Set(["theorem", "conjecture"]);
 const DEFINITION_KINDS = new Set(["definition", "construction", "notation"]);
@@ -112,7 +117,9 @@ function theoremRow(loc: AtlasLocation): LocatedStatus {
   if (PART_RELATIONS.has(loc.relation)) return "partial";
   if (loc.statement === true) return "statement_only";
   if (loc.proof_status === "proved") return "formalized";
-  return UNPROVED.has(loc.proof_status) ? "statement_only" : "partial";
+  if (UNPROVED.has(loc.proof_status)) return "statement_only";
+  // Data: D1 makes an exact or close match formalized; a broadMatch stays partial.
+  return DATA_MATCH_RELATIONS.has(loc.relation) ? "formalized" : "partial";
 }
 
 function definitionRow(loc: AtlasLocation): LocatedStatus {
@@ -320,6 +327,35 @@ export function basisLocation(passage: AtlasPassage, status: SummaryStatus): Atl
   return locations.find((loc) => locationStatus(passage.kind, loc) === status) ?? null;
 }
 
+// Decision D1: the hasPart locations a survived coverage claim names, in the
+// claim's order; [] when there is no claim, it has not survived, or a part is
+// not one of the passage's hasPart locations (the builder refuses that).
+function coverageParts(passage: AtlasPassage): AtlasLocation[] {
+  const claim = passage.coverage;
+  if (!claim || claim.challenge !== "survived") return [];
+  const locations = list(passage.locations);
+  const parts = list(claim.parts).map((key) => locations.find((loc) => loc.location_key === key));
+  return parts.length >= 2 && parts.every((loc) => loc?.relation === "hasPart") ? (parts as AtlasLocation[]) : [];
+}
+
+// "Formalized by N parts together", with the parts listed: shown only for a
+// survived claim. Its words follow what the claim gives on its own.
+function coverageBlock(passage: AtlasPassage, parts: AtlasLocation[], libs: Map<string, LibraryView>): string {
+  const n = parts.length;
+  const status = passage.coverage?.status;
+  const lead = status === "formalized" ? `Formalized by ${n} parts together`
+    : status === "statement_only" ? `Stated by ${n} parts together, not all of them proved`
+    : `Covered by ${n} parts together, not all of which count toward the status`;
+  const items = parts.map((loc) => {
+    const info = libs.get(loc.library)?.info ?? libraryInfo(loc.repo, null);
+    return `<li><span class="atlas-lib" title="${attr(`${info.name} · ${info.repo}`)}">${text(info.short)}</span> ` +
+      `${declName(String(loc.declaration ?? ""))} ` +
+      `<span class="atlas-muted">(${text(proofOf(loc).label)})</span></li>`;
+  }).join("");
+  return `<div class="atlas-coverage" data-coverage-status="${attr(status ?? "none")}">` +
+    `<p class="atlas-why">${text(lead)}:</p><ol class="atlas-coverage-parts">${items}</ol></div>`;
+}
+
 function statusSentence(passage: AtlasPassage, status: SummaryStatus, libs: Map<string, LibraryView>): string {
   const meta = STATUS[status];
   const best = basisLocation(passage, status);
@@ -407,8 +443,13 @@ function passageBlock(passage: AtlasPassage, article: AtlasArticle, ctx: CardCon
     (subject ? `<span class="atlas-subject">Subject of the article</span>` : "") +
     (section ? `<span class="atlas-section">${text(section)}</span>` : "") + `</h3>${pill(status)}</div>`);
   // A located passage says, in words, which location gives it its status. An
-  // absence and an undecided passage say so in their own boxes below.
-  if (located) parts.push(`<p class="atlas-why">${text(statusSentence(passage, status, ctx.libs))}</p>`);
+  // absence and an undecided passage say so in their own boxes below. When a
+  // survived coverage claim gives it its status (D1), the claim's line, with
+  // the parts listed, is that sentence; otherwise the line follows it.
+  const covering = located ? coverageParts(passage) : [];
+  const byClaim = covering.length > 0 && passage.coverage?.basis === true && passage.coverage.status === status;
+  if (located && !byClaim) parts.push(`<p class="atlas-why">${text(statusSentence(passage, status, ctx.libs))}</p>`);
+  if (covering.length) parts.push(coverageBlock(passage, covering, ctx.libs));
   parts.push(`<blockquote class="atlas-quote">` +
     (quote.prefix ? `<span class="atlas-affix">…${text(quote.prefix)}</span>` : "") +
     `<mark>${text(quote.exact)}</mark>` +
