@@ -155,8 +155,8 @@ uploads the Worker built from the local `src/` and the whole local `public/` dir
 promoter, replacing the live Brain selector and the whole asset tree without the journal or canary.
 Worker source changes are release-affecting and ship only in a new release. The only emergency
 lever is `wrangler rollback` to a recorded version, per the runbook's "Wrangler rollback" section.
-There is no forward hotfix path; whether to add one is open ([ROADMAP](../docs/ROADMAP.md),
-Waiting item 8).
+There is no forward hotfix path; whether to add one is open ("Worker-only hotfix path" in the
+[ROADMAP](../docs/ROADMAP.md)'s Waiting on Jack list).
 
 ```sh
 npm run tail          # follow Worker logs

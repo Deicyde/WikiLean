@@ -488,7 +488,8 @@ Do not delete or relocate either root after review.
 > refuses. Never run `wrangler deploy` directly: it uploads the Worker built from local
 > `wiki/src` and the local `wiki/public` outside the promoter, replacing the selector and the
 > whole asset tree. The only emergency lever is "Wrangler rollback" below. There is no forward
-> hotfix path; whether to add one is open (ROADMAP Waiting item 8).
+> hotfix path; whether to add one is open ("Worker-only hotfix path" in the ROADMAP's
+> Waiting on Jack list).
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.
