@@ -2,9 +2,11 @@
 # need no secrets, so the protected `CI / required` gate (worker, python and
 # browser) checks it before anyone merges. Open PRs are capped per ecosystem.
 # npm and pip updates touch release-affecting files; CONTRIBUTING.md ("Pull
-# requests") says when to merge them. .github/claude-cli is left out on purpose:
-# the poller runs that pinned CLI, no pull_request workflow exercises it, and it
-# is bumped by hand.
+# requests") says when to merge them. Two npm directories are left out on
+# purpose: .github/claude-cli (the poller's pinned CLI, which no pull_request
+# workflow exercises, so it is bumped by hand) and .github/backup-wrangler
+# (generated from wiki/package-lock.json by scripts/backup_wrangler_lock.py,
+# which CI checks, so it follows wiki's wrangler).
 version: 2
 updates:
   - package-ecosystem: "npm"
