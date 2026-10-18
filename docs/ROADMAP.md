@@ -1329,6 +1329,12 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   parts together", with the parts listed). The parity table is regenerated from
   formal-companion `b33f17f`, the producer commit that implements D1. Three literal
   readings Jack has not confirmed (Q1–Q3) are listed in docs/ATLAS.md, contract note 11.
+  Parity round two: the skill's hand-written table (97 cases) is pinned in WikiLean and runs
+  through the builder's own checks (`derive_passage_status`); round one's three differences
+  (an owed claim, a claim with a note, a location key twice) are now refused on both sides,
+  the producer table is regenerated at `c165c65` with every answer unchanged, and the
+  smoke-2 export built under D1 (`smoke-2-d1`, 331 passages) gives the skill's status for
+  every passage.
 
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
   (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a

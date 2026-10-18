@@ -1211,4 +1211,27 @@ describe("derived status rows", () => {
     expect(plain).toContainEqual(["theorem", [["exactMatch", "definition", false]], "formalized"]);
     expect(wrong).toEqual([]);
   });
+
+  it("locationStatus gives the shared table's status for every claim-free case it does not refuse", () => {
+    // scripts/atlas/fixtures/status_parity.json: the hand-written parity table both sides run
+    // (formal-companion's tests/data/locate/status-parity.json, byte for byte). As above, only a
+    // located case without a coverage claim reaches the page's per-location fallback.
+    const shared = JSON.parse(readFileSync(`${ATLAS_STORE_ROOT}/../status_parity.json`, "utf8")) as {
+      cases: Array<{
+        id: string; passage_kind: string; absent: boolean; coverage: unknown; refused?: boolean;
+        expected?: string | null; locations: Array<{ relation: string; proof_status: string; statement: boolean }>;
+      }>;
+    };
+    const plain = shared.cases.filter((c) => !c.refused && !c.absent && c.coverage === null);
+    const wrong: unknown[] = [];
+    for (const c of plain) {
+      const statuses = c.locations
+        .map((loc) => locationStatus(c.passage_kind, loc as never))
+        .filter((s): s is "formalized" | "statement_only" | "partial" => s !== null);
+      const best = statuses.length ? statuses.reduce((a, b) => (rank[b] < rank[a] ? b : a)) : null;
+      if (best !== c.expected) wrong.push([c.id, c.expected, best]);
+    }
+    expect(plain.length).toBeGreaterThanOrEqual(30);
+    expect(wrong).toEqual([]);
+  });
 });

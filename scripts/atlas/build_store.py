@@ -171,6 +171,10 @@ class AtlasError(Exception):
     """The record set breaks the input contract; the message names every problem found."""
 
 
+class StatusRefused(ValueError):
+    """derive_passage_status's refusal: inputs the builder refuses in a record set (the producer's CfError)."""
+
+
 # ---- small helpers -----------------------------------------------------------------------
 
 
@@ -667,7 +671,12 @@ def coverage_claim(ext: dict, at: str, problems: Problems) -> dict | None:
         elif len(parts) < MIN_COVERAGE_PARTS:
             found.append(f"coverage.parts names {len(parts)} location(s): a coverage claim needs at least "
                          f"{MIN_COVERAGE_PARTS} hasPart locations")
-    if "challenge" in claim and not member(claim["challenge"], CHALLENGES):
+    if "challenge" in claim and claim["challenge"] is None:
+        # The producer's derive_status refuses one too (cflib.vocab COVERAGE_RECORD_KEYS): a claim
+        # no challenge has judged yet upgrades nothing, so its holder passes no claim at all.
+        found.append("coverage.challenge is null: a record's claim carries its challenge value, and an owed "
+                     "claim (no challenge judged it yet) is not exported")
+    elif "challenge" in claim and not member(claim["challenge"], CHALLENGES):
         found.append(f"coverage.challenge must be one of {sorted(CHALLENGES)} (only survived counts)")
     for message in found:
         problems.add(at, message)
@@ -1027,7 +1036,9 @@ def derive_status(kind: str, locations: list[dict], coverage: dict | None = None
     highest-ranked location reaching it, or COVERAGE_BASIS when only the coverage claim
     reaches it (a location reaching the same status is preferred). (None, None) means the
     table gives the passage no status: its only locations are relatedMatch.
-    test_build_store.py checks this against a truth table generated from the producer.
+    test_build_store.py checks this against a truth table generated from the producer, and
+    derive_passage_status (these rules behind the builder's checks) against the hand-written
+    table the two sides share.
     """
     best: str | None = None
     basis: Any = None
@@ -1068,6 +1079,58 @@ def status_problems(kind: str | None, status: str, locations: list[dict],
         return [f"the records say {status}, but the derived-status rules (proposal §2.6 and vocabulary.md "
                 f"§1.11) derive {derived} for a {kind} passage with {_shape(locations, coverage)}"], None
     return [], basis
+
+
+def derive_passage_status(kind: Any, locations: list[dict], absent: bool, coverage: Any = None) -> str | None:
+    """One passage's derived status by the producer's signature, through the builder's own checks.
+
+    The function the two sides' shared parity table is written for (fixtures/status_parity.json,
+    a pinned copy of formal-companion's tests/data/locate/status-parity.json):
+    `cflib.vocab.derive_status(passage_kind, locations, absent, coverage)`. `locations` are
+    {location_key, relation, proof_status, statement} mappings, `absent` says the passage has a
+    checked absence, and `coverage` is the claim exactly as a record carries it
+    (extensions[locate].coverage), or None for none. It makes the checks build() makes on those
+    same values, with the same functions and messages: the kind, each location's relation,
+    proof_status and statement flag (statement_flag), a 64-hex location_key that no other location
+    has, an absence beside relatedMatch locations only, the claim's shape (coverage_claim) and its
+    parts (coverage_part_problems). Where build() would refuse the set it raises StatusRefused;
+    otherwise it returns derive_status's status, "not_formalized" for a checked absence, or None
+    (no status: unresolved). build() itself runs these checks record by record and reports every
+    problem; this is the one-passage form, so the parity test runs the builder's rules, not a copy.
+    """
+    if not member(kind, KINDS):
+        raise StatusRefused(f"kind must be one of {sorted(KINDS)}")
+    rows = []
+    for raw in locations:
+        if not isinstance(raw, dict):
+            raise StatusRefused("a location is an object {location_key, relation, proof_status, statement}")
+        relation, proof_status = raw.get("relation"), raw.get("proof_status")
+        if not member(relation, LOCATION_RELATIONS):
+            raise StatusRefused(f"relation {relation!r} is not a locate relation")
+        if not member(proof_status, PROOF_STATUSES):
+            raise StatusRefused(f"proof_status must be one of {sorted(PROOF_STATUSES)}")
+        statement, problem = statement_flag(raw.get("statement"), proof_status)
+        if problem:
+            raise StatusRefused(problem)
+        key = raw.get("location_key")
+        if not isinstance(key, str) or not HEX64.match(key):
+            raise StatusRefused("location_key must be 64 hex")
+        if any(row["location_key"] == key for row in rows):
+            raise StatusRefused(f"location_key {key} appears twice")
+        rows.append({"relation": relation, "proof_status": proof_status, "statement": statement,
+                     "location_key": key})
+    if absent and any(row["relation"] != "relatedMatch" for row in rows):
+        raise StatusRefused("an absence may sit beside relatedMatch locations only")
+    claim = None
+    if coverage is not None:
+        problems = Problems()
+        claim = coverage_claim({"coverage": coverage}, "the claim", problems)
+        found = problems.items or coverage_part_problems(claim, rows)
+        if found:
+            raise StatusRefused("; ".join(found))
+    if absent:
+        return "not_formalized"
+    return derive_status(kind, rows, claim)[0]
 
 
 def build_passages(classified: list[dict], source: dict, problems: Problems) -> list[dict]:

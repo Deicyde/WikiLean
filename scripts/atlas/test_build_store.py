@@ -31,6 +31,10 @@ import make_fixture  # noqa: E402
 RECORDSET = HERE / "fixtures" / "recordset"
 STORE = HERE / "fixtures" / "store"
 PRODUCER_TABLE = HERE / "fixtures" / "producer_derive_status.json"
+# The parity table both sides run: formal-companion's tests/data/locate/status-parity.json at
+# the commit docs/ATLAS.md section 3, check 6 names, byte for byte.
+SHARED_TABLE = HERE / "fixtures" / "status_parity.json"
+SHARED_TABLE_SHA256 = "4037149436deb56fd9808afa5d3e72be388a81b5335a3cf51329629c3158f58d"
 LOCATE = build_store.LOCATE
 # How a stamped status that differs from the recomputed one is refused.
 DERIVES = "the derived-status rules (proposal §2.6 and vocabulary.md §1.11) derive"
@@ -302,6 +306,101 @@ class DeriveStatusParityTests(unittest.TestCase):
                 reaching = [loc for loc in locations if build_store.location_status(kind, loc) == status]
                 self.assertIs(basis, reaching[0], (kind, ends))
         self.assertEqual(mismatches, [], f"{len(mismatches)} cases differ from the producer")
+
+
+def _hex_key(key):
+    """A shared case's location key ("k1") as the 64-hex key a record carries, one to one.
+
+    Anything that is not a string is left as it is, so a malformed part stays malformed.
+    """
+    return hashlib.sha256(key.encode("utf-8")).hexdigest() if isinstance(key, str) else key
+
+
+def _shared_case_status(case: dict):
+    """build_store.derive_passage_status on one case of the shared table: a status, None, or "refused"."""
+    locations = [{**loc, "location_key": _hex_key(loc.get("location_key"))} for loc in case["locations"]]
+    coverage = case["coverage"]
+    if isinstance(coverage, dict) and isinstance(coverage.get("parts"), list):
+        coverage = {**coverage, "parts": [_hex_key(key) for key in coverage["parts"]]}
+    try:
+        return build_store.derive_passage_status(case["passage_kind"], locations, case["absent"], coverage)
+    except build_store.StatusRefused:
+        return "refused"
+
+
+class SharedParityTableTests(unittest.TestCase):
+    """The parity table both sides run (fixtures/status_parity.json), through the builder's checks.
+
+    The table is formal-companion's hand-written tests/data/locate/status-parity.json, copied
+    byte for byte: each case's expectation was written from decision D1's spec, and the
+    producer's own test runs cflib.vocab.derive_status over the same cases. Here each case
+    goes through build_store.derive_passage_status, the builder's own checks and status rules
+    for one passage, with the case's keys ("k1", ...) as 64-hex keys.
+    """
+
+    def setUp(self):
+        self.doc = json.loads(SHARED_TABLE.read_text(encoding="utf-8"))
+        self.cases = {case["id"]: case for case in self.doc["cases"]}
+
+    def test_the_table_is_the_producers_copy(self):
+        self.assertEqual(hashlib.sha256(SHARED_TABLE.read_bytes()).hexdigest(), SHARED_TABLE_SHA256)
+        self.assertEqual(self.doc["schema"], "cf-locate-status-parity/1")
+        self.assertEqual(self.doc["function"], "derive_status(passage_kind, locations, absent, coverage) -> status | null")
+        self.assertEqual((self.doc["decision"]["id"], self.doc["decision"]["date"]), ("D1", "2026-10-18"))
+        self.assertIn("Formalized when the hasPart locations together cover every clause", self.doc["decision"]["text"])
+        self.assertEqual(len(self.cases), len(self.doc["cases"]))
+        for case in self.doc["cases"]:  # each case says one thing: a status (or null), or a refusal
+            self.assertNotEqual("expected" in case, bool(case.get("refused")), case["id"])
+        statuses = {case["expected"] for case in self.doc["cases"] if "expected" in case}
+        self.assertEqual(statuses, {*build_store.STATUSES, None})
+
+    def test_the_builder_derives_every_case_as_the_table_says(self):
+        mismatches = []
+        for case in self.doc["cases"]:
+            wanted = "refused" if case.get("refused") else case["expected"]
+            got = _shared_case_status(case)
+            if got != wanted:
+                mismatches.append((case["id"], wanted, got, case["rule"]))
+        self.assertEqual(mismatches, [], f"{len(mismatches)} cases differ from the shared table")
+
+    def test_the_inputs_parity_round_one_found_apart_are_refused(self):
+        # Round one (2026-10-18) found the two sides apart on three inputs no export carries: an
+        # owed claim (challenge null), a claim with a note, and one location_key on two locations
+        # (where the producer kept the last). Both sides now refuse each, in either order.
+        def case(locations, coverage, absent=False, kind="theorem"):
+            return _shared_case_status({"passage_kind": kind, "locations": locations, "absent": absent,
+                                        "coverage": coverage})
+        part = {"relation": "hasPart", "proof_status": "proved", "statement": False}
+        related = {"relation": "relatedMatch", "proof_status": "proved", "statement": False}
+        k1, k2 = {**part, "location_key": "k1"}, {**part, "location_key": "k2"}
+        survived = {"complete": True, "parts": ["k1", "k2"], "challenge": "survived"}
+        self.assertEqual(case([k1, k2], survived), "formalized")
+        self.assertEqual(case([k1, k2], {**survived, "challenge": None}), "refused")
+        self.assertEqual(case([k1, k2], {**survived, "note": "The two parts state both clauses."}), "refused")
+        self.assertEqual(case([k1, k2], {**survived, "challenge": "refuted"}), "refused")
+        self.assertEqual(case([k1, k2], None), "partial")  # a refuted claim is removed: its parts stay hasPart
+        self.assertEqual(case([{**related, "location_key": "k2"}, k1, k2], survived), "refused")
+        self.assertEqual(case([k1, k2, {**related, "location_key": "k2"}], survived), "refused")
+        for message, coverage in (("coverage.challenge is null", {**survived, "challenge": None}),
+                                  ("coverage: unexpected 'note'", {**survived, "note": "a note"})):
+            with self.assertRaises(build_store.StatusRefused) as caught:
+                build_store.derive_passage_status("theorem", [{**k1, "location_key": _hex_key("k1")},
+                                                              {**k2, "location_key": _hex_key("k2")}], False,
+                                                  {**coverage, "parts": [_hex_key("k1"), _hex_key("k2")]})
+            self.assertIn(message, str(caught.exception))
+
+    def test_it_is_the_builders_path(self):
+        # On every passage of the fixture store, the one-passage form gives the status build() gave.
+        for name, body in sorted(build_store.build(RECORDSET).items()):
+            if not name.startswith("atlas/v1/articles/"):
+                continue
+            for passage in json.loads(body)["passages"]:
+                with self.subTest(passage=passage["id"]):
+                    coverage = passage["coverage"]
+                    claim = None if coverage is None else {key: coverage[key] for key in build_store.COVERAGE_KEYS}
+                    self.assertEqual(build_store.derive_passage_status(
+                        passage["kind"], passage["locations"], passage["absence"] is not None, claim),
+                        passage["status"])
 
 
 class SetCopyTest(unittest.TestCase):
@@ -907,6 +1006,8 @@ class CoverageTests(SetCopyTest):
             ("incomplete", "coverage.complete must be true"),
             ("refuted", "coverage.challenge must be one of ['challenge_pending', 'downgraded', 'not_required', "
                         "'sampled_out', 'survived'] (only survived counts)"),
+            # An owed claim (no challenge judged it yet) upgrades nothing and is never exported.
+            ("owed", "coverage.challenge is null: a record's claim carries its challenge value"),
         ]
         for value, fragment in cases:
             with self.subTest(value=value):
@@ -923,6 +1024,8 @@ class CoverageTests(SetCopyTest):
                             ext["coverage"]["complete"] = False
                         elif value == "refuted":
                             ext["coverage"]["challenge"] = "refuted"
+                        elif value == "owed":
+                            ext["coverage"]["challenge"] = None
                         else:
                             ext["coverage"] = value
                 self.edit_parts(edit)
