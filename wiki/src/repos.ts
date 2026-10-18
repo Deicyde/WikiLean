@@ -17,6 +17,7 @@
 import type { Context, Hono } from "hono";
 import { drizzle } from "drizzle-orm/d1";
 import { and, asc, eq } from "drizzle-orm";
+import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { accounts, userRepos } from "./db/schema.js";
@@ -211,12 +212,9 @@ export function registerRepoRoutes(app: Hono<{ Bindings: Env }>): void {
     const rl = await limiter.limit({ key: `repos:${user.id}` });
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
-    let body: unknown;
-    try {
-      body = await c.req.json();
-    } catch {
-      return c.json({ ok: false, error: "bad JSON body" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.repos, "bad JSON body");
+    if (!read.ok) return read.response;
+    const body: unknown = read.value;
     const raw = parseBulk(body);
     if (typeof raw === "string") return c.json({ ok: false, error: raw }, 400);
 
@@ -293,12 +291,9 @@ export function registerRepoRoutes(app: Hono<{ Bindings: Env }>): void {
     const rl = await limiter.limit({ key: `repos:${user.id}` });
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
-    let body: unknown;
-    try {
-      body = await c.req.json();
-    } catch {
-      return c.json({ ok: false, error: "bad JSON body" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.repos, "bad JSON body");
+    if (!read.ok) return read.response;
+    const body: unknown = read.value;
     const raw = parseBulk(body);
     if (typeof raw === "string") return c.json({ ok: false, error: raw }, 400);
 

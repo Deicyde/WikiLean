@@ -3,7 +3,10 @@
 
 Spawns Claude agents via claude-agent-sdk, authenticated against the user's
 Claude Code login (Max plan). Each agent gets read-only access to the local
-mathlib4 clone via Read/Grep/Glob, and returns a structured JSON tag.
+mathlib4 clone via Read/Grep/Glob plus six in-process search tools
+(site/search_tools.py build_tagger_server), and returns a structured JSON tag.
+It has no Bash: the agent reads Wikipedia text, and a Bash rule scoped to one
+script still let `cat < file` read any file (site/agent_sandbox.py).
 
 Output is written incrementally to data/pilot_tagged.jsonl so the run is
 resumable: re-running skips any titles already present in the output file.
@@ -34,17 +37,13 @@ from claude_agent_sdk import (
 )
 
 HERE = Path(__file__).resolve().parent
+sys.path.append(str(HERE.parent / "site"))
+from agent_sandbox import sandboxed_options  # noqa: E402
+from search_tools import TAGGER_SERVER_NAME, build_tagger_server  # noqa: E402
 DEFAULT_IN = HERE / "data" / "pilot.jsonl"
 DEFAULT_OUT = HERE / "data" / "pilot_tagged.jsonl"
 LEADS_CACHE = HERE / "data" / ".cache" / "leads.jsonl"
 MATHLIB = Path("/Users/jack/Desktop/LEAN/mathlib4")
-
-# Purpose-built search CLIs (WikiLean skills) the agent calls via Bash — semantic
-# /loogle/decl over Mathlib, and concept->QID over Wikidata. Absolute paths
-# because the agent's cwd is the mathlib4 checkout, not the WikiLean repo.
-SKILLS = Path("/Users/jack/Desktop/LEAN/WikiLean/.claude/skills")
-MATHLIB_SEARCH = SKILLS / "mathlib-search" / "mathlib_search.py"
-WIKIDATA_SEARCH = SKILLS / "wikidata-search" / "wikidata.py"
 
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 WIKI_UA = (
@@ -58,26 +57,26 @@ You are a research assistant for the WikiLean project. For one Wikipedia
 mathematics article, identify the Mathlib4 declaration that best formalizes its
 central concept, and the most specific Wikidata QID for that declaration.
 
-Mathlib4 is the current working directory. You have two purpose-built search CLIs
-— run them with Bash and PREFER them over raw grep:
+Mathlib4 is the current working directory. You have purpose-built search tools
+— PREFER them over raw grep:
 
-  MATHLIB SEARCH — python3 <MS> <sub> ...
-    semantic "<prose statement>"    prose/concept -> ranked decls (LeanSearch). START HERE.
-    loogle   "<name/type pattern>"  syntactic/type search over Mathlib (ground truth).
-    decl     <Decl.Name> --live     EXACT existence + kind + module (authoritative index).
-  WIKIDATA  — python3 <WD> <sub> ...
-    search    "<concept>"           concept -> ranked QID candidates.
-    entity    <QID>                 label + description + P31/P279 + enwiki sitelink.
-    sitelinks <QID>                 confirm the QID's English-Wikipedia article.
+  MATHLIB
+    mathlib_semantic(query)   prose/concept -> ranked decls (LeanSearch). START HERE.
+    loogle(query)             syntactic/type search over Mathlib (ground truth).
+    decl_exists(name)         EXACT existence + kind + module (authoritative live index).
+  WIKIDATA
+    wikidata_search(label)    concept -> ranked QID candidates.
+    wikidata_entity(qid)      label + description + P31/P279 + enwiki sitelink.
+    wikidata_sitelinks(qid)   confirm the QID's English-Wikipedia article.
 
 Process:
   1. From the article, identify the central concept.
-  2. DISCOVER the decl: run `python3 <MS> semantic "<concept or a precise statement>"`;
-     use `python3 <MS> loogle "<pattern>"` when you can express a type/name shape.
+  2. DISCOVER the decl: call mathlib_semantic("<concept or a precise statement>");
+     use loogle("<pattern>") when you can express a type/name shape.
      Grep/Read are a fallback, not the primary tool.
-  3. VERIFY EXISTENCE (MANDATORY): for EVERY decl you report, run
-     `python3 <MS> decl <Decl.Name> --live` and include ONLY decls it reports as
-     EXISTS (use the kind + module it prints). If a name is not found it is wrong —
+  3. VERIFY EXISTENCE (MANDATORY): for EVERY decl you report, call
+     decl_exists("<Decl.Name>") and include ONLY decls it reports as
+     EXISTS (use the kind + module it returns). If a name is not found it is wrong —
      do NOT emit it. Never invent or guess a declaration name.
   4. Prefer the canonical / most-general formalization as the primary decl (avoid a
      narrow special-case theorem when a canonical statement of the concept exists).
@@ -86,11 +85,11 @@ Process:
 SPECIFICITY STEP (after primary_decl is chosen and verified):
   The article's Wikidata QID (given in the prompt) may be a BROAD parent. Find the
   MOST SPECIFIC QID the declaration actually formalizes:
-    a. `python3 <WD> search "<the decl's concept>"` -> candidates.
-    b. `python3 <WD> entity <QID>` on the top 1-3 — disambiguate by description +
+    a. wikidata_search("<the decl's concept>") -> candidates.
+    b. wikidata_entity("<QID>") on the top 1-3 — disambiguate by description +
        P31 (instance of) / P279 (subclass of). Do NOT trust the search's top hit;
        same-label items are common.
-    c. `python3 <WD> sitelinks <QID>` — confirm its English-Wikipedia article
+    c. wikidata_sitelinks("<QID>") — confirm its English-Wikipedia article
        describes the SAME object the decl defines (same scope), not a
        generalization or sibling.
   Use that narrower QID as primary_qid. If the article's QID is already the right
@@ -108,7 +107,7 @@ OUTPUT FORMAT — your final reply must be ONLY one JSON object, no prose:
       "module": "<dotted module path, e.g. Mathlib.Topology.MetricSpace.Basic>",
       "kind": "def" | "theorem" | "lemma" | "structure" | "class" | "instance" | "abbrev" | "inductive" | "other",
       "confidence": "high" | "medium" | "low",
-      "evidence": "<module + kind from `decl --live`, or a loogle/semantic hit>"
+      "evidence": "<module + kind from decl_exists, or a loogle/semantic hit>"
     }
   ],
   "primary_decl": "<single most central decl name, or null>",
@@ -127,7 +126,7 @@ the prompt. If `primary_decl` is null, set `primary_qid` to the article's QID,
 If nothing exists, return `mathlib_decls: []` and set `no_match_reason` to one
 of: "not formalized", "too elementary", "not amenable to formalization",
 "unclear scope", "other".
-""".replace("<MS>", str(MATHLIB_SEARCH)).replace("<WD>", str(WIKIDATA_SEARCH))
+"""
 
 
 # Reviewer-correction feedback loop. If this file exists, past human rejections
@@ -394,6 +393,33 @@ async def tag_one(
         return record
 
 
+def agent_options(model: str, max_turns: int) -> ClaudeAgentOptions:
+    """The tagger agent's sandboxed options.
+
+    Search capability is six in-process MCP tools (site/search_tools.py
+    build_tagger_server) over the WikiLean skill CLIs: Mathlib semantic/loogle/
+    decl --live and Wikidata search/entity/sitelinks. `semantic` (LeanSearch) is
+    far better at concept->decl than name-grep, `decl --live` is an authoritative
+    existence gate against the doc-gen4 index, and `entity`/`sitelinks` do the
+    P31/P279 disambiguation raw wbsearchentities skips. Each tool takes one
+    validated argument; the agent has no Bash, and Read/Grep/Glob see only the
+    mathlib4 checkout (site/agent_sandbox.py).
+    """
+    server, tool_names = build_tagger_server()
+    if server is None:
+        raise RuntimeError("tagger search tools unavailable (claude-agent-sdk or a "
+                           ".claude/skills CLI is missing); refusing to tag without them")
+    return sandboxed_options(
+        model=model,
+        system_prompt=build_system_prompt(),
+        tools=["Read", "Grep", "Glob"],
+        allowed_tools=tool_names,
+        mcp_servers={TAGGER_SERVER_NAME: server},
+        cwd=MATHLIB,
+        max_turns=max_turns,
+    )
+
+
 async def run(
     articles: list[dict],
     leads: dict[str, str],
@@ -402,23 +428,7 @@ async def run(
     model: str,
     max_turns: int,
 ) -> int:
-    # Search capability: scoped Bash to the two WikiLean skill CLIs only — Mathlib
-    # search (semantic/loogle/decl) and Wikidata (search/entity/sitelinks). These
-    # replace raw grep + raw curl: `semantic` (LeanSearch) is far better at
-    # concept->decl than name-grep, `decl --live` is an authoritative existence
-    # gate against the doc-gen4 index, and `wikidata entity/sitelinks` does the
-    # P31/P279 disambiguation raw wbsearchentities skips. The Bash perms are
-    # scoped to `python3 <those two scripts>` (no unrestricted shell).
-    options = ClaudeAgentOptions(
-        model=model,
-        system_prompt=build_system_prompt(),
-        allowed_tools=["Read", "Grep", "Glob",
-                       f"Bash(python3 {MATHLIB_SEARCH}:*)",
-                       f"Bash(python3 {WIKIDATA_SEARCH}:*)"],
-        cwd=str(MATHLIB),
-        permission_mode="bypassPermissions",
-        max_turns=max_turns,
-    )
+    options = agent_options(model, max_turns)
     sem = asyncio.Semaphore(concurrency)
     lock = asyncio.Lock()
     t0 = time.time()

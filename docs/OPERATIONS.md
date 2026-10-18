@@ -4,7 +4,9 @@ Where WikiLean's scheduled jobs run, where they log, and how to diagnose them,
 starting with the nightly review outage that began on 2026-09-18. Commands are
 for the nightly host unless a section says otherwise. `site/ops/README.md`
 covers installing and configuring the launchd jobs; this file covers checking
-on them.
+on them. Credentials the jobs use (names, holders, rotation, expiry) and the
+P0 production steps reserved for the maintainer are in
+[`docs/SECRETS.md`](SECRETS.md).
 
 ## What runs where
 

@@ -14,8 +14,17 @@ import type { Env } from "./env.js";
 import { requireRole } from "./auth.js";
 import { htmlEscape } from "./engine/html.js";
 import { type CrossRefSpec, crossRefSpec, crossRefUrl } from "./crossref.js";
+import { checkOrigin, readBodyCapped } from "./security.js";
 
 type Ctx = Context<{ Bindings: Env }>;
+
+// Publish caps. A real publish is tens of items: about 20 fresh pool
+// candidates plus the recycle and Brain queues (bot/poll.py, bot/finalize.py,
+// bot/daily_bot.py), each item well under 1 KB serialized. Both caps leave
+// roughly fifty times that headroom; past them the request is refused, never
+// truncated, so the bot sees the failure.
+export const MAX_QUEUE_ITEMS = 1000;
+export const MAX_QUEUE_BODY_BYTES = 2 * 1024 * 1024;
 
 export interface QueueItem {
   db?: string;
@@ -220,14 +229,23 @@ export function registerQueueRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // The bot publishes the assembled queue here (PIPELINE_TOKEN bearer → 'bot').
   const postQueue = async (c: Ctx, sp: CrossRefSpec) => {
+    const bad = checkOrigin(c);
+    if (bad) return bad;
     const user = await requireRole(c, ["bot", "admin"]);
     if (!user) return c.json({ ok: false, error: "bot/admin only" }, 403);
+    const text = await readBodyCapped(c.req.raw, MAX_QUEUE_BODY_BYTES);
+    if (text === null) {
+      return c.json({ ok: false, error: `request body too large (max ${MAX_QUEUE_BODY_BYTES} bytes)` }, 413);
+    }
     let items: QueueItem[];
     try {
-      const body = (await c.req.json()) as { items?: QueueItem[] };
+      const body = JSON.parse(text) as { items?: QueueItem[] };
       items = Array.isArray(body.items) ? body.items : [];
     } catch {
       return c.json({ ok: false, error: "bad json (expect {items:[…]})" }, 400);
+    }
+    if (items.length > MAX_QUEUE_ITEMS) {
+      return c.json({ ok: false, error: `too many items (max ${MAX_QUEUE_ITEMS})` }, 400);
     }
     const qidField = (v: unknown) => (typeof v === "string" && /^Q\d+$/.test(v) ? v : undefined);
     const idField = (v: unknown) => (typeof v === "string" && sp.idPattern.test(v) ? v : undefined);

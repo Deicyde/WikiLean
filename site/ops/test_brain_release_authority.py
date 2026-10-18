@@ -14,6 +14,19 @@ sys.path.insert(0, str(HERE))
 import brain_release_authority as authority  # noqa: E402
 
 
+def _nightly_watched() -> list[str]:
+    """The pathspecs brain-nightly.sh's uncommitted-source check passes to git status."""
+    lines = (REPO / "site/ops/brain-nightly.sh").read_text(encoding="utf-8").splitlines()
+    start = next(i for i, line in enumerate(lines) if "status --porcelain --" in line)
+    command = []
+    for line in lines[start:]:
+        command.append(line.rstrip().removesuffix("\\"))
+        if not line.rstrip().endswith("\\"):
+            break
+    words = " ".join(command).split("status --porcelain --", 1)[1].split(')"', 1)[0].split()
+    return [word.strip("'\"") for word in words]
+
+
 class ReleaseNeutralPathsTest(unittest.TestCase):
     def test_neutral_paths(self):
         for path in (
@@ -36,6 +49,8 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             "wiki/e2e/brain.spec.ts",
             "bench/run_benchmark.py",
             "bot/poll.py",
+            "bot/state/bot_state.json",
+            "bot/state/batch7_approved.json",
             "manage/status.py",
             "wikifunctions/lean/Foo.lean",
             "brain/authority/fixtures/release-profile-v1-conformance.json",
@@ -52,6 +67,8 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             "brain/authority/schemas/release/v1.json",
             "brain/authority/requests/d1-community-snapshot-v1.json",
             "catalog/data/source_registry.json",
+            "bot/state/cut_log.json",
+            "bot/state/seed_queue.json",
             "site/annotations/Group_theory.json",
             "site/assets/style.css",
             "site/build_brain_page.py",
@@ -76,19 +93,37 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertFalse(authority.is_release_neutral(path))
 
+    def test_reducer_code_and_curated_inputs_are_release_affecting(self):
+        # The reducer reads these exact Git bytes, so a commit that changes one must
+        # never let main move past a release built before it.
+        paths = set()
+        for name in sorted((REPO / "brain/authority").glob("reducer-inputs-v*.json")):
+            inventory = json.loads(name.read_text(encoding="utf-8"))
+            paths.update(inventory["scope"])
+            # Curated inputs, and any other input the inventory roots in the repository
+            # (v2 and later say so with "root": "repo").
+            paths.update(entry["path"] for entry in inventory["inputs"] if "path" in entry and (
+                entry["class"] == "curated_git_input" or entry.get("root") == "repo"))
+        self.assertIn("bot/state/cut_log.json", paths)
+        for path in sorted(paths):
+            with self.subTest(path=path):
+                self.assertFalse(authority.is_release_neutral(path))
+
+    def test_the_canary_is_the_only_nightly_watched_file_left_neutral(self):
+        # The nightly's uncommitted-source check still names the canary, which it no
+        # longer runs, and committed canary changes never reach release bytes. Among
+        # the files the nightly names explicitly (its directories, like wiki/, also
+        # hold neutral tests and a README), any other the policy calls neutral is a
+        # disagreement.
+        watched = [entry for entry in _nightly_watched() if entry != "$REDUCER_SCOPE"]
+        self.assertEqual([entry for entry in watched if authority.is_release_neutral(entry)],
+                         ["site/ops/brain-canary.py"])
+
     def test_neutral_files_are_outside_the_nightly_source_check(self):
         # brain-nightly.sh refuses to freeze a release while a path it watches is
         # uncommitted, so no explicitly neutral file may sit inside that list.
         script = (REPO / "site/ops/brain-nightly.sh").read_text(encoding="utf-8")
-        lines = script.splitlines()
-        start = next(i for i, line in enumerate(lines) if "status --porcelain --" in line)
-        command = []
-        for line in lines[start:]:
-            command.append(line.rstrip().removesuffix("\\"))
-            if not line.rstrip().endswith("\\"):
-                break
-        words = " ".join(command).split("status --porcelain --", 1)[1].split(')"', 1)[0].split()
-        watched = [word.strip("'\"") for word in words]
+        watched = _nightly_watched()
         self.assertIn("$REDUCER_SCOPE", watched)
         self.assertIn("site/ops/brain-nightly.sh", watched)
         self.assertIn('"$REPO/brain/authority/reducer-inputs-v1.json"', script)

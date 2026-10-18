@@ -129,8 +129,9 @@ and every changed path is release-neutral. The neutral set is `docs/`, every `RE
 and `.gitattributes`, with one exception: `site/test_frontier_page.py` is release-affecting.
 Everything else is release-affecting by default, including Worker source and configuration,
 `wiki/scripts/` (other than `test_*.py`), lockfiles, non-test `site/*.py`, site assets, reducer
-code, and Markdown outside those paths. `AGENTS.md` and `CONTRIBUTING.md` are currently
-release-affecting. The module itself is the authority for this list.
+code, and Markdown outside those paths. At `37b7036d`, `AGENTS.md` and `CONTRIBUTING.md` were
+release-affecting; #68 later made them neutral, and #75 made the five `bot/state/` files the
+reducer reads release-affecting. The module itself is the authority for this list.
 
 What that means for this release:
 

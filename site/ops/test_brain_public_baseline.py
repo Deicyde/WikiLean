@@ -170,6 +170,19 @@ class BaselineFixture(unittest.TestCase):
         manifest.chmod(0o444)
 
 class FreezeAndVerifyTest(BaselineFixture):
+    def test_build_generated_headers_file_is_never_baseline_payload(self) -> None:
+        # build-public writes _headers (the static-asset security headers) into
+        # every public tree it builds; attesting or freezing that tree skips it.
+        attested_before = baseline.render_source_attestation(self.source)
+        self._write("_headers", b"/*\n  X-Content-Type-Options: nosniff\n")
+        self.assertEqual(baseline.render_source_attestation(self.source), attested_before)
+        result = self.freeze()
+        self.assertNotIn("_headers", {item.path for item in result.files})
+        self.assertFalse((result.root / "_headers").exists())
+        # A manifest that names it is still a route-shadowing path.
+        self.assertTrue(baseline._is_route_shadowing_or_retired("_headers"))
+        self.assertEqual(baseline.BUILD_GENERATED_FILES, frozenset({"_headers"}))
+
     def test_freezes_complete_non_brain_inventory_with_content_identity(self) -> None:
         result = self.freeze()
         self.assertEqual(result.root.name, result.baseline_hex)

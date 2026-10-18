@@ -22,6 +22,7 @@
 
 import type { Context, Hono } from "hono";
 import { getCookie, setCookie, deleteCookie } from "hono/cookie";
+import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, internalReturnPath } from "./auth.js";
 
@@ -47,7 +48,7 @@ function reviewBaseUrl(c: Ctx): string {
 // App: user access tokens may expire (~8h) and carry a refresh token (~6mo). A
 // plain OAuth app instead returns a long-lived token (refresh_token/expires_at
 // absent) — both shapes are handled, so swapping the app type needs no migration.
-type ReviewTok = { token?: string; login?: string; refresh_token?: string; expires_at?: number };
+type ReviewTok = { token?: string; login?: string | null; refresh_token?: string; expires_at?: number };
 
 // Exchange a `code` (callback) or a `refresh_token` for a user access token.
 // SAME endpoint for OAuth apps and GitHub Apps — a GitHub App additionally returns
@@ -75,6 +76,149 @@ async function ghTokenExchange(c: Ctx, params: Record<string, string>): Promise<
   }
 }
 
+// Where reviewer GitHub tokens are stashed: the REVIEW_TOKENS namespace when it
+// is bound, else RENDER_CACHE. A namespace of their own keeps them out of the
+// cache the nightly host rewrites, but it is not access isolation: Cloudflare
+// grants KV access per account, so any credential that can write RENDER_CACHE
+// (the nightly host's `wrangler login` included) can read REVIEW_TOKENS too.
+// REVIEW_TOKEN_KEY is the protection at rest (sealReviewTok below).
+export function reviewTokenStore(env: Pick<Env, "REVIEW_TOKENS" | "RENDER_CACHE">): KVNamespace {
+  return env.REVIEW_TOKENS ?? env.RENDER_CACHE;
+}
+
+// Plaintext record under the cookie id itself: the only form without
+// REVIEW_TOKEN_KEY, and the form written before the key existed.
+const plainTokKey = (id: string) => `reviewtok:${id}`;
+
+const enc = new TextEncoder();
+const SEALED_VALUE_PREFIX = "rt1.";
+const MIN_REVIEW_TOKEN_KEY_CHARS = 32;
+
+function b64url(bytes: Uint8Array): string {
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+function fromB64url(text: string): Uint8Array {
+  const bin = atob(text.replace(/-/g, "+").replace(/_/g, "/"));
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+// The AES-256-GCM key, derived (HKDF-SHA-256) from the REVIEW_TOKEN_KEY secret,
+// or null when the secret is unset. A secret under 32 characters is refused.
+async function reviewSealKey(env: Pick<Env, "REVIEW_TOKEN_KEY">): Promise<CryptoKey | null> {
+  const secret = env.REVIEW_TOKEN_KEY;
+  if (!secret) return null;
+  if (secret.length < MIN_REVIEW_TOKEN_KEY_CHARS) {
+    throw new Error(`REVIEW_TOKEN_KEY must be at least ${MIN_REVIEW_TOKEN_KEY_CHARS} characters`);
+  }
+  const material = await crypto.subtle.importKey("raw", enc.encode(secret), "HKDF", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey(
+    { name: "HKDF", hash: "SHA-256", salt: new Uint8Array(0), info: enc.encode("wikilean/review-token/aes-gcm/v1") },
+    material,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+
+// Sealed records live under a digest of the cookie id, so listing the
+// namespace reveals no live cookie value.
+async function sealedTokKey(id: string): Promise<string> {
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(id)));
+  return `reviewtok:s1:${[...digest].map((b) => b.toString(16).padStart(2, "0")).join("")}`;
+}
+
+// AES-GCM with a fresh 96-bit IV; the cookie id is the additional data, so a
+// sealed value copied to another session's key does not open.
+async function sealReviewTok(key: CryptoKey, id: string, json: string): Promise<string> {
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(
+    await crypto.subtle.encrypt({ name: "AES-GCM", iv, additionalData: enc.encode(plainTokKey(id)) }, key, enc.encode(json)),
+  );
+  return `${SEALED_VALUE_PREFIX}${b64url(iv)}.${b64url(ct)}`;
+}
+
+// The JSON a sealed value holds, or null when it does not open (another key,
+// another cookie id, or tampering): the reviewer simply reconnects.
+async function openReviewTok(key: CryptoKey, id: string, sealed: string): Promise<string | null> {
+  if (!sealed.startsWith(SEALED_VALUE_PREFIX)) return null;
+  const [iv, ct] = sealed.slice(SEALED_VALUE_PREFIX.length).split(".");
+  if (!iv || !ct) return null;
+  try {
+    const plain = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: fromB64url(iv), additionalData: enc.encode(plainTokKey(id)) },
+      key,
+      fromB64url(ct),
+    );
+    return new TextDecoder().decode(plain);
+  } catch {
+    return null;
+  }
+}
+
+// Once REVIEW_TOKENS is bound, both forms of a record left in RENDER_CACHE from
+// before the binding (plaintext, or sealed when the key came first).
+async function deleteRenderCacheCopies(env: Env, id: string): Promise<void> {
+  if (!env.REVIEW_TOKENS) return;
+  await env.RENDER_CACHE.delete(plainTokKey(id));
+  await env.RENDER_CACHE.delete(await sealedTokKey(id));
+}
+
+async function putReviewTok(env: Env, id: string, json: string): Promise<void> {
+  const store = reviewTokenStore(env);
+  const key = await reviewSealKey(env);
+  if (key) {
+    await store.put(await sealedTokKey(id), await sealReviewTok(key, id, json), { expirationTtl: REVIEW_TOK_TTL });
+    await store.delete(plainTokKey(id));
+  } else {
+    await store.put(plainTokKey(id), json, { expirationTtl: REVIEW_TOK_TTL });
+  }
+  await deleteRenderCacheCopies(env, id);
+}
+
+// A sealed record first (with the key), then a plaintext one; each first in
+// reviewTokenStore, then in RENDER_CACHE from before REVIEW_TOKENS was bound.
+// With the key set, a record found in any other form or place is re-written
+// sealed to reviewTokenStore and its other copies deleted. So neither setting
+// the key nor then binding the namespace (docs/SECRETS.md P1, in that order)
+// signs anybody out, and neither plaintext nor a RENDER_CACHE copy outlives
+// the next read (or the 12 h TTL). A sealed record that does not open (another
+// key, another cookie id, tampering) reads as "not connected".
+async function readReviewTok(env: Env, id: string): Promise<string | null> {
+  const store = reviewTokenStore(env);
+  const key = await reviewSealKey(env);
+  if (key) {
+    const sealedKey = await sealedTokKey(id);
+    const sealed = await store.get(sealedKey);
+    if (sealed !== null) return openReviewTok(key, id, sealed);
+    const cached = env.REVIEW_TOKENS ? await env.RENDER_CACHE.get(sealedKey) : null;
+    if (cached !== null) {
+      const opened = await openReviewTok(key, id, cached);
+      if (opened !== null) await putReviewTok(env, id, opened);
+      return opened;
+    }
+  }
+  let plain = await store.get(plainTokKey(id));
+  if (plain === null && env.REVIEW_TOKENS) plain = await env.RENDER_CACHE.get(plainTokKey(id));
+  if (plain !== null && key) await putReviewTok(env, id, plain);
+  return plain;
+}
+
+async function writeReviewTok(env: Env, id: string, tok: ReviewTok): Promise<void> {
+  await putReviewTok(env, id, JSON.stringify(tok));
+}
+
+async function deleteReviewTok(env: Env, id: string): Promise<void> {
+  const store = reviewTokenStore(env);
+  await store.delete(plainTokKey(id));
+  await store.delete(await sealedTokKey(id));
+  await deleteRenderCacheCopies(env, id);
+}
+
 // The connected reviewer's GitHub token + login, from the cookie→KV mapping. If
 // the (GitHub App) access token is at/near expiry and we hold a refresh token,
 // transparently mint a fresh one and re-stash on a rolling TTL so an active
@@ -82,7 +226,7 @@ async function ghTokenExchange(c: Ctx, params: Record<string, string>): Promise<
 async function reviewToken(c: Ctx): Promise<ReviewTok> {
   const id = getCookie(c, REVIEW_COOKIE);
   if (!id) return {};
-  const raw = await c.env.RENDER_CACHE.get(`reviewtok:${id}`);
+  const raw = await readReviewTok(c.env, id);
   if (!raw) return {};
   let tok: ReviewTok;
   try {
@@ -94,7 +238,7 @@ async function reviewToken(c: Ctx): Promise<ReviewTok> {
     const fresh = await ghTokenExchange(c, { grant_type: "refresh_token", refresh_token: tok.refresh_token });
     if (fresh.token) {
       tok = { token: fresh.token, login: tok.login, refresh_token: fresh.refresh_token ?? tok.refresh_token, expires_at: fresh.expires_at };
-      await c.env.RENDER_CACHE.put(`reviewtok:${id}`, JSON.stringify(tok), { expirationTtl: REVIEW_TOK_TTL });
+      await writeReviewTok(c.env, id, tok);
     }
   }
   return tok;
@@ -1049,12 +1193,9 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
       );
     }
 
-    let body: { decisions?: Record<string, { status?: string; notes?: string; was?: string }> };
-    try {
-      body = await c.req.json();
-    } catch {
-      return c.json({ ok: false, error: "bad json" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.reviewPost);
+    if (!read.ok) return read.response;
+    const body = read.value as { decisions?: Record<string, { status?: string; notes?: string; was?: string }> };
     const decisions = body.decisions ?? {};
 
     // Resolve qid → (file, line) + head sha + already-posted markers from the PR.
@@ -1269,11 +1410,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!ex.token) return c.text("GitHub token exchange failed — try again.", 502);
     const login = await ghLogin(ex.token);
     const id = crypto.randomUUID();
-    await c.env.RENDER_CACHE.put(
-      `reviewtok:${id}`,
-      JSON.stringify({ token: ex.token, login, refresh_token: ex.refresh_token, expires_at: ex.expires_at }),
-      { expirationTtl: REVIEW_TOK_TTL },
-    );
+    await writeReviewTok(c.env, id, { token: ex.token, login, refresh_token: ex.refresh_token, expires_at: ex.expires_at });
     setCookie(c, REVIEW_COOKIE, id, {
       path: "/",
       httpOnly: true,
@@ -1287,7 +1424,7 @@ export function registerReviewRoutes(app: Hono<{ Bindings: Env }>): void {
   // Disconnect: drop the stored token + cookie.
   app.get("/review/auth/logout", async (c) => {
     const id = getCookie(c, REVIEW_COOKIE);
-    if (id) await c.env.RENDER_CACHE.delete(`reviewtok:${id}`);
+    if (id) await deleteReviewTok(c.env, id);
     deleteCookie(c, REVIEW_COOKIE, { path: "/" });
     return c.redirect(internalReturnPath(c.req.query("returnTo"), "/review"));
   });

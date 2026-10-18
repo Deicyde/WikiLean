@@ -109,9 +109,9 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-Linux CI uses `npx playwright install --with-deps chromium` to install system dependencies too. Failures retain traces and screenshots under `wiki/test-results/`; CI also writes the HTML report under `wiki/playwright-report/` and uploads both directories as the seven-day `browser-failure-artifacts` artifact.
+Linux CI uses `npx playwright install --with-deps chromium` to install system dependencies too. The loopback server builds the `/brain` page by importing `site/build_brain_page.py` with the `python3` on your PATH, which must be Python 3.10 or newer. Failures retain traces and screenshots under `wiki/test-results/`; CI also writes the HTML report under `wiki/playwright-report/` and uploads both directories as the seven-day `browser-failure-artifacts` artifact.
 
-The browser job currently runs on every CI trigger as a **non-required soak**. Branch protection should require only the aggregate `required` job, which covers the Worker and Python jobs. Promote browser testing into that aggregate only through a reviewed workflow change after its run history is stable; there is no automatic promotion threshold.
+The browser job runs on every CI trigger and is **required**: the aggregate `required` job covers the Worker, Python and browser jobs, and branch protection requires only that aggregate.
 
 #### Corpus-dependent checks
 
@@ -129,7 +129,7 @@ Its preflight requires more than 200 cached Wikipedia pages in `site/cache/*.htm
 - Branch from `main`, push, open a PR against `Deicyde/WikiLean`.
 - For substantive changes, open an issue first to discuss scope.
 - `.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It has read-only repository permissions, checks out without persisted credentials, receives no secrets, and contains no deployment, production write, or token-consuming step.
-- The required `worker` and `python` jobs use Node 22 and Python 3.12 respectively. The `required` aggregate is the branch-protection target; the separate `browser` job is the soak described above.
+- The `worker` and `browser` jobs use Node 22, and the `python` job uses Python 3.12. The `required` aggregate needs all three and is the branch-protection target.
 
 ---
 

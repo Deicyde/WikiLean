@@ -1,6 +1,8 @@
 // Auth. Two modes selected by env.AUTH_MODE:
 //   "oauth" → better-auth (GitHub/Google), the production path.
 //   "dev"   → a cookie stub for local development without OAuth credentials.
+// Any other value (unset, a typo, an override) fails closed: no session login
+// at all, and never the cookie stub, which trusts a client-set user id.
 // getUser() is the single seam the rest of the app depends on.
 
 import type { Context, Hono } from "hono";
@@ -12,6 +14,7 @@ import { eq } from "drizzle-orm";
 import { users, sessions, accounts, verifications } from "./db/schema.js";
 import { htmlEscape } from "./engine/html.js";
 import type { Env } from "./env.js";
+import { readBodyCapped } from "./security.js";
 
 export interface AuthUser {
   id: string;
@@ -26,6 +29,11 @@ const DEV_COOKIE = "wl_dev_user";
 // secret.
 const PIPELINE_USER_ID = "pipeline";
 type Ctx = Context<{ Bindings: Env }>;
+
+// Byte cap on a POST body forwarded to better-auth. Its own bodies (social
+// sign-in, sign-out, a form_post callback) are a few hundred bytes, and an
+// id-token sign-in carries one JWT of a few KB.
+export const MAX_AUTH_BODY_BYTES = 16 * 1024;
 
 const CONTROL_CHAR_RE = /[\u0000-\u001f\u007f-\u009f]/;
 
@@ -98,6 +106,31 @@ export function makeAuth(env: Env) {
   });
 }
 
+// The dev cookie stub trusts whatever user id the client sends, and user ids
+// are public (/u/:id). It is enabled only by this exact value.
+export function devAuthEnabled(env: Pick<Env, "AUTH_MODE">): boolean {
+  return env.AUTH_MODE === "dev";
+}
+
+const encoder = new TextEncoder();
+
+// Constant-time bearer check. Both sides are hashed first, so the comparison
+// runs over equal-length digests and leaks neither the token's bytes nor its
+// length through timing.
+export async function bearerMatches(presented: string, expected: string): Promise<boolean> {
+  const [a, b] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(presented)),
+    crypto.subtle.digest("SHA-256", encoder.encode(expected)),
+  ]);
+  const left = new Uint8Array(a);
+  const right = new Uint8Array(b);
+  const subtle = crypto.subtle as SubtleCrypto & { timingSafeEqual?: (x: ArrayBufferView, y: ArrayBufferView) => boolean };
+  if (typeof subtle.timingSafeEqual === "function") return subtle.timingSafeEqual(left, right);
+  let diff = 0;
+  for (let i = 0; i < left.length; i++) diff |= left[i] ^ right[i];
+  return diff === 0;
+}
+
 function availableProviders(env: Env): string[] {
   const p: string[] = [];
   if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) p.push("github");
@@ -109,10 +142,11 @@ export async function getUser(c: Ctx): Promise<AuthUser | null> {
   // Pipeline bearer branch — checked before the session paths so the runner
   // never touches cookie/better-auth machinery. Requires BOTH the header and
   // the PIPELINE_TOKEN secret (skip if either is missing); an exact match
-  // resolves to the 'pipeline' users row (role 'bot'). Missing row → treated
-  // as unauthenticated. A non-matching bearer falls through to session auth.
+  // (compared in constant time) resolves to the 'pipeline' users row (role
+  // 'bot'). Missing row → treated as unauthenticated. A non-matching bearer
+  // falls through to session auth.
   const authz = c.req.header("Authorization");
-  if (authz?.startsWith("Bearer ") && c.env.PIPELINE_TOKEN && authz.slice(7) === c.env.PIPELINE_TOKEN) {
+  if (authz?.startsWith("Bearer ") && c.env.PIPELINE_TOKEN && (await bearerMatches(authz.slice(7), c.env.PIPELINE_TOKEN))) {
     const db = drizzle(c.env.DB);
     const row = (await db.select().from(users).where(eq(users.id, PIPELINE_USER_ID)).limit(1))[0];
     if (!row) return null;
@@ -133,7 +167,9 @@ export async function getUser(c: Ctx): Promise<AuthUser | null> {
       return null;
     }
   }
-  // dev cookie stub
+  // dev cookie stub — only when AUTH_MODE is exactly "dev"; anything else
+  // (unset, a typo) is no login rather than "trust the cookie".
+  if (!devAuthEnabled(c.env)) return null;
   const id = getCookie(c, DEV_COOKIE);
   if (!id) return null;
   const db = drizzle(c.env.DB);
@@ -205,7 +241,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // Dev cookie login.
   app.get("/api/auth/dev-login", async (c) => {
-    if (c.env.AUTH_MODE !== "dev") return c.text("dev auth disabled", 403);
+    if (!devAuthEnabled(c.env)) return c.text("dev auth disabled", 403);
     const name = (c.req.query("name") || "Dev User").slice(0, 60);
     const id = "dev:" + (name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "user");
     const db = drizzle(c.env.DB);
@@ -218,21 +254,33 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/api/auth/me", async (c) => c.json({ user: await getUser(c) }));
 
   // better-auth owns the rest of /api/auth/* in oauth mode (sign-in, callback,
-  // sign-out, session). Registered after the specific routes above.
-  app.on(["GET", "POST"], "/api/auth/*", (c) => {
+  // sign-out, session). Registered after the specific routes above. Anonymous
+  // callers reach it, so a POST body is read here through readBodyCapped
+  // (MAX_AUTH_BODY_BYTES) and better-auth gets a copy of the request carrying
+  // the read text: a declared or streamed body past the cap is a 413 and is
+  // never buffered.
+  app.on(["GET", "POST"], "/api/auth/*", async (c) => {
     if (c.env.AUTH_MODE !== "oauth") return c.notFound();
-    return makeAuth(c.env).handler(c.req.raw);
+    const req = c.req.raw;
+    if (req.method !== "POST" || req.body === null) return makeAuth(c.env).handler(req);
+    const text = await readBodyCapped(req, MAX_AUTH_BODY_BYTES);
+    if (text === null) {
+      return c.json({ ok: false, error: `request body too large (max ${MAX_AUTH_BODY_BYTES} bytes)` }, 413);
+    }
+    return makeAuth(c.env).handler(new Request(req, { body: text }));
   });
 
   // Sign-in page.
   app.get("/login", (c) => {
     const ret = internalReturnPath(c.req.query("returnTo"), "/");
-    if (c.env.AUTH_MODE !== "oauth") {
+    if (devAuthEnabled(c.env)) {
       const u = new URL("/api/auth/dev-login", c.req.url);
       u.searchParams.set("returnTo", ret);
       return c.redirect(u.pathname + u.search);
     }
-    return c.html(loginPageHtml(ret, availableProviders(c.env)));
+    // An unrecognized AUTH_MODE offers no provider: better-auth only serves
+    // /api/auth/* in oauth mode, so its buttons could not work anyway.
+    return c.html(loginPageHtml(ret, c.env.AUTH_MODE === "oauth" ? availableProviders(c.env) : []));
   });
 
   // Sign-out (both modes).
