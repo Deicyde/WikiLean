@@ -47,9 +47,12 @@ export interface AtlasLocation {
   commit: string;
   declaration: string;
   module: string;
+  // Relative to the repository root.
   path: string;
   line: number;
-  end_line: number;
+  // Optional: absent when the library index records only the first line (as
+  // atlas's published index does); the page then says "line N".
+  end_line?: number;
   relation: string;
   proof_status: string;
   // The library index's flag for a Prop-valued definition (proposal §2.4): it
@@ -66,6 +69,9 @@ export interface AtlasPassage {
   id: string;
   item: string;
   kind: string;
+  // The passage's heading path ([] in the lead) and prominence
+  // (subject | central | supporting): every record of the agreed format carries
+  // both. Null only in a store built before they were required.
   section: string[] | null;
   prominence: string | null;
   quote: { exact: string; prefix?: string; suffix?: string };
@@ -126,8 +132,9 @@ export interface AtlasUniverse {
   id: string;
   sha256: string;
   frozen: string;
+  // Sorted by id, as the record set's universe.json lists them.
   libraries: UniverseLibrary[];
-  excluded: Array<{ id: string; reason: string; repo?: string }>;
+  excluded: Array<{ id: string; reason: string }>;
 }
 
 export interface AtlasCurrent {
@@ -135,7 +142,8 @@ export interface AtlasCurrent {
   campaign: string;
   built_at: string;
   universe: { id: string; sha256: string; frozen: string; libraries: number };
-  record_set: { seal_sha256: string; created: string; skill_commit: string };
+  // set_id and byte_budget (0 = the export had none) come from SEAL.json.
+  record_set: { seal_sha256: string; set_id?: string; created: string; skill_commit: string; byte_budget?: number };
   counts: {
     articles: number;
     passages: number;
@@ -381,7 +389,9 @@ function notConfiguredHtml(c: Ctx, error = NOT_CONFIGURED): Response {
 const FEEDBACK_VERDICTS = new Set(["confirm", "report"]);
 export const ATLAS_PSEUDONYM_DOMAIN = "atlas-feedback\0";
 const MAX_NOTE_CHARS = MAX_FLAG_COMMENT_LEN; // 500, the flag form's cap
-const CAMPAIGN_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
+// SEAL.json's campaign, as build_store.CAMPAIGN_RE: a campaign id, or for a run
+// outside any campaign "run:<run-id>[+<challenge-run-id>]".
+export const CAMPAIGN_RE = /^(?:run:[A-Za-z0-9][A-Za-z0-9._-]{0,63}(?:\+[A-Za-z0-9][A-Za-z0-9._-]{0,63})?|(?!run:)[A-Za-z0-9][A-Za-z0-9._:-]{0,127})$/;
 
 function missingTable(error: unknown): boolean {
   let current: unknown = error;
@@ -472,8 +482,8 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
   });
 
   // Not immutable: the key is the producer's universe_sha256, which covers the
-  // libraries' ids, commits and index shas but not the display metadata
-  // (src_dir, display_name, exclusions) stored beside them, so a later
+  // libraries' ids, commits and index shas but not the metadata stored beside
+  // them (display_name, roots, toolchain, licence, exclusions), so a later
   // campaign on the same frozen universe may rewrite the object.
   app.get("/api/atlas/universe/:sha", (c) => {
     const sha = c.req.param("sha");

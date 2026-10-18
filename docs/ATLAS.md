@@ -1,6 +1,6 @@
 # The formalization atlas
 
-**Status (2026-10-17): built on branch `claude/formalization-atlas`, not deployed.** The
+**Status (2026-10-18): built on branch `claude/formalization-atlas`, not deployed.** The
 Worker code, assets and migration 0015 are release-affecting and ship only in a release
 (section 11). Nothing is uploaded anywhere. The decisions this needs from Jack are in
 section 14.
@@ -68,53 +68,97 @@ formal-companion locate pipeline (fleet host)          WikiLean
 
 ## 3. Input contract: the sealed record set
 
-The layout follows the proposal §11.1 and the skill's `references/locate-documents.md` §6:
+The record-set format is the one formal-companion and WikiLean agreed: the proposal's §2.3
+and the skill's `references/locate-documents.md` §6, made precise below. Both sides
+implement exactly this. The builder accepts this shape and refuses any other, naming the
+key or the rule it breaks (an extra key such as `runs`, a missing one, a dict where a list
+belongs).
 
 ```
 <set>/SEAL.json                      the seal (below); lists every other file with its sha256
-<set>/universe.json                  the universe manifest (universe.yaml is accepted too, not both)
+<set>/universe.json                  the universe (below); there is no universe.yaml form
 <set>/sources.jsonl                  one row per source (article revision)
 <set>/records/<source-id>.jsonl      that source's Literature Links 2.0 records
 <set>/receipts/<sha256>.json         search receipts, named by the sha256 of their bytes
 ```
 
-`SEAL.json`:
+`SEAL.json` has exactly these keys:
 
 ```json
 {"schema": "cf-locate-recordset/1",
- "campaign": "<token>",
- "universe": {"id": "u1", "sha256": "<64 hex>"},
+ "set_id": "<token>",
+ "campaign": "<campaign id> | run:<run-id>[+<challenge-run-id>]",
+ "universe": {"id": "u1", "universe_sha256": "<64 hex>"},
  "sourceset": {"id": "<id>", "manifest_sha256": "<64 hex>"},
  "skill_commit": "<40 hex>",
  "created": "2026-10-17T12:00:00Z",
+ "byte_budget": 0,
  "files": {"<relative path>": "<sha256>", ...}}
 ```
 
-`universe.json`: `id`, `frozen` (YYYY-MM-DD), `universe_sha256`, `libraries` (each with
-`id`, `repo` (an https repository URL), `commit` (40 hex), and optionally `display_name`,
-`brain_lib`, `toolchain`, `roots`, `licence: {spdx}` and `src_dir`), and `excluded` (a
-list, each `{id, reason, repo?}`), as in proposal §2.3. `display_name` and `src_dir` are
-WikiLean additions (contract note 6).
+- **`campaign` is always a non-empty token**: the campaign id (letters, digits and `._:-`,
+  at most 128, not starting `run:`), or for a run outside any campaign
+  `run:<run-id>` or `run:<run-id>+<challenge-run-id>` (run ids of letters, digits and
+  `._-`, at most 64 each). Never null. The pages show a run token as "run L with challenge
+  run C, outside any campaign", and feedback rows carry the token as their campaign.
+- **`byte_budget`** is the per-source byte budget the export kept to: a source's records
+  file plus the receipts its absences reference. It is 0, meaning none, by default for a
+  sealed set. A consumer with a cap of its own (the later D1 import, section 12) asks the
+  export for one. When it is not 0, the builder refuses a source over it, and
+  `current.json` records `set_id` and `byte_budget` beside the seal's sha.
+
+`universe.json` has exactly the keys `id`, `universe_sha256` (never `sha256`), `frozen`
+(YYYY-MM-DD), `libraries` and `excluded`:
+
+- `libraries` is a **list, never a dict**, sorted by `id` (each id once). Each library has
+  exactly `id`, `brain_lib`, `repo` (an https repository URL), `commit` (40 hex),
+  `toolchain`, `roots` (a non-empty list of module roots), `licence: {spdx}`, and
+  optionally `display_name` (absent or null when the producer has none; contract note 6).
+  `index`, `conventions`, `src_dir`, `blob_url_template` and any other key are refused.
+- `excluded` is a list (empty when nothing is excluded) of exactly `{id, reason}`.
 
 `sources.jsonl`: `source_id` (`enwiki-<pageid>-<revision>`), `pageid`, `revision`, `title`,
 `wikidata`, `html_sha256`, `layer_sha256`, `renderer` (a short token such as `web-html/1`,
 or null), and `assessment: {class, importance}` (the WikiProject assessment, or null).
+
+Records follow proposal §2.7, with these points of the agreement:
+
+- **Every record carries `section` and `prominence`** for its passage, in the record's
+  locate extension: `section` is the heading path (a list of heading strings, `[]` in the
+  lead) and `prominence` is `subject`, `central` or `supporting`. The coverage page marks
+  the article's subject passages by it.
+- **A location's lean end** carries, in its locate extension, `library`, `path` (relative
+  to the repository root: Lean core's files are `src/Init/...`), `line`, and `end_line`
+  when the library index records one. atlas's published index records only `line`, so
+  `end_line` is then **absent** (never null), and consumers treat it as optional: the view
+  model omits it, the page says "line N", and the source link is `#L<line>`.
+- **A `closeMatch` always carries a non-empty `note`**, including one a challenge
+  downgrade produced: the challenger's witness sentence becomes the note when the worker
+  wrote none. A note-less `closeMatch` is refused.
+- **An absence keeps one lean end per universe library**, each minimal:
+  `{"type": "lean", "uri": <repo>, "version": <40 hex>}` and nothing else (no `role`, no
+  `extensions`, no `location`). On smoke-2's real set that shrinks an absence from about
+  12 KB to about 7 KB with 48 libraries.
 
 ### What the builder checks
 
 `scripts/atlas/build_store.py` refuses the whole set, listing every problem it found, when
 any of these fails:
 
-1. **Seal.** `SEAL.json` has the fields above; every listed file exists and matches its
+1. **Seal.** `SEAL.json` has exactly the keys above, with the campaign token grammar and
+   a `byte_budget` that is an integer 0 or more; every listed file exists and matches its
    sha256; no unlisted file, symlink or unsafe path is present. Receipts are named by
-   their own sha256, and every receipt is referenced.
-2. **Universe.** Its id and `universe_sha256` equal the seal's; library ids and
+   their own sha256, and every receipt is referenced. Hex, token and time values must
+   match in full (a trailing newline does not pass).
+2. **Universe.** `universe.json` has exactly the keys above (a `universe.yaml` is refused);
+   its id and `universe_sha256` equal the seal's; `libraries` is a list sorted by id, and
    repositories are unique; each repository is an https URL with a dotted host and one to
-   four path segments, none of them `.` or `..`; commits are 40-hex. A
-   `blob_url_template` is refused (contract note 6), and so is a `display_name` that is not
-   at most 100 printable ASCII letters, digits, spaces and `,.()/+:'&_-` or `·` (no
-   zero-width, soft-hyphen or look-alike character). `excluded` is a list. A
-   `universe.yaml` that does not parse, or repeats a key, is refused like duplicate-key JSON.
+   four path segments, none of them `.` or `..`; commits are 40-hex; `brain_lib` and
+   `toolchain` are non-empty strings, `roots` a non-empty list of them, and `licence`
+   exactly `{spdx}`. A `blob_url_template` or `src_dir` is refused by name (contract note
+   6), and so is a `display_name` that is not at most 100 printable ASCII letters, digits,
+   spaces and `,.()/+:'&_-` or `·` (no zero-width, soft-hyphen or look-alike character).
+   `excluded` is a list of `{id, reason}`.
 3. **Sources.** `source_id` agrees with `pageid` and `revision`; there is one revision per
    page per set, and one page per title (two titles with the same `title_key`, such as
    `Widget lemma` and `Widget_lemma`, are refused, because the index and the article box
@@ -126,8 +170,9 @@ any of these fails:
    against `provenance.json` first. JSON with duplicate keys, NaN, a number too large for
    a double (`1e400`, which parses as infinity) or nesting too deep to parse is refused.
 5. **Records (proposal §2.7).** Each record carries the `org.mathlib-initiative.formal-companion.locate`
-   extension with `item` (`In-text #<8-16 hex>`), the set's universe id and sha, and a
-   `challenge` value; `id` is `<source_id>::<item>`. The subject is one `html` end at the
+   extension with `item` (`In-text #<8-16 hex>`), the set's universe id and sha, a
+   `challenge` value, and its passage's `section` and `prominence`; `id` is
+   `<source_id>::<item>`. The subject is one `html` end at the
    source's revision: its `uri` is an `https://en.wikipedia.org/w/index.php` (or `/wiki/`)
    link whose parsed query has exactly one `oldid`, equal to the revision (so `oldid=20029`
    does not pass for revision 2002), and its `version` is the revision. Its `pageid` and
@@ -135,21 +180,23 @@ any of these fails:
    of `exact`, 32 characters of prefix and of suffix, all strings).
    - A **location** (relation `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch`,
      `hasPart` or `relatedMatch`) has one `lean` end at its library's repo and commit, with
-     `declaration`, `module`, a safe `.lean` `path`, `1 <= line <= end_line`, a
+     `declaration`, `module`, a safe repository-relative `.lean` `path`, an integer
+     `line` of at least 1 and, when present, an integer `end_line` of at least `line`, a
      `proof_status`, a unique 64-hex `location_key`, `rank` 1-5 and a `confidence`. A
-     `closeMatch` names its convention difference in `note`. The lean end's locate
+     `closeMatch` names its convention difference in a non-empty `note`. The lean end's locate
      extension may carry `statement`, the library index's flag for a Prop-valued
      definition (contract note 8): it must be `true` or `false` (absent or null is false),
      and is refused on a `proved` declaration, as the producer refuses it. Every location
      record carries its passage's derived status, except the `relatedMatch` records of a
      passage that has none (check 6).
-   - An **absence** (`noMatch`) has status `not_formalized` and exactly one whole-library
-     `lean` end per universe library, and references its receipt as
+   - An **absence** (`noMatch`) has status `not_formalized` and exactly one minimal
+     `{type, uri, version}` lean end per universe library, and references its receipt as
      `receipt: {sha256, queries, candidates}`. The counts must match the receipt file, and
      the receipt must list at least 3 distinct queries (gate rule 5).
    - An **unresolved** passage is a single record with `object: []`, no status and no
      relation.
-6. **Passages (proposal §2.6).** The records of one passage agree on kind, quote and status.
+6. **Passages (proposal §2.6).** The records of one passage agree on kind, quote, section,
+   prominence and status.
    A passage has at most one absence and at most 5 locations, with distinct ranks. An
    absence sits only beside `relatedMatch` locations, and `not_formalized` needs one.
    **The builder recomputes the derived status** of every located passage from its
@@ -189,17 +236,21 @@ any of these fails:
 
 ### Contract notes for formal-companion
 
-These are where the builder departs from, or adds to, the proposal as written. Each
-needs the skill's agreement before real record sets arrive:
+These are where the builder departs from, or adds to, the proposal as written. The
+record-set format itself (above: the seal, the universe's list shape, the campaign token,
+the byte budget, optional `end_line`, `section` and `prominence`, closeMatch notes and
+minimal absence ends) is agreed with the skill (note 10); the rest still needs its
+agreement before real record sets arrive:
 
 1. **CSL citations need an `id`.** The vendored schema requires `citation.id` and
    `citation.type`. Proposal §2.7's example citation has no `id` and fails validation as
    written. The fixture uses the source id.
-2. **`section` and `prominence` are requested in the record's locate extension**
-   (optional: `section` is a list of heading strings, `prominence` is
-   `subject|central|supporting`). The coverage page shows them, but §2.7's record shape
-   carries neither, and the sealed set has no passage table. The "Gadget (mathematics)"
-   fixture omits them, and the page copes.
+2. **`section` and `prominence` ride in every record's locate extension** (agreed;
+   required): `section` is the passage's heading path (`[]` in the lead), `prominence` is
+   `subject|central|supporting`. §2.7's example record shows neither, and the sealed set
+   has no passage table, so the records carry them. The coverage page shows both and marks
+   the article's subject passages. The "Gadget (mathematics)" fixture is a lead passage
+   (`section: []`).
 3. **Absence receipts.** The proposal says "referenced by sha256 and count". The builder
    reads that as `receipt: {sha256, queries, candidates}` and checks both counts against
    the file.
@@ -221,8 +272,9 @@ needs the skill's agreement before real record sets arrive:
    is built from GitHub's blob scheme for the library's own `github.com/<owner>/<repo>`,
    and a non-GitHub repository gets no source link, and no repository link on the
    universe page either (it is named there as text). A set carrying a template is
-   refused, so a producer learns it is unsupported. `src_dir` (the directory a record's
-   `path` is relative to) stays, and must be a safe relative path.
+   refused, so a producer learns it is unsupported. A lean end's `path` is relative to the
+   repository root (Lean core's records say `src/Init/...`), so there is no `src_dir`
+   either: a set carrying one is refused, and the registry prefixes nothing.
 7. **WikiLean recomputes the derived status** (section 3, check 6) with the producer's
    rules, as `cflib.vocab.derive_status` implements them at formal-companion `b4ac86a`.
    That code is not yet on formal-companion's master, and `references/vocabulary.md` §1.11
@@ -246,13 +298,20 @@ needs the skill's agreement before real record sets arrive:
    `relatedMatch` location records without a `status`, which it stores as an unresolved
    passage that keeps its related declarations. An unresolved record (`object: []`)
    beside them is refused, as is a status on them.
+10. **The agreed record-set format** (2026-10-18, after smoke 2, whose export WikiLean
+    refused on seven mismatches). Both sides implement section 3 exactly. Where the
+    agreement named a field but not its spelling, WikiLean chose: the budget is SEAL's
+    `byte_budget` (the name the export's option and report already use), a campaign id may
+    not start `run:`, run ids are letters, digits and `._-`, `display_name` is the one
+    optional library key (absent or null), and `section` is `[]` in the lead. Any other
+    key is refused, so a change to the format is a change on both sides at once.
 
 ## 4. The store (v1)
 
 ```
-atlas/v1/current.json                    campaign, universe summary, totals, build time, index shard list
+atlas/v1/current.json                    campaign, universe summary, record set (seal sha, set_id, byte_budget), totals, build time, index shard list
 atlas/v1/manifest.json                   every other file: bytes and sha256
-atlas/v1/universes/<universe-sha>.json   libraries (id, display name, repo, commit, toolchain, licence), exclusions
+atlas/v1/universes/<universe-sha>.json   libraries by id (id, brain_lib, display name, repo, commit, toolchain, roots, licence SPDX id), exclusions
 atlas/v1/articles/<pageid>.json          the article's view model (below)
 atlas/v1/records/<pageid>.jsonl          that article's records, byte for byte as sealed
 atlas/v1/index/<shard>.json              title -> page id and summary counts, sharded
@@ -266,8 +325,10 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   `subject_uri`, `outcome` (located, absent or unresolved), `status`, `basis` (the
   `location_key` of the location that justifies the status, or null), and `locations`,
   each with `library, repo, commit, declaration, module, path, line, end_line, relation,
-  proof_status, statement, rank, confidence, challenge, location_key, note` (`statement`
-  is the Prop-valued-definition flag, false when the record omits it). A passage also
+  proof_status, statement, rank, confidence, challenge, location_key, note` (`end_line`
+  only when the record has one; `statement` is the Prop-valued-definition flag, false
+  when the record omits it). `section` is the heading path (`[]` in the lead) and
+  `prominence` marks the article's `subject` passages. A passage also
   carries `absence {universe, universe_sha256, libraries, receipt, challenge}` or
   `unresolved {challenge}`; for a passage that is unresolved because its only locations
   are `relatedMatch`, `challenge` is its rank-1 location's and the locations are kept. A
@@ -302,7 +363,7 @@ nothing was written). Every check runs before any view is computed, and a value 
 wrong type (a list where a vocabulary word belongs, a number where `excluded` lists
 belong, `1e400`) is reported and dropped rather than used, so a malformed set is always a 2,
 never a crash that could be read as "`--check` found differences". A test sets nine
-hostile values (null, a bool, numbers, a string, lists, objects) into some 60 fields of
+hostile values (null, a bool, numbers, a string, lists, objects) into some 75 fields of
 the fixture in turn and requires a refusal or a build, never another exception. The tree
 is staged next to `--out` and moved into place, and the previous store is moved back if
 that fails, so a failed build leaves nothing half-written. `--out` is the store directory
@@ -312,7 +373,9 @@ build time (pass the same value to `--check`). `scripts/` is release-neutral, so
 builder can change without a release.
 
 The fixture lives in `scripts/atlas/fixtures/`. `make_fixture.py` writes `recordset/` (two
-synthetic articles that cover every outcome) and `store/` is its built store. The Python
+synthetic articles that cover every outcome, in exactly the agreed format: a lead
+passage, two subject passages, a location without `end_line`, a closeMatch from a
+challenge downgrade) and `store/` is its built store. The Python
 test pins both. The Worker tests and the browser harness read that same `store/`.
 
 ## 6. Store backend and publishing
@@ -348,7 +411,7 @@ many times over.
    `index/`, `manifest.json`), keyed by its path, overwriting what is there. That
    includes an existing `universes/<sha>.json`: the key is the producer's
    `universe_sha256`, which covers the libraries' ids, commits and index shas but not the
-   display metadata beside them (`src_dir`, `display_name`, exclusions), so the object is
+   metadata beside them (`display_name`, roots, toolchain, licence, exclusions), so the object is
    not content-addressed and a later campaign on the same frozen universe may change it.
    Each article object is self-contained, naming its own campaign, universe and record
    set.
@@ -399,9 +462,15 @@ and the live list filter.
   legend. Status and library are two facets combined with AND ("Showing 0 of 4 passages:
   Statement only, in Mathlib."); pressing a pressed chip clears its own facet. A chip with
   a zero count is shown flat and inert, like the dashboard's totals legend. A library with
-  only related declarations is labelled "related only".
+  only related declarations is labelled "related only". When the article has subject
+  passages (prominence `subject`), a "Subject" row names each one (its kind and quote,
+  linking its `#p-<hex>` block) with its status pill. The meta line names the campaign,
+  or for a run outside any campaign, the runs ("run L with challenge run C, outside any
+  campaign").
 - **Passage block.** Under a "Passages" heading, one `<h3>` per passage with its kind,
-  prominence and section path, beside a status pill (icon and word). A located passage
+  prominence and section path, beside a status pill (icon and word). A subject passage
+  carries a "Subject of the article" tag in place of the prominence word, the class
+  `is-subject` (an accent frame) and `data-prominence="subject"`. A located passage
   then says in visible text which location gives it its status, for example
   "Formalized: Mathlib states this exactly (proved).", naming the store's `basis`, not
   simply the rank-1 location. Then the quote with its context, and a link to the passage
@@ -413,9 +482,10 @@ and the live list filter.
   a proof-status badge. `statement only`, `wanted` and `axiom-dependent` are drawn as
   amber dashed alerts (the statement-only colour, not the not-formalized red) and are
   never hidden. Then the declaration (namespace faint, leaf bold,
-  wrapping at `.` and `_`), its module and lines, a convention note for close matches,
-  the provenance line (rank, confidence, challenge), and "Source @<sha7>" linking
-  `<repo>/blob/<commit>/<path>#L<line>-L<end_line>`.
+  wrapping at `.` and `_`), its module and lines ("lines 612–640", or "line 88" when the
+  record has no `end_line`), a convention note for close matches, the provenance line
+  (rank, confidence, challenge), and "Source @<sha7>" linking
+  `<repo>/blob/<commit>/<path>#L<line>-L<end_line>`, or `#L<line>` without an `end_line`.
 - **Absence:** "Searched N libraries in universe <id> (<frozen>) — not found", linking the
   universe page, with the receipt's counts. **Unresolved:** "Undecided", never counted as
   not formalized; a passage unresolved because only related declarations were found shows
@@ -427,7 +497,7 @@ and the live list filter.
   only states results never reads like one that proves them. The article list has a
   Libraries column (the index rows' `libraries`, as short names).
 - **Libraries** (`wiki/src/libraries.ts`, contract note 6). Names come from the seeds
-  (Mathlib, Lean core with `src/`, Batteries, TauCeti, Formal Conjectures, atlas-lean),
+  (Mathlib, Lean core, Batteries, TauCeti, Formal Conjectures, atlas-lean),
   then the FormalFrontier organisation pattern ("FormalFrontier · <repo>"), then
   owner/repo for any other GitHub repository. A universe entry's `display_name` is used
   only for a repository the seeds do not name, only when it is printable ASCII, and never
@@ -435,8 +505,9 @@ and the live list filter.
   `blob_url_template` is ignored (the builder refuses it): every source link is GitHub's
   blob scheme for the library's own repository, a non-GitHub repository gets none, and
   owner or repository names `.` and `..` get none. The universe page links a repository
-  only when it is `github.com/<owner>/<repo>` and names any other as text. The universe's
-  `src_dir` is kept.
+  only when it is `github.com/<owner>/<repo>` and names any other as text. A record's
+  `path` is relative to the repository root, so nothing is prefixed to it (Lean core's
+  paths already start `src/`).
 - **Accessibility.** Status is never shown by colour alone: each status has an icon, a word
   and its own stroke (solid, dashed, dotted, double, grey groove). Chips are real
   buttons with `aria-pressed`, and filter results are announced through a status region.
@@ -598,8 +669,8 @@ Each decision below comes with a recommendation.
    (false-not-formalized, §8.2). It needs a passage-level key, for example
    `(record id, universe sha)`. *Recommendation:* build it next, as a second verdict
    target.
-7. **The producer contract notes** (section 3) need formal-companion's agreement before the
-   first real set.
+7. **The producer contract notes** (section 3) other than the agreed format (note 10) need
+   formal-companion's agreement before the first real set.
 8. **Navigation.** `/atlas` is linked from atlas pages and from the article box, but not yet
    from the other shells' navigation. Adding it there changes cached bytes
    (`page:home`, `page:articles` and the render cache keys). *Recommendation:* add it in the
@@ -612,10 +683,15 @@ Each decision below comes with a recommendation.
   model (including each passage's basis and the per-library proof split), title shards,
   the §2.6 recomputation in both directions, its parity with the producer's truth table
   (`producer_derive_status.json`) and the §1.11 cases, the `statement` flag, related-only
-  passages, the other refusal cases (oldid, title keys, templates, dot-segment repos,
-  display names, renderer, malformed or duplicate-key YAML, unknown statuses, non-string
-  affixes), hostile values in some 60 fields (refused, never a crash), a YAML universe, and
-  the CLI (exit codes 2 and 3, and `--replace` refusing foreign content).
+  passages, the agreed record-set format (the seal's exact keys, campaign ids and run
+  tokens, `byte_budget` kept and enforced, the universe's sorted list and exact library
+  and exclusion keys, the pre-agreement shapes refused by name, `section` and
+  `prominence` on every record, optional but never null `end_line`, closeMatch notes,
+  minimal absence ends, `universe.yaml` refused), the other refusal cases (oldid, title
+  keys, templates, dot-segment repos, display names, renderer, unknown statuses,
+  non-string affixes), hostile values in some 75 fields of the records, sources, universe
+  and seal (refused, never a crash), and the CLI (exit codes 2 and 3, and `--replace`
+  refusing foreign content).
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
   pages on the fixture store, 404s, escaping and integer-only numbers, the headings, the
   visible status sentence and its basis, the shard cache and the search limiter, feedback
@@ -624,14 +700,18 @@ Each decision below comes with a recommendation.
   `RESEARCH_EXPORT_SALT` salt, the security headers on every atlas response and the pages'
   CSP fit (same-origin loads only, no inline handlers), the article box with its cache
   isolation and revision note, the readers, non-array universe lists, related-only and
-  Prop-valued-definition passages, the producer's truth table for the page's fallback
-  rows, and the library registry (seeded names, look-alike display names, ignored
-  templates, dot segments, GitHub-only repository links).
+  Prop-valued-definition passages, the subject passage's marking and its Subject row, a
+  location without `end_line` ("line 88", `#L88`), a run-token campaign on the pages and
+  in feedback (`CAMPAIGN_RE`, the same grammar as the builder's), the producer's truth
+  table for the page's fallback rows, and the library registry (seeded names, look-alike
+  display names, ignored templates, repository-relative paths, dot segments,
+  GitHub-only repository links).
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
   schemes at desktop width and at 375px, plus the combined filters, feedback, live search,
-  a passage permalink and the article box, and runs those flows again with the Worker's
+  a passage permalink, the Subject row's link and the article box, and runs those flows
+  again with the Worker's
   Report-Only CSP enforced, asserting no violation.
 - `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
   body caps and scans `wiki/src` so that no route reads a JSON body except through

@@ -15,8 +15,9 @@
 // link uses GitHub's blob scheme for the library's own github.com/<owner>/<repo>:
 // a universe's blob_url_template is ignored (the builder refuses one), and a
 // non-GitHub repository gets no source link rather than a guessed one, and no
-// repository link either. The universe's src_dir (the directory a record's
-// path is relative to) is kept.
+// repository link either. A record's path is relative to the repository root
+// (the agreed record-set format: Lean core's files are "src/Init/…"), so a
+// link is <repo>/blob/<commit>/<path> with nothing prefixed.
 
 export interface UniverseLibrary {
   id: string;
@@ -25,7 +26,6 @@ export interface UniverseLibrary {
   display_name?: string;
   // Not part of the contract (the builder refuses it); ignored if present.
   blob_url_template?: string;
-  src_dir?: string;
   brain_lib?: string;
   toolchain?: string;
   licence?: string;
@@ -39,8 +39,6 @@ export interface LibraryInfo {
   short: string;
   // {repo} {commit} {path} {line} {end_line}; null = no pinned source link.
   blobTemplate: string | null;
-  // Directory the record's path is relative to inside the repository.
-  srcDir: string | null;
 }
 
 const GITHUB_BLOB = "{repo}/blob/{commit}/{path}#L{line}-L{end_line}";
@@ -66,15 +64,14 @@ export function repoHref(repo: string): string | null {
 interface Seed {
   repo: string;
   name: string;
-  srcDir?: string;
 }
 
 // Seeded from repos.ts GLOBAL_SOURCES plus the universe libraries the locate
 // proposal names (§2.3: Lean core and Batteries are libraries of their own).
 const SEEDS: Seed[] = [
   { repo: "https://github.com/leanprover-community/mathlib4", name: "Mathlib" },
-  // Init, Std and Lean live under src/ in the lean4 repository.
-  { repo: "https://github.com/leanprover/lean4", name: "Lean core", srcDir: "src" },
+  // Init, Std and Lean live under src/ in the lean4 repository; record paths say so.
+  { repo: "https://github.com/leanprover/lean4", name: "Lean core" },
   { repo: "https://github.com/leanprover-community/batteries", name: "Batteries" },
   { repo: "https://github.com/TauCetiProject/TauCeti", name: "TauCeti" },
   { repo: "https://github.com/google-deepmind/formal-conjectures", name: "Formal Conjectures" },
@@ -131,7 +128,6 @@ export function libraryInfo(repo: string, entry?: UniverseLibrary | null): Libra
   const ff = github && github[0].toLowerCase() === "formalfrontier" ? github[1] : null;
   let name = seed?.name ?? (ff ? `FormalFrontier · ${ff}` : github ? `${github[0]}/${github[1]}` : clean);
   const blobTemplate: string | null = github ? GITHUB_BLOB : null;
-  let srcDir: string | null = seed?.srcDir ?? null;
   if (entry) {
     const display = typeof entry.display_name === "string" ? entry.display_name.replace(/ +/g, " ").trim() : "";
     // Chips show the name without its "(qualifier)", so that form is checked too.
@@ -140,10 +136,9 @@ export function libraryInfo(repo: string, entry?: UniverseLibrary | null): Libra
     if (!seed && display && DISPLAY_NAME_RE.test(display) && !claims(display) && !claims(withoutQualifier(display))) {
       name = display;
     }
-    if (typeof entry.src_dir === "string" && safeRelativePath(entry.src_dir)) srcDir = entry.src_dir;
   }
   const short = withoutQualifier(name) || name;
-  return { repo: clean, name, short, blobTemplate, srcDir };
+  return { repo: clean, name, short, blobTemplate };
 }
 
 // A repository-relative path a link may name: no absolute, parent, empty or
@@ -158,19 +153,19 @@ const COMMIT_RE = /^[0-9a-f]{40}$/;
 // The pinned source link for one location, or null when the library has no
 // template or any part fails validation. Every substituted part is encoded,
 // so a hostile path can neither leave the repository nor break an attribute.
+// end_line is optional (an index such as atlas's records only line): without
+// it the link names the one line, #L<line>.
 export function sourceUrl(
   info: LibraryInfo,
   loc: { commit: string; path: string; line?: number | null; end_line?: number | null },
 ): string | null {
   if (!info.blobTemplate || !COMMIT_RE.test(loc.commit) || !safeRelativePath(loc.path)) return null;
-  const full = info.srcDir ? `${info.srcDir}/${loc.path}` : loc.path;
-  if (!safeRelativePath(full)) return null;
   const line = Number.isSafeInteger(loc.line) && (loc.line as number) >= 1 ? (loc.line as number) : null;
   const end = Number.isSafeInteger(loc.end_line) && (loc.end_line as number) >= (line ?? 1) ? (loc.end_line as number) : line;
   let url = info.blobTemplate
     .replaceAll("{repo}", info.repo)
     .replaceAll("{commit}", loc.commit)
-    .replaceAll("{path}", full.split("/").map(encodeURIComponent).join("/"));
+    .replaceAll("{path}", loc.path.split("/").map(encodeURIComponent).join("/"));
   if (line === null) {
     url = url.replace(/#.*$/, "");
   } else {

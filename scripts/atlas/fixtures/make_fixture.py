@@ -9,15 +9,17 @@ them; `FormalFrontier/WidgetTheory` is a made-up repository in a real
 organisation, standing in for any of its ~50 repositories. Nothing here is a
 claim about Wikipedia or about any library.
 
-The records follow docs/proposals/wikipedia-locate.md §2.7 of the
-formal-companion skill (proposal v2, 2026-10-17), with two deliberate
-differences, both recorded in docs/ATLAS.md ("Contract notes"):
-
-* every CSL `citation` carries an `id`, which the vendored Literature Links
-  schema requires and the proposal's example omits;
-* the "Widget lemma" records carry the optional `section` and `prominence`
-  fields in the record's locate extension, which WikiLean asks the producer to
-  add; the "Gadget (mathematics)" records omit them, so both shapes are tested.
+The set is in exactly the record-set format formal-companion and WikiLean
+agreed (docs/ATLAS.md section 3): SEAL.json with set_id, a campaign token and
+byte_budget 0; universe.json with its libraries as a list sorted by id, each with
+brain_lib, roots, toolchain and licence {spdx}; every record with its passage's
+section and prominence; minimal {type, uri, version} lean ends on the absence;
+and one location (FormalFrontier's) whose index records only `line`, so its lean
+end has no end_line, as atlas's published index gives none. Its closeMatch was
+produced by a challenge downgrade, so its note is the challenger's witness
+sentence. One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
+("Contract notes"): every CSL `citation` carries an `id`, which the vendored
+Literature Links schema requires and the proposal's example omits.
 
 Run it after editing a value here; it rewrites recordset/ (SEAL.json included)
 deterministically, and scripts/atlas/test_build_store.py fails while the
@@ -39,7 +41,9 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / "recordset"
 LOCATE = "org.mathlib-initiative.formal-companion.locate"
 UNIVERSE_ID = "u-fixture"
+# A campaign id. A run outside any campaign would be "run:<run-id>[+<challenge-run-id>]".
 CAMPAIGN = "fixture-2026-10"
+SET_ID = "fixture-set"
 
 
 def fake_hex(label: str, length: int) -> str:
@@ -51,47 +55,49 @@ def dumps(value: object) -> str:
     return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
 
 
+# Sorted by id, as the agreed universe.json lists them.
 LIBRARIES = [
-    {"id": "mathlib", "brain_lib": "Mathlib", "display_name": "Mathlib",
-     "repo": "https://github.com/leanprover-community/mathlib4", "roots": ["Mathlib"],
-     "licence": {"spdx": "Apache-2.0"}},
-    # display_name differs from the registry's "Lean core": for a seeded repository
-    # the registry's name wins, so a universe cannot relabel a library.
-    {"id": "lean-core", "brain_lib": "Lean", "display_name": "Lean 4 core (Init, Std, Lean)",
-     "repo": "https://github.com/leanprover/lean4", "roots": ["Init", "Std", "Lean"],
-     "licence": {"spdx": "Apache-2.0"}, "src_dir": "src"},
     {"id": "batteries", "brain_lib": "Batteries", "display_name": "Batteries",
      "repo": "https://github.com/leanprover-community/batteries", "roots": ["Batteries"],
-     "licence": {"spdx": "Apache-2.0"}},
-    {"id": "tauceti", "brain_lib": "TauCeti", "display_name": "TauCeti",
-     "repo": "https://github.com/TauCetiProject/TauCeti", "roots": ["TauCeti"],
      "licence": {"spdx": "Apache-2.0"}},
     # No display_name: the Worker's registry names it from the repository pattern.
     {"id": "ff-widgets", "brain_lib": "WidgetTheory",
      "repo": "https://github.com/FormalFrontier/WidgetTheory", "roots": ["WidgetTheory"],
      "licence": {"spdx": "Apache-2.0"}},
+    # display_name differs from the registry's "Lean core": for a seeded repository
+    # the registry's name wins, so a universe cannot relabel a library.
+    {"id": "lean-core", "brain_lib": "Lean", "display_name": "Lean 4 core (Init, Std, Lean)",
+     "repo": "https://github.com/leanprover/lean4", "roots": ["Init", "Std", "Lean"],
+     "licence": {"spdx": "Apache-2.0"}},
+    {"id": "mathlib", "brain_lib": "Mathlib", "display_name": "Mathlib",
+     "repo": "https://github.com/leanprover-community/mathlib4", "roots": ["Mathlib"],
+     "licence": {"spdx": "Apache-2.0"}},
+    {"id": "tauceti", "brain_lib": "TauCeti", "display_name": "TauCeti",
+     "repo": "https://github.com/TauCetiProject/TauCeti", "roots": ["TauCeti"],
+     "licence": {"spdx": "Apache-2.0"}},
 ]
+assert [lib["id"] for lib in LIBRARIES] == sorted(lib["id"] for lib in LIBRARIES)
 for _lib in LIBRARIES:
     _lib["commit"] = fake_hex("commit " + _lib["id"], 40)
     _lib["toolchain"] = "leanprover/lean4:v4.24.0"
-    _lib["index"] = {"path": f"index/{_lib['id']}/", "sha256": fake_hex("index " + _lib["id"], 64),
-                     "declarations": 1000 + len(_lib["id"])}
 LIB = {lib["id"]: lib for lib in LIBRARIES}
+# Each library index's sha. The universe sha covers it, but universe.json does not
+# carry it (the agreed format has no index field).
+INDEX_SHA = {lib["id"]: fake_hex("index " + lib["id"], 64) for lib in LIBRARIES}
 
 # The fixture's own reading of "sha over sorted (id, commit, index sha)"
 # (proposal §2.3). The consumer treats the value as opaque and checks only that
 # SEAL.json, universe.json and every record agree on it.
 UNIVERSE_SHA = hashlib.sha256("".join(
-    f"{lib['id']}\t{lib['commit']}\t{lib['index']['sha256']}\n"
+    f"{lib['id']}\t{lib['commit']}\t{INDEX_SHA[lib['id']]}\n"
     for lib in sorted(LIBRARIES, key=lambda lib: lib["id"])).encode()).hexdigest()
 
 UNIVERSE = {
     "id": UNIVERSE_ID,
+    "universe_sha256": UNIVERSE_SHA,
     "frozen": "2026-10-17",
     "libraries": LIBRARIES,
-    "excluded": [{"id": "atlas-lean", "repo": "https://github.com/facebookresearch/atlas-lean",
-                  "reason": "licence forbids ML evaluation use"}],
-    "universe_sha256": UNIVERSE_SHA,
+    "excluded": [{"id": "atlas-lean", "reason": "licence forbids ML evaluation use"}],
 }
 
 SOURCES = [
@@ -128,24 +134,26 @@ def subject(source_id: str, quote: dict) -> dict:
     }
 
 
-def passage_ext(item: str, extra: dict, layout: dict | None) -> dict:
-    ext = {"item": item, "universe": UNIVERSE_ID, "universe_sha256": UNIVERSE_SHA, **extra}
-    if layout:
-        ext.update(layout)
-    return ext
+def passage_ext(item: str, extra: dict, layout: dict) -> dict:
+    """The record's locate extension: every record carries its passage's section and prominence."""
+    return {"item": item, "universe": UNIVERSE_ID, "universe_sha256": UNIVERSE_SHA,
+            "section": layout["section"], "prominence": layout["prominence"], **extra}
 
 
 def location(source_id: str, item: str, kind: str, quote: dict, status: str, loc: dict,
-             layout: dict | None) -> dict:
+             layout: dict) -> dict:
     lib = LIB[loc["library"]]
+    end_ext = {"library": loc["library"], "path": loc["path"], "line": loc["line"],
+               "proof_status": loc["proof_status"]}
+    if "end_line" in loc:  # absent when the library index records only line
+        end_ext["end_line"] = loc["end_line"]
     record = {
         "id": f"{source_id}::{item}",
         "subject": [subject(source_id, quote)],
         "object": [{
             "type": "lean", "uri": lib["repo"], "version": lib["commit"], "role": "key",
             "location": {"declaration": loc["declaration"], "module": loc["module"]},
-            "extensions": {LOCATE: {"library": loc["library"], "path": loc["path"], "line": loc["line"],
-                                    "end_line": loc["end_line"], "proof_status": loc["proof_status"]}},
+            "extensions": {LOCATE: end_ext},
         }],
         "relation": loc["relation"], "status": status, "kind": kind,
         "extensions": {LOCATE: passage_ext(item, {
@@ -170,10 +178,11 @@ RECEIPT_BYTES = (dumps(RECEIPT) + "\n").encode()
 RECEIPT_SHA = hashlib.sha256(RECEIPT_BYTES).hexdigest()
 
 
-def absence(source_id: str, item: str, kind: str, quote: dict, layout: dict | None) -> dict:
+def absence(source_id: str, item: str, kind: str, quote: dict, layout: dict) -> dict:
     return {
         "id": f"{source_id}::{item}",
         "subject": [subject(source_id, quote)],
+        # One minimal lean end per universe library, in universe order: no role, no extensions.
         "object": [{"type": "lean", "uri": lib["repo"], "version": lib["commit"]} for lib in LIBRARIES],
         "relation": "noMatch", "status": "not_formalized", "kind": kind,
         "extensions": {LOCATE: passage_ext(item, {
@@ -183,7 +192,7 @@ def absence(source_id: str, item: str, kind: str, quote: dict, layout: dict | No
     }
 
 
-def unresolved(source_id: str, item: str, kind: str, quote: dict, layout: dict | None) -> dict:
+def unresolved(source_id: str, item: str, kind: str, quote: dict, layout: dict) -> dict:
     return {
         "id": f"{source_id}::{item}",
         "subject": [subject(source_id, quote)],
@@ -197,7 +206,8 @@ def widget_records() -> list[dict]:
     sid = "enwiki-1001-2002"
     p1 = {"exact": "every finite widget admits a spanning gadget",
           "prefix": "The widget lemma states that ", "suffix": " of minimal degree."}
-    p1_layout = {"section": ["Statement"], "prominence": "central"}
+    # The article's subject: the theorem the article is named for.
+    p1_layout = {"section": ["Statement"], "prominence": "subject"}
     p2 = {"exact": "the number of spanning gadgets is at most the widget's rank",
           "prefix": "Moreover, ", "suffix": "."}
     p2_layout = {"section": ["Statement", "Bounds"], "prominence": "supporting"}
@@ -216,9 +226,11 @@ def widget_records() -> list[dict]:
         location(sid, "In-text #3fa91c07", "theorem", p1, "formalized", {
             "library": "ff-widgets", "declaration": "WidgetTheory.spanning_gadget_exists",
             "module": "WidgetTheory.Spanning", "path": "WidgetTheory/Spanning.lean",
-            "line": 88, "end_line": 104, "proof_status": "proved", "relation": "closeMatch",
+            # Line only, as atlas's published index gives it: no end_line.
+            "line": 88, "proof_status": "proved", "relation": "closeMatch",
+            # A challenge downgraded the worker's exactMatch: the note is the challenger's witness.
             "note": "Counts gadgets from 1, where the article counts from 0.",
-            "rank": 2, "confidence": "medium", "challenge": "not_required"}, p1_layout),
+            "rank": 2, "confidence": "medium", "challenge": "downgraded"}, p1_layout),
         location(sid, "In-text #5b0e44a1", "theorem", p2, "statement_only", {
             "library": "tauceti", "declaration": "TauCeti.Widget.gadget_count_le_rank",
             "module": "TauCeti.Widget.Bounds", "path": "TauCeti/Widget/Bounds.lean",
@@ -238,11 +250,13 @@ def gadget_records() -> list[dict]:
     sid = "enwiki-1003-2004"
     quote = {"exact": "a gadget is a widget together with a chosen basepoint",
              "prefix": "In combinatorics, ", "suffix": "."}
+    # The lead's defining sentence: no heading above it, and the article's subject.
+    layout = {"section": [], "prominence": "subject"}
     return [location(sid, "In-text #7d2c9e10", "definition", quote, "formalized", {
         "library": "mathlib", "declaration": "Gadget",
         "module": "Mathlib.Combinatorics.Widget.Gadget", "path": "Mathlib/Combinatorics/Widget/Gadget.lean",
         "line": 15, "end_line": 28, "proof_status": "definition", "relation": "exactMatch",
-        "rank": 1, "confidence": "high", "challenge": "survived"}, None)]
+        "rank": 1, "confidence": "high", "challenge": "survived"}, layout)]
 
 
 def files() -> dict[str, bytes]:
@@ -255,11 +269,14 @@ def files() -> dict[str, bytes]:
     }
     seal = {
         "schema": "cf-locate-recordset/1",
+        "set_id": SET_ID,
         "campaign": CAMPAIGN,
-        "universe": {"id": UNIVERSE_ID, "sha256": UNIVERSE_SHA},
+        "universe": {"id": UNIVERSE_ID, "universe_sha256": UNIVERSE_SHA},
         "sourceset": {"id": "ss-fixture", "manifest_sha256": fake_hex("sourceset manifest", 64)},
         "skill_commit": fake_hex("skill commit", 40),
         "created": "2026-10-17T12:00:00Z",
+        # The export's default for a sealed set: no per-source byte budget.
+        "byte_budget": 0,
         "files": {path: hashlib.sha256(data).hexdigest() for path, data in sorted(out.items())},
     }
     out["SEAL.json"] = (json.dumps(seal, ensure_ascii=False, sort_keys=True, indent=2) + "\n").encode()

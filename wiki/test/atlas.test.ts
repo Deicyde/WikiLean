@@ -17,10 +17,10 @@ import {
   WIDGET_PAGEID,
 } from "./helpers/atlas.js";
 import {
-  ATLAS_PSEUDONYM_DOMAIN, INDEX_CACHE_MS, atlasHref, kvReader, loadArticle, loadIndexShard, lookupTitle, memoryReader,
-  parsePageid, staticReader, titleKey, titleShard,
+  ATLAS_PSEUDONYM_DOMAIN, CAMPAIGN_RE, INDEX_CACHE_MS, atlasHref, kvReader, loadArticle, loadIndexShard, lookupTitle,
+  memoryReader, parsePageid, staticReader, titleKey, titleShard,
 } from "../src/atlas.js";
-import { atlasSummaryBox, locationStatus } from "../src/atlas-render.js";
+import { atlasSummaryBox, campaignLabel, locationStatus } from "../src/atlas-render.js";
 import { libraryInfo, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectAtlasSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
@@ -147,11 +147,12 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain("<title>WikiLean · Formalization atlas</title>");
     expect(html).toContain("2 articles · 5 passages · 4 Lean locations · 1 related declaration");
     expect(html).toContain('aria-label="5 passages: 2 formalized, 1 statement only, 1 not formalized, 1 undecided"');
-    // By library, in universe order. Seeded repositories keep the registry's
-    // name (the universe's "Lean 4 core (Init, Std, Lean)" is not used).
-    for (const name of ["Mathlib", "Lean core", "Batteries", "TauCeti", "FormalFrontier · WidgetTheory"]) {
-      expect(html).toContain(`<th scope="row">${name}</th>`);
-    }
+    // By library, in universe order (by id). Seeded repositories keep the
+    // registry's name (the universe's "Lean 4 core (Init, Std, Lean)" is not used).
+    const names = ["Batteries", "FormalFrontier · WidgetTheory", "Lean core", "Mathlib", "TauCeti"];
+    const at = names.map((name) => html.indexOf(`<th scope="row">${name}</th>`));
+    expect(at.every((i) => i > 0)).toBe(true);
+    expect([...at].sort((a, b) => a - b)).toEqual(at);
     expect(html).not.toContain("Lean 4 core");
     // Complete and incomplete locations are separate columns: TauCeti only
     // states its result, so it is never counted like a proved Mathlib row.
@@ -166,9 +167,12 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('data-shards="1 8"');
     // Where each article is formalized: a Libraries column from the index.
     expect(html).toContain('<th scope="col">Libraries</th>');
-    expect(html).toContain('title="Mathlib · https://github.com/leanprover-community/mathlib4">Mathlib</span> ' +
+    expect(html).toContain('title="FormalFrontier · WidgetTheory · https://github.com/FormalFrontier/WidgetTheory">FormalFrontier · WidgetTheory</span> ' +
+      '<span class="atlas-libtag" title="Mathlib · https://github.com/leanprover-community/mathlib4">Mathlib</span> ' +
       '<span class="atlas-libtag" title="TauCeti · https://github.com/TauCetiProject/TauCeti">TauCeti</span>');
-    expect(html).toContain("data-library-names=\"{&quot;mathlib&quot;:&quot;Mathlib&quot;");
+    expect(html).toContain("data-library-names=\"{&quot;batteries&quot;:&quot;Batteries&quot;,&quot;ff-widgets&quot;");
+    expect(html).toContain("&quot;mathlib&quot;:&quot;Mathlib&quot;");
+    expect(html).toContain('<p class="atlas-meta">Campaign fixture-2026-10 · <a href="/atlas/universe/');
     // The bar's legend: each totals chip carries its fill's swatch.
     expect(html).toContain('<span class="atlas-swatch" data-status="unresolved" aria-hidden="true"></span>');
     // Every table that can scroll sideways is a labelled, focusable region.
@@ -177,7 +181,7 @@ describe("atlas pages with the fixture store", () => {
     }
     expect(html).toContain('<a class="wl-navlink" href="/atlas" aria-current="page">Atlas</a>');
     expect(html).toContain('<script src="/assets/atlas.js?v=2"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=2">');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=3">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
   });
 
@@ -228,7 +232,20 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<section class="atlas-strip" aria-labelledby="atlas-h-coverage">\n<h2 class="atlas-h2" id="atlas-h-coverage">Coverage</h2>');
     expect(html).toContain('<h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>');
     expect(html.match(/<h3 class="atlas-p-h">/g)).toHaveLength(4);
-    expect(html).toContain('<h3 class="atlas-p-h"><span class="atlas-eyebrow">Theorem · central</span><span class="atlas-section">');
+    // The article's subject passage is marked: a tag in its heading, a class on
+    // its block, and a "Subject" row in the strip linking it. Other passages
+    // keep their prominence in the eyebrow.
+    expect(html).toContain('<h3 class="atlas-p-h"><span class="atlas-eyebrow">Theorem</span>' +
+      '<span class="atlas-subject">Subject of the article</span><span class="atlas-section">Statement</span></h3>');
+    expect(html).toContain('<li class="atlas-passage is-subject" id="p-3fa91c07" data-status="formalized" data-prominence="subject"');
+    expect(html.match(/class="atlas-passage is-subject"/g)).toHaveLength(1);
+    expect(html.match(/class="atlas-subject"/g)).toHaveLength(1);
+    expect(html).toContain('<span class="atlas-eyebrow">Definition · central</span><span class="atlas-section">Definitions</span>');
+    expect(html).toContain('<li class="atlas-passage" id="p-5b0e44a1" data-status="statement_only" data-prominence="supporting"');
+    expect(html).toContain('<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-subject">Subject</span>' +
+      '<ul class="atlas-subject-list" aria-labelledby="atlas-h-subject"><li><a href="#p-3fa91c07">Theorem: “every finite widget admits a spanning gadget”</a> ' +
+      '<span class="atlas-pill" data-status="formalized">');
+    expect(html).toContain("Searched <a href=\"/atlas/universe/" + FIXTURE_UNIVERSE_SHA + "\">universe u-fixture</a>: 5 libraries, frozen 2026-10-17, 1 excluded · campaign fixture-2026-10</p>");
     expect(html).toContain('<h4 class="atlas-related-h">Related, but states something else</h4>');
     // Only the dashboard is the Atlas nav link's own page.
     expect(html).toContain('<a class="wl-navlink" href="/atlas">Atlas</a>');
@@ -268,6 +285,16 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<span class="atlas-ps is-alert" data-proof="statement_only"');
     expect(html).toContain("close match");
     expect(html).toContain("Counts gadgets from 1, where the article counts from 0.");
+    // A lean end with no end_line (its index records only line): "line N", and
+    // the source link names that one line.
+    const ff = fixtureArticle().passages[0].locations[1];
+    expect(ff.library).toBe("ff-widgets");
+    expect(ff).not.toHaveProperty("end_line");
+    expect(html).toContain('<p class="atlas-module">WidgetTheory.Spanning · line 88</p>');
+    expect(html).toContain(`href="https://github.com/FormalFrontier/WidgetTheory/blob/${ff.commit}/WidgetTheory/Spanning.lean#L88"`);
+    expect(html).toContain(`(opens FormalFrontier · WidgetTheory at commit ${ff.commit.slice(0, 7)}, line 88)`);
+    expect(html).toContain("a challenger downgraded it");
+    expect(html).toContain('<p class="atlas-module">Mathlib.Combinatorics.Widget.Basic · lines 612–640</p>');
     // Absence and undecided.
     expect(html).toContain(`Searched 5 libraries in universe <a href="/atlas/universe/${FIXTURE_UNIVERSE_SHA}">u-fixture</a> (2026-10-17) — not found.`);
     expect(html).toContain("Related, but states something else");
@@ -289,11 +316,12 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain(`<a href="/${SLUG}">Annotated article on WikiLean</a>`);
   });
 
-  it("a small article that follows proposal §2.7 exactly (no section, no prominence) renders", async () => {
+  it("a lead passage (section []) that is the article's subject renders without a section", async () => {
     const h = bound();
     const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
-    expect(html).toContain('<span class="atlas-eyebrow">Definition</span>');
+    expect(html).toContain('<span class="atlas-eyebrow">Definition</span><span class="atlas-subject">Subject of the article</span></h3>');
     expect(html).not.toContain("atlas-section");
+    expect(html).toContain('<a href="#p-7d2c9e10">Definition: “a gadget is a widget together with a chosen basepoint”</a>');
     expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
     // One passage is "1 passage", in the strip and in the bar's name.
     expect(html).toContain('aria-label="1 passage: 1 formalized"');
@@ -392,7 +420,8 @@ describe("atlas pages with the fixture store", () => {
     files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
     bindAtlas(h.env, files);
     const html = await (await get(h.env, WIDGET_PATH)).text();
-    const block = html.slice(html.indexOf('<li class="atlas-passage" id="p-3fa91c07"'), html.indexOf("</li>", html.indexOf('id="p-3fa91c07"')));
+    const block = html.slice(html.indexOf('<li class="atlas-passage is-subject" id="p-3fa91c07"'), html.indexOf("</li>", html.indexOf('id="p-3fa91c07"')));
+    expect(block.length).toBeGreaterThan(0);
     expect(block).toContain('data-status="unresolved"');
     expect(block).toContain("Related, but states something else");
     expect(block).toContain("Widget.<wbr>");
@@ -609,6 +638,55 @@ describe("atlas feedback", () => {
   });
 });
 
+// SEAL.json's campaign is always a token: the campaign id, or for a run outside
+// any campaign "run:<run-id>[+<challenge-run-id>]" (build_store.CAMPAIGN_RE).
+describe("a record set from a run outside any campaign", () => {
+  const RUN = "run:loc-smoke-2+chal-smoke-2";
+
+  function runStore(): Map<string, string> {
+    const files = atlasFixtureFiles();
+    for (const [key, value] of files) {
+      if (key === "atlas/v1/current.json" || key.startsWith("atlas/v1/articles/")) {
+        const doc = JSON.parse(value);
+        doc.campaign = RUN;
+        files.set(key, JSON.stringify(doc));
+      }
+    }
+    return files;
+  }
+
+  it("names the runs on the pages, and takes feedback under the run token", async () => {
+    const h = setup();
+    bindAtlas(h.env, runStore());
+    const page = await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text();
+    expect(page).toContain(" · run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign</p>");
+    expect(page).toContain(`data-campaign="${RUN}"`);
+    const dashboard = await (await get(h.env, "/atlas")).text();
+    expect(dashboard).toContain('<p class="atlas-meta">Run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign · ');
+    const res = await post(h.env, "/api/atlas/feedback", feedback({ campaign: RUN }), { user: "u-human" });
+    expect(res.status).toBe(200);
+    expect(feedbackRows(h)[0]).toMatchObject({ campaign: RUN, verdict: "confirm" });
+    // The fixture's campaign id is now stale for this store.
+    expect((await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" })).status).toBe(409);
+    for (const campaign of ["run:loc-smoke-2+chal-smoke-2+x", "run:", "run:a+", "run:a:b", ""]) {
+      const bad = await post(h.env, "/api/atlas/feedback", feedback({ campaign }), { user: "u-human" });
+      expect(bad.status, campaign).toBe(400);
+    }
+  });
+
+  it("accepts exactly the tokens the builder accepts", () => {
+    for (const token of ["run:loc-smoke-2", RUN, "tier-a:shard-03", FIXTURE_CAMPAIGN]) {
+      expect(CAMPAIGN_RE.test(token), token).toBe(true);
+    }
+    for (const token of ["", "run:", "run:loc+", "run:+chal", "run:a+b+c", "run:a:b", "run:a b", "loc smoke", "-x",
+      "x".repeat(129), "run:" + "x".repeat(65), "fixture\n"]) {
+      expect(CAMPAIGN_RE.test(token), JSON.stringify(token)).toBe(false);
+    }
+    expect(campaignLabel("run:loc-1")).toBe("run loc-1, outside any campaign");
+    expect(campaignLabel(FIXTURE_CAMPAIGN)).toBe("campaign fixture-2026-10");
+  });
+});
+
 describe("atlas feedback export", () => {
   it("is pipeline-bearer only", async () => {
     const h = bound();
@@ -779,7 +857,7 @@ describe("atlas security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/atlas.css?v=2"]);
+    expect(box.urls).toEqual(["/assets/atlas.css?v=3"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -937,14 +1015,19 @@ describe("library registry", () => {
     expect(libraryInfo(ff.repo, { ...ff, display_name: "Mathlib widgets" }).name).toBe("FormalFrontier · WidgetTheory");
   });
 
-  it("builds pinned GitHub source links only, honouring src_dir, and refuses unsafe parts", () => {
+  it("builds pinned GitHub source links only, from repository-relative paths, and refuses unsafe parts", () => {
     const mathlib = libraryInfo("https://github.com/leanprover-community/mathlib4");
     expect(sourceUrl(mathlib, { commit: COMMIT, path: "Mathlib/A B.lean", line: 3, end_line: 9 }))
       .toBe(`https://github.com/leanprover-community/mathlib4/blob/${COMMIT}/Mathlib/A%20B.lean#L3-L9`);
     expect(sourceUrl(mathlib, { commit: COMMIT, path: "Mathlib/A.lean", line: 3, end_line: 3 }))
       .toBe(`https://github.com/leanprover-community/mathlib4/blob/${COMMIT}/Mathlib/A.lean#L3`);
+    // end_line is optional: without it the link names the one line.
+    expect(sourceUrl(mathlib, { commit: COMMIT, path: "Mathlib/A.lean", line: 81 }))
+      .toBe(`https://github.com/leanprover-community/mathlib4/blob/${COMMIT}/Mathlib/A.lean#L81`);
+    // A path is relative to the repository root, so Lean core's records say
+    // src/Init/..., and nothing is prefixed (no src/src/...).
     const core = libraryInfo("https://github.com/leanprover/lean4");
-    expect(sourceUrl(core, { commit: COMMIT, path: "Init/Core.lean", line: 1, end_line: 2 }))
+    expect(sourceUrl(core, { commit: COMMIT, path: "src/Init/Core.lean", line: 1, end_line: 2 }))
       .toBe(`https://github.com/leanprover/lean4/blob/${COMMIT}/src/Init/Core.lean#L1-L2`);
     // A universe's blob_url_template is ignored: a non-GitHub library gets no
     // link, and a GitHub one keeps GitHub's blob scheme for its own repository.

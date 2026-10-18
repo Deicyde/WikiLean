@@ -2,9 +2,11 @@
 """Build WikiLean's read-only formalization-atlas store from one sealed locate record set.
 
 New code. Design and contracts: docs/ATLAS.md. The input is the sealed record set
-the formal-companion skill's locate pipeline exports (its proposal
-docs/proposals/wikipedia-locate.md, §2.6, §2.7 and §11.1; its
-references/locate-documents.md §6). The output is a static tree the Worker reads
+the formal-companion skill's locate pipeline exports, in exactly the record-set
+format the two sides agreed (docs/ATLAS.md section 3: its proposal
+docs/proposals/wikipedia-locate.md §2.3, §2.6, §2.7 and §11.1, and its
+references/locate-documents.md §6, made precise); any other shape is refused with
+a message naming the key or rule. The output is a static tree the Worker reads
 through the optional ATLAS binding (wiki/src/atlas.ts):
 
     <out>/atlas/v1/current.json                 campaign, universe, counts, build time
@@ -14,7 +16,8 @@ through the optional ATLAS binding (wiki/src/atlas.ts):
     <out>/atlas/v1/records/<pageid>.jsonl       that article's Literature Links records, verbatim
     <out>/atlas/v1/index/<shard>.json           title -> page id + summary, hash-sharded
 
-Usage (Python 3.12, standard library plus the CI's pinned jsonschema):
+Usage (Python 3.12, standard library plus the CI's pinned jsonschema, through
+site/native_annotations.py):
 
     python3 scripts/atlas/build_store.py --record-set <set-dir> --out <store-dir>
     python3 scripts/atlas/build_store.py --record-set <set-dir> --out <store-dir> --check
@@ -94,24 +97,42 @@ QUOTE_MAX_WORDS = 12       # exported quote caps, proposal §2.7 and §10
 AFFIX_MAX_CHARS = 32
 MIN_ABSENCE_QUERIES = 3    # gate rule 5, proposal §4
 
-HEX40 = re.compile(r"^[0-9a-f]{40}$")
-HEX64 = re.compile(r"^[0-9a-f]{64}$")
-ITEM_RE = re.compile(r"^In-text #[0-9a-f]{8,16}$")
-SOURCE_ID_RE = re.compile(r"^enwiki-([1-9][0-9]*)-([1-9][0-9]*)$")
-TOKEN_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
-CREATED_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z$")
-DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+HEX40 = re.compile(r"^[0-9a-f]{40}\Z")
+HEX64 = re.compile(r"^[0-9a-f]{64}\Z")
+ITEM_RE = re.compile(r"^In-text #[0-9a-f]{8,16}\Z")
+SOURCE_ID_RE = re.compile(r"^enwiki-([1-9][0-9]*)-([1-9][0-9]*)\Z")
+TOKEN_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}\Z")
+# SEAL.json's campaign: the campaign id, or for a run outside any campaign
+# "run:<run-id>[+<challenge-run-id>]". A campaign id never starts "run:", and a run id
+# has no ":" or "+", so the two forms cannot be confused. wiki/src/atlas.ts CAMPAIGN_RE
+# is the same pattern (the feedback route checks a posted campaign against it).
+RUN_ID = r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}"
+CAMPAIGN_RE = re.compile(rf"^(?:run:{RUN_ID}(?:\+{RUN_ID})?|(?!run:)[A-Za-z0-9][A-Za-z0-9._:-]{{0,127}})\Z")
+# The agreed record-set format (docs/ATLAS.md section 3): every key of SEAL.json and of
+# universe.json, each library and each exclusion. Any other key is refused by name.
+SEAL_KEYS = ("schema", "set_id", "campaign", "universe", "sourceset", "skill_commit", "created",
+             "byte_budget", "files")
+SEAL_UNIVERSE_KEYS = ("id", "universe_sha256")
+SEAL_SOURCESET_KEYS = ("id", "manifest_sha256")
+UNIVERSE_KEYS = ("id", "universe_sha256", "frozen", "libraries", "excluded")
+LIBRARY_KEYS = ("id", "brain_lib", "repo", "commit", "toolchain", "roots", "licence")
+LIBRARY_OPTIONAL = ("display_name",)
+EXCLUDED_KEYS = ("id", "reason")
+# An absence names each universe library by a minimal lean end, and nothing else.
+ABSENCE_END_KEYS = ("type", "uri", "version")
+CREATED_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]+)?Z\Z")
+DATE_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
 # Whitespace for title keys, spelled out so wiki/src/atlas.ts matches it exactly.
 TITLE_SPACE = re.compile(r"[ \t\n\r\f\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000_]+")
 WORD_SPACE = re.compile(r"\s+")
 # A library repository: https, a dotted host, one to four path segments, none of them "." or "..".
-REPO_RE = re.compile(r"^https://[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:/[A-Za-z0-9_.~-]{1,100}){1,4}$")
+REPO_RE = re.compile(r"^https://[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:/[A-Za-z0-9_.~-]{1,100}){1,4}\Z")
 # A library's display_name: printable ASCII letters, digits, spaces and a few marks, so no
 # invisible or look-alike character can make it read as another library's name
 # (wiki/src/libraries.ts applies the same pattern and ignores a name that fails it).
-DISPLAY_NAME_RE = re.compile(r"^[A-Za-z0-9 ,.()\u00b7/+:'&_-]{1,100}$")
+DISPLAY_NAME_RE = re.compile(r"^[A-Za-z0-9 ,.()\u00b7/+:'&_-]{1,100}\Z")
 # sources.jsonl `renderer`, e.g. "web-html/1".
-RENDERER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}$")
+RENDERER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}\Z")
 
 
 class AtlasError(Exception):
@@ -170,6 +191,19 @@ def member(value: Any, allowed: frozenset[str] | tuple[str, ...]) -> bool:
     return isinstance(value, str) and value in allowed
 
 
+def key_problems(value: dict, required: tuple[str, ...], optional: tuple[str, ...] = ()) -> list[str]:
+    """The agreed format's key set for one object: what is missing and what is not in it."""
+    found = []
+    missing = [key for key in required if key not in value]
+    extra = sorted(key for key in value if key not in required and key not in optional)
+    if missing:
+        found.append("missing " + ", ".join(repr(key) for key in missing))
+    if extra:
+        found.append("unexpected " + ", ".join(repr(key) for key in extra)
+                     + " (not in the agreed record-set format, docs/ATLAS.md section 3)")
+    return found
+
+
 def title_key(title: str) -> str:
     """A Wikipedia title in comparison form: NFC, underscores as spaces, single spaces, trimmed."""
     return TITLE_SPACE.sub(" ", unicodedata.normalize("NFC", title)).strip(" ")
@@ -208,31 +242,6 @@ def names_revision(uri: Any, revision: int) -> bool:
     if parts.path != "/w/index.php" and not parts.path.startswith("/wiki/"):
         return False
     return parse_qs(parts.query, keep_blank_values=True).get("oldid") == [str(revision)]
-
-
-def _yaml_load(text: str) -> Any:
-    """yaml.safe_load, but a mapping with a repeated key is an error (as strict_json makes it for JSON)."""
-    import yaml  # PyYAML is pinned in requirements-ci.txt
-
-    class StrictLoader(yaml.SafeLoader):
-        pass
-
-    def mapping(loader: yaml.SafeLoader, node: yaml.MappingNode, deep: bool = False) -> dict:
-        loader.flatten_mapping(node)
-        seen: set = set()
-        for key_node, _ in node.value:
-            key = loader.construct_object(key_node, deep=True)
-            try:
-                repeated = key in seen
-            except TypeError:  # an unhashable key; construct_mapping reports it
-                continue
-            if repeated:
-                raise yaml.constructor.ConstructorError(None, None, f"duplicate key {key!r}", key_node.start_mark)
-            seen.add(key)
-        return yaml.SafeLoader.construct_mapping(loader, node, deep=deep)
-
-    StrictLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, mapping)
-    return yaml.load(text, Loader=StrictLoader)  # noqa: S506 - a SafeLoader subclass
 
 
 def schema_validator():
@@ -283,22 +292,48 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
         raise AtlasError(f"SEAL.json: not valid JSON ({exc})") from exc
     if not isinstance(seal, dict):
         raise AtlasError("SEAL.json: not an object")
-    if seal.get("schema") != SEAL_SCHEMA:
+    for message in key_problems(seal, SEAL_KEYS):
+        problems.add("SEAL.json", message)
+    # A missing key is reported once, above; the checks below judge the values present.
+    if "schema" in seal and seal["schema"] != SEAL_SCHEMA:
         problems.add("SEAL.json", f"schema must be {SEAL_SCHEMA!r}")
-    if not isinstance(seal.get("campaign"), str) or not TOKEN_RE.match(seal["campaign"]):
-        problems.add("SEAL.json", "campaign must be a token of letters, digits and ._:- (at most 128)")
+    if "set_id" in seal and (not isinstance(seal["set_id"], str) or not TOKEN_RE.match(seal["set_id"])):
+        problems.add("SEAL.json", "set_id must be a token of letters, digits and ._:- (at most 128)")
+    if "campaign" in seal and (not isinstance(seal["campaign"], str) or not CAMPAIGN_RE.match(seal["campaign"])):
+        problems.add("SEAL.json", "campaign must be a non-empty token: the campaign id (letters, digits and "
+                                  "._:-, at most 128, not starting 'run:'), or for a run outside any campaign "
+                                  "'run:<run-id>' or 'run:<run-id>+<challenge-run-id>' (run ids of letters, "
+                                  "digits and ._-, at most 64); never null")
     universe = seal.get("universe")
-    if (not isinstance(universe, dict) or not isinstance(universe.get("id"), str)
-            or not TOKEN_RE.match(universe["id"]) or not HEX64.match(str(universe.get("sha256", "")))):
-        problems.add("SEAL.json", "universe must be {id, sha256} with a 64-hex sha256")
+    if "universe" in seal and not isinstance(universe, dict):
+        problems.add("SEAL.json", "universe must be {id, universe_sha256}")
+    elif isinstance(universe, dict):
+        for message in key_problems(universe, SEAL_UNIVERSE_KEYS):
+            problems.add("SEAL.json: universe", message)
+        if "id" in universe and (not isinstance(universe["id"], str) or not TOKEN_RE.match(universe["id"])):
+            problems.add("SEAL.json", "universe.id must be a token")
+        if "universe_sha256" in universe and (not isinstance(universe["universe_sha256"], str)
+                                              or not HEX64.match(universe["universe_sha256"])):
+            problems.add("SEAL.json", "universe.universe_sha256 must be 64 lowercase hex")
     sourceset = seal.get("sourceset")
-    if (not isinstance(sourceset, dict) or not isinstance(sourceset.get("id"), str)
-            or not HEX64.match(str(sourceset.get("manifest_sha256", "")))):
+    if "sourceset" in seal and not isinstance(sourceset, dict):
         problems.add("SEAL.json", "sourceset must be {id, manifest_sha256}")
-    if not HEX40.match(str(seal.get("skill_commit", ""))):
+    elif isinstance(sourceset, dict):
+        for message in key_problems(sourceset, SEAL_SOURCESET_KEYS):
+            problems.add("SEAL.json: sourceset", message)
+        if "id" in sourceset and (not isinstance(sourceset["id"], str) or not TOKEN_RE.match(sourceset["id"])):
+            problems.add("SEAL.json", "sourceset.id must be a token")
+        if "manifest_sha256" in sourceset and (not isinstance(sourceset["manifest_sha256"], str)
+                                               or not HEX64.match(sourceset["manifest_sha256"])):
+            problems.add("SEAL.json", "sourceset.manifest_sha256 must be 64 lowercase hex")
+    if "skill_commit" in seal and (not isinstance(seal["skill_commit"], str) or not HEX40.match(seal["skill_commit"])):
         problems.add("SEAL.json", "skill_commit must be a 40-hex commit")
-    if not isinstance(seal.get("created"), str) or not CREATED_RE.match(seal["created"]):
+    if "created" in seal and (not isinstance(seal["created"], str) or not CREATED_RE.match(seal["created"])):
         problems.add("SEAL.json", "created must be an ISO 8601 UTC time ending in Z")
+    budget = seal.get("byte_budget")
+    if "byte_budget" in seal and (type(budget) is not int or budget < 0):
+        problems.add("SEAL.json", "byte_budget must be the per-source byte budget the export used: "
+                                  "an integer, 0 when the export had none")
     listed = seal.get("files")
     if not isinstance(listed, dict) or not listed:
         problems.add("SEAL.json", "files must map each relative path to its sha256")
@@ -334,103 +369,112 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
     return seal, sha256_hex(seal_bytes), files
 
 
+def _short_string(value: Any) -> bool:
+    return isinstance(value, str) and bool(value.strip()) and len(value) <= 300
+
+
 def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> dict:
-    has_json, has_yaml = "universe.json" in files, "universe.yaml" in files
-    if has_json == has_yaml:
-        raise AtlasError("the record set must hold exactly one of universe.json and universe.yaml")
-    if has_json:
-        try:
-            raw = strict_json(files["universe.json"].decode("utf-8"))
-        except (UnicodeDecodeError, ValueError) as exc:
-            raise AtlasError(f"universe.json: not valid JSON ({exc})") from exc
-    else:
-        try:
-            import yaml  # PyYAML is pinned in requirements-ci.txt
-        except ImportError as exc:  # pragma: no cover - the CI environment has it
-            raise AtlasError("universe.yaml needs PyYAML; export universe.json instead") from exc
-        try:
-            raw = _yaml_load(files["universe.yaml"].decode("utf-8"))
-        except (UnicodeDecodeError, yaml.YAMLError) as exc:
-            raise AtlasError(f"universe.yaml: not valid YAML ({exc})") from exc
-    where = "universe.json" if has_json else "universe.yaml"
+    """universe.json in the agreed shape: a list of libraries sorted by id (docs/ATLAS.md section 3)."""
+    where = "universe.json"
+    if "universe.yaml" in files:
+        problems.add("universe.yaml", "not part of the agreed record-set format: the universe is universe.json")
+    if where not in files:
+        raise AtlasError("universe.json is missing from the record set")
+    try:
+        raw = strict_json(files[where].decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise AtlasError(f"universe.json: not valid JSON ({exc})") from exc
     if not isinstance(raw, dict):
         raise AtlasError(f"{where}: not an object")
+    for message in key_problems(raw, UNIVERSE_KEYS):
+        problems.add(where, message)
+    if "sha256" in raw:
+        problems.add(where, "the universe's sha is universe_sha256, not sha256")
     if raw.get("id") != seal["universe"]["id"]:
         problems.add(where, "id differs from SEAL.json universe.id")
-    if raw.get("universe_sha256") != seal["universe"]["sha256"]:
-        problems.add(where, "universe_sha256 differs from SEAL.json universe.sha256")
+    if raw.get("universe_sha256") != seal["universe"]["universe_sha256"]:
+        problems.add(where, "universe_sha256 differs from SEAL.json universe.universe_sha256")
     frozen = raw.get("frozen")
-    if hasattr(frozen, "isoformat"):  # YAML reads an unquoted date as a date
-        frozen = frozen.isoformat()
     if not isinstance(frozen, str) or not DATE_RE.match(frozen):
         problems.add(where, "frozen must be a YYYY-MM-DD date")
     libraries_raw = raw.get("libraries")
+    if isinstance(libraries_raw, dict):
+        raise AtlasError(f"{where}: libraries must be a list of library objects sorted by id, "
+                         "not an object keyed by library id")
     if not isinstance(libraries_raw, list) or not libraries_raw:
-        raise AtlasError(f"{where}: libraries must be a non-empty list")
+        raise AtlasError(f"{where}: libraries must be a non-empty list of library objects sorted by id")
     libraries: list[dict] = []
-    seen_ids: set[str] = set()
     seen_repos: set[str] = set()
+    previous_id: str | None = None
     for index, lib in enumerate(libraries_raw):
         at = f"{where}: libraries[{index}]"
         if not isinstance(lib, dict):
             problems.add(at, "not an object")
             continue
+        # Refused by name first, so a producer learns why (docs/ATLAS.md, contract note 6).
+        if "blob_url_template" in lib:
+            problems.add(at, "blob_url_template is not supported: the Worker builds every source link "
+                             "from the repository itself (docs/ATLAS.md, contract note 6)")
+        if "src_dir" in lib:
+            problems.add(at, "src_dir is not supported: a lean end's path is relative to the repository root")
+        for message in key_problems({k: v for k, v in lib.items() if k not in ("blob_url_template", "src_dir")},
+                                    LIBRARY_KEYS, LIBRARY_OPTIONAL):
+            problems.add(at, message)
         lib_id, repo, commit = lib.get("id"), lib.get("repo"), lib.get("commit")
         if not isinstance(lib_id, str) or not TOKEN_RE.match(lib_id):
             problems.add(at, "id must be a token")
             continue
-        if lib_id in seen_ids:
-            problems.add(at, f"duplicate library id {lib_id!r}")
+        if previous_id is not None and lib_id <= previous_id:
+            problems.add(at, f"libraries must be sorted by id, each once ({lib_id!r} comes after {previous_id!r})")
+        previous_id = lib_id if previous_id is None or lib_id > previous_id else previous_id
         if not is_repo_url(repo):
             problems.add(at, "repo must be an https repository URL (host and path segments, no '.' or '..')")
         elif repo in seen_repos:
             problems.add(at, f"repo {repo} appears twice (one library per repository)")
+        else:
+            seen_repos.add(repo)
         if not isinstance(commit, str) or not HEX40.match(commit):
             problems.add(at, "commit must be a 40-hex commit")
-        seen_ids.add(lib_id)
-        if isinstance(repo, str):
-            seen_repos.add(repo)
-        entry = {"id": lib_id, "repo": repo, "commit": commit}
-        # Source links are built only from GitHub's blob scheme for the library's own
-        # repository (wiki/src/libraries.ts), so a producer-supplied URL template could
-        # only point a "Source" link somewhere else. It is refused, not ignored.
-        if "blob_url_template" in lib:
-            problems.add(at, "blob_url_template is not supported: the Worker builds every source link "
-                             "from the repository itself (docs/ATLAS.md, contract note 6)")
-        for key in ("display_name", "brain_lib", "toolchain", "src_dir"):
-            value = lib.get(key)
-            if value is None:
-                continue
-            if not isinstance(value, str) or not value.strip() or len(value) > 300:
+        entry: dict[str, Any] = {"id": lib_id, "repo": repo, "commit": commit}
+        for key in ("brain_lib", "toolchain"):
+            if not _short_string(lib.get(key)):
                 problems.add(at, f"{key} must be a non-empty string")
-            elif key == "display_name" and not DISPLAY_NAME_RE.match(value):
-                problems.add(at, "display_name must be at most 100 printable ASCII letters, digits, spaces "
-                                 "and ,.()/+:'&_- or \u00b7 (no invisible or look-alike characters)")
             else:
-                entry[key] = value
-        if "src_dir" in entry and not safe_relative(entry["src_dir"]):
-            problems.add(at, "src_dir must be a safe relative path")
-        if isinstance(lib.get("roots"), list) and all(isinstance(r, str) for r in lib["roots"]):
-            entry["roots"] = list(lib["roots"])
+                entry[key] = lib[key]
+        roots = lib.get("roots")
+        if not isinstance(roots, list) or not roots or not all(_short_string(root) for root in roots):
+            problems.add(at, "roots must be a non-empty list of module roots (non-empty strings)")
+        else:
+            entry["roots"] = list(roots)
         licence = lib.get("licence")
-        if isinstance(licence, dict) and isinstance(licence.get("spdx"), str):
+        if (not isinstance(licence, dict) or set(licence) != {"spdx"} or not _short_string(licence["spdx"])):
+            problems.add(at, "licence must be {spdx: <SPDX id>}")
+        else:
             entry["licence"] = licence["spdx"]
+        display = lib.get("display_name")
+        if display is not None:
+            if not isinstance(display, str) or not DISPLAY_NAME_RE.match(display):
+                problems.add(at, "display_name must be at most 100 printable ASCII letters, digits, spaces "
+                                 "and ,.()/+:'&_- or \u00b7 (no invisible or look-alike characters), or null")
+            else:
+                entry["display_name"] = display
         libraries.append(entry)
     excluded = []
     excluded_raw = raw.get("excluded")
-    if excluded_raw is None:
-        excluded_raw = []
-    elif not isinstance(excluded_raw, list):
-        problems.add(where, "excluded must be a list of {id, reason, repo?}")
+    if not isinstance(excluded_raw, list):
+        problems.add(where, "excluded must be a list of {id, reason} (empty when nothing is excluded)")
         excluded_raw = []
     for index, item in enumerate(excluded_raw):
-        if not isinstance(item, dict) or not isinstance(item.get("id"), str) or not isinstance(item.get("reason"), str):
-            problems.add(f"{where}: excluded[{index}]", "must be {id, reason}")
+        at = f"{where}: excluded[{index}]"
+        if not isinstance(item, dict):
+            problems.add(at, "must be {id, reason}")
             continue
-        entry = {"id": item["id"], "reason": item["reason"]}
-        if is_repo_url(item.get("repo")):
-            entry["repo"] = item["repo"]
-        excluded.append(entry)
+        for message in key_problems(item, EXCLUDED_KEYS):
+            problems.add(at, message)
+        if not isinstance(item.get("id"), str) or not TOKEN_RE.match(item["id"]) or not _short_string(item.get("reason")):
+            problems.add(at, "must be {id, reason}: a token id and a non-empty reason")
+            continue
+        excluded.append({"id": item["id"], "reason": item["reason"]})
     return {"schema": UNIVERSE_SCHEMA, "id": raw.get("id"), "sha256": raw.get("universe_sha256"),
             "frozen": frozen, "libraries": libraries, "excluded": excluded}
 
@@ -505,6 +549,7 @@ def load_sources(files: dict[str, bytes], problems: Problems) -> list[dict]:
         problems.add(extra, "records file for a source not in sources.jsonl")
     for path in sorted(files):
         top = path.split("/", 1)[0]
+        # universe.yaml (no longer part of the format) is reported by load_universe.
         if path not in ("universe.json", "universe.yaml", "sources.jsonl") and top not in ("records", "receipts"):
             problems.add(path, "unexpected file (a record set holds universe, sources, records/ and receipts/)")
     return sources
@@ -572,12 +617,14 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     if not member(kind, KINDS):
         problems.add(at, f"kind must be one of {sorted(KINDS)}")
         kind = None
+    # Every record carries its passage's section (the heading path, [] in the lead) and
+    # prominence: the page marks the article's subject passages by it.
     section = ext.get("section")
-    if section is not None and (not isinstance(section, list) or not all(isinstance(s, str) and s for s in section)):
-        problems.add(at, "section must be a list of heading strings")
+    if not isinstance(section, list) or not all(isinstance(s, str) and s.strip() for s in section):
+        problems.add(at, "section must be its passage's heading path: a list of heading strings, [] in the lead")
         section = None
     prominence = ext.get("prominence")
-    if prominence is not None and not member(prominence, PROMINENCES):
+    if not member(prominence, PROMINENCES):
         problems.add(at, f"prominence must be one of {sorted(PROMINENCES)}")
         prominence = None
 
@@ -624,9 +671,10 @@ def _absence(record: dict, base: dict, objects: list, ext: dict, ctx: Context, a
         problems.add(at, "a noMatch record has status not_formalized")
     expected = {(lib["repo"], lib["commit"]) for lib in ctx.universe["libraries"]}
     got = []
+    if any(end.get("type") != "lean" or set(end) != set(ABSENCE_END_KEYS) for end in objects):
+        problems.add(at, "a checked absence names each library by a minimal lean end, "
+                         '{"type": "lean", "uri", "version"} only (no location, role or extensions)')
     for end in objects:
-        if end.get("type") != "lean" or "location" in end:
-            problems.add(at, "a checked absence has whole-library lean ends (no location)")
         got.append((end.get("uri"), end.get("version")))
     if len(got) != len(set(got)) or set(got) != expected:
         problems.add(at, "a checked absence names every universe library at its commit, once each")
@@ -682,12 +730,16 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
         problems.add(at, "the lean end's uri and version must be its library's repo and commit")
     path, line, end_line = end_ext.get("path"), end_ext.get("line"), end_ext.get("end_line")
     if not isinstance(path, str) or not safe_relative(path) or not path.endswith(".lean"):
-        problems.add(at, "path must be a safe relative .lean path")
-    if type(line) is not int or type(end_line) is not int or not 1 <= line <= end_line:
-        problems.add(at, "line and end_line must be integers with 1 <= line <= end_line")
-    # Malformed values are reported and then dropped, so no later check meets them.
-    if type(line) is not int or type(end_line) is not int:
-        line = end_line = None
+        problems.add(at, "path must be a safe relative .lean path (relative to the repository root)")
+    if type(line) is not int or line < 1:
+        problems.add(at, "line must be an integer >= 1")
+        line = None  # malformed values are reported and then dropped, so no later check meets them
+    # end_line is there when the library index records one (atlas's published index has
+    # only line), and absent otherwise: never null.
+    if "end_line" in end_ext and (type(end_line) is not int or (line is not None and end_line < line)):
+        problems.add(at, "end_line, when the index has one, must be an integer >= line (omit it, never null, "
+                         "when the index records only line)")
+        end_line = None
     proof_status = end_ext.get("proof_status")
     if not member(proof_status, PROOF_STATUSES):
         problems.add(at, f"proof_status must be one of {sorted(PROOF_STATUSES)}")
@@ -714,15 +766,19 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
         confidence = None
     note = record.get("note")
     if relation == "closeMatch" and not (isinstance(note, str) and note.strip()):
-        problems.add(at, "a closeMatch names its convention difference in note (proposal §2.6)")
-    return {**base, "type": "location", "status": status, "location": {
+        problems.add(at, "a closeMatch names its convention difference in note (proposal §2.6); one a "
+                         "challenge downgrade produced carries the challenger's witness sentence")
+    view = {
         "library": library["id"], "repo": library["repo"], "commit": library["commit"],
         "declaration": location["declaration"], "module": location["module"],
-        "path": path, "line": line, "end_line": end_line,
+        "path": path, "line": line,
         "relation": relation, "proof_status": proof_status, "statement": statement, "rank": rank,
         "confidence": confidence, "challenge": base["challenge"],
         "location_key": key, "note": note if isinstance(note, str) and note.strip() else None,
-    }}
+    }
+    if end_line is not None:  # optional in the view model too: absent means "line N" only
+        view["end_line"] = end_line
+    return {**base, "type": "location", "status": status, "location": view}
 
 
 def statement_flag(value: Any, proof_status: str | None) -> tuple[bool, str | None]:
@@ -959,6 +1015,24 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
     }
 
 
+def check_budget(budget: int, path: str, files: dict[str, bytes], classified: list[dict],
+                 problems: Problems) -> None:
+    """A set sealed under a per-source byte budget keeps to it.
+
+    The export measures a source as its records file plus the receipts its absences
+    reference, each counted once; 0 means it ran with no budget, the default for a sealed
+    set. A consumer with a cap of its own (WikiLean's later D1 import) asks the export for
+    one, and SEAL records which budget was used, so a set that breaks it is refused here.
+    """
+    if not budget:
+        return
+    receipts = {f"receipts/{r['receipt']['sha256']}.json" for r in classified if r["type"] == "absence"}
+    size = len(files[path]) + sum(len(files[receipt]) for receipt in receipts if receipt in files)
+    if size > budget:
+        problems.add(path, f"this source's records and receipts are {size} bytes, over the byte_budget of "
+                           f"{budget} that SEAL.json says the export kept to")
+
+
 def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
     """Return the store tree, {relative path: bytes}, for one sealed record set."""
     validate, schema_error, provenance = schema_validator()
@@ -995,6 +1069,7 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
             reduced = classify_record(record, source, ctx, at, problems)
             if reduced is not None:
                 classified.append(reduced)
+        check_budget(seal["byte_budget"], path, files, classified, problems)
         built.append((source, build_passages(classified, source, problems)))
     for receipt in sorted(p for p in files if p.startswith("receipts/")):
         if receipt not in ctx.receipts_used:
@@ -1053,7 +1128,8 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
         "schema": CURRENT_SCHEMA, "campaign": seal["campaign"], "built_at": built_at, "builder": BUILDER,
         "universe": {"id": universe["id"], "sha256": universe["sha256"], "frozen": universe["frozen"],
                      "libraries": len(universe["libraries"])},
-        "record_set": {"seal_sha256": seal_sha, "created": seal["created"], "skill_commit": seal["skill_commit"],
+        "record_set": {"seal_sha256": seal_sha, "set_id": seal["set_id"], "created": seal["created"],
+                       "skill_commit": seal["skill_commit"], "byte_budget": seal["byte_budget"],
                        "sourceset": {"id": seal["sourceset"]["id"],
                                      "manifest_sha256": seal["sourceset"]["manifest_sha256"]}},
         "literature_links": {"version": provenance["version"], "commit": provenance["commit"],

@@ -85,6 +85,29 @@ class FixtureTests(unittest.TestCase):
         self.assertEqual(len(absence["object"]), 5)
         self.assertTrue(all(set(end) == {"type", "uri", "version"} for end in absence["object"]))
 
+    def test_fixture_is_in_the_agreed_format(self):
+        seal = json.loads((RECORDSET / "SEAL.json").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(seal), sorted(build_store.SEAL_KEYS))
+        self.assertEqual(sorted(seal["universe"]), ["id", "universe_sha256"])
+        self.assertEqual(seal["byte_budget"], 0)
+        universe = json.loads((RECORDSET / "universe.json").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(universe), sorted(build_store.UNIVERSE_KEYS))
+        ids = [lib["id"] for lib in universe["libraries"]]
+        self.assertEqual(ids, sorted(ids))
+        for lib in universe["libraries"]:
+            self.assertLessEqual(set(build_store.LIBRARY_KEYS), set(lib))
+        records = [r for p in sorted((RECORDSET / "records").glob("*.jsonl")) for r in read_jsonl(p)]
+        for record in records:
+            ext = record["extensions"][LOCATE]
+            self.assertIsInstance(ext["section"], list, record["id"])
+            self.assertIn(ext["prominence"], build_store.PROMINENCES, record["id"])
+        # FormalFrontier's index, like atlas's published one, records only line.
+        ends = {r["object"][0]["extensions"][LOCATE]["library"]: r["object"][0]["extensions"][LOCATE]
+                for r in read_jsonl(RECORDSET / "records/enwiki-1001-2002.jsonl")
+                if r.get("relation") not in (None, "noMatch")}
+        self.assertNotIn("end_line", ends["ff-widgets"])
+        self.assertEqual(ends["mathlib"]["end_line"], 640)
+
 
 class BuildTests(unittest.TestCase):
     def test_golden_store_matches_a_fresh_build(self):
@@ -126,9 +149,15 @@ class BuildTests(unittest.TestCase):
         self.assertEqual([p["outcome"] for p in article["passages"]], ["located", "located", "absent", "unresolved"])
         first = article["passages"][0]
         self.assertEqual([loc["library"] for loc in first["locations"]], ["mathlib", "ff-widgets"])
-        self.assertEqual(first["locations"][0]["line"], 612)
+        self.assertEqual((first["locations"][0]["line"], first["locations"][0]["end_line"]), (612, 640))
+        # A lean end without end_line keeps line, and the view model omits end_line.
+        self.assertEqual(first["locations"][1]["line"], 88)
+        self.assertNotIn("end_line", first["locations"][1])
+        self.assertEqual(first["locations"][1]["challenge"], "downgraded")
+        self.assertEqual(first["locations"][1]["note"], "Counts gadgets from 1, where the article counts from 0.")
         self.assertEqual(first["section"], ["Statement"])
-        self.assertEqual(first["prominence"], "central")
+        self.assertEqual(first["prominence"], "subject")
+        self.assertEqual([p["prominence"] for p in article["passages"]], ["subject", "supporting", "central", "supporting"])
         absent = article["passages"][2]
         self.assertEqual(absent["absence"]["libraries"], 5)
         self.assertEqual(absent["absence"]["universe"], "u-fixture")
@@ -148,10 +177,10 @@ class BuildTests(unittest.TestCase):
         # A statement-only location is a location, but not a complete one.
         self.assertEqual(summary["by_library"]["tauceti"],
                          {"locations": 1, "complete": 0, "incomplete": 1, "passages": 1, "related": 0})
-        # The small article follows proposal §2.7 exactly: no section or prominence.
+        # The small article's one passage is its lead's defining sentence: no heading, the subject.
         gadget = json.loads(build_store.build(RECORDSET)["atlas/v1/articles/1003.json"])
-        self.assertIsNone(gadget["passages"][0]["section"])
-        self.assertIsNone(gadget["passages"][0]["prominence"])
+        self.assertEqual(gadget["passages"][0]["section"], [])
+        self.assertEqual(gadget["passages"][0]["prominence"], "subject")
 
     def test_index_and_title_keys(self):
         self.assertEqual(build_store.title_key("Widget_lemma"), "Widget lemma")
@@ -163,10 +192,11 @@ class BuildTests(unittest.TestCase):
         current = json.loads(tree["atlas/v1/current.json"])
         self.assertEqual(current["index"], {"hex": 1, "shards": ["1", "8"], "entries": 2})
         shard = json.loads(tree["atlas/v1/index/1.json"])
-        # The last field lists the libraries holding a location, in universe order
-        # (Batteries holds only a related declaration).
+        # The last field lists the libraries holding a location, in universe order, which
+        # is by id (Batteries holds only a related declaration).
         self.assertEqual(shard["articles"], [["Widget lemma", 1001, 2002, 4, 1, 1, 0, 1, 1, "high",
-                                              ["mathlib", "tauceti", "ff-widgets"]]])
+                                              ["ff-widgets", "mathlib", "tauceti"]]])
+        self.assertEqual((current["record_set"]["set_id"], current["record_set"]["byte_budget"]), ("fixture-set", 0))
         self.assertEqual(shard["fields"][0:3], ["title", "pageid", "revision"])
         self.assertEqual(shard["fields"][-1], "libraries")
         totals = current["counts"]["by_library"]
@@ -216,7 +246,9 @@ class DeriveStatusParityTests(unittest.TestCase):
         self.assertEqual(mismatches, [], f"{len(mismatches)} cases differ from the producer")
 
 
-class RefusalTests(unittest.TestCase):
+class SetCopyTest(unittest.TestCase):
+    """A test on a scratch copy of the fixture record set, edited and resealed."""
+
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="atlas-test-"))
         self.set = self.tmp / "set"
@@ -225,10 +257,17 @@ class RefusalTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp)
 
+    def fresh(self) -> None:
+        self.tearDown()
+        self.setUp()
+
     def refuse(self, fragment: str):
         with self.assertRaises(build_store.AtlasError) as caught:
             build_store.build(self.set)
         self.assertIn(fragment, str(caught.exception))
+
+    def article(self, pageid: int = 1001) -> dict:
+        return json.loads(build_store.build(self.set)[f"atlas/v1/articles/{pageid}.json"])
 
     def edit_widget(self, edit) -> None:
         path = self.set / "records/enwiki-1001-2002.jsonl"
@@ -236,6 +275,22 @@ class RefusalTests(unittest.TestCase):
         edit(rows)
         write_jsonl(path, rows)
         reseal(self.set)
+
+    def edit_universe(self, edit) -> None:
+        path = self.set / "universe.json"
+        universe = json.loads(path.read_text())
+        edit(universe)
+        path.write_text(make_fixture.dumps(universe) + "\n")
+        reseal(self.set)
+
+    def edit_seal(self, edit) -> None:
+        path = self.set / "SEAL.json"
+        seal = json.loads(path.read_text())
+        edit(seal)
+        path.write_text(json.dumps(seal, sort_keys=True, indent=2) + "\n")
+
+
+class RefusalTests(SetCopyTest):
 
     def test_sha_mismatch_without_reseal(self):
         path = self.set / "sources.jsonl"
@@ -509,13 +564,6 @@ class RefusalTests(unittest.TestCase):
         reseal(self.set)
         self.refuse("has the same title key as page 1001")
 
-    def edit_universe(self, edit) -> None:
-        path = self.set / "universe.json"
-        universe = json.loads(path.read_text())
-        edit(universe)
-        path.write_text(make_fixture.dumps(universe) + "\n")
-        reseal(self.set)
-
     def test_blob_url_template_is_refused(self):
         self.edit_universe(lambda u: u["libraries"][0].update(
             blob_url_template="https://phish.example/login?next={commit}{path}"))
@@ -547,32 +595,197 @@ class RefusalTests(unittest.TestCase):
         reseal(self.set)
         self.refuse("universe_sha256 differs from SEAL.json")
 
-    def write_yaml(self, text: str) -> None:
-        (self.set / "universe.json").unlink()
-        (self.set / "universe.yaml").write_text(text)
+    def test_universe_yaml_is_refused(self):
+        # The agreed format has universe.json only; a YAML universe, alone or beside it, is refused.
+        (self.set / "universe.yaml").write_text("id: u-fixture\n")
         reseal(self.set)
-
-    def test_malformed_yaml_is_a_refusal(self):
-        self.write_yaml("id: u-fixture\nlibraries: [\n")
-        self.refuse("universe.yaml: not valid YAML")
-
-    def test_duplicate_yaml_keys_are_refused(self):
-        import yaml
-        universe = json.loads((self.set / "universe.json").read_text())
-        text = yaml.safe_dump(universe, sort_keys=True)
-        self.write_yaml(text + "frozen: '2026-10-18'\n")
-        self.refuse("duplicate key 'frozen'")
-
-    def test_universe_yaml_is_accepted(self):
-        import yaml
-        universe = json.loads((self.set / "universe.json").read_text())
+        self.refuse("universe.yaml: not part of the agreed record-set format")
         (self.set / "universe.json").unlink()
-        (self.set / "universe.yaml").write_text(yaml.safe_dump(universe, sort_keys=True))
         reseal(self.set)
+        self.refuse("universe.json is missing from the record set")
+
+
+class AgreedFormatTests(SetCopyTest):
+    """The record-set format formal-companion and WikiLean agreed (docs/ATLAS.md section 3):
+    exactly that shape builds, and every other shape is refused by name."""
+
+    # ---- SEAL.json ----
+
+    def test_campaign_is_a_campaign_id_or_a_run_token(self):
+        for token in ("run:loc-smoke-2", "run:loc-smoke-2+chal-smoke-2", "tier-a:shard-03", "fixture-2026-10"):
+            with self.subTest(token=token):
+                self.fresh()
+                self.edit_seal(lambda seal, token=token: seal.update(campaign=token))
+                tree = build_store.build(self.set)
+                self.assertEqual(json.loads(tree["atlas/v1/current.json"])["campaign"], token)
+                self.assertEqual(json.loads(tree["atlas/v1/articles/1001.json"])["campaign"], token)
+        for token in (None, "", "run:", "run:loc+", "run:+chal", "run:a+b+c", "run:a:b", "run:a b",
+                      "loc smoke", "-x", "x" * 129, "run:" + "x" * 65, "fixture\n"):
+            with self.subTest(token=token):
+                self.fresh()
+                self.edit_seal(lambda seal, token=token: seal.update(campaign=token))
+                self.refuse("campaign must be a non-empty token")
+
+    def test_seal_keys_are_exactly_the_agreed_ones(self):
+        self.edit_seal(lambda seal: seal.update(runs={"locate": "loc-1", "challenge": [], "inventory": "inv-1"}))
+        self.refuse("SEAL.json: unexpected 'runs' (not in the agreed record-set format")
+        self.fresh()
+        self.edit_seal(lambda seal: seal.pop("set_id"))
+        self.refuse("SEAL.json: missing 'set_id'")
+        self.fresh()
+        self.edit_seal(lambda seal: seal.pop("byte_budget"))
+        self.refuse("SEAL.json: missing 'byte_budget'")
+        # The pre-agreement shapes: universe.sha256, and a sourceset version.
+        self.fresh()
+        self.edit_seal(lambda seal: seal.update(universe={"id": "u-fixture", "sha256": make_fixture.UNIVERSE_SHA}))
+        self.refuse("SEAL.json: universe: missing 'universe_sha256'")
+        self.fresh()
+        self.edit_seal(lambda seal: seal["sourceset"].update(version=5))
+        self.refuse("SEAL.json: sourceset: unexpected 'version'")
+        self.fresh()
+        self.edit_seal(lambda seal: seal.update(set_id="smoke 2"))
+        self.refuse("set_id must be a token")
+        for key in ("universe", "sourceset", "campaign"):
+            with self.subTest(missing=key):
+                self.fresh()
+                self.edit_seal(lambda seal, key=key: seal.pop(key))
+                self.refuse(f"SEAL.json: missing {key!r}")
+
+    def test_byte_budget_is_off_by_default_and_kept_when_set(self):
+        for budget in (-1, True, 1.5, "0", None):
+            with self.subTest(budget=budget):
+                self.fresh()
+                self.edit_seal(lambda seal, budget=budget: seal.update(byte_budget=budget))
+                self.refuse("byte_budget must be the per-source byte budget the export used")
+        records = (RECORDSET / "records/enwiki-1001-2002.jsonl").stat().st_size
+        receipt = next((RECORDSET / "receipts").glob("*.json")).stat().st_size
+        # The export measures a source as its records plus the receipts its absences reference.
+        self.fresh()
+        self.edit_seal(lambda seal: seal.update(byte_budget=records + receipt))
         tree = build_store.build(self.set)
-        golden = build_store.build(RECORDSET)
-        universe_path = next(p for p in golden if p.startswith("atlas/v1/universes/"))
-        self.assertEqual(tree[universe_path], golden[universe_path])
+        self.assertEqual(json.loads(tree["atlas/v1/current.json"])["record_set"]["byte_budget"], records + receipt)
+        self.fresh()
+        self.edit_seal(lambda seal: seal.update(byte_budget=records + receipt - 1))
+        self.refuse(f"records/enwiki-1001-2002.jsonl: this source's records and receipts are {records + receipt} "
+                    f"bytes, over the byte_budget of {records + receipt - 1}")
+
+    # ---- universe.json ----
+
+    def test_libraries_are_a_list_sorted_by_id(self):
+        self.edit_universe(lambda u: u.update(libraries={lib["id"]: {k: v for k, v in lib.items() if k != "id"}
+                                                         for lib in u["libraries"]}))
+        self.refuse("libraries must be a list of library objects sorted by id, not an object keyed by library id")
+        self.fresh()
+        self.edit_universe(lambda u: u["libraries"].reverse())
+        self.refuse("libraries must be sorted by id, each once ('mathlib' comes after 'tauceti')")
+        self.fresh()
+        self.edit_universe(lambda u: u["libraries"].insert(1, dict(u["libraries"][0])))
+        self.refuse("libraries must be sorted by id, each once ('batteries' comes after 'batteries')")
+
+    def test_universe_keys_are_exactly_the_agreed_ones(self):
+        def old_shape(u):
+            u["sha256"] = u.pop("universe_sha256")
+            del u["frozen"]
+        self.edit_universe(old_shape)
+        self.refuse("universe.json: missing 'universe_sha256', 'frozen'")
+        self.refuse("universe.json: the universe's sha is universe_sha256, not sha256")
+        self.fresh()
+        self.edit_universe(lambda u: u.pop("excluded"))
+        self.refuse("universe.json: missing 'excluded'")
+        self.fresh()
+        self.edit_universe(lambda u: u["excluded"][0].update(repo="https://github.com/facebookresearch/atlas-lean"))
+        self.refuse("universe.json: excluded[0]: unexpected 'repo'")
+
+    def test_each_library_has_exactly_the_agreed_keys(self):
+        for key in build_store.LIBRARY_KEYS[1:]:
+            with self.subTest(missing=key):
+                self.fresh()
+                self.edit_universe(lambda u, key=key: u["libraries"][3].pop(key))
+                self.refuse(f"universe.json: libraries[3]: missing {key!r}")
+        for extra, fragment in ((("index", {"path": "index/mathlib/"}), "unexpected 'index'"),
+                                (("conventions", None), "unexpected 'conventions'"),
+                                (("src_dir", "src"), "src_dir is not supported: a lean end's path is relative "
+                                                     "to the repository root")):
+            with self.subTest(extra=extra[0]):
+                self.fresh()
+                self.edit_universe(lambda u, extra=extra: u["libraries"][2].update([extra]))
+                self.refuse(fragment)
+        for licence in ("Apache-2.0", {"spdx": ""}, {"spdx": "MIT", "paths": {}}, None):
+            with self.subTest(licence=licence):
+                self.fresh()
+                self.edit_universe(lambda u, licence=licence: u["libraries"][0].update(licence=licence))
+                self.refuse("licence must be {spdx: <SPDX id>}")
+        for roots in ([], "Mathlib", [""], None):
+            with self.subTest(roots=roots):
+                self.fresh()
+                self.edit_universe(lambda u, roots=roots: u["libraries"][3].update(roots=roots))
+                self.refuse("roots must be a non-empty list of module roots")
+        # display_name is the one optional key: absent or null builds.
+        self.fresh()
+        self.edit_universe(lambda u: u["libraries"][0].update(display_name=None))
+        tree = build_store.build(self.set)
+        universe = json.loads(tree[f"atlas/v1/universes/{make_fixture.UNIVERSE_SHA}.json"])
+        self.assertEqual([lib["id"] for lib in universe["libraries"]],
+                         ["batteries", "ff-widgets", "lean-core", "mathlib", "tauceti"])
+        self.assertNotIn("display_name", universe["libraries"][0])
+        self.assertEqual(universe["libraries"][3], {
+            "id": "mathlib", "brain_lib": "Mathlib", "display_name": "Mathlib", "licence": "Apache-2.0",
+            "repo": "https://github.com/leanprover-community/mathlib4", "commit": make_fixture.LIB["mathlib"]["commit"],
+            "roots": ["Mathlib"], "toolchain": "leanprover/lean4:v4.24.0"})
+        self.assertEqual(universe["excluded"], [{"id": "atlas-lean", "reason": "licence forbids ML evaluation use"}])
+
+    # ---- records ----
+
+    def test_every_record_carries_section_and_prominence(self):
+        for key in ("section", "prominence"):
+            for row in (0, 3, 5):  # a location, the absence, the unresolved record
+                with self.subTest(key=key, row=row):
+                    self.fresh()
+                    self.edit_widget(lambda rows, key=key, row=row: rows[row]["extensions"][LOCATE].pop(key))
+                    self.refuse(f"records/enwiki-1001-2002.jsonl:{row + 1}: "
+                                + ("section must be its passage's heading path" if key == "section"
+                                   else "prominence must be one of"))
+        self.fresh()
+        self.edit_widget(lambda rows: [row["extensions"][LOCATE].update(section=["Statement", ""]) for row in rows[:2]])
+        self.refuse("section must be its passage's heading path")
+
+    def test_end_line_is_optional_but_never_null_or_before_line(self):
+        def drop(rows):
+            del rows[0]["object"][0]["extensions"][LOCATE]["end_line"]
+        self.edit_widget(drop)
+        loc = self.article()["passages"][0]["locations"][0]
+        self.assertEqual(loc["line"], 612)
+        self.assertNotIn("end_line", loc)
+        for end_line in (None, 611, "640", 640.0):
+            with self.subTest(end_line=end_line):
+                self.fresh()
+                self.edit_widget(lambda rows, e=end_line: rows[0]["object"][0]["extensions"][LOCATE].update(end_line=e))
+                self.refuse("end_line, when the index has one, must be an integer >= line (omit it, never null")
+        for line in (None, 0, "612"):
+            with self.subTest(line=line):
+                self.fresh()
+                self.edit_widget(lambda rows, v=line: rows[0]["object"][0]["extensions"][LOCATE].update(line=v))
+                self.refuse("line must be an integer >= 1")
+        self.fresh()
+        self.edit_widget(lambda rows: rows[0]["object"][0]["extensions"][LOCATE].pop("line"))
+        self.refuse("line must be an integer >= 1")
+
+    def test_a_close_match_always_names_its_difference(self):
+        # (An empty note is already refused by the Literature Links schema.)
+        for note in (None, "   "):
+            with self.subTest(note=note):
+                self.fresh()
+                self.edit_widget(lambda rows, note=note: rows[1].pop("note") if note is None else rows[1].update(note=note))
+                self.refuse("a closeMatch names its convention difference in note")
+
+    def test_absence_ends_are_minimal(self):
+        for extra in ({"role": "key"}, {"extensions": {LOCATE: {"library": "batteries"}}},
+                      {"location": {"declaration": "X", "module": "Y"}}):
+            with self.subTest(extra=sorted(extra)):
+                self.fresh()
+                self.edit_widget(lambda rows, extra=extra: rows[3]["object"][0].update(extra))
+                self.refuse('a checked absence names each library by a minimal lean end, {"type": "lean", "uri", '
+                            '"version"} only')
 
 
 class MalformedValueTests(unittest.TestCase):
@@ -606,6 +819,8 @@ class MalformedValueTests(unittest.TestCase):
             document = json.loads(target.read_text(encoding="utf-8"))
             self.put(document, path, new)
             target.write_text(make_fixture.dumps(document) + "\n", encoding="utf-8")
+            if relative == "SEAL.json":
+                return  # reseal() would rewrite the file map it reads from SEAL.json
         else:
             rows = read_jsonl(target)
             self.put(rows[row], path, new)
@@ -639,10 +854,15 @@ class MalformedValueTests(unittest.TestCase):
             ["extensions", LOCATE, "receipt"], ["extensions", LOCATE, "receipt", "sha256"],
             ["extensions", LOCATE, "receipt", "queries"], ["object", 0, "uri"], ["object", 0, "version"])]
         targets += [("universe.json", None, path) for path in (
-            ["excluded"], ["excluded", 0], ["excluded", 0, "id"], ["excluded", 0, "repo"], ["libraries"],
-            ["libraries", 0], ["libraries", 0, "id"], ["libraries", 0, "repo"], ["libraries", 0, "commit"],
-            ["libraries", 0, "display_name"], ["libraries", 0, "roots"], ["libraries", 0, "licence"],
-            ["libraries", 0, "src_dir"], ["frozen"], ["id"], ["universe_sha256"])]
+            ["excluded"], ["excluded", 0], ["excluded", 0, "id"], ["excluded", 0, "reason"], ["excluded", 0, "repo"],
+            ["libraries"], ["libraries", 0], ["libraries", 0, "id"], ["libraries", 0, "repo"],
+            ["libraries", 0, "commit"], ["libraries", 0, "display_name"], ["libraries", 0, "roots"],
+            ["libraries", 0, "licence"], ["libraries", 0, "licence", "spdx"], ["libraries", 0, "brain_lib"],
+            ["libraries", 0, "toolchain"], ["libraries", 0, "src_dir"], ["frozen"], ["id"], ["universe_sha256"])]
+        targets += [("SEAL.json", None, path) for path in (
+            ["schema"], ["set_id"], ["campaign"], ["universe"], ["universe", "id"], ["universe", "universe_sha256"],
+            ["sourceset"], ["sourceset", "id"], ["sourceset", "manifest_sha256"], ["skill_commit"], ["created"],
+            ["byte_budget"])]
         targets += [("sources.jsonl", 0, path) for path in (
             ["renderer"], ["assessment"], ["assessment", "class"], ["title"], ["wikidata"], ["pageid"],
             ["html_sha256"], ["source_id"])]

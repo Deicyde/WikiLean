@@ -80,6 +80,18 @@ test("a passage permalink is not hidden under the sticky header", async ({ page 
   expect(header && pill && pill.y >= header.y + header.height).toBe(true);
 });
 
+test("the strip's Subject row links the article's subject passage", async ({ page }) => {
+  await page.goto(WIDGET);
+  const subject = page.locator(".atlas-passage.is-subject");
+  await expect(subject).toHaveCount(1);
+  await expect(subject.locator(".atlas-subject")).toHaveText("Subject of the article");
+  await page.getByRole("list", { name: "Subject" }).getByRole("link").click();
+  await expect(page).toHaveURL(new RegExp(`${WIDGET}#p-3fa91c07$`));
+  const header = await page.locator(".wl-header").boundingBox();
+  const pill = await page.locator("#p-3fa91c07 .atlas-pill").boundingBox();
+  expect(header && pill && pill.y >= header.y + header.height).toBe(true);
+});
+
 test("status and library chips filter the passages", async ({ page }) => {
   await page.goto(WIDGET);
   const passages = page.locator(".atlas-passage");

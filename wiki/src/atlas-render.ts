@@ -21,7 +21,7 @@ import type {
 import { libraryInfo, repoHref, sourceUrl, treeUrl, type LibraryInfo, type UniverseLibrary } from "./libraries.js";
 
 // Asset versions: bump with any change to site/assets/atlas.{css,js}.
-export const ATLAS_CSS = "/assets/atlas.css?v=2";
+export const ATLAS_CSS = "/assets/atlas.css?v=3";
 export const ATLAS_JS = "/assets/atlas.js?v=2";
 const STYLE_CSS = "/assets/style.css?v=9";
 
@@ -146,6 +146,15 @@ function importanceLabel(value: string | null | undefined): string {
   if (!value || value === "unknown") return "Not assessed";
   if (value === "na") return "N/A";
   return capital(value);
+}
+
+// SEAL's campaign token in words: "campaign <id>", or, for a run outside any
+// campaign ("run:<run-id>[+<challenge-run-id>]"), the runs it came from.
+export function campaignLabel(token: string): string {
+  const value = String(token ?? "");
+  const run = /^run:([^+]+)(?:\+(.+))?$/.exec(value);
+  if (!run) return `campaign ${value}`;
+  return `run ${run[1]}${run[2] ? ` with challenge run ${run[2]}` : ""}, outside any campaign`;
 }
 
 function sha7(commit: string): string {
@@ -329,6 +338,7 @@ function locationCard(loc: AtlasLocation, ctx: CardContext): string {
   const proof = proofOf(loc);
   const short = sha7(loc.commit);
   const relation = RELATION_WORD[loc.relation] ?? loc.relation;
+  // end_line is optional (an index may record only the first line): "line N".
   const line = count(loc.line), end = count(loc.end_line);
   const lines = end && end !== line ? `lines ${line}–${end}` : `line ${line}`;
   const verdict = ctx.verdicts.get(loc.location_key);
@@ -357,22 +367,40 @@ ${feedback}
 </article>`;
 }
 
+function passageStatus(passage: AtlasPassage): SummaryStatus {
+  return passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
+}
+
+// The passage's anchor (#p-<hex>), from its item "In-text #<hex>"; "" if malformed.
+function passageHex(passage: AtlasPassage): string {
+  return /#([0-9a-f]{8,16})$/.exec(String(passage.item ?? ""))?.[1] ?? "";
+}
+
+// A passage whose prominence is "subject" states what the article is about.
+function isSubject(passage: AtlasPassage): boolean {
+  return passage.prominence === "subject";
+}
+
 function passageBlock(passage: AtlasPassage, article: AtlasArticle, ctx: CardContext): string {
-  const status = passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
+  const status = passageStatus(passage);
   const located = passage.outcome !== "unresolved" && passage.outcome !== "absent"
     && (status === "formalized" || status === "statement_only" || status === "partial");
   const strong = passage.locations.filter((loc) => loc.relation !== "relatedMatch");
   const related = passage.locations.filter((loc) => loc.relation === "relatedMatch");
   const libraries = [...new Set(strong.map((loc) => loc.library))];
-  const hex = /#([0-9a-f]{8,16})$/.exec(passage.item)?.[1] ?? "";
-  const eyebrow = [capital(passage.kind), passage.prominence].filter(Boolean).join(" · ");
-  const section = passage.section?.length ? passage.section.join(" › ") : "";
+  const hex = passageHex(passage);
+  const subject = isSubject(passage);
+  // A subject passage says so in its own tag, so its eyebrow is the kind alone.
+  const eyebrow = [capital(passage.kind), subject ? "" : passage.prominence].filter(Boolean).join(" · ");
+  const section = Array.isArray(passage.section) && passage.section.length ? passage.section.join(" › ") : "";
   const context = inContextUrl(passage);
   const quote = passage.quote;
   const parts: string[] = [];
+  const prominence = typeof passage.prominence === "string" ? ` data-prominence="${attr(passage.prominence)}"` : "";
   // The producer's item id stays in the markup (data-item), not in the text.
-  parts.push(`<li class="atlas-passage" id="p-${hex}" data-status="${status}" data-libraries="${attr(libraries.join(" "))}" data-item="${attr(passage.item)}">`);
+  parts.push(`<li class="atlas-passage${subject ? " is-subject" : ""}" id="p-${hex}" data-status="${status}"${prominence} data-libraries="${attr(libraries.join(" "))}" data-item="${attr(passage.item)}">`);
   parts.push(`<div class="atlas-p-head"><h3 class="atlas-p-h"><span class="atlas-eyebrow">${text(eyebrow)}</span>` +
+    (subject ? `<span class="atlas-subject">Subject of the article</span>` : "") +
     (section ? `<span class="atlas-section">${text(section)}</span>` : "") + `</h3>${pill(status)}</div>`);
   // A located passage says, in words, which location gives it its status. An
   // absence and an undecided passage say so in their own boxes below.
@@ -456,16 +484,25 @@ export function atlasArticlePage(input: ArticlePageInput): string {
   const searched = universe
     ? `Searched <a href="/atlas/universe/${attr(article.universe.sha256)}">universe ${text(article.universe.id)}</a>: ${nLibraries} libraries, frozen ${text(article.universe.frozen)}${nExcluded ? `, ${int(nExcluded)} excluded` : ""}`
     : `Universe ${text(article.universe.id)} (${nLibraries} libraries, frozen ${text(article.universe.frozen)})`;
+  // The article's subject passages, named in the strip with a link to each.
+  const subjects = list(article.passages).filter(isSubject).map((passage) => {
+    const hex = passageHex(passage);
+    const label = `${capital(String(passage.kind ?? ""))}: “${String(passage.quote?.exact ?? "")}”`;
+    return `<li>${hex ? `<a href="#p-${hex}">${text(label)}</a>` : text(label)} ${pill(passageStatus(passage))}</li>`;
+  });
+  const subjectRow = subjects.length
+    ? `<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-subject">Subject</span><ul class="atlas-subject-list" aria-labelledby="atlas-h-subject">${subjects.join("")}</ul></div>\n`
+    : "";
   const main = `<main class="wl-atlas" id="atlas-article" data-pageid="${int(article.pageid)}" data-campaign="${attr(article.campaign)}">
 <nav class="atlas-crumbs" aria-label="Breadcrumb"><a href="/atlas">Formalization atlas</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="atlas-h1">${text(article.title)}</h1>
 <p class="atlas-meta">Wikipedia revision <a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${int(article.revision)}</a>${assessed ? ` · ${text(assessed)}` : ""}${wikileanSlug ? ` · <a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>` : ""}</p>
-<p class="atlas-meta">${searched} · campaign ${text(article.campaign)}</p>
+<p class="atlas-meta">${searched} · ${text(campaignLabel(article.campaign))}</p>
 <section class="atlas-strip" aria-labelledby="atlas-h-coverage">
 <h2 class="atlas-h2" id="atlas-h-coverage">Coverage</h2>
 <p class="atlas-strip-lead">${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.</p>
 ${statusBar(summary.by_status, "passage", "passages")}
-<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-status">Status</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">${statusChips}</div></div>
+${subjectRow}<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-status">Status</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">${statusChips}</div></div>
 ${libraryChips ? `<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-where">Where</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-where">${libraryChips}</div></div>` : ""}
 <p class="atlas-filter-note" role="status"><span class="atlas-filter-text"></span> <button type="button" class="atlas-clear" hidden>Show all passages</button></p>
 </section>
@@ -538,7 +575,7 @@ export function atlasDashboardPage(input: DashboardInput): string {
   const main = `<main class="wl-atlas" id="atlas-dashboard">
 <h1 class="atlas-h1">Formalization atlas</h1>
 <p class="atlas-lead">Which statements in WikiProject Mathematics articles are formalized in Lean, and where: each passage is located in a frozen set of Lean libraries at pinned commits, with a link to the exact source lines.</p>
-<p class="atlas-meta">Campaign ${text(current.campaign)} · ${universe ? `<a href="/atlas/universe/${attr(current.universe.sha256)}">universe ${text(current.universe.id)}</a>` : `universe ${text(current.universe.id)}`}: ${int(current.universe.libraries)} libraries, frozen ${text(current.universe.frozen)} · built ${text(String(current.built_at ?? "").slice(0, 10))}</p>
+<p class="atlas-meta">${text(capital(campaignLabel(current.campaign)))} · ${universe ? `<a href="/atlas/universe/${attr(current.universe.sha256)}">universe ${text(current.universe.id)}</a>` : `universe ${text(current.universe.id)}`}: ${int(current.universe.libraries)} libraries, frozen ${text(current.universe.frozen)} · built ${text(String(current.built_at ?? "").slice(0, 10))}</p>
 <section class="atlas-strip" aria-labelledby="atlas-h-totals">
 <h2 class="atlas-h2" id="atlas-h-totals">Totals</h2>
 <p class="atlas-strip-lead">${plural(count(counts.articles), "article", "articles")} · ${plural(count(counts.passages), "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}</p>
