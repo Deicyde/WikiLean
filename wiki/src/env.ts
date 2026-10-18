@@ -14,7 +14,9 @@ export interface Env {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
   // Anonymous flag-report limiter, keyed flag:<CF-Connecting-IP> (the flag
-  // endpoint has no auth, so the user-keyed EDIT_LIMITER can't cover it).
+  // endpoint has no auth, so the user-keyed EDIT_LIMITER can't cover it). It
+  // also caps the CSP report sink under csp:<CF-Connecting-IP> keys
+  // (security.ts): separate counters, shared limit and period.
   FLAG_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };

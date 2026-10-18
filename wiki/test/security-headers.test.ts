@@ -3,7 +3,7 @@
 // the enforced framing ban, Referrer-Policy, and the Report-Only CSP; the CSP
 // allows what the pages actually load; the headers never enter RENDER_CACHE
 // bytes (so no render-cache key bump); the /api/csp-report sink logs both
-// report shapes and caps its input; and the static-asset `_headers` file that
+// report shapes and caps its input and its per-IP request rate; and the static-asset `_headers` file that
 // build-public generates applies the same set to assets the Worker never sees.
 
 import { afterEach, describe, it, expect, vi } from "vitest";
@@ -129,17 +129,26 @@ describe("security headers", () => {
 });
 
 describe("POST /api/csp-report", () => {
-  it("answers 429 and logs nothing once the per-IP limit is spent", async () => {
-    const h = setup({ flagLimiterAllows: false });
+  it("caps each IP under its own csp:<ip> key before reading the body", async () => {
+    const h = setup();
+    const keys: string[] = [];
+    (h.env as { FLAG_LIMITER: unknown }).FLAG_LIMITER = {
+      limit: async ({ key }: { key: string }) => {
+        keys.push(key);
+        return { success: false };
+      },
+    };
     const log = vi.spyOn(console, "log").mockImplementation(() => {});
-    const body = JSON.stringify({
-      "csp-report": { "document-uri": `${ORIGIN}/Test_Article`, "effective-directive": "img-src", "blocked-uri": "https://evil.example/p.png", disposition: "report" },
-    });
-    const res = await postReport(h.env, body, "application/csp-report");
+    const res = await app.request(
+      "/api/csp-report",
+      { method: "POST", headers: { "Content-Type": "application/csp-report", "CF-Connecting-IP": "203.0.113.7" }, body: "{not json" },
+      h.env,
+    );
+    // Refused before the body is parsed: 429, not the 400 that malformed JSON gets.
     expect(res.status).toBe(429);
     expectSecurityHeaders(res);
+    expect(keys).toEqual(["csp:203.0.113.7"]);
     expect(log).not.toHaveBeenCalled();
-    log.mockRestore();
   });
 
   it("logs a legacy report-uri body and answers 204", async () => {
