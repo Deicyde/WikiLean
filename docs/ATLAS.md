@@ -458,8 +458,13 @@ and the live list filter.
   segments get no link. The pages have no inline event handlers, and `atlas.js` writes
   only through `textContent` and `createElement`. The pages keep two inline scripts
   byte-identical to the other shells (the theme bootstrap and the header search), and the
-  coverage bar uses `style="width:…"`. Both are allowed by today's Report-Only CSP, and a
-  strict CSP would need hashes for the scripts and `style-src-attr` for the bar.
+  coverage bar uses `style="width:…"`. Both are allowed by today's Report-Only CSP
+  (`'unsafe-inline'`, with no nonce or hash that would void it), and a strict CSP would
+  need hashes for the scripts and `style-src-attr` for the bar. Everything the pages, the
+  article box and `atlas.js` load or fetch is same-origin, so enforcing the Report-Only
+  policy as it stands breaks nothing (`wiki/e2e/atlas.spec.ts` runs the flows with it
+  enforced). `atlas.css` and `atlas.js` are static assets, so they get the security headers
+  from the generated `_headers` file, like every other asset.
 
 ## 9. Article pages
 
@@ -488,18 +493,24 @@ created_at, updated_at`, with `UNIQUE (location_key, user_id)`. A second verdict
 the first.
 
 **`POST /api/atlas/feedback`** takes `{location_key, pageid, campaign, verdict, note?}`.
-It answers 503 when unbound, 403 for a cross-origin request (`checkOrigin`), 401 without a
-session, and 403 for the pipeline bearer (these rows are human labels). It is
-rate-limited per user on `EDIT_LIMITER` (key `atlas:<user>`, 429). Bodies over 4 KB get
-413 before parsing. It answers 400 for a bad field and 404 unless the location is on the
-current store article. A campaign other than the store's gets **409** "stale", so a verdict
-always names what the person saw. `revision` and `campaign` are copied from the store, not
-taken from the client. Until migration 0015 is applied, the route answers 503, not 500.
+It answers 503 when unbound, 403 for a cross-origin request (`src/security.ts`
+`checkOrigin`), 401 without a session, and 403 for the pipeline bearer (these rows are
+human labels). It is rate-limited per user on `EDIT_LIMITER` (key `atlas:<user>`, 429).
+After those checks it reads the body through the shared `readJsonCapped`
+(`src/security.ts`) with its own entry `MAX_JSON_BODY_BYTES.atlasFeedback` (4 KiB): a
+declared or streamed body past it gets 413 "request body too large (max 4096 bytes)"
+before parsing. It answers 400 for a bad field and 404 unless the location is on the
+current store article. A campaign other than the store's gets **409** "stale", so a
+verdict always names what the person saw. `revision` and `campaign` are copied from the
+store, not taken from the client. Until migration 0015 is applied, the route answers 503,
+not 500.
 
 **`GET /api/atlas/feedback/export`** is for the pipeline bearer only (admin sessions get
 403). It returns every row as NDJSON, paged from D1, with users only as
-`sha256("atlas-feedback\0" + user_id + PIPELINE_TOKEN)[:12]`. The domain prefix keeps
-these pseudonyms apart from the research export's `sha256(user_id + PIPELINE_TOKEN)[:12]`:
+`sha256("atlas-feedback\0" + user_id + salt)[:12]`, where the salt is the research
+export's (`src/security.ts` `researchExportSalt`: the `RESEARCH_EXPORT_SALT` secret, or
+`PIPELINE_TOKEN` until it is set; `docs/SECRETS.md`). The domain prefix keeps these
+pseudonyms apart from the research export's `sha256(user_id + salt)[:12]`:
 this export carries notes, so a note that names its author must not let anyone join it to
 that person's pseudonymous annotation history in the research export. Within this export a
 person's pseudonym is stable, so their verdicts still group. The note is the only free
@@ -608,14 +619,20 @@ Each decision below comes with a recommendation.
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
   pages on the fixture store, 404s, escaping and integer-only numbers, the headings, the
   visible status sentence and its basis, the shard cache and the search limiter, feedback
-  auth, origin, validation, size cap, rate limit and missing table, the export and its
-  domain-separated pseudonyms, the article box with its cache isolation and revision
-  note, the readers, non-array universe lists, related-only and Prop-valued-definition
-  passages, the producer's truth table for the page's fallback rows, and the library
-  registry (seeded names, look-alike display names, ignored templates, dot segments,
-  GitHub-only repository links).
+  auth, origin, validation, size cap (the shared `readJsonCapped` cap, exact to the byte),
+  rate limit and missing table, the export and its domain-separated pseudonyms and their
+  `RESEARCH_EXPORT_SALT` salt, the security headers on every atlas response and the pages'
+  CSP fit (same-origin loads only, no inline handlers), the article box with its cache
+  isolation and revision note, the readers, non-array universe lists, related-only and
+  Prop-valued-definition passages, the producer's truth table for the page's fallback
+  rows, and the library registry (seeded names, look-alike display names, ignored
+  templates, dot segments, GitHub-only repository links).
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
   schemes at desktop width and at 375px, plus the combined filters, feedback, live search,
-  a passage permalink and the article box.
+  a passage permalink and the article box, and runs those flows again with the Worker's
+  Report-Only CSP enforced, asserting no violation.
+- `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
+  body caps and scans `wiki/src` so that no route reads a JSON body except through
+  `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry.

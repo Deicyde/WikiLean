@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
+import { CSP_REPORT_ONLY, SECURITY_HEADERS } from "../src/security.js";
 
 // The formalization atlas pages over the golden fixture store
 // (scripts/atlas/fixtures/store, bound in e2e/server.ts).
@@ -140,4 +141,74 @@ test("an article the atlas covers shows the summary box", async ({ page }) => {
   await expectNoSeriousViolations(page);
   await box.getByRole("link", { name: /See where/ }).click();
   await expect(page).toHaveURL(new RegExp(`${WIDGET}$`));
+});
+
+// The Worker's Report-Only policy (src/security.ts CSP_REPORT_ONLY), served as
+// an enforced Content-Security-Policy on every document, as enforcing it
+// would. Every atlas flow still works, and no violation fires, whether
+// reported or enforced.
+test("the atlas flows work with the Worker's Report-Only policy enforced", async ({ page, context, baseURL }) => {
+  const errors = collectPageErrors(page);
+  await page.route("**/*", async (route) => {
+    const request = route.request();
+    if (request.resourceType() !== "document" || request.method() !== "GET") return route.fallback();
+    const url = new URL(request.url());
+    if (url.hostname !== "127.0.0.1" && url.hostname !== "localhost") return route.fallback();
+    const response = await route.fetch({ maxRedirects: 0 });
+    const headers = response.headers();
+    expect(headers["content-security-policy-report-only"], url.pathname).toBe(CSP_REPORT_ONLY);
+    expect(headers["content-security-policy"], url.pathname).toBe(SECURITY_HEADERS["Content-Security-Policy"]);
+    await route.fulfill({
+      response,
+      headers: { ...headers, "content-security-policy": `${CSP_REPORT_ONLY}; frame-ancestors 'none'` },
+    });
+  });
+  await page.addInitScript(() => {
+    const seen: string[] = [];
+    Reflect.set(globalThis, "__csp", seen);
+    // The e2e files compile without the DOM lib, so the document is typed here.
+    type Violation = { disposition: string; effectiveDirective: string; blockedURI: string };
+    const doc = Reflect.get(globalThis, "document") as {
+      addEventListener(type: "securitypolicyviolation", listener: (event: Violation) => void): void;
+    };
+    doc.addEventListener("securitypolicyviolation", (event) => {
+      seen.push(`${event.disposition} ${event.effectiveDirective} ${event.blockedURI}`);
+    });
+  });
+  const violations = () => page.evaluate(() => Reflect.get(globalThis, "__csp") as string[]);
+  await context.addCookies([{ name: "wl_dev_user", value: "u-patroller", url: baseURL! }]);
+
+  // The coverage page: inline theme bootstrap, atlas.js, the filter chips and feedback.
+  await page.emulateMedia({ colorScheme: "dark" });
+  await page.goto(WIDGET);
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.locator('.atlas-chip[data-filter="status:statement_only"]').click();
+  await expect(page.locator(".atlas-passage:visible")).toHaveCount(1);
+  await page.getByRole("button", { name: "Show all passages" }).click();
+  await expect(page.locator(".atlas-passage:visible")).toHaveCount(4);
+  const card = page.locator('.atlas-card[data-library="mathlib"]');
+  await card.getByRole("button", { name: "Confirm" }).click();
+  await expect(card.getByRole("status")).toHaveText("Thanks: you confirmed this link.");
+  // The coverage bar's style="width:…" still sizes its segments.
+  const widths = await page.locator(".atlas-seg").evaluateAll((segs) =>
+    segs.map((seg) => (seg as unknown as { style: { width: string } }).style.width));
+  expect(widths.length).toBeGreaterThan(0);
+  expect(widths.every((width) => /%$/.test(width))).toBe(true);
+  expect(await violations()).toEqual([]);
+
+  // The dashboard's live search (it fetches index shards).
+  await page.goto("/atlas");
+  await page.getByLabel("Search covered articles").fill("gadg");
+  await expect(page.locator("#atlas-count")).toHaveText("1 of 2 articles match.");
+  expect(await violations()).toEqual([]);
+
+  await page.goto("/atlas/universe/0e6efcaae05b9aee11c90b919b55052636ee2932901127ea571268dc3a8d6a25");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  expect(await violations()).toEqual([]);
+
+  // The article page's summary box.
+  await page.goto("/Widget_lemma");
+  await expect(page.getByRole("complementary", { name: "Formalization atlas" })).toContainText("4 passages");
+  expect(await violations()).toEqual([]);
+  expect(errors).toEqual([]);
 });

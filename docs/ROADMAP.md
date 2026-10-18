@@ -1323,7 +1323,10 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
   (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
   release. Not deployed, and no store has been uploaded. The End-goal amendment and the
-  plane's choices are Waiting on Jack item 16.
+  plane's choices are Waiting on Jack item 16. The branch is stacked on
+  `claude/security-hardening` (#84, which merges first): the feedback route reads its body
+  through `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry, and the feedback export
+  salts its pseudonyms with `RESEARCH_EXPORT_SALT` (falling back to `PIPELINE_TOKEN`).
 
 - 2026-10-17: **Agent sandbox cohort boundary (branch `claude/security-hardening`, not yet
   merged or deployed).** From the first moderation run on a commit with

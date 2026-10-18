@@ -18,6 +18,7 @@ import type { Context, Hono } from "hono";
 import { getUser, requireRole } from "./auth.js";
 import type { Env } from "./env.js";
 import type { UniverseLibrary } from "./libraries.js";
+import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
   atlasArticlePage,
@@ -379,45 +380,8 @@ function notConfiguredHtml(c: Ctx, error = NOT_CONFIGURED): Response {
 
 const FEEDBACK_VERDICTS = new Set(["confirm", "report"]);
 export const ATLAS_PSEUDONYM_DOMAIN = "atlas-feedback\0";
-const MAX_FEEDBACK_BYTES = 4096;
 const MAX_NOTE_CHARS = MAX_FLAG_COMMENT_LEN; // 500, the flag form's cap
 const CAMPAIGN_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
-
-// Cross-site browser writes are refused (same rule as index.ts checkOrigin).
-function checkOrigin(c: Ctx): Response | null {
-  const origin = c.req.header("Origin");
-  if (origin && origin !== new URL(c.req.url).origin) {
-    return c.json({ ok: false, error: "cross-origin request rejected" }, 403);
-  }
-  return null;
-}
-
-// Reads at most `max` bytes as they stream; null = over the cap.
-async function readCappedText(req: Request, max: number): Promise<string | null> {
-  const declared = Number(req.headers.get("Content-Length"));
-  if (Number.isFinite(declared) && declared > max) return null;
-  if (!req.body) return "";
-  const reader = req.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    total += value.byteLength;
-    if (total > max) {
-      await reader.cancel();
-      return null;
-    }
-    chunks.push(value);
-  }
-  const buf = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) {
-    buf.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return new TextDecoder().decode(buf);
-}
 
 function missingTable(error: unknown): boolean {
   let current: unknown = error;
@@ -589,10 +553,11 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
   // ---- feedback ----
 
   // Confirm or report one location. Session users only (the pipeline bearer is
-  // refused: these rows are human labels), same-origin, byte-capped, rate
-  // limited per user, and checked against the current store so a key that is
-  // not on the page cannot be stored. One row per (location_key, user):
-  // a second verdict replaces the first.
+  // refused: these rows are human labels), same-origin (checkOrigin), rate
+  // limited per user, byte-capped after those checks (readJsonCapped,
+  // MAX_JSON_BODY_BYTES.atlasFeedback: 413 past it), and checked against the
+  // current store so a key that is not on the page cannot be stored. One row
+  // per (location_key, user): a second verdict replaces the first.
   app.post("/api/atlas/feedback", async (c) => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredJson(c);
@@ -604,16 +569,11 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     const { success } = await c.env.EDIT_LIMITER.limit({ key: `atlas:${user.id}` });
     if (!success) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
 
-    const text = await readCappedText(c.req.raw, MAX_FEEDBACK_BYTES);
-    if (text === null) return c.json({ ok: false, error: "payload too large" }, 413);
-    let body: Record<string, unknown>;
-    try {
-      const parsed = JSON.parse(text) as unknown;
-      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("not an object");
-      body = parsed as Record<string, unknown>;
-    } catch {
-      return c.json({ ok: false, error: "bad json" }, 400);
-    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.atlasFeedback);
+    if (!read.ok) return read.response;
+    const parsed = read.value;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return c.json({ ok: false, error: "bad json" }, 400);
+    const body = parsed as Record<string, unknown>;
     const { location_key: key, pageid, campaign, verdict } = body;
     if (typeof key !== "string" || !SHA_RE.test(key)) return c.json({ ok: false, error: "bad location_key" }, 400);
     if (typeof pageid !== "number" || !Number.isSafeInteger(pageid) || pageid < 1) {
@@ -657,15 +617,17 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
   // Benchmark seeding (docs/ATLAS.md, "Feedback"): every row, id-ascending,
   // paged from D1 so the response never materializes in memory. Pipeline
   // bearer only. Users appear only as pseudonyms, sha256("atlas-feedback\0" +
-  // user_id + salt) truncated to 12 hex. The domain prefix keeps them apart
-  // from the research export's sha256(user_id + salt): this export carries
-  // free-text notes, so a note that names its author must not re-identify
-  // that person's pseudonymous annotation history there. Reads only D1, so it
-  // works whether or not ATLAS is bound.
+  // user_id + salt) truncated to 12 hex, with the research export's salt
+  // (security.ts researchExportSalt: RESEARCH_EXPORT_SALT, else PIPELINE_TOKEN).
+  // The domain prefix keeps them apart from the research export's
+  // sha256(user_id + salt): this export carries free-text notes, so a note
+  // that names its author must not re-identify that person's pseudonymous
+  // annotation history there. Reads only D1, so it works whether or not ATLAS
+  // is bound.
   app.get("/api/atlas/feedback/export", async (c) => {
     const user = await requireRole(c, ["bot"]);
     if (!user) return c.json({ ok: false, error: "forbidden" }, 403);
-    const salt = c.env.PIPELINE_TOKEN ?? "";
+    const salt = researchExportSalt(c.env);
     const pseudonyms = new Map<string, string>();
     const pseudonymFor = async (userId: string) => {
       let value = pseudonyms.get(userId);

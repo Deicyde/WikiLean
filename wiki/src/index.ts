@@ -53,7 +53,7 @@ import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
-import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders } from "./security.js";
+import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders, researchExportSalt } from "./security.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -383,15 +383,6 @@ function statusCounts(annotations: AnnRecord[]): {
     else if (a.status === "not_formalized") counts.nNotFormalized += 1;
   }
   return counts;
-}
-
-// The research export's pseudonym salt. A dedicated secret keeps the salt
-// out of the hands of every PIPELINE_TOKEN holder (who could otherwise
-// recompute sha256(user_id + token) for the public user ids) and lets the
-// bearer rotate without re-keying research pseudonyms. Falls back to
-// PIPELINE_TOKEN so existing pseudonyms stay stable until the secret is set.
-function researchExportSalt(env: Pick<Env, "RESEARCH_EXPORT_SALT" | "PIPELINE_TOKEN">): string {
-  return env.RESEARCH_EXPORT_SALT || env.PIPELINE_TOKEN || "";
 }
 
 // Plain SHA-256 hex. The research export salts its pseudonyms with

@@ -11,6 +11,9 @@
 // The caps refuse a declared Content-Length over the cap without reading the
 // body, accept a body of exactly the cap, and run after the auth checks.
 
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { MAX_AUTH_BODY_BYTES } from "../src/auth.js";
 import { app } from "../src/index.js";
@@ -18,6 +21,7 @@ import { MAX_MCP_BODY_BYTES } from "../src/mcp.js";
 import { MAX_QUEUE_BODY_BYTES, MAX_QUEUE_ITEMS } from "../src/queue.js";
 import { MAX_JSON_BODY_BYTES } from "../src/security.js";
 import { blockNetwork, get, post, setup, PIPELINE_TOKEN, SLUG, type Harness } from "./helpers/harness.js";
+import { bindAtlas } from "./helpers/atlas.js";
 
 blockNetwork();
 
@@ -286,6 +290,13 @@ describe("JSON body caps on the remaining write routes", () => {
     { name: "repo registration", method: "POST", path: "/api/repos", headers: { Cookie: "wl_dev_user=u-human" }, max: MAX_JSON_BODY_BYTES.repos },
     { name: "repo removal", method: "DELETE", path: "/api/repos", headers: { Cookie: "wl_dev_user=u-human" }, max: MAX_JSON_BODY_BYTES.repos },
     { name: "review post", method: "POST", path: "/api/review/octo/repo/1", headers: review, max: MAX_JSON_BODY_BYTES.reviewPost },
+    {
+      name: "atlas feedback",
+      method: "POST",
+      path: "/api/atlas/feedback",
+      headers: { Cookie: "wl_dev_user=u-human" },
+      max: MAX_JSON_BODY_BYTES.atlasFeedback,
+    },
   ];
 
   function harness(): Harness {
@@ -293,6 +304,7 @@ describe("JSON body caps on the remaining write routes", () => {
     h.env.REVIEW_GITHUB_CLIENT_ID = "Iv1.test";
     h.env.REVIEW_GITHUB_CLIENT_SECRET = "secret";
     h.renderCache.store.set("reviewtok:review-session", JSON.stringify({ token: "gho_test", login: "reviewer" }));
+    bindAtlas(h.env); // without a store, /api/atlas/feedback answers 503 before reading
     return h;
   }
 
@@ -327,6 +339,38 @@ describe("JSON body caps on the remaining write routes", () => {
     const badEdge = await rawPost(h, "/api/brain/edge", "{nope", bearer);
     expect(badEdge.status).toBe(400);
     expect(await badEdge.json()).toEqual({ ok: false, error: "bad JSON body" });
+  });
+});
+
+// The rule the table above samples, checked over the whole Worker source: no
+// route parses a request body itself (c.req.json() and the like, or a stream
+// reader of its own), and every readJsonCapped call names a MAX_JSON_BODY_BYTES
+// entry, each entry in use. A new route therefore needs its own cap entry.
+describe("every JSON request body in wiki/src is read through readJsonCapped", () => {
+  it("has no c.req.json() or private body reader, and every cap is a used MAX_JSON_BODY_BYTES entry", () => {
+    const src = fileURLToPath(new URL("../src/", import.meta.url));
+    const files = readdirSync(src, { recursive: true, encoding: "utf8" }).filter((f) => f.endsWith(".ts")).sort();
+    expect(files).toEqual(expect.arrayContaining(["index.ts", "security.ts", "atlas.ts", "brain-edits.ts", "review.ts"]));
+    const problems: string[] = [];
+    const used = new Set<string>();
+    for (const rel of files) {
+      const text = readFileSync(join(src, rel), "utf8");
+      text.split("\n").forEach((line, i) => {
+        if (/^\s*\*/.test(line)) return; // block-comment body
+        const code = line.replace(/\/\/.*$/, "");
+        const at = `${rel}:${i + 1}: ${line.trim()}`;
+        if (/\breq(\.raw)?\.(json|text|arrayBuffer|blob|formData|parseBody)\s*\(/.test(code)) problems.push(at);
+        if (rel !== "security.ts" && /\.body\.getReader\s*\(/.test(code)) problems.push(at);
+      });
+      for (const m of text.matchAll(/\breadJsonCapped\(\s*\w+\s*,\s*([^,)]+)/g)) {
+        const cap = m[1].trim();
+        const key = /^MAX_JSON_BODY_BYTES\.(\w+)$/.exec(cap)?.[1];
+        if (key && Object.hasOwn(MAX_JSON_BODY_BYTES, key)) used.add(key);
+        else problems.push(`${rel}: readJsonCapped(…, ${cap})`);
+      }
+    }
+    expect(problems).toEqual([]);
+    expect([...used].sort()).toEqual(Object.keys(MAX_JSON_BODY_BYTES).sort());
   });
 });
 

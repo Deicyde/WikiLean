@@ -24,6 +24,7 @@ import { atlasSummaryBox, locationStatus } from "../src/atlas-render.js";
 import { libraryInfo, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectAtlasSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
+import { CSP_REPORT_ONLY, MAX_JSON_BODY_BYTES, SECURITY_HEADERS } from "../src/security.js";
 
 blockNetwork();
 
@@ -544,16 +545,49 @@ describe("atlas feedback", () => {
     expect(feedbackRows(h)).toEqual([]);
   });
 
-  it("caps the body size before parsing", async () => {
+  // The shared JSON body cap (security.ts readJsonCapped), with the route's
+  // own MAX_JSON_BODY_BYTES entry, read after the origin, auth and rate-limit
+  // checks.
+  it("caps the body at MAX_JSON_BODY_BYTES.atlasFeedback before parsing", async () => {
     const h = bound();
+    const max = MAX_JSON_BODY_BYTES.atlasFeedback;
+    expect(max).toBe(4096);
+    const tooLarge = { ok: false, error: `request body too large (max ${max} bytes)` };
+    const send = (body: string, headers: Record<string, string> = {}) => app.request("/api/atlas/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Cookie: "wl_dev_user=u-human", Origin: ORIGIN, ...headers },
+      body,
+    }, h.env);
+    // A JSON object of exactly `size` bytes: a valid verdict plus an ignored pad.
+    const padded = (size: number) => {
+      const head = JSON.stringify({ ...feedback(), pad: "" });
+      const text = head.slice(0, -2) + "x".repeat(size - head.length) + '"}';
+      expect(new TextEncoder().encode(text).byteLength).toBe(size);
+      return text;
+    };
+
     const res = await post(h.env, "/api/atlas/feedback", feedback({ note: "x".repeat(5000) }), { user: "u-human" });
     expect(res.status).toBe(413);
-    const declared = await app.request("/api/atlas/feedback", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Cookie: "wl_dev_user=u-human", Origin: ORIGIN, "Content-Length": "999999" },
-      body: JSON.stringify(feedback()),
-    }, h.env);
+    expect(await jsonOf(res)).toEqual(tooLarge);
+    const declared = await send(JSON.stringify(feedback()), { "Content-Length": "999999" });
     expect(declared.status).toBe(413);
+    expect(await jsonOf(declared)).toEqual(tooLarge);
+    expect(feedbackRows(h)).toEqual([]);
+
+    expect((await send(padded(max + 1))).status).toBe(413);
+    expect(feedbackRows(h)).toEqual([]);
+    const atCap = await send(padded(max));
+    expect(atCap.status).toBe(200);
+    expect(await jsonOf(atCap)).toEqual({ ok: true, verdict: "confirm" });
+    expect(feedbackRows(h)).toHaveLength(1);
+
+    // An oversized body from a caller the route refuses is answered as refused
+    // (401 / 403), never as too large.
+    const anonymous = await app.request("/api/atlas/feedback", {
+      method: "POST", headers: { "Content-Type": "application/json", "Content-Length": "999999" }, body: "{}",
+    }, h.env);
+    expect(anonymous.status).toBe(401);
+    expect((await send(padded(max + 1), { Origin: "https://evil.example" })).status).toBe(403);
   });
 
   it("is rate limited per user", async () => {
@@ -608,6 +642,157 @@ describe("atlas feedback export", () => {
     expect(lines[1]).toMatchObject({ verdict: "report", note: "special case only", pseudonym: pseudonym("u-patroller") });
     expect(JSON.stringify(lines)).not.toContain("u-human");
     expect(JSON.stringify(lines)).not.toContain(research("u-human"));
+  });
+
+  // The research export's salt (security.ts researchExportSalt): a bearer
+  // holder must not be able to recompute these pseudonyms either, and rotating
+  // the bearer must not re-key them once RESEARCH_EXPORT_SALT is set.
+  it("salts with RESEARCH_EXPORT_SALT when set, and with PIPELINE_TOKEN only as the fallback", async () => {
+    const h = bound();
+    await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
+    const pseudonymOf = async () => {
+      const res = await get(h.env, "/api/atlas/feedback/export", { bearer: PIPELINE_TOKEN });
+      expect(res.status).toBe(200);
+      return JSON.parse((await res.text()).trim()).pseudonym as string;
+    };
+    const atlas = (salt: string) => createHash("sha256").update("atlas-feedback\0" + "u-human" + salt).digest("hex").slice(0, 12);
+    const research = (salt: string) => createHash("sha256").update("u-human" + salt).digest("hex").slice(0, 12);
+    expect(await pseudonymOf()).toBe(atlas(PIPELINE_TOKEN));
+
+    h.env.RESEARCH_EXPORT_SALT = "dedicated-research-salt";
+    const salted = await pseudonymOf();
+    expect(salted).toBe(atlas("dedicated-research-salt"));
+    expect(salted).not.toBe(atlas(PIPELINE_TOKEN));
+    // Still domain-separated from the research export under the shared salt.
+    expect(salted).not.toBe(research("dedicated-research-salt"));
+
+    // An empty value is "unset", not an empty salt.
+    h.env.RESEARCH_EXPORT_SALT = "";
+    expect(await pseudonymOf()).toBe(atlas(PIPELINE_TOKEN));
+  });
+});
+
+// The atlas under the Worker's security layer (src/security.ts): every atlas
+// response, whatever its status or how it is built, carries SECURITY_HEADERS,
+// and the pages, the article box and the atlas assets load nothing the
+// Report-Only policy would report, so enforcing that policy cannot break them
+// (e2e/atlas.spec.ts runs the flows with it enforced).
+describe("atlas security headers and CSP", () => {
+  function expectSecurityHeaders(res: Response, label: string): void {
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) expect(res.headers.get(name), `${label}: ${name}`).toBe(value);
+  }
+
+  function sources(directive: string): string[] {
+    const part = CSP_REPORT_ONLY.split("; ").find((d) => d.startsWith(directive + " "));
+    expect(part, `CSP lacks ${directive}`).toBeDefined();
+    return part!.split(" ").slice(1);
+  }
+
+  const sameOrigin = (url: string) => new URL(url, ORIGIN).origin === new URL(ORIGIN).origin;
+
+  // Everything an HTML fragment makes the browser fetch, submit to or run.
+  function loads(html: string): { urls: string[]; embeds: string[]; handlers: string[] } {
+    const urls = [
+      ...[...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]),
+      ...[...html.matchAll(/<link\b[^>]*\srel="(?:stylesheet|preload|modulepreload|icon)"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]),
+      ...[...html.matchAll(/<form\b[^>]*\saction="([^"]*)"/g)].map((m) => m[1]),
+    ];
+    const embeds = [...html.matchAll(/<(img|iframe|frame|embed|object|video|audio|source)\b/g)].map((m) => m[1]);
+    const handlers = [...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)].map((m) => m[1]);
+    return { urls, embeds, handlers };
+  }
+
+  it("are on every atlas page, API answer, error, write answer and export", async () => {
+    const unbound = setup();
+    for (const path of ["/atlas", WIDGET_PATH, "/api/atlas/current", `/api/atlas/article/${WIDGET_PAGEID}`]) {
+      const res = await get(unbound.env, path);
+      expect(res.status, path).toBe(503);
+      expectSecurityHeaders(res, `unbound ${path}`);
+    }
+
+    const h = bound();
+    const reads: Array<[string, number]> = [
+      ["/atlas", 200], ["/atlas?q=wid", 200], [`/atlas/${WIDGET_PAGEID}`, 200], [WIDGET_PATH, 200],
+      [`/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, 200], ["/atlas/9999", 404],
+      ["/api/atlas/current", 200], [`/api/atlas/article/${WIDGET_PAGEID}`, 200], [`/api/atlas/records/${WIDGET_PAGEID}`, 200],
+      [`/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, 200], ["/api/atlas/index/1", 200], ["/api/atlas/article/9999", 404],
+    ];
+    for (const [path, status] of reads) {
+      const res = await get(h.env, path);
+      expect(res.status, path).toBe(status);
+      expectSecurityHeaders(res, path);
+    }
+
+    const writes: Array<[() => Promise<Response>, number]> = [
+      [() => post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" }), 200],
+      [() => post(h.env, "/api/atlas/feedback", feedback()), 401],
+      [() => post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human", origin: "https://evil.example" }), 403],
+      [() => post(h.env, "/api/atlas/feedback", feedback({ note: "x".repeat(5000) }), { user: "u-human" }), 413],
+      [() => post(h.env, "/api/atlas/feedback", feedback({ verdict: "maybe" }), { user: "u-human" }), 400],
+    ];
+    for (const [send, status] of writes) {
+      const res = await send();
+      expect(res.status).toBe(status);
+      expectSecurityHeaders(res, `feedback ${status}`);
+    }
+
+    // The export is a hand-built streaming Response, not a c.json/c.html one.
+    const exported = await get(h.env, "/api/atlas/feedback/export", { bearer: PIPELINE_TOKEN });
+    expect(exported.status).toBe(200);
+    expectSecurityHeaders(exported, "export");
+  });
+
+  it("the policy keeps inline scripts and styles working: 'unsafe-inline' with no nonce, hash or strict-dynamic", () => {
+    // A nonce, a hash or 'strict-dynamic' in a source list makes browsers
+    // ignore 'unsafe-inline' there, which would block the pages' inline theme
+    // and search scripts, their <style> block and the coverage bar's style="".
+    for (const directive of ["script-src", "style-src"]) {
+      expect(sources(directive)).toContain("'self'");
+      expect(sources(directive)).toContain("'unsafe-inline'");
+      expect(sources(directive).filter((s) => /^'(nonce-|sha(256|384|512)-|strict-dynamic)/.test(s))).toEqual([]);
+    }
+    expect(CSP_REPORT_ONLY).not.toMatch(/(script|style)-src-(elem|attr) /);
+    expect(sources("connect-src")).toContain("'self'");
+    expect(sources("form-action")).toEqual(["'self'"]);
+    expect(sources("script-src")).not.toContain("'unsafe-eval'");
+  });
+
+  it("the pages and the article box load only same-origin URLs, embed nothing, and have no inline handlers", async () => {
+    const h = bound();
+    h.db.prepare("UPDATE articles SET wikipedia_title = 'Widget_lemma' WHERE slug = ?").run(SLUG);
+    const pages: Array<[string, string | undefined]> = [
+      ["/atlas", undefined], ["/atlas?q=gadg", undefined], [WIDGET_PATH, undefined], [WIDGET_PATH, "u-human"],
+      [`/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, undefined], ["/atlas/9999", undefined],
+    ];
+    for (const [path, user] of pages) {
+      const html = await (await get(h.env, path, user ? { user } : {})).text();
+      const { urls, embeds, handlers } = loads(html);
+      expect(urls.length, path).toBeGreaterThan(0);
+      expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
+      expect(embeds, path).toEqual([]);
+      expect(handlers, path).toEqual([]);
+      expect(html, path).toContain('<script src="/assets/atlas.js?v=2"></script>');
+    }
+    const article = await (await get(h.env, `/${SLUG}`)).text();
+    const start = article.indexOf('<link rel="stylesheet" href="/assets/atlas.css');
+    const end = article.indexOf("</aside>", start);
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    const box = loads(article.slice(start, end));
+    expect(box.urls).toEqual(["/assets/atlas.css?v=2"]);
+    expect(box.embeds).toEqual([]);
+    expect(box.handlers).toEqual([]);
+  });
+
+  it("atlas.js fetches only same-origin paths and never evaluates strings; atlas.css loads nothing", () => {
+    const js = readFileSync(new URL("../../site/assets/atlas.js", import.meta.url), "utf8");
+    const css = readFileSync(new URL("../../site/assets/atlas.css", import.meta.url), "utf8");
+    const targets = [...js.matchAll(/\bfetch\(\s*(["'`])([^"'`]*)/g)].map((m) => m[2]);
+    expect(targets).toEqual(["/api/atlas/feedback", "/api/atlas/index/"]);
+    expect(js.match(/\bfetch\(/g)).toHaveLength(targets.length);
+    expect(js).not.toMatch(/https?:\/\/|["'`]\/\//);
+    expect(js).not.toMatch(/\beval\s*\(|\bnew\s+Function\b|\bset(Timeout|Interval)\(\s*["'`]/);
+    expect(css).not.toMatch(/url\(|@import/);
   });
 });
 
