@@ -76,6 +76,12 @@ CAUSES = [
 # site/moderate.py's ARTICLE_SPECIFIC_ERROR_RE treats both as article-specific.
 HOST_WIDE_ONLY_ON_EVERY_ARTICLE = re.compile(r"^(extract_failed|fetch_failed)\b")
 
+
+def _stage(error):
+    """'extract_failed' or 'fetch_failed' if the error names that stage, else None."""
+    m = HOST_WIDE_ONLY_ON_EVERY_ARTICLE.match(str(error).strip())
+    return m.group(1) if m else None
+
 _HOME = re.compile(r"/(?:Users|home)/[^/\s'\"]+")
 _SECRET = re.compile(
     r"sk-ant-[\w-]+|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_\w+|Bearer\s+\S+"
@@ -160,6 +166,13 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
     runs = []
     for rid, recs in list(by_run.items())[-n_runs:]:
         errs = [r for r in recs if r.get("error")]
+        # A stage's failure is host-wide only if every article that reached the
+        # stage failed there: the fetch runs after the Worker read, the extract
+        # after the fetch.
+        stage_failed = Counter(_stage(r["error"]) for r in errs)
+        read_failed = sum(1 for r in errs if str(r["error"]).strip().startswith("get_failed_"))
+        reached = {"fetch_failed": len(recs) - read_failed,
+                   "extract_failed": len(recs) - read_failed - stage_failed["fetch_failed"]}
         groups = OrderedDict()
         for r in errs:
             key = clean(r["error"])
@@ -173,8 +186,8 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
         for g in groups.values():
             raw = g.pop("raw")
             g["cause"] = likely_cause(raw)
-            if (HOST_WIDE_ONLY_ON_EVERY_ARTICLE.match(str(raw).strip())
-                    and g["count"] < len(recs)):
+            stage = _stage(raw)
+            if stage and stage_failed[stage] < reached[stage]:
                 g["cause"] = "article-specific"
             # Older checkouts start elapsed_s before annotate_one waits for a
             # concurrency slot, so queued articles also count that wait; the
@@ -325,10 +338,10 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
               f"(< {P3_THRESHOLD:.0%}); docs/ROADMAP.md gates re-anchoring stages 1-2 on this")
     else:
         print(f"  P3 trigger    not met ({_pct(rate)} >= {P3_THRESHOLD:.0%})")
-    if rate is not None and 0 < drift["largest_run"] <= OLD_WP_UPDATE_PAGE:
-        print(f"  sample        no wp-update run in the window took more than "
-              f"{OLD_WP_UPDATE_PAGE} articles, the old page size, so the attempts "
-              f"over-represent articles that keep failing; read the clear rate as a lower bound")
+    if rate is not None and drift["largest_run"] == OLD_WP_UPDATE_PAGE:
+        print(f"  sample        the largest wp-update run in the window took exactly "
+              f"{OLD_WP_UPDATE_PAGE} articles, a full old page, so the attempts over-represent "
+              f"articles that keep failing; read the clear rate as a lower bound")
     if drift["queue_head"]:
         print(f"  never cleared {drift['never_cleared']} slugs; most-retried:")
         for slug, n in drift["queue_head"]:

@@ -200,17 +200,42 @@ def test_extract_and_fetch_failures_are_host_wide_only_on_every_article():
     assert [g["cause"] for g in run_every["error_groups"]] == ["Wikipedia fetch"], run_every
 
 
+def test_each_stage_counts_only_the_articles_that_reached_it():
+    """A python3 outage hits every article that gets past the fetch; articles
+    that failed earlier must not make it look article-specific."""
+    recs = [{"slug": "A", "op": "review", "run_id": "mixd0001", "error": "get_failed_404"},
+            {"slug": "B", "op": "review", "run_id": "mixd0001", "error": "fetch_failed"},
+            {"slug": "C", "op": "review", "run_id": "mixd0001", "error": "extract_failed"},
+            {"slug": "D", "op": "review", "run_id": "mixd0001", "error": "extract_failed"}]
+    (run,) = nh.review_runs(recs, [], 5)
+    causes = {g["error"]: g["cause"] for g in run["error_groups"]}
+    assert causes["extract_failed"] == "python3 on the job's PATH", causes
+    assert causes["fetch_failed"] == "article-specific", causes  # C and D got past the fetch
+
+
 def test_full_disk_access_is_its_own_cause():
     assert nh.likely_cause("PermissionError: [Errno 1] Operation not permitted: "
                            "'/Users/x/Desktop/mathlib4'") == "Full Disk Access"
     assert nh.likely_cause("bash: line 1: exit 126") == "Full Disk Access"
+    assert nh.likely_cause("RuntimeError: agent_error: Command failed with exit code 126") == "Full Disk Access"
     assert nh.likely_cause("PermissionError: Permission denied") == "claude CLI"
 
 
-def test_report_flags_a_sample_from_the_old_100_row_page():
+def test_report_flags_a_sample_from_a_full_old_100_row_page():
+    """Only a run of exactly 100 (a full old page) was truncated; smaller runs
+    took the whole drifted set."""
     with tempfile.TemporaryDirectory() as td:
         cache = Path(td)
         _drift_logs(cache)
+        out = io.StringIO()
+        with _at_now(), contextlib.redirect_stdout(out):
+            nh.main(["--cache", str(cache), "--runs", "0"])
+        assert "lower bound" not in out.getvalue(), out.getvalue()
+        t = (NOW - 3600) * MS
+        decisions = nh.read_jsonl(cache / ".decisions.jsonl")
+        decisions += [{"ts": t, "run_id": "page", "mode": "wp-update", "slug": f"P{i}",
+                       "outcome": "noop", "anchors": None} for i in range(100)]
+        _write(cache / ".decisions.jsonl", decisions)
         out = io.StringIO()
         with _at_now(), contextlib.redirect_stdout(out):
             nh.main(["--cache", str(cache), "--runs", "0"])
