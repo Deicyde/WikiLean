@@ -5,11 +5,14 @@
 //     cap (400) before anything reaches KV;
 //   /mcp (POST): a raw-body byte cap (413, JSON-RPC error) before parsing;
 //   every other JSON body (readJsonCapped, MAX_JSON_BODY_BYTES): a 413 past
-//     its cap, the anonymous /api/flag route included.
+//     its cap, the anonymous /api/flag route included;
+//   /api/auth/* (POST, oauth mode): the anonymous better-auth forwarding route
+//     reads the body through readBodyCapped (MAX_AUTH_BODY_BYTES), 413 past it.
 // The caps refuse a declared Content-Length over the cap without reading the
 // body, accept a body of exactly the cap, and run after the auth checks.
 
 import { describe, expect, it } from "vitest";
+import { MAX_AUTH_BODY_BYTES } from "../src/auth.js";
 import { app } from "../src/index.js";
 import { MAX_MCP_BODY_BYTES } from "../src/mcp.js";
 import { MAX_QUEUE_BODY_BYTES, MAX_QUEUE_ITEMS } from "../src/queue.js";
@@ -324,5 +327,75 @@ describe("JSON body caps on the remaining write routes", () => {
     const badEdge = await rawPost(h, "/api/brain/edge", "{nope", bearer);
     expect(badEdge.status).toBe(400);
     expect(await badEdge.json()).toEqual({ ok: false, error: "bad JSON body" });
+  });
+});
+
+// better-auth's handler would buffer whatever body it is given, and the route
+// that forwards to it takes anonymous POSTs, so the Worker caps the body first.
+describe("/api/auth/* body cap (oauth mode)", () => {
+  const ORIGIN = "https://wikilean.example";
+  const paths = ["/api/auth/sign-in/social", "/api/auth/sign-out"];
+
+  function oauthHarness(): Harness {
+    const h = setup();
+    const bindings = h.env as unknown as Record<string, unknown>;
+    bindings.AUTH_MODE = "oauth";
+    bindings.BETTER_AUTH_SECRET = "0123456789abcdef0123456789abcdef";
+    bindings.BETTER_AUTH_URL = ORIGIN;
+    bindings.GITHUB_CLIENT_ID = "Iv1.test";
+    bindings.GITHUB_CLIENT_SECRET = "test-secret";
+    return h;
+  }
+
+  const tooLarge = { ok: false, error: `request body too large (max ${MAX_AUTH_BODY_BYTES} bytes)` };
+
+  it.each(paths)("%s: an anonymous chunked body past the cap is a 413 and is not drained", async (path) => {
+    const h = oauthHarness();
+    const total = 32 * 1024 * 1024;
+    const { stream, sent } = streamOf(total);
+    const res = await rawPost(h, ORIGIN + path, stream);
+    expect(res.status).toBe(413);
+    expect(await res.json()).toEqual(tooLarge);
+    expect(sent()).toBeLessThanOrEqual(2); // 64 KiB chunks against a 16 KiB cap
+  });
+
+  it.each(paths)("%s: a declared Content-Length past the cap is a 413 before reading", async (path) => {
+    const h = oauthHarness();
+    const { stream, sent } = streamOf(1024, 1024);
+    const res = await rawPost(h, ORIGIN + path, stream, { "Content-Length": String(MAX_AUTH_BODY_BYTES + 1) });
+    expect(res.status).toBe(413);
+    expect(await res.json()).toEqual(tooLarge);
+    expect(sent()).toBeLessThanOrEqual(1);
+  });
+
+  it("forwards a body of exactly the cap to better-auth and refuses one byte more", async () => {
+    const h = oauthHarness();
+    const atCap = paddedJson({ provider: "github", callbackURL: "/" }, MAX_AUTH_BODY_BYTES);
+    const ok = await rawPost(h, ORIGIN + "/api/auth/sign-in/social", exactStream(atCap, 4 * 1024));
+    expect(ok.status).toBe(200);
+    const body = (await ok.json()) as { redirect: boolean; url: string };
+    expect(body.redirect).toBe(true);
+    expect(new URL(body.url).origin).toBe("https://github.com");
+    const over = paddedJson({ provider: "github", callbackURL: "/" }, MAX_AUTH_BODY_BYTES + 1);
+    const refused = await rawPost(h, ORIGIN + "/api/auth/sign-in/social", exactStream(over, 4 * 1024));
+    expect(refused.status).toBe(413);
+  });
+
+  it("still serves a body-less sign-out POST and the GET session route", async () => {
+    const h = oauthHarness();
+    const signOut = await app.request(ORIGIN + "/api/auth/sign-out", { method: "POST" }, h.env);
+    expect(signOut.status).not.toBe(413);
+    expect(signOut.status).toBeLessThan(500);
+    const session = await app.request(ORIGIN + "/api/auth/get-session", {}, h.env);
+    expect(session.status).toBe(200);
+    expect(await session.json()).toBeNull();
+  });
+
+  it("outside oauth mode answers 404 without reading the body", async () => {
+    const h = setup();
+    const { stream, sent } = streamOf(MAX_AUTH_BODY_BYTES * 4);
+    const res = await rawPost(h, "/api/auth/sign-out", stream);
+    expect(res.status).toBe(404);
+    expect(sent()).toBeLessThanOrEqual(1);
   });
 });

@@ -14,6 +14,7 @@ import { eq } from "drizzle-orm";
 import { users, sessions, accounts, verifications } from "./db/schema.js";
 import { htmlEscape } from "./engine/html.js";
 import type { Env } from "./env.js";
+import { readBodyCapped } from "./security.js";
 
 export interface AuthUser {
   id: string;
@@ -28,6 +29,11 @@ const DEV_COOKIE = "wl_dev_user";
 // secret.
 const PIPELINE_USER_ID = "pipeline";
 type Ctx = Context<{ Bindings: Env }>;
+
+// Byte cap on a POST body forwarded to better-auth. Its own bodies (social
+// sign-in, sign-out, a form_post callback) are a few hundred bytes, and an
+// id-token sign-in carries one JWT of a few KB.
+export const MAX_AUTH_BODY_BYTES = 16 * 1024;
 
 const CONTROL_CHAR_RE = /[\u0000-\u001f\u007f-\u009f]/;
 
@@ -248,10 +254,20 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
   app.get("/api/auth/me", async (c) => c.json({ user: await getUser(c) }));
 
   // better-auth owns the rest of /api/auth/* in oauth mode (sign-in, callback,
-  // sign-out, session). Registered after the specific routes above.
-  app.on(["GET", "POST"], "/api/auth/*", (c) => {
+  // sign-out, session). Registered after the specific routes above. Anonymous
+  // callers reach it, so a POST body is read here through readBodyCapped
+  // (MAX_AUTH_BODY_BYTES) and better-auth gets a copy of the request carrying
+  // the read text: a declared or streamed body past the cap is a 413 and is
+  // never buffered.
+  app.on(["GET", "POST"], "/api/auth/*", async (c) => {
     if (c.env.AUTH_MODE !== "oauth") return c.notFound();
-    return makeAuth(c.env).handler(c.req.raw);
+    const req = c.req.raw;
+    if (req.method !== "POST" || req.body === null) return makeAuth(c.env).handler(req);
+    const text = await readBodyCapped(req, MAX_AUTH_BODY_BYTES);
+    if (text === null) {
+      return c.json({ ok: false, error: `request body too large (max ${MAX_AUTH_BODY_BYTES} bytes)` }, 413);
+    }
+    return makeAuth(c.env).handler(new Request(req, { body: text }));
   });
 
   // Sign-in page.
