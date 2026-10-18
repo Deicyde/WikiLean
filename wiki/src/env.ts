@@ -2,6 +2,13 @@ export interface Env {
   DB: D1Database;
   RENDER_CACHE: KVNamespace;
   WP_HTML: KVNamespace;
+  // Optional dedicated namespace for /review GitHub user tokens (review.ts
+  // reviewTokenStore). Unbound, the tokens stay in RENDER_CACHE. Not in
+  // wrangler.jsonc: the maintainer creates it and adds the binding
+  // (docs/SECRETS.md, "P1: seal review tokens and give them their own KV
+  // namespace"). KV access is account-wide, so REVIEW_TOKEN_KEY, not the
+  // namespace, is what keeps a KV reader from the tokens.
+  REVIEW_TOKENS?: KVNamespace;
   ASSETS: Fetcher;
   EDIT_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
@@ -41,6 +48,12 @@ export interface Env {
   // second token-holder exists.
   PIPELINE_TOKEN?: string;
 
+  // Salt for the research export's user pseudonyms (GET
+  // /api/research/export.jsonl). Optional secret: when unset the export falls
+  // back to PIPELINE_TOKEN, which keeps the pseudonyms already published stable.
+  // Setting it rotates every pseudonym once (docs/SECRETS.md).
+  RESEARCH_EXPORT_SALT?: string;
+
   // better-auth (used when AUTH_MODE === "oauth")
   BETTER_AUTH_SECRET?: string;
   BETTER_AUTH_URL?: string;
@@ -74,4 +87,10 @@ export interface Env {
   // submitter must be connected AS the PAT account — so this public endpoint can't
   // post through it on anyone else's behalf. Comments appear from the PAT owner.
   REVIEW_POSTING_PAT?: string;
+  // Seals /review GitHub user tokens at rest (review.ts sealReviewTok): with it
+  // set, a stored token is AES-GCM ciphertext bound to its cookie id, under a
+  // KV key that is a digest of the cookie id. At least 32 characters
+  // (`openssl rand -base64 48`). Unset, tokens stay plaintext JSON. Rotating it
+  // signs reviewers out of /review posting (their stored tokens no longer open).
+  REVIEW_TOKEN_KEY?: string;
 }

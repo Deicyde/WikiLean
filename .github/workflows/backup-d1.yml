@@ -116,10 +116,15 @@ jobs:
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: wiki/package-lock.json
+          cache-dependency-path: .github/backup-wrangler/package-lock.json
 
+      # Only Wrangler, never the whole wiki tree: .github/backup-wrangler is the
+      # exact Wrangler closure of wiki/package-lock.json (same versions and
+      # integrity hashes; scripts/backup_wrangler_lock.py --check runs in CI),
+      # installed without lifecycle scripts, so no dev tool runs on the runner
+      # before CLOUDFLARE_API_TOKEN reaches Wrangler.
       - name: Install pinned Wrangler
-        run: npm ci --prefix wiki
+        run: npm ci --prefix .github/backup-wrangler --ignore-scripts --include=dev
 
       - name: Compute timestamp
         id: stamp
@@ -146,7 +151,7 @@ jobs:
           trap 'rm -f "$plain"' EXIT
           # stdout goes to /dev/null; stderr goes through the redactor. pipefail
           # keeps wrangler's exit status.
-          wiki/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" 2>&1 > /dev/null \
+          .github/backup-wrangler/node_modules/.bin/wrangler d1 export wikilean --remote --output="$plain" 2>&1 > /dev/null \
             | sed -E 's#[A-Za-z][A-Za-z0-9+.-]*://[^[:space:]]+#[URL redacted]#g' >&2
           # An empty export must fail, not upload as a valid-looking .age.
           test -s "$plain" || { echo "::error::wrangler produced an empty export"; exit 1; }
@@ -177,9 +182,11 @@ jobs:
         run: |
           set -euo pipefail
           test -n "$PIPELINE_TOKEN" # fail fast (and quietly) if the secret is missing
-          curl --fail -sS --max-time 300 \
-            -H "Authorization: Bearer $PIPELINE_TOKEN" \
-            "https://wikilean.jackmccarthy.org/api/research/export.jsonl" \
+          # The bearer reaches curl on stdin (-H @-), never on its argv, so it
+          # is not visible in the process table; printf is a shell builtin.
+          printf 'Authorization: Bearer %s\n' "$PIPELINE_TOKEN" \
+            | curl --fail -sS --max-time 300 -H @- \
+              "https://wikilean.jackmccarthy.org/api/research/export.jsonl" \
             | age -R "$RUNNER_TEMP/age-recipients.txt" -o "research-export-${{ steps.stamp.outputs.ts }}.jsonl.age"
 
       - name: Upload encrypted research export artifact

@@ -6,9 +6,11 @@ Sources (any/all):
   --recycle FILE       triage output (recycle_queue.json) -> recycled items
   --brain FILE         bot/brain_queue.py output -> Brain-suggested items
   --candidates FILE    pool.py output -> unreviewed items
-Auth: --token or $PIPELINE_TOKEN. --dry-run prints the payload instead of POSTing.
+Auth: $WIKILEAN_API_TOKEN, $PIPELINE_TOKEN, or PIPELINE_TOKEN= in wiki/.dev.vars.
+There is no --token flag: a process's argv is visible to every local user.
+--dry-run prints the payload instead of POSTing.
 """
-import argparse, json, os, subprocess, sys
+import argparse, json, os, subprocess, sys, tempfile
 from pathlib import Path
 
 DEV_VARS = Path(__file__).resolve().parent.parent / "wiki" / ".dev.vars"
@@ -70,6 +72,28 @@ def queue_item(src, status):
     return item
 
 
+def post_queue(url, token, payload):
+    """POST the payload with curl, keeping the bearer off every argv.
+
+    A process's argv is world-readable (`ps`, /proc/<pid>/cmdline), so the
+    Authorization header reaches curl on stdin (`-H @-`) and the body comes
+    from a 0600 file in a private temporary directory (`--data-binary @file`),
+    removed when the call returns."""
+    if "\n" in token or "\r" in token:
+        sys.exit("token contains a line break; refusing to send it as a header")
+    with tempfile.TemporaryDirectory(prefix="wikilean-queue-") as tmp:
+        body = Path(tmp) / "payload.json"
+        fd = os.open(body, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(json.dumps(payload))
+        return subprocess.run(["curl", "-sS", "-X", "POST", url,
+                               "-H", "@-",
+                               "-H", "Content-Type: application/json",
+                               "--data-binary", f"@{body}"],
+                              input=f"Authorization: Bearer {token}\n",
+                              capture_output=True, text=True)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--wiki", default="https://wikilean.jackmccarthy.org")
@@ -78,10 +102,9 @@ def main():
     ap.add_argument("--brain", type=Path)
     ap.add_argument("--candidates", type=Path)
     ap.add_argument("--exclude", default="", help="comma-separated qids to omit from the published queue")
-    ap.add_argument("--token", default="")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
-    token = args.token or find_token()
+    token = find_token()
     exclude = {q.strip() for q in args.exclude.split(",") if q.strip()}
 
     items = []
@@ -133,11 +156,9 @@ def main():
     if args.dry_run:
         print(json.dumps(payload, indent=1)); return
     if not token:
-        sys.exit("no token: set WIKILEAN_API_TOKEN, pass --token, or add PIPELINE_TOKEN= to wiki/.dev.vars")
-    r = subprocess.run(["curl", "-sS", "-X", "POST", args.wiki + "/api/queue",
-                        "-H", "Authorization: Bearer " + token,
-                        "-H", "Content-Type: application/json", "-d", json.dumps(payload)],
-                       capture_output=True, text=True)
+        sys.exit("no token: export WIKILEAN_API_TOKEN (from a 0600 file, never on a command line) "
+                 "or add PIPELINE_TOKEN= to wiki/.dev.vars")
+    r = post_queue(args.wiki + "/api/queue", token, payload)
     print(r.stdout or r.stderr)
 
 

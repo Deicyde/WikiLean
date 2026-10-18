@@ -93,6 +93,11 @@ FORBIDDEN_PATHS = frozenset(
     }
 )
 ALLOWED_TOP_LEVEL_FILES = frozenset({"404.html", "robots.txt", "wikilean.ttl", "concepts.html"})
+# Written by wiki/scripts/build-public.ts on every build from the Worker source
+# (the static-asset security headers, wiki/src/security.ts). Like the Brain
+# surface it is build output, never baseline payload: freezing and attesting
+# skip it, and a manifest naming it is rejected as a route-shadowing path.
+BUILD_GENERATED_FILES = frozenset({"_headers"})
 
 _MANIFEST_KEYS = frozenset({"schema", "baseline_id", "authority", "files"})
 _AUTHORITY_KEYS = frozenset({"git_commit"})
@@ -943,7 +948,7 @@ def _read_source_tree(
             if not stat.S_ISREG(mode):
                 raise BaselineValidationError(f"source contains a non-regular file: {relative}")
             _validate_relative_path(relative, "source path")
-            if _is_brain_owned(relative):
+            if _is_brain_owned(relative) or relative in BUILD_GENERATED_FILES:
                 continue
             if _is_route_shadowing_or_retired(relative):
                 raise BaselineValidationError(

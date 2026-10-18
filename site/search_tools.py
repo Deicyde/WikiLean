@@ -8,6 +8,12 @@ search tools — the worst an injection can do is run a public search with an
 attacker-chosen string, never a shell command.
 
 Disable with WIKILEAN_SEARCH_TOOLS=0 (falls back to grep-only Agent 2).
+
+build_tagger_server() gives catalog/tag_with_mathlib.py the same treatment for
+the six searches its agent used to run through scoped Bash rules. Every tool
+argument is validated before it reaches a CLI argv (_query_arg, _decl_arg,
+_qid_arg): no option-like values, no control characters, bounded length, and
+never stdin or a file path.
 """
 from __future__ import annotations
 
@@ -66,6 +72,57 @@ def _run_cli(cli: Path, *argv: str, append_json: bool = True) -> str:
 
 def _text(s: str) -> dict:
     return {"content": [{"type": "text", "text": s}]}
+
+
+_MAX_ARG = 500
+_CONTROL_RE = re.compile(r"[\x00-\x1f\x7f-\x9f]")
+_QID_ARG_RE = re.compile(r"^Q[1-9][0-9]{0,11}$")
+
+
+class ToolArgError(ValueError):
+    """A tool argument that must not reach a CLI argv."""
+
+
+def _query_arg(value: object) -> str:
+    """A free-text search argument: a non-empty single line, at most 500
+    characters, that argparse cannot read as an option (no leading '-')."""
+    if not isinstance(value, str):
+        raise ToolArgError("expected a string")
+    text = value.strip()
+    if not text:
+        raise ToolArgError("empty query")
+    if len(text) > _MAX_ARG:
+        raise ToolArgError(f"query longer than {_MAX_ARG} characters")
+    if _CONTROL_RE.search(text):
+        raise ToolArgError("query contains a control character or line break")
+    if text.startswith("-"):
+        raise ToolArgError("query may not start with '-'")
+    return text
+
+
+def _decl_arg(value: object) -> str:
+    """A Lean declaration name: one token, no whitespace."""
+    text = _query_arg(value)
+    if any(ch.isspace() for ch in text):
+        raise ToolArgError("a declaration name has no whitespace")
+    return text
+
+
+def _qid_arg(value: object) -> str:
+    """A Wikidata item id, exactly Q<digits>."""
+    text = value.strip() if isinstance(value, str) else value
+    if not isinstance(text, str) or not _QID_ARG_RE.fullmatch(text):
+        raise ToolArgError("expected a QID like Q11518")
+    return text
+
+
+def _search(cli: Path, sub: str, validate, value: object, *flags: str) -> dict:
+    """Validate one tool argument, then run ``cli sub <value> *flags --json``."""
+    try:
+        arg = validate(value)
+    except ToolArgError as e:
+        return _text(f"invalid input: {e}. Nothing was run.")
+    return _text(_run_cli(cli, sub, arg, *flags))
 
 
 def _brain_unit_text(key: str) -> str:
@@ -230,6 +287,86 @@ def build_search_server():
     server = create_sdk_mcp_server(SERVER_NAME, "1.0.0", tools)
     names = [f"mcp__{SERVER_NAME}__{t.name}" for t in tools]
     return server, names
+
+
+TAGGER_SERVER_NAME = "tagger"
+
+
+def tagger_tools() -> list:
+    """The six search tools of catalog/tag_with_mathlib.py's agent (SdkMcpTool
+    objects; requires the SDK).
+
+    The tagger agent used to run these searches through Bash rules scoped to
+    ``python3 <cli>``; a scoped rule still let ``cat < file`` read any file. Each
+    tool here runs one fixed subcommand with one validated argument, so the
+    agent needs no Bash at all.
+    """
+
+    @tool(
+        "mathlib_semantic",
+        "Natural-language search of Mathlib4 (LeanSearch): describe the concept "
+        "or a precise statement in prose and get ranked candidate decls. START HERE.",
+        {"query": str},
+    )
+    async def mathlib_semantic(args):
+        return await asyncio.to_thread(_search, MATHLIB_CLI, "semantic", _query_arg, args.get("query"))
+
+    @tool(
+        "loogle",
+        "Syntactic/type search over Mathlib4 (ground truth): a dotted constant, a "
+        "quoted name substring, a ?a/?b type pattern, or a `|-` conclusion.",
+        {"query": str},
+    )
+    async def loogle(args):
+        return await asyncio.to_thread(_search, MATHLIB_CLI, "loogle", _query_arg, args.get("query"))
+
+    @tool(
+        "decl_exists",
+        "EXACT existence check against the live Mathlib doc index: kind and module "
+        "of one declaration. Input: the exact dotted name, e.g. 'Module.Dual'.",
+        {"name": str},
+    )
+    async def decl_exists(args):
+        return await asyncio.to_thread(_search, MATHLIB_CLI, "decl", _decl_arg, args.get("name"), "--live")
+
+    @tool(
+        "wikidata_search",
+        "Concept label -> ranked Wikidata QID candidates (label/alias prefix match; "
+        "do not trust the top hit).",
+        {"label": str},
+    )
+    async def wikidata_search(args):
+        return await asyncio.to_thread(_search, WIKIDATA_CLI, "search", _query_arg, args.get("label"))
+
+    @tool(
+        "wikidata_entity",
+        "One Wikidata item: label, description, P31 (instance of), P279 (subclass "
+        "of) and its English-Wikipedia sitelink. Input: a QID like 'Q752487'.",
+        {"qid": str},
+    )
+    async def wikidata_entity(args):
+        return await asyncio.to_thread(_search, WIKIDATA_CLI, "entity", _qid_arg, args.get("qid"))
+
+    @tool(
+        "wikidata_sitelinks",
+        "The Wikipedia sitelinks of one Wikidata item, to confirm its English article "
+        "describes the same object. Input: a QID like 'Q752487'.",
+        {"qid": str},
+    )
+    async def wikidata_sitelinks(args):
+        return await asyncio.to_thread(_search, WIKIDATA_CLI, "sitelinks", _qid_arg, args.get("qid"))
+
+    return [mathlib_semantic, loogle, decl_exists, wikidata_search, wikidata_entity, wikidata_sitelinks]
+
+
+def build_tagger_server():
+    """Return (server, tool_names) for catalog/tag_with_mathlib.py's agent, or
+    (None, []) when the SDK or a skill CLI is missing. Network-free to build."""
+    if not _SDK_OK or not MATHLIB_CLI.exists() or not WIKIDATA_CLI.exists():
+        return None, []
+    tools = tagger_tools()
+    server = create_sdk_mcp_server(TAGGER_SERVER_NAME, "1.0.0", tools)
+    return server, [f"mcp__{TAGGER_SERVER_NAME}__{t.name}" for t in tools]
 
 
 # Guidance appended to AGENT2_SYSTEM when the tools are wired in.

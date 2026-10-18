@@ -385,7 +385,8 @@ Wrangler configuration, and raw read-only selector/status/history responses into
 external content-addressed root. The proposed intent refers to those durable bytes.
 
 `site/ops/brain_activation_ci.py` emits canonical
-`wikilean.brain-activation-ci/v3` evidence for the exact required CI commands. Bundle
+`wikilean.brain-activation-ci/v3` evidence for the required Worker and Python CI commands
+(`npm ci`, `npm run test:ci`, `scripts/ci-python.sh`; not the browser job). Bundle
 `freeze` invokes it in-process, so caller-authored CI evidence is not accepted. It requires
 a clean promotion checkout whose `HEAD` and `refs/heads/main` equal each other and are the
 candidate authority or a later commit that differs from it only in release-neutral paths

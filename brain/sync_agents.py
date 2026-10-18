@@ -66,6 +66,7 @@ if os.environ.get("WIKILEAN_KEEP_API_KEY") != "1":
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent
+SITE = REPO / "site"  # agent_sandbox.py
 PROPOSALS = HERE / "proposals"
 NODES = HERE / "data" / "nodes.jsonl"
 EXTERNAL = REPO / "catalog" / "data" / "external"
@@ -573,15 +574,20 @@ input row exactly once, in the same order, repo/decl/qid byte-identical:
 
 async def _run_agent(system: str, user: str, state: dict) -> dict | None:
     """One SDK call, no tools (pure judgment). Returns parsed JSON or None;
-    accumulates tokens into state and counts window-exhaustion errors."""
-    from claude_agent_sdk import (AssistantMessage, ClaudeAgentOptions,
-                                  ResultMessage, TextBlock, query)
-    options = ClaudeAgentOptions(
+    accumulates tokens into state and counts window-exhaustion errors.
+
+    The agent reads external page text (a prompt-injection surface), so it
+    runs sandboxed (site/agent_sandbox.py): no built-in tools at all, no
+    bypass, and the empty sandbox directory as cwd instead of brain/."""
+    from claude_agent_sdk import (AssistantMessage, ResultMessage, TextBlock,
+                                  query)
+    if str(SITE) not in sys.path:
+        sys.path.append(str(SITE))
+    from agent_sandbox import sandboxed_options
+    options = sandboxed_options(
         model=MODEL,
         system_prompt=system,
-        allowed_tools=[],
-        cwd=str(HERE),
-        permission_mode="bypassPermissions",
+        tools=[],
         max_turns=4,
     )
     last_text = ""

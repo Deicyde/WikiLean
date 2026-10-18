@@ -1,6 +1,7 @@
 // GET /api/research/export.jsonl (P2a): the nightly pseudonymized research
 // export. Pins the line shape (exact key set), pseudonym derivation/stability
-// (sha256(user_id + PIPELINE_TOKEN) first 12 hex; null for pipeline), run_id
+// (sha256(user_id + salt) first 12 hex, salt = RESEARCH_EXPORT_SALT or else
+// PIPELINE_TOKEN; null for pipeline), run_id
 // extraction from revisions.meta, and the no-PII guarantee (no emails, names,
 // raw user ids, or comments anywhere in the stream). Authz cells live in
 // authz.test.ts.
@@ -144,6 +145,25 @@ describe("GET /api/research/export.jsonl", () => {
     const second = await fetchExport(h);
     expect(second.raw).toBe(first.raw);
     expect(second.lines[0].pseudonym).toBe(HUMAN_PSEUDONYM);
+  });
+
+  it("salts with RESEARCH_EXPORT_SALT when set, and with PIPELINE_TOKEN only as the fallback", async () => {
+    const h = setup();
+    await seedEvents(h);
+    const fallback = await fetchExport(h);
+    expect(fallback.lines[0].pseudonym).toBe(HUMAN_PSEUDONYM);
+
+    h.env.RESEARCH_EXPORT_SALT = "dedicated-research-salt";
+    const salted = await fetchExport(h);
+    const expected = createHash("sha256").update("u-human" + "dedicated-research-salt").digest("hex").slice(0, 12);
+    expect(salted.lines[0].pseudonym).toBe(expected);
+    expect(salted.lines[0].pseudonym).not.toBe(HUMAN_PSEUDONYM);
+    // The bearer still authorizes the export; only the salt moved.
+    expect(salted.res.status).toBe(200);
+
+    // An empty value is "unset", not an empty salt.
+    h.env.RESEARCH_EXPORT_SALT = "";
+    expect((await fetchExport(h)).lines[0].pseudonym).toBe(HUMAN_PSEUDONYM);
   });
 
   it("carries NO PII: no emails, display names, raw user ids, or comments", async () => {

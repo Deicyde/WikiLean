@@ -2,14 +2,28 @@
 // (HTML page, KV-cache hit, JSON API, 404, redirect) carries HSTS, nosniff,
 // the enforced framing ban, Referrer-Policy, and the Report-Only CSP; the CSP
 // allows what the pages actually load; the headers never enter RENDER_CACHE
-// bytes (so no render-cache key bump); and the /api/csp-report sink logs both
-// report shapes and caps its input.
+// bytes (so no render-cache key bump); the /api/csp-report sink logs both
+// report shapes and caps its input; and the static-asset `_headers` file that
+// build-public generates applies the same set to assets the Worker never sees.
 
 import { afterEach, describe, it, expect, vi } from "vitest";
 import { setup, get, blockNetwork, ORIGIN } from "./helpers/harness.js";
 import { Hono } from "hono";
 import { app } from "../src/index.js";
-import { CSP_REPORT_ONLY, SECURITY_HEADERS, parseCspReports, registerSecurityHeaders } from "../src/security.js";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import {
+  BRAIN_CSP_EXTRA_SOURCES,
+  BRAIN_CSP_REPORT_ONLY,
+  CSP_REPORT_ONLY,
+  SAME_ORIGIN_FRAMED_ASSET_PATHS,
+  SECURITY_HEADERS,
+  STATIC_HEADERS_MAX_LINE_LENGTH,
+  STATIC_HEADERS_MAX_RULES,
+  parseCspReports,
+  registerSecurityHeaders,
+  staticAssetHeadersFile,
+} from "../src/security.js";
 import type { Env } from "../src/env.js";
 
 blockNetwork();
@@ -28,8 +42,8 @@ function expectSecurityHeaders(res: Response): void {
   expect(res.headers.get("Referrer-Policy")).toBe("strict-origin-when-cross-origin");
 }
 
-function directive(name: string): string[] {
-  const d = CSP_REPORT_ONLY.split("; ").find((part) => part.startsWith(name + " "));
+function directive(name: string, policy = CSP_REPORT_ONLY): string[] {
+  const d = policy.split("; ").find((part) => part.startsWith(name + " "));
   expect(d, `CSP lacks ${name}`).toBeDefined();
   return d!.split(" ").slice(1);
 }
@@ -231,5 +245,123 @@ describe("POST /api/csp-report", () => {
     expect(parsed).toHaveLength(20);
     expect(parsed[0].blocked!.length).toBe(300);
     expect(parseCspReports({ unrelated: true })).toEqual([]);
+  });
+});
+
+// The static-asset `_headers` file (build-public writes it). This mirrors the
+// Workers Static Assets parser and applier (workers-shared parseHeaders and
+// attachCustomHeaders, as bundled in miniflare): path lines start with "/",
+// "# " lines are comments, "! Name" detaches a header an earlier matching rule
+// set, and a header set again by a later matching rule is appended to.
+function applyStaticHeaders(file: string, pathname: string): Headers {
+  const rules: Array<{ pattern: RegExp; set: Array<[string, string]>; unset: string[] }> = [];
+  for (const raw of file.split("\n")) {
+    const line = raw.trim();
+    if (!line || line.startsWith("#")) continue;
+    if (/^([^\s]+:\/\/|\/)/.test(line)) {
+      const pattern = new RegExp(
+        "^" + line.split("*").map((part) => part.replace(/[.+?^${}()|[\]\\]/g, "\\$&")).join(".*") + "$",
+      );
+      rules.push({ pattern, set: [], unset: [] });
+      continue;
+    }
+    const rule = rules[rules.length - 1];
+    expect(rule, `header line before any path: ${line}`).toBeDefined();
+    if (!line.includes(":")) {
+      expect(line.startsWith("! "), `not a header or unset line: ${line}`).toBe(true);
+      rule.unset.push(line.slice(2));
+      continue;
+    }
+    const at = line.indexOf(":");
+    const name = line.slice(0, at).trim();
+    expect(name).not.toContain(" ");
+    rule.set.push([name.toLowerCase(), line.slice(at + 1).trim()]);
+  }
+  const headers = new Headers();
+  const seen = new Set<string>();
+  for (const rule of rules.filter((r) => r.pattern.test(pathname))) {
+    for (const name of rule.unset) headers.delete(name);
+    for (const [name, value] of rule.set) {
+      if (seen.has(name)) headers.append(name, value);
+      else {
+        headers.set(name, value);
+        seen.add(name);
+      }
+    }
+  }
+  return headers;
+}
+
+describe("static asset _headers", () => {
+  it("applies the Worker's header set to every static asset path", () => {
+    const file = staticAssetHeadersFile();
+    for (const path of ["/", "/concepts", "/robots.txt", "/404.html", "/assets/brain/current.json", "/assets/style.css"]) {
+      const headers = applyStaticHeaders(file, path);
+      expectSecurityHeaders(new Response(null, { headers }));
+      expect([...headers.keys()].sort()).toEqual(Object.keys(SECURITY_HEADERS).map((k) => k.toLowerCase()).sort());
+    }
+  });
+
+  it("lets only the Brain page be framed, and only by this origin", () => {
+    const file = staticAssetHeadersFile();
+    expect(SAME_ORIGIN_FRAMED_ASSET_PATHS).toEqual(["/brain", "/brain.html"]);
+    for (const path of SAME_ORIGIN_FRAMED_ASSET_PATHS) {
+      const headers = applyStaticHeaders(file, path);
+      expect(headers.get("X-Frame-Options")).toBe("SAMEORIGIN");
+      expect(headers.get("Content-Security-Policy")).toBe("frame-ancestors 'self'");
+      // The Brain's own Report-Only policy replaces (never appends to) the shared one.
+      expect(headers.get("Content-Security-Policy-Report-Only")).toBe(BRAIN_CSP_REPORT_ONLY);
+      expect(headers.get("Strict-Transport-Security")).toBe(SECURITY_HEADERS["Strict-Transport-Security"]);
+      expect(headers.get("X-Content-Type-Options")).toBe("nosniff");
+      expect(headers.get("Reporting-Endpoints")).toBe(SECURITY_HEADERS["Reporting-Endpoints"]);
+    }
+    for (const path of ["/brain/", "/brainstorm", "/assets/brain/brain.html"]) {
+      const headers = applyStaticHeaders(file, path);
+      expect(headers.get("X-Frame-Options")).toBe("DENY");
+      expect(headers.get("Content-Security-Policy-Report-Only")).toBe(CSP_REPORT_ONLY);
+    }
+  });
+
+  it("gives the Brain page a Report-Only policy that allows exactly what it loads", () => {
+    // site/build_brain_page.py writes brain.html: an external d3 <script src>
+    // and fetch() calls to Wikipedia and Wikidata. Under the shared policy each
+    // was a violation on every landing view (home.ts frames /brain?embed=1).
+    const builder = readFileSync(fileURLToPath(new URL("../../site/build_brain_page.py", import.meta.url)), "utf8");
+    const origins = (re: RegExp) => [...new Set([...builder.matchAll(re)].map((m) => new URL(m[1]).origin))].sort();
+    const scripts = origins(/<script[^>]*\ssrc="(https:\/\/[^"]+)"/g);
+    const fetches = origins(/fetch\(\s*["'`](https:\/\/[^"'`]+)/g);
+    expect(scripts).toEqual(["https://cdn.jsdelivr.net"]);
+    expect(fetches).toEqual(["https://en.wikipedia.org", "https://www.wikidata.org"]);
+    expect([...BRAIN_CSP_EXTRA_SOURCES["script-src"]].sort()).toEqual(scripts);
+    expect([...BRAIN_CSP_EXTRA_SOURCES["connect-src"]].sort()).toEqual(fetches);
+    for (const origin of scripts) {
+      expect(directive("script-src", BRAIN_CSP_REPORT_ONLY)).toContain(origin);
+      expect(directive("script-src")).not.toContain(origin);
+    }
+    for (const origin of fetches) {
+      expect(directive("connect-src", BRAIN_CSP_REPORT_ONLY)).toContain(origin);
+      expect(directive("connect-src")).not.toContain(origin);
+    }
+    // Otherwise identical to the shared policy.
+    const strip = (policy: string) =>
+      policy
+        .split("; ")
+        .map((d) => d.split(" ").filter((src) => !scripts.includes(src) && !fetches.includes(src)).join(" "));
+    expect(strip(BRAIN_CSP_REPORT_ONLY)).toEqual(strip(CSP_REPORT_ONLY));
+  });
+
+  it("stays within the static-assets parser limits and never changes the dynamic CSP", () => {
+    const file = staticAssetHeadersFile();
+    expect(file.endsWith("\n")).toBe(true);
+    const lines = file.split("\n").filter((line) => line.trim() && !line.trim().startsWith("#"));
+    const paths = lines.filter((line) => line.startsWith("/"));
+    expect(paths.length).toBeLessThanOrEqual(STATIC_HEADERS_MAX_RULES);
+    for (const line of file.split("\n")) expect(line.length).toBeLessThanOrEqual(STATIC_HEADERS_MAX_LINE_LENGTH);
+    // Same Report-Only policy as Worker responses on every path but the Brain
+    // page, whose rule replaces it with BRAIN_CSP_REPORT_ONLY.
+    expect(file).toContain(`/*\n`);
+    expect(file).toContain(`  Content-Security-Policy-Report-Only: ${CSP_REPORT_ONLY}\n`);
+    expect(file.match(/Content-Security-Policy-Report-Only: /g)).toHaveLength(1 + SAME_ORIGIN_FRAMED_ASSET_PATHS.length);
+    expect(file.match(/! Content-Security-Policy-Report-Only\n/g)).toHaveLength(SAME_ORIGIN_FRAMED_ASSET_PATHS.length);
   });
 });

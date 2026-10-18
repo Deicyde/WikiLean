@@ -2,9 +2,10 @@
 """Run and attest the exact P1B CI gates without production credentials.
 
 The recorder is intentionally narrower than the activation-bundle builder.  It
-validates one clean promotion checkout, runs the repository's three required CI
-commands, validates the checkout again, and emits one canonical JSON document
-to stdout.  It never invokes Wrangler or any Brain deployment command.
+validates one clean promotion checkout, runs the repository's Worker and Python
+CI commands (not the browser job), validates the checkout again, and emits one
+canonical JSON document to stdout.  It never invokes Wrangler or any Brain
+deployment command.
 """
 from __future__ import annotations
 

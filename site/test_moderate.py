@@ -307,6 +307,25 @@ def test_build_meta_shape():
         "moderation_flags": []}
 
 
+def test_prompt_sha_moves_with_the_agent_sandbox_version():
+    # The sandbox changed what the agents see (tools, settings, CLAUDE.md,
+    # hooks, cwd) without moving any prompt text; prompt_sha must still mark
+    # the cohort boundary, or research cannot tell the runs apart.
+    import agent_sandbox
+    prompts = dict(MODERATE_AGENT1_SYSTEM="a1-review", AGENT1_SYSTEM="a1", AGENT2_SYSTEM="a2")
+    before = SimpleNamespace(**prompts)
+    after = SimpleNamespace(**prompts, SANDBOX_VERSION=agent_sandbox.SANDBOX_VERSION)
+    for mode in ("review", "new"):
+        assert m.get_prompt_sha(before, mode) != m.get_prompt_sha(after, mode), mode
+        assert m.get_prompt_sha(after, mode) == m.get_prompt_sha(
+            SimpleNamespace(**prompts, SANDBOX_VERSION=agent_sandbox.SANDBOX_VERSION), mode)
+    bumped = SimpleNamespace(**prompts, SANDBOX_VERSION="sandbox-v2")
+    assert m.get_prompt_sha(bumped, "review") != m.get_prompt_sha(after, "review")
+    # batch_annotate (the module moderate.py hashes) carries the live version.
+    src = (Path(__file__).resolve().parent / "batch_annotate.py").read_text(encoding="utf-8")
+    assert "from agent_sandbox import SANDBOX_VERSION" in src
+
+
 def test_resolve_token_env_wins():
     old = os.environ.get("WIKILEAN_API_TOKEN")
     os.environ["WIKILEAN_API_TOKEN"] = "tok-from-env"

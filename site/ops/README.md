@@ -173,7 +173,8 @@ launchctl kickstart -k gui/$(id -u)/org.wikilean.moderate                  # run
 launchctl bootout   gui/$(id -u)/org.wikilean.moderate                     # disable
 ```
 A failed batch can be undone with the run-level revert (see the run id in the
-log): `curl -X POST .../api/admin/revert-run/<run_id> -H "Authorization: Bearer <PIPELINE_TOKEN>"`.
+log). Pass the bearer on stdin so it never appears in the process table:
+`printf 'Authorization: Bearer %s\n' "$PIPELINE_TOKEN" | curl -X POST -H @- .../api/admin/revert-run/<run_id>`.
 
 ## Manual trigger (use leftover Max capacity near a window reset)
 The exact 5-hour window reset isn't readable by a background script (only the
