@@ -30,6 +30,7 @@ import make_fixture  # noqa: E402
 
 RECORDSET = HERE / "fixtures" / "recordset"
 STORE = HERE / "fixtures" / "store"
+PRODUCER_TABLE = HERE / "fixtures" / "producer_derive_status.json"
 LOCATE = build_store.LOCATE
 
 
@@ -173,6 +174,48 @@ class BuildTests(unittest.TestCase):
                                              "incomplete": 1, "related": 0})
 
 
+class DeriveStatusParityTests(unittest.TestCase):
+    """build_store.derive_status against the producer's own answers (make_producer_table.py)."""
+
+    def setUp(self):
+        self.table = json.loads(PRODUCER_TABLE.read_text(encoding="utf-8"))
+
+    def test_table_is_the_producers(self):
+        self.assertEqual(self.table["producer"]["repository"], "formal-companion")
+        self.assertRegex(self.table["producer"]["commit"], r"^[0-9a-f]{40}$")
+        cases = self.table["cases"]
+        singles = [case for case in cases if len(case[1]) == 1]
+        # Every kind x relation x proof status x statement flag, once each.
+        self.assertEqual(len(singles), 7 * 6 * 5 * 2)
+        self.assertEqual(len({json.dumps(case[:2]) for case in singles}), len(singles))
+        self.assertGreaterEqual(len(cases) - len(singles), 300)
+
+    def test_builder_derives_exactly_the_producers_status(self):
+        mismatches = []
+        for kind, ends, expected in self.table["cases"]:
+            problems = [build_store.statement_flag(statement, proof_status)[1] for _, proof_status, statement in ends]
+            if expected == "refused":
+                if not any(problems):
+                    mismatches.append((kind, ends, expected, "accepted"))
+                continue
+            if any(problems):
+                mismatches.append((kind, ends, expected, f"refused: {problems}"))
+                continue
+            locations = [{"relation": relation, "proof_status": proof_status, "statement": statement,
+                          "rank": rank, "library": "lib", "location_key": f"key{rank}"}
+                         for rank, (relation, proof_status, statement) in enumerate(ends, 1)]
+            status, basis = build_store.derive_status(kind, locations)
+            if status != expected:
+                mismatches.append((kind, ends, expected, status))
+            elif status is None:
+                self.assertIsNone(basis)
+            else:
+                # The basis is the highest-ranked location that reaches the passage's status.
+                reaching = [loc for loc in locations if build_store.location_status(kind, loc) == status]
+                self.assertIs(basis, reaching[0], (kind, ends))
+        self.assertEqual(mismatches, [], f"{len(mismatches)} cases differ from the producer")
+
+
 class RefusalTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="atlas-test-"))
@@ -258,6 +301,8 @@ class RefusalTests(unittest.TestCase):
         self.refuse("the records say formalized, but proposal §2.6 derives statement_only for a example passage")
 
     def test_formalized_construction_via_a_wanted_declaration(self):
+        # A construction is judged as a definition passage (vocabulary.md §1.11), whose
+        # broadMatch is partial whatever the declaration is.
         def edit(a, b):
             for row in (a, b):
                 row["kind"] = "construction"
@@ -265,7 +310,7 @@ class RefusalTests(unittest.TestCase):
                 row.pop("note", None)
                 row["object"][0]["extensions"][LOCATE]["proof_status"] = "wanted"
         self._first_passage(edit)
-        self.refuse("derives statement_only for a construction passage with broadMatch to wanted")
+        self.refuse("derives partial for a construction passage with broadMatch to wanted")
 
     def test_example_with_a_proved_match_is_formalized(self):
         def edit(a, b):
@@ -289,18 +334,58 @@ class RefusalTests(unittest.TestCase):
         self._first_passage(edit)
         self.refuse("the records say partial, but proposal §2.6 derives formalized")
 
-    def test_located_passage_with_only_related_matches_has_no_status(self):
-        def edit(a, b):
-            for row in (a, b):
-                row["relation"] = "relatedMatch"
-                row.pop("note", None)
-                row["status"] = "partial"
-        self._first_passage(edit)
-        self.refuse("gives a theorem passage with relatedMatch only no status")
+    def _related_only(self, a, b, status=None):
+        for row in (a, b):
+            row["relation"] = "relatedMatch"
+            row.pop("note", None)
+            row["extensions"][LOCATE]["challenge"] = "downgraded"
+            if status is None:
+                row.pop("status", None)
+            else:
+                row["status"] = status
 
-    def test_broad_match_to_a_definition_admits_both_readings(self):
-        # Proposal §2.6 lists it under statement_only (a Prop-valued definition) and under partial.
-        for status in ("statement_only", "partial"):
+    def test_located_passage_with_only_related_matches_has_no_status(self):
+        # Records that stamp a status on a related-only passage are refused: the table gives none.
+        self._first_passage(lambda a, b: self._related_only(a, b, "partial"))
+        self.refuse("gives a theorem passage with relatedMatch only no status: it is unresolved")
+
+    def test_related_only_passage_without_a_status_is_unresolved(self):
+        # Proposal §2.6 "(none)": what a challenge that downgrades a passage's locations leaves.
+        # It counts as undecided, never as not formalized, and keeps its related declarations.
+        self._first_passage(self._related_only)
+        tree = build_store.build(self.set)
+        article = json.loads(tree["atlas/v1/articles/1001.json"])
+        passage = article["passages"][0]
+        self.assertEqual((passage["outcome"], passage["status"], passage["basis"]), ("unresolved", None, None))
+        self.assertEqual(passage["unresolved"], {"challenge": "downgraded"})
+        self.assertEqual([loc["relation"] for loc in passage["locations"]], ["relatedMatch", "relatedMatch"])
+        self.assertEqual(article["summary"]["by_status"]["unresolved"], 2)
+        self.assertEqual(article["summary"]["by_status"]["formalized"], 0)
+        self.assertEqual(article["summary"]["by_library"]["mathlib"],
+                         {"locations": 0, "complete": 0, "incomplete": 0, "passages": 0, "related": 1})
+        shard = json.loads(tree["atlas/v1/index/1.json"])
+        self.assertEqual(shard["articles"][0][-1], ["tauceti"])  # Mathlib and FormalFrontier hold related only
+
+    def test_status_less_related_match_beside_a_counted_location_is_refused(self):
+        def edit(a, b):
+            b["relation"] = "relatedMatch"
+            b.pop("note", None)
+            b.pop("status")
+        self._first_passage(edit)
+        self.refuse("every record of a passage carries the same derived status (only a passage whose")
+
+    def test_status_less_record_that_counts_is_refused(self):
+        self._first_passage(lambda a, b: [row.pop("status") for row in (a, b)])
+        self.refuse("a location record carries a derived status")
+
+    def test_status_less_related_match_beside_an_absence_is_refused(self):
+        self.edit_widget(lambda rows: rows[4].pop("status"))
+        self.refuse("every record of a passage carries the same derived status")
+
+    def test_broad_match_to_a_definition_is_partial(self):
+        # The table's "broadMatch to a definition" row: partial, and only partial. A
+        # Prop-valued definition is marked by the statement flag, not by the relation.
+        for status, refused in (("partial", False), ("statement_only", True)):
             with self.subTest(status=status):
                 self.tearDown()
                 self.setUp()
@@ -312,8 +397,76 @@ class RefusalTests(unittest.TestCase):
                         row["status"] = status
                         row["object"][0]["extensions"][LOCATE]["proof_status"] = "definition"
                 self._first_passage(edit)
-                article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
-                self.assertEqual(article["passages"][0]["status"], status)
+                if refused:
+                    self.refuse("the records say statement_only, but proposal §2.6 derives partial")
+                else:
+                    article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+                    self.assertEqual(article["passages"][0]["status"], "partial")
+
+    def _one_location(self, kind, relation, proof_status, status, statement=None):
+        """Make the first Widget passage one location (Mathlib, rank 1) of the given shape."""
+        def edit(rows):
+            del rows[1]
+            row = rows[0]
+            row["kind"], row["relation"], row["status"] = kind, relation, status
+            if relation != "closeMatch":
+                row.pop("note", None)
+            end = row["object"][0]["extensions"][LOCATE]
+            end["proof_status"] = proof_status
+            if statement is not None:
+                end["statement"] = statement
+        self.edit_widget(edit)
+
+    def test_theorem_exactly_matched_to_data_is_partial(self):
+        # An instance such as Real.instField stating "R is a field": vocabulary.md §1.11
+        # decides it partial (as the table's broadMatch to a definition is).
+        self._one_location("theorem", "exactMatch", "definition", "partial")
+        self.assertEqual(json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+                         ["passages"][0]["status"], "partial")
+        self.tearDown()
+        self.setUp()
+        self._one_location("theorem", "exactMatch", "definition", "statement_only")
+        self.refuse("the records say statement_only, but proposal §2.6 derives partial for a theorem passage "
+                    "with exactMatch to definition")
+
+    def test_prop_valued_definition_states_a_theorem(self):
+        # The lean end's statement flag marks a Prop-valued definition: statement_only.
+        self._one_location("theorem", "exactMatch", "definition", "statement_only", statement=True)
+        article = json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+        passage = article["passages"][0]
+        self.assertEqual(passage["status"], "statement_only")
+        self.assertIs(passage["locations"][0]["statement"], True)
+        self.assertEqual(passage["basis"], passage["locations"][0]["location_key"])
+        self.tearDown()
+        self.setUp()
+        self._one_location("theorem", "exactMatch", "definition", "partial", statement=True)
+        self.refuse("derives statement_only for a theorem passage with exactMatch to a Prop-valued definition")
+
+    def test_statement_flag_must_be_a_bool_and_never_on_a_proved_declaration(self):
+        self._one_location("theorem", "exactMatch", "definition", "statement_only", statement="yes")
+        self.refuse("statement must be true or false")
+        self.tearDown()
+        self.setUp()
+        self._one_location("theorem", "exactMatch", "proved", "formalized", statement=True)
+        self.refuse("a proved declaration with the statement flag set")
+
+    def test_definition_matched_to_a_proved_theorem_is_partial(self):
+        for relation in ("exactMatch", "broadMatch"):
+            with self.subTest(relation=relation):
+                self.tearDown()
+                self.setUp()
+                self._one_location("definition", relation, "proved", "partial")
+                self.assertEqual(json.loads(build_store.build(self.set)["atlas/v1/articles/1001.json"])
+                                 ["passages"][0]["status"], "partial")
+
+    def test_construction_and_notation_are_definition_passages(self):
+        # A proved theorem never formalizes a construction or a notation (vocabulary.md §1.11).
+        for kind in ("construction", "notation"):
+            with self.subTest(kind=kind):
+                self.tearDown()
+                self.setUp()
+                self._one_location(kind, "exactMatch", "proved", "formalized")
+                self.refuse(f"the records say formalized, but proposal §2.6 derives partial for a {kind} passage")
 
     def test_basis_is_the_location_that_justifies_the_status(self):
         # Rank 1 states it without proof, rank 2 proves a more general result:
@@ -420,6 +573,137 @@ class RefusalTests(unittest.TestCase):
         golden = build_store.build(RECORDSET)
         universe_path = next(p for p in golden if p.startswith("atlas/v1/universes/"))
         self.assertEqual(tree[universe_path], golden[universe_path])
+
+
+class MalformedValueTests(unittest.TestCase):
+    """A malformed value anywhere is a refusal (exit 2), never a crash (docs/ATLAS.md, section 5)."""
+
+    HOSTILE = [None, True, 5, 1.5, "x", [], ["a"], {}, {"a": [1]}]
+    WIDGET = "records/enwiki-1001-2002.jsonl"
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="atlas-malformed-"))
+        self.set = self.tmp / "set"
+        shutil.copytree(RECORDSET, self.set)
+        self.original = {p: p.read_bytes() for p in self.set.rglob("*") if p.is_file()}
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def restore(self) -> None:
+        for path, data in self.original.items():
+            path.write_bytes(data)
+
+    @staticmethod
+    def put(value, path, new):
+        for step in path[:-1]:
+            value = value[step]
+        value[path[-1]] = new
+
+    def mutate(self, relative: str, row: int | None, path: list, new) -> None:
+        target = self.set / relative
+        if row is None:
+            document = json.loads(target.read_text(encoding="utf-8"))
+            self.put(document, path, new)
+            target.write_text(make_fixture.dumps(document) + "\n", encoding="utf-8")
+        else:
+            rows = read_jsonl(target)
+            self.put(rows[row], path, new)
+            write_jsonl(target, rows)
+        reseal(self.set)
+
+    def build_outcome(self) -> str:
+        try:
+            build_store.build(self.set)
+        except build_store.AtlasError:
+            return "refused"
+        except Exception as exc:  # noqa: BLE001 - the point of the test
+            return f"crashed: {type(exc).__name__}: {exc}"
+        return "built"
+
+    def test_no_malformed_value_crashes_the_builder(self):
+        loc_end = ["object", 0, "extensions", LOCATE]
+        targets = [(self.WIDGET, 0, path) for path in (
+            ["kind"], ["relation"], ["status"], ["note"], ["id"],
+            ["extensions", LOCATE, "challenge"], ["extensions", LOCATE, "confidence"],
+            ["extensions", LOCATE, "rank"], ["extensions", LOCATE, "location_key"],
+            ["extensions", LOCATE, "section"], ["extensions", LOCATE, "prominence"],
+            ["extensions", LOCATE, "item"], ["extensions", LOCATE, "universe"],
+            [*loc_end, "proof_status"], [*loc_end, "library"], [*loc_end, "path"], [*loc_end, "line"],
+            [*loc_end, "end_line"], [*loc_end, "statement"], ["object", 0, "location"],
+            ["object", 0, "location", "declaration"], ["object", 0, "uri"], ["object", 0, "version"],
+            ["subject", 0, "uri"], ["subject", 0, "version"], ["subject", 0, "location", "quote"],
+            ["subject", 0, "location", "quote", "exact"], ["subject", 0, "location", "quote", "prefix"],
+            ["subject", 0, "extensions", LOCATE, "pageid"])]
+        targets += [(self.WIDGET, 3, path) for path in (
+            ["extensions", LOCATE, "receipt"], ["extensions", LOCATE, "receipt", "sha256"],
+            ["extensions", LOCATE, "receipt", "queries"], ["object", 0, "uri"], ["object", 0, "version"])]
+        targets += [("universe.json", None, path) for path in (
+            ["excluded"], ["excluded", 0], ["excluded", 0, "id"], ["excluded", 0, "repo"], ["libraries"],
+            ["libraries", 0], ["libraries", 0, "id"], ["libraries", 0, "repo"], ["libraries", 0, "commit"],
+            ["libraries", 0, "display_name"], ["libraries", 0, "roots"], ["libraries", 0, "licence"],
+            ["libraries", 0, "src_dir"], ["frozen"], ["id"], ["universe_sha256"])]
+        targets += [("sources.jsonl", 0, path) for path in (
+            ["renderer"], ["assessment"], ["assessment", "class"], ["title"], ["wikidata"], ["pageid"],
+            ["html_sha256"], ["source_id"])]
+        crashes = []
+        for relative, row, path in targets:
+            for value in self.HOSTILE:
+                self.mutate(relative, row, path, value)
+                outcome = self.build_outcome()
+                if outcome.startswith("crashed"):
+                    crashes.append((relative, row, path, value, outcome))
+                self.restore()
+        self.assertEqual(crashes, [])
+
+    def run_main(self) -> tuple[int, str]:
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            code = build_store.main(["--record-set", str(self.set), "--out", str(self.tmp / "out")])
+        return code, err.getvalue()
+
+    def assert_exit_2(self, fragment: str) -> None:
+        code, err = self.run_main()
+        self.assertEqual(code, 2, err)
+        self.assertIn(fragment, err)
+        self.assertFalse((self.tmp / "out").exists())
+        self.restore()
+
+    def test_reported_crashes_are_refusals(self):
+        # Each of these used to exit 3 ("internal error") instead of listing the problem.
+        for value in (5, True, {"id": "x"}):
+            self.mutate("universe.json", None, ["excluded"], value)
+            self.assert_exit_2("excluded must be a list")
+        for path, fragment in ((["extensions", LOCATE, "challenge"], "challenge must be one of"),
+                               (["extensions", LOCATE, "confidence"], "confidence must be one of"),
+                               (["extensions", LOCATE, "prominence"], "prominence must be one of"),
+                               (["object", 0, "extensions", LOCATE, "proof_status"], "proof_status must be one of"),
+                               (["extensions", LOCATE, "rank"], "rank must be an integer")):
+            self.mutate(self.WIDGET, 0, path, ["a"])
+            self.assert_exit_2(fragment)
+        self.mutate("sources.jsonl", 0, ["renderer"], {"x": [1]})
+        self.assert_exit_2("renderer must be a short token")
+        # 1e400 is valid JSON that parses as infinity, which the store cannot write.
+        path = self.set / "sources.jsonl"
+        path.write_text(path.read_text().replace('"renderer":"web-html/1"', '"renderer":1e400', 1))
+        reseal(self.set)
+        self.assert_exit_2("non-finite JSON number 1e400")
+        path = self.set / self.WIDGET
+        path.write_text(path.read_text().replace('"rank":1', '"rank":1e400', 1))
+        reseal(self.set)
+        self.assert_exit_2("non-finite JSON number 1e400")
+        # Nesting too deep for the parser is a refusal too.
+        path.write_text("[" * 100000 + "]" * 100000 + "\n" + path.read_text())
+        reseal(self.set)
+        self.assert_exit_2("nested too deeply")
+
+    def test_display_name_is_printable_ascii(self):
+        # Invisible and look-alike characters could make a name read as "Mathlib".
+        for name in ("Mathlib\u200b", "M\u0430thlib", "Mathlib\u00ad", "Lean core\u2060", "Tab\there"):
+            self.mutate("universe.json", None, ["libraries", 4, "display_name"], name)
+            self.assert_exit_2("display_name must be at most 100 printable ASCII")
+        self.mutate("universe.json", None, ["libraries", 4, "display_name"], "Widget theory (FF \u00b7 fork), v2")
+        self.assertEqual(self.build_outcome(), "built")
 
 
 class CliTests(unittest.TestCase):

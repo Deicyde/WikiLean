@@ -31,6 +31,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import re
 import shutil
 import sys
@@ -68,16 +69,25 @@ INDEX_FIELDS = ["title", "pageid", "revision", "passages", "formalized", "statem
 KINDS = frozenset({"definition", "theorem", "conjecture", "example", "construction", "notation", "other"})
 PROMINENCES = frozenset({"subject", "central", "supporting"})
 LOCATION_RELATIONS = ("exactMatch", "closeMatch", "broadMatch", "narrowMatch", "hasPart", "relatedMatch")
-STRONG_RELATIONS = frozenset({"exactMatch", "closeMatch", "broadMatch"})
 PART_RELATIONS = frozenset({"hasPart", "narrowMatch"})
 PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "wanted", "definition"})
 # Proof statuses that state something without a finished proof (proposal §2.6's statement_only row).
 UNPROVED = frozenset({"statement_only", "wanted", "axiom_dependent"})
+# Which row of proposal §2.6's table judges a passage kind. The table names theorem,
+# conjecture and definition passages only; the rest is decided in formal-companion's
+# references/vocabulary.md §1.11 (cflib.vocab THEOREM_/DEFINITION_/EITHER_PASSAGE_KINDS):
+# a construction or a notation introduces an object or a symbol, so it is a definition
+# passage, and an example or an `other` passage is judged by both rows, the better winning.
+THEOREM_KINDS = frozenset({"theorem", "conjecture"})
+DEFINITION_KINDS = frozenset({"definition", "construction", "notation"})
+EITHER_KINDS = frozenset({"example", "other"})
 # A library location counts as complete when its declaration is proved or is a definition.
 COMPLETE = frozenset({"proved", "definition"})
 CHALLENGES = frozenset({"survived", "downgraded", "not_required", "sampled_out"})
 CONFIDENCES = frozenset({"high", "medium", "low"})
 STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
+# Best first, for "the best such location" (cflib.vocab _STATUS_RANK).
+STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 SUMMARY_STATUSES = (*STATUSES, "unresolved")
 MAX_LOCATIONS = 5          # K, proposal §2.7
 QUOTE_MAX_WORDS = 12       # exported quote caps, proposal §2.7 and §10
@@ -96,6 +106,12 @@ TITLE_SPACE = re.compile(r"[ \t\n\r\f\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u20
 WORD_SPACE = re.compile(r"\s+")
 # A library repository: https, a dotted host, one to four path segments, none of them "." or "..".
 REPO_RE = re.compile(r"^https://[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:/[A-Za-z0-9_.~-]{1,100}){1,4}$")
+# A library's display_name: printable ASCII letters, digits, spaces and a few marks, so no
+# invisible or look-alike character can make it read as another library's name
+# (wiki/src/libraries.ts applies the same pattern and ignores a name that fails it).
+DISPLAY_NAME_RE = re.compile(r"^[A-Za-z0-9 ,.()\u00b7/+:'&_-]{1,100}$")
+# sources.jsonl `renderer`, e.g. "web-html/1".
+RENDERER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}$")
 
 
 class AtlasError(Exception):
@@ -128,9 +144,30 @@ def _no_constants(name: str) -> Any:
     raise ValueError(f"non-finite JSON number {name}")
 
 
+def _finite_float(text: str) -> float:
+    # 1e400 parses as inf, which canonical() cannot write: refuse it here, as NaN is.
+    value = float(text)
+    if not math.isfinite(value):
+        raise ValueError(f"non-finite JSON number {text}")
+    return value
+
+
 def strict_json(text: str) -> Any:
-    """Parse JSON refusing duplicate keys and NaN/Infinity (the spec requires unique keys)."""
-    return json.loads(text, object_pairs_hook=_no_duplicates, parse_constant=_no_constants)
+    """Parse JSON refusing duplicate keys and non-finite numbers (the spec requires unique keys).
+
+    Every failure is a ValueError, which the callers report as a refusal: nesting too deep
+    for the parser included.
+    """
+    try:
+        return json.loads(text, object_pairs_hook=_no_duplicates, parse_constant=_no_constants,
+                          parse_float=_finite_float)
+    except RecursionError as exc:
+        raise ValueError("nested too deeply") from exc
+
+
+def member(value: Any, allowed: frozenset[str] | tuple[str, ...]) -> bool:
+    """`value in allowed` for a vocabulary of strings; a list or dict is simply not a member."""
+    return isinstance(value, str) and value in allowed
 
 
 def title_key(title: str) -> str:
@@ -366,6 +403,9 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
                 continue
             if not isinstance(value, str) or not value.strip() or len(value) > 300:
                 problems.add(at, f"{key} must be a non-empty string")
+            elif key == "display_name" and not DISPLAY_NAME_RE.match(value):
+                problems.add(at, "display_name must be at most 100 printable ASCII letters, digits, spaces "
+                                 "and ,.()/+:'&_- or \u00b7 (no invisible or look-alike characters)")
             else:
                 entry[key] = value
         if "src_dir" in entry and not safe_relative(entry["src_dir"]):
@@ -377,7 +417,13 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             entry["licence"] = licence["spdx"]
         libraries.append(entry)
     excluded = []
-    for index, item in enumerate(raw.get("excluded") or []):
+    excluded_raw = raw.get("excluded")
+    if excluded_raw is None:
+        excluded_raw = []
+    elif not isinstance(excluded_raw, list):
+        problems.add(where, "excluded must be a list of {id, reason, repo?}")
+        excluded_raw = []
+    for index, item in enumerate(excluded_raw):
         if not isinstance(item, dict) or not isinstance(item.get("id"), str) or not isinstance(item.get("reason"), str):
             problems.add(f"{where}: excluded[{index}]", "must be {id, reason}")
             continue
@@ -443,9 +489,13 @@ def load_sources(files: dict[str, bytes], problems: Problems) -> list[dict]:
                                 if isinstance(assessment.get(key), str) and assessment[key].strip()}
         elif assessment is not None:
             problems.add(at, "assessment must be an object or null")
+        renderer = row.get("renderer")
+        if renderer is not None and (not isinstance(renderer, str) or not RENDERER_RE.match(renderer)):
+            problems.add(at, "renderer must be a short token such as web-html/1, or null")
+            renderer = None
         sources.append({"source_id": source_id, "pageid": pageid, "revision": revision, "title": title,
                         "wikidata": wikidata, "html_sha256": row.get("html_sha256"),
-                        "layer_sha256": row.get("layer_sha256"), "renderer": row.get("renderer"),
+                        "layer_sha256": row.get("layer_sha256"), "renderer": renderer,
                         "assessment": clean_assessment or None})
     record_files = {p for p in files if p.startswith("records/")}
     expected = {f"records/{s['source_id']}.jsonl" for s in sources}
@@ -514,17 +564,20 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     universe = ctx.universe
     if ext.get("universe") != universe["id"] or ext.get("universe_sha256") != universe["sha256"]:
         problems.add(at, "universe and universe_sha256 must name the record set's universe")
-    if ext.get("challenge") not in CHALLENGES:
+    challenge = ext.get("challenge")
+    if not member(challenge, CHALLENGES):
         problems.add(at, f"challenge must be one of {sorted(CHALLENGES)}")
+        challenge = None
     kind = record.get("kind")
-    if kind not in KINDS:
+    if not member(kind, KINDS):
         problems.add(at, f"kind must be one of {sorted(KINDS)}")
+        kind = None
     section = ext.get("section")
     if section is not None and (not isinstance(section, list) or not all(isinstance(s, str) and s for s in section)):
         problems.add(at, "section must be a list of heading strings")
         section = None
     prominence = ext.get("prominence")
-    if prominence is not None and prominence not in PROMINENCES:
+    if prominence is not None and not member(prominence, PROMINENCES):
         problems.add(at, f"prominence must be one of {sorted(PROMINENCES)}")
         prominence = None
 
@@ -550,7 +603,7 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
             "quote": {key: quote[key] for key in ("exact", "prefix", "suffix") if key in quote},
-            "subject_uri": uri, "challenge": ext.get("challenge")}
+            "subject_uri": uri, "challenge": challenge}
     relation = record.get("relation")
     objects = record["object"]
     if relation is None:
@@ -604,8 +657,12 @@ def _absence(record: dict, base: dict, objects: list, ext: dict, ctx: Context, a
 def _location(record: dict, base: dict, objects: list, ext: dict, relation: str, ctx: Context, at: str,
               problems: Problems) -> dict | None:
     status = record.get("status")
-    if status not in STATUSES:
-        problems.add(at, f"a location record carries a derived status, one of {list(STATUSES)}")
+    # A passage whose only locations are relatedMatch, with no checked absence, has no
+    # derived status (proposal §2.6, "(none)"), so its records carry none; whether this
+    # passage is one is decided over all its records (build_passages).
+    if not (member(status, STATUSES) or (status is None and relation == "relatedMatch")):
+        problems.add(at, f"a location record carries a derived status, one of {list(STATUSES)} "
+                         "(only a relatedMatch of a passage with no status carries none)")
         return None
     if len(objects) != 1:
         problems.add(at, "a location record has exactly one lean end")
@@ -628,8 +685,16 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
         problems.add(at, "path must be a safe relative .lean path")
     if type(line) is not int or type(end_line) is not int or not 1 <= line <= end_line:
         problems.add(at, "line and end_line must be integers with 1 <= line <= end_line")
-    if end_ext.get("proof_status") not in PROOF_STATUSES:
+    # Malformed values are reported and then dropped, so no later check meets them.
+    if type(line) is not int or type(end_line) is not int:
+        line = end_line = None
+    proof_status = end_ext.get("proof_status")
+    if not member(proof_status, PROOF_STATUSES):
         problems.add(at, f"proof_status must be one of {sorted(PROOF_STATUSES)}")
+        proof_status = None
+    statement, message = statement_flag(end_ext.get("statement"), proof_status)
+    if message:
+        problems.add(at, message)
     key = ext.get("location_key")
     if not isinstance(key, str) or not HEX64.match(key):
         problems.add(at, "location_key must be 64 hex")
@@ -637,11 +702,16 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
         problems.add(at, f"location_key {key} appears twice")
     else:
         ctx.location_keys.add(key)
+    if not isinstance(key, str):
+        key = None
     rank = ext.get("rank")
     if type(rank) is not int or not 1 <= rank <= MAX_LOCATIONS:
         problems.add(at, f"rank must be an integer from 1 to {MAX_LOCATIONS}")
-    if ext.get("confidence") not in CONFIDENCES:
+        rank = None
+    confidence = ext.get("confidence")
+    if not member(confidence, CONFIDENCES):
         problems.add(at, f"confidence must be one of {sorted(CONFIDENCES)}")
+        confidence = None
     note = record.get("note")
     if relation == "closeMatch" and not (isinstance(note, str) and note.strip()):
         problems.add(at, "a closeMatch names its convention difference in note (proposal §2.6)")
@@ -649,108 +719,120 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
         "library": library["id"], "repo": library["repo"], "commit": library["commit"],
         "declaration": location["declaration"], "module": location["module"],
         "path": path, "line": line, "end_line": end_line,
-        "relation": relation, "proof_status": end_ext.get("proof_status"), "rank": rank,
-        "confidence": ext.get("confidence"), "challenge": ext.get("challenge"),
+        "relation": relation, "proof_status": proof_status, "statement": statement, "rank": rank,
+        "confidence": confidence, "challenge": base["challenge"],
         "location_key": key, "note": note if isinstance(note, str) and note.strip() else None,
     }}
 
 
+def statement_flag(value: Any, proof_status: str | None) -> tuple[bool, str | None]:
+    """The lean end's optional `statement` flag (a Prop-valued definition, proposal §2.4).
+
+    Returns (flag, problem). Absent or null is false, as in cflib.vocab.derive_status, which
+    refuses a flag that is not a bool and a flag on a proved declaration: a Prop-valued
+    definition has every proof status but proved (decide_proof_status), so no consistent
+    record says that.
+    """
+    if value is None:
+        return False, None
+    if not isinstance(value, bool):
+        return False, "statement must be true or false (the library index sets it on a Prop-valued definition)"
+    if value and proof_status == "proved":
+        return False, ("a proved declaration with the statement flag set: the flag marks a Prop-valued "
+                       "definition, whose proof_status is definition, wanted, statement_only or axiom_dependent")
+    return value, None
+
+
 def _rank_key(loc: dict) -> int:
-    # A malformed rank is already a reported problem; sort it last rather than crash.
+    # A malformed rank is already a reported problem (and dropped); sort it last.
     return loc["rank"] if type(loc["rank"]) is int else 99
 
 
-def _by_rank(locations: list[dict], relations: frozenset[str], proofs: frozenset[str] | None = None) -> list[dict]:
-    return [loc for loc in locations if loc["relation"] in relations
-            and (proofs is None or loc["proof_status"] in proofs)]
+def _theorem_row(loc: dict) -> str:
+    """One location of a theorem or conjecture passage (cflib.vocab._theorem_row)."""
+    if loc["relation"] in PART_RELATIONS:
+        return "partial"
+    # exactMatch, closeMatch, broadMatch
+    if loc["statement"]:  # a Prop-valued definition states a theorem, never proves it
+        return "statement_only"
+    if loc["proof_status"] == "proved":
+        return "formalized"
+    if loc["proof_status"] in UNPROVED:
+        return "statement_only"
+    # Data: the table's "broadMatch to a definition" is partial, and vocabulary.md §1.11
+    # decides an exact or close match to data the same way.
+    return "partial"
 
 
-def derive_status(kind: str, locations: list[dict]) -> list[tuple[str, dict]]:
+def _definition_row(loc: dict) -> str:
+    """One location of a definition passage (cflib.vocab._definition_row)."""
+    if loc["relation"] in PART_RELATIONS or loc["relation"] == "broadMatch":
+        return "partial"
+    # exactMatch, closeMatch
+    if loc["proof_status"] == "definition":
+        return "formalized"
+    if loc["proof_status"] in UNPROVED:
+        return "statement_only"
+    # A proved theorem stating a definition passage: not in the table; §1.11 says partial.
+    return "partial"
+
+
+def location_status(kind: str, loc: dict) -> str | None:
+    """The status one location gives a passage of `kind`; None for a relatedMatch, which never counts."""
+    if loc["relation"] == "relatedMatch":
+        return None
+    rows = []
+    if kind in THEOREM_KINDS or kind in EITHER_KINDS:
+        rows.append(_theorem_row(loc))
+    if kind in DEFINITION_KINDS or kind in EITHER_KINDS:
+        rows.append(_definition_row(loc))
+    return min(rows, key=STATUS_RANK.__getitem__) if rows else None
+
+
+def derive_status(kind: str, locations: list[dict]) -> tuple[str | None, dict | None]:
     """Proposal §2.6's derived status of a located passage, recomputed from its locations.
 
-    `locations` are in rank order. Returns the acceptable (status, basis) pairs: the
-    status the table gives and the highest-ranked location that justifies it. The
-    table's rows are read first-match, top to bottom (formalized, statement_only,
-    partial). Two pairs come back only where the table admits both readings, and an
-    empty list means the table gives this passage no status. Kinds the table does not
-    name (example, construction, notation, other) follow WikiLean's reading in
-    docs/ATLAS.md contract note 7: the theorem and definition rules together.
+    A port of formal-companion's cflib.vocab.derive_status (scripts/cflib/vocab.py, which
+    implements references/vocabulary.md §1.11's decisions for the cases the table leaves
+    open): each location that counts gets a status from its kind's row of the table, an
+    example or `other` passage taking the better of the two rows, and the passage takes the
+    best of them. `locations` are in rank order. Returns (status, basis): the one status the
+    producer stamps, and the highest-ranked location reaching it. (None, None) means the
+    table gives the passage no status: its only locations are relatedMatch.
+    test_build_store.py checks this against a truth table generated from the producer.
     """
-    strong = STRONG_RELATIONS
-    if kind in ("theorem", "conjecture"):
-        proved = _by_rank(locations, strong, frozenset({"proved"}))
-        if proved:
-            return [("formalized", proved[0])]
-        # "the best such location is statement_only, wanted or axiom_dependent, or is a
-        # Prop-valued definition stating a theorem passage"
-        stated = [loc for loc in _by_rank(locations, strong, UNPROVED | {"definition"})
-                  if not (loc["relation"] == "broadMatch" and loc["proof_status"] == "definition")]
-        if stated:
-            return [("statement_only", stated[0])]
-        # A broadMatch to a definition is both a more general Prop-valued definition
-        # (statement_only) and the partial row's "broadMatch to a definition".
-        broad_def = _by_rank(locations, frozenset({"broadMatch"}), frozenset({"definition"}))
-        parts = sorted(_by_rank(locations, PART_RELATIONS) + broad_def, key=_rank_key)
-        if broad_def:
-            return [("statement_only", broad_def[0]), ("partial", parts[0])]
-        if parts:
-            return [("partial", parts[0])]
-        return []
-    if kind == "definition":
-        defined = _by_rank(locations, frozenset({"exactMatch", "closeMatch"}), frozenset({"definition"}))
-        if defined:
-            return [("formalized", defined[0])]
-        stated = _by_rank(locations, frozenset({"exactMatch", "closeMatch"}), UNPROVED)
-        if stated:
-            return [("statement_only", stated[0])]
-        broad_def = _by_rank(locations, frozenset({"broadMatch"}), frozenset({"definition"}))
-        parts = sorted(_by_rank(locations, PART_RELATIONS) + broad_def, key=_rank_key)
-        broad_unproved = _by_rank(locations, frozenset({"broadMatch"}), UNPROVED)
-        if broad_unproved:
-            # A more general declaration that is itself unfinished: both rows apply.
-            return [("statement_only", broad_unproved[0]),
-                    ("partial", sorted(parts + broad_unproved, key=_rank_key)[0])]
-        if parts:
-            return [("partial", parts[0])]
-        return []
-    # The other kinds take the theorem rule and the definition rule together: a proved
-    # exact, close or broad match, or an exact or close match to a definition.
-    complete = sorted(_by_rank(locations, strong, frozenset({"proved"}))
-                      + _by_rank(locations, frozenset({"exactMatch", "closeMatch"}), frozenset({"definition"})),
-                      key=_rank_key)
-    if complete:
-        return [("formalized", complete[0])]
-    stated = _by_rank(locations, strong, UNPROVED)
-    if stated:
-        return [("statement_only", stated[0])]
-    parts = sorted(_by_rank(locations, PART_RELATIONS)
-                   + _by_rank(locations, frozenset({"broadMatch"}), frozenset({"definition"})), key=_rank_key)
-    if parts:
-        return [("partial", parts[0])]
-    return []
+    best: str | None = None
+    basis: dict | None = None
+    for loc in locations:
+        status = location_status(kind, loc)
+        if status is not None and (best is None or STATUS_RANK[status] < STATUS_RANK[best]):
+            best, basis = status, loc
+    return best, basis
 
 
 def _shape(locations: list[dict]) -> str:
-    shown = [f"{loc['relation']} to {loc['proof_status']}" for loc in locations if loc["relation"] != "relatedMatch"]
+    def declaration(loc: dict) -> str:
+        if not loc["statement"]:
+            return str(loc["proof_status"])
+        return "a Prop-valued definition" + ("" if loc["proof_status"] == "definition" else f" ({loc['proof_status']})")
+    shown = [f"{loc['relation']} to {declaration(loc)}" for loc in locations if loc["relation"] != "relatedMatch"]
     return ", ".join(shown) or "relatedMatch only"
 
 
-def status_problems(kind: str, status: str, locations: list[dict]) -> tuple[list[str], dict | None]:
+def status_problems(kind: str | None, status: str, locations: list[dict]) -> tuple[list[str], dict | None]:
     """Compare a located passage's stamped status with the recomputed one; returns (problems, basis)."""
     if status == "not_formalized":
         return ["not_formalized needs a checked absence (noMatch record)"], None
-    if kind not in KINDS:
+    if not member(kind, KINDS):
         return [], None  # already reported by classify_record
-    derived = derive_status(kind, locations)
-    if not derived:
-        return [f"proposal §2.6 gives a {kind} passage with {_shape(locations)} no status "
-                f"(docs/ATLAS.md, contract note 7)"], None
-    for candidate, basis in derived:
-        if candidate == status:
-            return [], basis
-    expected = " or ".join(candidate for candidate, _ in derived)
-    return [f"the records say {status}, but proposal §2.6 derives {expected} for a {kind} passage "
-            f"with {_shape(locations)}"], None
+    derived, basis = derive_status(kind, locations)
+    if derived is None:
+        return [f"proposal §2.6 gives a {kind} passage with {_shape(locations)} no status: it is unresolved, "
+                f"and its records carry no status (docs/ATLAS.md, contract note 9)"], None
+    if derived != status:
+        return [f"the records say {status}, but proposal §2.6 derives {derived} for a {kind} passage "
+                f"with {_shape(locations)}"], None
+    return [], basis
 
 
 def build_passages(classified: list[dict], source: dict, problems: Problems) -> list[dict]:
@@ -776,21 +858,31 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         if len(absences) > 1:
             problems.add(at, "a passage has at most one checked absence")
         if len(statuses) > 1:
-            problems.add(at, "every record of a passage carries the same derived status")
+            problems.add(at, "every record of a passage carries the same derived status"
+                         + (" (only a passage whose locations are all relatedMatch, with no checked absence, "
+                            "has records without one)" if None in statuses else ""))
         if len(locations) > MAX_LOCATIONS:
             problems.add(at, f"at most {MAX_LOCATIONS} locations per passage")
-        ranks = [loc["rank"] for loc in locations]
+        ranks = [loc["rank"] for loc in locations if loc["rank"] is not None]
         if len(ranks) != len(set(ranks)):
             problems.add(at, "location ranks are distinct")
         status = next(iter(statuses)) if len(statuses) == 1 else None
+        basis = None
+        unresolved_info = {"challenge": unresolved[0]["challenge"]} if unresolved else None
         if unresolved:
             outcome, status = "unresolved", None
         elif absences:
             outcome = "absent"
             if any(loc["relation"] != "relatedMatch" for loc in locations):
                 problems.add(at, "an absence may sit beside relatedMatch locations only")
-        basis = None
-        if not unresolved and not absences:
+        elif statuses == {None}:
+            # Only relatedMatch records, none with a status, and no checked absence: what a
+            # challenge that downgrades a passage's one location leaves. Nothing says it is
+            # formalized and nobody checked it is absent, so it counts as unresolved (never
+            # not_formalized), and its related declarations are kept.
+            outcome = "unresolved"
+            unresolved_info = {"challenge": locations[0]["challenge"] if locations else None}
+        else:
             outcome = "located"
             if status is not None:
                 found, basis = status_problems(first["kind"], status, locations)
@@ -807,7 +899,7 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             # The location that justifies the status (derive_status), so a page names it
             # rather than whichever location ranks first.
             "basis": basis["location_key"] if basis else None,
-            "unresolved": {"challenge": unresolved[0]["challenge"]} if unresolved else None,
+            "unresolved": unresolved_info,
         })
     return passages
 
@@ -962,7 +1054,8 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
         "universe": {"id": universe["id"], "sha256": universe["sha256"], "frozen": universe["frozen"],
                      "libraries": len(universe["libraries"])},
         "record_set": {"seal_sha256": seal_sha, "created": seal["created"], "skill_commit": seal["skill_commit"],
-                       "sourceset": seal["sourceset"]},
+                       "sourceset": {"id": seal["sourceset"]["id"],
+                                     "manifest_sha256": seal["sourceset"]["manifest_sha256"]}},
         "literature_links": {"version": provenance["version"], "commit": provenance["commit"],
                              "schema_sha256": provenance["sha256"]},
         "counts": totals,
