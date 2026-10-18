@@ -160,6 +160,14 @@ async function openReviewTok(key: CryptoKey, id: string, sealed: string): Promis
   }
 }
 
+// Once REVIEW_TOKENS is bound, both forms of a record left in RENDER_CACHE from
+// before the binding (plaintext, or sealed when the key came first).
+async function deleteRenderCacheCopies(env: Env, id: string): Promise<void> {
+  if (!env.REVIEW_TOKENS) return;
+  await env.RENDER_CACHE.delete(plainTokKey(id));
+  await env.RENDER_CACHE.delete(await sealedTokKey(id));
+}
+
 async function putReviewTok(env: Env, id: string, json: string): Promise<void> {
   const store = reviewTokenStore(env);
   const key = await reviewSealKey(env);
@@ -169,20 +177,30 @@ async function putReviewTok(env: Env, id: string, json: string): Promise<void> {
   } else {
     await store.put(plainTokKey(id), json, { expirationTtl: REVIEW_TOK_TTL });
   }
-  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(plainTokKey(id));
+  await deleteRenderCacheCopies(env, id);
 }
 
-// A sealed record first (with the key), then a plaintext one: the dedicated
-// store, then RENDER_CACHE from before REVIEW_TOKENS was bound. A plaintext
-// record found while the key is set is re-written sealed and its plaintext
-// copies deleted, so setting the key signs nobody out and leaves no
-// plaintext behind past the next read (or the 12 h TTL).
+// A sealed record first (with the key), then a plaintext one; each first in
+// reviewTokenStore, then in RENDER_CACHE from before REVIEW_TOKENS was bound.
+// With the key set, a record found in any other form or place is re-written
+// sealed to reviewTokenStore and its other copies deleted. So neither setting
+// the key nor then binding the namespace (docs/SECRETS.md P1, in that order)
+// signs anybody out, and neither plaintext nor a RENDER_CACHE copy outlives
+// the next read (or the 12 h TTL). A sealed record that does not open (another
+// key, another cookie id, tampering) reads as "not connected".
 async function readReviewTok(env: Env, id: string): Promise<string | null> {
   const store = reviewTokenStore(env);
   const key = await reviewSealKey(env);
   if (key) {
-    const sealed = await store.get(await sealedTokKey(id));
+    const sealedKey = await sealedTokKey(id);
+    const sealed = await store.get(sealedKey);
     if (sealed !== null) return openReviewTok(key, id, sealed);
+    const cached = env.REVIEW_TOKENS ? await env.RENDER_CACHE.get(sealedKey) : null;
+    if (cached !== null) {
+      const opened = await openReviewTok(key, id, cached);
+      if (opened !== null) await putReviewTok(env, id, opened);
+      return opened;
+    }
   }
   let plain = await store.get(plainTokKey(id));
   if (plain === null && env.REVIEW_TOKENS) plain = await env.RENDER_CACHE.get(plainTokKey(id));
@@ -198,7 +216,7 @@ async function deleteReviewTok(env: Env, id: string): Promise<void> {
   const store = reviewTokenStore(env);
   await store.delete(plainTokKey(id));
   await store.delete(await sealedTokKey(id));
-  if (env.REVIEW_TOKENS) await env.RENDER_CACHE.delete(plainTokKey(id));
+  await deleteRenderCacheCopies(env, id);
 }
 
 // The connected reviewer's GitHub token + login, from the cookie→KV mapping. If

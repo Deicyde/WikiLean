@@ -1,7 +1,9 @@
 // Reviewer GitHub tokens (/review posting). They are live credentials, so they
 // go to the dedicated REVIEW_TOKENS namespace when it is bound and fall back to
 // RENDER_CACHE when it is not. Binding it signs nobody out: a token stashed in
-// RENDER_CACHE earlier is still read, and is moved out on its next write.
+// RENDER_CACHE earlier is still read, and is moved out on its next write, or
+// on its next read when REVIEW_TOKEN_KEY is set. That holds for a token sealed
+// in RENDER_CACHE too, the state docs/SECRETS.md P1 leaves (key, then binding).
 //
 // A namespace is not access isolation (Cloudflare grants KV access per
 // account), so with REVIEW_TOKEN_KEY set the record is sealed: AES-GCM
@@ -155,6 +157,76 @@ describe("review token store", () => {
     expect(reviewKeys(h.tokens!).sort()).toEqual([await sealedKeyFor("legacy"), await sealedKeyFor("plain")].sort());
     for (const value of h.tokens!.store.values()) expect(value).not.toContain("gho_");
     expect(await connected(h.env, "legacy")).toMatchObject({ connected: true, login: "reviewer" });
+  });
+
+  it("keeps a token sealed in RENDER_CACHE before the binding, and moves it to REVIEW_TOKENS on read", async () => {
+    // docs/SECRETS.md P1 order: REVIEW_TOKEN_KEY first, then the namespace.
+    const h = harness(false, SEAL_KEY);
+    const id = await connect(h.env);
+    const key = await sealedKeyFor(id);
+    expect(reviewKeys(h.renderCache)).toEqual([key]);
+    const tokens = makeKV();
+    h.env.REVIEW_TOKENS = tokens as unknown as KVNamespace;
+    expect(await connected(h.env, id)).toMatchObject({ connected: true, login: "reviewer" });
+    expect(reviewKeys(h.renderCache)).toEqual([]);
+    expect(reviewKeys(tokens)).toEqual([key]);
+    const value = tokens.store.get(key)!;
+    expect(value.startsWith("rt1.")).toBe(true);
+    for (const secret of ["gho_user_token", "reviewer", id]) expect(value).not.toContain(secret);
+    expect(await connected(h.env, id)).toMatchObject({ connected: true, login: "reviewer" });
+    await request(h.env, "/review/auth/logout", `wl_review_gh=${id}`);
+    expect(reviewKeys(tokens)).toEqual([]);
+    expect(reviewKeys(h.renderCache)).toEqual([]);
+  });
+
+  it("logout right after the binding deletes a token sealed in RENDER_CACHE", async () => {
+    const h = harness(false, SEAL_KEY);
+    const id = await connect(h.env);
+    h.env.REVIEW_TOKENS = makeKV() as unknown as KVNamespace;
+    await request(h.env, "/review/auth/logout", `wl_review_gh=${id}`);
+    expect(reviewKeys(h.renderCache)).toEqual([]);
+    expect(await connected(h.env, id)).toMatchObject({ connected: false, login: null });
+  });
+
+  it("a sealed RENDER_CACHE copy that does not open stays signed out and is not moved", async () => {
+    const h = harness(false, SEAL_KEY);
+    const id = await connect(h.env);
+    const tokens = makeKV();
+    h.env.REVIEW_TOKENS = tokens as unknown as KVNamespace;
+    h.env.REVIEW_TOKEN_KEY = SEAL_KEY.replace("0123", "9999");
+    expect(await connected(h.env, id)).toMatchObject({ connected: false, login: null });
+    expect(reviewKeys(tokens)).toEqual([]);
+  });
+
+  it("a write after the binding deletes a stale sealed copy left in RENDER_CACHE", async () => {
+    const h = harness(false, SEAL_KEY);
+    // A GitHub App token about to expire, so the next read refreshes and writes.
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ access_token: "ghu_old", refresh_token: "ghr_old", expires_in: 1 }), { status: 200 }),
+      )
+      .mockResolvedValueOnce(new Response(JSON.stringify({ login: "reviewer" }), { status: 200 }))
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ access_token: "ghu_new", refresh_token: "ghr_new", expires_in: 28800 }), {
+          status: 200,
+        }),
+      );
+    const res = await request(h.env, "/review/auth/callback?code=code&state=state", "wl_review_oauth=state%7C%2Freview");
+    const id = /wl_review_gh=([^;]+)/.exec(res.headers.get("Set-Cookie") || "")?.[1] as string;
+    expect(id).toBeTruthy();
+    const key = await sealedKeyFor(id);
+    const tokens = makeKV();
+    h.env.REVIEW_TOKENS = tokens as unknown as KVNamespace;
+    // Both stores hold the record: the dedicated one is read, and the refresh's
+    // write must still clear the RENDER_CACHE copy.
+    const before = h.renderCache.store.get(key)!;
+    tokens.store.set(key, before);
+    expect(await connected(h.env, id)).toMatchObject({ connected: true, login: "reviewer" });
+    expect(reviewKeys(h.renderCache)).toEqual([]);
+    expect(reviewKeys(tokens)).toEqual([key]);
+    const after = tokens.store.get(key)!;
+    expect(after).not.toBe(before); // re-sealed by the refresh
+    expect(after).not.toContain("ghu_");
   });
 
   it("refuses a REVIEW_TOKEN_KEY shorter than 32 characters instead of storing a token", async () => {
