@@ -3095,7 +3095,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   // (pages.ts injectAtlasSummary). Null when ATLAS is unbound or the title has
   // no atlas entry; a store failure never breaks the article page.
   const atlas = await atlasSummaryFor(c.env, row.wikipediaTitle);
-  const atlasBox = atlas ? atlasSummaryBox(atlas, atlasHref(atlas.pageid, atlas.title)) : null;
+  const atlasBox = atlas ? atlasSummaryBox(atlas, atlasHref(atlas.pageid, atlas.title), row.revid) : null;
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
   const page = injectAtlasSummary(injectAuthAndEditor(base, {

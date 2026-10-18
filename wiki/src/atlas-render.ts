@@ -2,13 +2,15 @@
 // the /atlas dashboard, one article's coverage page, the universe page, the
 // 503/404 message page, and the compact box injected into article pages.
 //
-// Every value from the store is data: text goes through htmlEscape, every href
-// is either built here from validated parts or parsed and required to be
-// https, and no element carries an inline event handler. The only script on
-// these pages besides the shared theme bootstrap and header search is
-// /assets/atlas.js (site/assets/atlas.js), which writes the DOM through
-// textContent and createElement only. Status is never colour alone: each
-// status has an icon, a word and its own stroke pattern (atlas.css).
+// Every value from the store is data: text goes through htmlEscape, every
+// number through int() (a store object is cast, not validated, so a string
+// where a count belongs must never reach the HTML raw), every href is either
+// built here from validated parts or parsed and required to be https, and no
+// element carries an inline event handler. The only script on these pages
+// besides the shared theme bootstrap and header search is /assets/atlas.js
+// (site/assets/atlas.js), which writes the DOM through textContent and
+// createElement only. Status is never colour alone: each status has an icon, a
+// word and its own stroke pattern (atlas.css).
 
 import { htmlEscape } from "./engine/html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
@@ -16,15 +18,26 @@ import type { AuthUser } from "./auth.js";
 import type {
   AtlasArticle, AtlasCurrent, AtlasLocation, AtlasPassage, AtlasUniverse, IndexEntry, SummaryStatus,
 } from "./atlas.js";
-import { libraryInfo, sourceUrl, treeUrl, type LibraryInfo, type UniverseLibrary } from "./libraries.js";
+import { libraryInfo, repoHref, sourceUrl, treeUrl, type LibraryInfo, type UniverseLibrary } from "./libraries.js";
 
 // Asset versions: bump with any change to site/assets/atlas.{css,js}.
-export const ATLAS_CSS = "/assets/atlas.css?v=1";
-export const ATLAS_JS = "/assets/atlas.js?v=1";
+export const ATLAS_CSS = "/assets/atlas.css?v=2";
+export const ATLAS_JS = "/assets/atlas.js?v=2";
 const STYLE_CSS = "/assets/style.css?v=9";
 
-const text = (s: string) => htmlEscape(s, false);
-const attr = (s: string) => htmlEscape(s, true);
+const text = (s: string) => htmlEscape(String(s ?? ""), false);
+const attr = (s: string) => htmlEscape(String(s ?? ""), true);
+
+// A store number as a non-negative integer: anything else counts as 0.
+function count(value: unknown): number {
+  return Number.isSafeInteger(value) && (value as number) >= 0 ? (value as number) : 0;
+}
+// The same, as the text that goes into the HTML.
+const int = (value: unknown) => String(count(value));
+
+function plural(n: number, one: string, many: string): string {
+  return `${n} ${n === 1 ? one : many}`;
+}
 
 export type DashboardRow = IndexEntry & { href: string };
 
@@ -70,6 +83,12 @@ const CHALLENGE: Record<string, string> = {
 };
 const IMPORTANCE_ORDER = ["top", "high", "mid", "low", "bottom", "na", "unknown"];
 
+// Proposal §2.6's relation groups, as scripts/atlas/build_store.py names them.
+const STRONG = new Set(["exactMatch", "closeMatch", "broadMatch"]);
+const PARTIAL_RELATIONS = new Set(["hasPart", "narrowMatch", "broadMatch"]);
+const COMPLETE_PROOFS = new Set(["proved", "definition"]);
+const UNPROVED = new Set(["statement_only", "wanted", "axiom_dependent"]);
+
 // A status outside the vocabulary (a corrupt store) renders as undecided
 // rather than throwing; the builder never writes one.
 function asStatus(value: string | null | undefined): SummaryStatus {
@@ -77,7 +96,7 @@ function asStatus(value: string | null | undefined): SummaryStatus {
 }
 
 function proofOf(status: string) {
-  return PROOF[status] ?? { label: status, phrase: status, alert: true };
+  return PROOF[status] ?? { label: String(status), phrase: String(status), alert: true };
 }
 
 function capital(s: string): string {
@@ -91,7 +110,7 @@ function importanceLabel(value: string | null | undefined): string {
 }
 
 function sha7(commit: string): string {
-  return commit.slice(0, 7);
+  return String(commit ?? "").slice(0, 7);
 }
 
 function httpsUrl(value: string): string | null {
@@ -104,7 +123,7 @@ function httpsUrl(value: string): string | null {
 }
 
 function wikipediaRevisionUrl(pageid: number, revision: number): string {
-  return `https://en.wikipedia.org/w/index.php?curid=${pageid}&oldid=${revision}`;
+  return `https://en.wikipedia.org/w/index.php?curid=${int(pageid)}&oldid=${int(revision)}`;
 }
 
 // The passage in context: the record's own subject URI (the pinned revision)
@@ -125,16 +144,27 @@ function declName(name: string): string {
   return `<code class="atlas-decl">${ns}<b>${breakable(cut > 0 ? name.slice(cut + 1) : name)}</b></code>`;
 }
 
-function pill(status: SummaryStatus, sentence: string): string {
+// The status word with its icon. The sentence that explains it is visible
+// text beside it (passageBlock), so the pill carries no hover-only title.
+function pill(status: SummaryStatus): string {
   const meta = STATUS[status];
-  return `<span class="atlas-pill" data-status="${status}" title="${attr(sentence)}">` +
-    `<span class="atlas-ico" aria-hidden="true">${meta.icon}</span>${text(meta.label)}` +
-    `<span class="atlas-sr">. ${text(sentence)}</span></span>`;
+  return `<span class="atlas-pill" data-status="${status}">` +
+    `<span class="atlas-ico" aria-hidden="true">${meta.icon}</span>${text(meta.label)}</span>`;
+}
+
+// A small sample of a status's coverage-bar fill: the bar's legend.
+function swatch(status: SummaryStatus): string {
+  return `<span class="atlas-swatch" data-status="${status}" aria-hidden="true"></span>`;
 }
 
 // ---- shell -----------------------------------------------------------------
 
-function shell(opts: { title: string; description: string; canonical?: string; main: string; script?: boolean }): string {
+function shell(opts: {
+  title: string; description: string; canonical?: string; main: string; script?: boolean; dashboard?: boolean;
+}): string {
+  // aria-current="page" only on /atlas itself: an article or universe page is
+  // inside the atlas but is not the page the nav link opens.
+  const current = opts.dashboard ? ` aria-current="page"` : "";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -156,7 +186,7 @@ ${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : "
     <span class="wl-nav">
       ${SEARCHBOX_HTML}
       <a class="wl-navlink" href="/articles">Articles</a>
-      <a class="wl-navlink" href="/atlas" aria-current="page">Atlas</a>
+      <a class="wl-navlink" href="/atlas"${current}>Atlas</a>
       <a class="wl-navlink" href="/brain">Brain</a>
       <a class="wl-navlink" href="/recent-changes">Recent changes</a>
       <a class="wl-navlink" href="/stats">Stats</a>
@@ -168,7 +198,7 @@ ${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : "
 ${opts.main}
 <footer class="atlas-foot">
   <p>Quoted passages are excerpts of <a href="https://en.wikipedia.org/">Wikipedia</a> articles, available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>; the quote fields of the JSON and JSONL downloads stay under that licence.</p>
-  <p>The mapping (which passage is formalized where) is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, like WikiLean&#x27;s annotations. Links are found by an AI pipeline and checked by a second AI pass; people can confirm or report each one.</p>
+  <p>The mapping (which passage is formalized where) is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>, like WikiLean&#x27;s annotations. Links are found by an AI pipeline; some are re-checked by a second AI pass, and each location says whether it was. Signed-in readers can confirm or report a location.</p>
 </footer>
 ${SEARCHBOX_SCRIPT}
 ${opts.script === false ? "" : `<script src="${ATLAS_JS}"></script>\n`}</body>
@@ -205,28 +235,48 @@ function libraryViews(universe: AtlasUniverse | null, extra: Iterable<{ library:
   return views;
 }
 
-function statusBar(counts: Record<SummaryStatus, number>, noun: string): string {
-  const total = STATUS_ORDER.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
+// A table that may scroll sideways on a phone: a labelled, focusable region,
+// so a keyboard user can scroll it (axe scrollable-region-focusable). Its name
+// says "table" so it differs from the section around it.
+function tableWrap(label: string, table: string): string {
+  return `<div class="atlas-table-wrap" role="region" tabindex="0" aria-label="${attr(`Table: ${label}`)}">${table}</div>`;
+}
+
+function statusBar(raw: Record<SummaryStatus, number>, one: string, many: string): string {
+  const counts = Object.fromEntries(STATUS_ORDER.map((s) => [s, count(raw?.[s])])) as Record<SummaryStatus, number>;
+  const total = STATUS_ORDER.reduce((sum, s) => sum + counts[s], 0);
   if (total === 0) return "";
   const label = STATUS_ORDER.filter((s) => counts[s]).map((s) => `${counts[s]} ${STATUS[s].plural}`).join(", ");
   const segments = STATUS_ORDER.filter((s) => counts[s]).map((s) => {
     const pct = ((counts[s] / total) * 100).toFixed(2);
     return `<span class="atlas-seg" data-status="${s}" style="width:${pct}%" title="${attr(`${counts[s]} ${STATUS[s].plural}`)}"></span>`;
   }).join("");
-  return `<div class="atlas-bar" role="img" aria-label="${attr(`${total} ${noun}: ${label}`)}">${segments}</div>`;
+  return `<div class="atlas-bar" role="img" aria-label="${attr(`${plural(total, one, many)}: ${label}`)}">${segments}</div>`;
 }
 
-function statusSentence(passage: AtlasPassage, libs: Map<string, LibraryView>, article: AtlasArticle): string {
-  const status = asStatus(passage.status);
-  if (status === "unresolved" || passage.outcome === "unresolved") {
-    return "Undecided: the pipeline could not settle this passage, so it is not counted as not formalized.";
+// The location that justifies a located passage's status: the store's basis
+// (build_store derive_status), or, for a store built before it existed, the
+// highest-ranked location meeting the status's row of proposal §2.6. Never
+// simply the rank-1 location: rank 1 may state without a proof what rank 2
+// proves.
+export function basisLocation(passage: AtlasPassage, status: SummaryStatus): AtlasLocation | null {
+  const locations = Array.isArray(passage.locations) ? passage.locations : [];
+  if (passage.basis) {
+    const hit = locations.find((loc) => loc.location_key === passage.basis);
+    if (hit) return hit;
   }
-  if (status === "not_formalized") {
-    const n = passage.absence?.libraries ?? article.universe.libraries;
-    return `Not formalized: not found in the ${n} libraries of universe ${article.universe.id} (searched ${article.universe.frozen}).`;
+  const strong = locations.filter((loc) => STRONG.has(loc.relation));
+  if (status === "formalized") return strong.find((loc) => COMPLETE_PROOFS.has(loc.proof_status)) ?? null;
+  if (status === "statement_only") {
+    return strong.find((loc) => UNPROVED.has(loc.proof_status)) ?? strong.find((loc) => loc.proof_status === "definition") ?? null;
   }
-  const best = passage.locations.find((loc) => loc.relation !== "relatedMatch");
+  if (status === "partial") return locations.find((loc) => PARTIAL_RELATIONS.has(loc.relation)) ?? null;
+  return null;
+}
+
+function statusSentence(passage: AtlasPassage, status: SummaryStatus, libs: Map<string, LibraryView>): string {
   const meta = STATUS[status];
+  const best = basisLocation(passage, status);
   if (!best) return `${meta.label}.`;
   const name = libs.get(best.library)?.info.name ?? best.library;
   return `${meta.label}: ${name} ${RELATION_PHRASE[best.relation] ?? best.relation} (${proofOf(best.proof_status).phrase}).`;
@@ -246,7 +296,8 @@ function locationCard(loc: AtlasLocation, ctx: CardContext): string {
   const proof = proofOf(loc.proof_status);
   const short = sha7(loc.commit);
   const relation = RELATION_WORD[loc.relation] ?? loc.relation;
-  const lines = loc.end_line && loc.end_line !== loc.line ? `lines ${loc.line}–${loc.end_line}` : `line ${loc.line}`;
+  const line = count(loc.line), end = count(loc.end_line);
+  const lines = end && end !== line ? `lines ${line}–${end}` : `line ${line}`;
   const verdict = ctx.verdicts.get(loc.location_key);
   const feedback = ctx.user
     ? `<div class="atlas-fb" data-location-key="${attr(loc.location_key)}">` +
@@ -264,10 +315,10 @@ function locationCard(loc: AtlasLocation, ctx: CardContext): string {
 <span class="atlas-ps${proof.alert ? " is-alert" : ""}" data-proof="${attr(loc.proof_status)}" title="${attr(capital(proof.phrase))}">${proof.alert ? `<span aria-hidden="true">! </span>` : ""}${text(proof.label)}</span>
 ${src ? `<a class="atlas-src" href="${attr(src)}" rel="noopener" target="_blank">Source @${text(short)}<span aria-hidden="true"> ↗</span><span class="atlas-sr"> (opens ${text(info.name)} at commit ${text(short)}, ${text(lines)})</span></a>` : `<span class="atlas-src is-none">No source link</span>`}
 </div>
-<p class="atlas-decl-line">${declName(loc.declaration)}</p>
+<p class="atlas-decl-line">${declName(String(loc.declaration ?? ""))}</p>
 <p class="atlas-module">${text(loc.module)} · ${text(lines)}</p>
 ${loc.note ? `<p class="atlas-note"><span class="atlas-k">Convention:</span> ${text(loc.note)}</p>\n` : ""}<div class="atlas-card-foot">
-<span class="atlas-prov">AI pipeline · rank ${loc.rank} · ${text(loc.confidence)} confidence · ${text(CHALLENGE[loc.challenge] ?? loc.challenge)}</span>
+<span class="atlas-prov">AI pipeline · rank ${int(loc.rank)} · ${text(loc.confidence)} confidence · ${text(CHALLENGE[loc.challenge] ?? loc.challenge)}</span>
 ${feedback}
 </div>
 </article>`;
@@ -275,7 +326,8 @@ ${feedback}
 
 function passageBlock(passage: AtlasPassage, article: AtlasArticle, ctx: CardContext): string {
   const status = passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
-  const sentence = statusSentence(passage, ctx.libs, article);
+  const located = passage.outcome !== "unresolved" && passage.outcome !== "absent"
+    && (status === "formalized" || status === "statement_only" || status === "partial");
   const strong = passage.locations.filter((loc) => loc.relation !== "relatedMatch");
   const related = passage.locations.filter((loc) => loc.relation === "relatedMatch");
   const libraries = [...new Set(strong.map((loc) => loc.library))];
@@ -285,27 +337,31 @@ function passageBlock(passage: AtlasPassage, article: AtlasArticle, ctx: CardCon
   const context = inContextUrl(passage);
   const quote = passage.quote;
   const parts: string[] = [];
-  parts.push(`<li class="atlas-passage" id="p-${hex}" data-status="${status}" data-libraries="${attr(libraries.join(" "))}">`);
-  parts.push(`<div class="atlas-p-head"><span class="atlas-eyebrow">${text(eyebrow)}</span>` +
-    (section ? `<span class="atlas-section">${text(section)}</span>` : "") + pill(status, sentence) + `</div>`);
+  // The producer's item id stays in the markup (data-item), not in the text.
+  parts.push(`<li class="atlas-passage" id="p-${hex}" data-status="${status}" data-libraries="${attr(libraries.join(" "))}" data-item="${attr(passage.item)}">`);
+  parts.push(`<div class="atlas-p-head"><h3 class="atlas-p-h"><span class="atlas-eyebrow">${text(eyebrow)}</span>` +
+    (section ? `<span class="atlas-section">${text(section)}</span>` : "") + `</h3>${pill(status)}</div>`);
+  // A located passage says, in words, which location gives it its status. An
+  // absence and an undecided passage say so in their own boxes below.
+  if (located) parts.push(`<p class="atlas-why">${text(statusSentence(passage, status, ctx.libs))}</p>`);
   parts.push(`<blockquote class="atlas-quote">` +
     (quote.prefix ? `<span class="atlas-affix">…${text(quote.prefix)}</span>` : "") +
     `<mark>${text(quote.exact)}</mark>` +
     (quote.suffix ? `<span class="atlas-affix">${text(quote.suffix)}${/[.!?:;]\s*$/.test(quote.suffix) ? "" : "…"}</span>` : "") +
     `</blockquote>`);
-  if (context) parts.push(`<p class="atlas-context"><a href="${attr(context)}" rel="noopener" target="_blank">Read it in context on Wikipedia<span aria-hidden="true"> ↗</span></a> <span class="atlas-muted">${text(passage.item)}</span></p>`);
+  if (context) parts.push(`<p class="atlas-context"><a href="${attr(context)}" rel="noopener" target="_blank">Read it in context on Wikipedia<span aria-hidden="true"> ↗</span></a></p>`);
   if (strong.length) {
     parts.push(`<div class="atlas-cards">${strong.map((loc) => locationCard(loc, ctx)).join("\n")}</div>`);
   }
   if (passage.absence) {
     const a = passage.absence;
     parts.push(`<p class="atlas-absence"><span class="atlas-ico" aria-hidden="true">✕</span>` +
-      `Searched ${a.libraries} libraries in universe <a href="/atlas/universe/${attr(a.universe_sha256)}">${text(a.universe)}</a> ` +
+      `Searched ${int(a.libraries)} libraries in universe <a href="/atlas/universe/${attr(a.universe_sha256)}">${text(a.universe)}</a> ` +
       `(${text(article.universe.frozen)}) — not found. ` +
-      `<span class="atlas-muted">The search receipt lists ${a.receipt.queries} queries and ${a.receipt.candidates} candidates examined; ${text(CHALLENGE[a.challenge] ?? a.challenge)}.</span></p>`);
+      `<span class="atlas-muted">The search receipt lists ${int(a.receipt?.queries)} queries and ${int(a.receipt?.candidates)} candidates examined; ${text(CHALLENGE[a.challenge] ?? a.challenge)}.</span></p>`);
   }
   if (related.length) {
-    parts.push(`<p class="atlas-related-h">Related, but states something else</p>`);
+    parts.push(`<h4 class="atlas-related-h">Related, but states something else</h4>`);
     parts.push(`<div class="atlas-cards is-related">${related.map((loc) => locationCard(loc, ctx)).join("\n")}</div>`);
   }
   if (passage.outcome === "unresolved") {
@@ -315,16 +371,15 @@ function passageBlock(passage: AtlasPassage, article: AtlasArticle, ctx: CardCon
   return parts.join("\n");
 }
 
-function chip(filter: string, label: string, count: number, title: string, status?: SummaryStatus, icon?: string): string {
+function chip(filter: string, label: string, n: number, title: string, status?: SummaryStatus, icon?: string): string {
+  const mark = (status ? swatch(status) : "") + (icon ? `<span class="atlas-ico" aria-hidden="true">${icon}</span>` : "");
   // A filter that would show nothing is not offered: a zero count is inert.
-  if (count === 0) {
+  if (count(n) === 0) {
     return `<span class="atlas-chip is-static is-zero"${status ? ` data-status="${status}"` : ""}>` +
-      (icon ? `<span class="atlas-ico" aria-hidden="true">${icon}</span>` : "") +
-      `${text(label)} <span class="atlas-n">0</span></span>`;
+      `${mark}${text(label)} <span class="atlas-n">0</span></span>`;
   }
   return `<button type="button" class="atlas-chip" data-filter="${attr(filter)}"${status ? ` data-status="${status}"` : ""} aria-pressed="false" title="${attr(title)}">` +
-    (icon ? `<span class="atlas-ico" aria-hidden="true">${icon}</span>` : "") +
-    `${text(label)} <span class="atlas-n">${count}</span></button>`;
+    `${mark}${text(label)} <span class="atlas-n">${int(n)}</span></button>`;
 }
 
 // ---- the article coverage page ---------------------------------------------
@@ -343,44 +398,49 @@ export function atlasArticlePage(input: ArticlePageInput): string {
   const libs = libraryViews(universe, article.passages.flatMap((p) => p.locations));
   const ctx: CardContext = { libs, user, verdicts, loginHref: `/login?returnTo=${encodeURIComponent(selfHref)}` };
   const summary = article.summary;
-  const n = summary.passages;
+  const n = count(summary.passages);
+  const nLocations = count(summary.locations), nRelated = count(summary.related);
   const assessment = article.assessment;
   const assessed = assessment && (assessment.class || assessment.importance)
     ? `WikiProject Mathematics: ${[assessment.class ? `${assessment.class}-class` : "", assessment.importance ? `${importanceLabel(assessment.importance)} importance` : ""].filter(Boolean).join(", ")}`
     : "";
-  const statusChips = STATUS_ORDER.map((s) => chip(`status:${s}`, STATUS[s].label, summary.by_status[s] ?? 0,
+  const statusChips = STATUS_ORDER.map((s) => chip(`status:${s}`, STATUS[s].label, summary.by_status?.[s] ?? 0,
     `Show only ${STATUS[s].plural} passages`, s, STATUS[s].icon)).join("");
   const libraryChips = [...libs.values()]
-    .filter((view) => summary.by_library[view.id])
+    .filter((view) => summary.by_library?.[view.id])
     .map((view) => {
       const counts = summary.by_library[view.id];
       const commit = view.commit ? ` at commit ${sha7(view.commit)}` : "";
-      if (!counts.passages) {
-        return `<span class="atlas-chip is-static" title="${attr(`${view.info.name}${commit}: ${counts.related} related declaration${counts.related === 1 ? "" : "s"} only`)}">${text(view.info.short)} <span class="atlas-n">related only</span></span>`;
+      const passages = count(counts.passages), locations = count(counts.locations), related = count(counts.related);
+      if (!passages) {
+        return `<span class="atlas-chip is-static" title="${attr(`${view.info.name}${commit}: ${plural(related, "related declaration", "related declarations")} only`)}">${text(view.info.short)} <span class="atlas-n">related only</span></span>`;
       }
-      return chip(`library:${view.id}`, view.info.short, counts.passages,
-        `${view.info.name}${commit}: ${counts.passages} passage${counts.passages === 1 ? "" : "s"}, ${counts.locations} location${counts.locations === 1 ? "" : "s"}. Show only those passages.`);
+      return chip(`library:${view.id}`, view.info.short, passages,
+        `${view.info.name}${commit}: ${plural(passages, "passage", "passages")}, ${plural(locations, "location", "locations")}. Show only those passages.`);
     }).join("");
+  const nLibraries = int(article.universe.libraries);
   const searched = universe
-    ? `Searched <a href="/atlas/universe/${attr(article.universe.sha256)}">universe ${text(article.universe.id)}</a>: ${article.universe.libraries} libraries, frozen ${text(article.universe.frozen)}${universe.excluded.length ? `, ${universe.excluded.length} excluded` : ""}`
-    : `Universe ${text(article.universe.id)} (${article.universe.libraries} libraries, frozen ${text(article.universe.frozen)})`;
-  const main = `<main class="wl-atlas" id="atlas-article" data-pageid="${article.pageid}" data-campaign="${attr(article.campaign)}">
+    ? `Searched <a href="/atlas/universe/${attr(article.universe.sha256)}">universe ${text(article.universe.id)}</a>: ${nLibraries} libraries, frozen ${text(article.universe.frozen)}${universe.excluded.length ? `, ${universe.excluded.length} excluded` : ""}`
+    : `Universe ${text(article.universe.id)} (${nLibraries} libraries, frozen ${text(article.universe.frozen)})`;
+  const main = `<main class="wl-atlas" id="atlas-article" data-pageid="${int(article.pageid)}" data-campaign="${attr(article.campaign)}">
 <nav class="atlas-crumbs" aria-label="Breadcrumb"><a href="/atlas">Formalization atlas</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="atlas-h1">${text(article.title)}</h1>
-<p class="atlas-meta">Wikipedia revision <a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${article.revision}</a>${assessed ? ` · ${text(assessed)}` : ""}${wikileanSlug ? ` · <a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>` : ""}</p>
+<p class="atlas-meta">Wikipedia revision <a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${int(article.revision)}</a>${assessed ? ` · ${text(assessed)}` : ""}${wikileanSlug ? ` · <a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>` : ""}</p>
 <p class="atlas-meta">${searched} · campaign ${text(article.campaign)}</p>
-<section class="atlas-strip" aria-label="Coverage of this article">
-<p class="atlas-strip-lead">${n} passage${n === 1 ? "" : "s"} checked${summary.locations ? `, ${summary.locations} Lean location${summary.locations === 1 ? "" : "s"}` : ""}${summary.related ? ` (and ${summary.related} related declaration${summary.related === 1 ? "" : "s"})` : ""}.</p>
-${statusBar(summary.by_status, "passages")}
+<section class="atlas-strip" aria-labelledby="atlas-h-coverage">
+<h2 class="atlas-h2" id="atlas-h-coverage">Coverage</h2>
+<p class="atlas-strip-lead">${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.</p>
+${statusBar(summary.by_status, "passage", "passages")}
 <div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-status">Status</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">${statusChips}</div></div>
 ${libraryChips ? `<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-where">Where</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-where">${libraryChips}</div></div>` : ""}
 <p class="atlas-filter-note" role="status"><span class="atlas-filter-text"></span> <button type="button" class="atlas-clear" hidden>Show all passages</button></p>
 </section>
-${n ? `<ol class="atlas-passages">\n${article.passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : `<p>No formal passages were found in this revision.</p>`}
-<p class="atlas-data">Data: <a href="/api/atlas/article/${article.pageid}">view model (JSON)</a> · <a href="/api/atlas/records/${article.pageid}">Literature Links records (JSONL)</a> · record set <code title="${attr(article.record_set)}">${text(article.record_set.slice(0, 12))}</code></p>
+<h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>
+${article.passages.length ? `<ol class="atlas-passages" aria-labelledby="atlas-h-passages">\n${article.passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : `<p>No formal passages were found in this revision.</p>`}
+<p class="atlas-data">Data: <a href="/api/atlas/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/atlas/records/${int(article.pageid)}">Literature Links records (JSONL)</a> · record set <code title="${attr(article.record_set)}">${text(String(article.record_set ?? "").slice(0, 12))}</code></p>
 ${user ? `<p class="atlas-muted atlas-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they score the pipeline.</p>` : ""}
 </main>`;
-  const description = `Where ${article.title} is formalized in Lean: ${summary.by_status.formalized} of ${n} passages formalized.`;
+  const description = `Where ${article.title} is formalized in Lean: ${int(summary.by_status?.formalized)} of ${plural(n, "passage", "passages")} formalized.`;
   return shell({ title: `Atlas · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main });
 }
 
@@ -397,11 +457,19 @@ export interface DashboardInput {
 }
 
 function statusCells(row: Record<SummaryStatus, number>): string {
-  return STATUS_ORDER.map((s) => `<td class="num" data-status="${s}">${row[s] ?? 0}</td>`).join("");
+  return STATUS_ORDER.map((s) => `<td class="num" data-status="${s}">${int(row?.[s])}</td>`).join("");
 }
 
 function statusHeads(): string {
   return STATUS_ORDER.map((s) => `<th scope="col" class="num"><span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)}</th>`).join("");
+}
+
+function libraryTags(ids: string[], libs: Map<string, LibraryView>): string {
+  if (!ids.length) return `<span class="atlas-muted">none</span>`;
+  return ids.map((id) => {
+    const view = libs.get(id);
+    return `<span class="atlas-libtag" title="${attr(view ? `${view.info.name} · ${view.info.repo}` : id)}">${text(view?.info.short ?? id)}</span>`;
+  }).join(" ");
 }
 
 export function atlasDashboardPage(input: DashboardInput): string {
@@ -409,57 +477,65 @@ export function atlasDashboardPage(input: DashboardInput): string {
   const counts = current.counts;
   const libs = libraryViews(universe, []);
   const libraryRows = [...libs.values()].map((view) => {
-    const c = counts.by_library[view.id] ?? { articles: 0, passages: 0, locations: 0, related: 0 };
+    const c = counts.by_library?.[view.id] ?? { articles: 0, passages: 0, locations: 0, related: 0, complete: 0, incomplete: 0 };
+    const split = Number.isSafeInteger(c.complete) && Number.isSafeInteger(c.incomplete);
     const tree = view.commit ? treeUrl(view.info, view.commit) : null;
-    const commit = view.commit ? (tree ? `<a href="${attr(tree)}" rel="noopener"><code>@${text(sha7(view.commit))}</code></a>` : `<code>@${text(sha7(view.commit))}</code>`) : "";
-    return `<tr><th scope="row">${text(view.info.name)}</th><td>${commit}</td><td class="num">${c.articles}</td><td class="num">${c.passages}</td><td class="num">${c.locations}</td><td class="num">${c.related}</td></tr>`;
+    const sha = view.commit ? `<code class="atlas-sha">@${text(sha7(view.commit))}</code>` : "";
+    const commit = view.commit ? (tree ? `<a href="${attr(tree)}" rel="noopener">${sha}</a>` : sha) : "";
+    return `<tr><th scope="row">${text(view.info.name)}</th><td>${commit}</td><td class="num">${int(c.articles)}</td><td class="num">${int(c.passages)}</td>` +
+      `<td class="num">${split ? int(c.complete) : "—"}</td><td class="num">${split ? int(c.incomplete) : "—"}</td><td class="num">${int(c.related)}</td></tr>`;
   }).join("");
-  const importance = Object.entries(counts.by_importance)
+  const importance = Object.entries(counts.by_importance ?? {})
     .sort(([a], [b]) => {
       const ia = IMPORTANCE_ORDER.indexOf(a), ib = IMPORTANCE_ORDER.indexOf(b);
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || (a < b ? -1 : a > b ? 1 : 0);
     })
-    .map(([key, bucket]) => `<tr><th scope="row">${text(importanceLabel(key))}</th><td class="num">${bucket.articles}</td><td class="num">${bucket.passages}</td>${statusCells(bucket.by_status)}</tr>`)
+    .map(([key, bucket]) => `<tr><th scope="row">${text(importanceLabel(key))}</th><td class="num">${int(bucket?.articles)}</td><td class="num">${int(bucket?.passages)}</td>${statusCells(bucket?.by_status)}</tr>`)
     .join("");
-  const hasImportance = Object.keys(counts.by_importance).some((key) => key !== "unknown");
-  const list = rows.map((row) => `<tr data-title="${attr(row.title.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase())}"><th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th><td class="num">${row.passages}</td>${statusCells(row as unknown as Record<SummaryStatus, number>)}<td>${text(importanceLabel(row.importance))}</td></tr>`).join("\n");
+  const hasImportance = Object.keys(counts.by_importance ?? {}).some((key) => key !== "unknown");
+  const list = rows.map((row) => `<tr data-title="${attr(row.title.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase())}"><th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th><td class="num">${int(row.passages)}</td>${statusCells(row as unknown as Record<SummaryStatus, number>)}<td>${libraryTags(row.libraries ?? [], libs)}</td><td>${text(importanceLabel(row.importance))}</td></tr>`).join("\n");
+  const shown = rows.length;
   const showing = q
-    ? `${matched} of ${total} articles match “${text(q)}”${matched > rows.length ? `; showing the first ${rows.length}` : ""}.`
-    : `${total} articles${total > rows.length ? `; showing the first ${rows.length} by title. Search to narrow` : ""}.`;
+    ? `${matched} of ${total} articles match “${text(q)}”${matched > shown ? `; showing the first ${shown}` : ""}.`
+    : `${total} articles${total > shown ? `; showing the first ${shown} by title. Search to narrow` : ""}.`;
+  // id → short name, for rows atlas.js builds from the index shards.
+  const libraryNames = JSON.stringify(Object.fromEntries([...libs.values()].map((view) => [view.id, view.info.short])));
+  const nRelated = count(counts.related);
   const main = `<main class="wl-atlas" id="atlas-dashboard">
 <h1 class="atlas-h1">Formalization atlas</h1>
 <p class="atlas-lead">Which statements in WikiProject Mathematics articles are formalized in Lean, and where: each passage is located in a frozen set of Lean libraries at pinned commits, with a link to the exact source lines.</p>
-<p class="atlas-meta">Campaign ${text(current.campaign)} · ${universe ? `<a href="/atlas/universe/${attr(current.universe.sha256)}">universe ${text(current.universe.id)}</a>` : `universe ${text(current.universe.id)}`}: ${current.universe.libraries} libraries, frozen ${text(current.universe.frozen)} · built ${text(current.built_at.slice(0, 10))}</p>
+<p class="atlas-meta">Campaign ${text(current.campaign)} · ${universe ? `<a href="/atlas/universe/${attr(current.universe.sha256)}">universe ${text(current.universe.id)}</a>` : `universe ${text(current.universe.id)}`}: ${int(current.universe.libraries)} libraries, frozen ${text(current.universe.frozen)} · built ${text(String(current.built_at ?? "").slice(0, 10))}</p>
 <section class="atlas-strip" aria-labelledby="atlas-h-totals">
 <h2 class="atlas-h2" id="atlas-h-totals">Totals</h2>
-<p class="atlas-strip-lead">${counts.articles} articles · ${counts.passages} passages · ${counts.locations} Lean locations${counts.related ? ` · ${counts.related} related declaration${counts.related === 1 ? "" : "s"}` : ""}</p>
-${statusBar(counts.by_status, "passages")}
-<div class="atlas-chips">${STATUS_ORDER.map((s) => `<span class="atlas-chip is-static" data-status="${s}"><span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="atlas-n">${counts.by_status[s] ?? 0}</span></span>`).join("")}</div>
+<p class="atlas-strip-lead">${plural(count(counts.articles), "article", "articles")} · ${plural(count(counts.passages), "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}</p>
+${statusBar(counts.by_status, "passage", "passages")}
+<div class="atlas-chips atlas-legend">${STATUS_ORDER.map((s) => `<span class="atlas-chip is-static" data-status="${s}">${swatch(s)}<span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="atlas-n">${int(counts.by_status?.[s])}</span></span>`).join("")}</div>
 </section>
 <section aria-labelledby="atlas-h-libs">
 <h2 class="atlas-h2" id="atlas-h-libs">By library</h2>
-<div class="atlas-table-wrap"><table class="atlas-table"><thead><tr><th scope="col">Library</th><th scope="col">Commit</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th><th scope="col" class="num">Locations</th><th scope="col" class="num">Related only</th></tr></thead><tbody>${libraryRows}</tbody></table></div>
-<p class="atlas-muted">A passage counts toward every library that states it; “related only” declarations state something else and are not counted as locations.</p>
+${tableWrap("By library", `<table class="atlas-table"><thead><tr><th scope="col">Library</th><th scope="col">Commit</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th><th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th><th scope="col" class="num">Related only</th></tr></thead><tbody>${libraryRows}</tbody></table>`)}
+<p class="atlas-muted">A passage counts toward every library that states it. Complete locations are proved declarations or definitions; incomplete ones are stated without a finished proof (statement only, wanted, or axiom-dependent). “Related only” declarations state something else and are not counted as locations.</p>
 </section>
 ${hasImportance ? `<section aria-labelledby="atlas-h-imp">
 <h2 class="atlas-h2" id="atlas-h-imp">By WikiProject importance</h2>
-<div class="atlas-table-wrap"><table class="atlas-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads()}</tr></thead><tbody>${importance}</tbody></table></div>
+${tableWrap("By WikiProject importance", `<table class="atlas-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads()}</tr></thead><tbody>${importance}</tbody></table>`)}
 </section>` : ""}
 <section aria-labelledby="atlas-h-list">
 <h2 class="atlas-h2" id="atlas-h-list">Articles</h2>
 <form class="atlas-search" method="get" action="/atlas" role="search"><label for="atlas-q">Search covered articles</label> <input id="atlas-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
 <p class="atlas-count" id="atlas-count" role="status">${showing}</p>
-<div class="atlas-table-wrap"><table class="atlas-table atlas-list" id="atlas-list" data-total="${total}" data-shards="${attr(shards.join(" "))}"><thead><tr><th scope="col">Article</th><th scope="col" class="num">Passages</th>${statusHeads()}<th scope="col">Importance</th></tr></thead><tbody>
+${tableWrap("Articles", `<table class="atlas-table atlas-list" id="atlas-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr><th scope="col">Article</th><th scope="col" class="num">Passages</th>${statusHeads()}<th scope="col">Libraries</th><th scope="col">Importance</th></tr></thead><tbody>
 ${list}
-</tbody></table></div>
+</tbody></table>`)}
 </section>
-<p class="atlas-data">Data: <a href="/api/atlas/current">current build (JSON)</a> · record set <code title="${attr(current.record_set.seal_sha256)}">${text(current.record_set.seal_sha256.slice(0, 12))}</code></p>
+<p class="atlas-data">Data: <a href="/api/atlas/current">current build (JSON)</a> · record set <code title="${attr(current.record_set.seal_sha256)}">${text(String(current.record_set.seal_sha256 ?? "").slice(0, 12))}</code></p>
 </main>`;
   return shell({
     title: "Formalization atlas",
-    description: `Which WikiProject Mathematics statements are formalized in Lean, and where: ${counts.articles} articles, ${counts.passages} passages.`,
+    description: `Which WikiProject Mathematics statements are formalized in Lean, and where: ${plural(count(counts.articles), "article", "articles")}, ${plural(count(counts.passages), "passage", "passages")}.`,
     canonical: "https://wikilean.jackmccarthy.org/atlas",
     main,
+    dashboard: true,
   });
 }
 
@@ -468,7 +544,7 @@ ${list}
 export function atlasUniversePage(universe: AtlasUniverse): string {
   const rows = universe.libraries.map((lib: UniverseLibrary) => {
     const info = libraryInfo(lib.repo, lib);
-    const repo = httpsUrl(info.repo);
+    const repo = repoHref(info.repo);
     const tree = treeUrl(info, lib.commit);
     return `<tr><th scope="row">${text(info.name)} <span class="atlas-muted">${text(lib.id)}</span></th>` +
       `<td>${repo ? `<a href="${attr(repo)}" rel="noopener">${text(info.repo.replace(/^https:\/\//, ""))}</a>` : text(info.repo)}</td>` +
@@ -483,7 +559,7 @@ export function atlasUniversePage(universe: AtlasUniverse): string {
 <h1 class="atlas-h1">Universe ${text(universe.id)}</h1>
 <p class="atlas-meta">${universe.libraries.length} libraries, frozen ${text(universe.frozen)} · sha256 <code>${text(universe.sha256)}</code></p>
 <p>A “not found” in the atlas means exactly this: the passage was searched for in these libraries at these commits and nothing stating it was found. It says nothing about other libraries or later commits.</p>
-<div class="atlas-table-wrap"><table class="atlas-table"><thead><tr><th scope="col">Library</th><th scope="col">Repository</th><th scope="col">Commit</th><th scope="col">Toolchain</th><th scope="col">Licence</th></tr></thead><tbody>${rows}</tbody></table></div>
+${tableWrap(`Libraries of universe ${universe.id}`, `<table class="atlas-table"><thead><tr><th scope="col">Library</th><th scope="col">Repository</th><th scope="col">Commit</th><th scope="col">Toolchain</th><th scope="col">Licence</th></tr></thead><tbody>${rows}</tbody></table>`)}
 ${excluded}
 <p class="atlas-data">Data: <a href="/api/atlas/universe/${attr(universe.sha256)}">universe (JSON)</a></p>
 </main>`;
@@ -492,15 +568,22 @@ ${excluded}
 
 // ---- the article page's summary box ------------------------------------------
 
-export function atlasSummaryBox(entry: IndexEntry, href: string): string {
+// The box sits under WikiLean's own status badges, which count this page's
+// annotations, so it says that its counts are the atlas's, for the Wikipedia
+// revision the atlas checked, and names the page's revision when they differ.
+export function atlasSummaryBox(entry: IndexEntry, href: string, pageRevision: number | null = null): string {
   const counts = entry as unknown as Record<SummaryStatus, number>;
-  const parts = STATUS_ORDER.filter((s) => counts[s] > 0)
-    .map((s) => `<span class="atlas-mini" data-status="${s}"><span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${counts[s]} ${text(STATUS[s].plural)}</span>`)
+  const parts = STATUS_ORDER.filter((s) => count(counts[s]) > 0)
+    .map((s) => `<span class="atlas-mini" data-status="${s}"><span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${int(counts[s])} ${text(STATUS[s].plural)}</span>`)
     .join(" ");
+  const revision = count(entry.revision);
+  const other = pageRevision !== null && Number.isSafeInteger(pageRevision) && pageRevision !== revision
+    ? ` <span class="wl-atlas-box-rev">This page shows revision ${int(pageRevision)}.</span>`
+    : "";
   return `<link rel="stylesheet" href="${ATLAS_CSS}">\n` +
     `<aside class="wl-atlas-box" aria-label="Formalization atlas">` +
     `<span class="wl-atlas-box-h">Formalization atlas</span> ` +
-    `<span class="wl-atlas-box-counts">${entry.passages} passage${entry.passages === 1 ? "" : "s"} of Wikipedia revision ${entry.revision} checked against Lean libraries: ${parts || "none yet"}</span> ` +
+    `<span class="wl-atlas-box-counts">Separately from this page&#x27;s annotations, the atlas checked ${plural(count(entry.passages), "passage", "passages")} of Wikipedia revision ${int(revision)} against Lean libraries: ${parts || "none yet"}.${other}</span> ` +
     `<a class="wl-atlas-box-link" href="${attr(href)}">See where<span aria-hidden="true"> →</span></a>` +
     `</aside>\n`;
 }

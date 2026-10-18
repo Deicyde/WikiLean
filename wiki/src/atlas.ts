@@ -68,6 +68,9 @@ export interface AtlasPassage {
   subject_uri: string;
   outcome: "located" | "absent" | "unresolved";
   status: string | null;
+  // location_key of the location that justifies the status (build_store
+  // derive_status), or null; absent from stores built before it existed.
+  basis?: string | null;
   locations: AtlasLocation[];
   absence: {
     universe: string;
@@ -81,6 +84,10 @@ export interface AtlasPassage {
 
 export interface LibraryCounts {
   locations: number;
+  // locations split by proof status: complete = proved or a definition,
+  // incomplete = statement_only, wanted or axiom_dependent.
+  complete?: number;
+  incomplete?: number;
   passages: number;
   related: number;
 }
@@ -148,6 +155,8 @@ export interface IndexEntry {
   not_formalized: number;
   unresolved: number;
   importance: string | null;
+  // Ids of the libraries holding a location for the article, in universe order.
+  libraries: string[];
 }
 
 // ---- the store reader ------------------------------------------------------
@@ -193,8 +202,19 @@ export function memoryReader(files: ReadonlyMap<string, string> | Record<string,
   return { text: async (key: string) => map.get(ATLAS_PREFIX + key) ?? null };
 }
 
+// One reader per bound bucket object, so the index-shard cache below survives
+// across the requests an isolate serves with that binding. (Were the runtime to
+// hand each request a fresh binding object, the cache would simply miss.)
+const READERS = new WeakMap<object, AtlasReader>();
+
 export function atlasReader(env: Env): AtlasReader | null {
-  return env.ATLAS ? r2Reader(env.ATLAS) : null;
+  if (!env.ATLAS) return null;
+  let reader = READERS.get(env.ATLAS);
+  if (!reader) {
+    reader = r2Reader(env.ATLAS);
+    READERS.set(env.ATLAS, reader);
+  }
+  return reader;
 }
 
 class AtlasStoreError extends Error {}
@@ -212,6 +232,7 @@ async function readJson<T extends { schema: string }>(reader: AtlasReader, key: 
 const PAGEID_RE = /^[1-9][0-9]{0,9}$/;
 const SHA_RE = /^[0-9a-f]{64}$/;
 const SHARD_RE = /^[0-9a-f]{1,2}$/;
+const LIBRARY_ID_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
 
 export function parsePageid(raw: string | undefined): number | null {
   if (!raw || !PAGEID_RE.test(raw)) return null;
@@ -225,21 +246,56 @@ export const loadArticle = (reader: AtlasReader, pageid: number) =>
 export const loadUniverse = (reader: AtlasReader, sha: string) =>
   SHA_RE.test(sha) ? readJson<AtlasUniverse>(reader, `universes/${sha}.json`, UNIVERSE_SCHEMA) : Promise.resolve(null);
 
-export async function loadIndexShard(reader: AtlasReader, shard: string): Promise<IndexEntry[] | null> {
+// Parsed index shards, per reader, for INDEX_CACHE_MS. The dashboard reads
+// every shard and each article page one, so without this every anonymous view
+// re-reads and re-parses them from R2 (review finding: about 18 Class-B reads
+// and several MB of parsing per dashboard view). Only settled values are kept,
+// never a pending promise, since a Worker must not await another request's
+// I/O. A newly published store shows up within a minute, the staleness
+// /api/atlas/current already allows (max-age=60).
+export const INDEX_CACHE_MS = 60_000;
+const SHARD_CACHE = new WeakMap<AtlasReader, Map<string, { at: number; entries: IndexEntry[] | null }>>();
+
+export async function loadIndexShard(reader: AtlasReader, shard: string, now = Date.now()): Promise<IndexEntry[] | null> {
   if (!SHARD_RE.test(shard)) return null;
+  // Created and registered before any await: concurrent shard loads of one
+  // request must share one map, or the last to finish would drop the others.
+  let cache = SHARD_CACHE.get(reader);
+  if (!cache) {
+    cache = new Map();
+    SHARD_CACHE.set(reader, cache);
+  }
+  const hit = cache.get(shard);
+  if (hit && now - hit.at >= 0 && now - hit.at < INDEX_CACHE_MS) return hit.entries;
+  const entries = await parseIndexShard(reader, shard);
+  cache.set(shard, { at: now, entries });
+  return entries;
+}
+
+async function parseIndexShard(reader: AtlasReader, shard: string): Promise<IndexEntry[] | null> {
   const raw = await readJson<{ schema: string; fields: string[]; articles: unknown[][] }>(
     reader, `index/${shard}.json`, INDEX_SCHEMA,
   );
   if (!raw) return null;
+  if (!Array.isArray(raw.fields) || !Array.isArray(raw.articles)) {
+    throw new AtlasStoreError(`atlas index shard ${shard} lacks fields/articles`);
+  }
   const at = (name: string) => raw.fields.indexOf(name);
   const pos = {
     title: at("title"), pageid: at("pageid"), revision: at("revision"), passages: at("passages"),
     formalized: at("formalized"), statement_only: at("statement_only"), partial: at("partial"),
     not_formalized: at("not_formalized"), unresolved: at("unresolved"), importance: at("importance"),
+    libraries: at("libraries"),
   };
   if (pos.title < 0 || pos.pageid < 0) throw new AtlasStoreError(`atlas index shard ${shard} lacks title/pageid`);
-  const num = (row: unknown[], i: number) => (i >= 0 && typeof row[i] === "number" ? (row[i] as number) : 0);
-  return raw.articles.map((row) => ({
+  const num = (row: unknown[], i: number) => (i >= 0 && Number.isSafeInteger(row[i]) && (row[i] as number) >= 0 ? (row[i] as number) : 0);
+  const libraries = (row: unknown[]): string[] => {
+    const value = pos.libraries >= 0 ? row[pos.libraries] : null;
+    return Array.isArray(value)
+      ? value.filter((id): id is string => typeof id === "string" && LIBRARY_ID_RE.test(id)).slice(0, 64)
+      : [];
+  };
+  return raw.articles.filter(Array.isArray).map((row) => ({
     title: String(row[pos.title]),
     pageid: num(row, pos.pageid),
     revision: num(row, pos.revision),
@@ -250,6 +306,7 @@ export async function loadIndexShard(reader: AtlasReader, shard: string): Promis
     not_formalized: num(row, pos.not_formalized),
     unresolved: num(row, pos.unresolved),
     importance: pos.importance >= 0 && typeof row[pos.importance] === "string" ? (row[pos.importance] as string) : null,
+    libraries: libraries(row),
   }));
 }
 
@@ -318,6 +375,7 @@ function notConfiguredHtml(c: Ctx, error = NOT_CONFIGURED): Response {
 // ---- feedback --------------------------------------------------------------
 
 const FEEDBACK_VERDICTS = new Set(["confirm", "report"]);
+export const ATLAS_PSEUDONYM_DOMAIN = "atlas-feedback\0";
 const MAX_FEEDBACK_BYTES = 4096;
 const MAX_NOTE_CHARS = MAX_FLAG_COMMENT_LEN; // 500, the flag form's cap
 const CAMPAIGN_RE = /^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$/;
@@ -394,7 +452,28 @@ function foldForSearch(s: string): string {
   return s.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
+// Sort and search keys, computed once per cached index entry.
+const ENTRY_KEYS = new WeakMap<IndexEntry, { key: string; folded: string }>();
+function entryKeys(entry: IndexEntry): { key: string; folded: string } {
+  let keys = ENTRY_KEYS.get(entry);
+  if (!keys) {
+    keys = { key: titleKey(entry.title), folded: foldForSearch(entry.title) };
+    ENTRY_KEYS.set(entry, keys);
+  }
+  return keys;
+}
+
 const MAX_DASHBOARD_ROWS = 200;
+
+// A ?q= search scans every index entry, so it takes the anonymous read budget
+// /api/brain/* and /mcp use: per IP, MCP_LIMITER when bound, else
+// BRAIN_API_LIMITER (120/min), under its own key prefix.
+async function searchAllowed(c: Ctx): Promise<boolean> {
+  const limiter = c.env.MCP_LIMITER ?? c.env.BRAIN_API_LIMITER;
+  const ip = c.req.header("CF-Connecting-IP") || "unknown";
+  const { success } = await limiter.limit({ key: `atlas-q:${ip}` });
+  return success;
+}
 
 // ---- routes ----------------------------------------------------------------
 
@@ -425,12 +504,15 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     return serveText(c, `records/${pageid}.jsonl`, "application/x-ndjson; charset=utf-8", JSON_HEADERS["Cache-Control"], "unknown pageid");
   });
 
-  // Universes are content-addressed by their sha256: immutable.
+  // Not immutable: the key is the producer's universe_sha256, which covers the
+  // libraries' ids, commits and index shas but not the display metadata
+  // (src_dir, display_name, exclusions) stored beside them, so a later
+  // campaign on the same frozen universe may rewrite the object.
   app.get("/api/atlas/universe/:sha", (c) => {
     const sha = c.req.param("sha");
     if (!atlasReader(c.env)) return notConfiguredJson(c);
     if (!SHA_RE.test(sha)) return c.json({ ok: false, error: "unknown universe" }, 404);
-    return serveText(c, `universes/${sha}.json`, JSON_HEADERS["Content-Type"], "public, max-age=86400, immutable", "unknown universe");
+    return serveText(c, `universes/${sha}.json`, JSON_HEADERS["Content-Type"], JSON_HEADERS["Cache-Control"], "unknown universe");
   });
 
   app.get("/api/atlas/index/:shard", (c) => {
@@ -447,17 +529,22 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!reader) return notConfiguredHtml(c);
     const current = await loadCurrent(reader);
     if (!current) return notConfiguredHtml(c, "atlas store has no published build");
-    const universe = await loadUniverse(reader, current.universe.sha256);
     const q = (c.req.query("q") ?? "").trim().slice(0, 200);
-    const shards = current.index.shards.filter((s) => SHARD_RE.test(s)).slice(0, MAX_INDEX_SHARDS);
+    if (q && !(await searchAllowed(c))) {
+      return c.html(atlasMessagePage("Too many searches", "Too many atlas searches from this address in a minute.",
+        "Try again shortly, or browse the list without a search."), 429, { "Retry-After": "60" });
+    }
+    const universe = await loadUniverse(reader, current.universe.sha256);
+    const shards = (Array.isArray(current.index?.shards) ? current.index.shards : [])
+      .filter((s) => typeof s === "string" && SHARD_RE.test(s)).slice(0, MAX_INDEX_SHARDS);
     const loaded = await Promise.all(shards.map((s) => loadIndexShard(reader, s)));
     let rows: IndexEntry[] = loaded.flatMap((entries) => entries ?? []);
     const total = rows.length;
     if (q) {
       const needle = foldForSearch(q);
-      rows = rows.filter((row) => foldForSearch(row.title).includes(needle));
+      rows = rows.filter((row) => entryKeys(row).folded.includes(needle));
     }
-    const keyed = rows.map((row) => ({ row, key: titleKey(row.title) }));
+    const keyed = rows.map((row) => ({ row, key: entryKeys(row).key }));
     keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : a.row.pageid - b.row.pageid));
     const shown: DashboardRow[] = keyed.slice(0, MAX_DASHBOARD_ROWS)
       .map(({ row }) => ({ ...row, href: atlasHref(row.pageid, row.title) }));
@@ -566,8 +653,11 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // Benchmark seeding (docs/ATLAS.md, "Feedback"): every row, id-ascending,
   // paged from D1 so the response never materializes in memory. Pipeline
-  // bearer only. Users appear only as pseudonyms, sha256(user_id + salt)
-  // truncated to 12 hex, the research export's scheme. Reads only D1, so it
+  // bearer only. Users appear only as pseudonyms, sha256("atlas-feedback\0" +
+  // user_id + salt) truncated to 12 hex. The domain prefix keeps them apart
+  // from the research export's sha256(user_id + salt): this export carries
+  // free-text notes, so a note that names its author must not re-identify
+  // that person's pseudonymous annotation history there. Reads only D1, so it
   // works whether or not ATLAS is bound.
   app.get("/api/atlas/feedback/export", async (c) => {
     const user = await requireRole(c, ["bot"]);
@@ -577,7 +667,7 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     const pseudonymFor = async (userId: string) => {
       let value = pseudonyms.get(userId);
       if (value === undefined) {
-        value = (await sha256Hex(userId + salt)).slice(0, 12);
+        value = (await sha256Hex(ATLAS_PSEUDONYM_DOMAIN + userId + salt)).slice(0, 12);
         pseudonyms.set(userId, value);
       }
       return value;

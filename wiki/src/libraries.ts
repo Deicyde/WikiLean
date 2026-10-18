@@ -4,17 +4,23 @@
 // doc-gen4 pages exist only for a library's latest build, so the pinned
 // evidence is the source blob at the record's commit.
 //
-// Precedence (docs/ATLAS.md, "Libraries"): a universe manifest entry's own
-// display_name / blob_url_template / src_dir wins; then the seeds below; then
-// the FormalFrontier organisation pattern; then any github.com repository
-// (named owner/repo, linked with GitHub's blob scheme). A non-GitHub
-// repository with no template gets no source link rather than a guessed one.
+// Naming and links come from WikiLean, not from the record set (docs/ATLAS.md,
+// contract note 6). A library is named by the seeds below, then the
+// FormalFrontier organisation pattern, then owner/repo for any other GitHub
+// repository. A universe entry's display_name is used only for a repository
+// that is not seeded, and never when it would name a seeded library, so a
+// universe cannot relabel some repository as Mathlib. Every "Source @sha7"
+// link uses GitHub's blob scheme for the library's own github.com/<owner>/<repo>:
+// a universe's blob_url_template is ignored (the builder refuses one), and a
+// non-GitHub repository gets no source link rather than a guessed one. The
+// universe's src_dir (the directory a record's path is relative to) is kept.
 
 export interface UniverseLibrary {
   id: string;
   repo: string;
   commit: string;
   display_name?: string;
+  // Not part of the contract (the builder refuses it); ignored if present.
   blob_url_template?: string;
   src_dir?: string;
   brain_lib?: string;
@@ -36,7 +42,25 @@ export interface LibraryInfo {
 
 const GITHUB_BLOB = "{repo}/blob/{commit}/{path}#L{line}-L{end_line}";
 const GITHUB_RE = /^https:\/\/github\.com\/([A-Za-z0-9_.-]{1,100})\/([A-Za-z0-9_.-]{1,100})$/;
-const FORMAL_FRONTIER_RE = /^https:\/\/github\.com\/FormalFrontier\/([A-Za-z0-9_.-]{1,100})$/i;
+// A repository URL as build_store.REPO_RE accepts it: https, a dotted host, one
+// to four path segments, no query or fragment.
+const REPO_RE = /^https:\/\/[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:\/[A-Za-z0-9_.~-]{1,100}){1,4}$/;
+
+const dotSegment = (part: string) => part === "." || part === "..";
+
+// [owner, repo] of a github.com repository URL, or null. "." and ".." are not
+// names: "https://github.com/../.." would normalise to another URL entirely.
+function githubParts(repo: string): [string, string] | null {
+  const match = GITHUB_RE.exec(repo);
+  if (!match || dotSegment(match[1]) || dotSegment(match[2])) return null;
+  return [match[1], match[2]];
+}
+
+// The repository itself as a link target (the universe page), or null.
+export function repoHref(repo: string): string | null {
+  if (!REPO_RE.test(repo) || repo.split("/").slice(3).some(dotSegment)) return null;
+  return repo;
+}
 
 interface Seed {
   repo: string;
@@ -65,6 +89,13 @@ export function repoKey(repo: string): string {
 
 const SEED_BY_KEY = new Map(SEEDS.map((seed) => [repoKey(seed.repo), seed]));
 
+// Comparison form of a library name: lowercase, single spaces, no trailing
+// "(qualifier)". A display_name with the form of a seed's name is not used.
+function nameForm(name: string): string {
+  return name.replace(/\s*\([^)]*\)\s*$/, "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+const SEED_NAMES = new Set(SEEDS.flatMap((seed) => [seed.name, seed.name.replace(/\s*\([^)]*\)\s*$/, "")]).map(nameForm));
+
 function cleanRepo(repo: string): string {
   return repo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
 }
@@ -72,24 +103,20 @@ function cleanRepo(repo: string): string {
 export function libraryInfo(repo: string, entry?: UniverseLibrary | null): LibraryInfo {
   const clean = cleanRepo(repo);
   const seed = SEED_BY_KEY.get(repoKey(clean));
-  const github = GITHUB_RE.exec(clean);
-  const ff = FORMAL_FRONTIER_RE.exec(clean);
-  let name = seed?.name ?? (ff ? `FormalFrontier · ${ff[1]}` : github ? `${github[1]}/${github[2]}` : clean);
-  let blobTemplate: string | null = github ? GITHUB_BLOB : null;
+  const github = githubParts(clean);
+  const ff = github && github[0].toLowerCase() === "formalfrontier" ? github[1] : null;
+  let name = seed?.name ?? (ff ? `FormalFrontier · ${ff}` : github ? `${github[0]}/${github[1]}` : clean);
+  const blobTemplate: string | null = github ? GITHUB_BLOB : null;
   let srcDir: string | null = seed?.srcDir ?? null;
   if (entry) {
-    if (typeof entry.display_name === "string" && entry.display_name.trim()) name = entry.display_name.trim();
-    if (typeof entry.blob_url_template === "string" && validTemplate(entry.blob_url_template)) {
-      blobTemplate = entry.blob_url_template;
-    }
+    const display = typeof entry.display_name === "string" ? entry.display_name.replace(/\s+/g, " ").trim() : "";
+    // "FormalFrontier · …" names belong to the FormalFrontier organisation.
+    const claimsFormalFrontier = !ff && /^formal\s*frontier\b/i.test(display);
+    if (!seed && display && !SEED_NAMES.has(nameForm(display)) && !claimsFormalFrontier) name = display;
     if (typeof entry.src_dir === "string" && safeRelativePath(entry.src_dir)) srcDir = entry.src_dir;
   }
   const short = name.replace(/\s*\([^)]*\)\s*$/, "") || name;
   return { repo: clean, name, short, blobTemplate, srcDir };
-}
-
-function validTemplate(template: string): boolean {
-  return template.startsWith("https://") && template.includes("{commit}") && template.includes("{path}");
 }
 
 // A repository-relative path a link may name: no absolute, parent, empty or
@@ -133,6 +160,6 @@ export function sourceUrl(
 
 // The repository at a commit (the universe page's "commit" link).
 export function treeUrl(info: LibraryInfo, commit: string): string | null {
-  if (!COMMIT_RE.test(commit) || !GITHUB_RE.test(info.repo)) return null;
+  if (!COMMIT_RE.test(commit) || !githubParts(info.repo)) return null;
   return `${info.repo}/tree/${commit}`;
 }

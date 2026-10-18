@@ -9,15 +9,17 @@
 import { createHash } from "node:crypto";
 import { describe, it, expect } from "vitest";
 import {
-  setup, get, post, blockNetwork, PIPELINE_TOKEN, SLUG, ORIGIN, type Harness,
+  setup, get, post, blockNetwork, PIPELINE_TOKEN, REVID, SLUG, ORIGIN, type Harness,
 } from "./helpers/harness.js";
 import {
   atlasFixtureFiles, bindAtlas, fixtureArticle, FIXTURE_CAMPAIGN, FIXTURE_UNIVERSE_SHA, GADGET_PAGEID, WIDGET_PAGEID,
 } from "./helpers/atlas.js";
 import {
-  atlasHref, kvReader, loadArticle, lookupTitle, memoryReader, parsePageid, staticReader, titleKey, titleShard,
+  ATLAS_PSEUDONYM_DOMAIN, INDEX_CACHE_MS, atlasHref, kvReader, loadArticle, loadIndexShard, lookupTitle, memoryReader,
+  parsePageid, staticReader, titleKey, titleShard,
 } from "../src/atlas.js";
-import { libraryInfo, sourceUrl } from "../src/libraries.js";
+import { atlasSummaryBox } from "../src/atlas-render.js";
+import { libraryInfo, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectAtlasSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
 
@@ -104,9 +106,11 @@ describe("atlas APIs with the fixture store", () => {
     expect(body.trim().split("\n").map((line) => JSON.parse(line).relation)).toEqual(
       ["exactMatch", "closeMatch", "exactMatch", "noMatch", "relatedMatch", undefined]);
 
+    // Not immutable: the key is the producer's universe sha, which does not
+    // cover the display metadata stored beside the libraries.
     const universe = await get(h.env, `/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`);
     expect(universe.status).toBe(200);
-    expect(universe.headers.get("Cache-Control")).toBe("public, max-age=86400, immutable");
+    expect(universe.headers.get("Cache-Control")).toBe("public, max-age=300");
     expect((await jsonOf(universe)).libraries).toHaveLength(5);
 
     const current = await get(h.env, "/api/atlas/current");
@@ -140,17 +144,64 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain("<title>WikiLean · Formalization atlas</title>");
     expect(html).toContain("2 articles · 5 passages · 4 Lean locations · 1 related declaration");
     expect(html).toContain('aria-label="5 passages: 2 formalized, 1 statement only, 1 not formalized, 1 undecided"');
-    // By library: universe order, display names from the universe, registry fallback for FormalFrontier.
-    for (const name of ["Mathlib", "Lean 4 core (Init, Std, Lean)", "Batteries", "TauCeti", "FormalFrontier · WidgetTheory"]) {
+    // By library, in universe order. Seeded repositories keep the registry's
+    // name (the universe's "Lean 4 core (Init, Std, Lean)" is not used).
+    for (const name of ["Mathlib", "Lean core", "Batteries", "TauCeti", "FormalFrontier · WidgetTheory"]) {
       expect(html).toContain(`<th scope="row">${name}</th>`);
     }
+    expect(html).not.toContain("Lean 4 core");
+    // Complete and incomplete locations are separate columns: TauCeti only
+    // states its result, so it is never counted like a proved Mathlib row.
+    expect(html).toContain('<th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th>');
+    expect(html).toMatch(/<th scope="row">TauCeti<\/th><td>.*?<\/td><td class="num">1<\/td><td class="num">1<\/td><td class="num">0<\/td><td class="num">1<\/td><td class="num">0<\/td><\/tr>/);
+    expect(html).toMatch(/<th scope="row">Mathlib<\/th><td>.*?<\/td><td class="num">2<\/td><td class="num">2<\/td><td class="num">2<\/td><td class="num">0<\/td><td class="num">0<\/td><\/tr>/);
+    expect(html).toContain('<code class="atlas-sha">@bcb35bd</code>');
     expect(html).toContain("By WikiProject importance");
     expect(html).toContain('<th scope="row">High</th>');
     expect(html).toContain(`href="${WIDGET_PATH}"`);
     expect(html).toContain(`href="/atlas/${GADGET_PAGEID}/Gadget_(mathematics)"`);
     expect(html).toContain('data-shards="1 8"');
-    expect(html).toContain('<script src="/assets/atlas.js?v=1"></script>');
+    // Where each article is formalized: a Libraries column from the index.
+    expect(html).toContain('<th scope="col">Libraries</th>');
+    expect(html).toContain('title="Mathlib · https://github.com/leanprover-community/mathlib4">Mathlib</span> ' +
+      '<span class="atlas-libtag" title="TauCeti · https://github.com/TauCetiProject/TauCeti">TauCeti</span>');
+    expect(html).toContain("data-library-names=\"{&quot;mathlib&quot;:&quot;Mathlib&quot;");
+    // The bar's legend: each totals chip carries its fill's swatch.
+    expect(html).toContain('<span class="atlas-swatch" data-status="unresolved" aria-hidden="true"></span>');
+    // Every table that can scroll sideways is a labelled, focusable region.
+    for (const name of ["By library", "By WikiProject importance", "Articles"]) {
+      expect(html).toContain(`<div class="atlas-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
+    }
+    expect(html).toContain('<a class="wl-navlink" href="/atlas" aria-current="page">Atlas</a>');
+    expect(html).toContain('<script src="/assets/atlas.js?v=2"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=2">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
+  });
+
+  it("the dashboard reads each index shard once a minute, not once per view", async () => {
+    const h = bound();
+    await get(h.env, "/atlas");
+    await get(h.env, "/atlas?q=widget");
+    await get(h.env, `/${SLUG}`);
+    expect(h.gets.filter((key) => key === "atlas/v1/index/1.json")).toHaveLength(1);
+    expect(h.gets.filter((key) => key === "atlas/v1/index/8.json")).toHaveLength(1);
+    // A cached shard expires after INDEX_CACHE_MS.
+    const files = atlasFixtureFiles();
+    const reader = memoryReader(files);
+    const first = await loadIndexShard(reader, "1", 1_000);
+    files.set("atlas/v1/index/1.json", files.get("atlas/v1/index/8.json")!.replace('"shard":"8"', '"shard":"1"'));
+    expect(await loadIndexShard(reader, "1", 1_000 + INDEX_CACHE_MS - 1)).toBe(first);
+    expect((await loadIndexShard(reader, "1", 1_000 + INDEX_CACHE_MS))?.[0].title).toBe("Gadget (mathematics)");
+  });
+
+  it("a dashboard search takes the per-IP anonymous read budget; the plain list does not", async () => {
+    const h = setup({ brainApiLimiterAllows: false });
+    bindAtlas(h.env);
+    const limited = await get(h.env, "/atlas?q=gadg", { ip: "198.51.100.4" });
+    expect(limited.status).toBe(429);
+    expect(limited.headers.get("Retry-After")).toBe("60");
+    expect(await limited.text()).toContain("Too many atlas searches from this address in a minute.");
+    expect((await get(h.env, "/atlas")).status).toBe(200);
   });
 
   it("the dashboard search filters server-side through the index shards", async () => {
@@ -169,6 +220,18 @@ describe("atlas pages with the fixture store", () => {
     expect(res.status).toBe(200);
     const html = await res.text();
     expect(html).toContain('<h1 class="atlas-h1">Widget lemma</h1>');
+    // Headings to navigate by: Coverage, Passages, one h3 per passage, and an
+    // h4 over related declarations.
+    expect(html).toContain('<section class="atlas-strip" aria-labelledby="atlas-h-coverage">\n<h2 class="atlas-h2" id="atlas-h-coverage">Coverage</h2>');
+    expect(html).toContain('<h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>');
+    expect(html.match(/<h3 class="atlas-p-h">/g)).toHaveLength(4);
+    expect(html).toContain('<h3 class="atlas-p-h"><span class="atlas-eyebrow">Theorem · central</span><span class="atlas-section">');
+    expect(html).toContain('<h4 class="atlas-related-h">Related, but states something else</h4>');
+    // Only the dashboard is the Atlas nav link's own page.
+    expect(html).toContain('<a class="wl-navlink" href="/atlas">Atlas</a>');
+    expect(html).not.toContain('aria-current="page"');
+    // The footer claims only what the page shows.
+    expect(html).toContain("some are re-checked by a second AI pass, and each location says whether it was. Signed-in readers can confirm or report a location.");
     // Strip: counts by status and by library, as filter chips.
     expect(html).toContain('data-filter="status:formalized"');
     expect(html).toContain('data-filter="library:mathlib"');
@@ -178,10 +241,18 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<span class="atlas-chip is-static is-zero" data-status="partial">');
     expect(html).toContain("4 passages checked, 3 Lean locations (and 1 related declaration).");
     expect(html).toContain("Batteries <span class=\"atlas-n\">related only</span>");
-    // Pill with its full sentence, and the not-colour-only status data.
-    expect(html).toContain('title="Formalized: Mathlib states this exactly (proved)."');
-    expect(html).toContain('title="Statement only: TauCeti states this exactly (statement only: the proof is not finished)."');
-    expect(html).toContain('title="Not formalized: not found in the 5 libraries of universe u-fixture (searched 2026-10-17)."');
+    // The status in words is visible text beside the pill, not a hover-only
+    // title, and the pill is not read twice.
+    expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (proved).</p>');
+    expect(html).toContain('<p class="atlas-why">Statement only: TauCeti states this exactly (statement only: the proof is not finished).</p>');
+    expect(html).toContain('<span class="atlas-pill" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>Formalized</span>');
+    expect(html).not.toContain('class="atlas-pill" data-status="formalized" title=');
+    expect(html.match(/class="atlas-why"/g)).toHaveLength(2); // the absence and the undecided passage have their own boxes
+    // The producer's item id is markup, not reader-facing text.
+    expect(html).toContain('data-item="In-text #3fa91c07"');
+    expect(html).not.toMatch(/>In-text #/);
+    // The status chips carry the coverage bar's fills as their legend.
+    expect(html).toContain('<span class="atlas-swatch" data-status="statement_only" aria-hidden="true"></span>');
     // Location card: library chip, short commit, relation, proof status, name, pinned source link.
     const mathlib = fixtureArticle().passages[0].locations[0];
     const sha7 = mathlib.commit.slice(0, 7);
@@ -220,7 +291,62 @@ describe("atlas pages with the fixture store", () => {
     const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
     expect(html).toContain('<span class="atlas-eyebrow">Definition</span>');
     expect(html).not.toContain("atlas-section");
-    expect(html).toContain('title="Formalized: Mathlib states this exactly (a definition)."');
+    expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
+    // One passage is "1 passage", in the strip and in the bar's name.
+    expect(html).toContain('aria-label="1 passage: 1 formalized"');
+    expect(html).toContain("1 passage checked, 1 Lean location.");
+  });
+
+  it("the status sentence names the location that justifies the status, not rank 1", async () => {
+    // Rank 1 (Mathlib) only states the theorem; rank 2 (FormalFrontier) proves
+    // it, so the passage is formalized because of rank 2 (build_store basis).
+    for (const withBasis of [true, false]) {
+      const h = setup();
+      const files = atlasFixtureFiles();
+      const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+      const passage = article.passages[0];
+      passage.locations[0].proof_status = "statement_only";
+      passage.basis = withBasis ? passage.locations[1].location_key : undefined;
+      files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+      bindAtlas(h.env, files);
+      const html = await (await get(h.env, WIDGET_PATH)).text();
+      expect(html, `basis ${withBasis}`).toContain(
+        '<p class="atlas-why">Formalized: FormalFrontier · WidgetTheory states this up to a convention difference (proved).</p>');
+      expect(html, `basis ${withBasis}`).not.toContain("Formalized: Mathlib");
+    }
+  });
+
+  it("store numbers reach the HTML only as integers", async () => {
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+    article.revision = "<svg onload=alert(2)>";
+    article.pageid = "<i>p</i>";
+    article.summary.passages = "<b>n</b>";
+    article.summary.by_status.formalized = "<u>f</u>";
+    article.universe.libraries = "<s>l</s>";
+    article.passages[0].locations[0].rank = "<img src=x onerror=alert(1)>";
+    article.passages[0].locations[0].line = "<q>1</q>";
+    article.passages[2].absence.libraries = "<em>5</em>";
+    article.passages[2].absence.receipt.queries = "<kbd>q</kbd>";
+    files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+    const current = JSON.parse(files.get("atlas/v1/current.json")!);
+    current.counts.by_status.formalized = "<script>alert(3)</script>";
+    current.counts.by_library.mathlib.passages = "<sub>m</sub>";
+    current.counts.articles = "<sup>a</sup>";
+    current.universe.libraries = "<del>u</del>";
+    files.set("atlas/v1/current.json", JSON.stringify(current));
+    bindAtlas(h.env, files);
+    const page = await (await get(h.env, `/atlas/${WIDGET_PAGEID}`)).text();
+    const dashboard = await (await get(h.env, "/atlas")).text();
+    for (const html of [page, dashboard]) {
+      for (const tag of ["<svg", "<img", "<i>", "<b>n", "<u>", "<s>", "<q>", "<em>", "<kbd>", "<script>alert", "<sub>", "<sup>", "<del>"]) {
+        expect(html).not.toContain(tag);
+      }
+    }
+    expect(page).toContain("AI pipeline · rank 0 ·");
+    expect(page).toContain('data-pageid="0"');
+    expect(dashboard).toContain("0 articles · 5 passages");
   });
 
   it("unknown page ids are a 404 page; non-numeric ids fall through to the plain 404", async () => {
@@ -239,6 +365,9 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain("Universe u-fixture");
     expect(html).toContain("<b>atlas-lean</b>: licence forbids ML evaluation use");
     expect(html).toContain("github.com/leanprover/lean4");
+    expect(html).toContain('<div class="atlas-table-wrap" role="region" tabindex="0" aria-label="Table: Libraries of universe u-fixture">');
+    expect(html).toContain('<a href="https://github.com/leanprover-community/mathlib4" rel="noopener">github.com/leanprover-community/mathlib4</a>');
+    expect(html).not.toContain('aria-current="page"');
   });
 
   it("signed-in viewers get Confirm / Report controls showing their own verdict", async () => {
@@ -386,7 +515,12 @@ describe("atlas feedback export", () => {
     expect(res.headers.get("Cache-Control")).toBe("no-store");
     const lines = (await res.text()).trim().split("\n").map((line) => JSON.parse(line));
     expect(lines).toHaveLength(2);
-    const pseudonym = (id: string) => createHash("sha256").update(id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
+    // Domain-separated from the research export's sha256(user_id + salt), so a
+    // note that names its author cannot be joined to that export.
+    const pseudonym = (id: string) => createHash("sha256").update("atlas-feedback\0" + id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
+    const research = (id: string) => createHash("sha256").update(id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
+    expect(ATLAS_PSEUDONYM_DOMAIN).toBe("atlas-feedback\0");
+    expect(pseudonym("u-human")).not.toBe(research("u-human"));
     expect(lines[0]).toEqual({
       feedback_id: 1, location_key: MATHLIB_KEY, pageid: WIDGET_PAGEID, revision: 2002, campaign: FIXTURE_CAMPAIGN,
       verdict: "confirm", note: null, pseudonym: pseudonym("u-human"),
@@ -394,6 +528,7 @@ describe("atlas feedback export", () => {
     });
     expect(lines[1]).toMatchObject({ verdict: "report", note: "special case only", pseudonym: pseudonym("u-patroller") });
     expect(JSON.stringify(lines)).not.toContain("u-human");
+    expect(JSON.stringify(lines)).not.toContain(research("u-human"));
   });
 });
 
@@ -406,7 +541,10 @@ describe("article page summary box", () => {
     const html = await res.text();
     expect(html).toContain('<aside class="wl-atlas-box" aria-label="Formalization atlas">');
     expect(html).toContain(`<a class="wl-atlas-box-link" href="${WIDGET_PATH}">See where`);
-    expect(html).toContain("4 passages of Wikipedia revision 2002 checked against Lean libraries:");
+    // Its counts are the atlas's, not this page's annotations (the badges
+    // above), and it names the page's revision when the atlas checked another.
+    expect(html).toContain("Separately from this page&#x27;s annotations, the atlas checked 4 passages of Wikipedia revision 2002 against Lean libraries:");
+    expect(html).toContain(`<span class="wl-atlas-box-rev">This page shows revision ${REVID}.</span>`);
     expect(html).toContain("1 formalized");
     expect(html).toContain("1 undecided");
     expect(html.indexOf("wl-atlas-box")).toBeLessThan(html.indexOf('<main class="wl-article-body">'));
@@ -426,6 +564,15 @@ describe("article page summary box", () => {
     const res = await get(h.env, `/${SLUG}`);
     expect(res.status).toBe(200);
     expect(await res.text()).not.toContain("wl-atlas-box");
+  });
+
+  it("names the page's revision only when it differs from the atlas's", async () => {
+    const entry = (await lookupTitle(memoryReader(atlasFixtureFiles()), "Widget lemma"))!;
+    expect(atlasSummaryBox(entry, WIDGET_PATH, 2002)).not.toContain("wl-atlas-box-rev");
+    expect(atlasSummaryBox(entry, WIDGET_PATH, null)).not.toContain("wl-atlas-box-rev");
+    expect(atlasSummaryBox(entry, WIDGET_PATH, 2003)).toContain("This page shows revision 2003.");
+    const one = { ...entry, passages: 1, formalized: 1, statement_only: 0, not_formalized: 0, unresolved: 0 };
+    expect(atlasSummaryBox(one, WIDGET_PATH, 2002)).toContain("checked 1 passage of Wikipedia revision 2002");
   });
 
   it("injectAtlasSummary returns the page byte-for-byte when there is no box", () => {
@@ -481,7 +628,7 @@ describe("atlas store reader", () => {
 describe("library registry", () => {
   const COMMIT = "a".repeat(40);
 
-  it("names seeded, FormalFrontier and other GitHub repositories, with the universe taking precedence", () => {
+  it("names seeded, FormalFrontier and other GitHub repositories; a universe never relabels a seeded library", () => {
     expect(libraryInfo("https://github.com/leanprover-community/mathlib4").name).toBe("Mathlib");
     expect(libraryInfo("https://github.com/leanprover-community/mathlib4.git/").name).toBe("Mathlib");
     expect(libraryInfo("https://github.com/TauCetiProject/TauCeti").name).toBe("TauCeti");
@@ -491,13 +638,20 @@ describe("library registry", () => {
     expect(libraryInfo("https://github.com/facebookresearch/atlas-lean").short).toBe("ATLAS");
     expect(libraryInfo("https://github.com/FormalFrontier/WidgetTheory").name).toBe("FormalFrontier · WidgetTheory");
     expect(libraryInfo("https://github.com/someone/lean-thing").name).toBe("someone/lean-thing");
+    // A seeded repository keeps the registry's name whatever the universe says.
     const core = { id: "lean-core", repo: "https://github.com/leanprover/lean4", commit: COMMIT, display_name: "Lean 4 core (Init, Std, Lean)" };
     expect(libraryInfo(core.repo).name).toBe("Lean core");
-    expect(libraryInfo(core.repo, core).name).toBe("Lean 4 core (Init, Std, Lean)");
-    expect(libraryInfo(core.repo, core).short).toBe("Lean 4 core");
+    expect(libraryInfo(core.repo, core).name).toBe("Lean core");
+    // An unseeded repository may carry a display name, unless it names a seeded library.
+    const other = { id: "x", repo: "https://github.com/someone/lean-thing", commit: COMMIT };
+    expect(libraryInfo(other.repo, { ...other, display_name: "  Lean   Thing (fork) " }).name).toBe("Lean Thing (fork)");
+    expect(libraryInfo(other.repo, { ...other, display_name: "Lean Thing (fork)" }).short).toBe("Lean Thing");
+    for (const display of ["Mathlib", "mathlib", " MATHLIB ", "Mathlib (official)", "Batteries", "ATLAS", "Lean core", "FormalFrontier · WidgetTheory"]) {
+      expect(libraryInfo(other.repo, { ...other, display_name: display }).name, display).toBe("someone/lean-thing");
+    }
   });
 
-  it("builds pinned GitHub source links, honouring src_dir and templates, and refuses unsafe parts", () => {
+  it("builds pinned GitHub source links only, honouring src_dir, and refuses unsafe parts", () => {
     const mathlib = libraryInfo("https://github.com/leanprover-community/mathlib4");
     expect(sourceUrl(mathlib, { commit: COMMIT, path: "Mathlib/A B.lean", line: 3, end_line: 9 }))
       .toBe(`https://github.com/leanprover-community/mathlib4/blob/${COMMIT}/Mathlib/A%20B.lean#L3-L9`);
@@ -506,18 +660,39 @@ describe("library registry", () => {
     const core = libraryInfo("https://github.com/leanprover/lean4");
     expect(sourceUrl(core, { commit: COMMIT, path: "Init/Core.lean", line: 1, end_line: 2 }))
       .toBe(`https://github.com/leanprover/lean4/blob/${COMMIT}/src/Init/Core.lean#L1-L2`);
+    // A universe's blob_url_template is ignored: a non-GitHub library gets no
+    // link, and a GitHub one keeps GitHub's blob scheme for its own repository.
     const custom = libraryInfo("https://git.example.org/lib", {
       id: "x", repo: "https://git.example.org/lib", commit: COMMIT,
       blob_url_template: "https://git.example.org/lib/-/blob/{commit}/{path}#L{line}",
     });
-    expect(sourceUrl(custom, { commit: COMMIT, path: "X.lean", line: 4, end_line: 8 }))
-      .toBe(`https://git.example.org/lib/-/blob/${COMMIT}/X.lean#L4`);
+    expect(sourceUrl(custom, { commit: COMMIT, path: "X.lean", line: 4, end_line: 8 })).toBeNull();
     expect(sourceUrl(libraryInfo("https://git.example.org/lib"), { commit: COMMIT, path: "X.lean", line: 1, end_line: 1 })).toBeNull();
+    const phish = libraryInfo("https://github.com/leanprover-community/mathlib4", {
+      id: "mathlib", repo: "https://github.com/leanprover-community/mathlib4", commit: COMMIT,
+      display_name: "Mathlib", blob_url_template: "https://phish.example/login?next={commit}{path}",
+    });
+    expect(sourceUrl(phish, { commit: COMMIT, path: "A.lean", line: 1, end_line: 1 }))
+      .toBe(`https://github.com/leanprover-community/mathlib4/blob/${COMMIT}/A.lean#L1`);
+    // "." and ".." are not owner or repository names.
+    for (const repo of ["https://github.com/../..", "https://github.com/a/..", "https://github.com/./b"]) {
+      const info = libraryInfo(repo);
+      expect(info.blobTemplate, repo).toBeNull();
+      expect(sourceUrl(info, { commit: COMMIT, path: "A.lean", line: 1, end_line: 1 }), repo).toBeNull();
+      expect(treeUrl(info, COMMIT), repo).toBeNull();
+      expect(repoHref(repo), repo).toBeNull();
+    }
+    expect(repoHref("https://git.example.org/lib")).toBe("https://git.example.org/lib");
+    expect(repoHref("https://github.com/a/b?x=1")).toBeNull();
+    expect(repoHref("http://github.com/a/b")).toBeNull();
+    expect(treeUrl(libraryInfo("https://github.com/a/b"), COMMIT)).toBe(`https://github.com/a/b/tree/${COMMIT}`);
     for (const path of ["../x.lean", "/abs.lean", "a//b.lean", "a\\b.lean", "a/./b.lean", ""]) {
       expect(sourceUrl(mathlib, { commit: COMMIT, path, line: 1, end_line: 1 }), path).toBeNull();
     }
     expect(sourceUrl(mathlib, { commit: "HEAD", path: "Mathlib/A.lean", line: 1, end_line: 1 })).toBeNull();
     expect(libraryInfo("https://github.com/a/b", { id: "b", repo: "https://github.com/a/b", commit: COMMIT, blob_url_template: "javascript:{commit}{path}" }).blobTemplate)
       .toBe("{repo}/blob/{commit}/{path}#L{line}-L{end_line}");
+    expect(libraryInfo("https://github.com/FormalFrontier/X").name).toBe("FormalFrontier · X");
+    expect(libraryInfo("https://github.com/formalfrontier/X").name).toBe("FormalFrontier · X");
   });
 });

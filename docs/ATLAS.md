@@ -34,7 +34,7 @@ would collide with every invariant at once. The plane avoids that:
 |---|---|
 | Writes `articles.annotations` and bumps `version` | Never writes annotations; its only D1 table is `atlas_feedback` |
 | 256 KB cap per article (`MAX_ANNOTATIONS_BYTES`) and 500 items | No cap: one static object per article |
-| `EDIT_LIMITER` on every write, 30/min | Reads are unlimited; only feedback writes take the limiter |
+| `EDIT_LIMITER` on every write, 30/min | Feedback writes take `EDIT_LIMITER`; a dashboard search takes the per-IP anonymous read budget (section 7); other reads are not limited, and index shards are cached per isolate |
 | Item identity: 12-hex ids, `findMatch` re-pairing, `findLostHuman` 422 | No identity coupling: keyed by Wikipedia page id and the producer's `location_key` |
 | The nightly moderation job reviews and may rewrite items | The nightly never reads or writes the store, so it cannot overwrite it |
 | `articles.revid` advances only with re-anchored annotations | The store pins its own revision per article and never moves `articles.revid` |
@@ -296,8 +296,12 @@ many times over.
 
 1. Build and `--check` the store from the sealed set on the operator machine.
 2. Upload every object except `current.json` (`universes/`, `records/`, `articles/`,
-   `index/`, `manifest.json`), keyed by its path. Universes are content-addressed, and
-   each article object is self-contained, naming its own campaign, universe and record
+   `index/`, `manifest.json`), keyed by its path, overwriting what is there. That
+   includes an existing `universes/<sha>.json`: the key is the producer's
+   `universe_sha256`, which covers the libraries' ids, commits and index shas but not the
+   display metadata beside them (`src_dir`, `display_name`, exclusions), so the object is
+   not content-addressed and a later campaign on the same frozen universe may change it.
+   Each article object is self-contained, naming its own campaign, universe and record
    set.
 3. Upload `current.json` last, then delete objects the new manifest no longer lists.
 
@@ -310,13 +314,13 @@ and who runs it is an open decision (section 14).
 
 | Route | Answer | Cache-Control |
 |---|---|---|
-| `GET /atlas[?q=]` | dashboard: totals by status, by library, by WikiProject importance; article list, searched server-side through the index shards (200 rows shown) | none (HTML, like other pages) |
+| `GET /atlas[?q=]` | dashboard: totals by status, by library (complete and incomplete locations), by WikiProject importance; article list with the libraries holding each article, searched server-side through the index shards (200 rows shown). A `q` search takes the anonymous read budget of `/api/brain/*` and `/mcp` (per IP, `MCP_LIMITER` else `BRAIN_API_LIMITER`, 120/min, key `atlas-q:<ip>`) and answers 429 over it | none (HTML, like other pages) |
 | `GET /atlas/:pageid[/:slug]` | one article's coverage page; the slug is cosmetic | none |
 | `GET /atlas/universe/:sha` | the universe's libraries, commits and exclusions | none |
 | `GET /api/atlas/current` | `current.json` | `public, max-age=60` |
 | `GET /api/atlas/article/:pageid` | the view model | `public, max-age=300` |
 | `GET /api/atlas/records/:pageid` | the raw records, `application/x-ndjson` | `public, max-age=300` |
-| `GET /api/atlas/universe/:sha` | the universe | `public, max-age=86400, immutable` |
+| `GET /api/atlas/universe/:sha` | the universe | `public, max-age=300` (not immutable: see section 6) |
 | `GET /api/atlas/index/:shard` | one index shard (used by the dashboard's live filter) | `public, max-age=300` |
 | `POST /api/atlas/feedback` | section 10 | none |
 | `GET /api/atlas/feedback/export` | section 10 | `no-store` |
@@ -327,6 +331,11 @@ configured"** (an HTML page or JSON, with `no-store`). A bound but empty store a
 answers 404. `atlas` was already in `RESERVED`, so no article can take the name. The
 security middleware (`src/security.ts`) adds its headers to every one of these responses.
 
+Parsed index shards are cached per isolate for 60 seconds (`INDEX_CACHE_MS` in
+`src/atlas.ts`), so the dashboard and the article box do not re-read and re-parse them on
+every view. A newly published store reaches them within a minute, the staleness
+`/api/atlas/current` already allows.
+
 ## 8. UI
 
 The UI is server-rendered (`wiki/src/atlas-render.ts`) with one small vanilla enhancement
@@ -334,38 +343,60 @@ The UI is server-rendered (`wiki/src/atlas-render.ts`) with one small vanilla en
 `wiki/scripts/build-public.ts`. The pages work without JavaScript, except Confirm/Report
 and the live list filter.
 
-- **Coverage strip.** Passages checked and Lean locations, a coverage bar whose segments
-  are filled with patterns (solid, hatched, dotted, cross-hatched, empty), and filter
-  chips by status and by library. A chip with a zero count is shown but inert. A library
-  with only related declarations is labelled "related only".
-- **Passage block.** The kind and prominence in a small heading, the section path, and a
-  status pill whose tooltip is a full sentence (also present as screen-reader text, for
-  example "Formalized: Mathlib states this exactly (proved)."). Then the quote with its
-  context, and a link to the passage in the pinned Wikipedia revision (a text fragment).
+- **Coverage strip.** Under a "Coverage" heading: passages checked and Lean locations, a
+  coverage bar whose segments are filled with patterns (solid, hatched, dotted,
+  cross-hatched, grey vertical hatch for undecided), and filter chips by status and by
+  library. Each status chip carries a swatch of its fill, so the chips are the bar's
+  legend. Status and library are two facets combined with AND ("Showing 0 of 4 passages:
+  Statement only, in Mathlib."); pressing a pressed chip clears its own facet. A chip with
+  a zero count is shown flat and inert, like the dashboard's totals legend. A library with
+  only related declarations is labelled "related only".
+- **Passage block.** Under a "Passages" heading, one `<h3>` per passage with its kind,
+  prominence and section path, beside a status pill (icon and word). A located passage
+  then says in visible text which location gives it its status, for example
+  "Formalized: Mathlib states this exactly (proved).", naming the store's `basis`, not
+  simply the rank-1 location. Then the quote with its context, and a link to the passage
+  in the pinned Wikipedia revision (a text fragment). The producer's item id
+  (`In-text #<hex>`) is a `data-item` attribute, not reader-facing text. Passage
+  permalinks (`#p-<hex>`) clear the sticky header (`scroll-margin-top`).
 - **Location card.** One card per location: library chip, `@<sha7>`, the relation in
   words (exact match, close match, more general, special case, states part, related), and
-  a proof-status badge. `statement only`, `wanted` and `axiom-dependent` are drawn as red
-  outlined alerts and are never hidden. Then the declaration (namespace faint, leaf bold,
+  a proof-status badge. `statement only`, `wanted` and `axiom-dependent` are drawn as
+  amber dashed alerts (the statement-only colour, not the not-formalized red) and are
+  never hidden. Then the declaration (namespace faint, leaf bold,
   wrapping at `.` and `_`), its module and lines, a convention note for close matches,
   the provenance line (rank, confidence, challenge), and "Source @<sha7>" linking
   `<repo>/blob/<commit>/<path>#L<line>-L<end_line>`.
 - **Absence:** "Searched N libraries in universe <id> (<frozen>) — not found", linking the
   universe page, with the receipt's counts. **Unresolved:** "Undecided", never counted as
   not formalized.
-- **Libraries** (`wiki/src/libraries.ts`). The universe entry's `display_name`,
-  `blob_url_template` and `src_dir` win. Then come the seeds (Mathlib, Lean core with
-  `src/`, Batteries, TauCeti, Formal Conjectures, atlas-lean), then the FormalFrontier
-  organisation pattern ("FormalFrontier · <repo>"), then any GitHub repository. A
-  non-GitHub repository without a template gets no source link rather than a guessed one.
+- **Dashboard.** The by-library table splits locations into complete (proved or a
+  definition) and incomplete (statement only, wanted, axiom-dependent), so a library that
+  only states results never reads like one that proves them. The article list has a
+  Libraries column (the index rows' `libraries`, as short names).
+- **Libraries** (`wiki/src/libraries.ts`, contract note 6). Names come from the seeds
+  (Mathlib, Lean core with `src/`, Batteries, TauCeti, Formal Conjectures, atlas-lean),
+  then the FormalFrontier organisation pattern ("FormalFrontier · <repo>"), then
+  owner/repo for any other GitHub repository. A universe entry's `display_name` is used
+  only for a repository the seeds do not name, and never when it has the form of a seeded
+  library's name. A universe's `blob_url_template` is ignored (the builder refuses it):
+  every source link is GitHub's blob scheme for the library's own repository, a
+  non-GitHub repository gets none, and owner or repository names `.` and `..` get none.
+  The universe's `src_dir` is kept.
 - **Accessibility.** Status is never shown by colour alone: each status has an icon, a word
-  and its own stroke (solid, dashed, dotted, double, dashed grey). Chips are real
+  and its own stroke (solid, dashed, dotted, double, grey groove). Chips are real
   buttons with `aria-pressed`, and filter results are announced through a status region.
-  The layout has 16px gutters on phones and no horizontal scroll. Colours are the
-  stylesheet's tokens, so dark mode follows the site toggle and the OS preference. The
-  browser soak (`wiki/e2e/atlas.spec.ts`) runs axe on the coverage page and dashboard in
-  light and dark mode, and on an article page with the box. It also drives the filters,
-  the feedback flow and the live search.
-- **Security.** All store text is escaped (`htmlEscape`). Links are built from validated
+  The layout has 16px gutters on phones and no horizontal page scroll; a wide table
+  scrolls sideways inside a labelled, focusable region ("Table: …"), with its row labels
+  sticky below 720px. Only `/atlas` itself marks the Atlas nav link `aria-current="page"`.
+  Colours are the stylesheet's tokens, so dark mode follows the site toggle and the OS
+  preference. The browser tests (`wiki/e2e/atlas.spec.ts`) run axe on the coverage page
+  and dashboard in light and dark mode, at desktop width and at 375px (with the universe
+  page, checking that the page never scrolls sideways), and on an article page with the
+  box. They also drive the filters, the feedback flow, the live search and a passage
+  permalink.
+- **Security.** All store text is escaped (`htmlEscape`), and every store number goes
+  through `int()`, so a string where a count belongs renders as 0, never as markup. Links are built from validated
   parts or parsed and required to be https, and paths with `..`, absolute or empty
   segments get no link. The pages have no inline event handlers, and `atlas.js` writes
   only through `textContent` and `createElement`. The pages keep two inline scripts
@@ -377,14 +408,18 @@ and the live list filter.
 
 When `ATLAS` is bound and the article's Wikipedia title has an index entry, the article
 page shows a compact box above the body: passages checked, counts by status, and "See
-where →" linking `/atlas/<pageid>/<slug>`. `serveArticle` adds it **per request**, like
+where →" linking `/atlas/<pageid>/<slug>`. The page's header badges count WikiLean's own
+annotations, so the box says its counts are separate from them ("Separately from this
+page's annotations, the atlas checked N passages of Wikipedia revision R…"), and when the
+atlas checked another revision than the page shows it adds "This page shows revision
+R′.". `serveArticle` adds it **per request**, like
 the staleness banner (`pages.ts injectAtlasSummary`), and never bakes it into
 `render:v18`. The atlas changes independently of `articles.version`, so a cached box
 would be stale for up to 30 days. The cached base bytes do not change, so **no render-cache
 key bump is needed**, and the legacy annotation rendering is untouched.
 
-The box costs one R2 read (one index shard) per article view when bound, and nothing when
-unbound. A store failure is logged and drops the box; it never breaks the page. The match
+The box costs at most one R2 read (one index shard, cached for a minute per isolate) per
+article view when bound, and nothing when unbound. A store failure is logged and drops the box; it never breaks the page. The match
 is by title, because D1 stores no page id, so a page renamed after the atlas build loses
 its box until the next build.
 
@@ -406,8 +441,12 @@ taken from the client. Until migration 0015 is applied, the route answers 503, n
 
 **`GET /api/atlas/feedback/export`** is for the pipeline bearer only (admin sessions get
 403). It returns every row as NDJSON, paged from D1, with users only as
-`sha256(user_id + PIPELINE_TOKEN)[:12]`, the research export's pseudonym scheme. The
-note is the only free text. The page tells signed-in readers that maintainers read
+`sha256("atlas-feedback\0" + user_id + PIPELINE_TOKEN)[:12]`. The domain prefix keeps
+these pseudonyms apart from the research export's `sha256(user_id + PIPELINE_TOKEN)[:12]`:
+this export carries notes, so a note that names its author must not let anyone join it to
+that person's pseudonymous annotation history in the research export. Within this export a
+person's pseudonym is stable, so their verdicts still group. The note is the only free
+text. The page tells signed-in readers that maintainers read
 notes. The export reads only D1, so it keeps working if the store is unbound.
 
 **Seeds.** Proposal §8.1 makes the maintainer's spot checks tier **G4** (up to 30 negatives
@@ -483,8 +522,9 @@ Each decision below comes with a recommendation.
    annotations, and the quote fields as CC BY-SA 4.0. Proposal §10 requires that wording
    for a CC0 consumer. Confirm it before launch.
 5. **Feedback export carries notes.** It is the one free-text field, unlike the research
-   export. *Recommendation:* keep it, because reasons make reports usable, and the form
-   says maintainers read notes.
+   export, and its pseudonyms are domain-separated from that export's (section 10) so the
+   two cannot be joined. *Recommendation:* keep the notes, because reasons make reports
+   usable, and the form says maintainers read notes.
 6. **Absence feedback is not built.** Readers cannot yet say "this is formalized, here"
    against a "not found". That is the safety metric's most valuable label
    (false-not-formalized, §8.2). It needs a passage-level key, for example
@@ -507,10 +547,14 @@ Each decision below comes with a recommendation.
   YAML, unknown statuses, non-string affixes), a YAML universe, and the CLI (exit codes
   2 and 3, and `--replace` refusing foreign content).
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
-  pages on the fixture store, 404s, escaping, feedback auth, origin, validation, size cap,
-  rate limit and missing table, the export, the article box with its cache isolation, the
-  readers, and the library registry.
+  pages on the fixture store, 404s, escaping and integer-only numbers, the headings, the
+  visible status sentence and its basis, the shard cache and the search limiter, feedback
+  auth, origin, validation, size cap, rate limit and missing table, the export and its
+  domain-separated pseudonyms, the article box with its cache isolation and revision
+  note, the readers, and the library registry (seeded names, ignored templates, dot
+  segments).
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
-- `wiki/e2e/atlas.spec.ts` (the non-required browser soak) runs axe in both colour schemes,
-  plus the filters, feedback, live search and the article box.
+- `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
+  schemes at desktop width and at 375px, plus the combined filters, feedback, live search,
+  a passage permalink and the article box.

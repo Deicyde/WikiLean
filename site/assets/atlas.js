@@ -35,33 +35,54 @@
     var note = article.querySelector(".atlas-filter-text");
     var clear = article.querySelector(".atlas-clear");
 
-    var applyFilter = function (filter, label) {
+    // Two independent facets: at most one status and at most one library,
+    // combined with AND ("Statement only, in Mathlib"). A second chip in the
+    // same row replaces the first; pressing a pressed chip clears its facet.
+    var active = { status: null, library: null };
+    var labels = { status: "", library: "" };
+    var chipWords = function (chip) {
+      // The chip's own words, without its icon, swatch and count spans.
+      return Array.prototype.filter.call(chip.childNodes, function (n) { return n.nodeType === 3; })
+        .map(function (n) { return n.textContent; }).join("").trim();
+    };
+    var applyFilter = function () {
       var shown = 0;
       passages.forEach(function (p) {
-        var ok = true;
-        if (filter) {
-          var cut = filter.indexOf(":");
-          var kind = filter.slice(0, cut), value = filter.slice(cut + 1);
-          if (kind === "status") ok = p.getAttribute("data-status") === value;
-          else if (kind === "library") ok = (" " + (p.getAttribute("data-libraries") || "") + " ").indexOf(" " + value + " ") !== -1;
-        }
+        var ok = (!active.status || p.getAttribute("data-status") === active.status) &&
+          (!active.library || (" " + (p.getAttribute("data-libraries") || "") + " ").indexOf(" " + active.library + " ") !== -1);
         p.hidden = !ok;
         if (ok) shown += 1;
       });
-      chips.forEach(function (c) { c.setAttribute("aria-pressed", c.getAttribute("data-filter") === filter ? "true" : "false"); });
-      if (note) note.textContent = filter ? "Showing " + shown + " of " + passages.length + " passages: " + label + "." : "";
-      if (clear) clear.hidden = !filter;
+      chips.forEach(function (c) {
+        var f = c.getAttribute("data-filter"), cut = f.indexOf(":");
+        c.setAttribute("aria-pressed", active[f.slice(0, cut)] === f.slice(cut + 1) ? "true" : "false");
+      });
+      var any = active.status || active.library;
+      var words = [];
+      if (active.status) words.push(labels.status);
+      if (active.library) words.push("in " + labels.library);
+      if (note) note.textContent = any ? "Showing " + shown + " of " + passages.length + " passages: " + words.join(", ") + "." : "";
+      if (clear) clear.hidden = !any;
     };
     chips.forEach(function (chip) {
       chip.addEventListener("click", function () {
-        var filter = chip.getAttribute("data-filter");
-        // The chip's own words, without its icon and count spans.
-        var label = Array.prototype.filter.call(chip.childNodes, function (n) { return n.nodeType === 3; })
-          .map(function (n) { return n.textContent; }).join("").trim();
-        applyFilter(chip.getAttribute("aria-pressed") === "true" ? null : filter, label);
+        var filter = chip.getAttribute("data-filter"), cut = filter.indexOf(":");
+        var kind = filter.slice(0, cut), value = filter.slice(cut + 1);
+        if (kind !== "status" && kind !== "library") return;
+        if (active[kind] === value) {
+          active[kind] = null;
+        } else {
+          active[kind] = value;
+          labels[kind] = chipWords(chip);
+        }
+        applyFilter();
       });
     });
-    if (clear) clear.addEventListener("click", function () { applyFilter(null, ""); });
+    if (clear) clear.addEventListener("click", function () {
+      active.status = null;
+      active.library = null;
+      applyFilter();
+    });
 
     // ---- Confirm / Report ----
     var pageid = Number(article.getAttribute("data-pageid"));
@@ -159,6 +180,8 @@
     var total = Number(table.getAttribute("data-total")) || 0;
     var shards = (table.getAttribute("data-shards") || "").split(/\s+/).filter(Boolean);
     var STATUSES = ["formalized", "statement_only", "partial", "not_formalized", "unresolved"];
+    var libraryNames = {};
+    try { libraryNames = JSON.parse(table.getAttribute("data-library-names") || "{}") || {}; } catch (e) { libraryNames = {}; }
     var LIMIT = 200;
     var all = null;
     var loading = false;
@@ -192,6 +215,15 @@
         td.setAttribute("data-status", s);
         tr.appendChild(td);
       });
+      var libs = el("td");
+      var ids = Array.isArray(entry.libraries) ? entry.libraries : [];
+      if (!ids.length) libs.appendChild(el("span", "atlas-muted", "none"));
+      ids.forEach(function (id, i) {
+        if (i) libs.appendChild(document.createTextNode(" "));
+        var name = Object.prototype.hasOwnProperty.call(libraryNames, id) ? libraryNames[id] : id;
+        libs.appendChild(el("span", "atlas-libtag", name));
+      });
+      tr.appendChild(libs);
       tr.appendChild(el("td", null, importance(entry.importance)));
       return tr;
     };
