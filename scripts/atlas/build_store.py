@@ -105,11 +105,15 @@ COVERAGE_BASIS = "coverage"
 # The reading of D1 the lead set in parity round three (2026-10-18), which resolves the open
 # questions Q1-Q3 (docs/ATLAS.md, check 6 and contract note 11; formal-companion
 # references/vocabulary.md §1.11): a survived claim acts, for derive_status, as ONE more location
-# of this relation whose declaration is the weakest of its parts (coverage_location).
+# of this relation, a fixed stand-in rather than any one part (coverage_location): a proved
+# declaration on the theorem row and a definition on the definition row when every part is
+# finished, a statement_only declaration on both rows otherwise.
 COVERAGE_ACTS_AS = "exactMatch"
 # Confirming a claim confirms its parts: in the view model, a part whose own challenge is one of
 # these (no challenge judged it on its own) reads survived once its claim survived. A part another
-# verdict judged keeps that verdict.
+# verdict judged keeps that verdict, and a challenge_pending part stays pending: a prominence
+# overturn to subject or central put it under a rule requiring its own verdict, and the reopen
+# wins over the claim (formal-companion review 4).
 CONFIRMED_WITH_CLAIM = frozenset({"not_required", "sampled_out"})
 # The challenge verdicts (proposal §2.7 and §5; cflib.vocab CHALLENGE_VERDICTS). The last three
 # are records no challenge judged (CHALLENGE_UNJUDGED), and the Worker reads each as unchallenged:
@@ -992,12 +996,15 @@ def part_finished(part: dict) -> bool:
 def coverage_location(row: str, parts: list[dict]) -> dict:
     """The one exactMatch location a survived claim acts as, on the theorem or definition row.
 
-    Its declaration is the weakest of the parts (finished above unfinished): when every part is
+    It is a fixed stand-in, not any one part's own proof status and flag: when every part is
     finished it is proved on the theorem row and data (definition, no flag) on the definition
     row, so the claim formalizes the passage on either row (so a data part counts, as an exact
     match to data does, Q2; and the definition row has the statement_only case an exact match to
     an unfinished declaration has, Q3); when any part is unfinished it is a statement_only
-    declaration on both rows.
+    declaration on both rows. Read literally, "the least finished part" would be wrong on the
+    definition row: a claim of proved parts formalizes a definition passage, where an exact match
+    to a proved theorem is partial, and one with a Prop-valued-definition part is statement_only,
+    where an exact match to that definition formalizes it.
     """
     if not all(part_finished(part) for part in parts):
         proof_status = "statement_only"
@@ -1039,8 +1046,8 @@ def derive_status(kind: str, locations: list[dict], coverage: dict | None = None
     open, decision D1 among them): each location that counts gets a status from its kind's
     row of the table, an example or `other` passage taking the better of the two rows; a
     survived coverage claim over the passage's hasPart locations counts as one more exactMatch
-    location, to the weakest of its parts (coverage_location, coverage_status); and the passage
-    takes the best of them. `locations` are in rank order.
+    location, a fixed stand-in that is finished only when every part is (coverage_location,
+    coverage_status); and the passage takes the best of them. `locations` are in rank order.
 
     Returns (status, basis): the one status the producer stamps, and what justifies it: the
     highest-ranked location reaching it, or COVERAGE_BASIS when only the coverage claim
@@ -1149,9 +1156,12 @@ def confirmed_parts(claim: dict, locations: list[dict]) -> list[dict]:
     Confirming a coverage claim confirms its parts (the round-three reading of D1): a part whose
     own challenge is not_required or sampled_out (CONFIRMED_WITH_CLAIM) reads survived once the
     claim survived. A part another verdict judged keeps it (downgraded, survived), as does one
-    still owed a challenge (challenge_pending), and a claim that did not survive confirms nothing.
-    A producer that already stamps its parts survived gets the same view, so the rule is applied
-    here whichever value the part's records carry; the records themselves are copied verbatim.
+    still owed a challenge (challenge_pending: a prominence overturn to subject or central in the
+    claim's run put it under a rule requiring its own verdict, and the reopen wins over the claim,
+    as the producer's outcomes.confirm_parts runs after its _reopen), and a claim that did not
+    survive confirms nothing. A producer that already stamps its parts survived gets the same
+    view, so the rule is applied here whichever value the part's records carry; the records
+    themselves are copied verbatim.
     """
     if claim["challenge"] != COVERAGE_SURVIVED:
         return locations

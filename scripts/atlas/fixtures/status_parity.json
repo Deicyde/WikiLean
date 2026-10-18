@@ -2603,6 +2603,51 @@
     "challenge": "survived",
     "complete": true,
     "parts": [
+     "k1",
+     "k2",
+     "k3"
+    ]
+   },
+   "expected": "formalized",
+   "expected_challenges": {
+    "k1": "challenge_pending",
+    "k2": "challenge_pending",
+    "k3": "survived"
+   },
+   "id": "P05",
+   "locations": [
+    {
+     "challenge": "challenge_pending",
+     "location_key": "k1",
+     "proof_status": "proved",
+     "relation": "hasPart",
+     "statement": false
+    },
+    {
+     "challenge": "challenge_pending",
+     "location_key": "k2",
+     "proof_status": "proved",
+     "relation": "hasPart",
+     "statement": false
+    },
+    {
+     "challenge": "survived",
+     "location_key": "k3",
+     "proof_status": "proved",
+     "relation": "hasPart",
+     "statement": false
+    }
+   ],
+   "passage_kind": "theorem",
+   "rule": "round 3, review 4: the reopen wins: parts a prominence overturn in the same run reopened stay challenge_pending under a confirmed claim, a part its own verdict judged keeps it, and the claim still formalizes",
+   "table": "new"
+  },
+  {
+   "absent": false,
+   "coverage": {
+    "challenge": "survived",
+    "complete": true,
+    "parts": [
      "k1"
     ]
    },
@@ -3078,9 +3123,9 @@
   "absent": "the passage has a checked absence",
   "coverage": "null, or the passage's coverage claim as an exported record carries it (extensions[locate].coverage): exactly complete, parts (location keys of hasPart locations) and challenge (a record challenge value; a claim no challenge judged yet is passed as no claim)",
   "expected": "the derived status, or null for no status (unresolved)",
-  "expected_challenges": "optional: {location_key: the challenge value the location's exported record carries}. Confirming a claim (challenge survived) confirms its parts: each part whose own record is not_required or sampled_out is exported survived, a part a verdict judged keeps that verdict, and no other location changes; a refuted claim (downgraded) confirms nothing. So in an exported record set every part of a survived claim is survived",
+  "expected_challenges": "optional: {location_key: the challenge value the location's exported record carries}. Confirming a claim (challenge survived) confirms its parts: each part whose own record is not_required or sampled_out is exported survived, a part a verdict judged keeps that verdict, a part a prominence overturn to subject or central in the same run reopened (challenge_pending) stays challenge_pending, and no other location changes; a refuted claim (downgraded) confirms nothing. So in an exported record set every part of a survived claim is survived, or challenge_pending when the reopen made it so",
   "locations": "the passage's surviving locations after challenge: location_key, relation, proof_status (joined from the library index), statement (the Prop-valued definition flag)",
-  "locations[].challenge": "optional, on the cases with expected_challenges only: the challenge value of the location's own record before the claim's verdict (the plan's not_required or sampled_out, or a verdict's survived); derive_status does not read it",
+  "locations[].challenge": "optional, on the cases with expected_challenges only: the challenge value of the location's own record when the claim's verdict is applied, after any reopen (the plan's not_required or sampled_out, a verdict's survived, or challenge_pending for a record a prominence overturn to subject or central in the same run reopened, as in P05); derive_status does not read it",
   "locations[].location_key": "distinct within a case: a key on two locations is refused",
   "passage_kind": "the passage's kind (cflib.vocab.PASSAGE_KINDS)",
   "question": "a case whose expectation turns on one of the questions Q1-Q3 of the decision's reading (references/vocabulary.md section 1.11 of the skill), open in rounds 1 and 2 and resolved in round 3: a survived claim is one more exactMatch location, finished (proved; data) or unfinished (statement_only, wanted, axiom_dependent; a Prop-valued definition)",
@@ -3094,7 +3139,7 @@
    "Q3"
   ],
   "round": 3,
-  "text": "A survived coverage claim acts, for the derived status, exactly like one more exactMatch location. It is finished when every part is (proved, or data: a definition without the statement flag): a proved declaration to the theorem row and a definition to the definition row, so formalized on either. Otherwise (a part statement_only, wanted, axiom_dependent, or a Prop-valued definition) it is statement_only on both rows. Example and other passages are judged on both rows, the better winning, and the best status over all the evidence wins; a claim that is not survived adds nothing. Confirming a claim confirms its parts: each part whose own record no verdict judged (not_required, sampled_out) is survived, and a part a verdict judged keeps that verdict."
+  "text": "A survived coverage claim acts, for the derived status, exactly like one more exactMatch location. It is finished when every part is (proved, or data: a definition without the statement flag): a proved declaration to the theorem row and a definition to the definition row, so formalized on either. Otherwise (a part statement_only, wanted, axiom_dependent, or a Prop-valued definition) it is statement_only on both rows. Example and other passages are judged on both rows, the better winning, and the best status over all the evidence wins; a claim that is not survived adds nothing. Confirming a claim confirms its parts: each part whose own record no verdict judged (not_required, sampled_out) is survived, and a part a verdict judged keeps that verdict. The reopen wins: a part a prominence overturn to subject or central in the same run put under a rule requiring it is challenge_pending, owed its own verdict, and stays so; the claim stays survived and the status is unchanged."
  },
  "schema": "cf-locate-status-parity/1"
 }

@@ -34,7 +34,7 @@ PRODUCER_TABLE = HERE / "fixtures" / "producer_derive_status.json"
 # The parity table both sides run: formal-companion's tests/data/locate/status-parity.json at
 # the commit docs/ATLAS.md section 3, check 6 names, byte for byte.
 SHARED_TABLE = HERE / "fixtures" / "status_parity.json"
-SHARED_TABLE_SHA256 = "0ee06d561c4ee1ef5a3464ff971218b362861d20fc4f21ebe6e412d58deade3a"
+SHARED_TABLE_SHA256 = "0e8d8adbabdb66e32eaa262e55dfa1e098beb6670b7324c59fae42d3b98edda4"
 LOCATE = build_store.LOCATE
 # How a stamped status that differs from the recomputed one is refused.
 DERIVES = "the derived-status rules (proposal §2.6 and vocabulary.md §1.11) derive"
@@ -371,7 +371,7 @@ class SharedParityTableTests(unittest.TestCase):
         # the challenge value every location's exported record carries; the view model shows
         # exactly that, through build_store.confirmed_parts (what build_passages calls).
         cases = [case for case in self.doc["cases"] if "expected_challenges" in case]
-        self.assertGreaterEqual(len(cases), 4)
+        self.assertGreaterEqual(len(cases), 5)
         for case in cases:
             with self.subTest(case=case["id"]):
                 self.assertNotEqual(_shared_case_status(case), "refused")
@@ -383,6 +383,14 @@ class SharedParityTableTests(unittest.TestCase):
                     {**coverage, "parts": [_hex_key(key) for key in coverage["parts"]]}, locations)
                 self.assertEqual({loc["location_key"]: loc["challenge"] for loc in shown},
                                  {_hex_key(key): value for key, value in case["expected_challenges"].items()})
+        # Review four: the reopen wins. A part a prominence overturn to subject or central reopened
+        # in the claim's own run (challenge_pending) stays pending under a survived claim (P05).
+        reopened = [case["id"] for case in cases
+                    if (case["coverage"] or {}).get("challenge") == "survived"
+                    and any(loc["challenge"] == "challenge_pending" and loc["location_key"] in case["coverage"]["parts"]
+                            and case["expected_challenges"][loc["location_key"]] == "challenge_pending"
+                            for loc in case["locations"])]
+        self.assertIn("P05", reopened)
 
     def test_the_inputs_parity_round_one_found_apart_are_refused(self):
         # Round one (2026-10-18) found the two sides apart on three inputs no export carries: an
@@ -913,10 +921,12 @@ class CoverageTests(SetCopyTest):
                     self.refuse(f"the records say {wrong}, but {DERIVES} {expected} for a {kind} passage")
 
     # The round-three reading of D1 (docs/ATLAS.md check 6, resolving Q1-Q3): a survived claim
-    # counts as one more exactMatch location to the weakest of its parts. Finished parts are
-    # proved ones and data (a definition without the statement flag); unfinished ones are
-    # statement_only, wanted and axiom_dependent, and a Prop-valued definition (the flag set).
-    # Every part finished: formalized, on either row. Any part unfinished: statement only.
+    # counts as one more exactMatch location, a fixed stand-in rather than any one part. Finished
+    # parts are proved ones and data (a definition without the statement flag); unfinished ones
+    # are statement_only, wanted and axiom_dependent, and a Prop-valued definition (the flag set).
+    # Every part finished: a proved declaration on the theorem row and a definition on the
+    # definition row, so formalized on either. Any part unfinished: a statement_only declaration
+    # on both rows, so statement only.
     def test_theorem_parts(self):
         # Q2: a data part counts as finished, as an exact match to data formalizes a theorem; a
         # Prop-valued definition is unfinished whatever its proof_status.

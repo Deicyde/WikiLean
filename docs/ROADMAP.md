@@ -1336,14 +1336,22 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   smoke-2 export built under D1 (`smoke-2-d1`, 331 passages) gives the skill's status for
   every passage.
   Parity round three: the lead's reading of D1 resolves Q1–Q3. A survived claim counts as
-  one more exactMatch location at its weakest part: formalized on either row when every
-  part is proved or data, statement only when any part is unfinished (a Prop-valued
-  definition included), and an `example` or `other` passage takes the better row.
+  one more exactMatch location, a fixed stand-in rather than any one part: a proved
+  declaration on the theorem row and a definition on the definition row when every part is
+  proved or data (formalized on either row), a statement_only declaration on both rows when
+  any part is unfinished (a Prop-valued definition included), and an `example` or `other`
+  passage takes the better row.
   Confirming a claim confirms its parts, so the view model shows a survived claim's
   `not_required` and `sampled_out` parts as survived. The skill's table (117 cases) is
   re-pinned and the producer table regenerated at `3225e95` (394 coverage answers changed,
   none outside a survived claim). The smoke-2 re-export at that commit (`recordset-d1c`,
   331 passages, no claims) builds with the skill's status for every passage.
+  Review four: the reopen wins. A part a prominence overturn to subject or central reopened
+  in the claim's own run stays `challenge_pending` under a survived claim; WikiLean already
+  read it so, and the producer (`4fc2aa0`) now confirms parts after the reopen. The skill's
+  table (118 cases, P05 the reopen) is re-pinned, the producer table regenerated at
+  `4fc2aa0` with every answer unchanged, and the docs' "weakest part" wording replaced by
+  the fixed stand-in it always was.
 
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
   (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
