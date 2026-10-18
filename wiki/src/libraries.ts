@@ -8,12 +8,15 @@
 // contract note 6). A library is named by the seeds below, then the
 // FormalFrontier organisation pattern, then owner/repo for any other GitHub
 // repository. A universe entry's display_name is used only for a repository
-// that is not seeded, and never when it would name a seeded library, so a
-// universe cannot relabel some repository as Mathlib. Every "Source @sha7"
+// that is not seeded, only when it is plain printable ASCII (no invisible or
+// look-alike character), and never when its skeleton contains a seeded
+// library's, so a universe cannot relabel some repository as Mathlib, even as
+// "Mathlib\u200b", "M\u0430thlib", "MathIib" or "Mathlib 4". Every "Source @sha7"
 // link uses GitHub's blob scheme for the library's own github.com/<owner>/<repo>:
 // a universe's blob_url_template is ignored (the builder refuses one), and a
-// non-GitHub repository gets no source link rather than a guessed one. The
-// universe's src_dir (the directory a record's path is relative to) is kept.
+// non-GitHub repository gets no source link rather than a guessed one, and no
+// repository link either. The universe's src_dir (the directory a record's
+// path is relative to) is kept.
 
 export interface UniverseLibrary {
   id: string;
@@ -42,9 +45,6 @@ export interface LibraryInfo {
 
 const GITHUB_BLOB = "{repo}/blob/{commit}/{path}#L{line}-L{end_line}";
 const GITHUB_RE = /^https:\/\/github\.com\/([A-Za-z0-9_.-]{1,100})\/([A-Za-z0-9_.-]{1,100})$/;
-// A repository URL as build_store.REPO_RE accepts it: https, a dotted host, one
-// to four path segments, no query or fragment.
-const REPO_RE = /^https:\/\/[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+(?:\/[A-Za-z0-9_.~-]{1,100}){1,4}$/;
 
 const dotSegment = (part: string) => part === "." || part === "..";
 
@@ -56,10 +56,11 @@ function githubParts(repo: string): [string, string] | null {
   return [match[1], match[2]];
 }
 
-// The repository itself as a link target (the universe page), or null.
+// The repository itself as a link target (the universe page), or null. Only a
+// github.com/<owner>/<repo> repository is linked, as source and tree links are:
+// a universe may name any https host, and the page shows that one as text.
 export function repoHref(repo: string): string | null {
-  if (!REPO_RE.test(repo) || repo.split("/").slice(3).some(dotSegment)) return null;
-  return repo;
+  return githubParts(repo) ? repo : null;
 }
 
 interface Seed {
@@ -89,12 +90,35 @@ export function repoKey(repo: string): string {
 
 const SEED_BY_KEY = new Map(SEEDS.map((seed) => [repoKey(seed.repo), seed]));
 
-// Comparison form of a library name: lowercase, single spaces, no trailing
-// "(qualifier)". A display_name with the form of a seed's name is not used.
-function nameForm(name: string): string {
-  return name.replace(/\s*\([^)]*\)\s*$/, "").replace(/\s+/g, " ").trim().toLowerCase();
+// A display_name the page may show: printable ASCII letters, digits, spaces and
+// a few marks, the same pattern as build_store.DISPLAY_NAME_RE (which refuses a
+// set holding any other name). No zero-width, soft-hyphen, Cyrillic or other
+// look-alike character gets in.
+const DISPLAY_NAME_RE = /^[A-Za-z0-9 ,.()\u00b7/+:'&_-]{1,100}$/;
+
+// A name's skeleton: lowercase letters and digits only, with the ASCII
+// look-alikes folded together ("I", "i" and "1" read as "l", "0" as "o", "rn"
+// as "m", "vv" as "w"), so "MathIib", "Math-lib" and "Mathlib 4" share
+// "Mathlib"'s skeleton.
+function skeleton(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, "")
+    .replace(/rn/g, "m").replace(/vv/g, "w").replace(/[i1]/g, "l").replace(/0/g, "o");
 }
-const SEED_NAMES = new Set(SEEDS.flatMap((seed) => [seed.name, seed.name.replace(/\s*\([^)]*\)\s*$/, "")]).map(nameForm));
+// A name without a trailing "(qualifier)": the chip label.
+function withoutQualifier(name: string): string {
+  return name.replace(/\s*\([^)]*\)\s*$/, "");
+}
+// The skeletons of every seeded name, with and without its "(qualifier)".
+const SEED_SKELETONS = [...new Set(SEEDS.flatMap((seed) => [seed.name, withoutQualifier(seed.name)]).map(skeleton))];
+const FORMAL_FRONTIER = skeleton("FormalFrontier");
+
+// A display_name names another library when its skeleton contains a seeded
+// name's skeleton, or FormalFrontier's for a repository outside that
+// organisation. Containment, not equality: "Mathlib 4 (official)" is refused.
+function claimsAnotherLibrary(display: string, formalFrontier: boolean): boolean {
+  const form = skeleton(display);
+  return SEED_SKELETONS.some((seed) => form.includes(seed)) || (!formalFrontier && form.includes(FORMAL_FRONTIER));
+}
 
 function cleanRepo(repo: string): string {
   return repo.trim().replace(/\/+$/, "").replace(/\.git$/i, "");
@@ -109,13 +133,16 @@ export function libraryInfo(repo: string, entry?: UniverseLibrary | null): Libra
   const blobTemplate: string | null = github ? GITHUB_BLOB : null;
   let srcDir: string | null = seed?.srcDir ?? null;
   if (entry) {
-    const display = typeof entry.display_name === "string" ? entry.display_name.replace(/\s+/g, " ").trim() : "";
+    const display = typeof entry.display_name === "string" ? entry.display_name.replace(/ +/g, " ").trim() : "";
+    // Chips show the name without its "(qualifier)", so that form is checked too.
     // "FormalFrontier · …" names belong to the FormalFrontier organisation.
-    const claimsFormalFrontier = !ff && /^formal\s*frontier\b/i.test(display);
-    if (!seed && display && !SEED_NAMES.has(nameForm(display)) && !claimsFormalFrontier) name = display;
+    const claims = (form: string) => claimsAnotherLibrary(form, ff !== null);
+    if (!seed && display && DISPLAY_NAME_RE.test(display) && !claims(display) && !claims(withoutQualifier(display))) {
+      name = display;
+    }
     if (typeof entry.src_dir === "string" && safeRelativePath(entry.src_dir)) srcDir = entry.src_dir;
   }
-  const short = name.replace(/\s*\([^)]*\)\s*$/, "") || name;
+  const short = withoutQualifier(name) || name;
   return { repo: clean, name, short, blobTemplate, srcDir };
 }
 

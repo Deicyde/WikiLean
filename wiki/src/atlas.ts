@@ -51,6 +51,9 @@ export interface AtlasLocation {
   end_line: number;
   relation: string;
   proof_status: string;
+  // The library index's flag for a Prop-valued definition (proposal §2.4): it
+  // states a theorem without proving it. Absent from stores built before it.
+  statement?: boolean;
   rank: number;
   confidence: string;
   challenge: string;

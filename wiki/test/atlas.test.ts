@@ -7,18 +7,20 @@
 // box per request without touching the cached base page.
 
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
 import {
   setup, get, post, blockNetwork, PIPELINE_TOKEN, REVID, SLUG, ORIGIN, type Harness,
 } from "./helpers/harness.js";
 import {
-  atlasFixtureFiles, bindAtlas, fixtureArticle, FIXTURE_CAMPAIGN, FIXTURE_UNIVERSE_SHA, GADGET_PAGEID, WIDGET_PAGEID,
+  ATLAS_STORE_ROOT, atlasFixtureFiles, bindAtlas, fixtureArticle, FIXTURE_CAMPAIGN, FIXTURE_UNIVERSE_SHA, GADGET_PAGEID,
+  WIDGET_PAGEID,
 } from "./helpers/atlas.js";
 import {
   ATLAS_PSEUDONYM_DOMAIN, INDEX_CACHE_MS, atlasHref, kvReader, loadArticle, loadIndexShard, lookupTitle, memoryReader,
   parsePageid, staticReader, titleKey, titleShard,
 } from "../src/atlas.js";
-import { atlasSummaryBox } from "../src/atlas-render.js";
+import { atlasSummaryBox, locationStatus } from "../src/atlas-render.js";
 import { libraryInfo, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectAtlasSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
@@ -349,6 +351,69 @@ describe("atlas pages with the fixture store", () => {
     expect(dashboard).toContain("0 articles · 5 passages");
   });
 
+  it("a universe list that is not an array never reaches the HTML and never breaks a page", async () => {
+    const universePath = `atlas/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`;
+    const cases: Array<[string, (u: Record<string, unknown>) => void]> = [
+      ["excluded with a hostile length", (u) => { u.excluded = { length: "<img src=x onerror=alert(document.domain)>" }; }],
+      ["no excluded key", (u) => { delete u.excluded; }],
+      ["libraries with a hostile length", (u) => { u.libraries = { length: "<b>9</b>" }; }],
+      ["non-object entries", (u) => { u.libraries = [null, 5, { id: "x" }]; u.excluded = [null, "x"]; }],
+    ];
+    for (const [label, edit] of cases) {
+      const h = setup();
+      const files = atlasFixtureFiles();
+      const universe = JSON.parse(files.get(universePath)!);
+      edit(universe);
+      files.set(universePath, JSON.stringify(universe));
+      bindAtlas(h.env, files);
+      const page = await get(h.env, `/atlas/${WIDGET_PAGEID}`);
+      const universePage = await get(h.env, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`);
+      expect(page.status, label).toBe(200);
+      expect(universePage.status, label).toBe(200);
+      for (const html of [await page.text(), await universePage.text()]) {
+        expect(html, label).not.toContain("<img src=x");
+        expect(html, label).not.toContain("<b>9</b>");
+        expect(html, label).not.toContain(" excluded<");
+      }
+    }
+    const h = bound();
+    expect(await (await get(h.env, `/atlas/${WIDGET_PAGEID}`)).text()).toContain("5 libraries, frozen 2026-10-17, 1 excluded");
+  });
+
+  it("a passage whose only locations are related is undecided and keeps its related declarations", async () => {
+    // build_store's reading of proposal §2.6 "(none)": records without a status.
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+    const passage = article.passages[0];
+    Object.assign(passage, { outcome: "unresolved", status: null, basis: null, unresolved: { challenge: "downgraded" } });
+    for (const loc of passage.locations) loc.relation = "relatedMatch";
+    files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+    bindAtlas(h.env, files);
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    const block = html.slice(html.indexOf('<li class="atlas-passage" id="p-3fa91c07"'), html.indexOf("</li>", html.indexOf('id="p-3fa91c07"')));
+    expect(block).toContain('data-status="unresolved"');
+    expect(block).toContain("Related, but states something else");
+    expect(block).toContain("Widget.<wbr>");
+    expect(block).toContain("Undecided — the pipeline could not settle");
+    expect(block).not.toContain('class="atlas-why"');
+    expect(block).not.toContain('<div class="atlas-cards">');
+  });
+
+  it("a Prop-valued definition (the statement flag) is named as one", async () => {
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+    const loc = article.passages[1].locations[0];
+    Object.assign(loc, { proof_status: "definition", statement: true });
+    article.passages[1].basis = undefined;  // the fallback reads the flag too
+    files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+    bindAtlas(h.env, files);
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    expect(html).toContain('<p class="atlas-why">Statement only: TauCeti states this exactly (a Prop-valued definition: it states the claim without proving it).</p>');
+    expect(html).toContain(">Prop definition</span>");
+  });
+
   it("unknown page ids are a 404 page; non-numeric ids fall through to the plain 404", async () => {
     const h = bound();
     const missing = await get(h.env, "/atlas/9999");
@@ -368,6 +433,20 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<div class="atlas-table-wrap" role="region" tabindex="0" aria-label="Table: Libraries of universe u-fixture">');
     expect(html).toContain('<a href="https://github.com/leanprover-community/mathlib4" rel="noopener">github.com/leanprover-community/mathlib4</a>');
     expect(html).not.toContain('aria-current="page"');
+  });
+
+  it("the universe page links GitHub repositories only and names any other host as text", async () => {
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const universePath = `atlas/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`;
+    const universe = JSON.parse(files.get(universePath)!);
+    universe.libraries[4].repo = "https://evil.example.com/phish";
+    files.set(universePath, JSON.stringify(universe));
+    bindAtlas(h.env, files);
+    const html = await (await get(h.env, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`)).text();
+    expect(html).toContain("<td>https://evil.example.com/phish</td>");
+    expect(html).not.toContain('href="https://evil.example.com');
+    expect(html).toContain('<a href="https://github.com/leanprover/lean4" rel="noopener">');
   });
 
   it("signed-in viewers get Confirm / Report controls showing their own verdict", async () => {
@@ -651,6 +730,28 @@ describe("library registry", () => {
     }
   });
 
+  it("a display_name cannot read as a seeded library through invisible or look-alike characters", () => {
+    const repo = "https://github.com/evil-org/lean-stuff";
+    const entry = { id: "x", repo, commit: COMMIT };
+    const spoofs = [
+      "Mathlib\u200b", "M\u0430thlib", "Mathlib\u00ad", "Batteries\u200b", "Lean core\u2060", "\ufeffMathlib",
+      "Mathlib4", "Mathlib 4", "MathIib", "Math1ib", "Math-lib", "mathlib4 (leanprover-community)",
+      "leanprover-community/mathlib4", "Tau Ceti", "Formal Conjectures fork", "Atlas", "Lean\tcore",
+      "Formal Frontier tools", "Bat-teries (official)", "x".repeat(101),
+    ];
+    for (const display_name of spoofs) {
+      const info = libraryInfo(repo, { ...entry, display_name });
+      expect([info.name, info.short], JSON.stringify(display_name)).toEqual(["evil-org/lean-stuff", "evil-org/lean-stuff"]);
+    }
+    for (const display_name of ["Lean Thing (fork)", "Widget theory (FF · fork), v2", "Category theory: extras"]) {
+      expect(libraryInfo(repo, { ...entry, display_name }).name, display_name).toBe(display_name);
+    }
+    // A FormalFrontier repository may say so; another may not.
+    const ff = { id: "w", repo: "https://github.com/FormalFrontier/WidgetTheory", commit: COMMIT };
+    expect(libraryInfo(ff.repo, { ...ff, display_name: "FormalFrontier · Widgets" }).name).toBe("FormalFrontier · Widgets");
+    expect(libraryInfo(ff.repo, { ...ff, display_name: "Mathlib widgets" }).name).toBe("FormalFrontier · WidgetTheory");
+  });
+
   it("builds pinned GitHub source links only, honouring src_dir, and refuses unsafe parts", () => {
     const mathlib = libraryInfo("https://github.com/leanprover-community/mathlib4");
     expect(sourceUrl(mathlib, { commit: COMMIT, path: "Mathlib/A B.lean", line: 3, end_line: 9 }))
@@ -682,7 +783,11 @@ describe("library registry", () => {
       expect(treeUrl(info, COMMIT), repo).toBeNull();
       expect(repoHref(repo), repo).toBeNull();
     }
-    expect(repoHref("https://git.example.org/lib")).toBe("https://git.example.org/lib");
+    // Only a github.com/<owner>/<repo> repository is a link (the universe page).
+    expect(repoHref("https://git.example.org/lib")).toBeNull();
+    expect(repoHref("https://evil.example.com/phish")).toBeNull();
+    expect(repoHref("https://github.com/a/b/c")).toBeNull();
+    expect(repoHref("https://github.com/a/b")).toBe("https://github.com/a/b");
     expect(repoHref("https://github.com/a/b?x=1")).toBeNull();
     expect(repoHref("http://github.com/a/b")).toBeNull();
     expect(treeUrl(libraryInfo("https://github.com/a/b"), COMMIT)).toBe(`https://github.com/a/b/tree/${COMMIT}`);
@@ -694,5 +799,29 @@ describe("library registry", () => {
       .toBe("{repo}/blob/{commit}/{path}#L{line}-L{end_line}");
     expect(libraryInfo("https://github.com/FormalFrontier/X").name).toBe("FormalFrontier · X");
     expect(libraryInfo("https://github.com/formalfrontier/X").name).toBe("FormalFrontier · X");
+  });
+});
+
+describe("derived status rows", () => {
+  // scripts/atlas/fixtures/producer_derive_status.json: formal-companion's own
+  // cflib.vocab.derive_status answers (make_producer_table.py). The page's
+  // fallback for a store without `basis` must read the table the same way.
+  const table = JSON.parse(readFileSync(`${ATLAS_STORE_ROOT}/../producer_derive_status.json`, "utf8")) as {
+    cases: Array<[string, Array<[string, string, boolean]>, string | null]>;
+  };
+  const rank: Record<string, number> = { formalized: 0, statement_only: 1, partial: 2 };
+
+  it("locationStatus gives the producer's status for every case it does not refuse", () => {
+    const wrong: unknown[] = [];
+    for (const [kind, ends, expected] of table.cases) {
+      if (expected === "refused") continue;
+      const statuses = ends
+        .map(([relation, proof_status, statement]) => locationStatus(kind, { relation, proof_status, statement } as never))
+        .filter((s): s is "formalized" | "statement_only" | "partial" => s !== null);
+      const best = statuses.length ? statuses.reduce((a, b) => (rank[b] < rank[a] ? b : a)) : null;
+      if (best !== expected) wrong.push([kind, ends, expected, best]);
+    }
+    expect(table.cases.length).toBeGreaterThan(700);
+    expect(wrong).toEqual([]);
   });
 });

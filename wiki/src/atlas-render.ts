@@ -34,6 +34,15 @@ function count(value: unknown): number {
 }
 // The same, as the text that goes into the HTML.
 const int = (value: unknown) => String(count(value));
+// A store list: anything but an array is empty, so a corrupt object never
+// throws (a 500) and never reaches the HTML through a "length".
+function list<T>(value: T[] | null | undefined): T[] {
+  return Array.isArray(value) ? value : [];
+}
+// The universe's libraries that name a repository (the builder writes no other).
+function universeLibraries(universe: AtlasUniverse | null): UniverseLibrary[] {
+  return list(universe?.libraries).filter((lib) => lib !== null && typeof lib === "object" && typeof lib.repo === "string");
+}
 
 function plural(n: number, one: string, many: string): string {
   return `${n} ${n === 1 ? one : many}`;
@@ -71,6 +80,8 @@ const RELATION_PHRASE: Record<string, string> = {
 const PROOF: Record<string, { label: string; phrase: string; alert: boolean }> = {
   proved: { label: "proved", phrase: "proved", alert: false },
   definition: { label: "definition", phrase: "a definition", alert: false },
+  // A definition with the library index's statement flag (proposal §2.4).
+  prop_definition: { label: "Prop definition", phrase: "a Prop-valued definition: it states the claim without proving it", alert: false },
   statement_only: { label: "statement only", phrase: "statement only: the proof is not finished", alert: true },
   wanted: { label: "wanted", phrase: "wanted: stated as a goal, with no proof", alert: true },
   axiom_dependent: { label: "axiom-dependent", phrase: "depends on an axiom beyond the standard three", alert: true },
@@ -83,11 +94,38 @@ const CHALLENGE: Record<string, string> = {
 };
 const IMPORTANCE_ORDER = ["top", "high", "mid", "low", "bottom", "na", "unknown"];
 
-// Proposal §2.6's relation groups, as scripts/atlas/build_store.py names them.
-const STRONG = new Set(["exactMatch", "closeMatch", "broadMatch"]);
-const PARTIAL_RELATIONS = new Set(["hasPart", "narrowMatch", "broadMatch"]);
-const COMPLETE_PROOFS = new Set(["proved", "definition"]);
+// Proposal §2.6's table per location, as scripts/atlas/build_store.py ports it
+// from formal-companion's cflib.vocab.derive_status (docs/ATLAS.md, check 6).
+const PART_RELATIONS = new Set(["hasPart", "narrowMatch"]);
 const UNPROVED = new Set(["statement_only", "wanted", "axiom_dependent"]);
+const THEOREM_KINDS = new Set(["theorem", "conjecture"]);
+const DEFINITION_KINDS = new Set(["definition", "construction", "notation"]);
+const EITHER_KINDS = new Set(["example", "other"]);
+type LocatedStatus = "formalized" | "statement_only" | "partial";
+const LOCATED_RANK: Record<LocatedStatus, number> = { formalized: 0, statement_only: 1, partial: 2 };
+
+function theoremRow(loc: AtlasLocation): LocatedStatus {
+  if (PART_RELATIONS.has(loc.relation)) return "partial";
+  if (loc.statement === true) return "statement_only";
+  if (loc.proof_status === "proved") return "formalized";
+  return UNPROVED.has(loc.proof_status) ? "statement_only" : "partial";
+}
+
+function definitionRow(loc: AtlasLocation): LocatedStatus {
+  if (PART_RELATIONS.has(loc.relation) || loc.relation === "broadMatch") return "partial";
+  if (loc.proof_status === "definition") return "formalized";
+  return UNPROVED.has(loc.proof_status) ? "statement_only" : "partial";
+}
+
+// The status one location gives a passage of `kind` (build_store.location_status);
+// null for a relatedMatch, which never counts.
+export function locationStatus(kind: string, loc: AtlasLocation): LocatedStatus | null {
+  if (loc.relation === "relatedMatch") return null;
+  const rows: LocatedStatus[] = [];
+  if (THEOREM_KINDS.has(kind) || EITHER_KINDS.has(kind)) rows.push(theoremRow(loc));
+  if (DEFINITION_KINDS.has(kind) || EITHER_KINDS.has(kind)) rows.push(definitionRow(loc));
+  return rows.length ? rows.reduce((a, b) => (LOCATED_RANK[b] < LOCATED_RANK[a] ? b : a)) : null;
+}
 
 // A status outside the vocabulary (a corrupt store) renders as undecided
 // rather than throwing; the builder never writes one.
@@ -95,7 +133,8 @@ function asStatus(value: string | null | undefined): SummaryStatus {
   return STATUS_ORDER.includes(value as SummaryStatus) ? (value as SummaryStatus) : "unresolved";
 }
 
-function proofOf(status: string) {
+function proofOf(loc: Pick<AtlasLocation, "proof_status" | "statement">) {
+  const status = loc.statement === true && loc.proof_status === "definition" ? "prop_definition" : loc.proof_status;
   return PROOF[status] ?? { label: String(status), phrase: String(status), alert: true };
 }
 
@@ -226,7 +265,7 @@ interface LibraryView {
 
 function libraryViews(universe: AtlasUniverse | null, extra: Iterable<{ library: string; repo: string; commit: string }>): Map<string, LibraryView> {
   const views = new Map<string, LibraryView>();
-  for (const lib of universe?.libraries ?? []) {
+  for (const lib of universeLibraries(universe)) {
     views.set(lib.id, { id: lib.id, info: libraryInfo(lib.repo, lib), commit: lib.commit });
   }
   for (const loc of extra) {
@@ -256,22 +295,16 @@ function statusBar(raw: Record<SummaryStatus, number>, one: string, many: string
 
 // The location that justifies a located passage's status: the store's basis
 // (build_store derive_status), or, for a store built before it existed, the
-// highest-ranked location meeting the status's row of proposal §2.6. Never
-// simply the rank-1 location: rank 1 may state without a proof what rank 2
-// proves.
+// highest-ranked location whose own status (locationStatus) is the passage's.
+// Never simply the rank-1 location: rank 1 may state without a proof what
+// rank 2 proves.
 export function basisLocation(passage: AtlasPassage, status: SummaryStatus): AtlasLocation | null {
-  const locations = Array.isArray(passage.locations) ? passage.locations : [];
+  const locations = list(passage.locations);
   if (passage.basis) {
     const hit = locations.find((loc) => loc.location_key === passage.basis);
     if (hit) return hit;
   }
-  const strong = locations.filter((loc) => STRONG.has(loc.relation));
-  if (status === "formalized") return strong.find((loc) => COMPLETE_PROOFS.has(loc.proof_status)) ?? null;
-  if (status === "statement_only") {
-    return strong.find((loc) => UNPROVED.has(loc.proof_status)) ?? strong.find((loc) => loc.proof_status === "definition") ?? null;
-  }
-  if (status === "partial") return locations.find((loc) => PARTIAL_RELATIONS.has(loc.relation)) ?? null;
-  return null;
+  return locations.find((loc) => locationStatus(passage.kind, loc) === status) ?? null;
 }
 
 function statusSentence(passage: AtlasPassage, status: SummaryStatus, libs: Map<string, LibraryView>): string {
@@ -279,7 +312,7 @@ function statusSentence(passage: AtlasPassage, status: SummaryStatus, libs: Map<
   const best = basisLocation(passage, status);
   if (!best) return `${meta.label}.`;
   const name = libs.get(best.library)?.info.name ?? best.library;
-  return `${meta.label}: ${name} ${RELATION_PHRASE[best.relation] ?? best.relation} (${proofOf(best.proof_status).phrase}).`;
+  return `${meta.label}: ${name} ${RELATION_PHRASE[best.relation] ?? best.relation} (${proofOf(best).phrase}).`;
 }
 
 interface CardContext {
@@ -293,7 +326,7 @@ function locationCard(loc: AtlasLocation, ctx: CardContext): string {
   const view = ctx.libs.get(loc.library);
   const info = view?.info ?? libraryInfo(loc.repo, null);
   const src = sourceUrl(info, loc);
-  const proof = proofOf(loc.proof_status);
+  const proof = proofOf(loc);
   const short = sha7(loc.commit);
   const relation = RELATION_WORD[loc.relation] ?? loc.relation;
   const line = count(loc.line), end = count(loc.end_line);
@@ -419,8 +452,9 @@ export function atlasArticlePage(input: ArticlePageInput): string {
         `${view.info.name}${commit}: ${plural(passages, "passage", "passages")}, ${plural(locations, "location", "locations")}. Show only those passages.`);
     }).join("");
   const nLibraries = int(article.universe.libraries);
+  const nExcluded = universe ? list(universe.excluded).length : 0;
   const searched = universe
-    ? `Searched <a href="/atlas/universe/${attr(article.universe.sha256)}">universe ${text(article.universe.id)}</a>: ${nLibraries} libraries, frozen ${text(article.universe.frozen)}${universe.excluded.length ? `, ${universe.excluded.length} excluded` : ""}`
+    ? `Searched <a href="/atlas/universe/${attr(article.universe.sha256)}">universe ${text(article.universe.id)}</a>: ${nLibraries} libraries, frozen ${text(article.universe.frozen)}${nExcluded ? `, ${int(nExcluded)} excluded` : ""}`
     : `Universe ${text(article.universe.id)} (${nLibraries} libraries, frozen ${text(article.universe.frozen)})`;
   const main = `<main class="wl-atlas" id="atlas-article" data-pageid="${int(article.pageid)}" data-campaign="${attr(article.campaign)}">
 <nav class="atlas-crumbs" aria-label="Breadcrumb"><a href="/atlas">Formalization atlas</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
@@ -542,8 +576,11 @@ ${list}
 // ---- the universe page -------------------------------------------------------
 
 export function atlasUniversePage(universe: AtlasUniverse): string {
-  const rows = universe.libraries.map((lib: UniverseLibrary) => {
+  const libraries = universeLibraries(universe);
+  const excludedItems = list(universe.excluded).filter((item) => item !== null && typeof item === "object");
+  const rows = libraries.map((lib: UniverseLibrary) => {
     const info = libraryInfo(lib.repo, lib);
+    // GitHub repositories only (repoHref); any other host is named, not linked.
     const repo = repoHref(info.repo);
     const tree = treeUrl(info, lib.commit);
     return `<tr><th scope="row">${text(info.name)} <span class="atlas-muted">${text(lib.id)}</span></th>` +
@@ -551,13 +588,13 @@ export function atlasUniversePage(universe: AtlasUniverse): string {
       `<td>${tree ? `<a href="${attr(tree)}" rel="noopener"><code>${text(lib.commit)}</code></a>` : `<code>${text(lib.commit)}</code>`}</td>` +
       `<td>${text(lib.toolchain ?? "")}</td><td>${text(lib.licence ?? "")}</td></tr>`;
   }).join("");
-  const excluded = universe.excluded.length
-    ? `<h2 class="atlas-h2">Excluded</h2><ul class="atlas-excluded">${universe.excluded.map((item) => `<li><b>${text(item.id)}</b>: ${text(item.reason)}</li>`).join("")}</ul>`
+  const excluded = excludedItems.length
+    ? `<h2 class="atlas-h2">Excluded</h2><ul class="atlas-excluded">${excludedItems.map((item) => `<li><b>${text(item.id)}</b>: ${text(item.reason)}</li>`).join("")}</ul>`
     : "";
   const main = `<main class="wl-atlas" id="atlas-universe">
 <nav class="atlas-crumbs" aria-label="Breadcrumb"><a href="/atlas">Formalization atlas</a> <span aria-hidden="true">›</span> <span>Universe ${text(universe.id)}</span></nav>
 <h1 class="atlas-h1">Universe ${text(universe.id)}</h1>
-<p class="atlas-meta">${universe.libraries.length} libraries, frozen ${text(universe.frozen)} · sha256 <code>${text(universe.sha256)}</code></p>
+<p class="atlas-meta">${int(libraries.length)} libraries, frozen ${text(universe.frozen)} · sha256 <code>${text(universe.sha256)}</code></p>
 <p>A “not found” in the atlas means exactly this: the passage was searched for in these libraries at these commits and nothing stating it was found. It says nothing about other libraries or later commits.</p>
 ${tableWrap(`Libraries of universe ${universe.id}`, `<table class="atlas-table"><thead><tr><th scope="col">Library</th><th scope="col">Repository</th><th scope="col">Commit</th><th scope="col">Toolchain</th><th scope="col">Licence</th></tr></thead><tbody>${rows}</tbody></table>`)}
 ${excluded}

@@ -92,13 +92,13 @@ The layout follows the proposal §11.1 and the skill's `references/locate-docume
 
 `universe.json`: `id`, `frozen` (YYYY-MM-DD), `universe_sha256`, `libraries` (each with
 `id`, `repo` (an https repository URL), `commit` (40 hex), and optionally `display_name`,
-`brain_lib`, `toolchain`, `roots`, `licence: {spdx}` and `src_dir`), and `excluded` (each
-`{id, reason, repo?}`), as in proposal §2.3. `display_name` and `src_dir` are WikiLean
-additions (contract note 6).
+`brain_lib`, `toolchain`, `roots`, `licence: {spdx}` and `src_dir`), and `excluded` (a
+list, each `{id, reason, repo?}`), as in proposal §2.3. `display_name` and `src_dir` are
+WikiLean additions (contract note 6).
 
 `sources.jsonl`: `source_id` (`enwiki-<pageid>-<revision>`), `pageid`, `revision`, `title`,
-`wikidata`, `html_sha256`, `layer_sha256`, `renderer`, and `assessment: {class, importance}`
-(the WikiProject assessment, or null).
+`wikidata`, `html_sha256`, `layer_sha256`, `renderer` (a short token such as `web-html/1`,
+or null), and `assessment: {class, importance}` (the WikiProject assessment, or null).
 
 ### What the builder checks
 
@@ -111,17 +111,20 @@ any of these fails:
 2. **Universe.** Its id and `universe_sha256` equal the seal's; library ids and
    repositories are unique; each repository is an https URL with a dotted host and one to
    four path segments, none of them `.` or `..`; commits are 40-hex. A
-   `blob_url_template` is refused (contract note 6). A `universe.yaml` that does not parse,
-   or repeats a key, is refused like duplicate-key JSON.
+   `blob_url_template` is refused (contract note 6), and so is a `display_name` that is not
+   at most 100 printable ASCII letters, digits, spaces and `,.()/+:'&_-` or `·` (no
+   zero-width, soft-hyphen or look-alike character). `excluded` is a list. A
+   `universe.yaml` that does not parse, or repeats a key, is refused like duplicate-key JSON.
 3. **Sources.** `source_id` agrees with `pageid` and `revision`; there is one revision per
    page per set, and one page per title (two titles with the same `title_key`, such as
    `Widget lemma` and `Widget_lemma`, are refused, because the index and the article box
    find a page by its title key); every source has a records file, and every records file
-   has a source.
+   has a source; `renderer` is a short token or null.
 4. **Schema.** Every record passes the vendored Literature Links schema and its numeric
    checks, through the checker WikiLean already uses: `site/native_annotations.validate_link_record`
    on `wiki/src/vendor/literature-links/companion.schema.json`, whose sha256 is checked
-   against `provenance.json` first. JSON with duplicate keys or NaN is refused.
+   against `provenance.json` first. JSON with duplicate keys, NaN, a number too large for
+   a double (`1e400`, which parses as infinity) or nesting too deep to parse is refused.
 5. **Records (proposal §2.7).** Each record carries the `org.mathlib-initiative.formal-companion.locate`
    extension with `item` (`In-text #<8-16 hex>`), the set's universe id and sha, and a
    `challenge` value; `id` is `<source_id>::<item>`. The subject is one `html` end at the
@@ -134,7 +137,12 @@ any of these fails:
      `hasPart` or `relatedMatch`) has one `lean` end at its library's repo and commit, with
      `declaration`, `module`, a safe `.lean` `path`, `1 <= line <= end_line`, a
      `proof_status`, a unique 64-hex `location_key`, `rank` 1-5 and a `confidence`. A
-     `closeMatch` names its convention difference in `note`.
+     `closeMatch` names its convention difference in `note`. The lean end's locate
+     extension may carry `statement`, the library index's flag for a Prop-valued
+     definition (contract note 8): it must be `true` or `false` (absent or null is false),
+     and is refused on a `proved` declaration, as the producer refuses it. Every location
+     record carries its passage's derived status, except the `relatedMatch` records of a
+     passage that has none (check 6).
    - An **absence** (`noMatch`) has status `not_formalized` and exactly one whole-library
      `lean` end per universe library, and references its receipt as
      `receipt: {sha256, queries, candidates}`. The counts must match the receipt file, and
@@ -145,22 +153,39 @@ any of these fails:
    A passage has at most one absence and at most 5 locations, with distinct ranks. An
    absence sits only beside `relatedMatch` locations, and `not_formalized` needs one.
    **The builder recomputes the derived status** of every located passage from its
-   kind and its locations' relations and proof statuses (`derive_status`), and refuses
-   the set when the stamped status differs, in either direction: a sorry-backed match
-   stamped `formalized` is refused, and so is a proved exact match stamped
-   `statement_only` or `partial`. The table's rows are read first-match, top to bottom:
+   kind and its locations' relations, proof statuses and `statement` flags
+   (`derive_status`), and refuses the set when the stamped status differs, in either
+   direction: a sorry-backed match stamped `formalized` is refused, and so is a proved
+   exact match stamped `statement_only` or `partial`. `derive_status` is a port of the
+   producer's own `cflib.vocab.derive_status` (formal-companion `scripts/cflib/vocab.py`,
+   which implements the decisions `references/vocabulary.md` §1.11 makes for the cases the
+   proposal's table leaves open), so it accepts exactly the one status the producer
+   stamps. Each location that counts gets a status from its passage kind's row; the
+   passage takes the best of them (formalized, then statement only, then partial), and a
+   `relatedMatch` never counts:
 
-   | kind | `formalized` | else `statement_only` | else `partial` |
-   |---|---|---|---|
-   | theorem, conjecture | an exact, close or broad match to a `proved` declaration | an exact, close or broad match to a `statement_only`, `wanted` or `axiom_dependent` declaration, or an exact or close match to a `definition` (a Prop-valued definition) | a `hasPart` or `narrowMatch` |
-   | definition | an exact or close match to a `definition` | an exact or close match to a `statement_only`, `wanted` or `axiom_dependent` declaration | a `hasPart` or `narrowMatch`, or a broad match to a `definition` |
-   | example, construction, notation, other | either of the two rules above for `formalized` | an exact, close or broad match to a `statement_only`, `wanted` or `axiom_dependent` declaration | a `hasPart` or `narrowMatch`, or a broad match to a `definition` |
+   | location | theorem, conjecture | definition, construction, notation |
+   |---|---|---|
+   | `hasPart` or `narrowMatch`, to anything | partial | partial |
+   | `broadMatch`, to anything | as an exact match | partial |
+   | exact or close match to a `proved` declaration | formalized | partial |
+   | exact or close match to a `statement_only`, `wanted` or `axiom_dependent` declaration | statement only | statement only |
+   | exact or close match to a `definition` with the `statement` flag (Prop-valued) | statement only | formalized |
+   | exact or close match to any other `definition` (data) | partial | formalized |
 
-   Where the table admits two readings the builder accepts either (contract note 7), and a
-   passage the table gives no status (only `relatedMatch` locations, or a definition
-   passage matched only to proved theorems) is refused. The location that justifies the
-   status, the highest-ranked one meeting the row, is stored as the passage's `basis`, so
-   the page names it rather than whichever location ranks first.
+   An `example` or `other` passage is judged by both columns and takes the better answer.
+   A located passage whose only locations are `relatedMatch`, with no checked absence, has
+   no status (the table's "(none)" row): its records carry none, and the builder stores it
+   as outcome `unresolved`, counted as undecided (never as not formalized), with its
+   related declarations kept. Such a passage whose records stamp a status is refused. The
+   location that justifies the status, the highest-ranked one whose own status is the
+   passage's, is stored as the passage's `basis`, so the page names it rather than
+   whichever location ranks first. `scripts/atlas/fixtures/producer_derive_status.json`
+   holds the producer's answers for every one-location case and 300 sampled two- and
+   three-location cases, generated by `make_producer_table.py` from formal-companion at
+   `b4ac86a` (branch `claude/wikiproject-math`, also `locate/foundation`; not yet on its
+   master), and both the builder and the page's fallback (`locationStatus`) are tested
+   against it.
 
 ### Contract notes for formal-companion
 
@@ -187,23 +212,40 @@ needs the skill's agreement before real record sets arrive:
    refused.
 6. **Library naming and source links come from WikiLean, not from the set.** A library's
    `display_name` is shown only for a repository the registry does not seed
-   (`wiki/src/libraries.ts`), and never when it would name a seeded library, so a
-   universe cannot relabel a repository as Mathlib. `blob_url_template` is not part of the
-   contract: every "Source @sha7" link is built from GitHub's blob scheme for the
-   library's own `github.com/<owner>/<repo>`, and a non-GitHub repository gets no source
-   link. A set carrying a template is refused, so a producer learns it is unsupported.
-   `src_dir` (the directory a record's `path` is relative to) stays, and must be a safe
-   relative path.
-7. **WikiLean recomputes the derived status** (section 3, check 6) and needs the skill to
-   agree on three readings the proposal leaves open:
-   - kinds the §2.6 table does not name (`example`, `construction`, `notation`, `other`)
-     take the theorem and definition rules together, as in the table above;
-   - for a theorem passage, a broad match to a `definition` is both a Prop-valued
-     definition (`statement_only`) and the partial row's "broadMatch to a definition", so
-     either status is accepted;
-   - for a definition passage, a broad match to an unfinished declaration is accepted as
-     `statement_only` or `partial`.
-   A located passage the table gives no status is refused rather than guessed.
+   (`wiki/src/libraries.ts`), only when it is plain printable ASCII (the builder refuses
+   any other), and never when its skeleton (letters and digits, lowercased, with `I`, `i`
+   and `1` read as `l`, `0` as `o`, `rn` as `m`) contains a seeded library's, so a
+   universe cannot relabel a repository as Mathlib, whether as `Mathlib`, `Mathlib\u200b`,
+   `Mаthlib` (Cyrillic а), `MathIib` or `Mathlib 4`. Any other name falls back to
+   owner/repo. `blob_url_template` is not part of the contract: every "Source @sha7" link
+   is built from GitHub's blob scheme for the library's own `github.com/<owner>/<repo>`,
+   and a non-GitHub repository gets no source link, and no repository link on the
+   universe page either (it is named there as text). A set carrying a template is
+   refused, so a producer learns it is unsupported. `src_dir` (the directory a record's
+   `path` is relative to) stays, and must be a safe relative path.
+7. **WikiLean recomputes the derived status** (section 3, check 6) with the producer's
+   rules, as `cflib.vocab.derive_status` implements them at formal-companion `b4ac86a`.
+   That code is not yet on formal-companion's master, and `references/vocabulary.md` §1.11
+   marks its decisions as conservative, "until the maintainer says otherwise": a
+   construction or notation passage is a definition passage, an example or `other`
+   passage takes the better of the two rows, a theorem passage matched exactly or closely
+   to data is partial (an instance such as `Real.instField` stating "ℝ is a field" reads
+   partial, which §1.11 lists as an open question), and a definition passage matched to a
+   proved theorem is partial. When the producer changes a rule, regenerate
+   `producer_derive_status.json` and port the change; the parity test fails until both
+   agree. A located passage the table gives no status is unresolved (note 9), never
+   guessed.
+8. **The `statement` flag rides in the lean end's locate extension.** Proposal §2.4 puts
+   it in the library index beside `proof_status`, and §2.7 joins `proof_status` into the
+   lean end at export but does not list `statement`. The builder reads it from the same
+   place (`object[0].extensions.‹locate›.statement`). Without it, a theorem passage
+   matched to a Prop-valued definition, which the producer stamps `statement_only`,
+   recomputes as `partial` and the set is refused, so the export must carry it.
+9. **A passage with only `relatedMatch` locations** (no checked absence) has no derived
+   status, and the producer's export for it is not built yet. WikiLean reads it as
+   `relatedMatch` location records without a `status`, which it stores as an unresolved
+   passage that keeps its related declarations. An unresolved record (`object: []`)
+   beside them is refused, as is a status on them.
 
 ## 4. The store (v1)
 
@@ -224,9 +266,12 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   `subject_uri`, `outcome` (located, absent or unresolved), `status`, `basis` (the
   `location_key` of the location that justifies the status, or null), and `locations`,
   each with `library, repo, commit, declaration, module, path, line, end_line, relation,
-  proof_status, rank, confidence, challenge, location_key, note`. A passage also carries
-  `absence {universe, universe_sha256, libraries, receipt, challenge}` or `unresolved
-  {challenge}`. A `relatedMatch` states something else (proposal §2.6), so it is counted
+  proof_status, statement, rank, confidence, challenge, location_key, note` (`statement`
+  is the Prop-valued-definition flag, false when the record omits it). A passage also
+  carries `absence {universe, universe_sha256, libraries, receipt, challenge}` or
+  `unresolved {challenge}`; for a passage that is unresolved because its only locations
+  are `relatedMatch`, `challenge` is its rank-1 location's and the locations are kept. A
+  `relatedMatch` states something else (proposal §2.6), so it is counted
   in `related` and never as a location. `summary.by_library` (and `current.json`'s
   `counts.by_library`) splits each library's `locations` into `complete` (proved
   declarations and definitions) and `incomplete` (`statement_only`, `wanted`,
@@ -253,8 +298,12 @@ python3 scripts/atlas/build_store.py --record-set <set> --out <store> --replace 
 
 Exit codes: 0 is success, 1 means `--check` found differences, 2 means the record set
 was refused (the reasons go to stderr), and 3 means the builder itself failed (a bug;
-nothing was written). Every check runs before any view is computed, so a malformed set is
-always a 2, never a crash that could be read as "`--check` found differences". The tree
+nothing was written). Every check runs before any view is computed, and a value of the
+wrong type (a list where a vocabulary word belongs, a number where `excluded` lists
+belong, `1e400`) is reported and dropped rather than used, so a malformed set is always a 2,
+never a crash that could be read as "`--check` found differences". A test sets nine
+hostile values (null, a bool, numbers, a string, lists, objects) into some 60 fields of
+the fixture in turn and requires a refusal or a build, never another exception. The tree
 is staged next to `--out` and moved into place, and the previous store is moved back if
 that fails, so a failed build leaves nothing half-written. `--out` is the store directory
 itself: `--replace` refuses a directory that holds anything besides `atlas/v1/`, so
@@ -369,7 +418,10 @@ and the live list filter.
   `<repo>/blob/<commit>/<path>#L<line>-L<end_line>`.
 - **Absence:** "Searched N libraries in universe <id> (<frozen>) — not found", linking the
   universe page, with the receipt's counts. **Unresolved:** "Undecided", never counted as
-  not formalized.
+  not formalized; a passage unresolved because only related declarations were found shows
+  them under "Related, but states something else". A Prop-valued definition (the
+  `statement` flag) is badged "Prop definition" and described as stating the claim
+  without proving it.
 - **Dashboard.** The by-library table splits locations into complete (proved or a
   definition) and incomplete (statement only, wanted, axiom-dependent), so a library that
   only states results never reads like one that proves them. The article list has a
@@ -378,11 +430,13 @@ and the live list filter.
   (Mathlib, Lean core with `src/`, Batteries, TauCeti, Formal Conjectures, atlas-lean),
   then the FormalFrontier organisation pattern ("FormalFrontier · <repo>"), then
   owner/repo for any other GitHub repository. A universe entry's `display_name` is used
-  only for a repository the seeds do not name, and never when it has the form of a seeded
-  library's name. A universe's `blob_url_template` is ignored (the builder refuses it):
-  every source link is GitHub's blob scheme for the library's own repository, a
-  non-GitHub repository gets none, and owner or repository names `.` and `..` get none.
-  The universe's `src_dir` is kept.
+  only for a repository the seeds do not name, only when it is printable ASCII, and never
+  when its skeleton contains a seeded library's name (contract note 6). A universe's
+  `blob_url_template` is ignored (the builder refuses it): every source link is GitHub's
+  blob scheme for the library's own repository, a non-GitHub repository gets none, and
+  owner or repository names `.` and `..` get none. The universe page links a repository
+  only when it is `github.com/<owner>/<repo>` and names any other as text. The universe's
+  `src_dir` is kept.
 - **Accessibility.** Status is never shown by colour alone: each status has an icon, a word
   and its own stroke (solid, dashed, dotted, double, grey groove). Chips are real
   buttons with `aria-pressed`, and filter results are announced through a status region.
@@ -396,7 +450,10 @@ and the live list filter.
   box. They also drive the filters, the feedback flow, the live search and a passage
   permalink.
 - **Security.** All store text is escaped (`htmlEscape`), and every store number goes
-  through `int()`, so a string where a count belongs renders as 0, never as markup. Links are built from validated
+  through `int()`, so a string where a count belongs renders as 0, never as markup. A
+  store list that is not an array (a universe's `libraries` or `excluded`) is read as
+  empty, so its `length` never reaches the HTML and a missing list never makes a page a
+  500. Links are built from validated
   parts or parsed and required to be https, and paths with `..`, absolute or empty
   segments get no link. The pages have no inline event handlers, and `atlas.js` writes
   only through `textContent` and `createElement`. The pages keep two inline scripts
@@ -542,17 +599,21 @@ Each decision below comes with a recommendation.
 - `scripts/atlas/test_build_store.py` (in `scripts/ci-python.sh`) checks fixture
   reproducibility, schema validity, the golden store, determinism, the manifest, the view
   model (including each passage's basis and the per-library proof split), title shards,
-  the §2.6 recomputation in both directions and its two-reading cases, the other refusal
-  cases (oldid, title keys, templates, dot-segment repos, malformed or duplicate-key
-  YAML, unknown statuses, non-string affixes), a YAML universe, and the CLI (exit codes
-  2 and 3, and `--replace` refusing foreign content).
+  the §2.6 recomputation in both directions, its parity with the producer's truth table
+  (`producer_derive_status.json`) and the §1.11 cases, the `statement` flag, related-only
+  passages, the other refusal cases (oldid, title keys, templates, dot-segment repos,
+  display names, renderer, malformed or duplicate-key YAML, unknown statuses, non-string
+  affixes), hostile values in some 60 fields (refused, never a crash), a YAML universe, and
+  the CLI (exit codes 2 and 3, and `--replace` refusing foreign content).
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
   pages on the fixture store, 404s, escaping and integer-only numbers, the headings, the
   visible status sentence and its basis, the shard cache and the search limiter, feedback
   auth, origin, validation, size cap, rate limit and missing table, the export and its
   domain-separated pseudonyms, the article box with its cache isolation and revision
-  note, the readers, and the library registry (seeded names, ignored templates, dot
-  segments).
+  note, the readers, non-array universe lists, related-only and Prop-valued-definition
+  passages, the producer's truth table for the page's fallback rows, and the library
+  registry (seeded names, look-alike display names, ignored templates, dot segments,
+  GitHub-only repository links).
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
