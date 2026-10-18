@@ -45,7 +45,7 @@ NEUTRAL_DIRECTORIES: tuple[str, ...] = (
 # complete). brain-nightly.sh's uncommitted-source check is a different set: it
 # covers all of wiki/, so it also refuses local edits to Worker tests and
 # wiki/README.md, which never reach release bytes. The nightly checks curated
-# inputs separately, before the run, because its own proposal fold writes some.
+# inputs separately, exempting the files its own proposal fold rewrites every run.
 AFFECTING_EXCEPTIONS: tuple[str, ...] = (
     "bot/state/brain_queue.json",
     "bot/state/cut_log.json",

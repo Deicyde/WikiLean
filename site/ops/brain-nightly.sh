@@ -576,33 +576,6 @@ cd "$REPO" || exit 1
   export WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE
   echo "(shared Wikidata generation GREEN: $WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE)"
 
-  # ---- 0. CURATED INPUTS (checked before this run writes any) -----------------
-  # Curated reducer inputs (class curated_git_input in reducer-inputs-v1.json) are
-  # read from this working tree, and a release claims Git authority for them.
-  # Record any that already differ from HEAD, or exist while ignored (such as
-  # bot/state/pool_candidates.json), before ingest and fold run; section 4 then
-  # refuses to publish. The proposal fold's own writes come later and are not
-  # flagged here.
-  CURATED_DIRTY=""
-  if CURATED_INPUTS="$("$PYTHON_BIN" - "$REPO/brain/authority/reducer-inputs-v1.json" <<'PY'
-import json
-import sys
-value = json.load(open(sys.argv[1], encoding="utf-8"))
-inputs = value.get("inputs") if isinstance(value, dict) else None
-paths = [item.get("path") for item in inputs or []
-         if isinstance(item, dict) and item.get("class") == "curated_git_input"]
-if not paths or not all(isinstance(path, str) and path for path in paths):
-    raise SystemExit("invalid reducer inventory curated inputs")
-print("\n".join(paths))
-PY
-)"; then
-    CURATED_DIRTY="$(git -C "$REPO" status --ignored=matching --porcelain -- $CURATED_INPUTS)" \
-      || CURATED_DIRTY="(git status failed for the curated reducer inputs)"
-  else
-    CURATED_DIRTY="(the reducer inventory's curated inputs are invalid)"
-  fi
-  # ---- end of curated inputs check ----
-
   # ---- 1. INGEST (per-source cadence; each adapter fail-soft) ----------------
   echo "=== ingest: daily sources ==="
   py_soft "nlab ingest"        "$REPO/brain/ingest/nlab.py"
@@ -861,6 +834,52 @@ PY
     echo "!!! RELEASE ABORTED: could not inspect release-affecting source status"
     PUBLISH_OK=0
   fi
+  # ---- curated reducer inputs ----
+  # Curated reducer inputs (curated_git_input in reducer-inputs-v1.json) are read from
+  # this working tree too, and a release claims Git authority for them. Refuse any
+  # that differ from HEAD or exist while ignored (such as bot/state/pool_candidates.json),
+  # except the files brain/fold_proposals.py rewrites on every run: their uncommitted
+  # state is the fold's own output, which this run and earlier runs leave in place.
+  CURATED_DIRTY=""
+  if CURATED_INPUTS="$("$PYTHON_BIN" - "$REPO/brain/authority/reducer-inputs-v1.json" <<'PY'
+import fnmatch
+import json
+import sys
+# Written by brain/fold_proposals.py on every run (dump, merge or append), plus one
+# catalog/data/<key>_links.jsonl per frontier source key.
+FOLD_OUTPUTS = {
+    "brain/data/container_links.jsonl",
+    "brain/data/discovery_proposals.jsonl",
+    "brain/data/discovery_rejected.jsonl",
+    "brain/data/ext_anchor_links.jsonl",
+    "brain/data/fc_links.jsonl",
+    "catalog/data/grounding_overrides.jsonl",
+    "catalog/data/universe_extension.jsonl",
+}
+FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+inputs = value.get("inputs") if isinstance(value, dict) else None
+paths = [item.get("path") for item in inputs or []
+         if isinstance(item, dict) and item.get("class") == "curated_git_input"]
+if not paths or not all(isinstance(path, str) and path for path in paths):
+    raise SystemExit("invalid reducer inventory curated inputs")
+checked = [path for path in paths
+           if path not in FOLD_OUTPUTS and not fnmatch.fnmatchcase(path, FOLD_OUTPUT_PATTERN)]
+if not checked:
+    raise SystemExit("no curated reducer inputs left to check")
+print("\n".join(checked))
+PY
+)"; then
+    if ! CURATED_DIRTY="$(git -C "$REPO" status --ignored=matching --untracked-files=all \
+        --porcelain -- $CURATED_INPUTS)"; then
+      echo "!!! RELEASE ABORTED: could not inspect curated reducer input status"
+      PUBLISH_OK=0
+    fi
+  else
+    echo "!!! RELEASE ABORTED: the reducer inventory's curated inputs are invalid"
+    PUBLISH_OK=0
+  fi
+  # ---- end of curated reducer inputs ----
 
   if [ "$PUBLISH_OK" = "1" ] && [ ! -s "$REPO/site/out/brain.html" ]; then
     echo "!!! RELEASE ABORTED: site/out/brain.html is missing/empty"
@@ -869,8 +888,8 @@ PY
     echo "!!! RELEASE ABORTED: release-affecting source is uncommitted; the Git authority would be false:"
     echo "$DIRTY"
     PUBLISH_OK=0
-  elif [ "$PUBLISH_OK" = "1" ] && [ -n "${CURATED_DIRTY:-}" ]; then
-    echo "!!! RELEASE ABORTED: curated reducer inputs had local changes before this run; the Git authority would be false:"
+  elif [ "$PUBLISH_OK" = "1" ] && [ -n "$CURATED_DIRTY" ]; then
+    echo "!!! RELEASE ABORTED: curated reducer inputs differ from HEAD; the Git authority would be false:"
     echo "$CURATED_DIRTY"
     PUBLISH_OK=0
   elif [ "$PUBLISH_OK" = "1" ] && { [ ! -f "$REPO/brain/tools/build_release.py" ] || [ ! -f "$REPO/wiki/scripts/brain-release-public.ts" ]; }; then

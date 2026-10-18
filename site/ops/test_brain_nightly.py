@@ -547,7 +547,7 @@ class BrainNightlyShellTest(unittest.TestCase):
             "site/ops/nightly.env",
         ):
             self.assertIn(path, text)
-        # The nightly stopped running the canary in afdf3a67; the promoter runs it.
+        # The nightly stopped running the canary in 81c33d4d; the promoter runs it.
         self.assertNotIn("brain-canary.py", text)
         self.assertIn('value.get("scope")', text)
         self.assertIn('$REDUCER_SCOPE', text)
@@ -562,15 +562,16 @@ class BrainNightlyShellTest(unittest.TestCase):
         self.assertIn('--input-inventory "brain/authority/reducer-inputs-v1.json"', text)
         self.assertNotIn('--input-inventory "$REPO/', text)
 
-    def test_curated_inputs_changed_before_the_run_block_the_release(self):
-        # Curated reducer inputs are read from the working tree, so local edits (or an
-        # ignored file such as pool_candidates.json) made before the run would be frozen
-        # under a Git authority that lacks them. The check runs before ingest and fold.
+    def test_changed_curated_inputs_block_the_release_except_fold_outputs(self):
+        # Curated reducer inputs are read from the working tree, so a local edit (or an
+        # ignored file such as pool_candidates.json) would be frozen under a Git
+        # authority that lacks it. The files the proposal fold rewrites every run are
+        # exempt, since the nightly never commits or reverts them.
         text = SCRIPT.read_text(encoding="utf-8")
-        start = text.index("  # ---- 0. CURATED INPUTS")
-        end = text.index("  # ---- end of curated inputs check ----")
-        self.assertLess(end, text.index('echo "=== ingest: daily sources ==="'))
-        self.assertIn('elif [ "$PUBLISH_OK" = "1" ] && [ -n "${CURATED_DIRTY:-}" ]; then', text)
+        start = text.index("  # ---- curated reducer inputs ----")
+        end = text.index("  # ---- end of curated reducer inputs ----")
+        self.assertLess(text.index('"$PYTHON_BIN" "$REPO/brain/fold_proposals.py"'), start)
+        self.assertIn('elif [ "$PUBLISH_OK" = "1" ] && [ -n "$CURATED_DIRTY" ]; then', text[end:])
         snippet = text[start:end]
         env = dict(os.environ, GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
         with tempfile.TemporaryDirectory() as directory:
@@ -580,10 +581,14 @@ class BrainNightlyShellTest(unittest.TestCase):
                 inventory: json.dumps({"inputs": [
                     {"path": "bot/state/cut_log.json", "class": "curated_git_input"},
                     {"path": "bot/state/pool_candidates.json", "class": "curated_git_input"},
+                    {"path": "brain/data/fc_links.jsonl", "class": "curated_git_input"},
+                    {"path": "catalog/data/tauceti_links.jsonl", "class": "curated_git_input"},
                     {"path": "catalog/data/x.jsonl", "class": "immutable_source_object"},
                 ]}),
                 repo / "bot/state/cut_log.json": "[]\n",
                 repo / "bot/.gitignore": "state/pool_candidates.json\n",
+                repo / "brain/data/fc_links.jsonl": "{}\n",
+                repo / "catalog/data/tauceti_links.jsonl": "{}\n",
                 repo / "catalog/data/x.jsonl": "{}\n",
             }
             for path, content in files.items():
@@ -593,23 +598,53 @@ class BrainNightlyShellTest(unittest.TestCase):
                          ["-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "x"]):
                 subprocess.run(["git", "-C", str(repo), *args], check=True, env=env, capture_output=True)
 
-            def check() -> str:
+            def check() -> tuple[str, list[str]]:
                 result = subprocess.run(
-                    ["bash", "-c", "set -uo pipefail\n" + snippet + '\nprintf "%s" "$CURATED_DIRTY"'],
+                    ["bash", "-c", "set -uo pipefail\nPUBLISH_OK=1\n" + snippet
+                     + 'printf "PUBLISH_OK=%s\\n%s" "$PUBLISH_OK" "$CURATED_DIRTY"'],
                     env=dict(env, REPO=str(repo), PYTHON_BIN=sys.executable),
                     capture_output=True, text=True, check=True,
                 )
-                return result.stdout
+                # Anything before the marker is the snippet's own abort message.
+                publish, _, dirty = result.stdout.rpartition("PUBLISH_OK=")[2].partition("\n")
+                return publish, sorted(dirty.splitlines())
 
-            self.assertEqual(check(), "")
-            (repo / "catalog/data/x.jsonl").write_text("changed\n", encoding="utf-8")
-            self.assertEqual(check(), "")  # not a curated input
+            self.assertEqual(check(), ("1", []))
+            for path in ("catalog/data/x.jsonl", "brain/data/fc_links.jsonl",
+                         "catalog/data/tauceti_links.jsonl"):
+                (repo / path).write_text("changed\n", encoding="utf-8")
+            self.assertEqual(check(), ("1", []))  # not curated, or rewritten by the fold
             (repo / "bot/state/cut_log.json").write_text("[1]\n", encoding="utf-8")
             (repo / "bot/state/pool_candidates.json").write_text("[]\n", encoding="utf-8")
-            self.assertEqual(sorted(check().splitlines()),
-                             [" M bot/state/cut_log.json", "!! bot/state/pool_candidates.json"])
+            changed = ("1", [" M bot/state/cut_log.json", "!! bot/state/pool_candidates.json"])
+            self.assertEqual(check(), changed)
+            subprocess.run(["git", "-C", str(repo), "config", "status.showUntrackedFiles", "no"],
+                           check=True, env=env)
+            self.assertEqual(check(), changed)
             inventory.write_text("{}\n", encoding="utf-8")
-            self.assertEqual(check(), "(the reducer inventory's curated inputs are invalid)")
+            self.assertEqual(check(), ("0", []))  # fails closed
+
+    def test_curated_check_exempts_exactly_the_fold_outputs(self):
+        # The exemption list must track brain/fold_proposals.py: every curated input the
+        # fold names as a brain/data or catalog/data .jsonl file (it writes them all),
+        # and catalog/data/<key>_links.jsonl through the pattern.
+        import fnmatch
+        import re
+        text = SCRIPT.read_text(encoding="utf-8")
+        block = text[text.index("FOLD_OUTPUTS = {"):]
+        exempt = set(re.findall(r'"([^"]+)"', block[:block.index("}")]))
+        root = HERE.parent.parent
+        fold = (root / "brain/fold_proposals.py").read_text(encoding="utf-8")
+        named = {("brain/data/" if base == "DATA" else "catalog/data/") + name
+                 for base, name in re.findall(r'\b(DATA|CATALOG) / "([^"/]+\.jsonl)"', fold)}
+        inventory = json.loads((root / "brain/authority/reducer-inputs-v1.json").read_text(encoding="utf-8"))
+        curated = {item["path"] for item in inventory["inputs"] if item["class"] == "curated_git_input"}
+        self.assertEqual(exempt, named & curated)
+        self.assertIn('f"{key}_links.jsonl"', fold)
+        self.assertIn('FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"', text)
+        self.assertIn("catalog/data/tauceti_links.jsonl", curated)
+        self.assertTrue(fnmatch.fnmatchcase("catalog/data/tauceti_links.jsonl", "catalog/data/*_links.jsonl"))
+        self.assertTrue({"bot/state/cut_log.json", "catalog/data/source_registry.json"} <= curated - exempt)
 
     def test_release_metrics_and_public_stage_results_are_release_qualified(self):
         text = SCRIPT.read_text(encoding="utf-8")
