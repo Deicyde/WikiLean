@@ -288,9 +288,9 @@ commit and rejects any mismatch with the retained source tree.
 A release and its activation bundle name the commit they were built from, but `main`
 need not stay there. The promoter and the bundle freezer accept a clean `main` checkout at
 a later commit when it descends from the authority and every path that differs is
-release-neutral: `docs/`, README files, `test_*.py` and the `wiki/test` and `wiki/e2e`
-trees, CI definitions, `site/ops/` tooling other than `nightly.env` and
-`brain-nightly.sh`, the bot tree other than the five `bot/state/` files the reducer
+release-neutral: `docs/`, README files, `test_*.py` other than `site/test_frontier_page.py`,
+the `wiki/test` and `wiki/e2e` trees, CI definitions, `site/ops/` tooling other than
+`nightly.env` and `brain-nightly.sh`, the bot tree other than the five `bot/state/` files the reducer
 reads, and the bench, manage and wikifunctions trees (the list is
 `site/ops/brain_release_authority.py`; anything not listed is release-affecting). Reducer
 code and curated inputs, authority contracts and schemas, Worker source and configuration,
@@ -488,8 +488,9 @@ Do not delete or relocate either root after review.
 > the attempt's intent byte for byte (see "If an attempt is incomplete"). `npm run deploy`
 > refuses. Never run `wrangler deploy` directly: it uploads the Worker built from local
 > `wiki/src` and the local `wiki/public` outside the promoter, replacing the selector and the
-> whole asset tree. The only emergency lever is "Wrangler rollback" below; a forward hotfix
-> path, if one is ever wanted, would be a journaled promoter mode.
+> whole asset tree. The only emergency lever is "Wrangler rollback" below. There is no forward
+> hotfix path; whether to add one is open ("Worker-only hotfix path" in the ROADMAP's
+> Waiting on Jack list).
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.

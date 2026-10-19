@@ -1,0 +1,56 @@
+# Dependency update PRs (issue #10). Each one runs CI's pull_request jobs, which
+# need no secrets, so the protected `CI / required` gate (worker, python and
+# browser) checks it before anyone merges. Open PRs are capped per ecosystem.
+# npm and pip updates touch release-affecting files; CONTRIBUTING.md ("Pull
+# requests") says when to merge them. Two npm directories are left out on
+# purpose: .github/claude-cli (the poller's pinned CLI, which no pull_request
+# workflow exercises, so it is bumped by hand) and .github/backup-wrangler
+# (generated from wiki/package-lock.json by scripts/backup_wrangler_lock.py,
+# which CI checks, so it follows wiki's wrangler).
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/wiki"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    ignore:
+      # Types for a newer Node than the project runs (Node 22).
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+        update-types: ["minor", "patch"]
+        # Each of these arrives in its own PR: wrangler is the deploy, backup and
+        # rollback tool and no CI job runs it; an ajv or esbuild bump changes the
+        # committed wiki/src/vendor/literature-links/validate.js.
+        exclude-patterns: ["wrangler", "ajv", "esbuild"]
+
+  - package-ecosystem: "pip"
+    directory: "/"  # requirements-ci.txt (and any requirements*.txt one level down)
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 3
+    ignore:
+      # Exact versions sealed by brain/lmfdb_source_dependencies.py and
+      # brain/git_harvest_dependencies.py and checked in CI; bump these by hand,
+      # with a reseal of the brain source profile.
+      - dependency-name: "pg8000"
+      - dependency-name: "scramp"
+      - dependency-name: "asn1crypto"
+      - dependency-name: "python-dateutil"
+      - dependency-name: "six"
+      - dependency-name: "PyYAML"
+    groups:
+      # requirements-ci.txt is a resolved freeze with lockstep pairs
+      # (pydantic/pydantic_core, mcp/mcp-types, httpx2/httpcore2), so it moves
+      # as one PR.
+      python:
+        patterns: ["*"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"  # SHA-pinned actions get reviewed bumps
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 3

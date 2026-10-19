@@ -41,6 +41,7 @@ P3_THRESHOLD = 0.90  # docs/ROADMAP.md: re-anchoring stages 1-2 trigger at "<90%
 P3_MIN_SLUGS = 20    # fewer distinct drifted slugs than this is too few to judge
 WP_UPDATE_CAP = 1000       # /api/work's wp-update row cap (wiki/src/index.ts)
 WP_UPDATE_WARN_ROWS = 800  # warn when one wp-update run takes this many articles
+OLD_WP_UPDATE_PAGE = 100  # what /api/work served wp-update before its cap was raised
 
 # Ordered: the first matching pattern names the likely cause, matched against
 # the raw (untruncated) error. The names are the "Likely cause" column of the
@@ -49,6 +50,7 @@ CAUSES = [
     ("python3 on the job's PATH",
      r"^extract_failed|'python3'|xcrun|xcode-select|commandlinetools"),
     ("Mathlib checkout path", r"working directory does not exist"),
+    ("Full Disk Access", r"operation not permitted|exit (?:status |code )?126\b"),
     ("API-key credential", r"credit balance"),
     ("Claude login",
      r"not logged in|/login|invalid api key|oauth|authentication|unauthori[sz]ed"
@@ -69,6 +71,16 @@ CAUSES = [
     ("Worker read", r"^get_failed_"),
     ("agent output", r"^(agent[12]_no_json|final_read_failed|render_failed)"),
 ]
+# extract_failed and fetch_failed name one article's failure. They point at the
+# host (python3, Wikipedia) only when every article in the run shows them;
+# site/moderate.py's ARTICLE_SPECIFIC_ERROR_RE treats both as article-specific.
+HOST_WIDE_ONLY_ON_EVERY_ARTICLE = re.compile(r"^(extract_failed|fetch_failed)\b")
+
+
+def _stage(error):
+    """'extract_failed' or 'fetch_failed' if the error names that stage, else None."""
+    m = HOST_WIDE_ONLY_ON_EVERY_ARTICLE.match(str(error).strip())
+    return m.group(1) if m else None
 
 _HOME = re.compile(r"/(?:Users|home)/[^/\s'\"]+")
 _SECRET = re.compile(
@@ -126,9 +138,13 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
     decisions line (each is written when an article finishes). A rec's mode is
     its 'op'; recs without one (job_crashed) take the mode of the decisions
     line for the same run and slug. `moderate.py all` runs therefore count
-    their review articles too."""
+    their review articles too. Dry runs (a 'dry-run' decisions line, or a rec
+    marked dry_run) are left out: they write nothing and say nothing about the
+    nightly."""
     if n_runs <= 0:
         return []
+    dry = ({d.get("run_id") for d in decisions if d.get("outcome") == "dry-run"}
+           | {r.get("run_id") for r in run_log if r.get("dry_run")})
     mode_of, start_of = {}, {}
     for d in decisions:
         rid = d.get("run_id")
@@ -141,7 +157,7 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
     by_run = OrderedDict()
     for rec in run_log:
         rid = rec.get("run_id")
-        if not rid:
+        if not rid or rid in dry:
             continue
         mode = rec.get("op") or mode_of.get((rid, rec.get("slug")))
         if mode != "review":
@@ -150,6 +166,13 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
     runs = []
     for rid, recs in list(by_run.items())[-n_runs:]:
         errs = [r for r in recs if r.get("error")]
+        # A stage's failure is host-wide only if every article that reached the
+        # stage failed there: the fetch runs after the Worker read, the extract
+        # after the fetch.
+        stage_failed = Counter(_stage(r["error"]) for r in errs)
+        read_failed = sum(1 for r in errs if str(r["error"]).strip().startswith("get_failed_"))
+        reached = {"fetch_failed": len(recs) - read_failed,
+                   "extract_failed": len(recs) - read_failed - stage_failed["fetch_failed"]}
         groups = OrderedDict()
         for r in errs:
             key = clean(r["error"])
@@ -161,7 +184,11 @@ def review_runs(run_log: list, decisions: list, n_runs: int) -> list:
             if isinstance(r.get("elapsed_s"), (int, float)):
                 g["elapsed"].append(float(r["elapsed_s"]))
         for g in groups.values():
-            g["cause"] = likely_cause(g.pop("raw"))
+            raw = g.pop("raw")
+            g["cause"] = likely_cause(raw)
+            stage = _stage(raw)
+            if stage and stage_failed[stage] < reached[stage]:
+                g["cause"] = "article-specific"
             # Older checkouts start elapsed_s before annotate_one waits for a
             # concurrency slot, so queued articles also count that wait; the
             # fastest one is the closest to a single article's own time.
@@ -311,6 +338,10 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
               f"(< {P3_THRESHOLD:.0%}); docs/ROADMAP.md gates re-anchoring stages 1-2 on this")
     else:
         print(f"  P3 trigger    not met ({_pct(rate)} >= {P3_THRESHOLD:.0%})")
+    if rate is not None and drift["largest_run"] == OLD_WP_UPDATE_PAGE:
+        print(f"  sample        the largest wp-update run in the window took exactly "
+              f"{OLD_WP_UPDATE_PAGE} articles, a full old page, so the attempts over-represent "
+              f"articles that keep failing; read the clear rate as a lower bound")
     if drift["queue_head"]:
         print(f"  never cleared {drift['never_cleared']} slugs; most-retried:")
         for slug, n in drift["queue_head"]:
