@@ -177,6 +177,7 @@ launchctl print gui/$(id -u)/org.wikilean.moderate | grep -i 'last exit'   # hea
 launchctl kickstart -k gui/$(id -u)/org.wikilean.moderate                  # run now
 launchctl bootout   gui/$(id -u)/org.wikilean.moderate                     # disable
 ```
+Diagnosing a failing night, and what each error means: [`docs/OPERATIONS.md`](../../docs/OPERATIONS.md).
 A failed batch can be undone with the run-level revert (see the run id in the
 log). Pass the bearer on stdin so it never appears in the process table:
 `printf 'Authorization: Bearer %s\n' "$PIPELINE_TOKEN" | curl -X POST -H @- .../api/admin/revert-run/<run_id>`.
