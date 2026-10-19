@@ -398,6 +398,13 @@ class SettleHelpersTest(PollFixture):
         result = self.run_with(FakeGh(reviews=approvals("Deicyde")), settle.classify, PR, REPO)
         self.assertEqual(result["tags"], ["Q36161", "Q474715"])
 
+    def test_classify_records_each_tags_repo_relative_file(self):
+        # split.py joins this path onto the mathlib checkout, so it must be the
+        # diff's path without the b/ prefix.
+        result = self.run_with(FakeGh(), settle.classify, PR, REPO)
+        self.assertEqual([e["file"] for e in result["recycle"]],
+                         ["Mathlib/Data/Set/Defs.lean", "Mathlib/Order/Defs/PartialOrder.lean"])
+
 
 class ReadyHeaderTest(PollFixture):
     CLS = {"pr": PR, "reviewers": ["Deicyde", "SnirBroshi"], "maintainer_reviewers": ["SnirBroshi"],

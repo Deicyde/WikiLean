@@ -4,11 +4,12 @@
 Given the recycle qids, each with the file the batch PR tagged it in
 (settle.classify's "file"), remove their `@[wikidata Q…]` from those files
 (handling standalone + stacked forms), drop a now-unused CrossRefAttribute
-import, then (with --apply) `lake build`, amend the commit, and force-push so
+import, then (with --apply) build the touched modules, commit and push, so
 the open PR becomes the clean green-only set.
 
   dry-run (default): print the exact edits + the git/build commands it WOULD run.
-  --apply:           write files, build, commit --amend, push --force-with-lease.
+  --apply:           on the fetched branch tip: freshen, write files, build,
+                     commit, and push (fast-forward, no force).
 
 Usage:
   split.py --mathlib ~/mathlib4 --branch wikilean/wikidata-batch-2 \
