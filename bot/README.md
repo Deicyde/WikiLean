@@ -76,6 +76,10 @@ review-gated Brain lane:
     python3 brain/harvest_community_edges.py   # graduate live Brain edits
     python3 bot/brain_queue.py                 # refresh state/brain_queue.json
 
+Both rewrite curated reducer inputs (`brain/data/community_edges.jsonl`,
+`bot/state/brain_queue.json`). Run them in the Brain nightly's checkout and that
+nightly refuses to publish until the change is committed or reverted.
+
 ## Files
 
 | file | role | LLM? |
@@ -186,7 +190,8 @@ Before this, an expired token kept every run green and the bot blind from
   `POLL_ERROR`; its log stops short). `Commit poll state` still ran. Read the
   last line the step printed before dispatching again. If it is
   `refresh_tagged.py`'s `fetching … master (shallow)…`, a batch open's refresh
-  ran long and another dispatch only repeats it.
+  ran long and another dispatch only repeats it. (That was the 2026-08 pattern
+  under Git 2.54; the runner's Git 2.55 fetches the missing blobs in bulk.)
 
 ### Restore failed
 

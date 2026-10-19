@@ -47,11 +47,12 @@ STALE_DIGEST_HOURS = 36    # nightly refresh should keep it under a day
 BATCH_PR_STALE_DAYS = 30   # a batch PR open longer than this needs a nudge
 POLL_STALE_HOURS = 12      # the poll cron completes a run every few hours in practice
 POLL_RUNS_LISTED = 20      # runs read per check; skipped and early-cancelled ones are passed over
-# A cancelled run that lasted this long hit the job's time limit in
-# wikidata-poll.yml (30 minutes, since raised to 60), not the concurrency group
-# dropping a queued run:
-# 209 of the poller's 210 cancelled runs to 2026-10 lasted 30 minutes or more.
-POLL_TIMEOUT_MINUTES = 25
+# A cancelled run that lasted this long hit the job's 60-minute time limit in
+# wikidata-poll.yml. Durations run from startedAt, which includes queue time, so a
+# shorter cancelled run is a queued run the concurrency group dropped, or a manual
+# cancel, never a timeout. (Under the old 30-minute limit, 209 of the poller's 210
+# cancelled runs to 2026-10 lasted 30 minutes or more.)
+POLL_TIMEOUT_MINUTES = 55
 REVIEW_STALE_HOURS = 36    # the review runs once a night
 # One bulk copy of the catalog and annotations leaves their mtimes seconds apart
 # (4 s on 2026-08-19); only a gap longer than this means the graph is stale.

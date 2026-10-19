@@ -78,7 +78,9 @@ Community-edge graduation is separately off by default. To enable it, set
 `WIKILEAN_COMMUNITY_HARVEST=1` and point `WIKILEAN_D1_SNAPSHOT_BUNDLE` at one
 absolute, existing, sealed bundle produced by the explicit D1 acquisition step.
 The moderation job never acquires live D1 state itself and preserves the prior
-`community_edges.jsonl` if that bundle is absent or invalid.
+`community_edges.jsonl` if that bundle is absent or invalid. A harvest that changes
+`brain/data/community_edges.jsonl`, a curated reducer input, stops the next Brain nightly
+from publishing until the change is committed.
 
 The proposal-entity bundle is not source-plan authority by itself. Its reviewed receipt,
 lineage, request preimages, and normalized object still need explicit v3 current-corpus plan

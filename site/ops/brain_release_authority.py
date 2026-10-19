@@ -8,9 +8,11 @@ differs between the authority commit and the checkout is *release-neutral*: text
 never reaches release, public-asset, or Worker bytes. Neutral paths are listed here
 explicitly; everything else (reducer code and curated inputs, authority contracts and
 schemas, Worker source and configuration, lockfiles, public asset sources, annotation
-mirrors, non-README Markdown) is release-affecting by default, so a new file or
-directory is never silently neutral. The checkout must also descend from the authority commit: ``main`` only moves
-forward past a built release.
+mirrors, non-README Markdown) is release-affecting by default. A new file outside the
+neutral directories and name rules is therefore never silently neutral; a new file
+inside them is, so check what reads it before adding a build input there. The checkout
+must also descend from the authority commit: ``main`` only moves forward past a built
+release.
 
 Paths use the repository-relative POSIX form that ``git diff --name-only`` prints.
 """
@@ -65,8 +67,8 @@ NEUTRAL_FILES: tuple[str, ...] = (
     "HANDOFF.md",
     "LICENSE",
 )
-# Markdown is neutral only as a README or under a neutral directory; other
-# Markdown (brain/SCHEMA.md, templates) may be read at build time.
+# Markdown is neutral only as a README, under a neutral directory, or in
+# NEUTRAL_FILES; other Markdown (brain/SCHEMA.md, templates) may be read at build time.
 NEUTRAL_NAMES: tuple[str, ...] = ("README.md",)
 
 GIT_DIFF_ARGUMENTS: tuple[str, ...] = ("diff", "--no-renames", "--name-only", "-z")

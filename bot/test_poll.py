@@ -38,7 +38,7 @@ AUTH_BODY = ('{"message":"Bad credentials","documentation_url":'
 
 def pull(state="open", title="doc: add wikidata attributes (batch 7)", merged=False):
     return {"number": PR, "state": state, "merged": merged, "merged_at": None,
-            "title": title, "created_at": "2026-08-10T11:00:00Z",
+            "title": title, "created_at": "2026-08-10T11:00:00Z", "user": {"login": "Deicyde"},
             "head": {"sha": "c" * 40}}
 
 
