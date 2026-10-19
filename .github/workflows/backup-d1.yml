@@ -160,7 +160,7 @@ jobs:
           test "$(head -n 1 "wikilean-${{ steps.stamp.outputs.ts }}.sql.age")" = "age-encryption.org/v1"
 
       - name: Upload encrypted backup artifact
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: wikilean-d1-${{ steps.stamp.outputs.ts }}
           path: wikilean-${{ steps.stamp.outputs.ts }}.sql.age
@@ -194,7 +194,7 @@ jobs:
         # step is skipped (not failed) when the fetch didn't produce a file.
         if: steps.research.outcome == 'success'
         continue-on-error: true
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: research-export-${{ steps.stamp.outputs.ts }}
           path: research-export-${{ steps.stamp.outputs.ts }}.jsonl.age
