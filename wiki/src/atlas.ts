@@ -80,6 +80,11 @@ export interface AtlasPassage {
   // Absent from stores built before it; the page then reads a quote at the
   // cap as a head (atlas-render quoteCapped).
   quote_capped?: boolean;
+  // True when the quote is such a head and the rest of its passage lies
+  // within the quote's suffix (build_store.quote_extent), so the card, which
+  // shows the suffix, shows where the passage ends. Absent from stores built
+  // before it; the card then reads a head's passage as going on past it.
+  passage_ends_in_suffix?: boolean;
   subject_uri: string;
   outcome: "located" | "absent" | "unresolved";
   status: string | null;

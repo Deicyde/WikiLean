@@ -233,6 +233,14 @@ export function quoteCapped(passage: Pick<AtlasPassage, "quote" | "quote_capped"
   return exact !== "" && exact.split(/\s+/).length >= QUOTE_MAX_WORDS;
 }
 
+// Whether the card, which shows the quote's suffix, shows where a capped
+// head's passage ends: the store says the rest of the passage lies within that
+// suffix (build_store.quote_extent). A store built before the flag reads a
+// head's passage as going on past its suffix.
+function endsInSuffix(passage: Pick<AtlasPassage, "quote" | "passage_ends_in_suffix">): boolean {
+  return passage.passage_ends_in_suffix === true && typeof passage.quote?.suffix === "string" && passage.quote.suffix !== "";
+}
+
 // The mark after a capped head: an ellipsis outside the quotation (after its
 // highlight or its closing quotation mark, never inside it, so the quote stays
 // verbatim), with words for a screen reader, which may not voice "…".
@@ -250,38 +258,68 @@ function emptyStatusCounts(): Record<SummaryStatus, number> {
   return Object.fromEntries(STATUS_ORDER.map((s) => [s, 0])) as Record<SummaryStatus, number>;
 }
 
-// The central statements' counts by status, from a summary's by_prominence;
-// null when the store has none (built before it).
-function centralFromSummary(raw: Record<string, ProminenceCounts> | null | undefined): Record<SummaryStatus, number> | null {
+// The central statements by status, and how many passages are supporting.
+interface CentralCounts {
+  byStatus: Record<SummaryStatus, number>;
+  supporting: number;
+}
+
+// The central statements' counts, from a summary's by_prominence; null when
+// the store has none (built before it).
+function centralFromSummary(raw: Record<string, ProminenceCounts> | null | undefined): CentralCounts | null {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
-  const counts = emptyStatusCounts();
+  const byStatus = emptyStatusCounts();
   for (const prominence of CENTRAL_PROMINENCES) {
     const bucket = raw[prominence];
-    for (const s of STATUS_ORDER) counts[s] += count(bucket?.by_status?.[s]);
+    for (const s of STATUS_ORDER) byStatus[s] += count(bucket?.by_status?.[s]);
   }
-  return counts;
+  return { byStatus, supporting: count(raw.supporting?.passages) };
 }
 
 // The same, from an article's passages; null when no passage carries a
 // prominence (a store built before every record had one).
-function centralFromPassages(passages: AtlasPassage[]): Record<SummaryStatus, number> | null {
+function centralFromPassages(passages: AtlasPassage[]): CentralCounts | null {
   if (!passages.some((p) => typeof p.prominence === "string")) return null;
-  const counts = emptyStatusCounts();
+  const byStatus = emptyStatusCounts();
   for (const passage of passages) {
-    if (CENTRAL_PROMINENCES.includes(passage.prominence as string)) counts[passageStatus(passage)] += 1;
+    if (CENTRAL_PROMINENCES.includes(passage.prominence as string)) byStatus[passageStatus(passage)] += 1;
   }
-  return counts;
+  return { byStatus, supporting: passages.filter((p) => p.prominence === "supporting").length };
 }
 
-// "Central statements": the subject and central passages, counted by status,
-// next to the bar over all passages.
-function centralLine(counts: Record<SummaryStatus, number>, all: number, scope: string): string {
-  const total = STATUS_ORDER.reduce((sum, s) => sum + counts[s], 0);
-  const parts = STATUS_ORDER.filter((s) => counts[s] > 0)
-    .map((s) => `<span class="atlas-mini" data-status="${s}"><span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${int(counts[s])} ${text(STATUS[s].plural)}</span>`)
-    .join(", ");
-  return `<p class="atlas-strip-lead" id="atlas-central"><b>Central statements</b>, ${text(scope)}: ` +
-    (total ? `${int(total)} of ${plural(count(all), "passage", "passages")} — ${parts}.` : "none.") + `</p>`;
+// Between the status counts of the central-statements line: a comma in an
+// element of its own, so the summary box's ".atlas-mini + .atlas-mini" margin
+// (for its space-joined counts) does not match across it, and a wrapped line
+// starts flush.
+const CENTRAL_SEPARATOR = "<span>,</span> ";
+
+// "Central statements": how many of the passages state the article's subject
+// or a named result or definition (prominence subject or central, proposal
+// §2.2), how many are supporting, and the central ones by status. It follows
+// the bar over all passages and that bar's own legend, so the first figures
+// under the bar are the bar's. `articles` is the dashboard's article count.
+function centralLine(central: CentralCounts, rawAll: number, scope: { object: string; articles: number | null }): string {
+  const all = count(rawAll);
+  if (all === 0) return "";
+  const { byStatus, supporting } = central;
+  const total = STATUS_ORDER.reduce((sum, s) => sum + byStatus[s], 0);
+  let sentence: string;
+  if (total === 0) {
+    sentence = `No passage states ${text(scope.object)}.`;
+  } else {
+    const who = total === all ? (all === 1 ? "The one passage" : `All ${int(all)} passages`)
+      : `${int(total)} of the ${plural(all, "passage", "passages")}`;
+    const across = scope.articles === null ? "" : `, across ${plural(count(scope.articles), "article", "articles")},`;
+    const others = supporting === all - total
+      ? (supporting === 1 ? "the other one" : `the other ${int(supporting)}`) : int(supporting);
+    const rest = supporting > 0 ? `; ${others} ${supporting === 1 ? "is" : "are"} supporting (examples, setup)` : "";
+    const parts = STATUS_ORDER.filter((s) => byStatus[s] > 0)
+      .map((s) => `<span class="atlas-mini" data-status="${s}"><span class="atlas-ico" aria-hidden="true">${STATUS[s].icon}</span>${int(byStatus[s])} ${text(STATUS[s].plural)}</span>`)
+      .join(CENTRAL_SEPARATOR);
+    sentence = `${who}${across} ${total === 1 ? "states" : "state"} ${text(scope.object)}${rest}. ` +
+      `Of ${total === 1 ? "this one" : `these ${int(total)}`}: ${parts}.`;
+  }
+  return `<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> ${sentence}</p>`;
 }
 
 // ---- shell -----------------------------------------------------------------
@@ -536,15 +574,17 @@ function passageBlock(passage: AtlasPassage, article: AtlasArticle, ctx: CardCon
   const byClaim = covering.length > 0 && passage.coverage?.basis === true && passage.coverage.status === status;
   if (located && !byClaim) parts.push(`<p class="atlas-why">${text(statusSentence(passage, status, ctx.libs))}</p>`);
   if (covering.length) parts.push(coverageBlock(passage, covering, ctx.libs));
-  // The quote verbatim. A capped head (the passage goes on past the export's
-  // 12-word cap) ends in an ellipsis outside the highlight, after any suffix;
-  // otherwise a suffix that stops mid-sentence trails off as before.
+  // The quote verbatim, with its prefix and suffix as context. An ellipsis
+  // after it means that the passage continues, and nothing else: it follows a
+  // capped head (the passage goes on past the export's 12-word cap), outside
+  // the highlight and after any suffix, unless the rest of the passage lies
+  // within that suffix. A suffix is context and has no ellipsis of its own.
   const capped = quoteCapped(passage);
   parts.push(`<blockquote class="atlas-quote" data-quote="${capped ? "head" : "whole"}">` +
     (quote.prefix ? `<span class="atlas-affix">…${text(quote.prefix)}</span>` : "") +
     `<mark>${text(quote.exact)}</mark>` +
-    (quote.suffix ? `<span class="atlas-affix">${text(quote.suffix)}${capped || /[.!?:;]\s*$/.test(quote.suffix) ? "" : "…"}</span>` : "") +
-    (capped ? QUOTE_CONTINUES : "") +
+    (quote.suffix ? `<span class="atlas-affix">${text(quote.suffix)}</span>` : "") +
+    (capped && !endsInSuffix(passage) ? QUOTE_CONTINUES : "") +
     `</blockquote>`);
   if (context) parts.push(`<p class="atlas-context"><a href="${attr(context)}" rel="noopener" target="_blank">Read it in context on Wikipedia<span aria-hidden="true"> ↗</span></a></p>`);
   if (strong.length) {
@@ -632,7 +672,8 @@ export function atlasArticlePage(input: ArticlePageInput): string {
     ? `<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-subject">Subject</span><ul class="atlas-subject-list" aria-labelledby="atlas-h-subject">${subjects.join("")}</ul></div>\n`
     : "";
   const central = centralFromPassages(list(article.passages));
-  const centralRow = central ? `${centralLine(central, n, "the article's subject and central passages")}\n` : "";
+  const centralHtml = central ? centralLine(central, n, { object: "the article's subject or a named result or definition", articles: null }) : "";
+  const centralRow = centralHtml ? `${centralHtml}\n` : "";
   const anyCapped = list(article.passages).some((passage) => quoteCapped(passage));
   const main = `<main class="wl-atlas" id="atlas-article" data-pageid="${int(article.pageid)}" data-campaign="${attr(article.campaign)}">
 <nav class="atlas-crumbs" aria-label="Breadcrumb"><a href="/atlas">Formalization atlas</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
@@ -643,12 +684,12 @@ export function atlasArticlePage(input: ArticlePageInput): string {
 <h2 class="atlas-h2" id="atlas-h-coverage">Coverage</h2>
 <p class="atlas-strip-lead">${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.</p>
 ${statusBar(summary.by_status, "passage", "passages")}
-${centralRow}${subjectRow}<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-status">Status</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">${statusChips}</div></div>
-${libraryChips ? `<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-where">Where</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-where">${libraryChips}</div></div>` : ""}
+${subjectRow}<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-status">Status</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">${statusChips}</div></div>
+${centralRow}${libraryChips ? `<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-where">Where</span><div class="atlas-chips" role="group" aria-labelledby="atlas-h-where">${libraryChips}</div></div>` : ""}
 <p class="atlas-filter-note" role="status"><span class="atlas-filter-text"></span> <button type="button" class="atlas-clear" hidden>Show all passages</button></p>
 </section>
 <h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>
-${anyCapped ? `<p class="atlas-muted" id="atlas-quote-note">Each quote is at most the first ${QUOTE_MAX_WORDS} words of its passage. An ellipsis after a quote, outside it, means the passage goes on; read it in context on Wikipedia.</p>\n` : ""}${article.passages.length ? `<ol class="atlas-passages" aria-labelledby="atlas-h-passages">\n${article.passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : `<p>No formal passages were found in this revision.</p>`}
+${anyCapped ? `<p class="atlas-muted" id="atlas-quote-note">Quotes show at most the first ${QUOTE_MAX_WORDS} words of a passage. A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest.</p>\n` : ""}${article.passages.length ? `<ol class="atlas-passages" aria-labelledby="atlas-h-passages">\n${article.passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : `<p>No formal passages were found in this revision.</p>`}
 <p class="atlas-data">Data: <a href="/api/atlas/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/atlas/records/${int(article.pageid)}">Literature Links records (JSONL)</a> · record set <code title="${attr(article.record_set)}">${text(String(article.record_set ?? "").slice(0, 12))}</code></p>
 ${user ? `<p class="atlas-muted atlas-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they score the pipeline.</p>` : ""}
 </main>`;
@@ -693,12 +734,23 @@ export function atlasDashboardPage(input: DashboardInput): string {
     const sha = view.commit ? `<code class="atlas-sha">@${text(sha7(view.commit))}</code>` : "";
     return view.commit ? (tree ? `<a href="${attr(tree)}" rel="noopener">${sha}</a>` : sha) : "";
   };
+  // The table's libraries: the universe's, and any library the counts name
+  // that it does not list (the route passes no universe when its object cannot
+  // be read), under its id and with no commit, so the rows come from the counts
+  // and the page never says no library holds anything when one does.
+  const raw = counts.by_library;
+  const byLibraryCounts: AtlasCurrent["counts"]["by_library"] = raw && typeof raw === "object" && !Array.isArray(raw) ? raw : {};
+  const tableLibs = new Map(libs);
+  for (const id of Object.keys(byLibraryCounts)) {
+    if (!tableLibs.has(id)) tableLibs.set(id, { id, info: { repo: "", name: id, short: id, blobTemplate: null }, commit: null });
+  }
   // Libraries with a passage or a related declaration, most passages first, then
   // most complete locations, then by name; every other library of the universe
   // was searched and holds nothing in this build, so it is listed below the
   // table rather than as a row of zeros.
-  const byLibrary = [...libs.values()].map((view) => ({
-    view, c: counts.by_library?.[view.id] ?? { articles: 0, passages: 0, locations: 0, related: 0, complete: 0, incomplete: 0 },
+  const byLibrary = [...tableLibs.values()].map((view) => ({
+    view, c: (Object.prototype.hasOwnProperty.call(byLibraryCounts, view.id) ? byLibraryCounts[view.id] : null)
+      ?? { articles: 0, passages: 0, locations: 0, related: 0, complete: 0, incomplete: 0 },
   }));
   const held = byLibrary.filter(({ c }) => count(c.passages) > 0 || count(c.related) > 0)
     .sort((a, b) => count(b.c.passages) - count(a.c.passages) || count(b.c.complete) - count(a.c.complete)
@@ -718,7 +770,10 @@ export function atlasDashboardPage(input: DashboardInput): string {
       `<ul>${empty.map(({ view }) => `<li>${text(view.info.name)} ${commitOf(view)}</li>`).join("")}</ul></details>`
     : "";
   const central = centralFromSummary(counts.by_prominence);
-  const centralRow = central ? `\n${centralLine(central, count(counts.passages), "the subject and central passages of every article")}` : "";
+  const centralHtml = central
+    ? centralLine(central, count(counts.passages), { object: "an article's subject or a named result or definition", articles: count(counts.articles) })
+    : "";
+  const centralRow = centralHtml ? `\n${centralHtml}` : "";
   const importance = Object.entries(counts.by_importance ?? {})
     .sort(([a], [b]) => {
       const ia = IMPORTANCE_ORDER.indexOf(a), ib = IMPORTANCE_ORDER.indexOf(b);
@@ -747,8 +802,7 @@ ${statusBar(counts.by_status, "passage", "passages")}
 </section>
 <section aria-labelledby="atlas-h-libs">
 <h2 class="atlas-h2" id="atlas-h-libs">By library</h2>
-${libraryTable}${emptyLibraries}
-<p class="atlas-muted">A passage counts toward every library that states it. Complete locations are proved declarations or definitions; incomplete ones are stated without a finished proof (statement only, wanted, or axiom-dependent). “Related only” declarations state something else and are not counted as locations.</p>
+${libraryTable}${held.length ? `\n<p class="atlas-muted">A passage counts toward every library that states it. Complete locations are proved declarations or definitions; incomplete ones are stated without a finished proof (statement only, wanted, or axiom-dependent). “Related only” declarations state something else and are not counted as locations.</p>` : ""}${emptyLibraries}
 </section>
 ${hasImportance ? `<section aria-labelledby="atlas-h-imp">
 <h2 class="atlas-h2" id="atlas-h-imp">By WikiProject importance</h2>

@@ -161,12 +161,17 @@ describe("atlas pages with the fixture store", () => {
     // zeros: it is named, with its commit, below the table.
     expect(html).not.toContain('<th scope="row">Lean core</th>');
     const leanCore = "1465a20b72ff3532c8f25b2532812415f8fbb0e1";
-    expect(html).toContain('</table></div>\n<details id="atlas-libs-empty"><summary>1 more library searched, with no locations in this build</summary>' +
-      `<ul><li>Lean core <a href="https://github.com/leanprover/lean4/tree/${leanCore}" rel="noopener"><code class="atlas-sha">@1465a20</code></a></li></ul></details>`);
-    // Next to the bar over all passages: the central statements (subject and
-    // central passages) by status.
-    expect(html).toContain('</div>\n<p class="atlas-strip-lead" id="atlas-central"><b>Central statements</b>, the subject and central passages of every article: 4 of 7 passages — ' +
-      '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>3 formalized</span>, ' +
+    // The table's column notes follow it directly; the list comes after them.
+    expect(html).toContain('</table></div>\n<p class="atlas-muted">A passage counts toward every library that states it.');
+    expect(html).toContain('as locations.</p>\n<details id="atlas-libs-empty"><summary>1 more library searched, with no locations in this build</summary>' +
+      `<ul><li>Lean core <a href="https://github.com/leanprover/lean4/tree/${leanCore}" rel="noopener"><code class="atlas-sha">@1465a20</code></a></li></ul></details>\n</section>`);
+    // After the bar over all passages and its legend: the central statements
+    // (subject and central passages), what the rest are, and the central ones
+    // by status. The comma between two counts is an element, so the summary
+    // box's ".atlas-mini + .atlas-mini" margin does not apply.
+    expect(html).toContain('</span></span></div>\n<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> 4 of the 7 passages, across 2 articles, ' +
+      "state an article's subject or a named result or definition; the other 3 are supporting (examples, setup). Of these 4: " +
+      '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>3 formalized</span><span>,</span> ' +
       '<span class="atlas-mini" data-status="not_formalized"><span class="atlas-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n</section>');
     // Complete and incomplete locations are separate columns: TauCeti only
     // states its result, so it is never counted like a proved Mathlib row.
@@ -660,7 +665,8 @@ describe("atlas pages with the fixture store", () => {
     expect(widget.match(/data-quote-cut=""/g)).toHaveLength(1);
     expect(widget.match(/data-quote="whole"/g)).toHaveLength(3);
     expect(widget).toContain('<h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>\n<p class="atlas-muted" id="atlas-quote-note">' +
-      "Each quote is at most the first 12 words of its passage. An ellipsis after a quote, outside it, means the passage goes on; read it in context on Wikipedia.</p>");
+      "Quotes show at most the first 12 words of a passage. A … after the highlighted quote means the passage continues; " +
+      "“Read it in context on Wikipedia” shows the rest.</p>");
     // A passage of exactly 12 words is quoted whole: at the cap, but no ellipsis and no note.
     const gadget = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
     expect(gadget).toContain('<blockquote class="atlas-quote" data-quote="whole">' +
@@ -696,18 +702,42 @@ describe("atlas pages with the fixture store", () => {
       expect(block, label).toContain(`<span class="atlas-affix"> of minimal degree.</span>${capped ? CUT : ""}</blockquote>`);
       expect(html, label).not.toContain("<b>yes");
     }
-    // A suffix that stops mid-sentence trails off once: by its own ellipsis, or by the head's.
-    for (const capped of [false, true]) {
+    // An ellipsis after the quote means only that the passage continues: a suffix is context
+    // and never trails off by its own, even mid-sentence. A head whose passage ends inside its
+    // suffix (the export widens a suffix from the page, past the passage) gets no ellipsis on
+    // its card, which shows that end, yet keeps it in the Subject row, which shows the quote alone.
+    const cardCases: Array<[string, Record<string, unknown>, boolean, boolean]> = [
+      ["whole", { quote_capped: false }, false, false],
+      ["head", { quote_capped: true }, true, true],
+      ["head ending in its suffix", { quote_capped: true, passage_ends_in_suffix: true }, false, true],
+      // The flag only counts for a head with a suffix, and only as a boolean.
+      ["head, the flag not a boolean", { quote_capped: true, passage_ends_in_suffix: "yes" }, true, true],
+      ["whole, the flag set", { quote_capped: false, passage_ends_in_suffix: true }, false, false],
+    ];
+    for (const [label, flags, cardCut, rowCut] of cardCases) {
       const h = setup();
       const files = atlasFixtureFiles();
       const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
-      Object.assign(article.passages[0], { quote_capped: capped });
+      Object.assign(article.passages[0], flags);
       article.passages[0].quote.suffix = " of minimal";
       files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
       bindAtlas(h.env, files);
       const html = await (await get(h.env, WIDGET_PATH)).text();
-      expect(html).toContain(capped ? `<span class="atlas-affix"> of minimal</span>${CUT}</blockquote>`
-        : '<span class="atlas-affix"> of minimal…</span></blockquote>');
+      expect(html, label).toContain(`<span class="atlas-affix"> of minimal</span>${cardCut ? CUT : ""}</blockquote>`);
+      expect(html, label).toContain(`spanning gadget”${rowCut ? CUT : ""}</a>`);
+      expect(html, label).not.toContain("minimal…");
+    }
+    // Without a suffix there is nothing for the passage to end in: a head is cut on its card.
+    {
+      const h = setup();
+      const files = atlasFixtureFiles();
+      const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+      Object.assign(article.passages[0], { quote_capped: true, passage_ends_in_suffix: true });
+      delete article.passages[0].quote.suffix;
+      files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+      bindAtlas(h.env, files);
+      const html = await (await get(h.env, WIDGET_PATH)).text();
+      expect(html).toContain(`spanning gadget</mark>${CUT}</blockquote>`);
     }
   });
 
@@ -716,17 +746,42 @@ describe("atlas pages with the fixture store", () => {
     const widget = await (await get(h.env, WIDGET_PATH)).text();
     // Next to the bar over all four passages, which stays.
     expect(widget).toContain('<div class="atlas-bar" role="img" aria-label="4 passages: 1 formalized, 1 statement only, 1 not formalized, 1 undecided">');
+    // The bar is followed by its own legend (the Subject row, then the Status chips),
+    // and only then by the line, so the first figures under the bar are the bar's.
     expect(widget).toContain('title="1 undecided"></span></div>\n' +
-      '<p class="atlas-strip-lead" id="atlas-central"><b>Central statements</b>, the article\'s subject and central passages: 2 of 4 passages — ' +
-      '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>1 formalized</span>, ' +
-      '<span class="atlas-mini" data-status="not_formalized"><span class="atlas-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n' +
       '<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-subject">Subject</span>');
+    expect(widget).toContain('<div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">');
+    expect(widget).toMatch(/aria-labelledby="atlas-h-status">.*?<\/div><\/div>\n<p class="atlas-strip-lead" id="atlas-central">.*?<\/p>\n<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-where">/);
+    expect(widget).toContain('<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> 2 of the 4 passages ' +
+      "state the article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of these 2: " +
+      '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>1 formalized</span><span>,</span> ' +
+      '<span class="atlas-mini" data-status="not_formalized"><span class="atlas-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n');
     const gadget = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
-    expect(gadget).toContain("subject and central passages: 2 of 3 passages — " +
+    expect(gadget).toContain("<b>Central statements:</b> 2 of the 3 passages state the article's subject or a named result or definition; " +
+      "the other one is supporting (examples, setup). Of these 2: " +
       '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>2 formalized</span>.</p>');
-    // From the passages' prominence: only supporting passages is "none"; a store whose
-    // passages carry no prominence (built before it was required) gets no line.
-    for (const [label, prominence, expected] of [["all supporting", "supporting", "passages: none.</p>"], ["no prominence", null, null]] as const) {
+    // From the passages' prominence: every count and its grammar; a store whose passages
+    // carry no prominence (built before it was required) gets no line.
+    const lineCases: Array<[string, Array<string | null>, string]> = [
+      ["one central", ["subject", "supporting", "supporting", "supporting"],
+        "1 of the 4 passages states the article's subject or a named result or definition; the other 3 are supporting (examples, setup). Of this one: "],
+      ["all central", ["subject", "central", "central", "subject"], "All 4 passages state the article's subject or a named result or definition. Of these 4: "],
+      // A passage without a prominence is neither: the supporting count says only what it is.
+      ["one without", ["subject", "central", "supporting", null],
+        "2 of the 4 passages state the article's subject or a named result or definition; 1 is supporting (examples, setup). Of these 2: "],
+    ];
+    for (const [label, prominences, expected] of lineCases) {
+      const one = setup();
+      const files = atlasFixtureFiles();
+      const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+      article.passages.forEach((passage: Record<string, unknown>, i: number) => { passage.prominence = prominences[i]; });
+      files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+      bindAtlas(one.env, files);
+      const html = await (await get(one.env, WIDGET_PATH)).text();
+      expect(html, label).toContain(`<b>Central statements:</b> ${expected}`);
+    }
+    for (const [label, prominence, expected] of [["all supporting", "supporting",
+      "<b>Central statements:</b> No passage states the article's subject or a named result or definition.</p>"], ["no prominence", null, null]] as const) {
       const one = setup();
       const files = atlasFixtureFiles();
       const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
@@ -744,15 +799,18 @@ describe("atlas pages with the fixture store", () => {
     const cases: Array<[string, (counts: Record<string, any>) => void, string | null]> = [
       // A store built before by_prominence: no line.
       ["absent", (counts) => { delete counts.by_prominence; }, null],
+      // No supporting bucket to count: the line leaves the rest unsaid.
       ["hostile", (counts) => {
         counts.by_prominence = { subject: { by_status: { formalized: "<b>9</b>", partial: 2 } }, central: "<i>x</i>" };
-      }, "of every article: 2 of 7 passages — " +
+      }, "2 of the 7 passages, across 2 articles, state an article's subject or a named result or definition. Of these 2: " +
         '<span class="atlas-mini" data-status="partial"><span class="atlas-ico" aria-hidden="true">◔</span>2 partial</span>.</p>'],
       ["no central passages", (counts) => {
         for (const bucket of Object.values(counts.by_prominence) as Array<Record<string, any>>) {
           if (bucket !== counts.by_prominence.supporting) bucket.by_status = {};
         }
-      }, "of every article: none.</p>"],
+      }, "No passage states an article's subject or a named result or definition.</p>"],
+      // No passages at all: no line.
+      ["no passages", (counts) => { counts.passages = 0; }, null],
     ];
     for (const [label, edit, expected] of cases) {
       const h = setup();
@@ -803,6 +861,24 @@ describe("atlas pages with the fixture store", () => {
         expect(names, label).toEqual(["Batteries", "FormalFrontier · WidgetTheory", "Lean core", "Mathlib", "TauCeti"]);
       }
     }
+  });
+
+  it("without the universe object the by-library rows still come from the counts", async () => {
+    // The route passes no universe when its object cannot be read (in the publish window after
+    // old objects are deleted, say): the rows are the counts' libraries under their ids, with no
+    // commit, and the page never says that no library holds anything.
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const current = JSON.parse(files.get("atlas/v1/current.json")!);
+    files.delete(`atlas/v1/universes/${current.universe.sha256}.json`);
+    bindAtlas(h.env, files);
+    const html = await (await get(h.env, "/atlas")).text();
+    const rows = [...html.matchAll(/<tr><th scope="row">([^<]+)<\/th><td><\/td><td class="num">/g)].map((m) => m[1]);
+    expect(rows).toEqual(["mathlib", "ff-widgets", "tauceti", "batteries"]);
+    expect(html).toMatch(/<th scope="row">mathlib<\/th><td><\/td><td class="num">2<\/td><td class="num">4<\/td><td class="num">5<\/td><td class="num">0<\/td><td class="num">0<\/td><\/tr>/);
+    expect(html).not.toContain("No library holds a location");
+    // No universe names the libraries that hold nothing, so there is no list of them.
+    expect(html).not.toContain("atlas-libs-empty");
   });
 });
 
