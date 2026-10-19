@@ -661,8 +661,8 @@ top-level `note` says so.
 
 ## Rate limits & caching
 
-- `POST /mcp`: **120 requests/min per IP** (JSON-RPC error `-32000`, HTTP 429
-  when exceeded).
+- `POST /mcp`: **120 requests/min per IP**, per /64 for IPv6 (JSON-RPC error `-32000`,
+  HTTP 429 when exceeded).
 - REST compatibility routes are unauthenticated and revalidation-safe
   (`public, max-age=0, must-revalidate`) because they resolve the mutable
   current selector. `/api/brain/edges` remains live and `no-store`.
