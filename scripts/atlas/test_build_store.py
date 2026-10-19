@@ -258,7 +258,7 @@ class BuildTests(unittest.TestCase):
         # At the cap: whole exactly when the quote is the whole span.
         self.assertFalse(build_store.quote_capped(twelve, own))
         self.assertTrue(build_store.quote_capped(twelve, other))
-        # No usable span sha (never refused): a quote at the cap reads as a head.
+        # No usable span sha (the builder refuses one, subject_problems): a quote at the cap reads as a head.
         for span in (None, 5, True, [], {}, "x", own.upper(), own + "\n"):
             self.assertTrue(build_store.quote_capped(twelve, span), repr(span))
 
@@ -308,6 +308,47 @@ class BuildTests(unittest.TestCase):
                              repr((suffix, span)))
         # Without a usable span sha, a head's passage goes on past its suffix (the safe side).
         self.assertEqual(build_store.quote_extent({"exact": exact, "suffix": " of order 2."}, None), head)
+
+    def test_the_span_is_a_shortcut_to_what_the_span_sha_gives(self):
+        # F5's span gives the passage's length, so the text after exact is tail = (end - start)
+        # - len(exact) characters. Where the suffix covers it, or the tail runs past the suffix by
+        # more than any trailing-space run, the span alone decides; one or two characters past
+        # the suffix, only span_sha256 says whether they are whitespace. Either way the answer
+        # is the one span_sha256 gives without the span.
+        exact = "Every group of odd order is solvable, and so is every group"
+        sha = lambda text: hashlib.sha256(text.encode()).hexdigest()
+        ends = {"quote_capped": True, "passage_ends_in_suffix": True}
+        head = {"quote_capped": True, "passage_ends_in_suffix": False}
+        whole = {"quote_capped": False, "passage_ends_in_suffix": False}
+        self.assertEqual(build_store.MAX_TRAILING_SPACE, 2)
+        cases = [
+            # (suffix, the passage's text, what the quote shows, whether the span alone decides)
+            ("", exact, whole, True),
+            ("", exact + " ", whole, False),
+            ("", exact + " \xa0", whole, False),
+            ("", exact + "   ", head, True),
+            ("", exact + " and more.", head, True),
+            (" of order 2.", exact + " of order 2.", ends, True),
+            (" of order 2. Later: Every", exact + " of", ends, True),
+            (" of order 2.", exact + " of order 2.\xa0", ends, False),
+            (" of order 2", exact + " of order 2 or 3.", head, True),
+            ("\xa0Later:", exact + "\xa0", whole, True),
+            ("   Later:", exact + "   ", whole, True),
+            (" ", exact + " \n", whole, False),
+        ]
+        for suffix, text, expected, alone in cases:
+            quote = {"exact": exact, "suffix": suffix}
+            for start in (0, 7):
+                span = [start, start + len(text)]
+                with self.subTest(suffix=suffix, text=text[len(exact):], start=start):
+                    self.assertEqual(build_store.quote_extent(quote, sha(text)), expected)
+                    self.assertEqual(build_store.quote_extent(quote, sha(text), span), expected)
+                    # With no usable span sha, the span decides where it can, and the rest is a head.
+                    self.assertEqual(build_store.quote_extent(quote, None, span), expected if alone else head)
+                    self.assertEqual(build_store.quote_capped(quote, sha(text), span), expected["quote_capped"])
+        # Under the cap the passage ended first: whole, whatever the span.
+        eleven = {"exact": " ".join(f"w{i}" for i in range(11))}
+        self.assertEqual(build_store.quote_extent(eleven, None, [0, len(eleven["exact"]) + 50]), whole)
 
     def test_counts_by_prominence(self):
         # The subject and central passages are the article's statements: the pages count them
@@ -645,7 +686,8 @@ class RefusalTests(SetCopyTest):
 
     def test_records_of_one_passage_carry_the_same_span_sha(self):
         # The page's ellipsis reads span_sha256, so records that disagree on it are refused like
-        # any other passage field, whichever record comes first; none is chosen by its order.
+        # any other passage field, whichever record comes first; none is chosen by its order. (A
+        # missing one is refused on its own as well, LocateExtensionTests.)
         twelve = " ".join(["word"] * 12)
         own = hashlib.sha256(twelve.encode()).hexdigest()
         for shas in ((own, "0" * 64), ("0" * 64, own), (own, None)):
@@ -662,20 +704,6 @@ class RefusalTests(SetCopyTest):
                             ext["span_sha256"] = sha
                 self.edit_widget(edit)
                 self.refuse("records of one passage disagree on span_sha256")
-
-    def test_a_set_without_span_shas_builds(self):
-        # span_sha256 is read, never required: without it a quote at the cap reads as a head.
-        for path in (self.set / "records").glob("*.jsonl"):
-            rows = read_jsonl(path)
-            for row in rows:
-                del row["subject"][0]["extensions"][LOCATE]["span_sha256"]
-            write_jsonl(path, rows)
-        reseal(self.set)
-        tree = build_store.build(self.set)
-        self.assertEqual([p["quote_capped"] for p in json.loads(tree["atlas/v1/articles/1001.json"])["passages"]],
-                         [False, True, False, False])
-        self.assertEqual([p["quote_capped"] for p in json.loads(tree["atlas/v1/articles/1003.json"])["passages"]],
-                         [False, False, True])
 
     def test_a_head_whose_passage_ends_in_its_suffix_is_marked(self):
         # The Widget bound with a suffix that holds the rest of its passage: still a capped head
@@ -1596,6 +1624,234 @@ class AgreedFormatTests(SetCopyTest):
                 self.refuse(f"records/enwiki-1001-2002.jsonl:1: {fragment}")
 
 
+class LocateExtensionTests(SetCopyTest):
+    """The locate extension's agreed keys at its three places (docs/ATLAS.md section 3, "The locate
+    extension's keys"), and the subject end's optional span and layer_sha256 (formal-companion
+    722b30f): any other key is refused naming it, its place and the record id."""
+
+    WIDGET_ID = "enwiki-1001-2002::In-text #3fa91c07"
+    UNEXPECTED = "(not in the agreed record-set format, docs/ATLAS.md section 3)"
+    SPAN_RULE = ("span must be the passage's half-open code-point offsets on the layer, [start, end] with "
+                 "integers 0 <= start < end (formal-companion 722b30f)")
+
+    @staticmethod
+    def subject_ext(row: dict) -> dict:
+        return row["subject"][0]["extensions"][LOCATE]
+
+    def layer_sha(self, source_id: str = "enwiki-1001-2002") -> str:
+        rows = read_jsonl(self.set / "sources.jsonl")
+        return next(row["layer_sha256"] for row in rows if row["source_id"] == source_id)
+
+    def add_spans(self, tail: int = 0, sha: bool = True) -> None:
+        """Give every Widget record its passage's span, `tail` characters past its quote, on the layer.
+
+        With tail 0 the span's text is the quote's exact, so span_sha256 becomes its sha256 (sha);
+        records of one passage share one span, as the export writes them.
+        """
+        layer = self.layer_sha()
+
+        def edit(rows):
+            starts: dict[str, int] = {}
+            for row in rows:
+                exact = row["subject"][0]["location"]["quote"]["exact"]
+                start = starts.setdefault(row["id"], 1000 * len(starts))
+                ext = self.subject_ext(row)
+                ext.update(span=[start, start + len(exact) + tail], layer_sha256=layer)
+                if sha:
+                    ext["span_sha256"] = hashlib.sha256(exact.encode()).hexdigest()
+        self.edit_widget(edit)
+
+    def test_an_unknown_key_at_each_level_is_refused_by_name(self):
+        lean = lambda row: row["object"][0]["extensions"][LOCATE]  # noqa: E731
+        cases = [
+            # (row, the extension to edit, key, its place in the message)
+            (0, lambda row: row["extensions"][LOCATE], "x_note", "a location record's locate extension"),
+            (3, lambda row: row["extensions"][LOCATE], "x_note", "an absence record's locate extension"),
+            (5, lambda row: row["extensions"][LOCATE], "x_note", "an unresolved record's locate extension"),
+            (0, self.subject_ext, "spann", "the subject end's locate extension"),
+            (0, lean, "endline", "the lean end's locate extension"),
+            # A key of another shape is unknown to this one.
+            (3, lambda row: row["extensions"][LOCATE], "rank", "an absence record's locate extension"),
+            (5, lambda row: row["extensions"][LOCATE], "location_key", "an unresolved record's locate extension"),
+            (0, lambda row: row["extensions"][LOCATE], "receipt", "a location record's locate extension"),
+            (3, lambda row: row["extensions"][LOCATE]["receipt"], "sha", "the absence's receipt"),
+        ]
+        for row, place, key, level in cases:
+            with self.subTest(row=row, key=key, level=level):
+                self.fresh()
+                self.edit_widget(lambda rows, row=row, place=place, key=key: place(rows[row]).update({key: 1}))
+                rid = read_jsonl(self.set / "records/enwiki-1001-2002.jsonl")[row]["id"]
+                self.refuse(f"records/enwiki-1001-2002.jsonl:{row + 1}: record {rid}: unexpected key {key!r} in "
+                            f"{level} {self.UNEXPECTED}")
+        # Every unknown key is named, in one message per place.
+        self.fresh()
+        self.edit_widget(lambda rows: self.subject_ext(rows[0]).update(b_key=1, a_key=None))
+        self.refuse(f"record {self.WIDGET_ID}: unexpected keys 'a_key', 'b_key' in the subject end's locate extension")
+
+    def test_only_the_locate_extension_rides_on_a_record_and_its_ends(self):
+        for place, level in ((lambda row: row, "the record"), (lambda row: row["subject"][0], "the subject end"),
+                             (lambda row: row["object"][0], "the lean end")):
+            with self.subTest(level=level):
+                self.fresh()
+                self.edit_widget(lambda rows, place=place: place(rows[0])["extensions"].update(
+                    {"org.example.other": {"note": "x"}}))
+                self.refuse(f"records/enwiki-1001-2002.jsonl:1: record {self.WIDGET_ID}: unexpected extension "
+                            f"'org.example.other' on {level}: the agreed record-set format carries only {LOCATE!r}")
+
+    def test_the_subject_end_carries_renderer_licence_and_span_sha256(self):
+        for key, value, fragment in (
+                ("renderer", None, "the subject end's renderer must be its source's renderer token"),
+                ("renderer", "web-html/2", "the subject end's renderer must be its source's renderer token"),
+                ("renderer", "web html", "the subject end's renderer must be its source's renderer token"),
+                ("licence", None, "the subject end's licence, the source's SPDX licence id, must be a non-empty"),
+                ("licence", " ", "the subject end's licence, the source's SPDX licence id, must be a non-empty"),
+                ("licence", "L" * 301, "the subject end's licence, the source's SPDX licence id, is 301 characters, "
+                                       "longer than 300"),
+                ("span_sha256", None, "the subject end's span_sha256, the sha256 of the passage's span, must be 64"),
+                ("span_sha256", "A" * 64, "the subject end's span_sha256, the sha256 of the passage's span, must"),
+                ("pageid", 1001.0, "subject extension pageid and html_sha256 must match sources.jsonl"),
+                ("pageid", True, "subject extension pageid and html_sha256 must match sources.jsonl")):
+            with self.subTest(key=key, value=value if not isinstance(value, str) else value[:20]):
+                self.fresh()
+                self.edit_widget(lambda rows, key=key, value=value: self.subject_ext(rows[0]).update({key: value}))
+                self.refuse(f"records/enwiki-1001-2002.jsonl:1: {fragment}")
+        for key in ("renderer", "licence", "span_sha256"):
+            with self.subTest(missing=key):
+                self.fresh()
+                self.edit_widget(lambda rows, key=key: self.subject_ext(rows[0]).pop(key))
+                self.refuse(f"records/enwiki-1001-2002.jsonl:1: the subject end's {key}")
+
+    def test_a_receipt_count_is_an_integer(self):
+        # 2.0 == 2 in Python, so a float count once passed as the list's length.
+        for value in (2.0, True, "2", None):
+            with self.subTest(candidates=value):
+                self.fresh()
+                self.edit_widget(lambda rows, value=value: rows[3]["extensions"][LOCATE]["receipt"].update(
+                    candidates=value))
+                self.refuse("records/enwiki-1001-2002.jsonl:4: receipt.candidates must be an integer: the length of "
+                            "the candidates list in receipts/")
+
+    def without_spans(self) -> list[dict]:
+        """The Widget passages the same set builds to with every span and layer_sha256 taken out."""
+        self.edit_widget(lambda rows: [self.subject_ext(row).pop(key, None) for row in rows
+                                       for key in ("span", "layer_sha256")])
+        return self.article()["passages"]
+
+    def test_a_valid_span_builds_to_the_same_view(self):
+        # The span and layer_sha256 are optional, and quote_extent reads the span only as a
+        # shortcut to what span_sha256 gives: a set with them builds to the same passages as the
+        # same set without them, and the records, which the store keeps verbatim, keep them.
+        before = self.article()["passages"]
+        # The Widget bound is a quote at the cap: a span no longer than it (with span_sha256 the
+        # quote's sha) is its whole passage, and one that runs 60 characters on is a capped head.
+        for tail, sha, capped in ((0, True, False), (60, False, True)):
+            with self.subTest(tail=tail):
+                self.fresh()
+                self.add_spans(tail=tail, sha=sha)
+                tree = build_store.build(self.set)
+                passages = json.loads(tree["atlas/v1/articles/1001.json"])["passages"]
+                records = [json.loads(line) for line in tree["atlas/v1/records/1001.jsonl"].decode().splitlines()]
+                self.assertEqual(self.subject_ext(records[0])["span"], [0, 44 + tail])
+                self.assertEqual(self.subject_ext(records[0])["layer_sha256"], self.layer_sha())
+                self.assertIs(passages[1]["quote_capped"], capped)
+                self.assertEqual(passages, self.without_spans())
+                if not sha:
+                    self.assertEqual(passages, before)
+        # A tail the suffix gives in full (one character): the span's text is exact and the
+        # suffix's first character, and span_sha256 must be its sha256.
+        self.fresh()
+        self.add_spans(tail=1, sha=False)
+        self.refuse("records/enwiki-1001-2002.jsonl:1: span_sha256 is not the sha256 of the span's text, which the "
+                    "quote gives in full (exact and the first 1 characters of its suffix)")
+
+        def space_sha(rows):
+            for row in rows:
+                quote = row["subject"][0]["location"]["quote"]
+                text = quote["exact"] + quote.get("suffix", "")[:1]
+                self.subject_ext(row)["span_sha256"] = hashlib.sha256(text.encode()).hexdigest()
+        self.edit_widget(space_sha)
+        passages = self.article()["passages"]
+        self.assertEqual(passages, self.without_spans())
+
+    def test_the_fixture_with_its_passages_spans_builds_its_golden_view(self):
+        # The F5 shape on every record of the fixture. The two quotes at the cap get their
+        # passages' own lengths: the Widget bound's passage runs on 10 characters past its quote
+        # (" its rank."), past its empty suffix by more than any trailing-space run, so its span
+        # alone makes it a capped head; the Gadget equivalence's passage is its quote, a tail of
+        # 0, so its span alone makes it whole. The passages under the cap (stand-in
+        # span_sha256 values) are whole whatever their span, which runs 40 characters past
+        # their suffix. The view is the golden store's: the span and span_sha256 agree.
+        tails = {"Moreover, the number of spanning gadgets of a widget is at most": 10,
+                 "Moreover, the gadgets on a widget correspond bijectively to all its vertices.": 0}
+        for name in ("enwiki-1001-2002", "enwiki-1003-2004"):
+            path = self.set / "records" / f"{name}.jsonl"
+            rows = read_jsonl(path)
+            starts: dict[str, int] = {}
+            for row in rows:
+                quote = row["subject"][0]["location"]["quote"]
+                start = starts.setdefault(row["id"], 1000 * len(starts))
+                tail = tails.get(quote["exact"], len(quote.get("suffix", "")) + 40)
+                self.subject_ext(row).update(span=[start, start + len(quote["exact"]) + tail],
+                                             layer_sha256=self.layer_sha(name))
+            write_jsonl(path, rows)
+        reseal(self.set)
+        tree = build_store.build(self.set)
+        for pageid in (1001, 1003):
+            built = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            golden = json.loads((STORE / f"atlas/v1/articles/{pageid}.json").read_text())
+            self.assertEqual((built["passages"], built["summary"]), (golden["passages"], golden["summary"]))
+        self.assertEqual([p["quote_capped"] for p in json.loads(tree["atlas/v1/articles/1001.json"])["passages"]],
+                         [False, True, False, False])
+        self.assertEqual([p["quote_capped"] for p in json.loads(tree["atlas/v1/articles/1003.json"])["passages"]],
+                         [False, False, False])
+
+    def test_a_malformed_span_or_layer_hash_is_refused(self):
+        for span in ([5, 5], [6, 5], [-1, 50], [0], [0, 50, 60], ["0", "50"], [0.0, 50], [True, 50], [0, 50.0],
+                     "0-50", None, {}, {"start": 0, "end": 50}):
+            with self.subTest(span=span):
+                self.fresh()
+                self.add_spans()
+                self.edit_widget(lambda rows, span=span: self.subject_ext(rows[0]).update(span=span))
+                self.refuse(f"records/enwiki-1001-2002.jsonl:1: {self.SPAN_RULE}")
+        for layer, fragment in (("A" * 64, "layer_sha256 must be 64 lowercase hex"),
+                                ("0" * 63, "layer_sha256 must be 64 lowercase hex"),
+                                ("0" * 64 + "\n", "layer_sha256 must be 64 lowercase hex"),
+                                (None, "layer_sha256 must be 64 lowercase hex"),
+                                (["0" * 64], "layer_sha256 must be 64 lowercase hex"),
+                                ("0" * 64, "layer_sha256 must be the source's layer_sha256 (sources.jsonl)")):
+            with self.subTest(layer=layer):
+                self.fresh()
+                self.add_spans()
+                self.edit_widget(lambda rows, layer=layer: self.subject_ext(rows[0]).update(layer_sha256=layer))
+                self.refuse(f"records/enwiki-1001-2002.jsonl:1: {fragment}")
+        for key in ("span", "layer_sha256"):
+            with self.subTest(alone=key):
+                self.fresh()
+                self.add_spans()
+                self.edit_widget(lambda rows, key=key: self.subject_ext(rows[0]).pop(
+                    "layer_sha256" if key == "span" else "span"))
+                self.refuse("records/enwiki-1001-2002.jsonl:1: span and layer_sha256 come together or not at all")
+        # The quote is the head of its passage, so it fits in the span.
+        self.fresh()
+        self.add_spans(tail=-1, sha=False)
+        self.refuse("records/enwiki-1001-2002.jsonl:1: the quote's exact is 44 characters, longer than its span "
+                    "[0, 43] (43): the quote is the head of its passage")
+        # A span that is not the quote's text, by the quote's own sha.
+        self.fresh()
+        self.add_spans()
+        self.edit_widget(lambda rows: [self.subject_ext(row).update(span_sha256="5" * 64) for row in rows[:2]])
+        self.refuse("records/enwiki-1001-2002.jsonl:1: span_sha256 is not the sha256 of the span's text, which the "
+                    "quote gives in full (exact)")
+        # A passage field: every record of the passage carries the same span.
+        self.fresh()
+        self.add_spans(tail=60, sha=False)
+        self.edit_widget(lambda rows: self.subject_ext(rows[1]).update(span=[1, 105]))
+        self.refuse(f"records/enwiki-1001-2002.jsonl: {self.WIDGET_ID}: records of one passage disagree on span")
+        self.fresh()
+        self.edit_widget(lambda rows: self.subject_ext(rows[1]).update(span_sha256="5" * 64))
+        self.refuse(f"records/enwiki-1001-2002.jsonl: {self.WIDGET_ID}: records of one passage disagree on span_sha256")
+
+
 class MalformedValueTests(unittest.TestCase):
     """A malformed value anywhere is a refusal (exit 2), never a crash (docs/ATLAS.md, section 5)."""
 
@@ -1657,10 +1913,15 @@ class MalformedValueTests(unittest.TestCase):
             ["object", 0, "location", "declaration"], ["object", 0, "uri"], ["object", 0, "version"],
             ["subject", 0, "uri"], ["subject", 0, "version"], ["subject", 0, "location", "quote"],
             ["subject", 0, "location", "quote", "exact"], ["subject", 0, "location", "quote", "prefix"],
-            ["subject", 0, "extensions", LOCATE, "pageid"], ["subject", 0, "extensions", LOCATE, "span_sha256"])]
+            ["subject", 0, "extensions", LOCATE, "pageid"], ["subject", 0, "extensions", LOCATE, "renderer"],
+            ["subject", 0, "extensions", LOCATE, "licence"], ["subject", 0, "extensions", LOCATE, "span_sha256"],
+            ["subject", 0, "extensions", LOCATE, "span"], ["subject", 0, "extensions", LOCATE, "layer_sha256"],
+            ["subject", 0, "extensions", LOCATE], ["subject", 0, "extensions"], ["object", 0, "extensions"],
+            ["extensions", LOCATE, "x_unknown"], [*loc_end, "x_unknown"])]
         targets += [(self.WIDGET, 3, path) for path in (
             ["extensions", LOCATE, "receipt"], ["extensions", LOCATE, "receipt", "sha256"],
-            ["extensions", LOCATE, "receipt", "queries"], ["object", 0, "uri"], ["object", 0, "version"])]
+            ["extensions", LOCATE, "receipt", "queries"], ["extensions", LOCATE, "receipt", "candidates"],
+            ["object", 0, "uri"], ["object", 0, "version"])]
         # A coverage claim's every field, on one record of the Gadget article's covered passage.
         targets += [("records/enwiki-1003-2004.jsonl", 1, ["extensions", LOCATE, "coverage", *path]) for path in (
             [], ["parts"], ["parts", 0], ["parts", 1], ["challenge"], ["complete"])]

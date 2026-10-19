@@ -20,8 +20,9 @@
 // responses. The static Brain page (/brain, framed on every landing view)
 // also loads d3 from jsDelivr and fetches Wikipedia page summaries and
 // Wikidata entity search, so its `_headers` rule carries BRAIN_CSP_REPORT_ONLY,
-// the same policy plus exactly those origins. Tighten it, then enforce it,
-// once /api/csp-report stays quiet.
+// the same policy plus exactly those origins. It allows inline scripts, so
+// enforcing it as written would add little XSS protection; the reports show
+// what a stricter policy, with the inline scripts moved out first, would break.
 //
 // A Report-Only frame-ancestors only reports, so the framing ban rides a
 // separate, enforced Content-Security-Policy header (alongside the legacy
@@ -204,6 +205,25 @@ export function checkOrigin(c: Context<{ Bindings: Env }>): Response | null {
   return null;
 }
 
+// The client part of an anonymous rate-limit key, from CF-Connecting-IP. An IPv6
+// address keys by its /64: one host usually holds a whole /64 and could otherwise
+// rotate through it for a fresh budget per address. Everything else keys as given:
+// IPv4, the ::/64 block (loopback and the IPv4-mapped forms, one client per
+// address), and anything unparsable.
+export function limiterIp(ip: string | undefined): string | undefined {
+  if (!ip?.includes(":")) return ip;
+  const halves = ip.split("::");
+  if (halves.length > 2) return ip;
+  const head = halves[0] ? halves[0].split(":") : [];
+  const tail = halves[1] ? halves[1].split(":") : [];
+  const zeros = 8 - head.length - tail.length;
+  if (halves.length === 2 ? zeros < 1 : zeros !== 0) return ip;
+  const groups = [...head, ...Array<string>(zeros).fill("0"), ...tail];
+  if (!groups.every((g) => /^[0-9a-f]{1,4}$/i.test(g))) return ip;
+  const prefix = groups.slice(0, 4).map((g) => parseInt(g, 16).toString(16)).join(":");
+  return prefix === "0:0:0:0" ? ip : `${prefix}::/64`;
+}
+
 // Reads at most `max` bytes of the body, counting bytes as they stream, so a
 // chunked request without Content-Length cannot buffer an unbounded body.
 // null = over the cap.
@@ -307,9 +327,13 @@ export function registerSecurityHeaders(app: Hono<{ Bindings: Env }>): void {
 
   // Log-only sink: at most one structured line per request (Workers
   // observability), no storage. Unauthenticated by necessity (browsers send
-  // the reports), so the body is byte-capped and the violations per line are
-  // capped.
+  // the reports), so the body is byte-capped, the violations per line are
+  // capped, and each IP (an IPv6 /64) gets 5 requests a minute: FLAG_LIMITER's
+  // budget under its own csp:<ip> keys, checked before the body is read.
   app.post(CSP_REPORT_PATH, async (c) => {
+    const ip = limiterIp(c.req.header("CF-Connecting-IP")) ?? "";
+    const { success: allowed } = await c.env.FLAG_LIMITER.limit({ key: `csp:${ip}` });
+    if (!allowed) return c.json({ ok: false, error: "rate limited" }, 429);
     const text = await readBodyCapped(c.req.raw, MAX_REPORT_BYTES);
     if (text === null) return c.json({ ok: false, error: "report too large" }, 413);
     let payload: unknown;

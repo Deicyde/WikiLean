@@ -45,6 +45,11 @@ automatic rollback is not implemented because Wrangler has no compare-and-swap p
 Ordinary catalog ingest is fail-soft, but Wikidata planning/acquisition/folding and every
 build/release/deploy gate fail closed and log loudly. See
 `docs/BRAIN-RELEASE-RUNBOOK.md` for recovery.
+Before freezing, the nightly refuses to publish when release-affecting source is
+uncommitted, or when a curated reducer input (`curated_git_input` in
+`brain/authority/reducer-inputs-v1.json`) differs from HEAD or exists while ignored, such as
+a stray `bot/state/pool_candidates.json`. The files `brain/fold_proposals.py` rewrites on
+every run are exempt. Commit, revert or remove what the log lists, then rerun.
 Public staging hashes and copies through a fixed 1 MiB buffer, enforces object,
 byte, per-file, and free-space limits from `nightly.env`, and never prunes the
 frozen release store automatically. Machine-readable release, SQLite, and public
@@ -73,7 +78,9 @@ Community-edge graduation is separately off by default. To enable it, set
 `WIKILEAN_COMMUNITY_HARVEST=1` and point `WIKILEAN_D1_SNAPSHOT_BUNDLE` at one
 absolute, existing, sealed bundle produced by the explicit D1 acquisition step.
 The moderation job never acquires live D1 state itself and preserves the prior
-`community_edges.jsonl` if that bundle is absent or invalid.
+`community_edges.jsonl` if that bundle is absent or invalid. A harvest that changes
+`brain/data/community_edges.jsonl`, a curated reducer input, stops the next Brain nightly
+from publishing until the change is committed.
 
 The proposal-entity bundle is not source-plan authority by itself. Its reviewed receipt,
 lineage, request preimages, and normalized object still need explicit v3 current-corpus plan
@@ -172,6 +179,7 @@ launchctl print gui/$(id -u)/org.wikilean.moderate | grep -i 'last exit'   # hea
 launchctl kickstart -k gui/$(id -u)/org.wikilean.moderate                  # run now
 launchctl bootout   gui/$(id -u)/org.wikilean.moderate                     # disable
 ```
+Diagnosing a failing night, and what each error means: [`docs/OPERATIONS.md`](../../docs/OPERATIONS.md).
 A failed batch can be undone with the run-level revert (see the run id in the
 log). Pass the bearer on stdin so it never appears in the process table:
 `printf 'Authorization: Bearer %s\n' "$PIPELINE_TOKEN" | curl -X POST -H @- .../api/admin/revert-run/<run_id>`.

@@ -53,7 +53,7 @@ import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
-import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders, researchExportSalt } from "./security.js";
+import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders, researchExportSalt } from "./security.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -2502,7 +2502,7 @@ const FLAG_REASON_SET = new Set<string>(FLAG_REASONS);
 app.post("/api/flag/:slug", async (c) => {
   const originErr = checkOrigin(c);
   if (originErr) return originErr;
-  const ip = c.req.header("CF-Connecting-IP") ?? "";
+  const ip = limiterIp(c.req.header("CF-Connecting-IP")) ?? "";
   const { success: allowed } = await c.env.FLAG_LIMITER.limit({ key: `flag:${ip}` });
   if (!allowed) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
   const slug = c.req.param("slug");

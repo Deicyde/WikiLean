@@ -70,6 +70,7 @@ import {
   type DeclPair,
   type SuffixBucket,
 } from "./decl.js";
+import { limiterIp } from "./security.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -2493,7 +2494,7 @@ async function withRelease(
 }
 
 // Same anonymous budget as /mcp (review finding: the REST twins of the MCP
-// tools must not be a rate-limit bypass). Keyed by IP; MCP_LIMITER when bound,
+// tools must not be a rate-limit bypass). Keyed by IP (an IPv6 /64); MCP_LIMITER when bound,
 // else BRAIN_API_LIMITER — distinct "brainapi-ip:" prefix avoids colliding
 // with the write path's "brainapi:<user.id>" keys.
 async function rateLimitGate(
@@ -2501,7 +2502,7 @@ async function rateLimitGate(
   next: () => Promise<void>,
 ): Promise<Response | void> {
   const limiter = c.env.MCP_LIMITER ?? c.env.BRAIN_API_LIMITER;
-  const ip = c.req.header("CF-Connecting-IP") || "unknown";
+  const ip = limiterIp(c.req.header("CF-Connecting-IP")) || "unknown";
   const { success } = await limiter.limit({ key: `brainapi-ip:${ip}` });
   if (!success) return c.json({ ok: false, error: "rate limited (120/min)" }, 429);
   await next();
@@ -2684,7 +2685,7 @@ mode) exposing nine tools: <code>brain_bridge</code>, <code>brain_search</code>,
 <code>brain_snippets</code>, <code>brain_filter</code>, <code>decl_exists</code>,
 <code>brain_premises</code>.
 <code>brain_unit</code> still answers, as an alias of <code>brain_cell</code> — the v2 unit
-card <em>became</em> the cell card. Rate limit: 120 requests/min per IP. Every response echoes
+card <em>became</em> the cell card. Rate limit: 120 requests/min per IP (per /64 for IPv6). Every response echoes
 <code>release_id</code> and <code>snapshot:{generated_at,pin}</code>. <code>release_id</code>
 identifies the whole release. <code>generated_at</code> and <code>pin</code> are opaque provenance
 values of the release's inputs: compare them for equality, never parse them, and do not read them

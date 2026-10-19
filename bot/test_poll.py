@@ -38,7 +38,7 @@ AUTH_BODY = ('{"message":"Bad credentials","documentation_url":'
 
 def pull(state="open", title="doc: add wikidata attributes (batch 7)", merged=False):
     return {"number": PR, "state": state, "merged": merged, "merged_at": None,
-            "title": title, "created_at": "2026-08-10T11:00:00Z",
+            "title": title, "created_at": "2026-08-10T11:00:00Z", "user": {"login": "Deicyde"},
             "head": {"sha": "c" * 40}}
 
 
@@ -416,7 +416,7 @@ class ReadyHeaderTest(PollFixture):
         self.assertNotIn("jcommelin", h)  # the list is in the bot, not the header
         self.assertNotIn("faenuccio", h)
         self.assertIn("Reviews recorded from: `Deicyde`, `SnirBroshi`.", h)
-        self.assertIn("1 recycled to the next batch.", h)
+        self.assertIn("1 removed in this trim.", h)
         self.assertNotRegex(h, r"@\w")  # names, not pings
         self.assertNotIn("≥2 reviewers", h)
         self.assertNotIn("unresolved objection", h)
