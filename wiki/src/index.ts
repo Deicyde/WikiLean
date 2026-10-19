@@ -22,6 +22,7 @@ import { getWikipediaHtml } from "./wikipedia.js";
 import { getUser, requireRole, registerAuthRoutes } from "./auth.js";
 import { scheduled } from "./drift.js";
 import {
+  injectAtlasSummary,
   injectAuthAndEditor,
   historyPage,
   recentChangesPage,
@@ -46,11 +47,13 @@ import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
 import { registerCompanionRoutes } from "./companion.js";
+import { atlasHref, atlasSummaryFor, registerAtlasRoutes } from "./atlas.js";
+import { atlasSummaryBox } from "./atlas-render.js";
 import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
-import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders } from "./security.js";
+import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders, researchExportSalt } from "./security.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -105,18 +108,19 @@ const RESERVED = new Set([
   "u",
   "decl",
   "proposals",
-  "atlas",
+  "atlas", // the formalization atlas (src/atlas.ts, docs/ATLAS.md)
   "brain",
   "articles",
   "mcp",
   "repos",
   "about",
   // Static assets in wiki/public/ + the names of the DELETED old-graph-stack
-  // routes (/map, /map-v2, /graph, /atlas, /article-graph, graph_data.json,
+  // routes (/map, /map-v2, /graph, /article-graph, graph_data.json,
   // atlas_data.json — handlers deleted 2026-08-04; they now fall through to
   // the /:slug catch-all and 404). The names stay squatted here so an article
   // can never be created under an old URL (the invariant: every non-article
-  // top-level path is listed here).
+  // top-level path is listed here). /atlas itself is live again: since the
+  // formalization atlas it is the dashboard (src/atlas.ts), not the old graph.
   "concepts",
   "map",
   "map-v2",
@@ -140,6 +144,7 @@ registerQueueRoutes(app);
 registerRepoRoutes(app);
 registerCompanionRoutes(app);
 registerVersionRoutes(app);
+registerAtlasRoutes(app);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor
@@ -378,15 +383,6 @@ function statusCounts(annotations: AnnRecord[]): {
     else if (a.status === "not_formalized") counts.nNotFormalized += 1;
   }
   return counts;
-}
-
-// The research export's pseudonym salt. A dedicated secret keeps the salt
-// out of the hands of every PIPELINE_TOKEN holder (who could otherwise
-// recompute sha256(user_id + token) for the public user ids) and lets the
-// bearer rotate without re-keying research pseudonyms. Falls back to
-// PIPELINE_TOKEN so existing pseudonyms stay stable until the secret is set.
-function researchExportSalt(env: Pick<Env, "RESEARCH_EXPORT_SALT" | "PIPELINE_TOKEN">): string {
-  return env.RESEARCH_EXPORT_SALT || env.PIPELINE_TOKEN || "";
 }
 
 // Plain SHA-256 hex. The research export salts its pseudonyms with
@@ -3086,9 +3082,14 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
       proposals = parsePending(ms?.proposal);
     }
   }
+  // Formalization atlas summary box: per request, never in the cached base
+  // (pages.ts injectAtlasSummary). Null when ATLAS is unbound or the title has
+  // no atlas entry; a store failure never breaks the article page.
+  const atlas = await atlasSummaryFor(c.env, row.wikipediaTitle);
+  const atlasBox = atlas ? atlasSummaryBox(atlas, atlasHref(atlas.pageid, atlas.title), row.revid) : null;
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
-  const page = injectAuthAndEditor(base, {
+  const page = injectAtlasSummary(injectAuthAndEditor(base, {
     slug,
     user,
     annotations: editorItems(annotations as unknown as AnnRecord[]) as unknown as Annotation[],
@@ -3099,7 +3100,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
     revid: row.revid,
     isWatching,
     proposals,
-  });
+  }), atlasBox);
   return c.html(page);
 }
 

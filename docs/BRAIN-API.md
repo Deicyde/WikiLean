@@ -588,7 +588,9 @@ The old graph stack's routes — `/map`, `/map-v2`, `/graph`, `/atlas`,
 `/article-graph`, `/graph_data.json`, `/atlas_data.json`, `/api/atlas`, and the
 v2 `GET /api/brain/node` — are **deleted 2026-08-04** (they answer plain 404s;
 the `RESERVED` set in `wiki/src/index.ts` squats the page names so no article
-can be created under them). Every id `/api/brain/node` ever served is an ORGAN
+can be created under them). Since the formalization atlas (docs/ATLAS.md),
+`/atlas` and `/api/atlas/<kind>/<id>` are new, unrelated routes; the old graph's
+bare `/api/atlas` and `/api/atlas/<slug>` still answer 404. Every id `/api/brain/node` ever served is an ORGAN
 id and resolves on `/api/brain/cell`; the community-edit write path validates
 endpoints against the v3 cell layer (`aliases.json organs` ∪ `supercells.json`,
 via the strict `atomIdForOrgan`).

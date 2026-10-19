@@ -4,7 +4,7 @@
 > agents + 2 adversarial verifiers, cross-checked against the codebase). Update statuses
 > as work lands; do not re-litigate the binding decisions below without new evidence.
 
-## Waiting on Jack (updated 2026-10-16)
+## Waiting on Jack (updated 2026-10-17)
 
 Decisions only. Each lists its evidence and the options on the table, with no
 recommendation. Remove an item once its decision is recorded below.
@@ -96,8 +96,39 @@ recommendation. Remove an item once its decision is recorded below.
       kind. Options: keep both, or choose other relations.
     - WikiLean records no Mathlib commit per link, so it exports no `noMatch`. Options:
       record one, or keep exporting none.
+16. **Formalization atlas (docs/ATLAS.md, built on branch `claude/formalization-atlas`).**
+    A read-only data plane for the locate pipeline's sealed record sets: a store builder,
+    `/atlas` pages and APIs behind an optional R2 binding `ATLAS` (unbound: every atlas
+    route answers 503), a per-request summary box on article pages, and a feedback table
+    (migration 0015). Open choices (docs/ATLAS.md §14):
+    - The End-goal amendment above. Options: ratify, revise, or reject.
+    - Store backend. `src/wikipedia.ts` records that R2 was not enabled on the account.
+      Options: enable R2, use KV, or ship the store as static assets with each release.
+    - Who uploads a built store, and from which machine. Options: the operator Mac with a
+      bucket-scoped token, or another named host.
+    - Public licence wording: the pages state the mapping as CC0 and quote fields as
+      CC BY-SA 4.0 (proposal §10). Options: confirm, or change it.
+    - Whether the bearer-only feedback export may carry readers' free-text notes. Options:
+      keep them, or drop them as the research export does.
+    - Absence feedback ("this is formalized, here" against a "not found"). Options: build
+      it next, or later.
 
 ## End goal (verbatim from Jack)
+
+### Proposed amendment — PROPOSED 2026-10-17, pending Jack's ratification
+
+> Determine what parts of WikiProject Mathematics have been formalized in Lean and where,
+> then build a knowledge graph from it.
+
+These are Jack's words, recorded 2026-10-17; they are not yet ratified. If ratified, they
+become the End goal: "where" means the library (Mathlib, Lean core and Batteries, TauCeti,
+the FormalFrontier libraries and others), the declaration and the commit, and the knowledge
+graph is built from those located passages. The first deliverable is the read-only
+formalization atlas (docs/ATLAS.md), fed by the formal-companion skill's locate pipeline.
+The three routine operations and the human+AI moderation experiment below would serve that
+goal rather than define it. Ratification (or rejection) is recorded in the status log and
+closes Waiting on Jack item 16. Nothing below is deleted; the End goal as stated on
+2026-06-10 follows unchanged.
 
 A complete interface mapping Wikipedia statements to their formal implementation in
 Mathlib (and eventually CSLib, PhysLib, etc.). Primarily AI-moderated via three routine
@@ -1288,6 +1319,47 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-10-18: **Atlas status rules follow Jack's decision D1** (branch
+  `claude/formalization-atlas`, not deployed). Jack's decision: "Formalized when the hasPart
+  locations together cover every clause (challenger confirms coverage), and when an
+  exact/closeMatch is to an equivalence or data declaration that states the theorem (e.g.
+  CRT's RingEquiv)." The builder reads a passage's coverage claim from its records and
+  refuses a malformed one. The store and the page show a survived claim ("Formalized by 2
+  parts together", with the parts listed). The parity table is regenerated from
+  formal-companion `b33f17f`, the producer commit that implements D1. Three literal
+  readings Jack has not confirmed (Q1–Q3) are listed in docs/ATLAS.md, contract note 11.
+  Parity round two: the skill's hand-written table (97 cases) is pinned in WikiLean and runs
+  through the builder's own checks (`derive_passage_status`); round one's three differences
+  (an owed claim, a claim with a note, a location key twice) are now refused on both sides,
+  the producer table is regenerated at `c165c65` with every answer unchanged, and the
+  smoke-2 export built under D1 (`smoke-2-d1`, 331 passages) gives the skill's status for
+  every passage.
+  Parity round three: the lead's reading of D1 resolves Q1–Q3. A survived claim counts as
+  one more exactMatch location, a fixed stand-in rather than any one part: a proved
+  declaration on the theorem row and a definition on the definition row when every part is
+  proved or data (formalized on either row), a statement_only declaration on both rows when
+  any part is unfinished (a Prop-valued definition included), and an `example` or `other`
+  passage takes the better row.
+  Confirming a claim confirms its parts, so the view model shows a survived claim's
+  `not_required` and `sampled_out` parts as survived. The skill's table (117 cases) is
+  re-pinned and the producer table regenerated at `3225e95` (394 coverage answers changed,
+  none outside a survived claim). The smoke-2 re-export at that commit (`recordset-d1c`,
+  331 passages, no claims) builds with the skill's status for every passage.
+  Review four: the reopen wins. A part a prominence overturn to subject or central reopened
+  in the claim's own run stays `challenge_pending` under a survived claim; WikiLean already
+  read it so, and the producer (`4fc2aa0`) now confirms parts after the reopen. The skill's
+  table (118 cases, P05 the reopen) is re-pinned, the producer table regenerated at
+  `4fc2aa0` with every answer unchanged, and the docs' "weakest part" wording replaced by
+  the fixed stand-in it always was.
+
+- 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
+  (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
+  release. Not deployed, and no store has been uploaded. The End-goal amendment and the
+  plane's choices are Waiting on Jack item 16. The branch is stacked on
+  `claude/security-hardening` (#84, which merges first): the feedback route reads its body
+  through `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry, and the feedback export
+  salts its pseudonyms with `RESEARCH_EXPORT_SALT` (falling back to `PIPELINE_TOKEN`).
 
 - 2026-10-17: **Agent sandbox cohort boundary (branch `claude/security-hardening`, not yet
   merged or deployed).** From the first moderation run on a commit with
