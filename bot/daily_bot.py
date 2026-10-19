@@ -68,10 +68,10 @@ def main():
             print("  gate not open — nothing to settle today.")
         else:
             # 1) deterministic split to greens
-            recycle_qids = ",".join(e["qid"] for e in recycle)
+            recycle_pairs = ",".join(f"{e['qid']}={e['file']}" for e in recycle)
             print(f"\n{tag}SPLIT to {len(green)} greens (drop {len(recycle)}):")
             cmd = [sys.executable, str(HERE / "split.py"), "--mathlib", str(args.mathlib),
-                   "--branch", branch, "--recycle", recycle_qids] + (["--apply"] if not dry else [])
+                   "--branch", branch, "--recycle", recycle_pairs] + (["--apply"] if not dry else [])
             sh(cmd)
             # 2) LLM triage of recycled tags -> queue
             print(f"\n{tag}TRIAGE {len(recycle)} recycled tags (LLM):")

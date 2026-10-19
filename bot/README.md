@@ -183,6 +183,14 @@ Before this, an expired token kept every run green and the bot blind from
   reads (~30 s). Dispatch again; if it repeats, look at the PR page.
 - `RESOLVE-CONFLICT #N: batchN_approved.json MISSING (adopted batch?)` → see
   [Merge conflict on the batch PR](#merge-conflict-on-the-batch-pr).
+- `refusing to trim, not tagged where the PR put them: Q…` or `TRIM INCOMPLETE: Q…`
+  (then `split.py failed`) → the settle trim found a recycled tag missing from the
+  file the PR diff names, or still there after the edit. Dispatch again once:
+  GitHub may have served the pre-trim diff. If it repeats, open the PR diff. If
+  upstream moved the tagged file, merge master into the fork branch so the diff
+  shows the new path, then dispatch. If the QID is tagged twice in that file,
+  remove the extra copy by hand on the fork branch. Until it clears, every tick
+  re-settles first, so the conflict rebuild and the CI self-heal don't run.
 - `Restore bot state` failed → see [Restore failed](#restore-failed).
 - `Commit poll state` failed → someone pushed to `bot-state` mid-run. Read the
   log and dispatch again.
