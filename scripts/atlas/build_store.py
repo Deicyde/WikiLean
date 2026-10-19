@@ -156,6 +156,27 @@ LIBRARY_OPTIONAL = ("display_name",)
 EXCLUDED_KEYS = ("id", "reason")
 # An absence names each universe library by a minimal lean end, and nothing else.
 ABSENCE_END_KEYS = ("type", "uri", "version")
+# The agreed keys of the locate extension at each of the three places a record carries it
+# (docs/ATLAS.md section 3, "The locate extension's keys"): the record itself, by its shape; its
+# subject end; and a location's lean end. Any other key is refused, naming it, the place and the
+# record id, and so is any extension namespace beside the locate one. A required key that is
+# missing is named by the check of its value.
+RECORD_EXT_KEYS = ("item", "universe", "universe_sha256", "challenge", "section", "prominence")
+# coverage is a passage field (check 6): a claim on an absence or an unresolved record is refused
+# there, because every part of a claim is a hasPart location of its own passage.
+RECORD_EXT_OPTIONAL = ("coverage",)
+SHAPE_EXT_KEYS = {"location": ("location_key", "rank", "confidence"), "absence": ("receipt",), "unresolved": ()}
+SHAPE_LEVELS = {"location": "a location record's locate extension", "absence": "an absence record's locate extension",
+                "unresolved": "an unresolved record's locate extension", None: "the record's locate extension"}
+RECEIPT_KEYS = ("sha256", "queries", "candidates")
+SUBJECT_EXT_KEYS = ("pageid", "html_sha256", "renderer", "span_sha256", "licence")
+# The passage's whole span and the sha of the layer it indexes, in the shape formal-companion's
+# split-frontend commit 722b30f ("F5") writes them: optional, and together or not at all.
+SUBJECT_EXT_OPTIONAL = ("span", "layer_sha256")
+LEAN_EXT_KEYS = ("library", "path", "line", "proof_status")
+LEAN_EXT_OPTIONAL = ("end_line", "statement")
+SPAN_RULE = ("span must be the passage's half-open code-point offsets on the layer, [start, end] with "
+             "integers 0 <= start < end (formal-companion 722b30f)")
 CREATED_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]+)?Z\Z")
 DATE_RE = re.compile(r"^[0-9]{4}-[0-9]{2}-[0-9]{2}\Z")
 # Whitespace for title keys, spelled out so wiki/src/atlas.ts matches it exactly.
@@ -639,6 +660,102 @@ def _locate_ext(node: dict) -> dict | None:
     return value if isinstance(value, dict) else None
 
 
+def record_label(record: dict) -> str:
+    """How a message names a record: its id (the qualified passage id), which the schema makes a string."""
+    rid = record.get("id")
+    return rid if isinstance(rid, str) else "(without an id)"
+
+
+def _named(keys: list[str]) -> str:
+    return ", ".join(repr(key) for key in keys)
+
+
+def unexpected_keys(value: dict, allowed: tuple[str, ...], level: str, rid: str) -> list[str]:
+    """An unknown key at one level of a record, named with that level and the record's id."""
+    extra = sorted(key for key in value if key not in allowed)
+    if not extra:
+        return []
+    return [f"record {rid}: unexpected {'key' if len(extra) == 1 else 'keys'} {_named(extra)} in {level} "
+            "(not in the agreed record-set format, docs/ATLAS.md section 3)"]
+
+
+def foreign_extensions(node: dict, level: str, rid: str) -> list[str]:
+    """An extension namespace other than the locate one, on the record or on one of its ends."""
+    extensions = node.get("extensions")
+    extra = sorted(key for key in extensions if key != LOCATE) if isinstance(extensions, dict) else []
+    if not extra:
+        return []
+    return [f"record {rid}: unexpected {'extension' if len(extra) == 1 else 'extensions'} {_named(extra)} on "
+            f"{level}: the agreed record-set format carries only {LOCATE!r} (docs/ATLAS.md section 3)"]
+
+
+def subject_problems(ext: dict, source: dict) -> tuple[list[int] | None, list[str]]:
+    """The subject end's locate extension beyond pageid and html_sha256: (its span or None, problems).
+
+    renderer is the source's renderer token, licence the source's SPDX id and span_sha256 the
+    sha256 of the passage's span (proposal §2.7). The optional span (half-open code-point offsets
+    on the layer, never text) and layer_sha256 (the sha of that layer, the source's) come together
+    (formal-companion 722b30f); a malformed span is reported and dropped.
+    """
+    found = []
+    renderer = ext.get("renderer")
+    if (not isinstance(renderer, str) or not RENDERER_RE.match(renderer)
+            or (source["renderer"] is not None and renderer != source["renderer"])):
+        found.append("the subject end's renderer must be its source's renderer token (sources.jsonl renderer, "
+                     "e.g. web-html/1)")
+    message = _string_problem(ext.get("licence"), MAX_NAME_CHARS)
+    if message:
+        found.append(f"the subject end's licence, the source's SPDX licence id, {message} "
+                     f"(at most {MAX_NAME_CHARS} characters)")
+    span_sha = ext.get("span_sha256")
+    if not isinstance(span_sha, str) or not HEX64.match(span_sha):
+        found.append("the subject end's span_sha256, the sha256 of the passage's span, must be 64 lowercase hex")
+    if ("span" in ext) != ("layer_sha256" in ext):
+        found.append("span and layer_sha256 come together or not at all: a span is offsets on the layer "
+                     "whose sha is layer_sha256 (formal-companion 722b30f)")
+    span = None
+    if "span" in ext:
+        raw = ext["span"]
+        if (isinstance(raw, list) and len(raw) == 2 and all(type(offset) is int for offset in raw)
+                and 0 <= raw[0] < raw[1]):
+            span = [raw[0], raw[1]]
+        else:
+            found.append(SPAN_RULE)
+    if "layer_sha256" in ext:
+        layer = ext["layer_sha256"]
+        if not isinstance(layer, str) or not HEX64.match(layer):
+            found.append("layer_sha256 must be 64 lowercase hex: the sha256 of the layer the span indexes")
+        elif layer != source["layer_sha256"]:
+            found.append("layer_sha256 must be the source's layer_sha256 (sources.jsonl): the span indexes "
+                         "that layer")
+    return span, found
+
+
+def span_problems(span: list[int], quote: dict, span_sha256: Any) -> list[str]:
+    """Whether a passage's quote lies in its span, and the span's text agrees with span_sha256
+    wherever the quote gives that text in full.
+
+    The export's quote is the head of its passage: exact is the span's text from its start, at
+    most QUOTE_MAX_WORDS words, right-stripped, and the suffix the text right after exact
+    (formal-companion scripts/locate/records.py, cap_quote). So exact is never longer than the
+    span, and when the span's tail after exact is no longer than the suffix, exact and the
+    suffix's first characters are the span's whole text, whose sha256 is span_sha256.
+    """
+    exact = quote["exact"]
+    length = span[1] - span[0]
+    tail = length - len(exact)
+    if tail < 0:
+        return [f"the quote's exact is {len(exact)} characters, longer than its span [{span[0]}, {span[1]}] "
+                f"({length}): the quote is the head of its passage"]
+    suffix = quote.get("suffix", "")
+    if isinstance(span_sha256, str) and HEX64.match(span_sha256) and tail <= len(suffix):
+        if sha256_hex((exact + suffix[:tail]).encode("utf-8")) != span_sha256:
+            given = "exact" if tail == 0 else f"exact and the first {tail} characters of its suffix"
+            return [f"span_sha256 is not the sha256 of the span's text, which the quote gives in full ({given}): "
+                    "the span or the quote is not this passage's"]
+    return []
+
+
 def _quote_problems(quote: Any) -> list[str]:
     if not isinstance(quote, dict) or not isinstance(quote.get("exact"), str):
         return ["subject location must be a quote with exact"]
@@ -724,6 +841,17 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     if ext is None:
         problems.add(at, f"extensions[{LOCATE!r}] is missing")
         return None
+    rid = record_label(record)
+    # The record's own keys depend on its shape, which its relation decides (below); a relation
+    # that is no locate relation is refused there, and its extension is judged by every shape's keys.
+    relation = record.get("relation")
+    shape = ("unresolved" if relation is None else "absence" if relation == "noMatch"
+             else "location" if member(relation, LOCATION_RELATIONS) else None)
+    shape_keys = SHAPE_EXT_KEYS[shape] if shape else tuple(k for keys in SHAPE_EXT_KEYS.values() for k in keys)
+    for message in (*foreign_extensions(record, "the record", rid),
+                    *unexpected_keys(ext, RECORD_EXT_KEYS + RECORD_EXT_OPTIONAL + shape_keys, SHAPE_LEVELS[shape],
+                                     rid)):
+        problems.add(at, message)
     item = ext.get("item")
     if not isinstance(item, str) or not ITEM_RE.match(item):
         problems.add(at, "locate extension item must be 'In-text #<8-16 hex>'")
@@ -763,8 +891,18 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
         problems.add(at, "subject must name the source's revision: an en.wikipedia.org permanent link whose "
                          "oldid is exactly the revision, and version equal to it")
     subject_ext = _locate_ext(end) or {}
-    if subject_ext.get("pageid") != source["pageid"] or subject_ext.get("html_sha256") != source["html_sha256"]:
+    for message in (*foreign_extensions(end, "the subject end", rid),
+                    *unexpected_keys(subject_ext, SUBJECT_EXT_KEYS + SUBJECT_EXT_OPTIONAL,
+                                     "the subject end's locate extension", rid)):
+        problems.add(at, message)
+    pageid = subject_ext.get("pageid")
+    if type(pageid) is not int or pageid != source["pageid"] \
+            or subject_ext.get("html_sha256") != source["html_sha256"]:
         problems.add(at, "subject extension pageid and html_sha256 must match sources.jsonl")
+    span, messages = subject_problems(subject_ext, source)
+    for message in messages:
+        problems.add(at, message)
+    span_sha = subject_ext.get("span_sha256") if isinstance(subject_ext.get("span_sha256"), str) else None
     location = end.get("location")
     quote = location.get("quote") if isinstance(location, dict) else None
     messages = _quote_problems(quote)
@@ -772,11 +910,16 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
         problems.add(at, message)
     if messages:
         return None
+    if span is not None:
+        for message in span_problems(span, quote, span_sha):
+            problems.add(at, message)
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
             "quote": {key: quote[key] for key in ("exact", "prefix", "suffix") if key in quote},
+            # Passage fields every record of the passage carries alike (build_passages); the view
+            # model does not copy them, and the records keep them verbatim.
+            "span": span, "span_sha256": span_sha,
             "subject_uri": uri, "challenge": challenge, "coverage": coverage}
-    relation = record.get("relation")
     objects = record["object"]
     if relation is None:
         if objects or "status" in record:
@@ -807,6 +950,8 @@ def _absence(record: dict, base: dict, objects: list, ext: dict, ctx: Context, a
     if not isinstance(receipt, dict) or not HEX64.match(str(receipt.get("sha256", ""))):
         problems.add(at, "receipt must be {sha256, queries, candidates}")
         return None
+    for message in unexpected_keys(receipt, RECEIPT_KEYS, "the absence's receipt", record_label(record)):
+        problems.add(at, message)
     path = f"receipts/{receipt['sha256']}.json"
     if path not in ctx.files:
         problems.add(at, f"receipt {path} is not in the record set")
@@ -821,7 +966,9 @@ def _absence(record: dict, base: dict, objects: list, ext: dict, ctx: Context, a
         return None
     # Each count is its list's length in the receipt file, a repeated entry included.
     for name, items in (("queries", queries), ("candidates", candidates)):
-        if receipt.get(name) != len(items):
+        if type(receipt.get(name)) is not int:
+            problems.add(at, f"receipt.{name} must be an integer: the length of the {name} list in {path}")
+        elif receipt[name] != len(items):
             problems.add(at, f"receipt.{name} is {receipt.get(name)!r}, but {path} lists {len(items)} {name} "
                              "(each count is the length of that list in the receipt file, repeats included)")
     if len({q for q in queries if isinstance(q, str)}) < MIN_ABSENCE_QUERIES:
@@ -846,6 +993,11 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
     end = objects[0]
     location = end.get("location") or {}
     end_ext = _locate_ext(end) or {}
+    rid = record_label(record)
+    for message in (*foreign_extensions(end, "the lean end", rid),
+                    *unexpected_keys(end_ext, LEAN_EXT_KEYS + LEAN_EXT_OPTIONAL, "the lean end's locate extension",
+                                     rid)):
+        problems.add(at, message)
     library = next((lib for lib in ctx.universe["libraries"] if lib["id"] == end_ext.get("library")), None)
     if end.get("type") != "lean" or not isinstance(location.get("declaration"), str) \
             or not isinstance(location.get("module"), str):
@@ -1182,8 +1334,8 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         first = records[0]
         for other in records[1:]:
             # The coverage claim is a passage field like the rest: every record carries the
-            # same claim, or none does.
-            for key in ("kind", "quote", "section", "prominence", "coverage"):
+            # same claim, or none does. So are the span and span_sha256 of the subject end.
+            for key in ("kind", "quote", "section", "prominence", "coverage", "span", "span_sha256"):
                 if other[key] != first[key]:
                     problems.add(at, f"records of one passage disagree on {key}"
                                  + (" (every record of the passage carries the same claim, or none does)"

@@ -187,6 +187,49 @@ Records follow proposal §2.7, with these points of the agreement:
   claim no challenge has judged yet (owed) upgrades nothing and is not exported, and the
   producer's `derive_status` refuses one too. Confirming a claim confirms its parts, so a
   survived claim's part that no challenge judged on its own reads `survived` (check 6).
+- **The subject end's locate extension** carries `pageid` (an integer) and `html_sha256`,
+  both the source's in `sources.jsonl`; `renderer`, the source's renderer token (a short
+  token of that grammar when `sources.jsonl` has none);
+  `licence`, the source's SPDX licence id (`CC-BY-SA-4.0` for Wikipedia), a non-empty string
+  of at most 300 characters; and `span_sha256`, the sha256 of the passage's span on the
+  layer (64 lowercase hex). It may carry, both or neither, the passage's whole **`span`**
+  and the **`layer_sha256`** it indexes, in exactly the shape formal-companion's
+  split-frontend commit `722b30f` ("F5") writes them: `span` is `[start, end]`, the
+  passage's half-open offsets on the layer in code points (never its text), two integers
+  with `0 <= start < end`, and `layer_sha256` is 64 lowercase hex, equal to the source's
+  `layer_sha256` in `sources.jsonl`. A consumer holding that layer can highlight the whole
+  passage rather than only its capped quote. The quote is the head of its passage, so
+  `exact` is never longer than the span, and when the span's text after `exact` is no longer
+  than the quote's `suffix` (the text right after `exact`), `exact` and the suffix's first
+  characters are the span's whole text, and `span_sha256` must be its sha256. Sets from
+  before F5 carry neither field and build as before.
+
+### The locate extension's keys
+
+The locate extension (`extensions["org.mathlib-initiative.formal-companion.locate"]`) is the
+one place the Literature Links format admits fields of its own, so the schema cannot catch
+a new, misspelt or malformed key there. The builder holds each of its three places to
+exactly these keys, and refuses any other, naming the key, its place and the record id
+(`record <source_id>::<item>: unexpected key 'spann' in the subject end's locate
+extension`). A required key that is missing is named by the check of its value (check 5).
+
+| place | required | optional |
+|---|---|---|
+| the record, every shape | `item`, `universe`, `universe_sha256`, `challenge`, `section`, `prominence` | `coverage` |
+| a location record (any locate relation), besides | `location_key`, `rank`, `confidence` | |
+| an absence record (`noMatch`), besides | `receipt`: exactly `{sha256, queries, candidates}`, the counts integers | |
+| an unresolved record (no relation), besides | (none) | |
+| the subject end | `pageid`, `html_sha256`, `renderer`, `span_sha256`, `licence` | `span` with `layer_sha256` |
+| a location's lean end | `library`, `path`, `line`, `proof_status` | `end_line`, `statement` |
+
+So a location's `rank` on an absence, or a `receipt` on a location, is refused as a key of
+the wrong shape. `coverage` is allowed on every shape here and refused on an absence or an
+unresolved record by check 6 (its parts must be `hasPart` locations of its passage). The
+`extensions` object of a record, of its subject end and of a location's lean end holds the
+locate extension and nothing else: another namespace is refused by name, as an absence's
+lean ends carry no `extensions` at all. Keys of the Literature Links format itself (an end's
+`type`, `uri`, `version`, `role`, `location`, `citation`) are the vendored schema's to check
+(check 4).
 
 ### What the builder checks
 
@@ -229,9 +272,16 @@ any of these fails:
    `<source_id>::<item>`. The subject is one `html` end at the
    source's revision: its `uri` is an `https://en.wikipedia.org/w/index.php` (or `/wiki/`)
    link whose parsed query has exactly one `oldid`, equal to the revision (so `oldid=20029`
-   does not pass for revision 2002), and its `version` is the revision. Its `pageid` and
-   `html_sha256` match `sources.jsonl`, and its quote is within the export caps (12 words
-   of `exact`, 32 characters of prefix and of suffix, all strings).
+   does not pass for revision 2002), and its `version` is the revision. Its `pageid` (an
+   integer, so `1001.0` does not pass) and `html_sha256` match `sources.jsonl`, its
+   `renderer` is the source's (when it has one), its `licence` a non-empty SPDX id and its
+   `span_sha256` 64 lowercase hex, and its quote is within the export caps (12 words of
+   `exact`, 32 characters of prefix and of suffix, all strings). A `span` and
+   `layer_sha256`, when present, come together, the span two integers `0 <= start < end` no
+   shorter than `exact`, and `layer_sha256` the source's; where the quote gives the span's
+   text in full, `span_sha256` is its sha256 (above). Every locate extension has exactly
+   the keys of its place ("The locate extension's keys", above): an unknown key, or another
+   extension namespace, is refused by name with its place and the record id.
    - A **location** (relation `exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch`,
      `hasPart` or `relatedMatch`) has one `lean` end at its library's repo and commit, with
      `declaration`, `module`, a safe repository-relative `.lean` `path`, an integer
@@ -246,9 +296,9 @@ any of these fails:
      passage that has none (check 6).
    - An **absence** (`noMatch`) has status `not_formalized` and exactly one minimal
      `{type, uri, version}` lean end per universe library, and references its receipt as
-     `receipt: {sha256, queries, candidates}`. Each count must equal the length of that
-     list in the receipt file, repeats included, and the receipt must list at least 3
-     distinct queries (gate rule 5).
+     exactly `receipt: {sha256, queries, candidates}`. Each count is an integer (`2.0` and
+     `true` do not pass) equal to the length of that list in the receipt file, repeats
+     included, and the receipt must list at least 3 distinct queries (gate rule 5).
    - An **unresolved** passage is a single record with `object: []`, no status and no
      relation.
    - A **coverage claim**, when present, has exactly `complete` (`true`), `parts` (a list of
@@ -256,7 +306,7 @@ any of these fails:
      `null`, a missing or extra key, `complete: false`, one part, a repeated part, a null
      `challenge` (an owed claim) or a value such as `refuted` is refused, naming the rule.
 6. **Passages (proposal §2.6).** The records of one passage agree on kind, quote, section,
-   prominence, coverage claim and status.
+   prominence, coverage claim, status, and the subject end's `span` and `span_sha256`.
    A passage has at most one absence and at most 5 locations, with distinct ranks. An
    absence sits only beside `relatedMatch` locations, and `not_formalized` needs one. A
    coverage claim names only `hasPart` locations of its own passage (a key of another
@@ -541,6 +591,27 @@ agreement before real record sets arrive:
     (`smoke-2-d1` from `ad0b7e8`, `smoke-2-d1c` from `3225e95`, `smoke-2-d1e` from
     `4fc2aa0`), which carry no claim, all build with the current builder, to the same
     status and challenge values for each of their 331 passages.
+12. **The locate extension's keys, and F5's span** (2026-10-19). Until then the builder held
+    the seal, the universe, the libraries and the coverage claim to their agreed keys, but
+    read only the keys it used from the locate extension at its three places, so a new,
+    misspelt or malformed key there (`spann` for `span`, a stray `x_note`) built without
+    complaint and was published in the records. It now holds each place to the table in
+    "The locate extension's keys", as section 3 always said, and names the key, its place and
+    the record id. The keys are the ones proposal §2.7 shows, with the absence's `receipt`
+    (note 3), `statement` (note 8) and `coverage` (note 11), so an export in the agreed
+    format builds as it did. formal-companion's split-frontend commit
+    `722b30f` ("F5", `scripts/locate/records.py` `subject_end` and `_span`, documented in its
+    `references/locate-documents.md` §6) adds the passage's `span` and `layer_sha256` to every
+    subject end; WikiLean accepts them as optional, both or neither, in exactly that shape,
+    and checks them (section 3, above), so sets from before and after F5 both build.
+    `722b30f` also writes `prominence` only when the passage's outcome row has one; WikiLean
+    still requires it on every record (note 2), so the export should refuse such a passage by
+    name rather than omit the key. Checked on the real sets: `smoke-2-d1e`, its port
+    re-export `smoke-2-p3` and an F5-shaped copy of `smoke-2-p3` (its 917 records given the
+    spans of the run's outcome rows and the layer sha, each span verified against
+    `span_sha256` on the run's own layers) build byte for byte the stores the previous
+    builder built (31 files each), and the copy's misspelt `span`, a stray key at the record
+    and subject levels, a malformed span and a wrong layer sha are each refused.
 
 ## 4. The store (v1)
 
@@ -582,6 +653,12 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   declarations and definitions) and `incomplete` (`statement_only`, `wanted`,
   `axiom_dependent`), so a library that only states results is never counted as one
   that proves them.
+- **The passage's span.** The view model copies neither the subject end's `span` and
+  `layer_sha256` (F5, section 3) nor its `span_sha256`, so a set with them builds to the same
+  passages, summaries, index and universe as the same set without them (only the records'
+  bytes differ, and the shas that name them). The Worker holds no layer to index, and a
+  reader that does finds them in `atlas/v1/records/<pageid>.jsonl`, which keeps every
+  record byte for byte.
 - **Index shards.** The key is the first hex digit of `sha256(title_key)`, which gives 16
   shards. `title_key` is the NFC title with underscores and Unicode spaces collapsed to
   one space and trimmed, the same in Python (`title_key`) and TypeScript (`titleKey`). A
@@ -607,7 +684,7 @@ nothing was written). Every check runs before any view is computed, and a value 
 wrong type (a list where a vocabulary word belongs, a number where `excluded` lists
 belong, `1e400`) is reported and dropped rather than used, so a malformed set is always a 2,
 never a crash that could be read as "`--check` found differences". A test sets nine
-hostile values (null, a bool, numbers, a string, lists, objects) into some 75 fields of
+hostile values (null, a bool, numbers, a string, lists, objects) into some 90 fields of
 the fixture in turn and requires a refusal or a build, never another exception. The tree
 is staged next to `--out` and moved into place, and the previous store is moved back if
 that fails, so a failed build leaves nothing half-written. `--out` is the store directory
@@ -951,10 +1028,17 @@ Each decision below comes with a recommendation.
   `section` and `prominence` on every record, every challenge value with
   `challenge_pending` on a location, an absence and an unresolved record, receipt counts
   as list lengths, required `module`, `path` and `line`, optional but never null
-  `end_line`, closeMatch notes, minimal absence ends, `universe.yaml` refused), the other
-  refusal cases (oldid, title
+  `end_line`, closeMatch notes, minimal absence ends, `universe.yaml` refused), the
+  locate extension's keys (an unknown key at each of its places refused with its place
+  and the record id, a key of another shape, a stray receipt key, another extension
+  namespace on the record and on either end, the subject end's `renderer`, `licence`,
+  `span_sha256` and integer `pageid`, integer receipt counts), F5's optional `span` and
+  `layer_sha256` (a valid pair building to the same view model, the records keeping them;
+  a malformed span, a malformed or foreign layer sha, either one alone, a span shorter than
+  its quote, a `span_sha256` the quote contradicts, and records of one passage that
+  disagree, each refused), the other refusal cases (oldid, title
   keys, templates, dot-segment repos, display names, renderer, unknown statuses,
-  non-string affixes), hostile values in some 75 fields of the records, sources, universe
+  non-string affixes), hostile values in some 90 fields of the records, sources, universe
   and seal (refused, never a crash), and the CLI (exit codes 2 and 3, and `--replace`
   refusing foreign content).
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
