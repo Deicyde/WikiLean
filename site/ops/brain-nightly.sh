@@ -856,8 +856,8 @@ FOLD_OUTPUTS = {
     "catalog/data/grounding_overrides.jsonl",
     "catalog/data/universe_extension.jsonl",
 }
-FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"  # directly in catalog/data only
-def is_fold_output(path):
+FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"
+def is_fold_output(path):  # the pattern alone also crosses "/": direct children only
     return path in FOLD_OUTPUTS or (fnmatch.fnmatchcase(path, FOLD_OUTPUT_PATTERN)
                                    and "/" not in path[len("catalog/data/"):])
 value = json.load(open(sys.argv[1], encoding="utf-8"))
