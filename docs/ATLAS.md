@@ -120,6 +120,14 @@ belongs).
   list of module roots), `licence: {spdx}`, and optionally `display_name` (absent or null
   when the producer has none; contract note 6). `index`, `conventions`, `src_dir`,
   `blob_url_template` and any other key are refused.
+- **Libraries are keyed by `id`, and a repository may be several of them** (contract note
+  13). Proposal §2.3 lets a universe split one repository into libraries, one root each:
+  lean-core as `init` (roots `Init`) and `std` (roots `Std`), both at one lean4 commit. The
+  rule is: **each library `id` once, and each `(repo, root)` pair in one library only**. So
+  two libraries may share a repository, at one commit or at two, but not a root of it, and
+  one library may not list a root twice. A repository and a root are compared as written.
+  Nothing else about a shared repository is refused: a true duplicate is the same id, or
+  the same root of the same repository.
 - **`repo`** is `https://`, a dotted host (no port, no user), then one to four path
   segments of 1 to 100 letters, digits and `_.~-` each, none of them `.` or `..`, with no
   trailing slash, query or fragment:
@@ -184,9 +192,14 @@ Records follow proposal §2.7, with these points of the agreement:
 - **A `closeMatch` always carries a non-empty `note`**, including one a challenge
   downgrade produced: the challenger's witness sentence becomes the note when the worker
   wrote none. A note-less `closeMatch` is refused.
-- **An absence keeps one lean end per universe library**, each minimal:
-  `{"type": "lean", "uri": <repo>, "version": <40 hex>}` and nothing else (no `role`, no
-  `extensions`, no `location`). On smoke-2's real set that shrinks an absence from about
+- **An absence keeps one lean end per repository the universe searched, at its commit**,
+  each minimal: `{"type": "lean", "uri": <repo>, "version": <40 hex>}` and nothing else (no
+  `role`, no `extensions`, no `location`). That is one end per distinct `(repo, commit)` of
+  the universe's libraries, each once: libraries split from one repository at one commit
+  (Init and Std) are one search target and one end, and one repository at two commits is
+  two (formal-companion `124a587`, `records.absence_ends`, which places each end by the
+  first library by id). A universe whose repositories are all distinct gives one end per
+  library, as before. On smoke-2's real set the minimal form shrinks an absence from about
   12 KB to about 7 KB with 48 libraries.
 - **A coverage claim** (decision D1, check 6) rides in the record's locate extension as
   `coverage: {"complete": true, "parts": [<location_key>, ...], "challenge": <challenge
@@ -258,8 +271,11 @@ any of these fails:
    their own sha256, and every receipt is referenced. Hex, token and time values must
    match in full (a trailing newline does not pass).
 2. **Universe.** `universe.json` has exactly the keys above (a `universe.yaml` is refused);
-   its id and `universe_sha256` equal the seal's; `libraries` is a list sorted by id, and
-   repositories are unique; each repository follows the `repo` grammar above (an https URL
+   its id and `universe_sha256` equal the seal's; `libraries` is a list sorted by id, each
+   id once, and each `(repo, root)` pair belongs to one library (a repository may be several
+   libraries, above; a repeated id or a root of one repository in two libraries, or twice
+   in one, is refused, naming the library that holds it); each repository follows the
+   `repo` grammar above (an https URL
    with a dotted host and one to four path segments, none of them `.` or `..`, and no
    trailing slash); commits are 40-hex; `brain_lib` and `toolchain` are non-empty strings
    of at most 300 characters, `roots` a non-empty list of them, and `licence` exactly
@@ -310,7 +326,9 @@ any of these fails:
      record carries its passage's derived status, except the `relatedMatch` records of a
      passage that has none (check 6).
    - An **absence** (`noMatch`) has status `not_formalized` and exactly one minimal
-     `{type, uri, version}` lean end per universe library, and references its receipt as
+     `{type, uri, version}` lean end per distinct `(repo, commit)` of the universe's
+     libraries, each once (an end per library of a split repository, the export before
+     formal-companion `124a587`, names it twice and is refused), and references its receipt as
      exactly `receipt: {sha256, queries, candidates}`. Each count is an integer (`2.0` and
      `true` do not pass) equal to the length of that list in the receipt file, repeats
      included, and the receipt must list at least 3 distinct queries (gate rule 5).
@@ -627,6 +645,28 @@ agreement before real record sets arrive:
     `span_sha256` on the run's own layers) build byte for byte the stores the previous
     builder built (31 files each), and the copy's misspelt `span`, a stray key at the record
     and subject levels, a malformed span and a wrong layer sha are each refused.
+13. **Several libraries per repository** (agreed 2026-10-19). Proposal §2.3 gives a
+    `brain_lib` token one repository but lets a repository carry several tokens: a consumer
+    that needs one token per root (the Brain wants `Init` and `Std` apart) splits lean-core
+    into two universe libraries at one commit, one root each. The builder refused that
+    universe ("repo appears twice (one library per repository)"), and the producer's export
+    then gave each absence two identical lean4 ends, which check 5 refuses too. The two
+    sides agreed: WikiLean keys libraries by id and refuses only a true duplicate, the same
+    library id or the same `(repo, root)` (section 3, above); formal-companion's absence
+    names what was searched, one end per distinct `(repo, commit)` (`124a587`,
+    `records.absence_ends`), and WikiLean checks exactly that set, each pair once. The view
+    model was already keyed by library id (a location's `library`, `summary.by_library`,
+    `counts.by_library`, the index rows' `libraries`, the universe file), so Init and Std
+    are two libraries everywhere in the store, and an absence's `libraries` counts
+    libraries, not repositories. The pages name libraries per id as well: two that would
+    read alike, as two libraries of one repository always do, are told apart by their roots
+    ("Lean core · Init", "Lean core · Std"; UI, "Libraries"). Checked on brain4's locate
+    e2e (`tests/e2e/locate_synthetic/driver.py` at `124a587`) run over a split universe
+    (`alpha`, and `init` and `std` at one `example.org/lean4` commit, with a location in
+    `std`): the previous builder refuses its sealed set, this one builds it (12 files),
+    with each absence naming lean4 once. The unsplit e2e set and the three smoke-2 sets
+    (`smoke-2-d1`, `smoke-2-d1c`, `smoke-2-d1e`) build byte for byte the stores the previous
+    builder built.
 
 ## 4. The store (v1)
 
@@ -668,7 +708,10 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   `counts.by_library`) splits each library's `locations` into `complete` (proved
   declarations and definitions) and `incomplete` (`statement_only`, `wanted`,
   `axiom_dependent`), so a library that only states results is never counted as one
-  that proves them.
+  that proves them. Every library in the view model is a universe library id (a location's
+  `library`, both `by_library` maps, the index rows' `libraries`), so two libraries of one
+  repository (Init and Std, contract note 13) are two entries; a location also carries its
+  `repo` and `commit`.
 - **`quote_capped`** is true when the passage's quote is the capped head of a longer
   passage (section 3, "The quote is capped"), and false when it is the whole passage
   (`build_store.quote_extent`). A quote under 12 words is whole, because the passage ended
@@ -946,7 +989,15 @@ and the live list filter.
   owner or repository names `.` and `..` get none. The universe page links a repository
   only when it is `github.com/<owner>/<repo>` and names any other as text. A record's
   `path` is relative to the repository root, so nothing is prefixed to it (Lean core's
-  paths already start `src/`).
+  paths already start `src/`). Every page shows libraries per library id
+  (`libraryInfos`), as the store keys them, so libraries split from one repository (contract
+  note 13) are separate chips, cards, filters, table rows and universe rows. Libraries that
+  would read alike (one chip label, as libraries of one repository always do) are named
+  apart by their roots: "Lean core · Init" and "Lean core · Std". A root is shown without
+  a Lake glob's `.+` or `.*`, several are joined ("· Init, Std"), and when a root is not a
+  plain ASCII module name, or the roots do not tell the libraries apart, the library ids
+  are shown instead ("Lean core · init"). The name before the "·" is always the
+  repository's, so a root cannot relabel a library.
 - **Accessibility.** Status is never shown by colour alone: each status has an icon, a word
   and its own stroke (solid, dashed, dotted, double, grey groove). Chips are real
   buttons with `aria-pressed`, and filter results are announced through a status region.
@@ -1077,8 +1128,10 @@ applied and the cutover done). The importer would live in a release-neutral dire
 The atlas never writes the Brain. Locate output reaches it only (a) as
 `brain/proposals/*.jsonl` through the offline fold, or (b) after Jack chooses a release-gate
 mode for content changes. Concept edges come only from `subject` passages whose own QID was
-validated against a sealed Wikidata bundle, and each library maps to one `brain_lib` token
-per repository. Non-Mathlib libraries stay mentions-only by current policy.
+validated against a sealed Wikidata bundle, and each library maps to one `brain_lib` token.
+A token names one repository, and a repository may carry several (lean-core split into
+`Init` and `Std`, contract note 13). Non-Mathlib libraries stay mentions-only by current
+policy.
 
 ## 14. Prerequisites and open decisions for Jack
 
@@ -1145,7 +1198,14 @@ Each decision below comes with a recommendation.
   `section` and `prominence` on every record, every challenge value with
   `challenge_pending` on a location, an absence and an unresolved record, receipt counts
   as list lengths, required `module`, `path` and `line`, optional but never null
-  `end_line`, closeMatch notes, minimal absence ends, `universe.yaml` refused), the
+  `end_line`, closeMatch notes, minimal absence ends, `universe.yaml` refused), several
+  libraries per repository (`init` and `std` at one lean4 commit beside `mathlib` building,
+  a location in `std` and a related declaration in `init` kept apart by id through the view
+  model, the counts and the index;
+  an absence naming lean4 once building, twice refused, and one repository at two commits
+  needing two ends; a repeated library id, a root of one repository in two libraries at one
+  commit or two, and a root listed twice, each refused; one root name in two repositories
+  building), the
   locate extension's keys (an unknown key at each of its places refused with its place
   and the record id, a key of another shape, a stray receipt key, another extension
   namespace on the record and on either end, the subject end's `renderer`, `licence`,
@@ -1185,7 +1245,10 @@ Each decision below comes with a recommendation.
   takes from the counts, the heading's hidden separators, and
   the library registry (seeded names, look-alike
   display names, ignored templates, repository-relative paths, dot segments,
-  GitHub-only repository links).
+  GitHub-only repository links, and libraries that would read alike named apart by their
+  roots or ids), and libraries split from one repository shown per id (Lean core · Init and
+  Lean core · Std on the universe page, the coverage page's chips, cards and status
+  sentence, and the dashboard's table, library names and article list).
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour

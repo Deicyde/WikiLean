@@ -141,6 +141,65 @@ export function libraryInfo(repo: string, entry?: UniverseLibrary | null): Libra
   return { repo: clean, name, short, blobTemplate };
 }
 
+// One library of a universe (or of a location whose universe could not be
+// read), as libraryInfos names it.
+export interface LibraryEntry {
+  id: string;
+  repo: string;
+  display_name?: unknown;
+  roots?: unknown;
+}
+
+// A root as a qualifier: a Lake module glob ("Init", "FormalConjectures.+")
+// without its ".+" or ".*", when it is a plain ASCII module name; else null.
+const ROOT_LABEL_RE = /^[A-Za-z0-9_']+(?:\.[A-Za-z0-9_']+)*$/;
+function rootLabel(root: unknown): string | null {
+  if (typeof root !== "string") return null;
+  const name = root.replace(/\.[+*]$/, "");
+  return name.length <= 64 && ROOT_LABEL_RE.test(name) ? name : null;
+}
+// A library's roots as one qualifier ("Init", or "Init, Std"); null when one is
+// not a plain module name or there are more than four.
+function rootsLabel(roots: unknown): string | null {
+  if (!Array.isArray(roots) || roots.length === 0 || roots.length > 4) return null;
+  const labels = roots.map(rootLabel);
+  return labels.every((label) => label !== null) ? labels.join(", ") : null;
+}
+
+// Every library of a universe by id, each named by libraryInfo. Libraries are
+// keyed by id and a repository may be several of them (docs/ATLAS.md section 3:
+// proposal §2.3 splits lean-core into Init and Std at one commit), so two
+// libraries can come out with one name ("Lean core" for both). Those that would
+// read alike (one chip label, as libraries of one repository always do) are
+// told apart by their roots, "Lean core · Init" and "Lean core · Std", or by
+// their ids when the roots do not tell them apart as plain names. The base name
+// stays the repository's, so a root can never relabel a library.
+export function libraryInfos(entries: Iterable<LibraryEntry>): Map<string, LibraryInfo> {
+  const infos = new Map<string, LibraryInfo>();
+  const groups = new Map<string, LibraryEntry[]>();
+  for (const entry of entries) {
+    if (infos.has(entry.id)) continue;
+    const info = libraryInfo(entry.repo, entry as UniverseLibrary);
+    infos.set(entry.id, info);
+    const key = info.short.toLowerCase();
+    const group = groups.get(key);
+    if (group) group.push(entry);
+    else groups.set(key, [entry]);
+  }
+  for (const group of groups.values()) {
+    if (group.length < 2) continue;
+    const byRoots = group.map((entry) => rootsLabel(entry.roots));
+    const distinct = byRoots.every((label) => label !== null)
+      && new Set(byRoots.map((label) => (label as string).toLowerCase())).size === group.length;
+    group.forEach((entry, i) => {
+      const qualifier = distinct ? (byRoots[i] as string) : String(entry.id);
+      const info = infos.get(entry.id) as LibraryInfo;
+      infos.set(entry.id, { ...info, name: `${info.name} · ${qualifier}`, short: `${info.short} · ${qualifier}` });
+    });
+  }
+  return infos;
+}
+
 // A repository-relative path a link may name: no absolute, parent, empty or
 // backslash segments, no control characters.
 export function safeRelativePath(path: string): boolean {

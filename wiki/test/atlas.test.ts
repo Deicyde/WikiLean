@@ -21,7 +21,7 @@ import {
   memoryReader, parsePageid, staticReader, titleKey, titleShard,
 } from "../src/atlas.js";
 import { atlasSummaryBox, campaignLabel, locationStatus } from "../src/atlas-render.js";
-import { libraryInfo, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
+import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectAtlasSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
 import { CSP_REPORT_ONLY, MAX_JSON_BODY_BYTES, SECURITY_HEADERS } from "../src/security.js";
@@ -614,6 +614,72 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain("<td>https://evil.example.com/phish</td>");
     expect(html).not.toContain('href="https://evil.example.com');
     expect(html).toContain('<a href="https://github.com/leanprover/lean4" rel="noopener">');
+  });
+
+  it("libraries split from one repository are shown per library id, named apart (Lean core · Init, · Std)", async () => {
+    // docs/ATLAS.md section 3 and contract note 13: proposal §2.3 splits lean-core
+    // into Init and Std at one lean4 commit. The store keys libraries by id; the
+    // pages must not show two "Lean core"s.
+    const LEAN4 = "https://github.com/leanprover/lean4";
+    const universePath = `atlas/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`;
+    const articlePath = `atlas/v1/articles/${WIDGET_PAGEID}.json`;
+    const files = atlasFixtureFiles();
+    const universe = JSON.parse(files.get(universePath)!);
+    const core = universe.libraries.find((lib: { id: string }) => lib.id === "lean-core");
+    const { display_name: _unused, ...plain } = core;
+    universe.libraries = [
+      ...universe.libraries.filter((lib: { id: string }) => lib.id !== "lean-core"),
+      { ...plain, id: "init", brain_lib: "Init", roots: ["Init"] },
+      { ...plain, id: "std", brain_lib: "Std", roots: ["Std"] },
+    ].sort((a, b) => (a.id < b.id ? -1 : 1));
+    files.set(universePath, JSON.stringify(universe));
+    // The TauCeti location moves into std, and Batteries' related declaration into init.
+    const rename = (counts: Record<string, unknown>) => {
+      const { tauceti, batteries, ...rest } = counts;
+      return { ...rest, std: tauceti, init: batteries };
+    };
+    const article = JSON.parse(files.get(articlePath)!);
+    Object.assign(article.passages[1].locations[0], {
+      library: "std", repo: LEAN4, commit: core.commit, path: "src/Std/Data/Widget.lean", module: "Std.Data.Widget",
+    });
+    Object.assign(article.passages[2].locations[0], {
+      library: "init", repo: LEAN4, commit: core.commit, path: "src/Init/Data/Widget.lean", module: "Init.Data.Widget",
+    });
+    article.summary.by_library = rename(article.summary.by_library);
+    files.set(articlePath, JSON.stringify(article));
+    const current = JSON.parse(files.get("atlas/v1/current.json")!);
+    current.counts.by_library = rename(current.counts.by_library);
+    files.set("atlas/v1/current.json", JSON.stringify(current));
+    const shard = JSON.parse(files.get("atlas/v1/index/1.json")!);
+    shard.articles[0][shard.fields.indexOf("libraries")] = ["ff-widgets", "mathlib", "std"];
+    files.set("atlas/v1/index/1.json", JSON.stringify(shard));
+    const h = setup();
+    bindAtlas(h.env, files);
+
+    const universePage = await (await get(h.env, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`)).text();
+    expect(universePage).toContain('<th scope="row">Lean core · Init <span class="atlas-muted">init</span></th>');
+    expect(universePage).toContain('<th scope="row">Lean core · Std <span class="atlas-muted">std</span></th>');
+    expect(universePage).toContain(`<a href="${LEAN4}/tree/${core.commit}" rel="noopener"><code>${core.commit}</code></a>`);
+    expect(universePage).toContain("6 libraries, frozen 2026-10-17");
+    expect(universePage).not.toMatch(/>Lean core <span/);
+
+    const page = await (await get(h.env, WIDGET_PATH)).text();
+    const std = `<span class="atlas-lib" title="Lean core · Std · ${LEAN4}">Lean core · Std</span>`;
+    expect(page).toContain(std);
+    expect(page).toContain(`<span class="atlas-lib" title="Lean core · Init · ${LEAN4}">Lean core · Init</span>`);
+    expect(page).toContain('data-filter="library:std"');
+    expect(page).toContain("Lean core · Init <span class=\"atlas-n\">related only</span>");
+    expect(page).toContain("Statement only: Lean core · Std states this exactly");
+    expect(page).toContain(`href="${LEAN4}/blob/${core.commit}/src/Std/Data/Widget.lean#L41-L57"`);
+    expect(page).not.toMatch(/>Lean core</);
+
+    const dashboard = await (await get(h.env, "/atlas")).text();
+    expect(dashboard).toContain('<th scope="row">Lean core · Std</th>');
+    expect(dashboard).toContain('<th scope="row">Lean core · Init</th>');
+    expect(dashboard).toContain("&quot;init&quot;:&quot;Lean core · Init&quot;");
+    expect(dashboard).toContain("&quot;std&quot;:&quot;Lean core · Std&quot;");
+    expect(dashboard).toContain(`<span class="atlas-libtag" title="Lean core · Std · ${LEAN4}">Lean core · Std</span>`);
+    expect(dashboard).not.toMatch(/>Lean core</);
   });
 
   it("signed-in viewers get Confirm / Report controls showing their own verdict", async () => {
@@ -1359,6 +1425,43 @@ describe("library registry", () => {
     for (const display of ["Mathlib", "mathlib", " MATHLIB ", "Mathlib (official)", "Batteries", "ATLAS", "Lean core", "FormalFrontier · WidgetTheory"]) {
       expect(libraryInfo(other.repo, { ...other, display_name: display }).name, display).toBe("someone/lean-thing");
     }
+  });
+
+  it("libraries that would read alike are told apart by their roots, else by their ids", () => {
+    const lean4 = "https://github.com/leanprover/lean4";
+    const names = (entries: Parameters<typeof libraryInfos>[0]) =>
+      Object.fromEntries([...libraryInfos(entries)].map(([id, info]) => [id, [info.name, info.short]]));
+    // Lean core split into Init and Std at one commit (proposal §2.3), beside Mathlib.
+    expect(names([
+      { id: "init", repo: lean4, roots: ["Init"] },
+      { id: "mathlib", repo: "https://github.com/leanprover-community/mathlib4", roots: ["Mathlib"] },
+      { id: "std", repo: lean4, roots: ["Std"], display_name: "Std" },
+    ])).toEqual({
+      init: ["Lean core · Init", "Lean core · Init"], mathlib: ["Mathlib", "Mathlib"], std: ["Lean core · Std", "Lean core · Std"],
+    });
+    // A Lake glob is named without its suffix, and several roots together.
+    expect(names([
+      { id: "fc", repo: "https://github.com/google-deepmind/formal-conjectures", roots: ["FormalConjectures.+"] },
+      { id: "fc-lib", repo: "https://github.com/google-deepmind/formal-conjectures", roots: ["FormalConjecturesForMathlib", "Util.*"] },
+    ])).toEqual({
+      fc: ["Formal Conjectures · FormalConjectures", "Formal Conjectures · FormalConjectures"],
+      "fc-lib": ["Formal Conjectures · FormalConjecturesForMathlib, Util", "Formal Conjectures · FormalConjecturesForMathlib, Util"],
+    });
+    // Roots that are not plain module names, or that do not tell the libraries
+    // apart, give way to the ids; a library with no roots (a location's, when the
+    // universe could not be read) is named by its id too.
+    for (const [a, b] of [[["<b>Init</b>"], ["Std"]], [["Init"], ["init"]], [["Init"], undefined], [[], ["Std"]]]) {
+      expect(names([{ id: "core-a", repo: lean4, roots: a }, { id: "core-b", repo: lean4, roots: b }]), JSON.stringify([a, b]))
+        .toEqual({ "core-a": ["Lean core · core-a", "Lean core · core-a"], "core-b": ["Lean core · core-b", "Lean core · core-b"] });
+    }
+    // One library of a repository keeps its plain name; the first of a repeated id wins.
+    expect(names([{ id: "lean-core", repo: lean4, roots: ["Init", "Std"] }, { id: "lean-core", repo: lean4, roots: ["Lean"] }]))
+      .toEqual({ "lean-core": ["Lean core", "Lean core"] });
+    // The base name is the repository's: a root never relabels a library.
+    expect(names([
+      { id: "a", repo: "https://github.com/someone/lean-thing", roots: ["Mathlib"] },
+      { id: "b", repo: "https://github.com/someone/lean-thing", roots: ["Thing"] },
+    ]).a).toEqual(["someone/lean-thing · Mathlib", "someone/lean-thing · Mathlib"]);
   });
 
   it("a display_name cannot read as a seeded library through invisible or look-alike characters", () => {
