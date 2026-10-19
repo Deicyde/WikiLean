@@ -309,6 +309,21 @@ class BuildTests(unittest.TestCase):
         # Without a usable span sha, a head's passage goes on past its suffix (the safe side).
         self.assertEqual(build_store.quote_extent({"exact": exact, "suffix": " of order 2."}, None), head)
 
+    def test_a_span_past_a_worded_suffix_is_never_whole(self) -> None:
+        # Inconsistent producer data: the span runs one or two characters past a suffix with
+        # words in it, while span_sha256 hashes the bare quote. The span proves the passage goes
+        # on past the quote, so the hash may not make it whole.
+        exact = "Every group of odd order is solvable, and so is every group"
+        quote = {"exact": exact, "suffix": " of order 2."}
+        sha = hashlib.sha256(exact.encode("utf-8")).hexdigest()
+        for extra in (1, 2):
+            span = [0, len(exact) + len(quote["suffix"]) + extra]
+            got = build_store.quote_extent(quote, sha, span)
+            self.assertTrue(got["quote_capped"], extra)
+        # A suffix of whitespace alone proves nothing, so the hash still decides there.
+        spaced = {"exact": exact, "suffix": "  "}
+        self.assertFalse(build_store.quote_extent(spaced, sha, [0, len(exact) + 3])["quote_capped"])
+
     def test_the_span_is_a_shortcut_to_what_the_span_sha_gives(self):
         # F5's span gives the passage's length, so the text after exact is tail = (end - start)
         # - len(exact) characters. Where the suffix covers it, or the tail runs past the suffix by

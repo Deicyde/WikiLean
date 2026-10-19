@@ -708,7 +708,9 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   hash, the hash alone gives the same answer for all 331, and the articles are
   `smoke-2-p3`'s but for the record shas. Where a span could contradict `span_sha256`
   undetected (a tail past the suffix while `span_sha256` hashes a shorter text), the span
-  decides. The Worker holds no layer to index, and a reader that does finds them in
+  decides when its tail runs more than two characters past the suffix; within one or two,
+  the hash decides, except that a span running past a suffix with any non-whitespace in it
+  is never read as a whole passage (it proves the passage goes on past the quote). The Worker holds no layer to index, and a reader that does finds them in
   `atlas/v1/records/<pageid>.jsonl`, which keeps every record byte for byte.
 - **`summary.by_prominence`** counts the article's passages per prominence, `{subject,
   central, supporting}`, each `{passages, by_status}` with the five summary statuses, and

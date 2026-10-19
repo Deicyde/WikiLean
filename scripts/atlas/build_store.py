@@ -731,6 +731,17 @@ def quote_extent(quote: dict, span_sha256: Any, span: list[int] | None = None) -
             return whole if not rest or rest.isspace() else ends
         if tail > len(suffix) + MAX_TRAILING_SPACE:
             return head
+    # A span that runs past a suffix holding any non-whitespace proves the passage goes on past
+    # the quote, so the hash below may say where it ends but never that the quote is all of it:
+    # such a set is inconsistent producer data, and a cut passage is never shown as whole.
+    never_whole = span is not None and span[1] - span[0] - len(exact) > len(suffix) and bool(suffix.strip())
+    found = _extent_from_hash(exact, suffix, span_sha256, whole, head, ends)
+    return head if never_whole and found is whole else found
+
+
+def _extent_from_hash(exact: str, suffix: str, span_sha256: Any, whole: dict[str, bool],
+                      head: dict[str, bool], ends: dict[str, bool]) -> dict[str, bool]:
+    """quote_extent's answer from ``span_sha256`` alone, for a quote at the cap."""
     if not (isinstance(span_sha256, str) and HEX64.match(span_sha256)):
         return head
     target = bytes.fromhex(span_sha256)
