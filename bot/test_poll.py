@@ -402,7 +402,7 @@ class SettleHelpersTest(PollFixture):
 class ReadyHeaderTest(PollFixture):
     CLS = {"pr": PR, "reviewers": ["Deicyde", "SnirBroshi"], "maintainer_reviewers": ["SnirBroshi"],
            "gate": True, "tags": ["Q1", "Q2", "Q3"], "green": [{"qid": "Q1"}, {"qid": "Q2"}],
-           "recycle": [{"qid": "Q3"}]}
+           "recycle": [{"qid": "Q3", "file": "Mathlib/Order/Basic.lean"}]}
 
     def test_header_states_the_rule_classify_applies(self):
         h = settle.ready_header(self.CLS)
@@ -422,7 +422,7 @@ class ReadyHeaderTest(PollFixture):
         self.assertNotIn("unresolved objection", h)
         self.assertTrue(h.endswith("<!-- wikilean-bot-ready -->"))
 
-    def test_settle_posts_that_header(self):
+    def test_settle_trims_each_tag_in_its_file_and_posts_that_header(self):
         self.write_state()
         commands = []
         with mock.patch.object(poll, "sh", side_effect=lambda cmd, **kw: commands.append(cmd)), \
@@ -432,6 +432,8 @@ class ReadyHeaderTest(PollFixture):
             poll.do_settle(PR, "wikilean/wikidata-batch-7", Path("/unused"), self.CLS, dry=False)
         table = next(c for c in commands if str(c[1]).endswith("pr_table.py"))
         self.assertEqual(table[table.index("--header") + 1], settle.ready_header(self.CLS))
+        split = next(c for c in commands if str(c[1]).endswith("split.py"))
+        self.assertEqual(split[split.index("--recycle") + 1], "Q3=Mathlib/Order/Basic.lean")
 
 
 class DecideCommandLineTest(unittest.TestCase):
