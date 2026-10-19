@@ -34,7 +34,7 @@ import {
   SYNAPSE_KINDS_CSV,
   type ApiResult,
 } from "./brain-api.js";
-import { readBodyCapped } from "./security.js";
+import { limiterIp, readBodyCapped } from "./security.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -396,7 +396,7 @@ export function registerMcpRoutes(app: Hono<{ Bindings: Env }>): void {
     // counters separate from brainapi:<user.id> writes.
     const limiter: Limiter =
       (c.env as Env & { MCP_LIMITER?: Limiter }).MCP_LIMITER ?? c.env.BRAIN_API_LIMITER;
-    const ip = c.req.header("CF-Connecting-IP") || "unknown";
+    const ip = limiterIp(c.req.header("CF-Connecting-IP")) || "unknown";
     const rl = await limiter.limit({ key: `mcp:${ip}` });
     if (!rl.success) {
       return c.json(rpcError(null, -32000, "rate limited (120 requests/min per IP) — slow down"), 429);
@@ -600,7 +600,7 @@ body; responses are plain <code>application/json</code> (no SSE, no sessions, no
         "arguments":{"q":"abelian group","direction":"informal_to_formal"}}}'</code></pre>
 <p class="muted">Protocol revisions 2025-06-18 and 2025-03-26; methods
 <code>initialize</code>, <code>tools/list</code>, <code>tools/call</code>, <code>ping</code>.
-Rate limit: 120 calls/min per IP. Read-only by construction.</p>
+Rate limit: 120 calls/min per IP (per /64 for IPv6). Read-only by construction.</p>
 
 <h2>The nine tools</h2>
 <p>The canonical autoformalization loop: <code>brain_bridge</code> (informal statement &rarr;
