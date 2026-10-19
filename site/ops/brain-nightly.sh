@@ -856,15 +856,17 @@ FOLD_OUTPUTS = {
     "catalog/data/grounding_overrides.jsonl",
     "catalog/data/universe_extension.jsonl",
 }
-FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"
+FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"  # directly in catalog/data only
+def is_fold_output(path):
+    return path in FOLD_OUTPUTS or (fnmatch.fnmatchcase(path, FOLD_OUTPUT_PATTERN)
+                                   and "/" not in path[len("catalog/data/"):])
 value = json.load(open(sys.argv[1], encoding="utf-8"))
 inputs = value.get("inputs") if isinstance(value, dict) else None
 paths = [item.get("path") for item in inputs or []
          if isinstance(item, dict) and item.get("class") == "curated_git_input"]
 if not paths or not all(isinstance(path, str) and path for path in paths):
     raise SystemExit("invalid reducer inventory curated inputs")
-checked = [path for path in paths
-           if path not in FOLD_OUTPUTS and not fnmatch.fnmatchcase(path, FOLD_OUTPUT_PATTERN)]
+checked = [path for path in paths if not is_fold_output(path)]
 if not checked:
     raise SystemExit("no curated reducer inputs left to check")
 print("\n".join(checked))
