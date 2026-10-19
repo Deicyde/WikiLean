@@ -77,8 +77,8 @@ review-gated Brain lane:
     python3 bot/brain_queue.py                 # refresh state/brain_queue.json
 
 Both rewrite curated reducer inputs (`brain/data/community_edges.jsonl`,
-`bot/state/brain_queue.json`). Run them in the Brain nightly's checkout and that
-nightly refuses to publish until the change is committed or reverted.
+`bot/state/brain_queue.json`). If a run changes the file in the Brain nightly's
+checkout, that nightly refuses to publish until the change is committed or reverted.
 
 ## Files
 
