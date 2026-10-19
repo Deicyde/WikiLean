@@ -10,10 +10,10 @@ import { setup, post, get, blockNetwork, SLUG } from "./helpers/harness.js";
 blockNetwork();
 
 describe("limiterIp", () => {
-  it("keeps IPv4 and IPv4-mapped IPv6 addresses whole", () => {
-    expect(limiterIp("203.0.113.7")).toBe("203.0.113.7");
-    expect(limiterIp("::ffff:203.0.113.7")).toBe("203.0.113.7");
-    expect(limiterIp("::FFFF:203.0.113.7")).toBe("203.0.113.7");
+  it("keeps IPv4 and ::/64 addresses (loopback, IPv4-mapped) whole", () => {
+    for (const ip of ["203.0.113.7", "::ffff:203.0.113.7", "::ffff:cb00:7107", "::1"]) {
+      expect(limiterIp(ip)).toBe(ip);
+    }
   });
 
   it("keys an IPv6 address by its /64, however it is written", () => {
@@ -21,7 +21,6 @@ describe("limiterIp", () => {
       expect(limiterIp(ip)).toBe("2001:db8:1:2::/64");
     }
     expect(limiterIp("2001:db8::1")).toBe("2001:db8:0:0::/64");
-    expect(limiterIp("::1")).toBe("0:0:0:0::/64");
   });
 
   it("passes a missing header and anything it can't parse through unchanged", () => {

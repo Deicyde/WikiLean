@@ -196,12 +196,11 @@ export function checkOrigin(c: Context<{ Bindings: Env }>): Response | null {
 
 // The client part of an anonymous rate-limit key, from CF-Connecting-IP. An IPv6
 // address keys by its /64: one host usually holds a whole /64 and could otherwise
-// rotate through it for a fresh budget per address. IPv4, including IPv4-mapped
-// IPv6, keys by the full address; anything unparsable keys as given.
+// rotate through it for a fresh budget per address. Everything else keys as given:
+// IPv4, the ::/64 block (loopback and the IPv4-mapped forms, one client per
+// address), and anything unparsable.
 export function limiterIp(ip: string | undefined): string | undefined {
   if (!ip?.includes(":")) return ip;
-  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i.exec(ip);
-  if (mapped) return mapped[1];
   const halves = ip.split("::");
   if (halves.length > 2) return ip;
   const head = halves[0] ? halves[0].split(":") : [];
@@ -210,7 +209,8 @@ export function limiterIp(ip: string | undefined): string | undefined {
   if (halves.length === 2 ? zeros < 1 : zeros !== 0) return ip;
   const groups = [...head, ...Array<string>(zeros).fill("0"), ...tail];
   if (!groups.every((g) => /^[0-9a-f]{1,4}$/i.test(g))) return ip;
-  return `${groups.slice(0, 4).map((g) => parseInt(g, 16).toString(16)).join(":")}::/64`;
+  const prefix = groups.slice(0, 4).map((g) => parseInt(g, 16).toString(16)).join(":");
+  return prefix === "0:0:0:0" ? ip : `${prefix}::/64`;
 }
 
 // Reads at most `max` bytes of the body, counting bytes as they stream, so a
