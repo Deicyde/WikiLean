@@ -166,7 +166,7 @@ treat `#` as a comment, so the inline comments in these blocks would break the c
    # the PATH the wrapper exports (current wrapper first, else the older one)
    JOBPATH="$(sed -n 's/^ *export PATH="\(.*\)"$/\1/p' "$C/site/ops/nightly-runtime.sh" "$C/site/ops/nightly-moderate.sh" 2>/dev/null | head -1)"; echo "$JOBPATH"
    # extract_sections.py runs under the bare name python3 when $PY's path contains
-   # "venv" (PY in site/batch_annotate.py), otherwise under $PY itself
+   # "venv" (the PY constant in site/batch_annotate.py), otherwise under $PY itself
    env -i HOME="$HOME" PATH="$JOBPATH" /bin/sh -c 'command -v python3 && python3 -c "import sys; print(sys.version)"'
    # the claude CLI the agent SDK runs: the copy bundled in the wheel, else a claude on PATH
    "$PY" -c 'import claude_agent_sdk as s; print(s.__version__)'
@@ -442,8 +442,8 @@ stays behind unless you copy it, and this runbook's summary script reads only th
    disk during the September Brain migration (5.8 GB free at the 2026-09-23 checkpoint),
    which makes a moved or deleted checkout conceivable. *Confirms it:* the directory
    error in step 4 and step 6.
-4. **`python3` on the job's PATH stopped working.** `PY` in `site/batch_annotate.py` runs
-   `extract_sections.py` with the bare name `python3` whenever `$PY`'s path contains
+4. **`python3` on the job's PATH stopped working.** `site/batch_annotate.py` runs
+   `extract_sections.py` with the bare name `python3` (its `PY` constant) whenever `$PY`'s path contains
    `venv`. The older wrapper sets `PY` to `catalog/.venv/bin/python3` and `PATH` to
    `/opt/homebrew/bin:/usr/bin:…` (13915083, lines 15-16). On that Mac the ambient
    `python3` is the macOS system Python (2026-09-26 handoff), the Xcode Command Line
