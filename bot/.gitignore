@@ -4,4 +4,5 @@ state/pool_candidates.json
 # state/*.json are TRACKED: main holds a frozen snapshot that the Brain build reads,
 # and the GitHub Actions poller persists its live copy on the bot-state branch
 # (ops/state-branch.sh). pool_candidates.json stays ignored — it's regenerated
-# every run and only feeds the /queue publish.
+# every run and feeds the /queue publish; brain/build_cells.py also reads it when
+# present, so the Brain nightly refuses to publish while it exists.

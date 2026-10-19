@@ -583,12 +583,14 @@ class BrainNightlyShellTest(unittest.TestCase):
                     {"path": "bot/state/pool_candidates.json", "class": "curated_git_input"},
                     {"path": "brain/data/fc_links.jsonl", "class": "curated_git_input"},
                     {"path": "catalog/data/tauceti_links.jsonl", "class": "curated_git_input"},
+                    {"path": "catalog/data/external/x_links.jsonl", "class": "curated_git_input"},
                     {"path": "catalog/data/x.jsonl", "class": "immutable_source_object"},
                 ]}),
                 repo / "bot/state/cut_log.json": "[]\n",
                 repo / "bot/.gitignore": "state/pool_candidates.json\n",
                 repo / "brain/data/fc_links.jsonl": "{}\n",
                 repo / "catalog/data/tauceti_links.jsonl": "{}\n",
+                repo / "catalog/data/external/x_links.jsonl": "{}\n",
                 repo / "catalog/data/x.jsonl": "{}\n",
             }
             for path, content in files.items():
@@ -616,7 +618,10 @@ class BrainNightlyShellTest(unittest.TestCase):
             self.assertEqual(check(), ("1", []))  # not curated, or rewritten by the fold
             (repo / "bot/state/cut_log.json").write_text("[1]\n", encoding="utf-8")
             (repo / "bot/state/pool_candidates.json").write_text("[]\n", encoding="utf-8")
-            changed = ("1", [" M bot/state/cut_log.json", "!! bot/state/pool_candidates.json"])
+            # The <key>_links exemption covers catalog/data itself, not a subdirectory.
+            (repo / "catalog/data/external/x_links.jsonl").write_text("changed\n", encoding="utf-8")
+            changed = ("1", [" M bot/state/cut_log.json", " M catalog/data/external/x_links.jsonl",
+                             "!! bot/state/pool_candidates.json"])
             self.assertEqual(check(), changed)
             subprocess.run(["git", "-C", str(repo), "config", "status.showUntrackedFiles", "no"],
                            check=True, env=env)
@@ -642,6 +647,7 @@ class BrainNightlyShellTest(unittest.TestCase):
         self.assertEqual(exempt, named & curated)
         self.assertIn('f"{key}_links.jsonl"', fold)
         self.assertIn('FOLD_OUTPUT_PATTERN = "catalog/data/*_links.jsonl"', text)
+        self.assertIn('"/" not in path[len("catalog/data/"):]', text)
         self.assertIn("catalog/data/tauceti_links.jsonl", curated)
         self.assertTrue(fnmatch.fnmatchcase("catalog/data/tauceti_links.jsonl", "catalog/data/*_links.jsonl"))
         self.assertTrue({"bot/state/cut_log.json", "catalog/data/source_registry.json"} <= curated - exempt)

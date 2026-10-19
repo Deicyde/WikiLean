@@ -78,7 +78,9 @@ Community-edge graduation is separately off by default. To enable it, set
 `WIKILEAN_COMMUNITY_HARVEST=1` and point `WIKILEAN_D1_SNAPSHOT_BUNDLE` at one
 absolute, existing, sealed bundle produced by the explicit D1 acquisition step.
 The moderation job never acquires live D1 state itself and preserves the prior
-`community_edges.jsonl` if that bundle is absent or invalid.
+`community_edges.jsonl` if that bundle is absent or invalid. A harvest that changes
+`brain/data/community_edges.jsonl`, a curated reducer input, stops the next Brain nightly
+from publishing until the change is committed.
 
 The proposal-entity bundle is not source-plan authority by itself. Its reviewed receipt,
 lineage, request preimages, and normalized object still need explicit v3 current-corpus plan
@@ -177,6 +179,7 @@ launchctl print gui/$(id -u)/org.wikilean.moderate | grep -i 'last exit'   # hea
 launchctl kickstart -k gui/$(id -u)/org.wikilean.moderate                  # run now
 launchctl bootout   gui/$(id -u)/org.wikilean.moderate                     # disable
 ```
+Diagnosing a failing night, and what each error means: [`docs/OPERATIONS.md`](../../docs/OPERATIONS.md).
 A failed batch can be undone with the run-level revert (see the run id in the
 log). Pass the bearer on stdin so it never appears in the process table:
 `printf 'Authorization: Bearer %s\n' "$PIPELINE_TOKEN" | curl -X POST -H @- .../api/admin/revert-run/<run_id>`.

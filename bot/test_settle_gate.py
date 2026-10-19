@@ -172,6 +172,24 @@ class PerTagRuleTest(PollFixture):
         self.assertEqual(r["reviewers"], [AUTHOR, "SnirBroshi"])
         self.assertTrue(r["gate"])
 
+    def test_the_author_s_approve_does_not_beat_a_non_maintainer_s_reject(self):
+        # No author privilege: with no maintainer verdict, any objection recycles the
+        # tag, whoever approved it and in either order. (pull() names Deicyde as the PR
+        # author, whose pasted review is dated REJECT_AT.)
+        for reject_at in (APPROVE_AT, AFTER):  # before and after the author's approve
+            with self.subTest(reject_at=reject_at):
+                r = self.classify(comments=[written_verdict("someone", "Q36161", "reject", at=reject_at)],
+                                  issue_comments=[pasted_review(AUTHOR, {"Q36161": "approve"})])
+                self.assertEqual(self.verdict(r), ("recycle", "objection (reject/revise)"))
+
+    def test_the_author_does_not_stand_in_for_a_maintainer_in_the_gate(self):
+        # The author counts toward the two reviewers, but a maintainer is still needed.
+        r = self.classify(comments=[written_verdict("someone", "Q36161", "approve")],
+                          issue_comments=[pasted_review(AUTHOR, {"Q36161": "approve"})])
+        self.assertEqual(r["reviewers"], [AUTHOR, "someone"])
+        self.assertEqual(r["maintainer_reviewers"], [])
+        self.assertFalse(r["gate"])
+
     def test_listed_maintainers_count_whatever_the_association(self):
         r = self.classify(reviews=[review("GrunWeg", "APPROVED")],
                           issue_comments=[pasted_review(AUTHOR, {"Q36161": "approve"})])
@@ -211,7 +229,7 @@ class Pr42608ReplayTest(PollFixture):
         self.assertEqual(r["recycle"], [])
         h = settle.ready_header(r)
         self.assertIn("**9** `@[wikidata]` tags", h)
-        self.assertNotIn("recycled", h)
+        self.assertNotIn("removed in this trim", h)
 
 
 class ConflictRebuildTest(PollFixture):
