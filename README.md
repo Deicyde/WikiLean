@@ -108,7 +108,7 @@ and a release-qualified canary. See the [Brain API](docs/BRAIN-API.md),
 | State | Current value |
 |---|---|
 | Architecture code merged to `main` | Yes |
-| New Worker/site bundle deployed | Yes: promoted 2026-10-04 from authority commit `2eb31baa`; `wiki/src` is unchanged on `main` since |
+| New Worker/site bundle deployed | Yes: promoted 2026-10-04 from authority commit `2eb31baa`. `main` has changed `wiki/src` since (for example #46, #47, #54 and #63); those changes reach production only with the next release |
 | Immutable Brain release assets published | Yes: release `sha256:8305822b…`, manifest `fa645b2b…` |
 | Production selector activated | Yes: v2 selector, `audited_at` 2026-10-04T17:25:04Z, no previous release |
 
