@@ -127,6 +127,7 @@ run_check "Frontier generated-page contract" "$PYTHON_BIN" site/test_frontier_pa
 run_check "Bot poller fail-closed tests" "$PYTHON_BIN" bot/test_poll.py
 run_check "Bot settle per-tag rule tests" "$PYTHON_BIN" bot/test_settle_gate.py
 run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
+run_check "Bot tag refresh refuses a truncated list" "$PYTHON_BIN" bot/test_refresh_tagged.py
 run_check "Queue publisher keeps the bearer off argv" "$PYTHON_BIN" bot/test_publish_queue.py
 run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" scripts/test_workflow_credentials.py
 

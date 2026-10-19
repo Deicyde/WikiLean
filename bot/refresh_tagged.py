@@ -13,12 +13,19 @@ from pathlib import Path
 OUT = Path(__file__).resolve().parent / "data" / "tagged_in_master.txt"
 PAIRS_OUT = Path(__file__).resolve().parent / "data" / "tagged_pairs.txt"
 UPSTREAM = "https://github.com/leanprover-community/mathlib4"
+# A refresh that finds far fewer tags than the last list is a broken grep, not a
+# state: in 2026-08 two refreshes found 20 and 19 tagged QIDs instead of about 145
+# and overwrote both lists. Refuse a count below this share of the previous list's
+# unless --allow-shrink says the drop is real (a bulk untagging on master).
+SHRINK_FLOOR = 0.5
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--allow-shrink", action="store_true",
+                    help="write the lists even if the QID count fell below half the previous list's")
     args = ap.parse_args()
     g = ["git", "-C", str(args.mathlib)]
 
@@ -56,8 +63,13 @@ def main():
             pairs.add((q, f))
     qids = sorted(qids, key=lambda q: int(q[1:]))
     pairs = sorted(pairs, key=lambda p: (int(p[0][1:]), p[1]))
+    previous = len(OUT.read_text().split()) if OUT.exists() else 0
     print(f"found {len(qids)} tagged QIDs on master, {len(pairs)} (qid, file) pairs "
-          f"(was {len(OUT.read_text().split()) if OUT.exists() else 0})")
+          f"(was {previous})")
+    if previous and len(qids) < previous * SHRINK_FLOOR and not args.allow_shrink:
+        sys.exit(f"only {len(qids)} tagged QIDs, under half of the previous {previous}: refusing "
+                 f"to overwrite {OUT.name}/{PAIRS_OUT.name} (a partial git grep?). Rerun, or pass "
+                 f"--allow-shrink if master really lost them. git grep stderr: {grep.stderr[:300]}")
     if args.dry_run:
         print("[dry-run] not writing.", " ".join(qids[:12]), "…")
         return
