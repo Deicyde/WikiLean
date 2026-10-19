@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """refresh_tagged.py writes the merged-tag exclusion lists only from a plausible
-grep: a count under half of the previous list's fails closed unless --allow-shrink."""
+grep: a count under 90% of the previous list's fails closed unless --allow-shrink."""
 from __future__ import annotations
 
 import contextlib
@@ -52,16 +52,18 @@ class RefreshTaggedTest(unittest.TestCase):
 
     def test_a_small_drop_still_writes(self):
         previous = [f"Q{i}" for i in range(1, 11)]
-        message, out, _ = self.refresh(previous, previous[:6])
+        message, out, _ = self.refresh(previous, previous[:9])  # exactly 90%
         self.assertIsNone(message)
-        self.assertEqual(out.split(), previous[:6])
+        self.assertEqual(out.split(), previous[:9])
 
-    def test_a_count_under_half_of_the_previous_list_fails_closed(self):
+    def test_a_count_under_90_percent_of_the_previous_list_fails_closed(self):
         previous = [f"Q{i}" for i in range(1, 146)]
-        message, out, pairs = self.refresh(previous, previous[:20])
-        self.assertIn("only 20 tagged QIDs, under half of the previous 145", message)
-        self.assertEqual(out.split(), previous)  # both lists untouched
-        self.assertEqual(pairs, "old pairs\n")
+        for found in (previous[:20], previous[:130]):  # an August truncation, and a milder one
+            with self.subTest(found=len(found)):
+                message, out, pairs = self.refresh(previous, found)
+                self.assertIn(f"only {len(found)} tagged QIDs, under 90% of the previous 145", message)
+                self.assertEqual(out.split(), previous)  # both lists untouched
+                self.assertEqual(pairs, "old pairs\n")
 
     def test_allow_shrink_accepts_a_real_drop(self):
         previous = [f"Q{i}" for i in range(1, 146)]
