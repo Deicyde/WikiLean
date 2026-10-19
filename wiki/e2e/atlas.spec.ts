@@ -89,6 +89,109 @@ test("a survived coverage claim names its parts under 'Formalized by 2 parts tog
   await expect(claim.getByRole("listitem").first()).toBeVisible();
 });
 
+// The heading's pieces are flex items and the section's "§ " is CSS content:
+// hidden separators keep the accessible name from running them together.
+test("a passage heading's accessible name keeps its pieces apart", async ({ page }) => {
+  await page.goto(WIDGET);
+  await expect(page.locator("#p-91aa02de h3")).toHaveAccessibleName("Definition · central · § Definitions");
+  await expect(page.getByRole("heading", { level: 3, name: "Theorem · Subject of the article · § Statement" })).toHaveCount(1);
+  // The separators are read, not seen: the visible heading is unchanged.
+  await expect(page.locator("#p-91aa02de h3 .atlas-sr")).toHaveCount(1);
+  const hidden = await page.locator("#p-91aa02de h3 .atlas-sr").boundingBox();
+  expect(hidden && hidden.width <= 1 && hidden.height <= 1).toBe(true);
+  await page.goto(GADGET);
+  await expect(page.locator("#p-7d2c9e10 h3")).toHaveAccessibleName("Definition · Subject of the article");
+});
+
+// The export quotes at most a passage's first 12 words; a capped head ends in
+// an ellipsis outside the highlighted quotation, and the quote stays verbatim.
+test("a capped quote ends in an ellipsis outside the quotation; a whole one does not", async ({ page }) => {
+  await page.goto(WIDGET);
+  const quote = page.locator("#p-5b0e44a1 blockquote");
+  await expect(quote.locator("mark")).toHaveText("Moreover, the number of spanning gadgets of a widget is at most");
+  const cut = quote.locator("[data-quote-cut]");
+  await expect(cut).toBeVisible();
+  await expect(cut.locator('[aria-hidden="true"]')).toHaveText(" …");
+  const mark = await quote.locator("mark").boundingBox();
+  const dots = await cut.locator('[aria-hidden="true"]').boundingBox();
+  // After the highlight: to its right on its last line, or on a line below it.
+  expect(mark && dots && (dots.x >= mark.x + mark.width - 1 || dots.y >= mark.y + mark.height - 1)).toBe(true);
+  await expect(page.locator("#atlas-quote-note")).toHaveText("Quotes show at most the first 12 words of a passage. " +
+    "A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest.");
+  await expect(page.locator("#p-3fa91c07 [data-quote-cut]")).toHaveCount(0);
+  // Exactly 12 words, the whole passage: no ellipsis.
+  await page.goto(GADGET);
+  await expect(page.locator("#p-c93b0d58 blockquote mark")).toHaveText("Moreover, the gadgets on a widget correspond bijectively to all its vertices.");
+  await expect(page.locator("[data-quote-cut]")).toHaveCount(0);
+  await expect(page.locator("#atlas-quote-note")).toHaveCount(0);
+});
+
+// The vertical gap from the bottom of `a` to the top of `b` (negative when `b`
+// starts above `a`'s bottom), so a test can say which comes first on the page.
+async function gapBelow(page: Page, a: string, b: string): Promise<number> {
+  const first = await page.locator(a).first().boundingBox();
+  const second = await page.locator(b).first().boundingBox();
+  expect(first && second).toBeTruthy();
+  return second!.y - (first!.y + first!.height);
+}
+
+// The gap after each comma of the central-statements line is the space alone:
+// the summary box's ".atlas-mini + .atlas-mini" margin does not reach it. (The
+// e2e files compile without the DOM lib, so getComputedStyle is typed here.)
+async function expectPlainCommaGaps(page: Page): Promise<void> {
+  const margins = await page.locator("#atlas-central .atlas-mini").evaluateAll((spans) => {
+    const style = Reflect.get(globalThis, "getComputedStyle") as (element: unknown) => { marginLeft: string };
+    return spans.map((span) => style(span).marginLeft);
+  });
+  expect(margins.length).toBeGreaterThan(1);
+  expect(margins.every((m) => m === "0px")).toBe(true);
+}
+
+test("the central statements are counted under the bar over all passages and its legend", async ({ page }) => {
+  for (const width of [1280, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(WIDGET);
+    await expect(page.locator(".atlas-strip .atlas-bar")).toHaveCount(1);
+    await expect(page.locator("#atlas-central")).toHaveText(
+      "Central statements: 2 of the 4 passages state the article's subject or a named result or definition; " +
+      "the other 2 are supporting (examples, setup). Of these 2: ✓1 formalized, ✕1 not formalized.");
+    // The bar's own counts (the Status chips) come first, then the line, then the Where row.
+    expect(await gapBelow(page, ".atlas-strip .atlas-bar", '[aria-labelledby="atlas-h-status"]')).toBeGreaterThanOrEqual(0);
+    expect(await gapBelow(page, '[aria-labelledby="atlas-h-status"]', "#atlas-central")).toBeGreaterThanOrEqual(0);
+    expect(await gapBelow(page, "#atlas-central", '[aria-labelledby="atlas-h-where"]')).toBeGreaterThanOrEqual(0);
+    await expectPlainCommaGaps(page);
+    await page.goto("/atlas");
+    await expect(page.locator(".atlas-strip .atlas-bar")).toHaveCount(1);
+    await expect(page.locator("#atlas-central")).toHaveText(
+      "Central statements: 4 of the 7 passages, across 2 articles, state an article's subject or a named result or definition; " +
+      "the other 3 are supporting (examples, setup). Of these 4: ✓3 formalized, ✕1 not formalized.");
+    expect(await gapBelow(page, ".atlas-legend", "#atlas-central")).toBeGreaterThanOrEqual(0);
+    await expectPlainCommaGaps(page);
+  }
+});
+
+test("the by-library table leads with the libraries that hold passages and lists the empty ones apart", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/atlas");
+  const rows = page.getByRole("region", { name: "Table: By library" }).locator("tbody th");
+  await expect(rows).toHaveText(["Mathlib", "FormalFrontier · WidgetTheory", "TauCeti", "Batteries"]);
+  const more = page.locator("#atlas-libs-empty");
+  // The table's column notes follow it; the list of empty libraries comes after them.
+  const notes = page.locator('section[aria-labelledby="atlas-h-libs"] > p.atlas-muted');
+  await expect(notes).toContainText("A passage counts toward every library that states it.");
+  expect(await gapBelow(page, '[aria-label="Table: By library"]', 'section[aria-labelledby="atlas-h-libs"] > p.atlas-muted')).toBeGreaterThanOrEqual(0);
+  // The list keeps the notes' margin rather than touching the table's last row.
+  expect(await gapBelow(page, 'section[aria-labelledby="atlas-h-libs"] > p.atlas-muted', "#atlas-libs-empty")).toBeGreaterThan(0);
+  await expect(more.locator("summary")).toHaveText("1 more library searched, with no locations in this build");
+  await expect(more.getByRole("listitem")).toBeHidden();
+  await more.locator("summary").click();
+  await expect(more.getByRole("listitem")).toHaveText(["Lean core @1465a20"]);
+  await expect(more.getByRole("link", { name: "@1465a20" })).toHaveAttribute("href", /\/tree\/1465a20b72ff3532c8f25b2532812415f8fbb0e1$/);
+  await expectNoSeriousViolations(page);
+  const overflow = await page.locator("html").evaluate((root) => root.scrollWidth - root.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+});
+
 test("a passage permalink is not hidden under the sticky header", async ({ page }) => {
   await page.goto(`${WIDGET}#p-5b0e44a1`);
   const header = await page.locator(".wl-header").boundingBox();

@@ -126,7 +126,22 @@ STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
 STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 SUMMARY_STATUSES = (*STATUSES, "unresolved")
 MAX_LOCATIONS = 5          # K, proposal §2.7
-QUOTE_MAX_WORDS = 12       # exported quote caps, proposal §2.7 and §10
+# The exported quote caps (proposal §2.7 and §10): the verbatim-quotation cap that the licence
+# class of an open source allows a record (formal-companion POLICY.md, "quotation, not
+# reproduction"). The export quotes a passage's first QUOTE_MAX_WORDS words, so a longer
+# passage's quote is its capped head (quote_capped).
+QUOTE_MAX_WORDS = 12
+# The whitespace a passage span may end in after its last word: the export right-strips it from
+# the quote, but span_sha256 hashes it (formal-companion scripts/locate/records.py, cap_quote and
+# passage_records), so quote_extent tries every run of one or two whitespace characters (what
+# str.isspace, the export's rstrip and its \s word split, all treat as space; none lies above
+# U+3000). A span that ends in a longer run reads as a head, the safe side.
+_SPACE_CHARS = tuple(ch for ch in map(chr, range(0x3001)) if ch.isspace())
+TRAILING_SPACE = ("", *_SPACE_CHARS, *(a + b for a in _SPACE_CHARS for b in _SPACE_CHARS))
+_TRAILING_SPACE_BYTES = tuple(run.encode("utf-8") for run in TRAILING_SPACE)
+# The longest of those runs: a span whose text runs further past the quote's suffix than this
+# is longer than any text quote_extent's hash path tries.
+MAX_TRAILING_SPACE = max(map(len, TRAILING_SPACE))
 AFFIX_MAX_CHARS = 32
 MIN_ABSENCE_QUERIES = 3    # gate rule 5, proposal §4
 
@@ -681,6 +696,97 @@ def _locate_ext(node: dict) -> dict | None:
     return value if isinstance(value, dict) else None
 
 
+def _ends_with_space(head: Any, target: bytes) -> bool:
+    """Whether the text hashed into ``head`` (a sha256 object), followed by no whitespace or by
+    one of the TRAILING_SPACE runs, has the digest ``target``."""
+    for run in _TRAILING_SPACE_BYTES:
+        candidate = head.copy()
+        candidate.update(run)
+        if candidate.digest() == target:
+            return True
+    return False
+
+
+def quote_extent(quote: dict, span_sha256: Any, span: list[int] | None = None) -> dict[str, bool]:
+    """How much of its passage a quote shows, as two passage fields (docs/ATLAS.md section 4).
+
+    ``quote_capped`` is true when the quote is the capped head of a longer passage rather than
+    all of it, and ``passage_ends_in_suffix`` is true when it is such a head and the rest of the
+    passage lies within the quote's suffix, which the passage card shows after it.
+
+    The export's ``exact`` is the passage from its start to the earlier of the end of its
+    QUOTE_MAX_WORDS-th word and the passage's own end, right-stripped; its ``suffix``, when the
+    quote needs one to be unique, is the text right after ``exact``, which may run past the
+    passage's end; and the subject end's ``span_sha256`` is the sha256 of the whole passage
+    span, trailing whitespace included (formal-companion scripts/locate/records.py,
+    ``cap_quote`` and ``passage_records``). So a quote under the cap is the whole passage (the
+    passage ended first). A quote at the cap is the whole passage exactly when the span is the
+    quote followed by whitespace only, which is tried for every TRAILING_SPACE run; and failing
+    that, the passage ends in the suffix exactly when the span is the quote followed by the
+    suffix's first characters, or by all of it and a TRAILING_SPACE run.
+
+    F5's ``span`` (formal-companion 722b30f), when the record carries one, is a shortcut to the
+    same answer: the span's text after ``exact`` is ``tail = (end - start) - len(exact)`` code
+    points. When the suffix covers that tail, the quote gives the span's whole text, which
+    span_problems has held to ``span_sha256``; when the tail runs past the suffix by more than
+    any TRAILING_SPACE run, no text the hash path tries is that long, so the quote is a head;
+    and a tail that ends one or two characters past the suffix is left to ``span_sha256``, the
+    only field that says whether those characters are whitespace. The builder requires a 64-hex
+    ``span_sha256`` (subject_problems); called without one, and without a span that decides, a
+    quote at the cap reads as a head whose passage goes on past its suffix, so a cut passage is
+    never shown as whole. The page marks a head with an ellipsis outside the quotation; the
+    quote itself is never changed.
+    """
+    whole = {"quote_capped": False, "passage_ends_in_suffix": False}
+    head = {"quote_capped": True, "passage_ends_in_suffix": False}
+    ends = {"quote_capped": True, "passage_ends_in_suffix": True}
+    exact = quote["exact"]
+    if len(WORD_SPACE.split(exact.strip())) < QUOTE_MAX_WORDS:
+        return whole
+    suffix = quote.get("suffix")
+    suffix = suffix if isinstance(suffix, str) else ""
+    if span is not None:
+        tail = span[1] - span[0] - len(exact)
+        if 0 <= tail <= len(suffix):
+            rest = suffix[:tail]
+            return whole if not rest or rest.isspace() else ends
+        if tail > len(suffix) + MAX_TRAILING_SPACE:
+            return head
+    # A span that runs past a suffix holding any non-whitespace proves the passage goes on past
+    # the quote, so the hash below may say where it ends but never that the quote is all of it:
+    # such a set is inconsistent producer data, and a cut passage is never shown as whole.
+    never_whole = span is not None and span[1] - span[0] - len(exact) > len(suffix) and bool(suffix.strip())
+    found = _extent_from_hash(exact, suffix, span_sha256, whole, head, ends)
+    return head if never_whole and found is whole else found
+
+
+def _extent_from_hash(exact: str, suffix: str, span_sha256: Any, whole: dict[str, bool],
+                      head: dict[str, bool], ends: dict[str, bool]) -> dict[str, bool]:
+    """quote_extent's answer from ``span_sha256`` alone, for a quote at the cap."""
+    if not (isinstance(span_sha256, str) and HEX64.match(span_sha256)):
+        return head
+    target = bytes.fromhex(span_sha256)
+    base = hashlib.sha256(exact.encode("utf-8"))
+    if _ends_with_space(base, target):
+        return whole
+    if not suffix:
+        return head
+    # The span is the quote followed by suffix[:k] for some k, or by the whole suffix and the
+    # whitespace the suffix stopped before; whitespace alone after the quote is a whole passage.
+    for k in range(1, len(suffix) + 1):
+        candidate = base.copy()
+        candidate.update(suffix[:k].encode("utf-8"))
+        if candidate.digest() == target or (k == len(suffix) and _ends_with_space(candidate, target)):
+            return whole if suffix[:k].isspace() else ends
+    return head
+
+
+def quote_capped(quote: dict, span_sha256: Any, span: list[int] | None = None) -> bool:
+    """Whether a passage's quote is the capped head of a longer passage rather than all of it
+    (quote_extent's ``quote_capped``)."""
+    return quote_extent(quote, span_sha256, span)["quote_capped"]
+
+
 def record_label(record: dict) -> str:
     """How a message names a record: its id (the qualified passage id), which the schema makes a string."""
     rid = record.get("id")
@@ -937,8 +1043,9 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
             "quote": {key: quote[key] for key in ("exact", "prefix", "suffix") if key in quote},
-            # Passage fields every record of the passage carries alike (build_passages); the view
-            # model does not copy them, and the records keep them verbatim.
+            # Passage fields every record of the passage carries alike (build_passages). The view
+            # model copies neither: quote_extent reads them to tell a capped quote from a whole
+            # passage, and the records keep them verbatim.
             "span": span, "span_sha256": span_sha,
             "subject_uri": uri, "challenge": challenge, "coverage": coverage}
     objects = record["object"]
@@ -1359,7 +1466,8 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         first = records[0]
         for other in records[1:]:
             # The coverage claim is a passage field like the rest: every record carries the
-            # same claim, or none does. So are the span and span_sha256 of the subject end.
+            # same claim, or none does. So are the subject end's span and span_sha256, which the
+            # page's ellipsis reads (quote_extent), so that no record order decides it.
             for key in ("kind", "quote", "section", "prominence", "coverage", "span", "span_sha256"):
                 if other[key] != first[key]:
                     problems.add(at, f"records of one passage disagree on {key}"
@@ -1427,8 +1535,11 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
                        "receipt": absences[0]["receipt"], "challenge": absences[0]["challenge"]}
         passages.append({
             "id": pid, "item": first["item"], "kind": first["kind"], "section": first["section"],
-            "prominence": first["prominence"], "quote": first["quote"], "subject_uri": first["subject_uri"],
-            "outcome": outcome, "status": status, "locations": locations, "absence": absence,
+            "prominence": first["prominence"], "quote": first["quote"],
+            # quote_capped: the quote is the capped head of a longer passage, so the page marks
+            # it; passage_ends_in_suffix: the rest of that passage is within the quote's suffix.
+            **quote_extent(first["quote"], first["span_sha256"], first["span"]),
+            "subject_uri": first["subject_uri"], "outcome": outcome, "status": status, "locations": locations, "absence": absence,
             # The location that justifies the status (derive_status), so a page names it
             # rather than whichever location ranks first; null when the coverage claim does.
             "basis": basis["location_key"] if isinstance(basis, dict) else None,
@@ -1445,16 +1556,28 @@ def _status_counts() -> dict[str, int]:
     return {status: 0 for status in SUMMARY_STATUSES}
 
 
+def _prominence_counts() -> dict[str, dict]:
+    """Passages and their statuses per prominence: the subject and central passages are the
+    article's statements, which the pages count apart from the supporting ones (worked
+    examples, setup sentences), so a headline is not set by the supporting passages."""
+    return {prominence: {"passages": 0, "by_status": _status_counts()} for prominence in sorted(PROMINENCES)}
+
+
 def article_view(source: dict, passages: list[dict], universe: dict, seal: dict, seal_sha: str,
                  records_sha: str) -> dict:
     """The article's view model. Runs only on a set that passed every check."""
     by_status = _status_counts()
+    by_prominence = _prominence_counts()
     by_library: dict[str, dict[str, int]] = {}
     by_proof = Counter()
     by_relation = Counter()
     n_locations = n_related = 0
     for passage in passages:
         by_status[passage["status"] or "unresolved"] += 1
+        # Every record of a set that passed carries its passage's prominence.
+        bucket = by_prominence[passage["prominence"]]
+        bucket["passages"] += 1
+        bucket["by_status"][passage["status"] or "unresolved"] += 1
         if passage["absence"] is not None:
             passage["absence"].update({"universe": universe["id"], "universe_sha256": universe["sha256"],
                                        "libraries": len(universe["libraries"])})
@@ -1488,7 +1611,8 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
                      "libraries": len(universe["libraries"])},
         "record_set": seal_sha, "records_sha256": records_sha,
         "summary": {"passages": len(passages), "locations": n_locations, "related": n_related, "by_status": by_status,
-                    "by_library": by_library, "by_proof_status": dict(by_proof), "by_relation": dict(by_relation)},
+                    "by_prominence": by_prominence, "by_library": by_library, "by_proof_status": dict(by_proof),
+                    "by_relation": dict(by_relation)},
         "passages": passages,
     }
 
@@ -1565,7 +1689,7 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
     tree[f"{prefix}universes/{universe['sha256']}.json"] = canonical(universe)
     shards: dict[str, list[list]] = {}
     totals = {"articles": len(articles), "passages": 0, "locations": 0, "related": 0, "by_status": _status_counts(),
-              "by_library": {}, "by_importance": {}}
+              "by_prominence": _prominence_counts(), "by_library": {}, "by_importance": {}}
     for article in articles:
         pageid = article["pageid"]
         tree[f"{prefix}articles/{pageid}.json"] = canonical(article)
@@ -1583,6 +1707,10 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
         totals["related"] += summary["related"]
         for status, count in summary["by_status"].items():
             totals["by_status"][status] += count
+        for prominence, counts in summary["by_prominence"].items():
+            totals["by_prominence"][prominence]["passages"] += counts["passages"]
+            for status, count in counts["by_status"].items():
+                totals["by_prominence"][prominence]["by_status"][status] += count
         for lib, counts in summary["by_library"].items():
             entry = totals["by_library"].setdefault(lib, {"articles": 0, "passages": 0, "locations": 0,
                                                           "complete": 0, "incomplete": 0, "related": 0})

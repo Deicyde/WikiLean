@@ -226,6 +226,173 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(gadget["summary"]["by_library"]["mathlib"],
                          {"locations": 4, "complete": 4, "incomplete": 0, "passages": 3, "related": 0})
 
+    def test_a_quote_at_the_cap_is_marked_when_it_is_a_capped_head(self):
+        # The export quotes a passage's first 12 words (proposal §2.7's verbatim cap) and stamps
+        # span_sha256, the sha256 of the whole passage, so the builder tells a capped head from a
+        # whole passage, and the page marks only the head with an ellipsis.
+        tree = build_store.build(RECORDSET)
+        widget = json.loads(tree["atlas/v1/articles/1001.json"])
+        gadget = json.loads(tree["atlas/v1/articles/1003.json"])
+        self.assertEqual([p["quote_capped"] for p in widget["passages"]], [False, True, False, False])
+        self.assertEqual([p["quote_capped"] for p in gadget["passages"]], [False, False, False])
+        # The head has no suffix, so the rest of its passage is never within one.
+        for passage in widget["passages"] + gadget["passages"]:
+            self.assertIs(passage["passage_ends_in_suffix"], False)
+        head, whole = widget["passages"][1], gadget["passages"][2]
+        # Both are at the cap; only the bound is longer than its quote. The quote stays verbatim.
+        for passage in (head, whole):
+            self.assertEqual(len(passage["quote"]["exact"].split()), build_store.QUOTE_MAX_WORDS)
+        self.assertEqual(head["quote"], {"exact": "Moreover, the number of spanning gadgets of a widget is at most"})
+        self.assertEqual(whole["quote"],
+                         {"exact": "Moreover, the gadgets on a widget correspond bijectively to all its vertices."})
+
+    def test_quote_capped_reads_the_cap_and_the_span_sha(self):
+        twelve = {"exact": " ".join(f"w{i}" for i in range(12))}
+        eleven = {"exact": " ".join(f"w{i}" for i in range(11))}
+        own = hashlib.sha256(twelve["exact"].encode()).hexdigest()
+        other = "0" * 64
+        # Under the cap the passage ended first: whole, whatever the span sha says.
+        for span in (own, other, None):
+            self.assertFalse(build_store.quote_capped(eleven, span))
+        self.assertFalse(build_store.quote_capped({"exact": ""}, other))
+        # At the cap: whole exactly when the quote is the whole span.
+        self.assertFalse(build_store.quote_capped(twelve, own))
+        self.assertTrue(build_store.quote_capped(twelve, other))
+        # No usable span sha (the builder refuses one, subject_problems): a quote at the cap reads as a head.
+        for span in (None, 5, True, [], {}, "x", own.upper(), own + "\n"):
+            self.assertTrue(build_store.quote_capped(twelve, span), repr(span))
+
+    def test_a_whole_passage_may_end_in_whitespace(self):
+        # The export right-strips the quote but hashes the span as it is, and a block span can
+        # keep the space that ends its paragraph: a hair space, a no-break space, or a space and
+        # a no-break space on the producer's real source set (docs/ATLAS.md section 4).
+        twelve = {"exact": " ".join(f"w{i}" for i in range(12))}
+        sha = lambda text: hashlib.sha256(text.encode()).hexdigest()
+        for tail in ("\u200a", "\xa0", " \xa0", "\u2009", "\u3000", " ", "\n", "\t", " \n", "\xa0\xa0", "\r\n"):
+            self.assertEqual(build_store.quote_extent(twelve, sha(twelve["exact"] + tail)),
+                             {"quote_capped": False, "passage_ends_in_suffix": False}, repr(tail))
+        # A longer run of trailing whitespace is not tried: the quote reads as a head (the safe side).
+        self.assertTrue(build_store.quote_capped(twelve, sha(twelve["exact"] + "   ")))
+        # Whitespace runs only: a word after the quote is a longer passage.
+        self.assertTrue(build_store.quote_capped(twelve, sha(twelve["exact"] + " w12")))
+        # The runs are every whitespace character the export's rstrip and \s word split know.
+        everything = tuple(ch for ch in map(chr, range(0x110000)) if ch.isspace())
+        self.assertEqual(build_store._SPACE_CHARS, everything)
+        self.assertTrue(all(build_store.WORD_SPACE.fullmatch(ch) for ch in everything))
+        self.assertEqual(len(build_store.TRAILING_SPACE), 1 + len(everything) + len(everything) ** 2)
+
+    def test_a_capped_head_whose_passage_ends_in_its_suffix(self):
+        # A quote that is not unique on the page carries a suffix, the text right after it, which
+        # may hold the rest of the passage and run on past its end (formal-companion
+        # records.cap_quote widens it from the layer, not from the passage).
+        exact = "Every group of odd order is solvable, and so is every group"
+        sha = lambda text: hashlib.sha256(text.encode()).hexdigest()
+        ends = {"quote_capped": True, "passage_ends_in_suffix": True}
+        head = {"quote_capped": True, "passage_ends_in_suffix": False}
+        whole = {"quote_capped": False, "passage_ends_in_suffix": False}
+        cases = [
+            # The passage ends with the suffix, inside it, or with it and its trailing space.
+            (" of order 2.", exact + " of order 2.", ends),
+            (" of order 2. Later: Every", exact + " of order 2.", ends),
+            (" of order 2. Later: Every", exact + " of", ends),
+            (" of order 2.", exact + " of order 2.\xa0", ends),
+            # The passage goes on past the suffix.
+            (" of order 2", exact + " of order 2 or 3.", head),
+            # Whitespace alone after the quote, in the suffix or past it, is a whole passage.
+            ("\xa0Later:", exact + "\xa0", whole),
+            ("   Later:", exact + "   ", whole),
+            (" ", exact + " \n", whole),
+        ]
+        for suffix, span, expected in cases:
+            self.assertEqual(build_store.quote_extent({"exact": exact, "suffix": suffix}, sha(span)), expected,
+                             repr((suffix, span)))
+        # Without a usable span sha, a head's passage goes on past its suffix (the safe side).
+        self.assertEqual(build_store.quote_extent({"exact": exact, "suffix": " of order 2."}, None), head)
+
+    def test_a_span_past_a_worded_suffix_is_never_whole(self) -> None:
+        # Inconsistent producer data: the span runs one or two characters past a suffix with
+        # words in it, while span_sha256 hashes the bare quote. The span proves the passage goes
+        # on past the quote, so the hash may not make it whole.
+        exact = "Every group of odd order is solvable, and so is every group"
+        quote = {"exact": exact, "suffix": " of order 2."}
+        sha = hashlib.sha256(exact.encode("utf-8")).hexdigest()
+        for extra in (1, 2):
+            span = [0, len(exact) + len(quote["suffix"]) + extra]
+            got = build_store.quote_extent(quote, sha, span)
+            self.assertTrue(got["quote_capped"], extra)
+        # A suffix of whitespace alone proves nothing, so the hash still decides there.
+        spaced = {"exact": exact, "suffix": "  "}
+        self.assertFalse(build_store.quote_extent(spaced, sha, [0, len(exact) + 3])["quote_capped"])
+
+    def test_the_span_is_a_shortcut_to_what_the_span_sha_gives(self):
+        # F5's span gives the passage's length, so the text after exact is tail = (end - start)
+        # - len(exact) characters. Where the suffix covers it, or the tail runs past the suffix by
+        # more than any trailing-space run, the span alone decides; one or two characters past
+        # the suffix, only span_sha256 says whether they are whitespace. Either way the answer
+        # is the one span_sha256 gives without the span.
+        exact = "Every group of odd order is solvable, and so is every group"
+        sha = lambda text: hashlib.sha256(text.encode()).hexdigest()
+        ends = {"quote_capped": True, "passage_ends_in_suffix": True}
+        head = {"quote_capped": True, "passage_ends_in_suffix": False}
+        whole = {"quote_capped": False, "passage_ends_in_suffix": False}
+        self.assertEqual(build_store.MAX_TRAILING_SPACE, 2)
+        cases = [
+            # (suffix, the passage's text, what the quote shows, whether the span alone decides)
+            ("", exact, whole, True),
+            ("", exact + " ", whole, False),
+            ("", exact + " \xa0", whole, False),
+            ("", exact + "   ", head, True),
+            ("", exact + " and more.", head, True),
+            (" of order 2.", exact + " of order 2.", ends, True),
+            (" of order 2. Later: Every", exact + " of", ends, True),
+            (" of order 2.", exact + " of order 2.\xa0", ends, False),
+            (" of order 2", exact + " of order 2 or 3.", head, True),
+            ("\xa0Later:", exact + "\xa0", whole, True),
+            ("   Later:", exact + "   ", whole, True),
+            (" ", exact + " \n", whole, False),
+        ]
+        for suffix, text, expected, alone in cases:
+            quote = {"exact": exact, "suffix": suffix}
+            for start in (0, 7):
+                span = [start, start + len(text)]
+                with self.subTest(suffix=suffix, text=text[len(exact):], start=start):
+                    self.assertEqual(build_store.quote_extent(quote, sha(text)), expected)
+                    self.assertEqual(build_store.quote_extent(quote, sha(text), span), expected)
+                    # With no usable span sha, the span decides where it can, and the rest is a head.
+                    self.assertEqual(build_store.quote_extent(quote, None, span), expected if alone else head)
+                    self.assertEqual(build_store.quote_capped(quote, sha(text), span), expected["quote_capped"])
+        # Under the cap the passage ended first: whole, whatever the span.
+        eleven = {"exact": " ".join(f"w{i}" for i in range(11))}
+        self.assertEqual(build_store.quote_extent(eleven, None, [0, len(eleven["exact"]) + 50]), whole)
+
+    def test_counts_by_prominence(self):
+        # The subject and central passages are the article's statements: the pages count them
+        # apart from the supporting ones, per article and in the totals.
+        tree = build_store.build(RECORDSET)
+        current = json.loads(tree["atlas/v1/current.json"])
+        zero = dict.fromkeys(build_store.SUMMARY_STATUSES, 0)
+        widget = json.loads(tree["atlas/v1/articles/1001.json"])["summary"]
+        self.assertEqual(widget["by_prominence"], {
+            "subject": {"passages": 1, "by_status": {**zero, "formalized": 1}},
+            "central": {"passages": 1, "by_status": {**zero, "not_formalized": 1}},
+            "supporting": {"passages": 2, "by_status": {**zero, "statement_only": 1, "unresolved": 1}}})
+        gadget = json.loads(tree["atlas/v1/articles/1003.json"])["summary"]
+        self.assertEqual(gadget["by_prominence"], {
+            prominence: {"passages": 1, "by_status": {**zero, "formalized": 1}}
+            for prominence in ("subject", "central", "supporting")})
+        totals = current["counts"]
+        self.assertEqual(totals["by_prominence"], {
+            "subject": {"passages": 2, "by_status": {**zero, "formalized": 2}},
+            "central": {"passages": 2, "by_status": {**zero, "formalized": 1, "not_formalized": 1}},
+            "supporting": {"passages": 3, "by_status": {**zero, "formalized": 1, "statement_only": 1,
+                                                        "unresolved": 1}}})
+        # Every passage is counted once, under its own prominence.
+        for summary in (widget, gadget, totals):
+            buckets = summary["by_prominence"].values()
+            self.assertEqual(sum(b["passages"] for b in buckets), summary["passages"])
+            for status in build_store.SUMMARY_STATUSES:
+                self.assertEqual(sum(b["by_status"][status] for b in buckets), summary["by_status"][status])
+
     def test_index_and_title_keys(self):
         self.assertEqual(build_store.title_key("Widget_lemma"), "Widget lemma")
         self.assertEqual(build_store.title_key("  Gadget\u00a0(mathematics) "), "Gadget (mathematics)")
@@ -531,6 +698,39 @@ class RefusalTests(SetCopyTest):
                 row["subject"][0]["location"]["quote"]["exact"] = " ".join(["word"] * 13)
         self.edit_widget(edit)
         self.refuse("exceeds 12 words")
+
+    def test_records_of_one_passage_carry_the_same_span_sha(self):
+        # The page's ellipsis reads span_sha256, so records that disagree on it are refused like
+        # any other passage field, whichever record comes first; none is chosen by its order. (A
+        # missing one is refused on its own as well, LocateExtensionTests.)
+        twelve = " ".join(["word"] * 12)
+        own = hashlib.sha256(twelve.encode()).hexdigest()
+        for shas in ((own, "0" * 64), ("0" * 64, own), (own, None)):
+            with self.subTest(shas=shas):
+                self.fresh()
+
+                def edit(rows, shas=shas):
+                    for row, sha in zip(rows[:2], shas):
+                        row["subject"][0]["location"]["quote"] = {"exact": twelve}
+                        ext = row["subject"][0]["extensions"][LOCATE]
+                        if sha is None:
+                            del ext["span_sha256"]
+                        else:
+                            ext["span_sha256"] = sha
+                self.edit_widget(edit)
+                self.refuse("records of one passage disagree on span_sha256")
+
+    def test_a_head_whose_passage_ends_in_its_suffix_is_marked(self):
+        # The Widget bound with a suffix that holds the rest of its passage: still a capped head
+        # (the Subject row shows only the quote), but the card's suffix reaches the passage's end.
+        def edit(rows):
+            quote = rows[2]["subject"][0]["location"]["quote"]
+            quote["suffix"] = " its rank. Further"
+            rows[2]["subject"][0]["extensions"][LOCATE]["span_sha256"] = hashlib.sha256(
+                (quote["exact"] + " its rank.").encode()).hexdigest()
+        self.edit_widget(edit)
+        bound = self.article()["passages"][1]
+        self.assertEqual((bound["quote_capped"], bound["passage_ends_in_suffix"]), (True, True))
 
     def test_commit_outside_the_universe(self):
         self.edit_widget(lambda rows: rows[0]["object"][0].update(version="0" * 40))
@@ -1672,19 +1872,32 @@ class LocateExtensionTests(SetCopyTest):
                 self.refuse("records/enwiki-1001-2002.jsonl:4: receipt.candidates must be an integer: the length of "
                             "the candidates list in receipts/")
 
+    def without_spans(self) -> list[dict]:
+        """The Widget passages the same set builds to with every span and layer_sha256 taken out."""
+        self.edit_widget(lambda rows: [self.subject_ext(row).pop(key, None) for row in rows
+                                       for key in ("span", "layer_sha256")])
+        return self.article()["passages"]
+
     def test_a_valid_span_builds_to_the_same_view(self):
-        # The span and layer_sha256 are optional: a set with them builds to the same passages,
-        # and the records, which the store keeps verbatim, keep them.
+        # The span and layer_sha256 are optional, and quote_extent reads the span only as a
+        # shortcut to what span_sha256 gives: a set with them builds to the same passages as the
+        # same set without them, and the records, which the store keeps verbatim, keep them.
         before = self.article()["passages"]
-        for tail, sha in ((0, True), (60, False)):
+        # The Widget bound is a quote at the cap: a span no longer than it (with span_sha256 the
+        # quote's sha) is its whole passage, and one that runs 60 characters on is a capped head.
+        for tail, sha, capped in ((0, True, False), (60, False, True)):
             with self.subTest(tail=tail):
                 self.fresh()
                 self.add_spans(tail=tail, sha=sha)
                 tree = build_store.build(self.set)
-                self.assertEqual(json.loads(tree["atlas/v1/articles/1001.json"])["passages"], before)
+                passages = json.loads(tree["atlas/v1/articles/1001.json"])["passages"]
                 records = [json.loads(line) for line in tree["atlas/v1/records/1001.jsonl"].decode().splitlines()]
                 self.assertEqual(self.subject_ext(records[0])["span"], [0, 44 + tail])
                 self.assertEqual(self.subject_ext(records[0])["layer_sha256"], self.layer_sha())
+                self.assertIs(passages[1]["quote_capped"], capped)
+                self.assertEqual(passages, self.without_spans())
+                if not sha:
+                    self.assertEqual(passages, before)
         # A tail the suffix gives in full (one character): the span's text is exact and the
         # suffix's first character, and span_sha256 must be its sha256.
         self.fresh()
@@ -1695,10 +1908,43 @@ class LocateExtensionTests(SetCopyTest):
         def space_sha(rows):
             for row in rows:
                 quote = row["subject"][0]["location"]["quote"]
-                text = quote["exact"] + quote["suffix"][:1]
+                text = quote["exact"] + quote.get("suffix", "")[:1]
                 self.subject_ext(row)["span_sha256"] = hashlib.sha256(text.encode()).hexdigest()
         self.edit_widget(space_sha)
-        self.assertEqual(self.article()["passages"], before)
+        passages = self.article()["passages"]
+        self.assertEqual(passages, self.without_spans())
+
+    def test_the_fixture_with_its_passages_spans_builds_its_golden_view(self):
+        # The F5 shape on every record of the fixture. The two quotes at the cap get their
+        # passages' own lengths: the Widget bound's passage runs on 10 characters past its quote
+        # (" its rank."), past its empty suffix by more than any trailing-space run, so its span
+        # alone makes it a capped head; the Gadget equivalence's passage is its quote, a tail of
+        # 0, so its span alone makes it whole. The passages under the cap (stand-in
+        # span_sha256 values) are whole whatever their span, which runs 40 characters past
+        # their suffix. The view is the golden store's: the span and span_sha256 agree.
+        tails = {"Moreover, the number of spanning gadgets of a widget is at most": 10,
+                 "Moreover, the gadgets on a widget correspond bijectively to all its vertices.": 0}
+        for name in ("enwiki-1001-2002", "enwiki-1003-2004"):
+            path = self.set / "records" / f"{name}.jsonl"
+            rows = read_jsonl(path)
+            starts: dict[str, int] = {}
+            for row in rows:
+                quote = row["subject"][0]["location"]["quote"]
+                start = starts.setdefault(row["id"], 1000 * len(starts))
+                tail = tails.get(quote["exact"], len(quote.get("suffix", "")) + 40)
+                self.subject_ext(row).update(span=[start, start + len(quote["exact"]) + tail],
+                                             layer_sha256=self.layer_sha(name))
+            write_jsonl(path, rows)
+        reseal(self.set)
+        tree = build_store.build(self.set)
+        for pageid in (1001, 1003):
+            built = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            golden = json.loads((STORE / f"atlas/v1/articles/{pageid}.json").read_text())
+            self.assertEqual((built["passages"], built["summary"]), (golden["passages"], golden["summary"]))
+        self.assertEqual([p["quote_capped"] for p in json.loads(tree["atlas/v1/articles/1001.json"])["passages"]],
+                         [False, True, False, False])
+        self.assertEqual([p["quote_capped"] for p in json.loads(tree["atlas/v1/articles/1003.json"])["passages"]],
+                         [False, False, False])
 
     def test_a_malformed_span_or_layer_hash_is_refused(self):
         for span in ([5, 5], [6, 5], [-1, 50], [0], [0, 50, 60], ["0", "50"], [0.0, 50], [True, 50], [0, 50.0],
