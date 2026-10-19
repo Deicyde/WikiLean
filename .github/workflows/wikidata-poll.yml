@@ -65,8 +65,12 @@ jobs:
     # adds the CrossRefAttribute import deterministically and lets mathlib CI compile
     # (commit 80a4741). Settle and conflict ticks take minutes, but a batch open spends
     # most of its time in bot/refresh_tagged.py: in 2026-08 the old 30m job limit
-    # cancelled 200 of 221 batch-open ticks while still in it, and the 21 that got past
-    # it spent 19-30 min in the tick step. No-op (decide=wait) ticks still exit in ~12s.
+    # cancelled 200 of 224 batch-open ticks while still in it. Of the 24 that got past
+    # it, three were truncated refreshes (1.6-5.3 min) and the rest spent 19.5-29.5 min
+    # in the tick step (five then hit the job limit). Those runs used Git 2.54, whose git grep
+    # fetched a lazy clone's missing blobs one at a time; the runner has had Git 2.55,
+    # which fetches them in bulk, since about 2026-08-19, and no batch open has run
+    # since. No-op (decide=wait) ticks still exit in ~12s.
     # The long steps carry shorter timeouts of their own. A step that hits its
     # timeout fails, so a hang reports as a failed run; hitting this job limit
     # instead ends the run as cancelled, which is easy to read as harmless. The

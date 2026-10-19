@@ -312,7 +312,7 @@ def test_decision_ignores_the_echoed_grep_command():
 
 
 def test_ci_gate_reads_the_latest_finished_run_on_main():
-    runs = [_ci_run(10, "cancelled", 1, minutes=2), _ci_run(9, "cancelled", 1.5, minutes=24.9),
+    runs = [_ci_run(10, "cancelled", 1, minutes=2), _ci_run(9, "cancelled", 1.5, minutes=54.9),
             {"databaseId": 8, "createdAt": _iso_ago(2), "conclusion": "success"}]
     net = FakeNet(ci_runs=runs)
     with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
@@ -328,13 +328,13 @@ def test_ci_gate_counts_a_long_cancelled_run_as_a_timeout():
     """The job's time limit cancels a tick that runs too long; five of them
     used to fill the listing and leave a silent 'CI ?'."""
     runs = [_ci_run(10, "cancelled", 0.5, minutes=2)]
-    runs += [_ci_run(9 - i, "cancelled", 1 + 4 * i, minutes=31 - i) for i in range(5)]
+    runs += [_ci_run(9 - i, "cancelled", 1 + 4 * i, minutes=65 - i) for i in range(5)]
     runs += [_ci_run(4, "success", 22)]
     net = FakeNet(ci_runs=runs, ci_log="poll\tDecide\t2026-10-14T01:00:00.1Z POLL_DECISION=act\n")
     with tempfile.TemporaryDirectory() as td, patched(net, Path(td)):
         dec, text, alerts = status.ci_gate()
     assert dec == "act" and text == "CI act (run 9, 1h ago)", (dec, text)
-    assert alerts == ["wikidata-poll run 9 timed out (cancelled after 31 min)"], alerts
+    assert alerts == ["wikidata-poll run 9 timed out (cancelled after 65 min)"], alerts
     assert any(c[:4] == ["gh", "run", "view", "9"] for c in net.calls), net.calls
 
 
