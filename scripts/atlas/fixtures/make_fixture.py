@@ -22,7 +22,12 @@ prominence was overturned to subject after the challenge ran, so a challenge is 
 none has judged it (read as unchallenged). Two Gadget theorems show the maintainer's
 decision D1 (docs/ATLAS.md, section 3, check 6): a conjunction formalized by two hasPart
 locations under a survived coverage claim, and a theorem an equivalence (data, like CRT's
-RingEquiv) states exactly. One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
+RingEquiv) states exactly. Two passages model the export's 12-word quote cap the way a real
+export quotes a passage, with no prefix or suffix: the Widget bound is longer than the cap,
+so its quote is its capped head, and the Gadget equivalence is exactly 12 words, so its quote
+is the whole passage; each subject end's span_sha256 is the sha256 of its passage's text, as
+the export stamps it (the other passages keep a stand-in span_sha256 and are under the cap,
+so each is whole). One difference from proposal §2.7 remains, recorded in docs/ATLAS.md
 ("Contract notes"): every CSL `citation` carries an `id`, which the vendored
 Literature Links schema requires and the proposal's example omits.
 
@@ -124,7 +129,15 @@ def location_key(source_id: str, item: str, library: str, declaration: str) -> s
     return hashlib.sha256("\n".join(parts).encode()).hexdigest()
 
 
-def subject(source_id: str, quote: dict) -> dict:
+def span_sha256(source_id: str, quote: dict, layout: dict) -> str:
+    """The subject end's span_sha256: the sha256 of the passage's text when the layout gives
+    it (the export's own value), else a stand-in."""
+    if "span" in layout:
+        return hashlib.sha256(layout["span"].encode()).hexdigest()
+    return fake_hex("span " + source_id + quote["exact"], 64)
+
+
+def subject(source_id: str, quote: dict, layout: dict) -> dict:
     source = SOURCE[source_id]
     uri = ("https://en.wikipedia.org/w/index.php?title=" + source["title"].replace(" ", "_")
            .replace("(", "%28").replace(")", "%29") + f"&oldid={source['revision']}")
@@ -135,7 +148,7 @@ def subject(source_id: str, quote: dict) -> dict:
                      "container-title": "Wikipedia", "URL": uri},
         "extensions": {LOCATE: {
             "pageid": source["pageid"], "html_sha256": source["html_sha256"], "renderer": source["renderer"],
-            "span_sha256": fake_hex("span " + source_id + quote["exact"], 64), "licence": "CC-BY-SA-4.0"}},
+            "span_sha256": span_sha256(source_id, quote, layout), "licence": "CC-BY-SA-4.0"}},
     }
 
 
@@ -154,7 +167,7 @@ def location(source_id: str, item: str, kind: str, quote: dict, status: str, loc
         end_ext["end_line"] = loc["end_line"]
     record = {
         "id": f"{source_id}::{item}",
-        "subject": [subject(source_id, quote)],
+        "subject": [subject(source_id, quote, layout)],
         "object": [{
             "type": "lean", "uri": lib["repo"], "version": lib["commit"], "role": "key",
             "location": {"declaration": loc["declaration"], "module": loc["module"]},
@@ -188,7 +201,7 @@ RECEIPT_SHA = hashlib.sha256(RECEIPT_BYTES).hexdigest()
 def absence(source_id: str, item: str, kind: str, quote: dict, layout: dict) -> dict:
     return {
         "id": f"{source_id}::{item}",
-        "subject": [subject(source_id, quote)],
+        "subject": [subject(source_id, quote, layout)],
         # One minimal lean end per universe library, in universe order: no role, no extensions.
         "object": [{"type": "lean", "uri": lib["repo"], "version": lib["commit"]} for lib in LIBRARIES],
         "relation": "noMatch", "status": "not_formalized", "kind": kind,
@@ -202,7 +215,7 @@ def absence(source_id: str, item: str, kind: str, quote: dict, layout: dict) -> 
 def unresolved(source_id: str, item: str, kind: str, quote: dict, layout: dict) -> dict:
     return {
         "id": f"{source_id}::{item}",
-        "subject": [subject(source_id, quote)],
+        "subject": [subject(source_id, quote, layout)],
         "object": [],
         "kind": kind,
         "extensions": {LOCATE: passage_ext(item, {"challenge": "not_required"}, layout)},
@@ -215,9 +228,11 @@ def widget_records() -> list[dict]:
           "prefix": "The widget lemma states that ", "suffix": " of minimal degree."}
     # The article's subject: the theorem the article is named for.
     p1_layout = {"section": ["Statement"], "prominence": "subject"}
-    p2 = {"exact": "the number of spanning gadgets is at most the widget's rank",
-          "prefix": "Moreover, ", "suffix": "."}
-    p2_layout = {"section": ["Statement", "Bounds"], "prominence": "supporting"}
+    # Longer than the export's 12-word cap: the quote is the passage's capped head, with no
+    # prefix or suffix (it is unique already), and span_sha256 hashes the whole passage.
+    p2 = {"exact": "Moreover, the number of spanning gadgets of a widget is at most"}
+    p2_layout = {"section": ["Statement", "Bounds"], "prominence": "supporting",
+                 "span": "Moreover, the number of spanning gadgets of a widget is at most its rank."}
     p3 = {"exact": "a widget is balanced if every gadget has equal weight",
           "prefix": "In this article, ", "suffix": "."}
     p3_layout = {"section": ["Definitions"], "prominence": "central"}
@@ -273,9 +288,9 @@ def gadget_records() -> list[dict]:
     # A theorem that a data declaration states: an equivalence, as CRT's RingEquiv states the
     # Chinese remainder theorem. Its proof_status is definition and it carries no statement flag;
     # by decision D1 an exact match to it formalizes the theorem.
-    equiv = {"exact": "the gadgets on a widget correspond bijectively to its vertices",
-             "prefix": "Moreover, ", "suffix": "."}
-    equiv_layout = {"section": ["Properties"], "prominence": "supporting"}
+    # Exactly 12 words, the whole passage: at the cap, yet not cut (its sha256 is the span's).
+    equiv = {"exact": "Moreover, the gadgets on a widget correspond bijectively to all its vertices."}
+    equiv_layout = {"section": ["Properties"], "prominence": "supporting", "span": equiv["exact"]}
     return [location(sid, "In-text #7d2c9e10", "definition", quote, "formalized", {
         "library": "mathlib", "declaration": "Gadget",
         "module": module, "path": path,

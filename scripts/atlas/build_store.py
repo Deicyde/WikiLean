@@ -126,7 +126,11 @@ STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
 STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 SUMMARY_STATUSES = (*STATUSES, "unresolved")
 MAX_LOCATIONS = 5          # K, proposal §2.7
-QUOTE_MAX_WORDS = 12       # exported quote caps, proposal §2.7 and §10
+# The exported quote caps (proposal §2.7 and §10): the verbatim-quotation cap that the licence
+# class of an open source allows a record (formal-companion POLICY.md, "quotation, not
+# reproduction"). The export quotes a passage's first QUOTE_MAX_WORDS words, so a longer
+# passage's quote is its capped head (quote_capped).
+QUOTE_MAX_WORDS = 12
 AFFIX_MAX_CHARS = 32
 MIN_ABSENCE_QUERIES = 3    # gate rule 5, proposal §4
 
@@ -639,6 +643,27 @@ def _locate_ext(node: dict) -> dict | None:
     return value if isinstance(value, dict) else None
 
 
+def quote_capped(quote: dict, span_sha256: Any) -> bool:
+    """Whether a passage's quote is the capped head of a longer passage rather than all of it.
+
+    The export's ``exact`` is the passage from its start to the earlier of the end of its
+    QUOTE_MAX_WORDS-th word and the passage's own end, right-stripped, and the subject end's
+    ``span_sha256`` is the sha256 of the whole passage span (formal-companion
+    scripts/locate/records.py, ``cap_quote`` and ``passage_records``). So a quote under the cap
+    is the whole passage (the passage ended first), and a quote at the cap is the whole passage
+    exactly when its own sha256 is the span's. ``span_sha256`` is not part of the agreed format
+    (docs/ATLAS.md section 3) and is never refused: without a 64-hex one, a quote at the cap is
+    read as a head, so a cut passage is never shown as whole. The page marks a head with an
+    ellipsis outside the quotation; the quote itself is never changed.
+    """
+    exact = quote["exact"]
+    if len(WORD_SPACE.split(exact.strip())) < QUOTE_MAX_WORDS:
+        return False
+    if isinstance(span_sha256, str) and HEX64.match(span_sha256):
+        return sha256_hex(exact.encode("utf-8")) != span_sha256
+    return True
+
+
 def _quote_problems(quote: Any) -> list[str]:
     if not isinstance(quote, dict) or not isinstance(quote.get("exact"), str):
         return ["subject location must be a quote with exact"]
@@ -775,6 +800,8 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
             "quote": {key: quote[key] for key in ("exact", "prefix", "suffix") if key in quote},
+            # Read only to tell a capped quote from a whole passage (quote_capped); never refused.
+            "span_sha256": subject_ext.get("span_sha256"),
             "subject_uri": uri, "challenge": challenge, "coverage": coverage}
     relation = record.get("relation")
     objects = record["object"]
@@ -1250,8 +1277,10 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
                        "receipt": absences[0]["receipt"], "challenge": absences[0]["challenge"]}
         passages.append({
             "id": pid, "item": first["item"], "kind": first["kind"], "section": first["section"],
-            "prominence": first["prominence"], "quote": first["quote"], "subject_uri": first["subject_uri"],
-            "outcome": outcome, "status": status, "locations": locations, "absence": absence,
+            "prominence": first["prominence"], "quote": first["quote"],
+            # True when the quote is the capped head of a longer passage, so the page marks it.
+            "quote_capped": quote_capped(first["quote"], first["span_sha256"]),
+            "subject_uri": first["subject_uri"], "outcome": outcome, "status": status, "locations": locations, "absence": absence,
             # The location that justifies the status (derive_status), so a page names it
             # rather than whichever location ranks first; null when the coverage claim does.
             "basis": basis["location_key"] if isinstance(basis, dict) else None,
@@ -1268,16 +1297,28 @@ def _status_counts() -> dict[str, int]:
     return {status: 0 for status in SUMMARY_STATUSES}
 
 
+def _prominence_counts() -> dict[str, dict]:
+    """Passages and their statuses per prominence: the subject and central passages are the
+    article's statements, which the pages count apart from the supporting ones (worked
+    examples, setup sentences), so a headline is not set by the supporting passages."""
+    return {prominence: {"passages": 0, "by_status": _status_counts()} for prominence in sorted(PROMINENCES)}
+
+
 def article_view(source: dict, passages: list[dict], universe: dict, seal: dict, seal_sha: str,
                  records_sha: str) -> dict:
     """The article's view model. Runs only on a set that passed every check."""
     by_status = _status_counts()
+    by_prominence = _prominence_counts()
     by_library: dict[str, dict[str, int]] = {}
     by_proof = Counter()
     by_relation = Counter()
     n_locations = n_related = 0
     for passage in passages:
         by_status[passage["status"] or "unresolved"] += 1
+        # Every record of a set that passed carries its passage's prominence.
+        bucket = by_prominence[passage["prominence"]]
+        bucket["passages"] += 1
+        bucket["by_status"][passage["status"] or "unresolved"] += 1
         if passage["absence"] is not None:
             passage["absence"].update({"universe": universe["id"], "universe_sha256": universe["sha256"],
                                        "libraries": len(universe["libraries"])})
@@ -1311,7 +1352,8 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
                      "libraries": len(universe["libraries"])},
         "record_set": seal_sha, "records_sha256": records_sha,
         "summary": {"passages": len(passages), "locations": n_locations, "related": n_related, "by_status": by_status,
-                    "by_library": by_library, "by_proof_status": dict(by_proof), "by_relation": dict(by_relation)},
+                    "by_prominence": by_prominence, "by_library": by_library, "by_proof_status": dict(by_proof),
+                    "by_relation": dict(by_relation)},
         "passages": passages,
     }
 
@@ -1388,7 +1430,7 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
     tree[f"{prefix}universes/{universe['sha256']}.json"] = canonical(universe)
     shards: dict[str, list[list]] = {}
     totals = {"articles": len(articles), "passages": 0, "locations": 0, "related": 0, "by_status": _status_counts(),
-              "by_library": {}, "by_importance": {}}
+              "by_prominence": _prominence_counts(), "by_library": {}, "by_importance": {}}
     for article in articles:
         pageid = article["pageid"]
         tree[f"{prefix}articles/{pageid}.json"] = canonical(article)
@@ -1406,6 +1448,10 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
         totals["related"] += summary["related"]
         for status, count in summary["by_status"].items():
             totals["by_status"][status] += count
+        for prominence, counts in summary["by_prominence"].items():
+            totals["by_prominence"][prominence]["passages"] += counts["passages"]
+            for status, count in counts["by_status"].items():
+                totals["by_prominence"][prominence]["by_status"][status] += count
         for lib, counts in summary["by_library"].items():
             entry = totals["by_library"].setdefault(lib, {"articles": 0, "passages": 0, "locations": 0,
                                                           "complete": 0, "incomplete": 0, "related": 0})

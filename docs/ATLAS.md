@@ -150,6 +150,16 @@ Records follow proposal §2.7, with these points of the agreement:
   locate extension: `section` is the heading path (a list of heading strings, `[]` in the
   lead) and `prominence` is `subject`, `central` or `supporting`. The coverage page marks
   the article's subject passages by it.
+- **The quote is capped, and may be the passage's head.** The export quotes at most the
+  first 12 words of a passage as `exact`, with at most 32 characters of `prefix` and
+  `suffix` (proposal §2.7 and §10): the verbatim-quotation cap that the licence class of an
+  open source allows a record (the skill's `POLICY.md`, "quotation, not reproduction"). The
+  passage's full text stays in the producer's workspace. So the quote of a longer passage
+  stops mid-sentence, and on smoke 2's real set 322 of 331 quotes do. The subject end's
+  locate extension carries `span_sha256`, the sha256 of the whole passage span (the skill's
+  `scripts/locate/records.py`, `cap_quote` and `passage_records`), which is how the builder
+  tells a capped head from a whole passage (`quote_capped`, section 4). It is read, never
+  required: the builder refuses no set over it.
 - **A location's lean end** carries `location.declaration` and `location.module`, and in
   its locate extension `library`, `path` (relative to the repository root: Lean core's
   files are `src/Init/...`), `line`, and `end_line` when the library index records one.
@@ -545,7 +555,7 @@ agreement before real record sets arrive:
 ## 4. The store (v1)
 
 ```
-atlas/v1/current.json                    campaign, universe summary, record set (seal sha, set_id, byte_budget), totals, build time, index shard list
+atlas/v1/current.json                    campaign, universe summary, record set (seal sha, set_id, byte_budget), totals (by status, prominence, library, importance), build time, index shard list
 atlas/v1/manifest.json                   every other file: bytes and sha256
 atlas/v1/universes/<universe-sha>.json   libraries by id (id, brain_lib, display name, repo, commit, toolchain, roots, licence SPDX id), exclusions
 atlas/v1/articles/<pageid>.json          the article's view model (below)
@@ -556,11 +566,11 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
 - **Article view model** (`wikilean.atlas.article/1`): `pageid`, `title`, `revision`,
   `source_id`, `wikidata`, `assessment`, `campaign`, `universe {id, sha256, frozen,
   libraries}`, `record_set` (the SEAL's sha256), `records_sha256`, `summary` (passages,
-  locations, related, by status, by library, by proof status, by relation) and
-  `passages`. Each passage has `item`, `kind`, `section`, `prominence`, `quote`,
-  `subject_uri`, `outcome` (located, absent or unresolved), `status`, `basis` (the
-  `location_key` of the location that justifies the status, or null), `coverage` (the
-  coverage claim, below, or null), and `locations`,
+  locations, related, by status, by prominence, by library, by proof status, by relation)
+  and `passages`. Each passage has `item`, `kind`, `section`, `prominence`, `quote`,
+  `quote_capped`, `subject_uri`, `outcome` (located, absent or unresolved), `status`,
+  `basis` (the `location_key` of the location that justifies the status, or null),
+  `coverage` (the coverage claim, below, or null), and `locations`,
   each with `library, repo, commit, declaration, module, path, line, end_line, relation,
   proof_status, statement, rank, confidence, challenge, location_key, note` (`end_line`
   only when the record has one; `statement` is the Prop-valued-definition flag, false
@@ -582,6 +592,26 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   declarations and definitions) and `incomplete` (`statement_only`, `wanted`,
   `axiom_dependent`), so a library that only states results is never counted as one
   that proves them.
+- **`quote_capped`** is true when the passage's quote is the capped head of a longer
+  passage (section 3, "The quote is capped"), and false when it is the whole passage
+  (`build_store.quote_capped`): a quote under 12 words is whole, because the passage ended
+  first, and a quote of 12 words is whole exactly when its sha256 equals the record's
+  `span_sha256`; without a 64-hex `span_sha256`, a quote of 12 words reads as a head, so a cut
+  passage is never shown as whole. The quote itself is copied verbatim.
+- **`summary.by_prominence`** counts the article's passages per prominence, `{subject,
+  central, supporting}`, each `{passages, by_status}` with the five summary statuses, and
+  `current.json`'s `counts.by_prominence` sums it over every article. The subject and
+  central passages are the article's statements, and the pages count them apart from the
+  supporting ones (worked examples, setup sentences): on smoke 2's real set, 204 of 331
+  passages are supporting, and they set the headline of the bar over all passages.
+- **Changing v1.** A field is added within v1 only when a store without it still reads
+  correctly: the schema strings stay `…/1`, and the Worker treats the field as optional,
+  falling back to what an older store allows. So `basis`, `coverage`, `statement`,
+  `quote_capped` and `by_prominence` are absent from stores built before them; without
+  `quote_capped` the page reads a 12-word quote as a head, and without
+  `counts.by_prominence` the dashboard leaves out its central-statements line (the article
+  page counts its own passages). Removing or redefining a field, or changing the shard key,
+  is a v2 store.
 - **Index shards.** The key is the first hex digit of `sha256(title_key)`, which gives 16
   shards. `title_key` is the NFC title with underscores and Unicode spaces collapsed to
   one space and trimmed, the same in Python (`title_key`) and TypeScript (`titleKey`). A
@@ -619,7 +649,9 @@ builder can change without a release.
 The fixture lives in `scripts/atlas/fixtures/`. `make_fixture.py` writes `recordset/` (two
 synthetic articles that cover every outcome, in exactly the agreed format: a lead
 passage, two subject passages, a location without `end_line`, a closeMatch from a
-challenge downgrade, a `challenge_pending` location) and `store/` is its built store. The Python
+challenge downgrade, a `challenge_pending` location, and two quotes at the 12-word cap,
+one the capped head of a longer passage and one a whole passage, each with the
+`span_sha256` of its passage's text) and `store/` is its built store. The Python
 test pins both. The Worker tests and the browser harness read that same `store/`.
 
 ## 6. Store backend and publishing
@@ -706,15 +738,27 @@ and the live list filter.
   legend. Status and library are two facets combined with AND ("Showing 0 of 4 passages:
   Statement only, in Mathlib."); pressing a pressed chip clears its own facet. A chip with
   a zero count is shown flat and inert, like the dashboard's totals legend. A library with
-  only related declarations is labelled "related only". When the article has subject
+  only related declarations is labelled "related only"; the Where row has a chip only for a
+  library that holds a location or a related declaration (the article's
+  `summary.by_library` names no other), so it never shows a chip of zeros. Under the bar, a
+  "Central statements" line counts the article's subject and central passages by status
+  ("Central statements, the article's subject and central passages: 19 of 37 passages — 8
+  formalized, 9 partial, 2 not formalized."), from the passages' prominence, beside the bar
+  over all passages, which stays: the supporting passages (worked examples, setup
+  sentences) are most of an article's passages and would otherwise set its headline. A store
+  whose passages carry no prominence gets no such line. When the article has subject
   passages (prominence `subject`), a "Subject" row names each one (its kind and quote,
-  linking its `#p-<hex>` block) with its status pill. The meta line names the campaign,
-  or for a run outside any campaign, the runs ("run L with challenge run C, outside any
-  campaign").
+  linking its `#p-<hex>` block) with its status pill; a quote that is a capped head
+  (`quote_capped`) is followed, after its closing quotation mark, by an ellipsis. The meta
+  line names the campaign, or for a run outside any campaign, the runs ("run L with
+  challenge run C, outside any campaign").
 - **Passage block.** Under a "Passages" heading, one `<h3>` per passage with its kind,
-  prominence and section path, beside a status pill (icon and word). A subject passage
-  carries a "Subject of the article" tag in place of the prominence word, the class
-  `is-subject` (an accent frame) and `data-prominence="subject"`. A located passage
+  prominence and section path, beside a status pill (icon and word). The heading's pieces
+  are flex items separated only by a gap, and the section's "§ " is CSS generated content,
+  so a visually hidden " · " (`atlas-sr`) sits between them and the heading's accessible
+  name reads "Theorem · central · § Statement" rather than running the pieces together. A
+  subject passage carries a "Subject of the article" tag in place of the prominence word,
+  the class `is-subject` (an accent frame) and `data-prominence="subject"`. A located passage
   then says in visible text which location gives it its status, for example
   "Formalized: Mathlib states this exactly (proved).", naming the store's `basis`, not
   simply the rank-1 location. A survived coverage claim (decision D1) adds a line with
@@ -726,8 +770,13 @@ and the live list filter.
   claim confirmed says "a challenger checked it" on its card. When the claim is the basis that line is the status sentence;
   otherwise it follows the sentence. A claim that did not survive shows no line, and its
   parts are ordinary "states part" cards. Then the quote with its context, and a link to the passage
-  in the pinned Wikipedia revision (a text fragment). The producer's item id
-  (`In-text #<hex>`) is a `data-item` attribute, not reader-facing text. Passage
+  in the pinned Wikipedia revision (a text fragment). The quote is verbatim. When it is the
+  capped head of a longer passage (`quote_capped`), an ellipsis follows it outside the
+  highlight, after any suffix, with "(the passage continues)" for a screen reader, and the
+  blockquote is `data-quote="head"` (else `"whole"`); a note under the Passages heading
+  says that a quote is at most the first 12 words of its passage. A store built before
+  `quote_capped` gets the word count: a 12-word quote reads as a head. The producer's item
+  id (`In-text #<hex>`) is a `data-item` attribute, not reader-facing text. Passage
   permalinks (`#p-<hex>`) clear the sticky header (`scroll-margin-top`).
 - **Location card.** One card per location: library chip, `@<sha7>`, the relation in
   words (exact match, close match, more general, special case, states part, related), and
@@ -746,8 +795,15 @@ and the live list filter.
   without proving it.
 - **Dashboard.** The by-library table splits locations into complete (proved or a
   definition) and incomplete (statement only, wanted, axiom-dependent), so a library that
-  only states results never reads like one that proves them. The article list has a
-  Libraries column (the index rows' `libraries`, as short names).
+  only states results never reads like one that proves them. Its rows are the libraries
+  that hold a passage or a related declaration, sorted by passages (most first), then by
+  complete locations (most first), then by name; every other library of the universe was
+  searched and holds nothing in this build, so it is listed by name with its commit in a
+  `<details>` below the table ("39 more libraries searched, with no locations in this
+  build" on smoke 2, whose universe has 48) rather than as a row of zeros. The Totals
+  section adds the "Central statements" line under the bar and its legend, from
+  `current.json`'s `counts.by_prominence` (absent from older stores, which get no line).
+  The article list has a Libraries column (the index rows' `libraries`, as short names).
 - **Libraries** (`wiki/src/libraries.ts`, contract note 6). Names come from the seeds
   (Mathlib, Lean core, Batteries, TauCeti, Formal Conjectures, atlas-lean),
   then the FormalFrontier organisation pattern ("FormalFrontier · <repo>"), then
@@ -932,7 +988,10 @@ Each decision below comes with a recommendation.
 
 - `scripts/atlas/test_build_store.py` (in `scripts/ci-python.sh`) checks fixture
   reproducibility, schema validity, the golden store, determinism, the manifest, the view
-  model (including each passage's basis and the per-library proof split), title shards,
+  model (including each passage's basis and the per-library proof split), `quote_capped`
+  (a 12-word head and a 12-word whole passage in the fixture, a quote under the cap, and
+  hostile or missing `span_sha256` values), the counts by prominence per article and in
+  `current.json`, title shards,
   the §2.6 recomputation in both directions, its parity with the producer's truth table
   (`producer_derive_status.json`, coverage cases included), with the hand-written table
   both sides run (`status_parity.json`, pinned by sha256, every case through
@@ -972,7 +1031,12 @@ Each decision below comes with a recommendation.
   reaching the HTML), the theorem a data declaration formalizes, a location without `end_line`
   ("line 88", `#L88`), a run-token campaign on the pages and
   in feedback (`CAMPAIGN_RE`, the same grammar as the builder's), the producer's truth
-  table and the shared parity table's claim-free cases for the page's fallback rows, and
+  table and the shared parity table's claim-free cases for the page's fallback rows, a
+  capped quote's ellipsis outside the quotation (in the card, after any suffix, and after
+  the Subject row's closing quotation mark; none on a 12-word whole passage; the word count
+  for a store without the flag), the central-statements line on the article page and the
+  dashboard (and none for a store without prominences or `counts.by_prominence`), the
+  by-library order and the list of empty libraries, the heading's hidden separators, and
   the library registry (seeded names, look-alike
   display names, ignored templates, repository-relative paths, dot segments,
   GitHub-only repository links).
@@ -980,7 +1044,10 @@ Each decision below comes with a recommendation.
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
   schemes at desktop width and at 375px (the Gadget page with its coverage claim's parts
-  list included), plus the parts list itself, the combined filters, feedback, live search,
+  list included), plus the parts list itself, a passage heading's accessible name, a capped
+  quote's ellipsis outside its highlight, the central-statements lines, the by-library
+  order with the empty libraries' list opened at 375px (axe, no sideways scroll), the
+  combined filters, feedback, live search,
   a passage permalink, the Subject row's link and the article box, and runs those flows
   again with the Worker's
   Report-Only CSP enforced, asserting no violation.

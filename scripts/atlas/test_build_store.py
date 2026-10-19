@@ -226,6 +226,67 @@ class BuildTests(unittest.TestCase):
         self.assertEqual(gadget["summary"]["by_library"]["mathlib"],
                          {"locations": 4, "complete": 4, "incomplete": 0, "passages": 3, "related": 0})
 
+    def test_a_quote_at_the_cap_is_marked_when_it_is_a_capped_head(self):
+        # The export quotes a passage's first 12 words (proposal §2.7's verbatim cap) and stamps
+        # span_sha256, the sha256 of the whole passage, so the builder tells a capped head from a
+        # whole passage, and the page marks only the head with an ellipsis.
+        tree = build_store.build(RECORDSET)
+        widget = json.loads(tree["atlas/v1/articles/1001.json"])
+        gadget = json.loads(tree["atlas/v1/articles/1003.json"])
+        self.assertEqual([p["quote_capped"] for p in widget["passages"]], [False, True, False, False])
+        self.assertEqual([p["quote_capped"] for p in gadget["passages"]], [False, False, False])
+        head, whole = widget["passages"][1], gadget["passages"][2]
+        # Both are at the cap; only the bound is longer than its quote. The quote stays verbatim.
+        for passage in (head, whole):
+            self.assertEqual(len(passage["quote"]["exact"].split()), build_store.QUOTE_MAX_WORDS)
+        self.assertEqual(head["quote"], {"exact": "Moreover, the number of spanning gadgets of a widget is at most"})
+        self.assertEqual(whole["quote"],
+                         {"exact": "Moreover, the gadgets on a widget correspond bijectively to all its vertices."})
+
+    def test_quote_capped_reads_the_cap_and_the_span_sha(self):
+        twelve = {"exact": " ".join(f"w{i}" for i in range(12))}
+        eleven = {"exact": " ".join(f"w{i}" for i in range(11))}
+        own = hashlib.sha256(twelve["exact"].encode()).hexdigest()
+        other = "0" * 64
+        # Under the cap the passage ended first: whole, whatever the span sha says.
+        for span in (own, other, None):
+            self.assertFalse(build_store.quote_capped(eleven, span))
+        self.assertFalse(build_store.quote_capped({"exact": ""}, other))
+        # At the cap: whole exactly when the quote is the whole span.
+        self.assertFalse(build_store.quote_capped(twelve, own))
+        self.assertTrue(build_store.quote_capped(twelve, other))
+        # No usable span sha (never refused): a quote at the cap reads as a head.
+        for span in (None, 5, True, [], {}, "x", own.upper(), own + "\n"):
+            self.assertTrue(build_store.quote_capped(twelve, span), repr(span))
+
+    def test_counts_by_prominence(self):
+        # The subject and central passages are the article's statements: the pages count them
+        # apart from the supporting ones, per article and in the totals.
+        tree = build_store.build(RECORDSET)
+        current = json.loads(tree["atlas/v1/current.json"])
+        zero = dict.fromkeys(build_store.SUMMARY_STATUSES, 0)
+        widget = json.loads(tree["atlas/v1/articles/1001.json"])["summary"]
+        self.assertEqual(widget["by_prominence"], {
+            "subject": {"passages": 1, "by_status": {**zero, "formalized": 1}},
+            "central": {"passages": 1, "by_status": {**zero, "not_formalized": 1}},
+            "supporting": {"passages": 2, "by_status": {**zero, "statement_only": 1, "unresolved": 1}}})
+        gadget = json.loads(tree["atlas/v1/articles/1003.json"])["summary"]
+        self.assertEqual(gadget["by_prominence"], {
+            prominence: {"passages": 1, "by_status": {**zero, "formalized": 1}}
+            for prominence in ("subject", "central", "supporting")})
+        totals = current["counts"]
+        self.assertEqual(totals["by_prominence"], {
+            "subject": {"passages": 2, "by_status": {**zero, "formalized": 2}},
+            "central": {"passages": 2, "by_status": {**zero, "formalized": 1, "not_formalized": 1}},
+            "supporting": {"passages": 3, "by_status": {**zero, "formalized": 1, "statement_only": 1,
+                                                        "unresolved": 1}}})
+        # Every passage is counted once, under its own prominence.
+        for summary in (widget, gadget, totals):
+            buckets = summary["by_prominence"].values()
+            self.assertEqual(sum(b["passages"] for b in buckets), summary["passages"])
+            for status in build_store.SUMMARY_STATUSES:
+                self.assertEqual(sum(b["by_status"][status] for b in buckets), summary["by_status"][status])
+
     def test_index_and_title_keys(self):
         self.assertEqual(build_store.title_key("Widget_lemma"), "Widget lemma")
         self.assertEqual(build_store.title_key("  Gadget\u00a0(mathematics) "), "Gadget (mathematics)")
@@ -1500,7 +1561,7 @@ class MalformedValueTests(unittest.TestCase):
             ["object", 0, "location", "declaration"], ["object", 0, "uri"], ["object", 0, "version"],
             ["subject", 0, "uri"], ["subject", 0, "version"], ["subject", 0, "location", "quote"],
             ["subject", 0, "location", "quote", "exact"], ["subject", 0, "location", "quote", "prefix"],
-            ["subject", 0, "extensions", LOCATE, "pageid"])]
+            ["subject", 0, "extensions", LOCATE, "pageid"], ["subject", 0, "extensions", LOCATE, "span_sha256"])]
         targets += [(self.WIDGET, 3, path) for path in (
             ["extensions", LOCATE, "receipt"], ["extensions", LOCATE, "receipt", "sha256"],
             ["extensions", LOCATE, "receipt", "queries"], ["object", 0, "uri"], ["object", 0, "version"])]

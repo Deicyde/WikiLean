@@ -75,6 +75,11 @@ export interface AtlasPassage {
   section: string[] | null;
   prominence: string | null;
   quote: { exact: string; prefix?: string; suffix?: string };
+  // True when the quote is the capped head of a longer passage: the export
+  // quotes at most a passage's first 12 words (build_store.quote_capped).
+  // Absent from stores built before it; the page then reads a quote at the
+  // cap as a head (atlas-render quoteCapped).
+  quote_capped?: boolean;
   subject_uri: string;
   outcome: "located" | "absent" | "unresolved";
   status: string | null;
@@ -108,6 +113,12 @@ export interface AtlasCoverage {
   basis: boolean;
 }
 
+// One prominence's passages and their statuses (build_store._prominence_counts).
+export interface ProminenceCounts {
+  passages: number;
+  by_status: Record<SummaryStatus, number>;
+}
+
 export interface LibraryCounts {
   locations: number;
   // locations split by proof status: complete = proved or a definition,
@@ -136,6 +147,8 @@ export interface AtlasArticle {
     locations: number;
     related: number;
     by_status: Record<SummaryStatus, number>;
+    // subject | central | supporting; absent from stores built before it.
+    by_prominence?: Record<string, ProminenceCounts>;
     by_library: Record<string, LibraryCounts>;
     by_proof_status: Record<string, number>;
     by_relation: Record<string, number>;
@@ -166,6 +179,8 @@ export interface AtlasCurrent {
     locations: number;
     related: number;
     by_status: Record<SummaryStatus, number>;
+    // Every article's summary.by_prominence summed; absent from stores built before it.
+    by_prominence?: Record<string, ProminenceCounts>;
     by_library: Record<string, LibraryCounts & { articles: number }>;
     by_importance: Record<string, { articles: number; passages: number; by_status: Record<SummaryStatus, number> }>;
   };
