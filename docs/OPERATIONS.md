@@ -166,7 +166,7 @@ treat `#` as a comment, so the inline comments in these blocks would break the c
    # the PATH the wrapper exports (current wrapper first, else the older one)
    JOBPATH="$(sed -n 's/^ *export PATH="\(.*\)"$/\1/p' "$C/site/ops/nightly-runtime.sh" "$C/site/ops/nightly-moderate.sh" 2>/dev/null | head -1)"; echo "$JOBPATH"
    # extract_sections.py runs under the bare name python3 when $PY's path contains
-   # "venv" (site/batch_annotate.py:60), otherwise under $PY itself
+   # "venv" (the PY constant in site/batch_annotate.py), otherwise under $PY itself
    env -i HOME="$HOME" PATH="$JOBPATH" /bin/sh -c 'command -v python3 && python3 -c "import sys; print(sys.version)"'
    # the claude CLI the agent SDK runs: the copy bundled in the wheel, else a claude on PATH
    "$PY" -c 'import claude_agent_sdk as s; print(s.__version__)'
@@ -243,7 +243,7 @@ treat `#` as a comment, so the inline comments in these blocks would break the c
 
    If the error text in step 4 says `fetch_failed`, also probe Wikipedia the way review
    does. Review fetches the article's **pinned** revision with `requests` and its own
-   User-Agent (`site/batch_annotate.py:171-214`). wp-update fetches the latest revision
+   User-Agent (`fetch_html` in `site/batch_annotate.py`). wp-update fetches the latest revision
    through a different code path, so a working wp-update doesn't clear this:
 
    ```bash
@@ -306,10 +306,10 @@ moderate log). The "Likely cause" column is what `manage/nightly_health.py` prin
 |---|---|---|---|
 | `extract_failed` on every article that reached the extract, or `No such file or directory: 'python3'` | python3 on the job's PATH | `extract_sections.py` could not run under the `python3` the job's PATH finds. | Make step 5's first command succeed: `xcode-select --install` or `sudo xcodebuild -license accept` if `/usr/bin/python3` is the one found, or install a Python 3 earlier on the job's PATH. |
 | `Working directory does not exist` (a mathlib4 path) | Mathlib checkout path | Agent 2's working directory is gone. Agent 1 runs first, so it used Max quota, although `/stats` records 0 tokens. | Restore the checkout or point `WIKILEAN_MATHLIB` at a readable mathlib4 checkout. Never edit that checkout. |
-| `Credit balance is too low` | API-key credential | The CLI authenticated with an API key instead of the Max login. The environment variable can't be the source: `site/batch_annotate.py:35-37` removes `ANTHROPIC_API_KEY` at import, and `_import_ba` in `site/moderate.py` keeps it removed under the default `--auth subscription`. | Look at the CLI's own credentials: an API-key (Console) login stored by `claude`, `primaryApiKey` in `~/.claude.json`, or an `env` or `apiKeyHelper` entry in `~/.claude/settings.json`. Log in again with the Max account. |
+| `Credit balance is too low` | API-key credential | The CLI authenticated with an API key instead of the Max login. The environment variable can't be the source: `site/batch_annotate.py` removes `ANTHROPIC_API_KEY` at import (`_popped_key`), and `_import_ba` in `site/moderate.py` keeps it removed under the default `--auth subscription`. | Look at the CLI's own credentials: an API-key (Console) login stored by `claude`, `primaryApiKey` in `~/.claude.json`, or an `env` or `apiKeyHelper` entry in `~/.claude/settings.json`. Log in again with the Max account. |
 | `Not logged in`, `Invalid API key`, `Please run /login`, `Failed to authenticate`, `OAuth`, `401`, `authentication` | Claude login | The CLI the job runs has no usable Claude login, or its token expired or was revoked. | Log in with the CLI the job runs: start `"$B"` from step 5 in the desktop session and type `/login` with the Max account; confirm the plan is active on claude.ai. Re-run both step 5 checks, then step 7. For a login that doesn't depend on the keychain, `claude setup-token` prints a long-lived token for headless use; export it as `CLAUDE_CODE_OAUTH_TOKEN` from the gitignored `site/ops/nightly.local.env`, which only the current wrapper reads, so an older checkout needs the fresh checkout below first. Never put it in git or in a plist (`launchctl print` shows a plist's environment). Steps 5 and 7 must then run with the token (step 5 shows how). |
 | `hit your limit`, `weekly limit`, `usage limit`, `resets` | plan or usage limit | The Max allowance is used up. | Check usage in the CLI (`/status`). On a checkout with b079500b, five such errors in a row stop the run within 7 errors, and the wrapper retries a 5-hour-window limit once. 15 of 15 with this text means the checkout predates b079500b (step 2). |
-| `issue with the selected model`, `not_found_error` | model id | The plan or account cannot use the pinned model (`claude-opus-4-7`, `site/batch_annotate.py:57`). | Set `WIKILEAN_AGENT_MODEL` to a model the plan offers, exported from `site/ops/nightly.local.env` (current wrapper) or the plist's `EnvironmentVariables` (older wrapper). Re-run step 5 with that `--model`. |
+| `issue with the selected model`, `not_found_error` | model id | The plan or account cannot use the pinned model (`claude-opus-4-7`, `MODEL` in `site/batch_annotate.py`). | Set `WIKILEAN_AGENT_MODEL` to a model the plan offers, exported from `site/ops/nightly.local.env` (current wrapper) or the plist's `EnvironmentVariables` (older wrapper). Re-run step 5 with that `--model`. |
 | `network_post_failed`, `rate_limited_429`, `post_<code>` | Worker write | The agents finished but the save to the Worker failed. The payload is checkpointed and the next run flushes it; tokens were counted. | Check the Worker and the network from the host; `moderate.py flush` retries the checkpoints. |
 | `Command failed with exit code`, `Claude Code not found`, `error result`, a JSON decode error | claude CLI | The CLI did not start, crashed, or reported an error without text. | Run `"$B" --version` (step 5). A bundled CLI too old for the service needs a newer `claude-agent-sdk` in the job's venv (see `catalog/requirements.txt`); a broken install needs a reinstall of the same version. |
 | `Control request timeout: initialize` | claude CLI startup timeout | The CLI process started but did not answer the agent SDK's `initialize` request within the SDK's limit (60 s by default), so that agent never got its prompt. | Run step 5's checks, the launchd one included; a CLI that hangs there reproduces it. A hang only under launchd points at access the LaunchAgent lacks, such as the keychain or a checkout under `~/Desktop` (`site/ops/README.md`, Full Disk Access). If startup is only slow, export `CLAUDE_CODE_STREAM_CLOSE_TIMEOUT` (milliseconds) from `site/ops/nightly.local.env` to raise the SDK's limit. |
@@ -356,10 +356,11 @@ stays behind unless you copy it, and this runbook's summary script reads only th
 
 ### What the code says about that pattern
 
-1. **Unchanged tokens place every failure inside `annotate_one`.** `annotate_one` sets
-   `tokens` only on its success path (`site/batch_annotate.py:612-616`). Its error
-   returns (`:453-460`, `:499-502`, `:549-551`, `:596-598`, `:617-618`) leave it unset,
-   even when one or both agents already ran. Failures after `annotate_one` succeeds (the
+1. **Unchanged tokens place every failure inside `annotate_one`.** `annotate_one` in
+   `site/batch_annotate.py` sets `tokens` only on its success path. Its error returns
+   (`fetch_failed`, `extract_failed`, `agent1_no_json`, `agent2_no_json`, `render_failed`,
+   and the `except` that records an exception) leave it unset, even when one or both
+   agents already ran. Failures after `annotate_one` succeeds (the
    final read, or the Worker POST in `site/moderate.py`'s `_write_article`) keep the agents' tokens,
    and `run_jobs` adds them up. Flat tokens therefore mean all 15 articles failed during
    fetch, extract, an agent call, or render, never at the save.
@@ -392,13 +393,14 @@ stays behind unless you copy it, and this runbook's summary script reads only th
    Python, uses the same bearer token and Worker endpoints, runs the anchor matcher
    in-process, and writes to `site/cache/` (`site/update_from_upstream.py`,
    `process_slug`). Review alone uses:
-   - the agent SDK and the `claude` CLI with its stored login
-     (`site/batch_annotate.py:226-268`);
-   - the pinned model (`:57`);
-   - Agent 2's working directory, the Mathlib checkout (`:56`, `:544-548`);
-   - a `python3` subprocess for `extract_sections.py` (`:60`, `:217-223`, `:457`);
+   - the agent SDK and the `claude` CLI with its stored login (`run_agent` in
+     `site/batch_annotate.py`);
+   - the pinned model (`MODEL`);
+   - Agent 2's working directory, the Mathlib checkout (`MATHLIB`, passed as Agent 2's
+     `cwd` in `annotate_one`);
+   - a `python3` subprocess for `extract_sections.py` (`PY`, `run_script`);
    - a Wikipedia fetch of the **pinned** revision, through `requests` with its own
-     User-Agent, every exception collapsed to `fetch_failed` (`:171-214`, `:453-455`).
+     User-Agent, every exception collapsed to `fetch_failed` (`fetch_html`).
      wp-update fetches the latest revision through `render.fetch_article_html`.
 4. **The review command itself starts.** The run registers, so `batch_annotate` (and
    with it `claude_agent_sdk`) imported (`_import_ba` in `site/moderate.py`) and `GET /api/work`
@@ -413,7 +415,7 @@ stays behind unless you copy it, and this runbook's summary script reads only th
 1. **The job's Claude login is unusable (most likely).** When the CLI has no usable
    login it fails every article within seconds, and the SDK surfaces its text as
    `RuntimeError: agent_error: Not logged in · Please run /login` or `Invalid API key ·
-   Please run /login` (`site/batch_annotate.py:259-268`). Neither contains an abort
+   Please run /login` (`run_agent` in `site/batch_annotate.py`). Neither contains an abort
    keyword, so the result is 15 of 15, exit 0 and no retry on any checkout without PR #52, which is the
    observed pattern. Credentials that are missing, unreadable or expired fit this:
    - removed by a logout or by a CLI update elsewhere rewriting the stored login;
@@ -440,8 +442,8 @@ stays behind unless you copy it, and this runbook's summary script reads only th
    disk during the September Brain migration (5.8 GB free at the 2026-09-23 checkpoint),
    which makes a moved or deleted checkout conceivable. *Confirms it:* the directory
    error in step 4 and step 6.
-4. **`python3` on the job's PATH stopped working.** `site/batch_annotate.py:60` runs
-   `extract_sections.py` with the bare name `python3` whenever `$PY`'s path contains
+4. **`python3` on the job's PATH stopped working.** `site/batch_annotate.py` runs
+   `extract_sections.py` with the bare name `python3` (its `PY` constant) whenever `$PY`'s path contains
    `venv`. The older wrapper sets `PY` to `catalog/.venv/bin/python3` and `PATH` to
    `/opt/homebrew/bin:/usr/bin:…` (13915083, lines 15-16). On that Mac the ambient
    `python3` is the macOS system Python (2026-09-26 handoff), the Xcode Command Line
@@ -454,7 +456,7 @@ stays behind unless you copy it, and this runbook's summary script reads only th
    wp-update's in library, User-Agent and target revision, and any exception becomes
    `fetch_failed`, which has no abort keyword and takes seconds. *Confirms it:*
    `fetch_failed` in step 4 and a failing Wikipedia probe in step 5.
-6. **The pinned model is refused** (`claude-opus-4-7`, `site/batch_annotate.py:57`). The
+6. **The pinned model is refused** (`claude-opus-4-7`, `MODEL` in `site/batch_annotate.py`). The
    CLI names the model in its error, with no abort keyword. Less likely, because the ID
    is still listed as active. *Confirms it:* a model error in step 4, and step 5 failing
    with `--model claude-opus-4-7` but passing with another model.
@@ -470,8 +472,8 @@ Unlikely:
 - **Full disk.** wp-update caches article HTML and appends to `.wp_update_report.jsonl`
   every night, and its error count on `/stats` has not moved.
 - **A missing MCP server.** The search tools are an in-process SDK server. If building it
-  fails, the error is swallowed (`site/batch_annotate.py:287-291`) and Agent 2 just runs
-  without them; it doesn't fail the article.
+  fails, the error is swallowed (the `build_search_server` import in
+  `site/batch_annotate.py`) and Agent 2 just runs without them; it doesn't fail the article.
 - **The Worker or the pipeline token.** wp-update makes the same reads and writes.
 - **A failure at the save.** Flat tokens rule it out (point 1).
 - **Usage limits on a current checkout.** They stop the run within 7 errors, and the
