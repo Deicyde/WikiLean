@@ -154,7 +154,16 @@ UNIVERSE_KEYS = ("id", "universe_sha256", "frozen", "libraries", "excluded")
 LIBRARY_KEYS = ("id", "brain_lib", "repo", "commit", "toolchain", "roots", "licence")
 LIBRARY_OPTIONAL = ("display_name",)
 EXCLUDED_KEYS = ("id", "reason")
-# An absence names each universe library by a minimal lean end, and nothing else.
+# Libraries are keyed by id, and a repository may be several of them: proposal §2.3 lets a
+# universe split one repository into libraries, one root each (lean-core's Init and Std at one
+# commit), and WikiLean agreed to it on 2026-10-19 (docs/ATLAS.md, contract note 13). So only a
+# true duplicate is refused: an id twice, or one root of one repository in two libraries (or
+# twice in one), whatever their commits. A repository and a root are compared as written.
+LIBRARY_RULE = ("libraries are keyed by id, each id once, and a repository may be several libraries, "
+                "but each of its roots belongs to one library (docs/ATLAS.md section 3)")
+# An absence names what was searched: each distinct (repo, commit) of the universe by one
+# minimal lean end, and nothing else, so libraries split from one repository at one commit are
+# one end (formal-companion 124a587, records.absence_ends).
 ABSENCE_END_KEYS = ("type", "uri", "version")
 # The agreed keys of the locate extension at each of the three places a record carries it
 # (docs/ATLAS.md section 3, "The locate extension's keys"): the record itself, by its shape; its
@@ -449,7 +458,11 @@ def _string_problem(value: Any, cap: int) -> str | None:
 
 
 def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> dict:
-    """universe.json in the agreed shape: a list of libraries sorted by id (docs/ATLAS.md section 3)."""
+    """universe.json in the agreed shape: a list of libraries sorted by id (docs/ATLAS.md section 3).
+
+    Libraries are keyed by id, and one repository may be several of them (LIBRARY_RULE): only an
+    id twice, or a root of one repository in two libraries, is refused.
+    """
     where = "universe.json"
     if "universe.yaml" in files:
         problems.add("universe.yaml", "not part of the agreed record-set format: the universe is universe.json")
@@ -479,7 +492,9 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
     if not isinstance(libraries_raw, list) or not libraries_raw:
         raise AtlasError(f"{where}: libraries must be a non-empty list of library objects sorted by id")
     libraries: list[dict] = []
-    seen_repos: set[str] = set()
+    seen_ids: set[str] = set()
+    # (repo, root) -> the id of the library that holds it (LIBRARY_RULE).
+    root_owner: dict[tuple[str, str], str] = {}
     previous_id: str | None = None
     for index, lib in enumerate(libraries_raw):
         at = f"{where}: libraries[{index}]"
@@ -499,15 +514,14 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
         if not isinstance(lib_id, str) or not TOKEN_RE.match(lib_id):
             problems.add(at, f"id must be {TOKEN_RULE}")
             continue
-        if previous_id is not None and lib_id <= previous_id:
+        if lib_id in seen_ids:
+            problems.add(at, f"library id {lib_id!r} appears twice: {LIBRARY_RULE}")
+        elif previous_id is not None and lib_id < previous_id:
             problems.add(at, f"libraries must be sorted by id, each once ({lib_id!r} comes after {previous_id!r})")
+        seen_ids.add(lib_id)
         previous_id = lib_id if previous_id is None or lib_id > previous_id else previous_id
         if not is_repo_url(repo):
             problems.add(at, f"repo must be {REPO_RULE}")
-        elif repo in seen_repos:
-            problems.add(at, f"repo {repo} appears twice (one library per repository)")
-        else:
-            seen_repos.add(repo)
         if not isinstance(commit, str) or not HEX40.match(commit):
             problems.add(at, "commit must be a 40-hex commit")
         entry: dict[str, Any] = {"id": lib_id, "repo": repo, "commit": commit}
@@ -524,6 +538,13 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
                              f"most {MAX_NAME_CHARS} characters")
         else:
             entry["roots"] = list(roots)
+            if is_repo_url(repo):
+                for root in roots:
+                    owner = root_owner.setdefault((repo, root), lib_id)
+                    if owner != lib_id:
+                        problems.add(at, f"root {root!r} of {repo} is also library {owner!r}'s: {LIBRARY_RULE}")
+                if len(set(roots)) != len(roots):
+                    problems.add(at, f"roots names one root twice: {LIBRARY_RULE}")
         licence = lib.get("licence")
         if (not isinstance(licence, dict) or set(licence) != {"spdx"}
                 or _string_problem(licence["spdx"], MAX_NAME_CHARS)):
@@ -937,15 +958,19 @@ def _absence(record: dict, base: dict, objects: list, ext: dict, ctx: Context, a
              problems: Problems) -> dict | None:
     if record.get("status") != "not_formalized":
         problems.add(at, "a noMatch record has status not_formalized")
+    # What was searched: each distinct (repo, commit) of the universe, however many libraries
+    # it is (Init and Std split from lean4 at one commit are one search target, and one end).
     expected = {(lib["repo"], lib["commit"]) for lib in ctx.universe["libraries"]}
     got = []
     if any(end.get("type") != "lean" or set(end) != set(ABSENCE_END_KEYS) for end in objects):
-        problems.add(at, "a checked absence names each library by a minimal lean end, "
+        problems.add(at, "a checked absence names each repository it searched by a minimal lean end, "
                          '{"type": "lean", "uri", "version"} only (no location, role or extensions)')
     for end in objects:
         got.append((end.get("uri"), end.get("version")))
     if len(got) != len(set(got)) or set(got) != expected:
-        problems.add(at, "a checked absence names every universe library at its commit, once each")
+        problems.add(at, "a checked absence names every repository of the universe at its commit, once each: "
+                         "one end per distinct (repo, commit) of its libraries, so libraries split from one "
+                         "repository at one commit are one end")
     receipt = ext.get("receipt")
     if not isinstance(receipt, dict) or not HEX64.match(str(receipt.get("sha256", ""))):
         problems.add(at, "receipt must be {sha256, queries, candidates}")

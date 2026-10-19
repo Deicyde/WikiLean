@@ -18,7 +18,9 @@ import type { AuthUser } from "./auth.js";
 import type {
   AtlasArticle, AtlasCurrent, AtlasLocation, AtlasPassage, AtlasUniverse, IndexEntry, SummaryStatus,
 } from "./atlas.js";
-import { libraryInfo, repoHref, sourceUrl, treeUrl, type LibraryInfo, type UniverseLibrary } from "./libraries.js";
+import {
+  libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl, type LibraryEntry, type LibraryInfo, type UniverseLibrary,
+} from "./libraries.js";
 
 // Asset versions: bump with any change to site/assets/atlas.{css,js}.
 export const ATLAS_CSS = "/assets/atlas.css?v=4";
@@ -283,15 +285,25 @@ interface LibraryView {
   commit: string | null;
 }
 
+// The page's libraries by id: the universe's, then any library a location names
+// that the universe does not list (the route passes no universe when its object
+// cannot be read). Keyed by id, as the store is, so libraries split from one
+// repository (Init and Std of Lean core) are two views, named apart (libraryInfos).
 function libraryViews(universe: AtlasUniverse | null, extra: Iterable<{ library: string; repo: string; commit: string }>): Map<string, LibraryView> {
-  const views = new Map<string, LibraryView>();
+  const commits = new Map<string, string>();
+  const entries: LibraryEntry[] = [];
   for (const lib of universeLibraries(universe)) {
-    views.set(lib.id, { id: lib.id, info: libraryInfo(lib.repo, lib), commit: lib.commit });
+    if (commits.has(lib.id)) continue;
+    commits.set(lib.id, lib.commit);
+    entries.push(lib);
   }
   for (const loc of extra) {
-    if (!views.has(loc.library)) views.set(loc.library, { id: loc.library, info: libraryInfo(loc.repo, null), commit: loc.commit });
+    if (commits.has(loc.library)) continue;
+    commits.set(loc.library, loc.commit);
+    entries.push({ id: loc.library, repo: loc.repo });
   }
-  return views;
+  const infos = libraryInfos(entries);
+  return new Map(entries.map((entry) => [entry.id, { id: entry.id, info: infos.get(entry.id) as LibraryInfo, commit: commits.get(entry.id) ?? null }]));
 }
 
 // A table that may scroll sideways on a phone: a labelled, focusable region,
@@ -663,8 +675,10 @@ ${list}
 export function atlasUniversePage(universe: AtlasUniverse): string {
   const libraries = universeLibraries(universe);
   const excludedItems = list(universe.excluded).filter((item) => item !== null && typeof item === "object");
+  // Named as every other page names them, so libraries of one repository read apart.
+  const infos = libraryInfos(libraries);
   const rows = libraries.map((lib: UniverseLibrary) => {
-    const info = libraryInfo(lib.repo, lib);
+    const info = infos.get(lib.id) ?? libraryInfo(lib.repo, lib);
     // GitHub repositories only (repoHref); any other host is named, not linked.
     const repo = repoHref(info.repo);
     const tree = treeUrl(info, lib.commit);

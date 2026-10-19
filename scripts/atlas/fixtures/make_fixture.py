@@ -189,8 +189,11 @@ def absence(source_id: str, item: str, kind: str, quote: dict, layout: dict) -> 
     return {
         "id": f"{source_id}::{item}",
         "subject": [subject(source_id, quote)],
-        # One minimal lean end per universe library, in universe order: no role, no extensions.
-        "object": [{"type": "lean", "uri": lib["repo"], "version": lib["commit"]} for lib in LIBRARIES],
+        # One minimal lean end per distinct (repo, commit) of the universe, placed by its first
+        # library in universe order (formal-companion records.absence_ends): no role, no
+        # extensions. The fixture's repositories are all distinct, so that is one per library.
+        "object": [{"type": "lean", "uri": repo, "version": commit}
+                   for repo, commit in dict.fromkeys((lib["repo"], lib["commit"]) for lib in LIBRARIES)],
         "relation": "noMatch", "status": "not_formalized", "kind": kind,
         "extensions": {LOCATE: passage_ext(item, {
             "receipt": {"sha256": RECEIPT_SHA, "queries": len(RECEIPT["queries"]),

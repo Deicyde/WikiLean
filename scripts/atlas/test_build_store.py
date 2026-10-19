@@ -512,7 +512,7 @@ class RefusalTests(SetCopyTest):
 
     def test_absence_missing_a_library(self):
         self.edit_widget(lambda rows: rows[3]["object"].pop())
-        self.refuse("names every universe library")
+        self.refuse("names every repository of the universe at its commit, once each")
 
     def test_unresolved_with_a_status(self):
         self.edit_widget(lambda rows: rows[5].update(status="not_formalized"))
@@ -1207,7 +1207,7 @@ class AgreedFormatTests(SetCopyTest):
         self.refuse("libraries must be sorted by id, each once ('mathlib' comes after 'tauceti')")
         self.fresh()
         self.edit_universe(lambda u: u["libraries"].insert(1, dict(u["libraries"][0])))
-        self.refuse("libraries must be sorted by id, each once ('batteries' comes after 'batteries')")
+        self.refuse("universe.json: libraries[1]: library id 'batteries' appears twice: libraries are keyed by id")
 
     def test_universe_keys_are_exactly_the_agreed_ones(self):
         def old_shape(u):
@@ -1311,8 +1311,8 @@ class AgreedFormatTests(SetCopyTest):
             with self.subTest(extra=sorted(extra)):
                 self.fresh()
                 self.edit_widget(lambda rows, extra=extra: rows[3]["object"][0].update(extra))
-                self.refuse('a checked absence names each library by a minimal lean end, {"type": "lean", "uri", '
-                            '"version"} only')
+                self.refuse('a checked absence names each repository it searched by a minimal lean end, '
+                            '{"type": "lean", "uri", "version"} only')
 
     def test_every_challenge_verdict_builds_and_challenge_pending_is_one(self):
         # proposal §2.7: survived, downgraded, not_required, sampled_out, challenge_pending
@@ -1437,6 +1437,132 @@ class AgreedFormatTests(SetCopyTest):
                 self.fresh()
                 self.edit_widget(lambda rows, edit=edit: edit(rows[0]["object"][0]))
                 self.refuse(f"records/enwiki-1001-2002.jsonl:1: {fragment}")
+
+
+class SharedRepositoryTests(SetCopyTest):
+    """Several libraries per repository (docs/ATLAS.md section 3 and contract note 13).
+
+    Proposal §2.3 lets a universe split one repository into libraries, one root each
+    (lean-core's Init and Std at one lean4 commit); WikiLean agreed on 2026-10-19 to key
+    libraries by id and refuse only a true duplicate (an id twice, or one root of one
+    repository in two libraries), and formal-companion 124a587 (records.absence_ends) writes
+    an absence's ends one per distinct (repo, commit).
+    """
+
+    LEAN4 = "https://github.com/leanprover/lean4"
+    CORE = make_fixture.LIB["lean-core"]["commit"]
+    OTHER = "6" * 40
+    MATHLIB = make_fixture.LIB["mathlib"]
+
+    def split(self, std_commit: str | None = None, keep: tuple[str, ...] | None = None,
+              std_roots: tuple[str, ...] = ("Std",)) -> None:
+        """lean-core becomes init (roots Init) and std (roots Std) at its repository; with
+        `keep`, the universe holds only those other libraries besides the two."""
+        def edit(u):
+            core = next(lib for lib in u["libraries"] if lib["id"] == "lean-core")
+            libraries = [lib for lib in u["libraries"] if lib["id"] != "lean-core"
+                         and (keep is None or lib["id"] in keep)]
+            for lib_id, roots, commit in (("init", ("Init",), self.CORE), ("std", std_roots, std_commit or self.CORE)):
+                lib = {**core, "id": lib_id, "brain_lib": lib_id.capitalize(), "roots": list(roots), "commit": commit}
+                del lib["display_name"]
+                libraries.append(lib)
+            u["libraries"] = sorted(libraries, key=lambda lib: lib["id"])
+        self.edit_universe(edit)
+
+    def lean4_end(self, row: dict, library: str, root: str, commit: str | None = None) -> None:
+        """Move a location's lean end into a library of the lean4 repository."""
+        end = row["object"][0]
+        end.update(uri=self.LEAN4, version=commit or self.CORE)
+        end["location"]["module"] = f"{root}.Data.Widget"
+        end["extensions"][LOCATE].update(library=library, path=f"src/{root}/Data/Widget.lean")
+
+    @staticmethod
+    def absence_ends(absence: dict, *pairs: tuple[str, str]) -> None:
+        absence["object"] = [{"type": "lean", "uri": uri, "version": version} for uri, version in pairs]
+
+    def test_init_and_std_at_one_lean4_commit_build_beside_mathlib(self):
+        self.split(keep=("mathlib",))
+        def edit(rows):
+            del rows[1]                                  # the ff-widgets close match; mathlib still formalizes it
+            self.lean4_end(rows[1], "std", "Std")        # tauceti's statement_only match
+            self.lean4_end(rows[3], "init", "Init")      # batteries' related match, beside the absence
+            # One end per distinct (repo, commit), placed by the first library by id.
+            self.absence_ends(rows[2], (self.LEAN4, self.CORE), (self.MATHLIB["repo"], self.MATHLIB["commit"]))
+        self.edit_widget(edit)
+        tree = build_store.build(self.set)
+        universe = json.loads(tree[f"atlas/v1/universes/{make_fixture.UNIVERSE_SHA}.json"])
+        self.assertEqual([(lib["id"], lib["repo"], lib["commit"], lib["roots"]) for lib in universe["libraries"]], [
+            ("init", self.LEAN4, self.CORE, ["Init"]),
+            ("mathlib", self.MATHLIB["repo"], self.MATHLIB["commit"], ["Mathlib"]),
+            ("std", self.LEAN4, self.CORE, ["Std"])])
+        article = json.loads(tree["atlas/v1/articles/1001.json"])
+        # Libraries are per id in the view model, though two share a repository.
+        self.assertEqual(article["universe"]["libraries"], 3)
+        self.assertEqual(sorted(article["summary"]["by_library"]), ["init", "mathlib", "std"])
+        self.assertEqual(article["summary"]["by_library"]["std"],
+                         {"locations": 1, "complete": 0, "incomplete": 1, "passages": 1, "related": 0})
+        self.assertEqual(article["summary"]["by_library"]["init"],
+                         {"locations": 0, "complete": 0, "incomplete": 0, "passages": 0, "related": 1})
+        bounds, absent = article["passages"][1], article["passages"][2]
+        self.assertEqual({key: bounds["locations"][0][key] for key in ("library", "repo", "commit", "path")},
+                         {"library": "std", "repo": self.LEAN4, "commit": self.CORE,
+                          "path": "src/Std/Data/Widget.lean"})
+        self.assertEqual((bounds["status"], bounds["basis"]), ("statement_only", bounds["locations"][0]["location_key"]))
+        # "Searched 3 libraries": the absence counts libraries; its records name two repositories.
+        self.assertEqual((absent["outcome"], absent["absence"]["libraries"]), ("absent", 3))
+        self.assertEqual([loc["library"] for loc in absent["locations"]], ["init"])
+        records = [json.loads(line) for line in tree["atlas/v1/records/1001.jsonl"].decode().splitlines()]
+        self.assertEqual([end["uri"] for end in records[2]["object"]], [self.LEAN4, self.MATHLIB["repo"]])
+        current = json.loads(tree["atlas/v1/current.json"])
+        self.assertEqual(sorted(current["counts"]["by_library"]), ["init", "mathlib", "std"])
+        self.assertEqual(current["universe"]["libraries"], 3)
+        index = json.loads(tree[f"atlas/v1/index/{build_store.title_shard('Widget lemma')}.json"])
+        self.assertEqual(index["articles"][0][-1], ["mathlib", "std"])  # in universe order, locations only
+
+    def test_an_absence_names_each_repository_at_its_commit_once(self):
+        # The fixture's absence names lean4 once: with lean-core split at one commit it still builds.
+        self.split()
+        article = self.article()
+        self.assertEqual(article["passages"][2]["absence"]["libraries"], 6)
+        lean4 = {"type": "lean", "uri": self.LEAN4, "version": self.CORE}
+        ends = [end for end in read_jsonl(self.set / "records/enwiki-1001-2002.jsonl")[3]["object"]]
+        self.assertEqual(ends.count(lean4), 1)
+        # One end per universe library (the export before 124a587) names lean4 twice: refused.
+        self.edit_widget(lambda rows: rows[3]["object"].insert(2, dict(lean4)))
+        self.refuse("a checked absence names every repository of the universe at its commit, once each: one end "
+                    "per distinct (repo, commit) of its libraries")
+        # One repository at two commits is two search targets, so two ends.
+        self.fresh()
+        self.split(std_commit=self.OTHER)
+        self.refuse("names every repository of the universe at its commit, once each")
+        self.edit_widget(lambda rows: rows[3]["object"].append({"type": "lean", "uri": self.LEAN4, "version": self.OTHER}))
+        self.assertEqual(self.article()["passages"][2]["absence"]["libraries"], 6)
+
+    def test_a_duplicate_library_id_is_refused(self):
+        self.split()
+        def twice(u):
+            std = next(lib for lib in u["libraries"] if lib["id"] == "std")
+            u["libraries"].insert(u["libraries"].index(std) + 1, {
+                **std, "repo": "https://github.com/leanprover/std4", "roots": ["Std4"]})
+        self.edit_universe(twice)
+        self.refuse("universe.json: libraries[5]: library id 'std' appears twice: libraries are keyed by id, each id "
+                    "once, and a repository may be several libraries, but each of its roots belongs to one library")
+
+    def test_one_root_of_one_repository_belongs_to_one_library(self):
+        for commit in (None, self.OTHER):
+            with self.subTest(std_commit=commit):
+                self.fresh()
+                self.split(std_commit=commit, std_roots=("Std", "Init"))
+                self.refuse("universe.json: libraries[4]: root 'Init' of https://github.com/leanprover/lean4 is also "
+                            "library 'init''s: libraries are keyed by id")
+        self.fresh()
+        self.split(std_roots=("Std", "Std"))
+        self.refuse("universe.json: libraries[4]: roots names one root twice")
+        # A root of one name in two repositories is two roots: it builds.
+        self.fresh()
+        self.split()
+        self.edit_universe(lambda u: next(lib for lib in u["libraries"] if lib["id"] == "batteries")["roots"].append("Std"))
+        self.assertEqual(self.article()["universe"]["libraries"], 6)
 
 
 class LocateExtensionTests(SetCopyTest):
