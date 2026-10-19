@@ -195,8 +195,9 @@ and `cd wiki && npx wrangler secret list` (names only).
   quickstatements 1 MiB, `/api/repos` 256 KiB, `/review` posting 1 MiB. Each answers 413 on a
   declared or streamed body past its cap, after the route's auth and rate-limit checks.
 - **Dependency advisories** (`npm audit` in `wiki/`, 2026-10-17):
-  - `hono` (runtime): upgraded 4.12.34 to 4.13.12; `npm audit --omit=dev` is clean.
-    4.13.13 exists but was 13 days old; take it after a two-week cooldown.
+  - `hono` (runtime): upgraded 4.12.34 to 4.13.12 on 2026-10-17, then to 4.13.13 on
+    2026-10-19 (#92), once it was past the two-week cooldown (published 2026-10-04).
+    `npm audit --omit=dev` is clean at that commit.
   - `wrangler` 4.120.0 (dev), via miniflare: `undici` ≤7.29.0 (high) and `sharp`
     ≤0.35.5-rc.1 (high). Fixed from wrangler 4.149.0 (sharp 0.35.5, undici 7.29.1;
     9 days old) or 4.151.1 (npm's pick, 1 day old). **Not upgraded**, because:
@@ -220,10 +221,10 @@ and `cd wiki && npx wrangler secret list` (names only).
   - `source-map-js` ≤1.2.1 (dev, high DoS on crafted source maps): fixable with
     `npm audit fix` (lockfile only); left for the next dependency PR.
 - **Stale pin, already on `origin/main`:** `brain/acquire_d1_snapshot.py` and
-  `brain/d1_snapshot_bundle.py` pin `PACKAGE_LOCK_SHA256 = 533f09a6…`, but
-  `wiki/package-lock.json` has hashed to `5e57535b…` since `d50f5da5`, so the
-  operator D1 snapshot refuses to run until that pin is reviewed and updated. Any
-  lockfile change (this branch's hono bump included) needs the same re-pin.
+  `brain/d1_snapshot_bundle.py` pin `PACKAGE_LOCK_SHA256 = 533f09a6…`, which
+  `wiki/package-lock.json` has not matched since `d50f5da5`, so the operator D1
+  snapshot refuses to run until that pin is reviewed and updated (issue #87). Every
+  lockfile change moves the digest again.
 
 ## Outstanding production actions
 
