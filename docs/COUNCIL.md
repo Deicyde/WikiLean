@@ -98,7 +98,9 @@ CREATE VIEW IF NOT EXISTS council_ballots_latest AS
 
 - `ranking` lists pair_keys and `"NOT_FORMALIZED"`, best first; `relations` maps a pair_key to
   a relation. `voter_id` is `user:<users.id>` for a person, or `model:<id>` with the model id
-  observed in the call's envelope or transcript.
+  observed in the call's envelope or transcript, followed by `@<effort>` when the run set that
+  voter's reasoning effort (§6). One model at two efforts is then two voters, each with its own
+  latest ballot.
 - `citation` is `{model, model_observed, effort_requested, effort_observed, harness,
   harness_version, prompt_sha256, operator, created_at, run_id, record_set, seed}`.
   `model_observed` is false only when the harness reported no id and the requested one is stored.
@@ -111,8 +113,8 @@ CREATE VIEW IF NOT EXISTS council_ballots_latest AS
 
 ## 5. Counting
 
-Schulze (beatpath) sets the order and a direct majority over NOT_FORMALIZED decides acceptance,
-per passage, counted separately for each voter kind, over the options
+Schulze (beatpath) sets the order and a direct majority over NOT_FORMALIZED decides which
+candidates are accepted, per passage, counted separately for each voter kind, over the options
 O = the current candidates ∪ {NOT_FORMALIZED}:
 
 1. Take each voter's latest ballot, skipping withdrawn ones and options no longer candidates.
@@ -120,23 +122,31 @@ O = the current candidates ∪ {NOT_FORMALIZED}:
    after a ballot was cast is compared only on the ballots that ranked it.
 3. Strongest paths, by winning votes: p[x][y] = d[x][y] if d[x][y] > d[y][x], else 0; then for
    each i, each j ≠ i and each k ∉ {i, j}: p[j][k] = max(p[j][k], min(p[j][i], p[i][k])).
-4. x beats y when p[x][y] > p[y][x]. This relation is transitive, so the full ranking orders the
-   options by how many others each beats, most first.
-5. Ties in that count put NOT_FORMALIZED first, then candidates by ascending pair_key.
-6. A candidate c is accepted when more ballots rank it above NOT_FORMALIZED than below it,
-   d[c][NOT_FORMALIZED] > d[NOT_FORMALIZED][c], whatever the strongest paths say; the accepted
-   set is the accepted candidates in the full ranking's order. So a council split on whether a
-   candidate formalizes the passage (a tie) does not accept it, with any number of voters. The
-   beatpath does not decide acceptance because from three voters on it can deny a majority (2-1
-   with three, by a cycle through NOT_FORMALIZED), and from four on accept a card without one (a
-   2-2 tie with four, by a path through another candidate).
+4. x beats y when p[x][y] > p[y][x], a strict partial order. The Schulze ranking is the options
+   that beat NOT_FORMALIZED, then NOT_FORMALIZED, then the rest; within each group by how many
+   options each beats, most first, and ties by ascending pair_key. It follows "beats"
+   throughout: nothing outside the first group beats anything in it.
+5. A candidate c is accepted when more ballots rank it above NOT_FORMALIZED than below it,
+   d[c][NOT_FORMALIZED] > d[NOT_FORMALIZED][c], whatever the strongest paths say. So a council
+   split on whether a candidate formalizes the passage (a tie) does not accept it, with any
+   number of voters. The beatpath does not decide acceptance because it can deny a majority (2-1
+   with three voters, by a cycle through NOT_FORMALIZED) and accept a card without one (a 2-2
+   tie with four, by a path through another candidate; with three, a 1-1 tie when one ballot does
+   not rank the card, rule 2).
+6. The council's ranking is the accepted candidates in the Schulze ranking's order, then
+   NOT_FORMALIZED, then the other candidates in that order. Within each of the three parts it
+   follows "beats"; across them it need not, since a candidate without a majority can beat an
+   accepted one.
 7. An accepted card's relation comes from the voters who accepted it and gave it one (§2): first
-   the status (formalized or partial, by derive_status's mapping for the card alone) that most of
-   their relations imply, then the most common relation among those that imply it. A tie goes to
-   the weaker: the weaker status, then the weaker relation by strength, then by name.
+   the status that most of their relations derive for the card alone, by derive_status
+   (formalized, statement_only or partial), then the most common relation among those that
+   derive it. A tie goes to the weaker: the weaker status (formalized > statement_only >
+   partial), then the weaker relation by strength, then the relation name, ascending (which
+   decides only hasPart against narrowMatch, and gives hasPart).
 8. Report n (ballots counted); the Condorcet winner (x with d[x][y] > d[y][x] for every other y;
-   it is always Schulze's winner too) or null; the full ranking; the accepted set, in order, with
-   each card's relation; d; and the pairs the tie-break ordered.
+   when there is one it comes first in both rankings) or null; the council's ranking; the
+   accepted set, in order, with each card's relation; d; the pairs the ranking orders although
+   neither option beats the other; and the pairs it puts against "beats".
 9. No candidate accepted: the council says no candidate formalizes the passage. Otherwise the
    first accepted candidate is the council's choice.
 
@@ -158,9 +168,12 @@ and the snapshot: it is recomputed when needed, never stored as the truth.
 - A model ballot is one fresh call for that one passage (the pilot asked eight per call), with no
   tools, no web and no repository access. Every model gets the same prompt (its sha256 is in the
   citation) and is not told which other models vote.
-- A voter's reasoning effort, where its CLI takes one, is set for the run and checked against the
-  effort the call reports; a call that reports another gives no ballot. The citation keeps the
-  effort requested and the one observed (null when the call reports none).
+- A run may set a voter's reasoning effort, and then checks the effort each call reports: a call
+  that reports another gives no ballot, and so does one that reports none from a CLI that always
+  reports it (Codex). A CLI that reports it only sometimes (Muse) is checked when it does. A
+  voter whose effort the run does not set runs at its CLI's default, unchecked, even when the CLI
+  takes an effort. The citation keeps the effort requested and the one observed, each null when
+  there is none.
 - People vote in a view that shows only what a model sees, and see the tally only after voting.
   Someone who has read the cards has seen their relations, one more reason the tallies stay apart.
 
@@ -212,9 +225,11 @@ stored, and shown only under Details. For the council it is stronger:
 
 ## 9. Next run
 
-- **Voters:** three models, Claude, Codex and Muse, each through its own CLI under §6, Codex and
-  Muse at high reasoning effort and Claude at its CLI's default. Gemini is pending a route that
-  only an administrator can set up; until then it does not vote, and the harness keeps its
-  adapter.
+- **Voters:** three models, Claude, Codex and Muse, each through its own CLI under §6. The run
+  sets Codex's and Muse's reasoning effort to high, so their voter ids end in `@high` (§4). It
+  does not set Claude's: Claude runs at its CLI's default, which is not checked, and its ballots
+  cite both efforts as null. Gemini is pending a route that only an administrator can set up;
+  until then it does not vote, and the harness keeps its adapter.
 - **Counting:** §5. With all three ballots present a card cannot tie with NOT_FORMALIZED: every
-  card is decided 3-0 or 2-1. A passage missing a ballot can split 1-1, and then accepts nothing.
+  card is decided 3-0 or 2-1. On a passage missing a ballot a card can split 1-1, and is then not
+  accepted.
