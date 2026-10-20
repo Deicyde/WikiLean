@@ -562,6 +562,63 @@ class BrainNightlyShellTest(unittest.TestCase):
         self.assertIn('--input-inventory "brain/authority/reducer-inputs-v1.json"', text)
         self.assertNotIn('--input-inventory "$REPO/', text)
 
+    def test_release_cleanliness_gate_covers_every_module_the_reducer_imports(self):
+        # The release freezes bytes computed by the reducer scope and the release tools,
+        # run from this working tree; an uncommitted edit to any module they import
+        # would be frozen under a Git authority that lacks it. Resolve local imports
+        # (including lazy ones inside functions) the way the scripts' sys.path does.
+        import ast
+        root = HERE.parent.parent
+        inventory = json.loads((root / "brain/authority/reducer-inputs-v1.json").read_text(encoding="utf-8"))
+        roots = list(inventory["scope"]) + [
+            "brain/tools/build_release.py", "brain/tools/verify_release.py",
+            "brain/tools/measure_store.py", "brain/tools/authority_contracts.py",
+            "brain/fold_proposals.py", "brain/wikidata_entity_bundle.py",
+            "brain/acquire_wikidata_entities.py", "brain/ingest/common.py",
+        ]
+        search = ["brain", "brain/tools", "site", "catalog", "site/ops"]
+
+        def resolve(name: str, importer: str) -> list[str]:
+            top = name.split(".")[0]
+            for directory in [str(Path(importer).parent)] + search:
+                for candidate in (Path(directory) / f"{top}.py", Path(directory) / top / "__init__.py"):
+                    if (root / candidate).is_file():
+                        found = [str(candidate)]
+                        sub = Path(directory) / (name.replace(".", "/") + ".py")
+                        if "." in name and (root / sub).is_file():
+                            found.append(str(sub))
+                        return found
+            return []
+
+        closure: set[str] = set()
+        todo = list(roots)
+        while todo:
+            path = todo.pop()
+            if path in closure or not (root / path).is_file():
+                continue
+            closure.add(path)
+            for node in ast.walk(ast.parse((root / path).read_text(encoding="utf-8"))):
+                if isinstance(node, ast.Import):
+                    names = [alias.name for alias in node.names]
+                elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                    names = [node.module] + [f"{node.module}.{alias.name}" for alias in node.names]
+                else:
+                    continue
+                for name in names:
+                    todo.extend(resolve(name, path))
+        self.assertIn("brain/build_cells.py", closure)
+        self.assertIn("brain/wikidata_observation.py", closure)
+
+        text = SCRIPT.read_text(encoding="utf-8")
+        start = text.index('if ! DIRTY="$(git -C "$REPO" status --porcelain -- \\')
+        command = text[start:text.index(')"; then', start)].replace("\\\n", " ")
+        watched = [word.strip("'\"") for word in command.split()[7:]]
+        self.assertIn("$REDUCER_SCOPE", watched)
+        watched = [entry.rstrip("/") for entry in watched if entry != "$REDUCER_SCOPE"] + inventory["scope"]
+        unwatched = sorted(path for path in closure
+                           if not any(path == entry or path.startswith(entry + "/") for entry in watched))
+        self.assertEqual(unwatched, [])
+
     def test_changed_curated_inputs_block_the_release_except_fold_outputs(self):
         # Curated reducer inputs are read from the working tree, so a local edit (or an
         # ignored file such as pool_candidates.json) would be frozen under a Git
