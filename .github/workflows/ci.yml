@@ -105,9 +105,30 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  attribution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: No Claude attribution in the commit history
+        run: |
+          messages=$(git log -i -E --grep='noreply@anthropic\.com|generated with \[claude code\]' --format='%h %s' HEAD)
+          idents=$(git log --format='%h %ae %ce' HEAD | grep -i 'noreply@anthropic\.com' || true)
+          if [[ -n "$messages$idents" ]]; then
+            echo "::error::Commits name Claude as an author (drop the Co-Authored-By: Claude line):"
+            printf '%s\n' "$messages" "$idents" | sed '/^$/d'
+            exit 1
+          fi
+
   required:
     if: always()
-    needs: [worker, python, browser]
+    needs: [worker, python, browser, attribution]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
@@ -116,9 +137,10 @@ jobs:
           WORKER_RESULT: ${{ needs.worker.result }}
           PYTHON_RESULT: ${{ needs.python.result }}
           BROWSER_RESULT: ${{ needs.browser.result }}
+          ATTRIBUTION_RESULT: ${{ needs.attribution.result }}
         run: |
-          if [[ "$WORKER_RESULT" != "success" || "$PYTHON_RESULT" != "success" || "$BROWSER_RESULT" != "success" ]]; then
-            echo "Required CI failed: worker=$WORKER_RESULT python=$PYTHON_RESULT browser=$BROWSER_RESULT"
+          if [[ "$WORKER_RESULT" != "success" || "$PYTHON_RESULT" != "success" || "$BROWSER_RESULT" != "success" || "$ATTRIBUTION_RESULT" != "success" ]]; then
+            echo "Required CI failed: worker=$WORKER_RESULT python=$PYTHON_RESULT browser=$BROWSER_RESULT attribution=$ATTRIBUTION_RESULT"
             exit 1
           fi
-          echo "Required CI passed: worker=$WORKER_RESULT python=$PYTHON_RESULT browser=$BROWSER_RESULT"
+          echo "Required CI passed: worker=$WORKER_RESULT python=$PYTHON_RESULT browser=$BROWSER_RESULT attribution=$ATTRIBUTION_RESULT"
