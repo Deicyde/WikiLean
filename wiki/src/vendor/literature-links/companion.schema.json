@@ -49,7 +49,7 @@
     "reference": {
       "type": "string",
       "minLength": 1,
-      "pattern": "^(?:[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f\\u2066-\\u2069\\u3000\\ufeff\\ufffe\\uffff%]|%[0-9A-Fa-f]{2})+(?![\\s\\S])"
+      "pattern": "^(?:[^\\u0000-\\u0020\\u007f-\\u00a0\\u061c\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f-\\u206f\\u3000\\ufeff\\ufffe\\uffff%]|%[0-9A-Fa-f]{2})+(?![\\s\\S])"
     },
     "text": {
       "type": "string",
@@ -58,7 +58,7 @@
     "extensions": {
       "type": "object",
       "patternProperties": {
-        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f\\u2066-\\u2069\\u3000\\ufeff\\ufffe\\uffff]+(?![\\s\\S])": true
+        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u061c\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f-\\u206f\\u3000\\ufeff\\ufffe\\uffff]+(?![\\s\\S])": true
       },
       "additionalProperties": false
     },
@@ -388,7 +388,7 @@
     "identifiers": {
       "type": "object",
       "patternProperties": {
-        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f\\u2066-\\u2069\\u3000\\ufeff\\ufffe\\uffff]+(?![\\s\\S])": {
+        "^[^\\u0000-\\u0020\\u007f-\\u00a0\\u061c\\u1680\\u2000-\\u200f\\u2028-\\u202f\\u205f-\\u206f\\u3000\\ufeff\\ufffe\\uffff]+(?![\\s\\S])": {
           "$ref": "#/$defs/text"
         }
       },
