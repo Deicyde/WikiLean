@@ -211,7 +211,7 @@ proposal is not an additional authoritative representation to build alongside it
 `docs/COMPANION-NATIVE.md` is the runbook for the storage, editor, pipeline,
 history and renderer changes and for the copied-database cutover.
 
-Each link is one Literature Links 2.0 record. A work item with no formal end
+Each link is one Literature Links 1.0 record. A work item with no formal end
 keeps its source selections in its `unlinked` list, and they leave WikiLean as
 records with `"object": []`.
 
