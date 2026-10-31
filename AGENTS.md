@@ -144,8 +144,8 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   new secret; never write a value anywhere.
 - `.github/workflows/ci.yml` is validation only: read-only repository permissions, checkout
   credentials disabled, no secrets, no deployments, no production writes, and no token-consuming
-  agent calls. Its `required` job aggregates the hermetic `worker` and `python` gates and the
-  loopback-only `browser` gate.
+  agent calls. Its `required` job aggregates the hermetic `worker` and `python` gates, the
+  loopback-only `browser` gate and the `attribution` check of the commit history.
 - The Playwright `browser` job runs on every CI trigger and has been required since PR #72.
   Failures upload `wiki/playwright-report/` and `wiki/test-results/` as `browser-failure-artifacts`
   for 7 days.
@@ -211,3 +211,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - Verify before asserting; be honest about failures. Ultracode is typically on — use Workflows
   for substantive work and adversarially review your own changes before committing.
 - Credentials: lead with the earned **Fordham BS**, not the in-progress Stony Brook MA.
+- **No Claude attribution:** commit as Jack, with no `Co-Authored-By: Claude` line and no
+  "Generated with Claude Code" PR footer; CI's `attribution` job fails on one in the history.
+  The history was rewritten on 2026-10-17 to remove them, so a clone from before then is on
+  the old history: move its work with `git rebase --onto`, never merge it into a new branch.
