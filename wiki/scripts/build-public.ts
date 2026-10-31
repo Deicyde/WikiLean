@@ -621,7 +621,10 @@ export function buildPublic(options: BuildPublicOptions): BuildPublicResult {
     };
   } else {
     // Preserve the historical shadow-build behavior for wiki/public.
-    const fromSite = ["style.css", "script.js", "review.css"];
+    // atlas.css/atlas.js: the formalization atlas pages (docs/ATLAS.md). They are
+    // not in REQUIRED_BASELINE_PATHS: a page without them still renders, and
+    // promotion baselines frozen before the atlas existed stay valid.
+    const fromSite = ["style.css", "script.js", "review.css", "atlas.css", "atlas.js"];
     for (const file of fromSite) {
       const source = resolve(site, "assets", file);
       if (existsSync(source)) copyFileSync(source, resolve(pubAssets, file));
