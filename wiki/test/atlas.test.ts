@@ -8,6 +8,7 @@
 
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
 import { describe, it, expect } from "vitest";
 import {
   setup, get, post, blockNetwork, PIPELINE_TOKEN, REVID, SLUG, ORIGIN, type Harness,
@@ -46,6 +47,30 @@ function feedback(overrides: Record<string, unknown> = {}): Record<string, unkno
 
 function feedbackRows(h: Harness): Array<Record<string, unknown>> {
   return h.db.prepare("SELECT * FROM atlas_feedback ORDER BY id").all() as Array<Record<string, unknown>>;
+}
+
+// The Confirm / Report controls of one location on a coverage page.
+function feedbackBox(html: string, key = MATHLIB_KEY): string {
+  const start = html.indexOf(`<div class="atlas-fb" data-location-key="${key}">`);
+  expect(start, "the location has feedback controls").toBeGreaterThanOrEqual(0);
+  return html.slice(start, html.indexOf("</div>", start));
+}
+
+// The fixture store as a later build publishes it: another campaign and record
+// set over the same article and the same location keys.
+const NEXT_CAMPAIGN = "fixture-2026-11";
+const NEXT_RECORD_SET = "b".repeat(64);
+function nextCampaignStore(): Map<string, string> {
+  const files = atlasFixtureFiles();
+  for (const [key, value] of files) {
+    if (key === "atlas/v1/current.json" || key.startsWith("atlas/v1/articles/")) {
+      const doc = JSON.parse(value);
+      doc.campaign = NEXT_CAMPAIGN;
+      if (key.startsWith("atlas/v1/articles/")) doc.record_set = NEXT_RECORD_SET;
+      files.set(key, JSON.stringify(doc));
+    }
+  }
+  return files;
 }
 
 describe("atlas routes without a store", () => {
@@ -199,6 +224,22 @@ describe("atlas pages with the fixture store", () => {
     files.set("atlas/v1/index/1.json", files.get("atlas/v1/index/8.json")!.replace('"shard":"8"', '"shard":"1"'));
     expect(await loadIndexShard(reader, "1", 1_000 + INDEX_CACHE_MS - 1)).toBe(first);
     expect((await loadIndexShard(reader, "1", 1_000 + INDEX_CACHE_MS))?.[0].title).toBe("Gadget (mathematics)");
+  });
+
+  it("a dashboard search keys an IPv6 client by its /64, so rotating inside it buys no new budget", async () => {
+    const h = setup();
+    bindAtlas(h.env);
+    const keys: string[] = [];
+    const record = { limit: async ({ key }: { key: string }) => { keys.push(key); return { success: true }; } };
+    Object.assign(h.env, { BRAIN_API_LIMITER: record });
+    for (const ip of ["2001:db8:1:2::a", "2001:db8:1:2:ffff::b", "2001:db8:1:3::a", "198.51.100.4"]) {
+      expect((await get(h.env, "/atlas?q=gadg", { ip })).status).toBe(200);
+    }
+    expect((await get(h.env, "/atlas?q=gadg")).status).toBe(200);
+    expect(keys).toEqual([
+      "atlas-q:2001:db8:1:2::/64", "atlas-q:2001:db8:1:2::/64", "atlas-q:2001:db8:1:3::/64", "atlas-q:198.51.100.4",
+      "atlas-q:unknown",
+    ]);
   });
 
   it("a dashboard search takes the per-IP anonymous read budget; the plain list does not", async () => {
@@ -697,7 +738,7 @@ describe("atlas pages with the fixture store", () => {
 });
 
 describe("atlas feedback", () => {
-  it("stores one verdict per (location, user); a second verdict replaces the first", async () => {
+  it("appends one row per verdict, and the newest is the person's verdict", async () => {
     const h = bound();
     const first = await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
     expect(first.status).toBe(200);
@@ -705,14 +746,94 @@ describe("atlas feedback", () => {
     const second = await post(h.env, "/api/atlas/feedback", feedback({ verdict: "report", note: "  wrong lemma  " }), { user: "u-human" });
     expect(second.status).toBe(200);
     const rows = feedbackRows(h);
-    expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toMatchObject({ verdict: "confirm", note: null, user_id: "u-human" });
+    expect(rows[1]).toMatchObject({
       location_key: MATHLIB_KEY, pageid: WIDGET_PAGEID, revision: 2002, campaign: FIXTURE_CAMPAIGN,
       verdict: "report", note: "wrong lemma", user_id: "u-human",
     });
-    expect(rows[0].updated_at as number).toBeGreaterThanOrEqual(rows[0].created_at as number);
+    expect(rows[1].created_at as number).toBeGreaterThanOrEqual(rows[0].created_at as number);
+    expect(rows[1]).not.toHaveProperty("updated_at");
     await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-patroller" });
-    expect(feedbackRows(h)).toHaveLength(2);
+    expect(feedbackRows(h)).toHaveLength(3);
+    const latest = h.db.prepare("SELECT user_id, verdict FROM atlas_feedback_latest ORDER BY user_id").all();
+    expect(latest).toEqual([{ user_id: "u-human", verdict: "report" }, { user_id: "u-patroller", verdict: "confirm" }]);
+  });
+
+  it("copies the record set, the relation and the pair key from the store at write time, never from the client", async () => {
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+    const location = article.passages[0].locations[0];
+    bindAtlas(h.env, files);
+    await post(h.env, "/api/atlas/feedback", feedback({ record_set: "c".repeat(64), relation: "hasPart", pair_key: "d".repeat(64) }), { user: "u-human" });
+    expect(article.record_set).toMatch(/^[0-9a-f]{64}$/);
+    expect(feedbackRows(h)[0]).toMatchObject({
+      record_set: article.record_set, relation: location.relation, pair_key: null, provenance: "human",
+    });
+
+    // A store that carries the producer's pair key: the row keeps it.
+    location.pair_key = "e".repeat(64);
+    files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+    bindAtlas(h.env, files);
+    await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
+    expect(feedbackRows(h)[1]).toMatchObject({ pair_key: "e".repeat(64), relation: location.relation });
+  });
+
+  it("a withdrawal is a verdict: nothing shows as pressed, and the earlier row stays", async () => {
+    const h = bound();
+    await post(h.env, "/api/atlas/feedback", feedback({ verdict: "report", note: "wrong lemma" }), { user: "u-human" });
+    const res = await post(h.env, "/api/atlas/feedback", feedback({ verdict: "withdraw" }), { user: "u-human" });
+    expect(res.status).toBe(200);
+    expect(await jsonOf(res)).toEqual({ ok: true, verdict: "withdraw" });
+    expect(feedbackRows(h).map((row) => row.verdict)).toEqual(["report", "withdraw"]);
+    expect(feedbackRows(h)[0].note).toBe("wrong lemma");
+    const box = feedbackBox(await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text());
+    expect(box).toContain('data-verdict="confirm" aria-pressed="false"');
+    expect(box).toContain('data-verdict="report" aria-pressed="false"');
+    expect(box).not.toContain("this link.");
+    // A later verdict counts again.
+    await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
+    expect(feedbackBox(await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text()))
+      .toContain('data-verdict="confirm" aria-pressed="true"');
+  });
+
+  // docs/ATLAS.md section 10: a verdict belongs to the campaign the person saw.
+  it("a verdict from one campaign is not pressed in the next", async () => {
+    const h = bound();
+    await post(h.env, "/api/atlas/feedback", feedback({ verdict: "report", note: "wrong lemma" }), { user: "u-human" });
+    const before = feedbackBox(await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text());
+    expect(before).toContain('data-verdict="report" aria-pressed="true"');
+    expect(before).toContain("You reported this link.");
+
+    bindAtlas(h.env, nextCampaignStore());
+    const after = feedbackBox(await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text());
+    expect(after).toContain('data-verdict="report" aria-pressed="false"');
+    expect(after).toContain('data-verdict="confirm" aria-pressed="false"');
+    expect(after).not.toContain("You reported this link.");
+  });
+
+  it("the next campaign's verdict does not overwrite the old campaign's row", async () => {
+    const h = bound();
+    await post(h.env, "/api/atlas/feedback", feedback({ verdict: "report", note: "wrong lemma" }), { user: "u-human" });
+    const [old] = feedbackRows(h);
+
+    bindAtlas(h.env, nextCampaignStore());
+    const next = await post(h.env, "/api/atlas/feedback", feedback({ campaign: NEXT_CAMPAIGN }), { user: "u-human" });
+    expect(next.status).toBe(200);
+    const rows = feedbackRows(h);
+    expect(rows).toHaveLength(2);
+    expect(rows[0]).toEqual(old);
+    expect(rows[0]).toMatchObject({ campaign: FIXTURE_CAMPAIGN, verdict: "report", note: "wrong lemma" });
+    expect(rows[1]).toMatchObject({ campaign: NEXT_CAMPAIGN, record_set: NEXT_RECORD_SET, verdict: "confirm", note: null });
+    expect(feedbackBox(await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text()))
+      .toContain('data-verdict="confirm" aria-pressed="true"');
+
+    // Each campaign keeps its own current verdict.
+    bindAtlas(h.env);
+    const back = feedbackBox(await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text());
+    expect(back).toContain('data-verdict="report" aria-pressed="true"');
+    expect(back).toContain('data-verdict="confirm" aria-pressed="false"');
   });
 
   it("refuses anonymous, bearer and cross-origin writes", async () => {
@@ -808,15 +929,107 @@ describe("atlas feedback", () => {
     expect(feedbackRows(h)).toEqual([]);
   });
 
+  it("the table holds only human labels and only the three verdicts", () => {
+    const h = bound();
+    const insert = (verdict: string, provenance: string) => h.db.prepare(
+      `INSERT INTO atlas_feedback (location_key, pageid, revision, campaign, record_set, relation, verdict, provenance, user_id, created_at)
+       VALUES (?, 1, 1, 'c', ?, 'exactMatch', ?, ?, 'u-human', 1)`,
+    ).run(MATHLIB_KEY, "a".repeat(64), verdict, provenance);
+    expect(() => insert("confirm", "ai")).toThrow(/CHECK constraint failed/);
+    expect(() => insert("maybe", "human")).toThrow(/CHECK constraint failed/);
+    for (const verdict of ["confirm", "report", "withdraw"]) insert(verdict, "human");
+    expect(feedbackRows(h)).toHaveLength(3);
+  });
+
   it("answers 503 (not 500) while migration 0015 is not applied", async () => {
     const h = bound();
-    h.db.exec("DROP TABLE atlas_feedback");
+    h.db.exec("DROP VIEW atlas_feedback_latest; DROP TABLE atlas_feedback");
     const res = await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
     expect(res.status).toBe(503);
     expect((await jsonOf(res)).error).toBe("atlas feedback not configured (migration 0015)");
     // The coverage page still renders for a signed-in viewer.
     expect((await get(h.env, WIDGET_PATH, { user: "u-human" })).status).toBe(200);
     expect((await get(h.env, "/api/atlas/feedback/export", { bearer: PIPELINE_TOKEN })).status).toBe(503);
+  });
+});
+
+// How the file behaves when an operator applies it (docs/ATLAS.md section 10). It
+// is applied by hand, so this is what stands between a database that still holds
+// the superseded table and a half-migrated one.
+describe("migration 0015", () => {
+  const MIGRATION = readFileSync(new URL("../migrations/0015_atlas_feedback.sql", import.meta.url), "utf8");
+  // The table shape this file replaced, as a database that applied it holds it.
+  const SUPERSEDED = `
+    CREATE TABLE atlas_feedback (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      location_key TEXT NOT NULL CHECK (length(location_key) = 64),
+      pageid INTEGER NOT NULL,
+      revision INTEGER NOT NULL,
+      campaign TEXT NOT NULL,
+      verdict TEXT NOT NULL CHECK (verdict IN ('confirm', 'report')),
+      note TEXT CHECK (note IS NULL OR length(note) <= 500),
+      user_id TEXT NOT NULL REFERENCES users(id),
+      created_at INTEGER NOT NULL,
+      updated_at INTEGER NOT NULL,
+      UNIQUE (location_key, user_id)
+    );
+    CREATE INDEX idx_atlas_feedback_user_page ON atlas_feedback (user_id, pageid);
+    CREATE INDEX idx_atlas_feedback_location ON atlas_feedback (location_key);`;
+  const database = (): DatabaseSync => {
+    const db = new DatabaseSync(":memory:");
+    db.exec("CREATE TABLE users (id TEXT PRIMARY KEY)");
+    return db;
+  };
+  const schema = (db: DatabaseSync) =>
+    db.prepare("SELECT type, name, sql FROM sqlite_master WHERE name LIKE '%atlas_feedback%' ORDER BY name").all() as
+      Array<{ type: string; name: string; sql: string | null }>;
+
+  it("applies to a database with no atlas_feedback, and a re-run changes nothing", () => {
+    const db = database();
+    db.exec(MIGRATION);
+    const applied = schema(db);
+    expect(applied.map((row) => `${row.type} ${row.name}`).sort()).toEqual([
+      "index idx_atlas_feedback_judgment",
+      "index idx_atlas_feedback_pair",
+      "index idx_atlas_feedback_user_page",
+      "table atlas_feedback",
+      "view atlas_feedback_latest",
+    ]);
+    db.exec(MIGRATION);
+    expect(schema(db)).toEqual(applied);
+  });
+
+  it("stops on a database that still holds the superseded table, and creates nothing", () => {
+    const db = database();
+    db.exec(SUPERSEDED);
+    const before = schema(db);
+    expect(() => db.exec(MIGRATION)).toThrow(/pair_key/);
+    expect(schema(db)).toEqual(before);
+  });
+
+  it("the view reads the newest row per judgment, and only per judgment", () => {
+    const db = database();
+    db.exec(MIGRATION);
+    db.exec("INSERT INTO users (id) VALUES ('a'), ('b')");
+    const insert = db.prepare(
+      `INSERT INTO atlas_feedback (location_key, pageid, revision, campaign, record_set, relation, verdict, user_id, created_at)
+       VALUES (?, 1, 1, ?, ?, 'exactMatch', ?, ?, 1)`,
+    );
+    const key = "a".repeat(64), other = "b".repeat(64), set = "c".repeat(64);
+    insert.run(key, "one", set, "report", "a");
+    insert.run(key, "one", set, "withdraw", "a");
+    insert.run(key, "two", set, "confirm", "a");
+    insert.run(key, "one", set, "confirm", "b");
+    insert.run(other, "one", set, "report", "a");
+    const latest = db.prepare(
+      "SELECT location_key, campaign, user_id, verdict FROM atlas_feedback_latest ORDER BY location_key, campaign, user_id",
+    ).all().map((row) => ({ ...row }));
+    expect(latest).toEqual([
+      { location_key: key, campaign: "one", user_id: "a", verdict: "withdraw" },
+      { location_key: key, campaign: "one", user_id: "b", verdict: "confirm" },
+      { location_key: key, campaign: "two", user_id: "a", verdict: "confirm" },
+      { location_key: other, campaign: "one", user_id: "a", verdict: "report" },
+    ]);
   });
 });
 
@@ -877,6 +1090,16 @@ describe("atlas feedback export", () => {
     expect((await get(h.env, "/api/atlas/feedback/export", { user: "u-human" })).status).toBe(403);
   });
 
+  it("streams every verdict, not only the newest, for consumers to take the newest per judgment", async () => {
+    const h = bound();
+    await post(h.env, "/api/atlas/feedback", feedback({ verdict: "report" }), { user: "u-human" });
+    await post(h.env, "/api/atlas/feedback", feedback({ verdict: "withdraw" }), { user: "u-human" });
+    const res = await get(h.env, "/api/atlas/feedback/export", { bearer: PIPELINE_TOKEN });
+    const lines = (await res.text()).trim().split("\n").map((line) => JSON.parse(line));
+    expect(lines.map((line) => line.verdict)).toEqual(["report", "withdraw"]);
+    expect(lines.map((line) => line.feedback_id)).toEqual([1, 2]);
+  });
+
   it("streams every row with pseudonyms and no user ids, and works with ATLAS unbound", async () => {
     const h = bound();
     await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
@@ -894,10 +1117,12 @@ describe("atlas feedback export", () => {
     const research = (id: string) => createHash("sha256").update(id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
     expect(ATLAS_PSEUDONYM_DOMAIN).toBe("atlas-feedback\0");
     expect(pseudonym("u-human")).not.toBe(research("u-human"));
+    const article = fixtureArticle();
     expect(lines[0]).toEqual({
-      feedback_id: 1, location_key: MATHLIB_KEY, pageid: WIDGET_PAGEID, revision: 2002, campaign: FIXTURE_CAMPAIGN,
-      verdict: "confirm", note: null, pseudonym: pseudonym("u-human"),
-      created_at: lines[0].created_at, updated_at: lines[0].updated_at,
+      feedback_id: 1, location_key: MATHLIB_KEY, pair_key: null, pageid: WIDGET_PAGEID, revision: 2002,
+      campaign: FIXTURE_CAMPAIGN, record_set: article.record_set, relation: article.passages[0].locations[0].relation,
+      verdict: "confirm", note: null, provenance: "human", pseudonym: pseudonym("u-human"),
+      created_at: lines[0].created_at,
     });
     expect(lines[1]).toMatchObject({ verdict: "report", note: "special case only", pseudonym: pseudonym("u-patroller") });
     expect(JSON.stringify(lines)).not.toContain("u-human");
