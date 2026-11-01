@@ -1,4 +1,4 @@
-"""Native WikiLean review items whose links hold lossless Literature Links 2.0 annotations.
+"""Native WikiLean review items whose links hold lossless Literature Links 1.0 annotations.
 
 The review item is application data. Each link's ``annotation`` is one Literature Links
 record, and each unlinked selection is one end. Legacy conversion is explicit; read
