@@ -582,5 +582,54 @@ esac
                 self.assertIn("seed bot-state only", r.stdout)
 
 
+class BodyEditsUseRest(unittest.TestCase):
+    """The token holds public_repo and workflow; `gh pr edit` also needs read:org."""
+
+    REPO = "leanprover-community/mathlib4"
+
+    def fake_run(self, body):
+        calls = []
+
+        def run(cmd, **kw):
+            calls.append(cmd)
+            out = body if cmd[1:3] == ["pr", "view"] else ""
+            return subprocess.CompletedProcess(cmd, 0, out, "")
+
+        return calls, run
+
+    def assert_rest_edit(self, calls, pr, new):
+        edits = [c for c in calls if c[1:3] != ["pr", "view"]]
+        self.assertEqual(edits, [["gh", "api", "-X", "PATCH", f"repos/{self.REPO}/pulls/{pr}", "-f", f"body={new}"]])
+
+    def test_body_count(self):
+        import pr_table
+        calls, run = self.fake_run("adds a batch of 12 tags")
+        with mock.patch.object(pr_table.subprocess, "run", run), contextlib.redirect_stdout(io.StringIO()):
+            pr_table.sync_body_count(7, self.REPO, n=9)
+        self.assert_rest_edit(calls, 7, "adds a batch of 9 tags")
+
+    def test_review_link(self):
+        import pr_table
+        calls, run = self.fake_run("see /review?pr= here")
+        with mock.patch.object(pr_table.subprocess, "run", run), contextlib.redirect_stdout(io.StringIO()):
+            pr_table.sync_review_link(7, self.REPO)
+        self.assert_rest_edit(calls, 7, "see /review?pr=7 here")
+
+    def test_open_batch_review_link(self):
+        import open_batch
+        calls = []
+
+        def run(cmd, **kw):
+            calls.append(cmd)
+            viewed = sum(c[1:3] == ["pr", "view"] for c in calls)
+            out = ("see /review?pr= here" if viewed == 1 else "see /review?pr=7 here") if cmd[1:3] == ["pr", "view"] else ""
+            return subprocess.CompletedProcess(cmd, 0, out, "")
+
+        with mock.patch.object(open_batch.subprocess, "run", run), mock.patch("time.sleep"), \
+                contextlib.redirect_stdout(io.StringIO()):
+            open_batch.fill_review_link(7)
+        self.assert_rest_edit(calls, 7, "see /review?pr=7 here")
+
+
 if __name__ == "__main__":
     unittest.main()

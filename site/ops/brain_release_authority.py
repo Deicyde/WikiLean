@@ -58,8 +58,9 @@ AFFECTING_EXCEPTIONS: tuple[str, ...] = (
     "site/ops/nightly.env",
     "site/test_frontier_page.py",
 )
+# .gitattributes is deliberately absent: eol or working-tree-encoding rules there
+# change the bytes a fresh promotion worktree checks out for wiki/src.
 NEUTRAL_FILES: tuple[str, ...] = (
-    ".gitattributes",
     ".gitignore",
     "AGENTS.md",
     "CLAUDE.md",

@@ -107,9 +107,10 @@ treat `#` as a comment, so the inline comments in these blocks would break the c
    ```bash
    git -C "$C" log -1 --format='%h %ci %s'
    git -C "$C" status --short | head -20
-   git -C "$C" merge-base --is-ancestor b079500b HEAD 2>/dev/null \
-     && echo "has the 2026-08-04 abort fix (b079500b)" \
-     || echo "older than b079500b, or that commit was never fetched"
+   git -C "$C" merge-base --is-ancestor c526afd4 HEAD 2>/dev/null \
+     || git -C "$C" merge-base --is-ancestor b079500b HEAD 2>/dev/null \
+     && echo "has the 2026-08-04 abort fix (c526afd4; b079500b before the 2026-10-17 history rewrite)" \
+     || echo "older than the 2026-08-04 abort fix, or that commit was never fetched"
    ls "$C/site/ops/nightly-runtime.sh" 2>/dev/null && echo "current wrapper" || echo "older wrapper"
    grep -nE '^(REPO|PY)=|export (PATH|WIKILEAN_MATHLIB)=' "$C/site/ops/nightly-moderate.sh" "$C/site/ops/nightly-runtime.sh" 2>/dev/null
    ```

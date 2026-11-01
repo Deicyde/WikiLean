@@ -1,6 +1,6 @@
 # Native companion records in WikiLean
 
-WikiLean's native application format stores complete Literature Links 2.0
+WikiLean's native application format stores complete Literature Links 1.0
 annotations in D1. Normal native reads and edits use those objects directly. The
 vendored schema and its pin are in `wiki/src/vendor/literature-links/`.
 No production database has been migrated, and no Worker built from this code
