@@ -245,8 +245,11 @@ Before this, an expired token kept every run green and the bot blind from
   and reopen the upstream PR) and `workflow` (the conflict rebuild force-pushes a
   branch rebuilt on fresh upstream master, and GitHub refuses a push that updates
   `.github/workflows/` from a token without it).
-- **Current expiry:** not recorded. The token set on 2026-06-23 most likely
-  expired on 2026-09-21 (90 days). Write the new date here when you rotate.
+- **Body edits use the REST API.** `gh pr edit` also needs `read:org`, because its
+  GraphQL query reads `login`. `bot/pr_table.py` and `bot/open_batch.py` call
+  `gh api -X PATCH` instead, so the two scopes above are enough.
+- **Current expiry:** about 2027-01-29 (set 2026-10-31 US Eastern for 90 days; the
+  exact date is on the tokens page). Write the new date here when you rotate.
 - **Tracked by:** Jack (@Deicyde). Set a reminder a week before the expiry.
 
 Steps:
