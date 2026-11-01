@@ -7,6 +7,7 @@ import type { Env } from "../src/env.js";
 import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
 import { installBrainFixture } from "../test/helpers/brain-fixture.js";
+import { bindAtlas } from "../test/helpers/atlas.js";
 import { SEED_ANNOTATIONS, WP_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
 
 const HOST = "127.0.0.1";
@@ -17,6 +18,8 @@ const SOURCE_ASSETS = new Map<string, { path: string; contentType: string }>([
   ["/assets/style.css", { path: resolve(ROOT, "../site/assets/style.css"), contentType: "text/css; charset=utf-8" }],
   ["/assets/script.js", { path: resolve(ROOT, "../site/assets/script.js"), contentType: "text/javascript; charset=utf-8" }],
   ["/assets/review.css", { path: resolve(ROOT, "../site/assets/review.css"), contentType: "text/css; charset=utf-8" }],
+  ["/assets/atlas.css", { path: resolve(ROOT, "../site/assets/atlas.css"), contentType: "text/css; charset=utf-8" }],
+  ["/assets/atlas.js", { path: resolve(ROOT, "../site/assets/atlas.js"), contentType: "text/javascript; charset=utf-8" }],
   ["/assets/editor.js", { path: resolve(ROOT, "assets/editor.js"), contentType: "text/javascript; charset=utf-8" }],
 ]);
 
@@ -80,6 +83,12 @@ nativeSeed[1].unlinked.push({ type: "html", uri: "https://example.net/narrative.
 harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,4,1,?,?)")
   .run("Native_Article", "Native Article", "Native Article", REVID, JSON.stringify(nativeSeed), Date.now(), Date.now());
 await harness.wpHtml.put(`wp:Native_Article:${REVID}`, WP_FIXTURE);
+// The formalization atlas: the golden fixture store (scripts/atlas/fixtures),
+// plus an article whose Wikipedia title the atlas covers, for the summary box.
+bindAtlas(harness.env);
+harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,3,1,?,?)")
+  .run("Widget_lemma", "Widget lemma", "Widget lemma", REVID, "[]", Date.now(), Date.now());
+await harness.wpHtml.put(`wp:Widget_lemma:${REVID}`, WP_FIXTURE);
 const runtimeFetch = globalThis.fetch;
 globalThis.fetch = (async (input: RequestInfo | URL) => {
   throw new Error(`browser harness attempted an external fetch: ${String(input)}`);

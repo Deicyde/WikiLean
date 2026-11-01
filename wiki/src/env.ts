@@ -38,6 +38,12 @@ export interface Env {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
 
+  // Formalization atlas store (docs/ATLAS.md): an R2 bucket holding the static
+  // tree scripts/atlas/build_store.py writes (keys atlas/v1/...). Optional and
+  // read-only: when unbound every atlas route answers 503 "atlas store not
+  // configured". Binding it is an operator decision (docs/ATLAS.md, "Store").
+  ATLAS?: R2Bucket;
+
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 
   // Worker Version identity for GET /api/version (src/version.ts), from the

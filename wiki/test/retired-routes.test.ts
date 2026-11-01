@@ -6,6 +6,11 @@
 // multi-segment /api/atlas paths fall through to app.notFound. Either way the
 // contract is the same: the normal clean article-404 page — never a redirect,
 // never a 500, and never article creation under an old URL.
+//
+// /atlas itself is live again as the formalization atlas dashboard
+// (src/atlas.ts, test/atlas.test.ts); it is still RESERVED, so no article can
+// be created under it. The old graph's /api/atlas and /api/atlas/<slug> data
+// paths stay plain 404s: the atlas APIs live under /api/atlas/<kind>/<id>.
 
 import { describe, it, expect } from "vitest";
 import { setup, get, botCreate, articleRow, blockNetwork } from "./helpers/harness.js";
@@ -13,7 +18,7 @@ import { setup, get, botCreate, articleRow, blockNetwork } from "./helpers/harne
 blockNetwork();
 
 // Every path the deleted tombstone handlers used to answer.
-const DELETED_PAGE_PATHS = ["/map", "/map-v2", "/graph", "/atlas", "/article-graph"];
+const DELETED_PAGE_PATHS = ["/map", "/map-v2", "/graph", "/article-graph"];
 const DELETED_DATA_PATHS = ["/graph_data.json", "/atlas_data.json", "/api/atlas", "/api/atlas/algebra"];
 
 describe("deleted old-graph-stack routes", () => {
@@ -31,7 +36,7 @@ describe("deleted old-graph-stack routes", () => {
 
   it("the fallthrough never creates or serves an article under an old URL", async () => {
     const { db, env } = setup();
-    for (const path of DELETED_PAGE_PATHS) {
+    for (const path of [...DELETED_PAGE_PATHS, "/atlas"]) {
       const slug = path.slice(1);
       await get(env, path);
       expect(articleRow(db, slug), slug).toBeUndefined();

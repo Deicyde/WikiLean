@@ -304,7 +304,11 @@ function applyStaticHeaders(file: string, pathname: string): Headers {
 describe("static asset _headers", () => {
   it("applies the Worker's header set to every static asset path", () => {
     const file = staticAssetHeadersFile();
-    for (const path of ["/", "/concepts", "/robots.txt", "/404.html", "/assets/brain/current.json", "/assets/style.css"]) {
+    for (const path of [
+      "/", "/concepts", "/robots.txt", "/404.html", "/assets/brain/current.json", "/assets/style.css",
+      // The formalization atlas's assets (build-public copies them from site/assets).
+      "/assets/atlas.css", "/assets/atlas.js",
+    ]) {
       const headers = applyStaticHeaders(file, path);
       expectSecurityHeaders(new Response(null, { headers }));
       expect([...headers.keys()].sort()).toEqual(Object.keys(SECURITY_HEADERS).map((k) => k.toLowerCase()).sort());

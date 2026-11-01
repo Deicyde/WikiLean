@@ -122,6 +122,26 @@ export function injectAuthAndEditor(
   return idx === -1 ? page + inject : page.slice(0, idx) + inject + page.slice(idx);
 }
 
+// The formalization atlas summary box (docs/ATLAS.md, "Article pages"),
+// injected per request like the staleness banner and NEVER baked into the
+// cached base page: the atlas store changes independently of articles.version,
+// so a cached box would go stale for up to 30 days. The cached base bytes are
+// unchanged, so no render-cache key bump. `box` is atlasSummaryBox() output or
+// null (no atlas entry, or ATLAS unbound), in which case the page is returned
+// byte-for-byte unchanged. Placed just above the article body, outside <main>,
+// so the wrap engine, script.js and the editor never see it.
+export function injectAtlasSummary(page: string, box: string | null): string {
+  if (!box) return page;
+  const at = page.indexOf('<main class="wl-article-body">');
+  if (at !== -1) return page.slice(0, at) + box + page.slice(at);
+  const body = page.match(/<body[^>]*>/);
+  if (body && body.index !== undefined) {
+    const end = body.index + body[0].length;
+    return page.slice(0, end) + "\n" + box + page.slice(end);
+  }
+  return page;
+}
+
 // Warm academic-minimalist shell, matching home.ts: paper background, serif
 // display headings (system stacks only), one deep-blue accent (#1a4b8c), and
 // the status trio retuned to #2f7d4f / #b08020 / #b3372f. Text-on-tint badge

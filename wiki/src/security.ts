@@ -183,6 +183,17 @@ export function parseCspReports(payload: unknown): CspViolation[] {
   return out.slice(0, MAX_REPORTS_LOGGED);
 }
 
+// The pseudonym salt of both pseudonymous exports: the research export
+// (index.ts, sha256(user_id + salt)) and the atlas feedback export (atlas.ts,
+// domain-separated). A dedicated secret keeps the salt out of the hands of
+// every PIPELINE_TOKEN holder (who could otherwise recompute the pseudonyms
+// for the public user ids) and lets the bearer rotate without re-keying them.
+// Falls back to PIPELINE_TOKEN so existing pseudonyms stay stable until the
+// secret is set.
+export function researchExportSalt(env: Pick<Env, "RESEARCH_EXPORT_SALT" | "PIPELINE_TOKEN">): string {
+  return env.RESEARCH_EXPORT_SALT || env.PIPELINE_TOKEN || "";
+}
+
 // CSRF guard for session-authenticated writes: a browser request whose Origin
 // is another site is refused. Requests without an Origin (the pipeline's
 // curl/requests clients) pass; a same-origin fetch always sends one.
@@ -259,7 +270,11 @@ export async function readBodyCapped(req: Request, max: number): Promise<string 
 //   brainEdge / brainNode: one edge or node with short bounded fields;
 //   quickstatements: up to 200,000 characters of pasted TSV, or 100 rows;
 //   repos: at most 50 repository rows;
-//   reviewPost: one PR's reviewer decisions with free-text notes.
+//   reviewPost: one PR's reviewer decisions with free-text notes;
+//   atlasFeedback: one location verdict (atlas.ts): a 64-hex location key, a
+//     page id, a campaign of at most 128 characters and a note of at most
+//     MAX_FLAG_COMMENT_LEN characters (about 3.3 KB even if every note
+//     character is \u-escaped).
 export const MAX_JSON_BODY_BYTES = {
   flag: 16 * 1024,
   flagResolve: 16 * 1024,
@@ -270,6 +285,7 @@ export const MAX_JSON_BODY_BYTES = {
   quickstatements: 1024 * 1024,
   repos: 256 * 1024,
   reviewPost: 1024 * 1024,
+  atlasFeedback: 4 * 1024,
 } as const;
 
 export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };

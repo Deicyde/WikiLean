@@ -42,8 +42,8 @@ and `BETTER_AUTH_URL` are plain vars in `wiki/wrangler.jsonc`, not secrets.
 
 | Name | Holder | Scope / power | Consumers | Rotation | Expiry |
 |---|---|---|---|---|---|
-| `PIPELINE_TOKEN` | Jack (Cloudflare account); copies below | Full `bot` role: PUT/POST articles, decide proposals, `/api/work`, `/api/runs`, `/api/admin/revert-run`, `/api/research/export.jsonl`, `/api/queue` | nightly host (`wiki/.dev.vars`), Actions secret `PIPELINE_TOKEN` (backup job, poller as `WIKILEAN_API_TOKEN`) | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter), then update every copy (step 5 there). Emergency: the kill switch below | none (static); last set 2026-06-10/11 (ROADMAP) |
-| `RESEARCH_EXPORT_SALT` | Jack | Salt for research-export pseudonyms (`index.ts researchExportSalt`) | Worker only | Setting or changing it re-keys every pseudonym once. Unset, the salt falls back to `PIPELINE_TOKEN` | not set yet |
+| `PIPELINE_TOKEN` | Jack (Cloudflare account); copies below | Full `bot` role: PUT/POST articles, decide proposals, `/api/work`, `/api/runs`, `/api/admin/revert-run`, `/api/research/export.jsonl`, `/api/atlas/feedback/export`, `/api/queue` | nightly host (`wiki/.dev.vars`), Actions secret `PIPELINE_TOKEN` (backup job, poller as `WIKILEAN_API_TOKEN`) | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter), then update every copy (step 5 there). Emergency: the kill switch below | none (static); last set 2026-06-10/11 (ROADMAP) |
+| `RESEARCH_EXPORT_SALT` | Jack | Salt for the pseudonyms of the research export and the atlas feedback export (`security.ts researchExportSalt`; the atlas ones are domain-separated) | Worker only | Setting or changing it re-keys every pseudonym once. Unset, the salt falls back to `PIPELINE_TOKEN` | not set yet |
 | `BETTER_AUTH_SECRET` | Jack | Signs every better-auth session cookie | Worker only | Rotation signs everyone out | unknown; rotation pending (P0 3) |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth app owner (wiki login) | Identity only (`read:user`, `user:email`, `auth.ts`) | Worker login | Generate a new client secret in the OAuth app, put it, then delete the old one in GitHub | GitHub OAuth client secrets do not expire |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | — | Google sign-in | — | — | not set |
@@ -139,7 +139,8 @@ version-only path instead; it rides the next reviewed promotion:
    hours): `gh secret set PIPELINE_TOKEN --repo Deicyde/WikiLean < ~/.wikilean-rotate.tmp`,
    then replace the `PIPELINE_TOKEN=` line in `wiki/.dev.vars` on the nightly host
    with an editor, then `rm ~/.wikilean-rotate.tmp`. Set `RESEARCH_EXPORT_SALT`
-   first (once, same procedure) so research pseudonyms do not change with the bearer.
+   first (once, same procedure) so research and atlas feedback pseudonyms do not change
+   with the bearer.
 6. Record the date in the [expiry register](#expiry-register).
 
 **Emergency** (a leaked `PIPELINE_TOKEN`): use the kill switch above first; it takes
@@ -192,8 +193,9 @@ and `cd wiki && npx wrangler secret list` (names only).
   `MAX_AUTH_BODY_BYTES`); every other JSON body
   through `readJsonCapped` (`wiki/src/security.ts` `MAX_JSON_BODY_BYTES`): `/api/flag` 16 KiB
   (anonymous), article create/save 4 MiB, `/api/runs` 64 KiB, Brain edge/node 64 KiB,
-  quickstatements 1 MiB, `/api/repos` 256 KiB, `/review` posting 1 MiB. Each answers 413 on a
-  declared or streamed body past its cap, after the route's auth and rate-limit checks.
+  quickstatements 1 MiB, `/api/repos` 256 KiB, `/review` posting 1 MiB, `/api/atlas/feedback`
+  4 KiB. Each answers 413 on a declared or streamed body past its cap, after the route's
+  auth and rate-limit checks.
 - **Dependency advisories** (`npm audit` in `wiki/`, 2026-10-17):
   - `hono` (runtime): upgraded 4.12.34 to 4.13.12 on 2026-10-17, then to 4.13.13 on
     2026-10-19 (#92), once it was past the two-week cooldown (published 2026-10-04).

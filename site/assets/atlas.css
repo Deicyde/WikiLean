@@ -1,0 +1,185 @@
+/* Formalization atlas (docs/ATLAS.md, "UI"): the /atlas pages and the summary
+   box on article pages. Built only from style.css's tokens (--paper, --surface,
+   --ink, --muted, --line, --line-strong, --accent, --serif and the --c-* status
+   trio), so dark mode follows [data-theme] and prefers-color-scheme exactly as
+   the article pages do. Status is never colour alone: every status has an icon
+   and a word in the markup, and its own stroke here (solid, dashed, dotted,
+   double, groove grey); the coverage bar adds fill patterns, and the status
+   chips carry a swatch of each fill as its legend. */
+
+[data-status="formalized"]     { --st: var(--c-formalized);     --st-ink: var(--c-formalized-ink);     --st-bg: var(--c-formalized-bg);     --st-line: solid; }
+[data-status="statement_only"] { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dashed; }
+[data-status="partial"]        { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dotted; }
+[data-status="not_formalized"] { --st: var(--c-not_formalized); --st-ink: var(--c-not_formalized-ink); --st-bg: var(--c-not_formalized-bg); --st-line: double; }
+[data-status="unresolved"]     { --st: var(--c-untouched);      --st-ink: var(--muted);                --st-bg: transparent;                --st-line: groove; }
+
+.atlas-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---- page frame ---- */
+.wl-atlas { max-width: 1000px; margin: 0 auto; padding: 20px 28px 48px; color: var(--ink); line-height: 1.55; font-size: 15px; box-sizing: border-box; }
+.wl-atlas a, .atlas-foot a { color: var(--accent); text-underline-offset: 2px; }
+.wl-atlas a:hover { text-decoration-thickness: 2px; }
+.atlas-crumbs { font-size: 12px; color: var(--muted); margin: 0 0 4px; }
+.atlas-h1 { font-family: var(--serif); font-size: 1.75rem; line-height: 1.2; margin: 4px 0 6px; overflow-wrap: anywhere; }
+.atlas-h2 { font-family: var(--serif); font-size: 1.15rem; margin: 28px 0 8px; }
+.atlas-strip > .atlas-h2 { font-size: 1rem; margin: 0 0 4px; }
+.atlas-lead { color: var(--muted); max-width: 70ch; margin: 0 0 8px; }
+.atlas-meta { color: var(--muted); font-size: 13px; margin: 2px 0; }
+.atlas-muted { color: var(--muted); }
+.atlas-data { margin: 24px 0 0; font-size: 12px; color: var(--muted); }
+.atlas-data code, .atlas-meta code { font-size: 11px; overflow-wrap: anywhere; }
+.atlas-message p { max-width: 70ch; }
+.atlas-foot { max-width: 1000px; margin: 8px auto 40px; padding: 12px 28px 0; box-sizing: border-box; border-top: 1px solid var(--line-strong); color: var(--muted); font-size: 12px; line-height: 1.5; }
+.atlas-foot p { margin: 4px 0; }
+.atlas-foot a { text-decoration: underline; }
+
+/* ---- coverage strip ---- */
+.atlas-strip { margin: 16px 0 18px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; }
+.atlas-strip .atlas-h2 { margin-top: 0; }
+.atlas-strip-lead { margin: 0 0 6px; font-size: 14px; }
+.atlas-strip-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 8px 0 0; }
+.atlas-strip-h { flex: 0 0 64px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.atlas-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.atlas-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; box-sizing: border-box; padding: 2px 10px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; line-height: 1.3; cursor: pointer; }
+.atlas-chip[data-status] { border: 1.5px var(--st-line) var(--st); }
+.atlas-chip[data-status="not_formalized"] { border-width: 3px; }
+.atlas-chip:hover { border-color: var(--accent); }
+.atlas-chip[aria-pressed="true"] { background: var(--st-bg, var(--line)); outline: 2px solid var(--accent); outline-offset: 1px; font-weight: 600; }
+.atlas-chip.is-static, .atlas-chip.is-static[data-status] { cursor: default; border-color: transparent; background: transparent; padding-left: 2px; }
+.atlas-chip.is-zero { opacity: .7; }
+.atlas-chip.is-static:hover { border-color: transparent; }
+.atlas-n { font-weight: 700; font-variant-numeric: tabular-nums; }
+.atlas-ico { display: inline-block; min-width: 1em; text-align: center; font-weight: 700; color: var(--st-ink, inherit); }
+.atlas-filter-note { margin: 8px 0 0; font-size: 12px; color: var(--muted); min-height: 1em; }
+.atlas-clear { font: inherit; font-size: 12px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--accent); border-radius: 6px; padding: 1px 8px; cursor: pointer; }
+
+.atlas-bar { display: flex; height: 12px; margin: 6px 0 4px; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.atlas-seg { display: block; height: 100%; box-shadow: inset -2px 0 0 var(--surface); }
+.atlas-seg:last-child { box-shadow: none; }
+/* The swatch is the bar's legend: the same fill, inside each status chip. */
+.atlas-swatch { display: inline-block; width: 14px; height: 10px; flex: 0 0 14px; border: 1px solid var(--line-strong); border-radius: 2px; box-sizing: border-box; }
+.atlas-seg[data-status="formalized"], .atlas-swatch[data-status="formalized"] { background: var(--c-formalized); }
+.atlas-seg[data-status="statement_only"], .atlas-swatch[data-status="statement_only"] { background: repeating-linear-gradient(135deg, var(--c-partial) 0 3px, transparent 3px 6px); }
+.atlas-seg[data-status="partial"], .atlas-swatch[data-status="partial"] { background: radial-gradient(circle, var(--c-partial) 1.4px, transparent 1.8px) 0 0 / 5px 5px; }
+.atlas-seg[data-status="not_formalized"], .atlas-swatch[data-status="not_formalized"] { background: repeating-linear-gradient(45deg, var(--c-not_formalized) 0 2px, transparent 2px 5px), repeating-linear-gradient(-45deg, var(--c-not_formalized) 0 2px, transparent 2px 5px); }
+/* Undecided is a visible grey vertical hatch, never an empty-looking track. */
+.atlas-seg[data-status="unresolved"], .atlas-swatch[data-status="unresolved"] { background: repeating-linear-gradient(90deg, var(--c-untouched) 0 1.5px, transparent 1.5px 4px); }
+.atlas-seg[data-status="unresolved"] { box-shadow: inset 0 0 0 1px var(--c-untouched); }
+
+/* ---- passages ---- */
+.atlas-passages { list-style: none; margin: 0; padding: 0; }
+.atlas-passage { margin: 0 0 14px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line-strong); border-left: 5px var(--st-line) var(--st); border-radius: 8px; scroll-margin-top: 64px; }
+.atlas-p-head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.atlas-p-h { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; margin: 0; font: inherit; }
+.atlas-why { margin: 4px 0 0; font-size: 13px; color: var(--muted); }
+/* Decision D1: the hasPart locations a survived coverage claim names, listed under its line. */
+.atlas-coverage-parts { margin: 2px 0 0; padding: 0 0 0 22px; list-style: decimal; font-size: 13px; color: var(--muted); }
+.atlas-coverage-parts li { margin: 2px 0 0; overflow-wrap: anywhere; }
+.atlas-coverage-parts .atlas-decl { font-size: 13px; }
+.atlas-eyebrow { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.atlas-section { font-size: 12px; color: var(--muted); }
+.atlas-section::before { content: "§ "; }
+/* The article's subject passages (prominence "subject"): a tag in the heading, an
+   accent frame around the block, and a "Subject" row in the coverage strip linking them. */
+.atlas-passage.is-subject { box-shadow: 0 0 0 1px var(--accent); }
+.atlas-subject { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); border: 1px solid var(--accent); border-radius: 999px; padding: 0 8px; line-height: 1.6; }
+.atlas-subject-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; flex: 1 1 0; min-width: 0; font-size: 13px; }
+.atlas-subject-list li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
+.atlas-subject-list a { overflow-wrap: anywhere; }
+.atlas-subject-list .atlas-pill { margin-left: 0; }
+.atlas-pill { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; padding: 1px 10px; border: 1.5px var(--st-line) var(--st); border-radius: 999px; background: var(--st-bg); color: var(--st-ink); font-size: 12px; font-weight: 700; }
+.atlas-pill[data-status="not_formalized"] { border-width: 3px; }
+.atlas-quote { margin: 8px 0 4px; padding: 0 0 0 12px; border-left: 3px solid var(--line-strong); font-family: var(--serif); font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
+.atlas-quote mark { background: var(--st-bg); color: inherit; padding: 0 2px; border-radius: 2px; }
+.atlas-affix { color: var(--muted); }
+.atlas-context { margin: 2px 0 0; font-size: 12px; }
+
+.atlas-cards { display: grid; gap: 10px; margin: 10px 0 0; }
+.atlas-card { padding: 9px 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; min-width: 0; }
+.atlas-cards.is-related .atlas-card { border-style: dashed; }
+.atlas-card-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; font-size: 12px; }
+.atlas-lib { padding: 0 6px; border: 1px solid var(--line-strong); border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); background: var(--surface); }
+.atlas-commit { font-size: 11px; color: var(--muted); }
+.atlas-rel { color: var(--ink); }
+.atlas-ps { font-size: 11px; color: var(--muted); }
+/* An unfinished proof is the statement-only amber with its dashed stroke, not
+   the not-formalized red: the declaration exists, its proof does not. */
+.atlas-ps.is-alert { padding: 0 6px; border: 1.5px dashed var(--c-partial); border-radius: 4px; background: var(--c-partial-bg); color: var(--c-partial-ink); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+.atlas-src { margin-left: auto; }
+.atlas-src.is-none { color: var(--muted); }
+.atlas-decl-line { margin: 6px 0 2px; overflow-wrap: anywhere; }
+.atlas-decl { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; color: var(--ink); }
+.atlas-ns { color: var(--muted); }
+.atlas-decl b { font-weight: 700; }
+.atlas-module { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; color: var(--muted); overflow-wrap: anywhere; }
+.atlas-note { margin: 6px 0 0; font-size: 13px; }
+.atlas-k { font-weight: 700; }
+.atlas-card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+.atlas-fb { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.atlas-fb-btn { min-height: 28px; padding: 2px 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
+.atlas-fb-btn:hover { border-color: var(--accent); color: var(--accent); }
+.atlas-fb-btn[aria-pressed="true"] { border: 2px solid var(--accent); color: var(--accent); font-weight: 700; }
+.atlas-fb-btn:disabled { opacity: .6; cursor: progress; }
+.atlas-fb-msg { color: var(--muted); }
+.atlas-fb-form { display: grid; gap: 6px; width: 100%; margin: 6px 0 0; }
+.atlas-fb-form textarea { width: 100%; box-sizing: border-box; min-height: 56px; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; font-size: 13px; }
+.atlas-fb-form .atlas-fb-actions { display: flex; gap: 6px; }
+.atlas-fb-signin { font-size: 12px; }
+.atlas-fb-help { font-size: 12px; max-width: 75ch; }
+
+.atlas-absence, .atlas-undecided { margin: 10px 0 0; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+.atlas-absence { border: 3px double var(--c-not_formalized); }
+.atlas-absence > .atlas-ico { color: var(--c-not_formalized-ink); margin-right: 4px; }
+.atlas-absence .atlas-muted { display: block; margin-top: 2px; font-size: 12px; }
+.atlas-undecided { border: 1.5px dashed var(--c-untouched); color: var(--muted); }
+.atlas-undecided > .atlas-ico { margin-right: 4px; }
+.atlas-related-h { margin: 12px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.atlas-libtag { display: inline-block; padding: 0 5px; border: 1px solid var(--line-strong); border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+
+/* ---- tables and search (dashboard, universe) ---- */
+.atlas-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.atlas-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line-strong); font-size: 13px; }
+.atlas-table th, .atlas-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.atlas-table thead th { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.atlas-table tbody th { font-weight: 600; }
+.atlas-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.atlas-table code { font-size: 11.5px; overflow-wrap: anywhere; }
+.atlas-table code.atlas-sha { white-space: nowrap; overflow-wrap: normal; }
+.atlas-search { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 0 0 6px; }
+.atlas-search label { font-size: 13px; font-weight: 600; }
+.atlas-search input { flex: 1 1 220px; max-width: 420px; padding: 5px 9px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; }
+.atlas-search button { padding: 5px 12px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--accent); font: inherit; font-size: 13px; cursor: pointer; }
+.atlas-count { font-size: 12px; color: var(--muted); margin: 0 0 6px; }
+.atlas-excluded { padding-left: 1.2em; }
+
+/* ---- the summary box on article pages ---- */
+.wl-atlas-box { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; max-width: 1000px; margin: 0 auto; padding: 9px 28px; box-sizing: border-box; background: var(--surface); border-bottom: 1px solid var(--line); color: var(--ink); font-size: 13px; line-height: 1.5; }
+.wl-atlas-box-h { font-family: var(--serif); font-weight: 700; }
+.wl-atlas-box-counts { color: var(--muted); }
+.wl-atlas-box-rev { white-space: nowrap; }
+.atlas-mini { white-space: nowrap; color: var(--st-ink); font-weight: 600; }
+.atlas-mini + .atlas-mini { margin-left: 8px; }
+.atlas-mini .atlas-ico { min-width: 0; margin-right: 2px; }
+.wl-atlas-box-link { margin-left: auto; color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+
+@media (max-width: 720px) {
+  .wl-atlas { padding: 16px 16px 40px; font-size: 14px; }
+  .atlas-foot { padding: 12px 16px 0; }
+  .wl-atlas-box { padding: 8px 16px; }
+  .wl-atlas-box-link { margin-left: 0; }
+  .atlas-passage { padding: 10px 12px; }
+  .atlas-pill { margin-left: 0; }
+  .atlas-src { margin-left: 0; flex-basis: 100%; }
+  .atlas-strip-h { flex-basis: 100%; }
+  .atlas-search input { font-size: 16px; max-width: none; }
+  .atlas-fb-form textarea { font-size: 16px; }
+  /* The phone header wraps to about 106px. */
+  .atlas-passage { scroll-margin-top: 120px; }
+  /* A wide table scrolls sideways inside its region; the row label stays put. */
+  .atlas-table tbody th, .atlas-table thead th:first-child { position: sticky; left: 0; z-index: 1; background: var(--surface); box-shadow: 1px 0 0 var(--line); }
+}
+
+@media (prefers-contrast: more) {
+  .atlas-passage, .atlas-card, .atlas-chip, .atlas-table { border-color: var(--ink); }
+  .atlas-muted, .atlas-meta, .atlas-ns, .atlas-module, .atlas-coverage-parts { color: var(--ink); }
+}
