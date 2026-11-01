@@ -143,9 +143,9 @@ describe("Better Auth Drizzle adapter", () => {
 
       const row = db
         .prepare("SELECT identifier, value FROM verifications WHERE identifier = ?")
-        .get(state) as { identifier: string; value: string } | undefined;
+        .get(`auth-state:${state}`) as { identifier: string; value: string } | undefined;
       expect(row).toBeDefined();
-      expect(row!.identifier).toBe(state);
+      expect(row!.identifier).toBe(`auth-state:${state}`);
       const verification = JSON.parse(row!.value) as {
         callbackURL: string;
         codeVerifier: string;
@@ -184,7 +184,7 @@ describe("Better Auth Drizzle adapter", () => {
       expect(stateCookie).toBeDefined();
       const verificationRow = db
         .prepare("SELECT value FROM verifications WHERE identifier = ?")
-        .get(state) as { value: string } | undefined;
+        .get(`auth-state:${state}`) as { value: string } | undefined;
       expect(verificationRow).toBeDefined();
       const verification = JSON.parse(verificationRow!.value) as { codeVerifier: string };
 
@@ -275,7 +275,7 @@ describe("Better Auth Drizzle adapter", () => {
         "https://api.github.com/user/emails",
       ]);
       expect(
-        db.prepare("SELECT COUNT(*) AS count FROM verifications WHERE identifier = ?").get(state),
+        db.prepare("SELECT COUNT(*) AS count FROM verifications WHERE identifier = ?").get(`auth-state:${state}`),
       ).toEqual({ count: 0 });
 
       const user = db
