@@ -133,7 +133,7 @@ status, note, provenance and other review metadata, and REQUIRES two arrays:
       "location":{"declaration":"<declaration>","module":"<Mathlib module>"}}]},
     "base_uri":"<only if needed>"}]
   unlinked: [{"type":"html","uri":"<supplied pinned article URI>","location":{...}}]
-Every annotation in links is one Literature Links 2.0 record: its subject is
+Every annotation in links is one Literature Links 1.0 record: its subject is
 the informal source selection and its object the formal end. No root
 mathlib/decl/module/anchor/anchors. Write every WikiLean anchor in this
 profile form; the pipeline resolves it against the pinned article afterwards.
