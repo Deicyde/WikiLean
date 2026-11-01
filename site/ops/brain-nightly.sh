@@ -827,6 +827,8 @@ PY
       brain/wikidata_entity_bundle.py brain/fold_proposals.py brain/ingest/common.py \
       brain/tools/build_release.py brain/tools/verify_release.py brain/tools/measure_store.py \
       brain/tools/authority_contracts.py brain/authority/schemas \
+      brain/install_wikidata_observation.py brain/wikidata_observation.py \
+      brain/tools/execution_environment.py catalog/huggingface_download.py \
       brain/authority/reducer-inputs-v1.json \
       $REDUCER_SCOPE \
       site/test_frontier_page.py \
