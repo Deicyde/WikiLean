@@ -7,9 +7,9 @@
 // What this plane deliberately does not do: no D1 annotation writes, no item
 // identity matching, no 256 KB annotation cap, no EDIT_LIMITER on reads, and no
 // interaction with the nightly moderation pipeline. Its only D1 surface is the
-// small atlas_feedback table (migration 0015), where signed-in people confirm or
-// report single locations; the pipeline bearer exports those rows as benchmark
-// seeds.
+// small append-only atlas_feedback table (migration 0015), where signed-in people
+// confirm, report or withdraw on single locations; the pipeline bearer exports
+// those rows as benchmark seeds.
 //
 // Unbound ATLAS → every atlas page and API route answers 503 "atlas store not
 // configured" (the feedback export, which reads only D1, keeps working).
@@ -18,7 +18,7 @@ import type { Context, Hono } from "hono";
 import { getUser, requireRole } from "./auth.js";
 import type { Env } from "./env.js";
 import type { UniverseLibrary } from "./libraries.js";
-import { checkOrigin, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
+import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
   atlasArticlePage,
@@ -62,6 +62,9 @@ export interface AtlasLocation {
   confidence: string;
   challenge: string;
   location_key: string;
+  // The producer's revision- and commit-free key for the judgment. The builder
+  // does not carry it yet, so feedback rows hold NULL until a store does.
+  pair_key?: string | null;
   note: string | null;
 }
 
@@ -422,7 +425,7 @@ function notConfiguredHtml(c: Ctx, error = NOT_CONFIGURED): Response {
 
 // ---- feedback --------------------------------------------------------------
 
-const FEEDBACK_VERDICTS = new Set(["confirm", "report"]);
+const FEEDBACK_VERDICTS = new Set(["confirm", "report", "withdraw"]);
 export const ATLAS_PSEUDONYM_DOMAIN = "atlas-feedback\0";
 const MAX_NOTE_CHARS = MAX_FLAG_COMMENT_LEN; // 500, the flag form's cap
 // SEAL.json's campaign, as build_store.CAMPAIGN_RE: a campaign id, or for a run
@@ -439,13 +442,15 @@ function missingTable(error: unknown): boolean {
   return false;
 }
 
-// The viewer's own verdicts on one article (location_key → verdict). Empty
-// when the table is missing (migration 0015 not yet applied).
-async function viewerVerdicts(env: Env, userId: string, pageid: number): Promise<Map<string, string>> {
+// The viewer's current verdicts on one article in one campaign (location_key →
+// verdict): a verdict names the campaign the person saw, so it is not shown in
+// the next, and a withdrawn one is no verdict. Empty when the table is missing
+// (migration 0015 not yet applied).
+async function viewerVerdicts(env: Env, userId: string, pageid: number, campaign: string): Promise<Map<string, string>> {
   try {
     const { results } = await env.DB.prepare(
-      "SELECT location_key, verdict FROM atlas_feedback WHERE user_id = ? AND pageid = ?",
-    ).bind(userId, pageid).all<{ location_key: string; verdict: string }>();
+      "SELECT location_key, verdict FROM atlas_feedback_latest WHERE user_id = ? AND pageid = ? AND campaign = ? AND verdict <> 'withdraw'",
+    ).bind(userId, pageid, campaign).all<{ location_key: string; verdict: string }>();
     return new Map(results.map((row) => [row.location_key, row.verdict]));
   } catch (error) {
     if (!missingTable(error)) throw error;
@@ -479,11 +484,11 @@ function entryKeys(entry: IndexEntry): { key: string; folded: string } {
 const MAX_DASHBOARD_ROWS = 200;
 
 // A ?q= search scans every index entry, so it takes the anonymous read budget
-// /api/brain/* and /mcp use: per IP, MCP_LIMITER when bound, else
+// /api/brain/* and /mcp use: per IP (an IPv6 /64), MCP_LIMITER when bound, else
 // BRAIN_API_LIMITER (120/min), under its own key prefix.
 async function searchAllowed(c: Ctx): Promise<boolean> {
   const limiter = c.env.MCP_LIMITER ?? c.env.BRAIN_API_LIMITER;
-  const ip = c.req.header("CF-Connecting-IP") || "unknown";
+  const ip = limiterIp(c.req.header("CF-Connecting-IP")) || "unknown";
   const { success } = await limiter.limit({ key: `atlas-q:${ip}` });
   return success;
 }
@@ -587,7 +592,7 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     const universe = await loadUniverse(reader, article.universe.sha256);
     const viewer = await getUser(c);
     const user = viewer && viewer.role !== "bot" ? viewer : null;
-    const verdicts = user ? await viewerVerdicts(c.env, user.id, article.pageid) : new Map<string, string>();
+    const verdicts = user ? await viewerVerdicts(c.env, user.id, article.pageid, article.campaign) : new Map<string, string>();
     const wikileanSlug = await wikileanSlugFor(c.env, article.title);
     return c.html(atlasArticlePage({
       article, universe, user, verdicts, wikileanSlug, selfHref: atlasHref(article.pageid, article.title),
@@ -598,12 +603,13 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
 
   // ---- feedback ----
 
-  // Confirm or report one location. Session users only (the pipeline bearer is
-  // refused: these rows are human labels), same-origin (checkOrigin), rate
-  // limited per user, byte-capped after those checks (readJsonCapped,
-  // MAX_JSON_BODY_BYTES.atlasFeedback: 413 past it), and checked against the
-  // current store so a key that is not on the page cannot be stored. One row
-  // per (location_key, user): a second verdict replaces the first.
+  // Confirm, report or withdraw on one location. Session users only (the
+  // pipeline bearer is refused: these rows are human labels), same-origin
+  // (checkOrigin), rate limited per user, byte-capped after those checks
+  // (readJsonCapped, MAX_JSON_BODY_BYTES.atlasFeedback: 413 past it), and checked
+  // against the current store so a key that is not on the page cannot be stored.
+  // Append-only: one row per verdict, never updated. What the person judged
+  // (revision, campaign, record set, relation, pair key) is copied from the store.
   app.post("/api/atlas/feedback", async (c) => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredJson(c);
@@ -640,18 +646,18 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     if (article.campaign !== campaign) {
       return c.json({ ok: false, error: "stale: the atlas changed since this page loaded", campaign: article.campaign }, 409);
     }
-    const known = article.passages.some((p) => p.locations.some((loc) => loc.location_key === key));
-    if (!known) return c.json({ ok: false, error: "unknown location_key" }, 404);
+    const location = article.passages.flatMap((p) => p.locations).find((loc) => loc.location_key === key);
+    if (!location) return c.json({ ok: false, error: "unknown location_key" }, 404);
 
     const now = Date.now();
     try {
       await c.env.DB.prepare(
-        `INSERT INTO atlas_feedback (location_key, pageid, revision, campaign, verdict, note, user_id, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-         ON CONFLICT (location_key, user_id) DO UPDATE SET
-           pageid = excluded.pageid, revision = excluded.revision, campaign = excluded.campaign,
-           verdict = excluded.verdict, note = excluded.note, updated_at = excluded.updated_at`,
-      ).bind(key, pageid, article.revision, article.campaign, verdict, note, user.id, now, now).run();
+        `INSERT INTO atlas_feedback (location_key, pair_key, pageid, revision, campaign, record_set, relation, verdict, note, user_id, created_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ).bind(
+        key, location.pair_key ?? null, pageid, article.revision, article.campaign, article.record_set,
+        location.relation, verdict, note, user.id, now,
+      ).run();
     } catch (error) {
       if (missingTable(error)) return notConfiguredJson(c, "atlas feedback not configured (migration 0015)");
       throw error;
@@ -660,9 +666,10 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     return c.json({ ok: true, verdict });
   });
 
-  // Benchmark seeding (docs/ATLAS.md, "Feedback"): every row, id-ascending,
-  // paged from D1 so the response never materializes in memory. Pipeline
-  // bearer only. Users appear only as pseudonyms, sha256("atlas-feedback\0" +
+  // Benchmark seeding (docs/ATLAS.md, "Feedback"): every verdict, id-ascending,
+  // paged from D1 so the response never materializes in memory; a consumer takes
+  // the newest row per (location_key, campaign, pseudonym), where "withdraw" means
+  // none. Pipeline bearer only. Users appear only as pseudonyms, sha256("atlas-feedback\0" +
   // user_id + salt) truncated to 12 hex, with the research export's salt
   // (security.ts researchExportSalt: RESEARCH_EXPORT_SALT, else PIPELINE_TOKEN).
   // The domain prefix keeps them apart from the research export's
@@ -696,11 +703,12 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     const body = new ReadableStream<Uint8Array>({
       async pull(controller) {
         const { results } = await env.DB.prepare(
-          `SELECT id, location_key, pageid, revision, campaign, verdict, note, user_id, created_at, updated_at
+          `SELECT id, location_key, pair_key, pageid, revision, campaign, record_set, relation, verdict, note, provenance, user_id, created_at
            FROM atlas_feedback WHERE id > ? ORDER BY id LIMIT ?`,
         ).bind(cursor, PAGE).all<{
-          id: number; location_key: string; pageid: number; revision: number; campaign: string;
-          verdict: string; note: string | null; user_id: string; created_at: number; updated_at: number;
+          id: number; location_key: string; pair_key: string | null; pageid: number; revision: number; campaign: string;
+          record_set: string; relation: string; verdict: string; note: string | null; provenance: string;
+          user_id: string; created_at: number;
         }>();
         if (results.length === 0) {
           controller.close();
@@ -712,14 +720,17 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
           out += JSON.stringify({
             feedback_id: row.id,
             location_key: row.location_key,
+            pair_key: row.pair_key,
             pageid: row.pageid,
             revision: row.revision,
             campaign: row.campaign,
+            record_set: row.record_set,
+            relation: row.relation,
             verdict: row.verdict,
             note: row.note,
+            provenance: row.provenance,
             pseudonym: await pseudonymFor(row.user_id),
             created_at: row.created_at,
-            updated_at: row.updated_at,
           }) + "\n";
         }
         controller.enqueue(encoder.encode(out));

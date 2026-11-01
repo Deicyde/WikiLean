@@ -111,7 +111,7 @@ npm run test:e2e
 
 Linux CI uses `npx playwright install --with-deps chromium` to install system dependencies too. The loopback server builds the `/brain` page by importing `site/build_brain_page.py` with the `python3` on your PATH, which must be Python 3.10 or newer. Failures retain traces and screenshots under `wiki/test-results/`; CI also writes the HTML report under `wiki/playwright-report/` and uploads both directories as the seven-day `browser-failure-artifacts` artifact.
 
-The browser job runs on every CI trigger and is **required**: the aggregate `required` job covers the Worker, Python and browser jobs, and branch protection requires only that aggregate.
+The browser job runs on every CI trigger and is **required**: the aggregate `required` job covers the Worker, Python, browser and attribution jobs, and branch protection requires only that aggregate.
 
 #### Corpus-dependent checks
 
@@ -129,7 +129,7 @@ Its preflight requires more than 200 cached Wikipedia pages in `site/cache/*.htm
 - Branch from `main`, push, open a PR against `Deicyde/WikiLean`.
 - For substantive changes, open an issue first to discuss scope.
 - `.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual dispatch. It has read-only repository permissions, checks out without persisted credentials, receives no secrets, and contains no deployment, production write, or token-consuming step.
-- The `worker` and `browser` jobs use Node 22, and the `python` job uses Python 3.12. The `required` aggregate needs all three and is the branch-protection target.
+- The `worker` and `browser` jobs use Node 22, and the `python` job uses Python 3.12. The `attribution` job fails when a commit in the history names Claude as an author (a `Co-Authored-By: Claude` line). The `required` aggregate needs all four and is the branch-protection target.
 - Dependabot (`.github/dependabot.yml`) opens weekly npm (`wiki/`) and pip (`requirements-ci.txt`) PRs and monthly GitHub Actions PRs, each gated by `required`. npm and pip PRs change release-affecting files, so merge them at the start of a release cycle, never between a release build and its promotion; Actions PRs are release-neutral. `wrangler` arrives in its own PR: it is the deploy, backup and rollback tool and no CI job runs it, so merge it only at the start of a release cycle. In the same PR, run `python3 scripts/backup_wrangler_lock.py --write` to regenerate `.github/backup-wrangler` (CI's check fails until you do), and update the release runbook's Wrangler 4.120 notes. Any npm PR that moves a package Wrangler depends on needs the same `--write`. If an `ajv` or `esbuild` PR fails `check:companion-validator`, run `node scripts/generate-companion-validator.mjs` in `wiki/` and commit the regenerated `validate.js` to that PR. After merging an Actions PR that bumps `upload-artifact`, dispatch Backup D1 once and check the run: no pull request exercises it.
 
 ---

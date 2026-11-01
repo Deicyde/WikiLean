@@ -70,12 +70,22 @@ jobs:
         id: selector
         run: |
           python - <<'PY'
-          import json, os, re, sys
+          import json, os, re, sys, time
           sys.path.insert(0, "site/ops")
-          from brain_http import probe_selector
+          from brain_http import TransportError, probe_selector
 
           # The promoter's selector probe: cache-busting nonce, size cap, trusted TLS.
-          probe = probe_selector(os.environ["BASE_URL"])
+          # Three tries 10 s apart ride out a transient edge error, as the canary's
+          # --timeout does below; a 404 or an invalid selector still fails at once.
+          for attempt in range(3):
+              try:
+                  probe = probe_selector(os.environ["BASE_URL"])
+                  break
+              except TransportError as exc:
+                  if attempt == 2:
+                      sys.exit(f"live release selector unreachable after 3 tries: {exc}")
+                  print(f"selector probe failed ({exc}); retrying in 10 s")
+                  time.sleep(10)
           if probe.missing:
               sys.exit("live release selector is missing (HTTP 404)")
           body = probe.body

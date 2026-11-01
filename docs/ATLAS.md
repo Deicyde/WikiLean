@@ -860,7 +860,7 @@ and who runs it is an open decision (section 14).
 
 | Route | Answer | Cache-Control |
 |---|---|---|
-| `GET /atlas[?q=]` | dashboard: totals by status, by library (complete and incomplete locations), by WikiProject importance; article list with the libraries holding each article, searched server-side through the index shards (200 rows shown). A `q` search takes the anonymous read budget of `/api/brain/*` and `/mcp` (per IP, `MCP_LIMITER` else `BRAIN_API_LIMITER`, 120/min, key `atlas-q:<ip>`) and answers 429 over it | none (HTML, like other pages) |
+| `GET /atlas[?q=]` | dashboard: totals by status, by library (complete and incomplete locations), by WikiProject importance; article list with the libraries holding each article, searched server-side through the index shards (200 rows shown). A `q` search takes the anonymous read budget of `/api/brain/*` and `/mcp` (per IP, an IPv6 client by its /64 (`limiterIp`), `MCP_LIMITER` else `BRAIN_API_LIMITER`, 120/min, key `atlas-q:<ip>`) and answers 429 over it | none (HTML, like other pages) |
 | `GET /atlas/:pageid[/:slug]` | one article's coverage page; the slug is cosmetic | none |
 | `GET /atlas/universe/:sha` | the universe's libraries, commits and exclusions | none |
 | `GET /api/atlas/current` | `current.json` | `public, max-age=60` |
@@ -1048,10 +1048,25 @@ its box until the next build.
 
 ## 10. Feedback, and how it becomes benchmark seeds
 
-**Table** (`wiki/migrations/0015_atlas_feedback.sql`): `id, location_key, pageid,
-revision, campaign, verdict ('confirm'|'report'), note (at most 500 characters), user_id,
-created_at, updated_at`, with `UNIQUE (location_key, user_id)`. A second verdict replaces
-the first.
+**Table** (`wiki/migrations/0015_atlas_feedback.sql`): `id, location_key, pair_key, pageid,
+revision, campaign, record_set, relation, verdict ('confirm'|'report'|'withdraw'), note (at
+most 500 characters), provenance ('human'), user_id, created_at`. It is append-only: one row
+per verdict, never updated. A person's current verdict on one judgment is the newest row for
+`(location_key, campaign, user_id)`, which the view `atlas_feedback_latest` gives, and there
+a `withdraw` means no verdict. `pair_key` is the producer's revision- and commit-free key,
+NULL until the store carries it (the builder does not yet).
+
+A verdict belongs to the campaign the person saw. The page shows a signed-in reader their
+current verdicts for the store's campaign only, so a report from one campaign is not shown as
+pressed in the next, and a verdict in the next adds a row beside the old one.
+
+**Applying it.** Like the others, by hand after a D1 backup (`CLAUDE.md`, "Site / D1"):
+`wrangler d1 execute wikilean --remote --file=migrations/0015_atlas_feedback.sql`. It is
+idempotent on its own shape. On a database that still holds the superseded table (one row per
+`(location_key, user_id)`, with `updated_at`), `CREATE TABLE IF NOT EXISTS` passes over that
+table and the next statement, the `pair_key` index, fails because the column is missing. So
+the file stops before it creates anything: no index changes and no view appears. Drop the old
+table first.
 
 **`POST /api/atlas/feedback`** takes `{location_key, pageid, campaign, verdict, note?}`.
 It answers 503 when unbound, 403 for a cross-origin request (`src/security.ts`
@@ -1062,12 +1077,16 @@ After those checks it reads the body through the shared `readJsonCapped`
 declared or streamed body past it gets 413 "request body too large (max 4096 bytes)"
 before parsing. It answers 400 for a bad field and 404 unless the location is on the
 current store article. A campaign other than the store's gets **409** "stale", so a
-verdict always names what the person saw. `revision` and `campaign` are copied from the
-store, not taken from the client. Until migration 0015 is applied, the route answers 503,
-not 500.
+verdict always names what the person saw. `revision`, `campaign`, `record_set` (the
+article's SEAL sha), `relation` and `pair_key` are copied from the store at write time, not
+taken from the client. The route refuses the pipeline bearer and the `provenance` CHECK keeps
+the rows human labels as a property of the data. Until migration 0015 is applied, the route
+answers 503, not 500.
 
 **`GET /api/atlas/feedback/export`** is for the pipeline bearer only (admin sessions get
-403). It returns every row as NDJSON, paged from D1, with users only as
+403). It returns every verdict as NDJSON, paged from D1, with `pair_key`, `record_set`,
+`relation` and `provenance` on each line. Consumers take the newest row per
+`(location_key, campaign, pseudonym)`. Users appear only as
 `sha256("atlas-feedback\0" + user_id + salt)[:12]`, where the salt is the research
 export's (`src/security.ts` `researchExportSalt`: the `RESEARCH_EXPORT_SALT` secret, or
 `PIPELINE_TOKEN` until it is set; `docs/SECRETS.md`). The domain prefix keeps these
@@ -1081,10 +1100,11 @@ notes. The export reads only D1, so it keeps working if the store is unbound.
 **Seeds.** Proposal §8.1 makes the maintainer's spot checks tier **G4** (up to 30 negatives
 and 20 positives per release). Consumer-side human input is never a gold tier of its own.
 Feedback rows are G4 **candidates**: a `report` is a candidate negative and a `confirm` a
-candidate positive. The maintainer adjudicates them before any enters the gold manifest.
-A row joins its sealed record set by `(location_key, campaign)`, which recovers the exact
-relation and declaration judged; the relation is not part of `location_key`, so a verdict
-on one campaign does not carry over to a re-judged relation. Per §8.4, the export stays
+candidate positive; a `withdraw` takes back that person's earlier verdict on the judgment.
+The maintainer adjudicates them before any enters the gold manifest. A row names its sealed
+record set and the relation judged, and `location_key` recovers the declaration from that
+set; the relation is not part of `location_key`, so a verdict on one campaign does not carry
+over to a re-judged relation. Per §8.4, the export stays
 on the operator machine and never goes to the fleet host, and val/test seeds never feed
 the improvement loop.
 
@@ -1095,7 +1115,7 @@ the improvement loop.
 | `docs/ATLAS.md`, `scripts/atlas/**` (builder, fixtures, test), `wiki/test/**`, `wiki/e2e/**` | release-neutral | on merge |
 | `wiki/src/atlas.ts`, `atlas-render.ts`, `libraries.ts`, `env.ts`, `index.ts`, `pages.ts` | release-affecting | only in a new release (fresh P1B, Jack's approval) |
 | `site/assets/atlas.{css,js}`, `wiki/scripts/build-public.ts` | release-affecting | with that release's public baseline |
-| `wiki/migrations/0015_atlas_feedback.sql` | operator action | applied to D1 after a backup; fail-soft until then |
+| `wiki/migrations/0015_atlas_feedback.sql` | operator action | applied to D1 after a backup; fail-soft until then; stops on the superseded table (section 10) |
 
 - `atlas.css` and `atlas.js` are copied by build-public but are not in the required
   baseline lists, so baselines frozen before the atlas stay valid. The next baseline
@@ -1221,9 +1241,13 @@ Each decision below comes with a recommendation.
   refusing foreign content).
 - `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
   pages on the fixture store, 404s, escaping and integer-only numbers, the headings, the
-  visible status sentence and its basis, the shard cache and the search limiter, feedback
+  visible status sentence and its basis, the shard cache and the search limiter with its
+  IPv6 /64 key, feedback
   auth, origin, validation, size cap (the shared `readJsonCapped` cap, exact to the byte),
-  rate limit and missing table, the export and its domain-separated pseudonyms and their
+  rate limit and missing table, append-only rows and withdrawal, what a row copies from the
+  store, a verdict not pressed in the next campaign and not overwritten by its verdict,
+  migration 0015 on an empty database, on a re-run and on the superseded table, the export
+  and its domain-separated pseudonyms and their
   `RESEARCH_EXPORT_SALT` salt, the security headers on every atlas response and the pages'
   CSP fit (same-origin loads only, no inline handlers), the article box with its cache
   isolation and revision note, the readers, non-array universe lists, related-only and

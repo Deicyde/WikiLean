@@ -96,7 +96,7 @@ def sync_body_count(pr, repo, n=None):
     co-located `@[wikidata Q1, wikidata Q2]` counts as 2 — matching the ENTRY counts the
     explicit-n callers pass. Callers that already know the exact post-edit count (settle,
     conflict-resolver) pass it to skip the fetch AND any GitHub diff-recompute lag right
-    after a force-push. Idempotent; best-effort (never raises), but a real `gh pr edit`
+    after a force-push. Idempotent; best-effort (never raises), but a real body edit
     failure is surfaced loudly — it would otherwise leave a settled PR's body wrong with no
     later re-sync (refresh_table skips settled PRs)."""
     try:
@@ -111,7 +111,7 @@ def sync_body_count(pr, repo, n=None):
                               capture_output=True, text=True).stdout
         new = re.sub(r"adds a batch of \d+", f"adds a batch of {n}", body, count=1)
         if new != body and "adds a batch of" in body:
-            r = subprocess.run(["gh", "pr", "edit", str(pr), "--repo", repo, "--body", new],
+            r = subprocess.run(["gh", "api", "-X", "PATCH", f"repos/{repo}/pulls/{pr}", "-f", f"body={new}"],
                                capture_output=True, text=True)
             if r.returncode == 0:
                 print(f"  synced PR body tag count -> {n}")
@@ -131,7 +131,7 @@ def sync_review_link(pr, repo):
                               capture_output=True, text=True).stdout
         if "/review?pr=" in body and f"/review?pr={pr}" not in body:
             new = body.replace("/review?pr=", f"/review?pr={pr}")
-            r = subprocess.run(["gh", "pr", "edit", str(pr), "--repo", repo, "--body", new],
+            r = subprocess.run(["gh", "api", "-X", "PATCH", f"repos/{repo}/pulls/{pr}", "-f", f"body={new}"],
                                capture_output=True, text=True)
             if r.returncode == 0:
                 print(f"  filled reviewer-UI link (?pr={pr})")

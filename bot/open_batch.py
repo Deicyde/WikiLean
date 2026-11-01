@@ -134,7 +134,7 @@ def fill_review_link(prn):
         if "/review?pr=" not in body:
             return  # no placeholder to fill
         new = body.replace("/review?pr=", f"/review?pr={prn}")
-        r = subprocess.run(["gh", "pr", "edit", str(prn), "--repo", REPO, "--body", new],
+        r = subprocess.run(["gh", "api", "-X", "PATCH", f"repos/{REPO}/pulls/{prn}", "-f", f"body={new}"],
                            capture_output=True, text=True)
         last = (r.stderr or r.stdout).strip()
         time.sleep(10)
