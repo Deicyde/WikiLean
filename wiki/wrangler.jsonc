@@ -39,7 +39,8 @@
         "simple": { "limit": 30, "period": 60 }
       },
       // Anonymous flag-report limiter: max 5 flags per minute, keyed by
-      // CF-Connecting-IP (the endpoint is unauthenticated by design). It also
+      // CF-Connecting-IP, an IPv6 address by its /64 (the endpoint is
+      // unauthenticated by design). It also
       // caps POST /api/csp-report under csp:<ip> keys; changing the limit or
       // the period changes both.
       {
@@ -58,7 +59,8 @@
         "simple": { "limit": 120, "period": 60 }
       },
       // Anonymous MCP endpoint limiter: 120 JSON-RPC calls per minute, keyed
-      // mcp:<CF-Connecting-IP> (read-only surface; agents burst tools/call).
+      // mcp:<CF-Connecting-IP>, an IPv6 address by its /64 (read-only surface;
+      // agents burst tools/call).
       {
         "name": "MCP_LIMITER",
         "type": "ratelimit",

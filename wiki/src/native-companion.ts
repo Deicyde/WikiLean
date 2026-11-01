@@ -1,4 +1,4 @@
-/** WikiLean's application records. Each link holds one Literature Links 2.0 annotation, which
+/** WikiLean's application records. Each link holds one Literature Links 1.0 annotation, which
  * has no version, work-item identity, moderation state, or required application extension. */
 import schemaCheck from './vendor/literature-links/validate.js';
 
@@ -22,7 +22,7 @@ export interface LinkEnd {
   junk?: string[];
   extensions?: JsonObject;
 }
-/** A Literature Links 2.0 annotation: the subject ends, usually the passage, and the object ends. */
+/** A Literature Links 1.0 annotation: the subject ends, usually the passage, and the object ends. */
 export interface LinkRecord {
   subject: LinkEnd[];
   object: LinkEnd[];

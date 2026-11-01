@@ -13,10 +13,11 @@ export interface Env {
   EDIT_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
-  // Anonymous flag-report limiter, keyed flag:<CF-Connecting-IP> (the flag
-  // endpoint has no auth, so the user-keyed EDIT_LIMITER can't cover it). It
-  // also caps the CSP report sink under csp:<CF-Connecting-IP> keys
-  // (security.ts): separate counters, shared limit and period.
+  // Anonymous flag-report limiter, keyed flag:<CF-Connecting-IP> (an IPv6 /64,
+  // limiterIp in security.ts; the flag endpoint has no auth, so the user-keyed
+  // EDIT_LIMITER can't cover it). It also caps the CSP report sink under
+  // csp:<CF-Connecting-IP> keys (security.ts): separate counters, shared limit
+  // and period.
   FLAG_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
@@ -25,7 +26,7 @@ export interface Env {
   BRAIN_API_LIMITER: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
-  // Anonymous /mcp JSON-RPC limiter, keyed mcp:<CF-Connecting-IP>. Optional so
+  // Anonymous /mcp JSON-RPC limiter, keyed mcp:<CF-Connecting-IP> (an IPv6 /64). Optional so
   // deploys predating the binding fall back to BRAIN_API_LIMITER (mcp.ts).
   MCP_LIMITER?: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;

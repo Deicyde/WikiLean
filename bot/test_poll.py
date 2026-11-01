@@ -398,11 +398,18 @@ class SettleHelpersTest(PollFixture):
         result = self.run_with(FakeGh(reviews=approvals("Deicyde")), settle.classify, PR, REPO)
         self.assertEqual(result["tags"], ["Q36161", "Q474715"])
 
+    def test_classify_records_each_tags_repo_relative_file(self):
+        # split.py joins this path onto the mathlib checkout, so it must be the
+        # diff's path without the b/ prefix.
+        result = self.run_with(FakeGh(), settle.classify, PR, REPO)
+        self.assertEqual([e["file"] for e in result["recycle"]],
+                         ["Mathlib/Data/Set/Defs.lean", "Mathlib/Order/Defs/PartialOrder.lean"])
+
 
 class ReadyHeaderTest(PollFixture):
     CLS = {"pr": PR, "reviewers": ["Deicyde", "SnirBroshi"], "maintainer_reviewers": ["SnirBroshi"],
            "gate": True, "tags": ["Q1", "Q2", "Q3"], "green": [{"qid": "Q1"}, {"qid": "Q2"}],
-           "recycle": [{"qid": "Q3"}]}
+           "recycle": [{"qid": "Q3", "file": "Mathlib/Order/Basic.lean"}]}
 
     def test_header_states_the_rule_classify_applies(self):
         h = settle.ready_header(self.CLS)
@@ -422,7 +429,7 @@ class ReadyHeaderTest(PollFixture):
         self.assertNotIn("unresolved objection", h)
         self.assertTrue(h.endswith("<!-- wikilean-bot-ready -->"))
 
-    def test_settle_posts_that_header(self):
+    def test_settle_trims_each_tag_in_its_file_and_posts_that_header(self):
         self.write_state()
         commands = []
         with mock.patch.object(poll, "sh", side_effect=lambda cmd, **kw: commands.append(cmd)), \
@@ -432,6 +439,8 @@ class ReadyHeaderTest(PollFixture):
             poll.do_settle(PR, "wikilean/wikidata-batch-7", Path("/unused"), self.CLS, dry=False)
         table = next(c for c in commands if str(c[1]).endswith("pr_table.py"))
         self.assertEqual(table[table.index("--header") + 1], settle.ready_header(self.CLS))
+        split = next(c for c in commands if str(c[1]).endswith("split.py"))
+        self.assertEqual(split[split.index("--recycle") + 1], "Q3=Mathlib/Order/Basic.lean")
 
 
 class DecideCommandLineTest(unittest.TestCase):
@@ -571,6 +580,55 @@ esac
                 self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
                 self.assertEqual(output.strip(), "act=false")
                 self.assertIn("seed bot-state only", r.stdout)
+
+
+class BodyEditsUseRest(unittest.TestCase):
+    """The token holds public_repo and workflow; `gh pr edit` also needs read:org."""
+
+    REPO = "leanprover-community/mathlib4"
+
+    def fake_run(self, body):
+        calls = []
+
+        def run(cmd, **kw):
+            calls.append(cmd)
+            out = body if cmd[1:3] == ["pr", "view"] else ""
+            return subprocess.CompletedProcess(cmd, 0, out, "")
+
+        return calls, run
+
+    def assert_rest_edit(self, calls, pr, new):
+        edits = [c for c in calls if c[1:3] != ["pr", "view"]]
+        self.assertEqual(edits, [["gh", "api", "-X", "PATCH", f"repos/{self.REPO}/pulls/{pr}", "-f", f"body={new}"]])
+
+    def test_body_count(self):
+        import pr_table
+        calls, run = self.fake_run("adds a batch of 12 tags")
+        with mock.patch.object(pr_table.subprocess, "run", run), contextlib.redirect_stdout(io.StringIO()):
+            pr_table.sync_body_count(7, self.REPO, n=9)
+        self.assert_rest_edit(calls, 7, "adds a batch of 9 tags")
+
+    def test_review_link(self):
+        import pr_table
+        calls, run = self.fake_run("see /review?pr= here")
+        with mock.patch.object(pr_table.subprocess, "run", run), contextlib.redirect_stdout(io.StringIO()):
+            pr_table.sync_review_link(7, self.REPO)
+        self.assert_rest_edit(calls, 7, "see /review?pr=7 here")
+
+    def test_open_batch_review_link(self):
+        import open_batch
+        calls = []
+
+        def run(cmd, **kw):
+            calls.append(cmd)
+            viewed = sum(c[1:3] == ["pr", "view"] for c in calls)
+            out = ("see /review?pr= here" if viewed == 1 else "see /review?pr=7 here") if cmd[1:3] == ["pr", "view"] else ""
+            return subprocess.CompletedProcess(cmd, 0, out, "")
+
+        with mock.patch.object(open_batch.subprocess, "run", run), mock.patch("time.sleep"), \
+                contextlib.redirect_stdout(io.StringIO()):
+            open_batch.fill_review_link(7)
+        self.assert_rest_edit(calls, 7, "see /review?pr=7 here")
 
 
 if __name__ == "__main__":

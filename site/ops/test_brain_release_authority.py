@@ -88,6 +88,7 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             "wiki/public-asset-source-attestation.json",
             "wiki/scripts/brain-release-public.ts",
             "brand-new-directory/file.txt",
+            ".gitattributes",
             "tests.py",
             "docs",
         ):

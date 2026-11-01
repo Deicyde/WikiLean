@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 """Split a batch PR down to its GREEN tags — FULLY DETERMINISTIC (no LLM).
 
-Given the recycle qids, remove their `@[wikidata Q…]` from the branch's Lean
-files (handling standalone + stacked forms), drop a now-unused CrossRefAttribute
-import, then (with --apply) `lake build`, amend the commit, and force-push so
+Given the recycle qids, each with the file the batch PR tagged it in
+(settle.classify's "file"), remove their `@[wikidata Q…]` from those files
+(handling standalone + stacked forms), drop a now-unused CrossRefAttribute
+import, then (with --apply) build the touched modules, commit and push, so
 the open PR becomes the clean green-only set.
 
   dry-run (default): print the exact edits + the git/build commands it WOULD run.
-  --apply:           write files, build, commit --amend, push --force-with-lease.
+  --apply:           on the fetched branch tip: freshen, write files, build,
+                     commit, and push (fast-forward, no force).
 
 Usage:
   split.py --mathlib ~/mathlib4 --branch wikilean/wikidata-batch-2 \
-           --recycle Q942423,Q120812,Q1783179,Q187235,Q1154787,Q652446 [--apply]
+           --recycle Q942423=Mathlib/Order/Basic.lean,Q120812=Mathlib/Data/Set/Defs.lean [--apply]
 """
 import argparse, subprocess, re, sys
 from pathlib import Path
@@ -52,22 +54,28 @@ def strip_tag(line, qid):
     return new
 
 
+def tagged(qid, text):
+    return re.search(rf"\bwikidata\s+{re.escape(qid)}\b", text)
+
+
 def plan(mathlib: Path, recycle):
-    """Return [(relpath, [(op, lineno, old, new)])] edits; op = 'del'|'edit'|'import'."""
-    edits = {}
-    # locate each qid in the checkout
-    for qid in recycle:
-        hit = run(["grep", "-rln", f"wikidata {qid}", str(mathlib / "Mathlib")], check=False).stdout.split()
-        if not hit:
-            print(f"  !! {qid}: not found in checkout (already removed?)", file=sys.stderr)
-            continue
-        path = Path(hit[0])
-        lines = path.read_text(encoding="utf-8").split("\n")
+    """Return ({path: [(op, lineno, old, new)]}, missing); op = 'del'|'edit'|'import'.
+
+    recycle is [(qid, relpath)]. Each qid is looked for only in its own file and only
+    as a whole word: the checkout also holds upstream files that may carry the same
+    tag, and Q12 must not match Q123. missing lists the qids their file doesn't carry."""
+    edits, missing = {}, []
+    for qid, rel in recycle:
+        path = mathlib / rel
+        lines = path.read_text(encoding="utf-8").split("\n") if path.is_file() else []
         for i, ln in enumerate(lines):
-            if re.search(rf"wikidata\s+{re.escape(qid)}\b", ln):
+            if tagged(qid, ln):
                 new = strip_tag(ln, qid)
                 edits.setdefault(path, []).append(("del" if new is None else "edit", i, ln, new))
                 break
+        else:
+            print(f"  !! {qid}: not tagged in {rel}", file=sys.stderr)
+            missing.append(qid)
     # drop a now-unused import where no wikidata tag will remain in the file
     for path, ops in list(edits.items()):
         lines = path.read_text(encoding="utf-8").split("\n")
@@ -84,7 +92,20 @@ def plan(mathlib: Path, recycle):
             for i, ln in enumerate(lines):
                 if ln.strip() == IMPORT_LINE:
                     ops.append(("import", i, ln, None))
-    return edits
+    return edits, missing
+
+
+def show(mathlib: Path, edits):
+    rel = lambda p: str(p).replace(str(mathlib) + "/", "")
+    for path, ops in edits.items():
+        print(f"\n{rel(path)}")
+        for op, i, old, new in ops:
+            if op == "import":
+                print(f"  L{i+1} drop unused import: {old.strip()}")
+            elif new is None:
+                print(f"  L{i+1} delete: {old.strip()}")
+            else:
+                print(f"  L{i+1} edit:   {old.strip()}  ->  {new.strip()}")
 
 
 def apply_edits(edits):
@@ -137,25 +158,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mathlib", type=Path, required=True)
     ap.add_argument("--branch", required=True)
-    ap.add_argument("--recycle", required=True, help="comma-separated qids to remove")
+    ap.add_argument("--recycle", required=True,
+                    help="comma-separated QID=FILE pairs to remove, FILE relative to --mathlib")
     ap.add_argument("--apply", action="store_true", help="write + build + amend + force-push")
     ap.add_argument("--no-build", action="store_true", help="skip the local build (CI verifies)")
     args = ap.parse_args()
-    recycle = [q.strip() for q in args.recycle.split(",") if q.strip()]
+    recycle = []
+    for pair in filter(None, (p.strip() for p in args.recycle.split(","))):
+        qid, _, rel = pair.partition("=")
+        if not (re.fullmatch(r"Q\d+", qid) and rel):
+            ap.error(f"--recycle wants QID=FILE pairs, got {pair!r}")
+        recycle.append((qid, rel))
 
     print(f"# split: keep greens, remove {len(recycle)} recycled tags from {args.branch}")
-    edits = plan(args.mathlib, recycle)
-    rel = lambda p: str(p).replace(str(args.mathlib) + "/", "")
-    for path, ops in edits.items():
-        print(f"\n{rel(path)}")
-        for op, i, old, new in ops:
-            if op == "import":
-                print(f"  L{i+1} drop unused import: {old.strip()}")
-            elif new is None:
-                print(f"  L{i+1} delete: {old.strip()}")
-            else:
-                print(f"  L{i+1} edit:   {old.strip()}  ->  {new.strip()}")
     if not args.apply:
+        show(args.mathlib, plan(args.mathlib, recycle)[0])
         print("\n[dry-run] no files changed. On --apply, would (on the CURRENT remote tip):")
         print(f"  git fetch origin {args.branch} && git reset --hard origin/{args.branch}")
         print("  git merge upstream/master   (freshen so the cache-verify passes)")
@@ -179,10 +196,19 @@ def main():
     # passes (a stale merged-master leaves core-file oleans uncached).
     print("  freshened against upstream/master" if freshen_master(args.mathlib)
           else "  (upstream/master merge conflicted — trimming on the branch tip)")
-    edits = plan(args.mathlib, recycle)  # re-plan against the fresh tip
+    edits, missing = plan(args.mathlib, recycle)  # plan against the fresh tip
+    show(args.mathlib, edits)
+    # A recycled tag the trim can't find stays on the PR, and the next poll tick
+    # re-settles it again: fail the tick instead.
+    if missing:
+        sys.exit(f"refusing to trim, not tagged where the PR put them: {', '.join(missing)}")
     if not edits:
         print("nothing to remove on the current tip — done."); return
     apply_edits(edits)
+    left = [qid for qid, rel in recycle if tagged(qid, (args.mathlib / rel).read_text(encoding="utf-8"))]
+    if left:
+        run(["git", "checkout", "--", *[str(p) for p in edits]], cwd=args.mathlib, check=False)
+        sys.exit(f"TRIM INCOMPLETE: {', '.join(left)} still tagged; restored files, not pushing.")
     # Build ONLY the touched modules — removing a doc attribute + unused import is
     # semantically inert, so this is a fast confidence check (CI re-verifies).
     mods = ["Mathlib." + str(p).split("/Mathlib/", 1)[1].replace(".lean", "").replace("/", ".")
