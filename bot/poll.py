@@ -70,15 +70,15 @@ def do_settle(pr, branch, mathlib, cls, dry):
             e.setdefault("decl", decl_by_qid.get(e["qid"]))
     except Exception as ex:
         print(f"  (could not enrich recycle decls: {ex})")
-    qids = ",".join(e["qid"] for e in recycle)
+    pairs = ",".join(f"{e['qid']}={e['file']}" for e in recycle)
     green = len(cls["green"])
     print(f"  SETTLE #{pr}: {green} green / {len(recycle)} recycle "
           f"(reviewers {cls['reviewers']}, maintainers {cls['maintainer_reviewers']})")
     if dry:
-        print(f"    would: split --recycle {qids}; triage (LLM); publish /queue; pr_table --post; ready comment")
+        print(f"    would: split --recycle {pairs}; triage (LLM); publish /queue; pr_table --post; ready comment")
         return
     sh([sys.executable, str(HERE / "split.py"), "--mathlib", str(mathlib), "--branch", branch,
-        "--recycle", qids, "--apply", "--no-build"], check=True)
+        "--recycle", pairs, "--apply", "--no-build"], check=True)
     sh([sys.executable, str(HERE / "triage.py"), "--out-queue", str(QUEUE)], input=json.dumps(recycle))
     # Feedback loop (deterministic, idempotent): harvest every reviewer
     # reject/revise (corrections, with the narrower QID they named) + approve
