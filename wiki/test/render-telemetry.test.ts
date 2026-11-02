@@ -4,10 +4,10 @@
 // engine's real match results. Log-only: no D1 write rides along
 // (articles.anchored_count is deferred). Cache hits emit nothing.
 
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, type MockInstance } from "vitest";
 import { setup, get, SLUG, REVID, blockNetwork } from "./helpers/harness.js";
 
-function renderLines(spy: ReturnType<typeof vi.spyOn>): Array<Record<string, unknown>> {
+function renderLines(spy: MockInstance<typeof console.log>): Array<Record<string, unknown>> {
   return spy.mock.calls
     .map((c) => String(c[0]))
     .filter((s) => s.includes('"event":"render"'))

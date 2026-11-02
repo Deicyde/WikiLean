@@ -213,15 +213,18 @@ and `cd wiki && npx wrangler secret list` (names only).
     local dev server; sharp serves only Miniflare's local Images binding. Upgrade
     together with that re-pin, then run `python3 scripts/backup_wrangler_lock.py
     --write` so the backup job follows.
-  - `vitest` 3.2.6 (dev): `tinypool` ≤2.1.1 (critical, prototype pollution to RCE)
-    and `@vitest/mocker` (moderate, path traversal). The fix is vitest 5, a major
-    upgrade: not done here. Both need an attacker-controlled test run; CI has no
-    secrets.
+  - `vitest` (dev): upgraded 3.2.6 to 5.0.5 on 2026-11-02 (#91), past the two-week
+    cooldown (published 2026-10-15). That clears `tinypool` ≤2.1.1 (critical,
+    prototype pollution to RCE) and `@vitest/mocker` (moderate, path traversal).
+    vitest 5 makes `vite` a required peer, which `wiki/.npmrc`'s
+    `legacy-peer-deps=true` does not install, so `vite` 7.3.7 is a direct
+    devDependency; 7.3.6 and earlier carry the `launch-editor` and dev-server
+    advisories.
   - `ajv` 8.17.1 (dev, moderate ReDoS with `$data`): 8.20.0 would change the
     generated companion validator (`npm run check:companion-validator`), which is
     Worker source; the generator does not use `$data`. Not upgraded.
-  - `source-map-js` ≤1.2.1 (dev, high DoS on crafted source maps): fixable with
-    `npm audit fix` (lockfile only); left for the next dependency PR.
+  - `source-map-js` ≤1.2.1 (dev, high DoS on crafted source maps): 1.2.2 since #91,
+    through `vite`'s `postcss`.
 - **Stale pin, already on `origin/main`:** `brain/acquire_d1_snapshot.py` and
   `brain/d1_snapshot_bundle.py` pin `PACKAGE_LOCK_SHA256 = 533f09a6…`, which
   `wiki/package-lock.json` has not matched since `d50f5da5`, so the operator D1
