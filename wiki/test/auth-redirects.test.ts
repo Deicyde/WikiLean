@@ -90,6 +90,27 @@ describe("main auth returnTo handling", () => {
     expect(scriptSafeJson(returnTo)).toContain("\\u003c/script>");
     expect(scriptSafeJson(returnTo)).toContain("\\u2028");
     expect(scriptSafeJson(returnTo)).toContain("\\u2029");
+    expect(logoutHtml).not.toContain("<script>alert(1)");
+    h.db.close();
+  });
+
+  it.each(HOSTILE_RETURN_PATHS)("the oauth logout page falls back for hostile target %j", async (value) => {
+    const h = oauthHarness();
+    const html = await (await request(h.env, `/logout?returnTo=${encodeURIComponent(value)}`)).text();
+    expect(html).toContain(`location.href="/"`);
+    expect(html).toContain(`<a href="/">`);
+    expect(html).not.toContain("evil.example");
+    expect(html).not.toContain("javascript:");
+    h.db.close();
+  });
+
+  it("escapes the destination in the oauth logout page's failure links", async () => {
+    const h = oauthHarness();
+    const returnTo = `/x"><img src=y onerror=alert(1)>&z='`;
+    const html = await (await request(h.env, `/logout?returnTo=${encodeURIComponent(returnTo)}`)).text();
+    expect(html).not.toContain("<img");
+    expect(html).toContain(`<a href="/x&quot;&gt;&lt;img src=y onerror=alert(1)&gt;&amp;z=&#x27;">`);
+    expect(html).toContain(`<a href="/logout?returnTo=%2Fx%22%3E%3Cimg%20src%3Dy%20onerror%3Dalert(1)%3E%26z%3D&#x27;">`);
     h.db.close();
   });
 });

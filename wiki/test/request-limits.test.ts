@@ -425,11 +425,22 @@ describe("/api/auth/* body cap (oauth mode)", () => {
     expect(refused.status).toBe(413);
   });
 
+  // A body-less POST reaches the route with a null body only when a test builds
+  // it that way; a browser's reaches it as an empty stream (Content-Length: 0),
+  // which goes through the cap and the rebuilt request. test/sign-out.test.ts
+  // covers that against a real session.
   it("still serves a body-less sign-out POST and the GET session route", async () => {
     const h = oauthHarness();
-    const signOut = await app.request(ORIGIN + "/api/auth/sign-out", { method: "POST" }, h.env);
-    expect(signOut.status).not.toBe(413);
-    expect(signOut.status).toBeLessThan(500);
+    const nullBody = await app.request(ORIGIN + "/api/auth/sign-out", { method: "POST" }, h.env);
+    expect(nullBody.status).toBe(200);
+    expect(await nullBody.json()).toEqual({ success: true });
+    const emptyStream = await app.request(
+      ORIGIN + "/api/auth/sign-out",
+      { method: "POST", headers: { "Content-Length": "0" }, body: exactStream(""), duplex: "half" } as RequestInit,
+      h.env,
+    );
+    expect(emptyStream.status).toBe(200);
+    expect(await emptyStream.json()).toEqual({ success: true });
     const session = await app.request(ORIGIN + "/api/auth/get-session", {}, h.env);
     expect(session.status).toBe(200);
     expect(await session.json()).toBeNull();
