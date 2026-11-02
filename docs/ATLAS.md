@@ -1037,7 +1037,7 @@ page's annotations, the atlas checked N passages of Wikipedia revision R…"), a
 atlas checked another revision than the page shows it adds "This page shows revision
 R′.". `serveArticle` adds it **per request**, like
 the staleness banner (`pages.ts injectAtlasSummary`), and never bakes it into
-`render:v18`. The atlas changes independently of `articles.version`, so a cached box
+`render:v19`. The atlas changes independently of `articles.version`, so a cached box
 would be stale for up to 30 days. The cached base bytes do not change, so **no render-cache
 key bump is needed**, and the legacy annotation rendering is untouched.
 

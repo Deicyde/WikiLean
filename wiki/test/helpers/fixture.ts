@@ -29,6 +29,37 @@ export const WP_FIXTURE = [
   "<p>Every subgroup of an abelian group is normal. The fundamental theorem of finite abelian groups classifies them completely.</p>",
 ].join("\n");
 
+// Formulas in both shapes of MediaWiki's parse output, one inline and one
+// display formula each (e2e/formulas.spec.ts). Each is MathML, hidden by an
+// inline style, beside an SVG fallback image. Older pinned bodies class the
+// MathML's span mwe-math-mathml-inline or -display (with mwe-math-mathml-a11y);
+// current ones class it only mwe-math-mathml-a11y, and the outer wrapper is
+// mwe-math-element-inline or -block. The images are data: URIs because a
+// hidden <img> still loads and the browser harness never leaves loopback.
+export const FORMULA_SLUG = "Formula_Article";
+const FALLBACK_SVG = "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20width='8'%20height='8'/%3E";
+const formula = (outer: string, inner: string, image: string, tex: string, mathml: string, block = false) =>
+  `<span class="${outer}"><span class="${inner}" style="display: none;">` +
+  `<math xmlns="http://www.w3.org/1998/Math/MathML"${block ? ' display="block"' : ""} alttext="{\\displaystyle ${tex}}">` +
+  `<semantics><mrow class="MJX-TeXAtom-ORD"><mstyle displaystyle="true" scriptlevel="0">${mathml}</mstyle></mrow>` +
+  `<annotation encoding="application/x-tex">{\\displaystyle ${tex}}</annotation></semantics></math></span>` +
+  `<img src="${FALLBACK_SVG}" class="${image} mw-invert skin-invert" aria-hidden="true" ` +
+  `style="vertical-align: -0.505ex; width:12ex; height:2.676ex;" alt="{\\displaystyle ${tex}}"></span>`;
+const SUM = "<mi>a</mi><mo>+</mo><mi>b</mi>";
+const SQUARES = "<msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup><mo>=</mo><msup><mi>c</mi><mn>2</mn></msup>";
+export const WP_FORMULA_FIXTURE = [
+  '<div class="mw-parser-output">',
+  `<p id="formula-old-inline"><b>Older inline shape:</b> ${formula("mwe-math-element mwe-math-element-inline",
+    "mwe-math-mathml-inline mwe-math-mathml-a11y", "mwe-math-fallback-image-inline", "a+b", SUM)} stays in its sentence.</p>`,
+  `<p id="formula-old-display"><b>Older display shape:</b>${formula("mwe-math-element mwe-math-element-block",
+    "mwe-math-mathml-display mwe-math-mathml-a11y", "mwe-math-fallback-image-display", "a^{2}+b^{2}=c^{2}", SQUARES, true)}ends here.</p>`,
+  `<p id="formula-a11y-inline"><b>Current inline shape:</b> ${formula("mwe-math-element mwe-math-element-inline",
+    "mwe-math-mathml-a11y", "mwe-math-fallback-image-inline", "a+b", SUM)} stays in its sentence.</p>`,
+  `<p id="formula-a11y-display"><b>Current display shape:</b>${formula("mwe-math-element mwe-math-element-block",
+    "mwe-math-mathml-a11y", "mwe-math-fallback-image-display", "a^{2}+b^{2}=c^{2}", SQUARES, true)}ends here.</p>`,
+  "</div>",
+].join("\n");
+
 export const SEED_ANNOTATIONS = [
   {
     id: "aaaaaaaaaaaa",

@@ -102,7 +102,7 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   decide proposals (approve/reject), and an AI approve that changes human bytes re-labels
   them `ai-moderated` — **AI-changed bytes are never left marked `human`, and bots never
   mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
-- **Render-cache keys are manually versioned + load-bearing** (currently `render:v18:`,
+- **Render-cache keys are manually versioned + load-bearing** (currently `render:v19:`,
   `page:home:v10`, `page:articles:v3`, `page:articles-index:v1`, `page:about:v2`,
   `page:sitemap:v4`, `page:stats:v6`, `page:wikifunctions:v3`,
   `page:wikifunctions-verify:v3` — all in `index.ts`) — bump the
