@@ -5,10 +5,11 @@ This runbook covers Phase 1 static Brain releases for `wikilean`. From 2026-10-0
 selector with no previous release; the [activation record](BRAIN-ACTIVATION-2026-10-04.md)
 has the IDs and constraints. That promotion's attempt
 `20261004T172504Z-8305822b0083-27c7c461cb` was reconciled on 2026-10-08 (journal outcome
-`deployed_reconciled`). Since 2026-11-01, production has served release B, promoted through
-the Jack-gated P1C; its attempt closed with journal outcome `deployed`, so no incomplete
-attempt blocks the next promotion. No rollback drill has been run. Keep the nightly
-`WIKILEAN_BRAIN_DEPLOY=0`.
+`deployed_reconciled`). Since 2026-11-01, production has served release B,
+`sha256:2fe2d19b…` (manifest `d5f774c2…`), with the 2026-10-04 release as its previous
+release. It was promoted through the Jack-gated P1C, and its attempt closed with journal
+outcome `deployed`, so no incomplete attempt blocks the next promotion. No rollback drill
+has been run. Keep the nightly `WIKILEAN_BRAIN_DEPLOY=0`.
 
 Run operator commands on the operator Mac: the host that holds the deployment journal, the
 release and evidence stores, and authenticated Wrangler. In the examples below,
@@ -481,8 +482,8 @@ Do not delete or relocate either root after review.
 
 ## Deploy
 
-> **Production has served release B since 2026-11-01.** Its attempt closed with journal
-> outcome `deployed`. Running the promoter
+> **Production has served release B (`sha256:2fe2d19b…`, manifest `d5f774c2…`) since
+> 2026-11-01.** Its attempt closed with journal outcome `deployed`. Running the promoter
 > with `--execute` changes production and needs Jack's approval for the exact release and
 > window. After any `--execute`, keep `wiki/wrangler.jsonc` and the Node/Wrangler toolchain
 > unchanged until that attempt has a clean `final_state`: reconciliation requires both to match
@@ -744,12 +745,15 @@ with their version IDs, and promoter deployments carry an attempt-unique tag and
 with `versions list --json`, and record in the incident notes that the ID came from
 Cloudflare rather than the journal.
 
-For the 2026-10-04 release, the predeploy state is a Worker with no selector (last
-observed as Worker version `d2926a43-483b-4447-b570-d067c4d77d98`, 2026-08-28; see the
-[activation record](BRAIN-ACTIVATION-2026-10-04.md)). The release canary below requires an
-expected release ID and manifest digest, so it cannot verify that rollback. Verify it by hand
-instead: `/assets/brain/current.json` returns 404 again and `/api/brain/*` responses carry no
-`release_id`.
+Every promotion after the 2026-10-04 release starts from a predeploy state that serves a
+selector, so the canary below verifies its rollback. For release B (`sha256:2fe2d19b…`), that
+predeploy release is the 2026-10-04 release, `sha256:8305822b…` (manifest `fa645b2b…`). Only
+the 2026-10-04 release's own predeploy state was a Worker with no selector (last observed as
+Worker version `d2926a43-483b-4447-b570-d067c4d77d98`, 2026-08-28; see the
+[activation record](BRAIN-ACTIVATION-2026-10-04.md)). The canary requires an expected release
+ID and manifest digest, so it cannot verify a rollback to that state. Verify that rollback by
+hand instead: `/assets/brain/current.json` returns 404 again and `/api/brain/*` responses
+carry no `release_id`.
 
 After rollback, run the canary against the predeploy Brain release:
 
