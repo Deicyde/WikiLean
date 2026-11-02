@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
+import { makeSignature } from "better-auth/crypto";
 import type { Env } from "../src/env.js";
 import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
@@ -94,7 +95,42 @@ globalThis.fetch = (async (input: RequestInfo | URL) => {
   throw new Error(`browser harness attempted an external fetch: ${String(input)}`);
 }) as typeof globalThis.fetch;
 
-async function fetch(request: Request): Promise<Response> {
+// better-auth only answers in oauth mode, so sign-out (e2e/sign-out.spec.ts) gets
+// a second loopback listener: the same database and assets, the app in oauth mode.
+// Its two /__e2e routes make and count session rows, which a spec cannot reach.
+const OAUTH_PORT = PORT + 1;
+const OAUTH_SECRET = "0123456789abcdef0123456789abcdef";
+const oauthEnv: Env = {
+  ...harness.env,
+  AUTH_MODE: "oauth",
+  BETTER_AUTH_SECRET: OAUTH_SECRET,
+  BETTER_AUTH_URL: `http://${HOST}:${OAUTH_PORT}`,
+};
+
+async function createSession(): Promise<Response> {
+  const token = `e2e-${crypto.randomUUID()}`;
+  const now = Math.floor(Date.now() / 1000);
+  harness.db
+    .prepare(
+      "INSERT INTO sessions (id, user_id, token, expires_at, ip_address, user_agent, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?)",
+    )
+    .run(token, "u-human", token, now + 3600, "127.0.0.1", "playwright", now, now);
+  return Response.json({ token, cookie: encodeURIComponent(`${token}.${await makeSignature(token, OAUTH_SECRET)}`) });
+}
+
+function sessionRows(token: string | null): Response {
+  const row = harness.db.prepare("SELECT COUNT(*) AS n FROM sessions WHERE token = ?").get(token) as { n: number };
+  return Response.json({ rows: row.n });
+}
+
+function oauthFetch(request: Request): Promise<Response> | Response {
+  const url = new URL(request.url);
+  if (url.pathname === "/__e2e/session") return createSession();
+  if (url.pathname === "/__e2e/session-rows") return sessionRows(url.searchParams.get("token"));
+  return fetch(request, oauthEnv);
+}
+
+async function fetch(request: Request, env: Env = harness.env): Promise<Response> {
   const pathname = new URL(request.url).pathname;
   const asset = SOURCE_ASSETS.get(pathname);
   if (asset) {
@@ -123,14 +159,18 @@ async function fetch(request: Request): Promise<Response> {
       headers: { "Cache-Control": "no-store", "Content-Type": generated.contentType },
     });
   }
-  return app.fetch(request, harness.env);
+  return app.fetch(request, env);
 }
 
-const server = serve({ fetch, hostname: HOST, port: PORT }, (info) => {
+const server = serve({ fetch: (request) => fetch(request), hostname: HOST, port: PORT }, (info) => {
   console.log(`WikiLean browser harness listening on http://${HOST}:${info.port}`);
+});
+const oauthServer = serve({ fetch: oauthFetch, hostname: HOST, port: OAUTH_PORT }, (info) => {
+  console.log(`WikiLean oauth-mode browser harness listening on http://${HOST}:${info.port}`);
 });
 
 function shutdown(): void {
+  oauthServer.close();
   server.close(() => {
     globalThis.fetch = runtimeFetch;
     harness.db.close();

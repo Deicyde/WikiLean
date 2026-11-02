@@ -235,6 +235,34 @@ document.querySelectorAll(".prov").forEach(function(b){b.addEventListener("click
 </body></html>`;
 }
 
+// Goes to returnTo only when better-auth reports the sign-out done. A refusal or a
+// network error stays on the page and says so, since the session may still be live.
+function logoutPageHtml(returnTo: string): string {
+  const retry = htmlEscape(`/logout?returnTo=${encodeURIComponent(returnTo)}`, true);
+  return (
+    `<!doctype html><html lang="en"><meta charset="utf-8"><title>Signing out…</title>` +
+    `<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>` +
+    `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#5f594e;display:grid;place-items:center;min-height:100vh;margin:0}` +
+    `a{color:#1a4b8c}[data-theme="dark"] body{background:#1a1816;color:#9a9081}[data-theme="dark"] a{color:#6e9adf}</style>` +
+    `<main><p id="wl-signing-out" role="status">Signing out…</p>` +
+    `<p id="wl-signout-failed" role="alert" hidden>Sign-out failed. You may still be signed in. <a href="${retry}">Try again</a> · <a href="${htmlEscape(returnTo, true)}">Continue without signing out</a></p></main>` +
+    `<script>(function(){function failed(){document.title="Sign-out failed";document.getElementById("wl-signing-out").hidden=true;document.getElementById("wl-signout-failed").hidden=false}` +
+    `fetch("/api/auth/sign-out",{method:"POST"}).then(function(r){return r.ok?r.json():null}).then(function(b){if(b&&b.success===true){location.href=${scriptSafeJson(returnTo)}}else{failed()}}).catch(failed)})();</script>`
+  );
+}
+
+// A copy of a request whose body has been read, carrying the read text. An empty
+// body stays no body. A browser sends fetch(url, { method: "POST" }) with
+// Content-Length: 0, and the Worker runtime gives that a non-null empty body, so
+// it comes through here. new Request(req, { body: "" }) would stamp it text/plain,
+// and better-auth answers any non-null body of the wrong type with a 415; with no
+// body it does not look at the type. Only the URL form gives a null body in every
+// runtime: new Request(req, { body: null }) falls back to req's own read body.
+function withReadBody(req: Request, text: string): Request {
+  if (text === "") return new Request(req.url, { method: req.method, headers: req.headers });
+  return new Request(req, { body: text });
+}
+
 export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
   // Specific /api/auth/* routes MUST be registered before the better-auth
   // wildcard below, since Hono runs the first matching handler.
@@ -257,8 +285,8 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
   // sign-out, session). Registered after the specific routes above. Anonymous
   // callers reach it, so a POST body is read here through readBodyCapped
   // (MAX_AUTH_BODY_BYTES) and better-auth gets a copy of the request carrying
-  // the read text: a declared or streamed body past the cap is a 413 and is
-  // never buffered.
+  // the read text (withReadBody): a declared or streamed body past the cap is a
+  // 413 and is never buffered.
   app.on(["GET", "POST"], "/api/auth/*", async (c) => {
     if (c.env.AUTH_MODE !== "oauth") return c.notFound();
     const req = c.req.raw;
@@ -267,7 +295,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
     if (text === null) {
       return c.json({ ok: false, error: `request body too large (max ${MAX_AUTH_BODY_BYTES} bytes)` }, 413);
     }
-    return makeAuth(c.env).handler(new Request(req, { body: text }));
+    return makeAuth(c.env).handler(withReadBody(req, text));
   });
 
   // Sign-in page.
@@ -288,14 +316,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>): void {
     const ret = internalReturnPath(c.req.query("returnTo"), "/");
     if (c.env.AUTH_MODE === "oauth") {
       // Styled to the warm palette so the flash page matches the site (W3 fix #6c).
-      return c.html(
-        `<!doctype html><meta charset="utf-8"><title>Signing out…</title>` +
-          `<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>` +
-          `<style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#f7f4ee;color:#5f594e;display:grid;place-items:center;min-height:100vh;margin:0}` +
-          `[data-theme="dark"] body{background:#1a1816;color:#9a9081}</style>` +
-          `<script>fetch("/api/auth/sign-out",{method:"POST"}).then(function(){location.href=${scriptSafeJson(ret)}}).catch(function(){location.href=${scriptSafeJson(ret)}});</script>` +
-          `Signing out…`,
-      );
+      return c.html(logoutPageHtml(ret));
     }
     deleteCookie(c, DEV_COOKIE, { path: "/" });
     return c.redirect(ret);
