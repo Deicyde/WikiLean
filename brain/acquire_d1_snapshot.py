@@ -98,20 +98,35 @@ D1_DATABASE_NAME = "wikilean"
 D1_DATABASE_ID = "fc1b0190-77dd-4f41-a5b9-7f30d53df140"
 D1_BINDING = "SEALED_D1"
 UPSTREAM_URI = f"d1://cloudflare/{D1_DATABASE_ID}"
-WRANGLER_VERSION = "4.120.0"
+WRANGLER_VERSION = "4.151.3"
 WRANGLER_INTEGRITY = (
-    "sha512-cBmu/MeaB/fPacC0JpATs4duTOCagBxrZo+vBzuTX06tLzwSyAHE1drlHUZ8rP0"
-    "VqVz1fy3ReGYTiHdKkoHltg=="
+    "sha512-mzPQLmkAhZUV7CdiAhE+hiIAJlS9xPL6vZe1B8oQFuWxFu7nmQnvHAVjcAcabwSGkX"
+    "FXH9uspzXwHOFrfbQmqQ=="
 )
 WRANGLER_CLI_SHA256 = (
-    "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
+    "85a0fd68160392c7b9233a2a3406a94d61ab2a84d6dc192ebcb758774a76ee61"
 )
 WRANGLER_CLI = (
     ROOT / "wiki" / "node_modules" / "wrangler" / "wrangler-dist" / "cli.js"
 )
 PACKAGE_LOCK = ROOT / "wiki" / "package-lock.json"
-PACKAGE_LOCK_SHA256 = (
-    "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
+# Wrangler's dependency closure in PACKAGE_LOCK (see _wrangler_closure_sha256).
+# The rest of the lockfile may move without a re-pin.
+WRANGLER_CLOSURE_FIELDS = (
+    "version",
+    "resolved",
+    "integrity",
+    "dependencies",
+    "optionalDependencies",
+    "peerDependencies",
+    "peerDependenciesMeta",
+)
+# Optional peers the lock installs are pinned too (ws loads bufferutil when it is
+# present), except type declarations Wrangler never loads. workers-types is also a
+# root devDependency that moves every week.
+UNPINNED_OPTIONAL_PEERS = frozenset({"@cloudflare/workers-types"})
+WRANGLER_CLOSURE_SHA256 = (
+    "2abb1c96189898e2e9b5e6210ceb282c4724f8b8e637d71d1567ced09a5e3d24"
 )
 DEFAULT_STORE = ROOT / "catalog" / ".cache" / "d1" / "snapshots"
 LOCAL_DEPENDENCIES = (
@@ -853,6 +868,58 @@ def _verify_runtime_closure(toolchain: Mapping[str, Any]) -> None:
         raise D1SnapshotError("D1 snapshot wrapper changed during acquisition")
 
 
+def _wrangler_closure_sha256(packages: Mapping[str, Any]) -> str:
+    """Digest everything Wrangler can load from the wiki lockfile.
+
+    Walks every install path Node resolves from ``node_modules/wrangler`` through
+    dependencies, optional dependencies and peers (optional peers too, when the
+    lock installs them, apart from UNPINNED_OPTIONAL_PEERS) and hashes each path's
+    version, resolved URL, integrity and dependency declarations. While no other
+    optional peer is installed, the paths are the closure
+    scripts/backup_wrangler_lock.py copies into .github/backup-wrangler.
+    """
+
+    def resolve(base: str, name: str) -> str | None:
+        while True:
+            candidate = f"{base}/node_modules/{name}" if base else f"node_modules/{name}"
+            if candidate in packages:
+                return candidate
+            if not base:
+                return None
+            cut = base.rfind("/node_modules/")
+            base = base[:cut] if cut >= 0 else ""
+
+    seen: set[str] = set()
+    stack = ["node_modules/wrangler"]
+    while stack:
+        path = stack.pop()
+        if path in seen:
+            continue
+        seen.add(path)
+        entry = packages[path]
+        peers_meta = entry.get("peerDependenciesMeta") or {}
+        edges = [(name, True) for name in entry.get("dependencies") or {}]
+        edges += [(name, False) for name in entry.get("optionalDependencies") or {}]
+        edges += [
+            (name, not (peers_meta.get(name) or {}).get("optional", False))
+            for name in entry.get("peerDependencies") or {}
+            if name not in UNPINNED_OPTIONAL_PEERS
+        ]
+        for name, required in edges:
+            target = resolve(path, name)
+            if target is not None:
+                stack.append(target)
+            elif required:
+                raise D1SnapshotError(
+                    f"package lock: {path} needs {name}, which the lock does not install"
+                )
+    pinned = {
+        path: {field: packages[path].get(field) for field in WRANGLER_CLOSURE_FIELDS}
+        for path in sorted(seen)
+    }
+    return _sha256(contracts.canonical_json_bytes(pinned))
+
+
 def _pinned_toolchain(
     *,
     probe_runner: Runner = subprocess.run,
@@ -863,11 +930,6 @@ def _pinned_toolchain(
     if not PACKAGE_LOCK.is_file():
         raise D1SnapshotError(f"missing package lock: {PACKAGE_LOCK}")
     lock_bytes = PACKAGE_LOCK.read_bytes()
-    lock_sha256 = _sha256(lock_bytes)
-    if lock_sha256 != PACKAGE_LOCK_SHA256:
-        raise D1SnapshotError(
-            f"package lock changed: expected {PACKAGE_LOCK_SHA256}, got {lock_sha256}"
-        )
     try:
         lock = contracts.parse_json_bytes(
             lock_bytes, location=str(PACKAGE_LOCK)
@@ -888,6 +950,15 @@ def _pinned_toolchain(
         )
     if package_integrity != WRANGLER_INTEGRITY:
         raise D1SnapshotError("Wrangler lockfile integrity does not match reviewed pin")
+    try:
+        closure_sha256 = _wrangler_closure_sha256(lock["packages"])
+    except (AttributeError, KeyError, TypeError) as exc:
+        raise D1SnapshotError("package lock has a malformed Wrangler dependency closure") from exc
+    if closure_sha256 != WRANGLER_CLOSURE_SHA256:
+        raise D1SnapshotError(
+            "Wrangler's dependency closure in the package lock changed: "
+            f"expected {WRANGLER_CLOSURE_SHA256}, got {closure_sha256}"
+        )
     if not WRANGLER_CLI.is_file():
         raise D1SnapshotError("pinned local Wrangler is absent; run `cd wiki && npm ci`")
     cli_metadata = WRANGLER_CLI.lstat()
@@ -913,7 +984,7 @@ def _pinned_toolchain(
         raise D1SnapshotError(f"Node 22 required, found {node_version!r}")
     python = _resolved_python()
     toolchain = {
-        "schema": "wikilean.d1-acquisition-toolchain/v1",
+        "schema": "wikilean.d1-acquisition-toolchain/v2",
         "invocation": {
             "config_sha256": _sha256(_minimal_wrangler_config()),
             "database_binding": D1_BINDING,
@@ -934,7 +1005,7 @@ def _pinned_toolchain(
             "version": WRANGLER_VERSION,
             "package_integrity": WRANGLER_INTEGRITY,
             "cli_sha256": cli_sha256,
-            "package_lock_sha256": lock_sha256,
+            "closure_sha256": closure_sha256,
         },
         "wrapper": {"sha256": LOADED_SCRIPT_SHA256},
     }
