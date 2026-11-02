@@ -8,5 +8,10 @@ export default defineConfig({
       "test/seed.test.ts",
     ],
     testTimeout: 120000,
+    // Vitest 5 caches test results (cache, node_modules/.vite) and
+    // transformed modules (fsModuleCache, node_modules/.vitest-cache) by
+    // default; the release promoter fingerprints wiki/node_modules.
+    cache: false,
+    fsModuleCache: false,
   },
 });
