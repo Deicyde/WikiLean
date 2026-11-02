@@ -42,6 +42,20 @@ async function expectFailureShown(page: Page, returnTo: string): Promise<void> {
   await expect(alert.getByRole("link", { name: "Continue without signing out" })).toHaveAttribute("href", returnTo);
 }
 
+async function rejectExternalRequests(page: Page): Promise<void> {
+  await page.route("**/*", async (route) => {
+    const url = new URL(route.request().url());
+    if (url.hostname !== "127.0.0.1" && url.hostname !== "localhost") {
+      throw new Error(`browser test attempted an external request: ${url.href}`);
+    }
+    await route.continue();
+  });
+}
+
+test.beforeEach(async ({ page }) => {
+  await rejectExternalRequests(page);
+});
+
 test("the /logout page ends the session, then goes to returnTo", async ({ context, page, request }) => {
   const session = await signIn(context, request);
   expect(await sessionRows(request, session)).toBe(1);
