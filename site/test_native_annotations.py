@@ -93,7 +93,7 @@ class NativeContract(unittest.TestCase):
         import hashlib
         provenance = json.loads((n.SCHEMA_PATH.parent / 'provenance.json').read_text(encoding='utf-8'))
         self.assertEqual(hashlib.sha256(n.SCHEMA_PATH.read_bytes()).hexdigest(), provenance['sha256'])
-        self.assertEqual(provenance['version'], '1.0.0')
+        self.assertEqual(provenance['version'], '1.0.1')
 
     def test_native_shape_internal_identity_and_base_are_checked(self):
         broken = []
