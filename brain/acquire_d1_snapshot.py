@@ -112,8 +112,21 @@ WRANGLER_CLI = (
 PACKAGE_LOCK = ROOT / "wiki" / "package-lock.json"
 # Wrangler's dependency closure in PACKAGE_LOCK (see _wrangler_closure_sha256).
 # The rest of the lockfile may move without a re-pin.
+WRANGLER_CLOSURE_FIELDS = (
+    "version",
+    "resolved",
+    "integrity",
+    "dependencies",
+    "optionalDependencies",
+    "peerDependencies",
+    "peerDependenciesMeta",
+)
+# Optional peers the lock installs are pinned too (ws loads bufferutil when it is
+# present), except type declarations Wrangler never loads. workers-types is also a
+# root devDependency that moves every week.
+UNPINNED_OPTIONAL_PEERS = frozenset({"@cloudflare/workers-types"})
 WRANGLER_CLOSURE_SHA256 = (
-    "b21e7538d4e6329bb3317e38dd5289cb097f000e77959481b3e28bcacc7bf538"
+    "2abb1c96189898e2e9b5e6210ceb282c4724f8b8e637d71d1567ced09a5e3d24"
 )
 DEFAULT_STORE = ROOT / "catalog" / ".cache" / "d1" / "snapshots"
 LOCAL_DEPENDENCIES = (
@@ -856,11 +869,14 @@ def _verify_runtime_closure(toolchain: Mapping[str, Any]) -> None:
 
 
 def _wrangler_closure_sha256(packages: Mapping[str, Any]) -> str:
-    """Digest every install path Node resolves from ``node_modules/wrangler``.
+    """Digest everything Wrangler can load from the wiki lockfile.
 
-    Follows dependencies, optional dependencies and required peers, as
-    scripts/backup_wrangler_lock.py does, and hashes each path's version,
-    resolved URL and integrity.
+    Walks every install path Node resolves from ``node_modules/wrangler`` through
+    dependencies, optional dependencies and peers (optional peers too, when the
+    lock installs them, apart from UNPINNED_OPTIONAL_PEERS) and hashes each path's
+    version, resolved URL, integrity and dependency declarations. While no other
+    optional peer is installed, the paths are the closure
+    scripts/backup_wrangler_lock.py copies into .github/backup-wrangler.
     """
 
     def resolve(base: str, name: str) -> str | None:
@@ -882,21 +898,23 @@ def _wrangler_closure_sha256(packages: Mapping[str, Any]) -> str:
         seen.add(path)
         entry = packages[path]
         peers_meta = entry.get("peerDependenciesMeta") or {}
-        names = [
-            *(entry.get("dependencies") or {}),
-            *(entry.get("optionalDependencies") or {}),
-            *(
-                name
-                for name in entry.get("peerDependencies") or {}
-                if not (peers_meta.get(name) or {}).get("optional", False)
-            ),
+        edges = [(name, True) for name in entry.get("dependencies") or {}]
+        edges += [(name, False) for name in entry.get("optionalDependencies") or {}]
+        edges += [
+            (name, not (peers_meta.get(name) or {}).get("optional", False))
+            for name in entry.get("peerDependencies") or {}
+            if name not in UNPINNED_OPTIONAL_PEERS
         ]
-        for name in names:
+        for name, required in edges:
             target = resolve(path, name)
             if target is not None:
                 stack.append(target)
+            elif required:
+                raise D1SnapshotError(
+                    f"package lock: {path} needs {name}, which the lock does not install"
+                )
     pinned = {
-        path: {field: packages[path].get(field) for field in ("version", "resolved", "integrity")}
+        path: {field: packages[path].get(field) for field in WRANGLER_CLOSURE_FIELDS}
         for path in sorted(seen)
     }
     return _sha256(contracts.canonical_json_bytes(pinned))

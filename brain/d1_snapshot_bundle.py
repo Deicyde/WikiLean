@@ -43,7 +43,7 @@ WRANGLER_INTEGRITY = (
     "FXH9uspzXwHOFrfbQmqQ=="
 )
 WRANGLER_CLI_SHA256 = "85a0fd68160392c7b9233a2a3406a94d61ab2a84d6dc192ebcb758774a76ee61"
-WRANGLER_CLOSURE_SHA256 = "b21e7538d4e6329bb3317e38dd5289cb097f000e77959481b3e28bcacc7bf538"
+WRANGLER_CLOSURE_SHA256 = "2abb1c96189898e2e9b5e6210ceb282c4724f8b8e637d71d1567ced09a5e3d24"
 # The toolchain.json schema and Wrangler pins each reviewed acquirer generation
 # records. Generations before the closure pin ran Wrangler 4.120.0 and pinned the
 # whole wiki/package-lock.json.
@@ -68,7 +68,7 @@ WRANGLER_TOOLCHAIN = (
         "closure_sha256": WRANGLER_CLOSURE_SHA256,
     },
 )
-ACQUIRER_WRAPPER_SHA256 = "b8e5670e054960d1d0c6228b6a6a9df600e0638c438abf9b4652e24fca01757a"
+ACQUIRER_WRAPPER_SHA256 = "4d0dbec5350ddba4784eb64713fb687a9eb2b62633e4200f953846a13e674ca4"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",

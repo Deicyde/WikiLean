@@ -416,24 +416,85 @@ class D1SnapshotTests(unittest.TestCase):
         )["packages"]
         self.assertEqual(snapshot._wrangler_closure_sha256(backup), snapshot.WRANGLER_CLOSURE_SHA256)
 
-    def test_unrelated_lockfile_changes_keep_the_wrangler_closure(self) -> None:
-        packages = {
-            "": {"devDependencies": {"wrangler": "1.0.0", "vitest": "1.0.0"}},
-            "node_modules/wrangler": {"version": "1.0.0", "dependencies": {"esbuild": "1"},
-                                      "optionalDependencies": {"fsevents": "2"}},
-            "node_modules/esbuild": {"version": "1.0.0", "resolved": "r", "integrity": "i"},
-            "node_modules/vitest": {"version": "1.0.0", "dependencies": {"esbuild": "2"}},
-            "node_modules/vitest/node_modules/esbuild": {"version": "2.0.0"},
+    def test_wrangler_closure_digest_covers_what_wrangler_can_load(self) -> None:
+        def lock() -> dict:
+            return {
+                "": {"devDependencies": {"wrangler": "1.0.0", "vitest": "1.0.0"}},
+                "node_modules/wrangler": {
+                    "version": "1.0.0",
+                    "dependencies": {"esbuild": "1"},
+                    "optionalDependencies": {"fsevents": "2"},
+                    "peerDependencies": {"@cloudflare/workers-types": "5", "ws": "8"},
+                    "peerDependenciesMeta": {
+                        "@cloudflare/workers-types": {"optional": True},
+                        "ws": {"optional": True},
+                    },
+                },
+                "node_modules/esbuild": {"version": "1.0.0", "resolved": "r", "integrity": "i"},
+                "node_modules/vitest": {"version": "1.0.0", "dependencies": {"esbuild": "2"}},
+                "node_modules/vitest/node_modules/esbuild": {"version": "2.0.0"},
+                "node_modules/@cloudflare/workers-types": {"version": "5.0.0"},
+            }
+
+        before = snapshot._wrangler_closure_sha256(lock())
+        unrelated = lock()
+        unrelated["node_modules/vitest"]["version"] = "2.0.0"
+        unrelated["node_modules/vitest/node_modules/esbuild"]["version"] = "2.1.0"
+        unrelated["node_modules/@cloudflare/workers-types"]["version"] = "5.1.0"
+        self.assertEqual(snapshot._wrangler_closure_sha256(unrelated), before)
+
+        def changed(edit) -> str:
+            packages = lock()
+            edit(packages)
+            return snapshot._wrangler_closure_sha256(packages)
+
+        cases = {
+            "integrity": lambda p: p["node_modules/esbuild"].update(integrity="other"),
+            "nearer copy": lambda p: p.update({"node_modules/wrangler/node_modules/esbuild": {"version": "1.0.1"}}),
+            "edge rewrite": lambda p: p["node_modules/esbuild"].update(
+                peerDependencies={"undici": "7"}, peerDependenciesMeta={"undici": {"optional": True}}
+            ),
+            "installed optional peer": lambda p: p.update({"node_modules/ws": {"version": "8.0.0"}}),
         }
-        before = snapshot._wrangler_closure_sha256(packages)
-        packages["node_modules/vitest"]["version"] = "2.0.0"
-        packages["node_modules/vitest/node_modules/esbuild"]["version"] = "2.1.0"
-        self.assertEqual(snapshot._wrangler_closure_sha256(packages), before)
-        packages["node_modules/esbuild"]["integrity"] = "other"
-        self.assertNotEqual(snapshot._wrangler_closure_sha256(packages), before)
-        packages["node_modules/esbuild"]["integrity"] = "i"
-        packages["node_modules/wrangler/node_modules/esbuild"] = {"version": "1.0.1"}
-        self.assertNotEqual(snapshot._wrangler_closure_sha256(packages), before)
+        for name, edit in cases.items():
+            with self.subTest(name):
+                self.assertNotEqual(changed(edit), before)
+        missing = lock()
+        del missing["node_modules/esbuild"]
+        with self.assertRaisesRegex(snapshot.D1SnapshotError, "needs esbuild"):
+            snapshot._wrangler_closure_sha256(missing)
+
+    def test_pinned_toolchain_refuses_a_changed_wrangler_closure(self) -> None:
+        packages = {
+            "": {"devDependencies": {"wrangler": snapshot.WRANGLER_VERSION}},
+            "node_modules/wrangler": {
+                "version": snapshot.WRANGLER_VERSION,
+                "integrity": snapshot.WRANGLER_INTEGRITY,
+            },
+        }
+        malformed = {
+            **packages,
+            "node_modules/wrangler": {**packages["node_modules/wrangler"], "dependencies": {"esbuild": "1"}},
+            "node_modules/esbuild": ["not", "an", "entry"],
+        }
+        cases = (
+            (packages, "dependency closure in the package lock changed"),
+            (malformed, "malformed Wrangler dependency closure"),
+        )
+        for value, message in cases:
+            with self.subTest(message), tempfile.TemporaryDirectory() as temporary:
+                lock = Path(temporary) / "package-lock.json"
+                lock.write_text(json.dumps({"packages": value}))
+                with (
+                    mock.patch.object(snapshot, "PACKAGE_LOCK", lock),
+                    mock.patch.object(
+                        snapshot,
+                        "_verify_isolated_startup",
+                        return_value=snapshot.REQUIRED_PYTHON_STARTUP_FLAGS,
+                    ),
+                ):
+                    with self.assertRaisesRegex(snapshot.D1SnapshotError, message):
+                        snapshot._pinned_toolchain(environment={})
 
     def test_sealed_config_direct_node_and_sanitized_environment(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:

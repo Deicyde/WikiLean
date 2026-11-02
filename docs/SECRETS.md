@@ -200,8 +200,8 @@ and `cd wiki && npx wrangler secret list` (names only).
   - `hono` (runtime): upgraded 4.12.34 to 4.13.12 on 2026-10-17, then to 4.13.13 on
     2026-10-19 (#92), once it was past the two-week cooldown (published 2026-10-04).
     `npm audit --omit=dev` is clean at that commit.
-  - `wrangler` (dev): upgraded 4.120.0 to 4.151.3 on 2026-11-03 (#110), past the
-    two-week cooldown (published 2026-10-20). That fixes `sharp` ≤0.35.5-rc.1 (now
+  - `wrangler` (dev): upgraded 4.120.0 to 4.151.3 in #110, past the two-week
+    cooldown (published 2026-10-20). That fixes `sharp` ≤0.35.5-rc.1 (now
     0.35.5) and `undici` ≤7.29.0 (now 7.29.1). Still open: later `undici` advisories
     fixed in 7.30.1 (high, including a TLS-options bypass), which first ships in
     Wrangler 4.153.0 (published 2026-10-26), and a moderate Wrangler advisory fixed
@@ -210,8 +210,9 @@ and `cd wiki && npx wrangler secret list` (names only).
     dev server. Wrangler holds Cloudflare credentials, so it moves only with a
     reviewed re-pin: `brain/acquire_d1_snapshot.py` and `brain/d1_snapshot_bundle.py`
     pin its version, package integrity, `cli.js` sha256 and its dependency closure in
-    `wiki/package-lock.json` (#87; the same closure `.github/backup-wrangler` holds,
-    so unrelated lockfile changes no longer break the acquirer). A re-pin adds an
+    `wiki/package-lock.json`, dependency declarations included (#87; the same closure
+    `.github/backup-wrangler` holds, so lockfile changes outside it no longer break the
+    acquirer). A re-pin adds an
     acquirer generation to `brain/d1_snapshot_bundle.py`, which keeps older
     acquisitions verifiable, and a profile to `brain/d1_source_export_profiles.json`;
     then run `python3 scripts/backup_wrangler_lock.py --write`.

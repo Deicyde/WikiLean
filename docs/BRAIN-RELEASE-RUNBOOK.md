@@ -694,9 +694,9 @@ exact manifest:
 ## Wrangler rollback
 
 These commands were verified against the repository-pinned Wrangler `4.151.3`
-(`wiki/package.json` and `wiki/package-lock.json`) using `wrangler --help`,
-`deployments status --help`, `deployments list --help`, `versions list --help`, and
-`rollback --help`: every flag this runbook and the promoter pass is there. Their JSON output
+(`wiki/package.json` and `wiki/package-lock.json`) using `--help` for `deployments status`,
+`deployments list`, `versions list`, `versions view`, `rollback`, `deploy` and
+`d1 execute`: every flag this runbook and the promoter pass is there. Their JSON output
 was last exercised on 4.120.0, so the first P1B dry run on 4.151.3 checks the promoter's
 parsing. Run `npm ci` first when `wiki/node_modules` is absent. `--no-install` is
 deliberate: it prevents `npx` from downloading a newer Wrangler during a recovery.
