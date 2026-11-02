@@ -30,8 +30,9 @@ export const WP_FIXTURE = [
 ].join("\n");
 
 // Formulas in both shapes of MediaWiki's parse output, one inline and one
-// display formula each (e2e/formulas.spec.ts). Each is MathML, hidden by an
-// inline style, beside an SVG fallback image. Older pinned bodies class the
+// display formula each, plus a current-shape display formula wider than a
+// phone (e2e/formulas.spec.ts). Each is MathML, hidden by an inline style,
+// beside an SVG fallback image. Older pinned bodies class the
 // MathML's span mwe-math-mathml-inline or -display (with mwe-math-mathml-a11y);
 // current ones class it only mwe-math-mathml-a11y, and the outer wrapper is
 // mwe-math-element-inline or -block. The images are data: URIs because a
@@ -47,6 +48,10 @@ const formula = (outer: string, inner: string, image: string, tex: string, mathm
   `style="vertical-align: -0.505ex; width:12ex; height:2.676ex;" alt="{\\displaystyle ${tex}}"></span>`;
 const SUM = "<mi>a</mi><mo>+</mo><mi>b</mi>";
 const SQUARES = "<msup><mi>a</mi><mn>2</mn></msup><mo>+</mo><msup><mi>b</mi><mn>2</mn></msup><mo>=</mo><msup><mi>c</mi><mn>2</mn></msup>";
+// a_1 + a_2 + ... + a_16: wider than a phone's column, narrower than a desktop's.
+const TERMS = Array.from({ length: 16 }, (_, i) => i + 1);
+const LONG_SUM = TERMS.map((n) => `<msub><mi>a</mi><mn>${n}</mn></msub>`).join("<mo>+</mo>");
+const LONG_SUM_TEX = TERMS.map((n) => `a_{${n}}`).join("+");
 export const WP_FORMULA_FIXTURE = [
   '<div class="mw-parser-output">',
   `<p id="formula-old-inline"><b>Older inline shape:</b> ${formula("mwe-math-element mwe-math-element-inline",
@@ -57,6 +62,8 @@ export const WP_FORMULA_FIXTURE = [
     "mwe-math-mathml-a11y", "mwe-math-fallback-image-inline", "a+b", SUM)} stays in its sentence.</p>`,
   `<p id="formula-a11y-display"><b>Current display shape:</b>${formula("mwe-math-element mwe-math-element-block",
     "mwe-math-mathml-a11y", "mwe-math-fallback-image-display", "a^{2}+b^{2}=c^{2}", SQUARES, true)}ends here.</p>`,
+  `<p id="formula-a11y-wide"><b>A long display formula:</b>${formula("mwe-math-element mwe-math-element-block",
+    "mwe-math-mathml-a11y", "mwe-math-fallback-image-display", LONG_SUM_TEX, LONG_SUM, true)}ends here.</p>`,
   "</div>",
 ].join("\n");
 

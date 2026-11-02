@@ -357,6 +357,8 @@ body.show-dim .anno .mwe-math-element-block            { opacity: 1; }
   /* Wikipedia tables/infoboxes are wider than a phone viewport: scroll them
      in place instead of overflowing the page. */
   .wl-article-body table { display: block; overflow-x: auto; max-width: 100%; }
+  /* A display formula wider than the phone scrolls in its own box, as tables do. */
+  .mwe-math-element-block { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
   /* iOS zooms the whole page when a focused input's font-size is < 16px. */
   #wl-tooltip .tt-flag-comment { font-size: 16px; }
 }

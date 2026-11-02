@@ -7,6 +7,7 @@ import { expect, test, type Page } from "@playwright/test";
 // class the MathML's span mwe-math-mathml-inline or -display; current ones
 // class it only mwe-math-mathml-a11y. style.css must draw the MathML, inline in
 // the sentence or as a centred block in a display formula, and hide the image.
+// On a phone, a display formula wider than the screen scrolls in its own box.
 const FORMULA_PATH = "/Formula_Article";
 const SHAPES = ["old", "a11y"] as const;
 
@@ -44,7 +45,7 @@ async function computedDisplay(page: Page, selector: string): Promise<string> {
 test("draws each formula's MathML in its sentence or centred on its own line, and hides the fallback image", async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto(FORMULA_PATH);
-  await expect(page.locator(".wl-article-body .mwe-math-element")).toHaveCount(4);
+  await expect(page.locator(".wl-article-body .mwe-math-element")).toHaveCount(5);
   for (const shape of SHAPES) {
     for (const kind of ["inline", "display"]) {
       const formula = page.locator(`#formula-${shape}-${kind}`);
@@ -71,5 +72,28 @@ test("draws each formula's MathML in its sentence or centred on its own line, an
   // The current shape's span takes its layout from the formula's wrapper.
   expect(await computedDisplay(page, "#formula-a11y-inline .mwe-math-mathml-a11y")).toBe("inline");
   expect(await computedDisplay(page, "#formula-a11y-display .mwe-math-mathml-a11y")).toBe("block");
+  expect(errors).toEqual([]);
+});
+
+// Phone width: the page never scrolls sideways; a display formula wider than the
+// column scrolls in its own box, starting at the box's left edge, and scrolling
+// the box reaches the formula's right end.
+test("at 375px a display formula wider than the column scrolls in its own box, not the page", async ({ page }) => {
+  const errors = collectPageErrors(page);
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(FORMULA_PATH);
+  const block = page.locator("#formula-a11y-wide .mwe-math-element-block");
+  const content = block.locator("math semantics > mrow");
+  await expect(block.locator("math")).toBeVisible();
+  const frame = await block.boundingBox();
+  const start = await content.boundingBox();
+  expect(frame && start).toBeTruthy();
+  expect(start!.width).toBeGreaterThan(frame!.width);
+  expect(await page.locator("html").evaluate((root) => root.scrollWidth - root.clientWidth)).toBeLessThanOrEqual(0);
+  expect(start!.x).toBeGreaterThanOrEqual(frame!.x - 1);
+  await block.evaluate((node) => { node.scrollLeft = node.scrollWidth; });
+  const end = await content.boundingBox();
+  expect(end).toBeTruthy();
+  expect(end!.x + end!.width).toBeLessThanOrEqual(frame!.x + frame!.width + 1);
   expect(errors).toEqual([]);
 });
