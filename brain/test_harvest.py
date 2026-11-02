@@ -42,7 +42,7 @@ FAKE_TOOLCHAIN = {
         "version": bundle_verifier.WRANGLER_VERSION,
         "package_integrity": bundle_verifier.WRANGLER_INTEGRITY,
         "cli_sha256": bundle_verifier.WRANGLER_CLI_SHA256,
-        "package_lock_sha256": bundle_verifier.PACKAGE_LOCK_SHA256,
+        "closure_sha256": bundle_verifier.WRANGLER_CLOSURE_SHA256,
     },
     "wrapper": {"sha256": bundle_verifier.ACQUIRER_WRAPPER_SHA256},
 }

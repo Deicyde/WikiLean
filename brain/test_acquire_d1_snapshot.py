@@ -59,7 +59,7 @@ VERIFIABLE_TOOLCHAIN = {
         "version": bundle_verifier.WRANGLER_VERSION,
         "package_integrity": bundle_verifier.WRANGLER_INTEGRITY,
         "cli_sha256": bundle_verifier.WRANGLER_CLI_SHA256,
-        "package_lock_sha256": bundle_verifier.PACKAGE_LOCK_SHA256,
+        "closure_sha256": bundle_verifier.WRANGLER_CLOSURE_SHA256,
     },
     "wrapper": FAKE_TOOLCHAIN["wrapper"],
 }
@@ -258,6 +258,18 @@ class D1SnapshotTests(unittest.TestCase):
             ),
         )
         self.assertEqual(
+            bundle_verifier.WRANGLER_TOOLCHAIN,
+            (
+                "wikilean.d1-acquisition-toolchain/v2",
+                {
+                    "version": snapshot.WRANGLER_VERSION,
+                    "package_integrity": snapshot.WRANGLER_INTEGRITY,
+                    "cli_sha256": snapshot.WRANGLER_CLI_SHA256,
+                    "closure_sha256": snapshot.WRANGLER_CLOSURE_SHA256,
+                },
+            ),
+        )
+        self.assertEqual(
             bundle_verifier.NORMALIZATION_CONFIGURATION_SHA256,
             snapshot.NORMALIZATION_CONFIGURATION_SHA256,
         )
@@ -392,6 +404,37 @@ class D1SnapshotTests(unittest.TestCase):
         ]
         self.assertEqual(deleted[0]["status"], "deleted")
 
+    def test_wrangler_pins_match_the_checked_in_lockfiles(self) -> None:
+        packages = json.loads(snapshot.PACKAGE_LOCK.read_text(encoding="utf-8"))["packages"]
+        self.assertEqual(packages[""]["devDependencies"]["wrangler"], snapshot.WRANGLER_VERSION)
+        self.assertEqual(packages["node_modules/wrangler"]["version"], snapshot.WRANGLER_VERSION)
+        self.assertEqual(packages["node_modules/wrangler"]["integrity"], snapshot.WRANGLER_INTEGRITY)
+        self.assertEqual(snapshot._wrangler_closure_sha256(packages), snapshot.WRANGLER_CLOSURE_SHA256)
+        # .github/backup-wrangler holds the same closure (scripts/backup_wrangler_lock.py).
+        backup = json.loads(
+            (snapshot.ROOT / ".github" / "backup-wrangler" / "package-lock.json").read_text(encoding="utf-8")
+        )["packages"]
+        self.assertEqual(snapshot._wrangler_closure_sha256(backup), snapshot.WRANGLER_CLOSURE_SHA256)
+
+    def test_unrelated_lockfile_changes_keep_the_wrangler_closure(self) -> None:
+        packages = {
+            "": {"devDependencies": {"wrangler": "1.0.0", "vitest": "1.0.0"}},
+            "node_modules/wrangler": {"version": "1.0.0", "dependencies": {"esbuild": "1"},
+                                      "optionalDependencies": {"fsevents": "2"}},
+            "node_modules/esbuild": {"version": "1.0.0", "resolved": "r", "integrity": "i"},
+            "node_modules/vitest": {"version": "1.0.0", "dependencies": {"esbuild": "2"}},
+            "node_modules/vitest/node_modules/esbuild": {"version": "2.0.0"},
+        }
+        before = snapshot._wrangler_closure_sha256(packages)
+        packages["node_modules/vitest"]["version"] = "2.0.0"
+        packages["node_modules/vitest/node_modules/esbuild"]["version"] = "2.1.0"
+        self.assertEqual(snapshot._wrangler_closure_sha256(packages), before)
+        packages["node_modules/esbuild"]["integrity"] = "other"
+        self.assertNotEqual(snapshot._wrangler_closure_sha256(packages), before)
+        packages["node_modules/esbuild"]["integrity"] = "i"
+        packages["node_modules/wrangler/node_modules/esbuild"] = {"version": "1.0.1"}
+        self.assertNotEqual(snapshot._wrangler_closure_sha256(packages), before)
+
     def test_sealed_config_direct_node_and_sanitized_environment(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -454,7 +497,9 @@ class D1SnapshotTests(unittest.TestCase):
                 mock.patch.object(snapshot, "WRANGLER_CLI", cli),
                 mock.patch.object(snapshot, "PACKAGE_LOCK", lock),
                 mock.patch.object(
-                    snapshot, "PACKAGE_LOCK_SHA256", snapshot._file_sha256(lock)
+                    snapshot,
+                    "WRANGLER_CLOSURE_SHA256",
+                    snapshot._wrangler_closure_sha256(json.loads(lock.read_text())["packages"]),
                 ),
                 mock.patch.object(
                     snapshot, "WRANGLER_CLI_SHA256", snapshot._file_sha256(cli)

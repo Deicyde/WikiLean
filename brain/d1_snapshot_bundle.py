@@ -34,17 +34,41 @@ UPSTREAM_URI = "d1://cloudflare/fc1b0190-77dd-4f41-a5b9-7f30d53df140"
 SQL_SHA256 = "ff06ef9e56b56950e76c900cb44324b75f9d93969c3bf3d8f77cd235ae2fd61d"
 REQUEST_PARAMETERS_SHA256 = "8c44319321dec3d7b19102548ca14d02ceaa96913fb74a13dcf714be65325cc3"
 NORMALIZATION_CONFIGURATION_SHA256 = "369fc2c6b553f4646ad0f46a39e3b9e802c7cfee2b76ff1714907d2263fea5c1"
-TOOLCHAIN_SCHEMA = "wikilean.d1-acquisition-toolchain/v1"
+TOOLCHAIN_SCHEMA = "wikilean.d1-acquisition-toolchain/v2"
 CONFIG_SHA256 = "e50553dcf93ed26c59fe703276498e1a111b11073f45bd8ddbcbd1b0083ab317"
 D1_BINDING = "SEALED_D1"
-WRANGLER_VERSION = "4.120.0"
+WRANGLER_VERSION = "4.151.3"
 WRANGLER_INTEGRITY = (
-    "sha512-cBmu/MeaB/fPacC0JpATs4duTOCagBxrZo+vBzuTX06tLzwSyAHE1drlHUZ8rP0"
-    "VqVz1fy3ReGYTiHdKkoHltg=="
+    "sha512-mzPQLmkAhZUV7CdiAhE+hiIAJlS9xPL6vZe1B8oQFuWxFu7nmQnvHAVjcAcabwSGkX"
+    "FXH9uspzXwHOFrfbQmqQ=="
 )
-WRANGLER_CLI_SHA256 = "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7"
-PACKAGE_LOCK_SHA256 = "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4"
-ACQUIRER_WRAPPER_SHA256 = "84c5348d2d3875f708388a3d6ab23efc6972d8a9d32e5928396ccaad8d2cce3c"
+WRANGLER_CLI_SHA256 = "85a0fd68160392c7b9233a2a3406a94d61ab2a84d6dc192ebcb758774a76ee61"
+WRANGLER_CLOSURE_SHA256 = "b21e7538d4e6329bb3317e38dd5289cb097f000e77959481b3e28bcacc7bf538"
+# The toolchain.json schema and Wrangler pins each reviewed acquirer generation
+# records. Generations before the closure pin ran Wrangler 4.120.0 and pinned the
+# whole wiki/package-lock.json.
+WRANGLER_4_120_TOOLCHAIN = (
+    "wikilean.d1-acquisition-toolchain/v1",
+    {
+        "version": "4.120.0",
+        "package_integrity": (
+            "sha512-cBmu/MeaB/fPacC0JpATs4duTOCagBxrZo+vBzuTX06tLzwSyAHE1drlHUZ8rP0"
+            "VqVz1fy3ReGYTiHdKkoHltg=="
+        ),
+        "cli_sha256": "9f0469b1e826fd5b76232cd557047fbb30b94e4fd1de65d23e65a3641bd7e7a7",
+        "package_lock_sha256": "533f09a637b9d47ee455da89a1cd14c14cb615fd3fab623a117cb411e874a4b4",
+    },
+)
+WRANGLER_TOOLCHAIN = (
+    TOOLCHAIN_SCHEMA,
+    {
+        "version": WRANGLER_VERSION,
+        "package_integrity": WRANGLER_INTEGRITY,
+        "cli_sha256": WRANGLER_CLI_SHA256,
+        "closure_sha256": WRANGLER_CLOSURE_SHA256,
+    },
+)
+ACQUIRER_WRAPPER_SHA256 = "b8e5670e054960d1d0c6228b6a6a9df600e0638c438abf9b4652e24fca01757a"
 LOCAL_DEPENDENCY_PINS = (
     {
         "path": "brain/stage_io.py",
@@ -59,8 +83,9 @@ LOCAL_DEPENDENCY_PINS = (
         "sha256": "7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac",
     },
 )
-# Review whole wrapper/dependency generations together. Historical acquisitions
-# remain verifiable; mixing individually recognized hashes is never permitted.
+# Review whole wrapper/dependency/toolchain generations together. Historical
+# acquisitions remain verifiable; mixing individually recognized hashes is never
+# permitted.
 REVIEWED_ACQUIRER_GENERATIONS = (
     ('160254977bc70370920fb0df03cfa00389db4876df35e3d816656bccec05c35c',
      ({'path': 'brain/stage_io.py',
@@ -68,20 +93,24 @@ REVIEWED_ACQUIRER_GENERATIONS = (
       {'path': 'brain/tools/authority_contracts.py',
        'sha256': 'fd87f76991f52f522587d0ef45cf4605b00f0970a23f0dfe1b50d6597c9a9319'},
       {'path': 'brain/tools/execution_environment.py',
-       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
+       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'}),
+     WRANGLER_4_120_TOOLCHAIN),
     ('350fa3d7c130d3c3c7b8057a8bcf39c3d5ce7536e2559c342833a5f56e879aa1',
      ({'path': 'brain/stage_io.py',
        'sha256': '018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e'},
       {'path': 'brain/tools/authority_contracts.py',
        'sha256': 'e985e18145eb938a8479f573fa0831ce67950fa2020453a8a6b620277319d2fc'},
       {'path': 'brain/tools/execution_environment.py',
-       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'})),
-    (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS),
+       'sha256': '7b89aafb4f7c9e88b54cc591a55c93e16ebdbf6a57712e95ded388322873ccac'}),
+     WRANGLER_4_120_TOOLCHAIN),
+    ("84c5348d2d3875f708388a3d6ab23efc6972d8a9d32e5928396ccaad8d2cce3c", LOCAL_DEPENDENCY_PINS,
+     WRANGLER_4_120_TOOLCHAIN),
     ("47952c5f9ac934a20ef7400c721b6c631746586c0c1da22531ae4d53eee28650", (
         {"path": "brain/stage_io.py", "sha256": "018565795c777f7383710039a2830d4f32887366549fa41b8572d02176c9982e"},
         {"path": "brain/tools/authority_contracts.py", "sha256": "fb2f105b2cad2a5ceed38925694f8da1766b57774a7e730078f537b68da018c6"},
         {"path": "brain/tools/execution_environment.py", "sha256": "fb447fe288a2948c76037b4b7504eaf73bd04ba6289a2447859a6838d5f81cbd"},
-    )),
+    ), WRANGLER_4_120_TOOLCHAIN),
+    (ACQUIRER_WRAPPER_SHA256, LOCAL_DEPENDENCY_PINS, WRANGLER_TOOLCHAIN),
 )
 REQUIRED_PYTHON_STARTUP_FLAGS = {
     "ignore_environment": True,
@@ -575,7 +604,7 @@ def _validate_toolchain(value: Any) -> dict[str, Any]:
         ),
         "toolchain.json",
     )
-    if toolchain["schema"] != TOOLCHAIN_SCHEMA:
+    if toolchain["schema"] not in {schema for _, _, (schema, _) in REVIEWED_ACQUIRER_GENERATIONS}:
         raise HarvestError("toolchain.json.schema: unexpected schema")
     invocation = _exact_object(
         toolchain["invocation"],
@@ -618,24 +647,16 @@ def _validate_toolchain(value: Any) -> dict[str, Any]:
             "toolchain.json.python.startup_flags: expected isolated -I -S policy"
         )
     dependencies = toolchain["local_dependencies"]
-    wrangler = _exact_object(
-        toolchain["wrangler"],
-        ("version", "package_integrity", "cli_sha256", "package_lock_sha256"),
-        "toolchain.json.wrangler",
-    )
-    if wrangler != {
-        "version": WRANGLER_VERSION,
-        "package_integrity": WRANGLER_INTEGRITY,
-        "cli_sha256": WRANGLER_CLI_SHA256,
-        "package_lock_sha256": PACKAGE_LOCK_SHA256,
-    }:
+    recorded = (toolchain["schema"], toolchain["wrangler"])
+    if not any(recorded == known_toolchain for _, _, known_toolchain in REVIEWED_ACQUIRER_GENERATIONS):
         raise HarvestError("toolchain.json.wrangler: does not match reviewed pins")
     wrapper = _exact_object(
         toolchain["wrapper"], ("sha256",), "toolchain.json.wrapper"
     )
     if not any(wrapper["sha256"] == known_wrapper and dependencies == list(known_dependencies)
-               for known_wrapper, known_dependencies in REVIEWED_ACQUIRER_GENERATIONS):
-        raise HarvestError("toolchain.json: wrapper and local_dependencies do not match a reviewed acquisition generation")
+               and recorded == known_toolchain
+               for known_wrapper, known_dependencies, known_toolchain in REVIEWED_ACQUIRER_GENERATIONS):
+        raise HarvestError("toolchain.json: wrapper, local_dependencies and Wrangler pins do not match a reviewed acquisition generation")
     return toolchain
 
 

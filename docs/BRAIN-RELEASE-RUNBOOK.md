@@ -338,10 +338,10 @@ verify the exact command families with the reviewed Node binary:
 )
 ```
 
-Do not use `wrangler whoami` as this gate; Wrangler 4.120 can exit zero while reporting that
-the shell is unauthenticated. If using `CLOUDFLARE_API_TOKEN`, export it locally only. Do
-not place it in `nightly.local.env`, repository files, command arguments, logs, or review
-messages.
+Do not use `wrangler whoami` as this gate; Wrangler 4.120 exited zero while reporting that
+the shell was unauthenticated, and 4.151.3 has not been checked. If using
+`CLOUDFLARE_API_TOKEN`, export it locally only. Do not place it in `nightly.local.env`,
+repository files, command arguments, logs, or review messages.
 
 After the shadow release, public baseline, and semantic comparison have been produced,
 run the promoter's no-mutation path with retention enabled. The retained store must be an
@@ -557,9 +557,9 @@ promoter refuses another mutation until every incomplete attempt has been reconc
 against live Wrangler and selector state.
 
 The P1A `--dry-run` calls read-only Wrangler status/history commands and Wrangler's local
-`deploy --dry-run` compiler/validator. Wrangler 4.120 performs no authentication or upload
-in that mode. The promoter never invokes a mutating deploy in `--dry-run` and has no
-automatic rollback path.
+`deploy --dry-run` compiler/validator. Wrangler 4.120 performed no authentication or upload
+in that mode; the first P1B dry run on 4.151.3 is its first check there. The promoter never
+invokes a mutating deploy in `--dry-run` and has no automatic rollback path.
 
 When the promotion commit contains `wiki/migrations/0014_native_companions.sql`, both modes refuse unless a read-only `wrangler d1 execute wikilean --remote` query finds `source_revid` and `schema_version` on `revisions`: apply 0014 to D1 first (docs/COMPANION-NATIVE.md).
 
@@ -693,12 +693,13 @@ exact manifest:
 
 ## Wrangler rollback
 
-These commands were verified against the repository-pinned Wrangler `4.120.0`
-(`wiki/package.json` and `wiki/package-lock.json`) using `npx --no-install wrangler
---help`, `deployments --help`, `deployments status --help`, `deployments list --help`,
-`versions list --help`, and `rollback --help`. Run `npm ci` first when
-`wiki/node_modules` is absent. `--no-install` is deliberate: it prevents `npx` from
-downloading a newer Wrangler during a recovery.
+These commands were verified against the repository-pinned Wrangler `4.151.3`
+(`wiki/package.json` and `wiki/package-lock.json`) using `wrangler --help`,
+`deployments status --help`, `deployments list --help`, `versions list --help`, and
+`rollback --help`: every flag this runbook and the promoter pass is there. Their JSON output
+was last exercised on 4.120.0, so the first P1B dry run on 4.151.3 checks the promoter's
+parsing. Run `npm ci` first when `wiki/node_modules` is absent. `--no-install` is
+deliberate: it prevents `npx` from downloading a newer Wrangler during a recovery.
 
 Run these on the operator Mac, from its checkout's `wiki/` directory, with Wrangler
 authenticated. A checkout without `wiki/node_modules` or Cloudflare credentials cannot run
@@ -716,9 +717,9 @@ Deployment is permitted only when `versions` contains exactly one entry with
 `percentage: 100` before and after reading the selector. A split or otherwise
 ambiguous deployment fails closed and must be reviewed manually.
 
-Automatic rollback is deliberately not implemented. Wrangler 4.120 has no rollback
-compare-and-swap operation, so rollback is always a separately approved manual action in
-an exclusive deployment window.
+Automatic rollback is deliberately not implemented. Wrangler 4.151.3, like 4.120, has no
+rollback compare-and-swap operation, so rollback is always a separately approved manual
+action in an exclusive deployment window.
 
 Roll back noninteractively to a verified version ID:
 

@@ -200,19 +200,21 @@ and `cd wiki && npx wrangler secret list` (names only).
   - `hono` (runtime): upgraded 4.12.34 to 4.13.12 on 2026-10-17, then to 4.13.13 on
     2026-10-19 (#92), once it was past the two-week cooldown (published 2026-10-04).
     `npm audit --omit=dev` is clean at that commit.
-  - `wrangler` 4.120.0 (dev), via miniflare: `undici` ≤7.29.0 (high) and `sharp`
-    ≤0.35.5-rc.1 (high). Fixed from wrangler 4.149.0 (sharp 0.35.5, undici 7.29.1;
-    9 days old) or 4.151.1 (npm's pick, 1 day old). **Not upgraded**, because:
-    the only fully fixed releases are under two weeks old, and this is the binary
-    that holds Cloudflare credentials; Wrangler 4.120.0 is pinned by version,
-    package integrity and `cli.js` sha256 in `brain/acquire_d1_snapshot.py` and
-    `brain/d1_snapshot_bundle.py` (whose own digest is pinned per generation in
-    `brain/d1_source_export_profiles.json`), the release runbook verified rollback
-    commands against it, and moving it needs a reviewed re-pin of that provenance.
-    Exposure is low: undici here is Wrangler's client to the Cloudflare API and the
-    local dev server; sharp serves only Miniflare's local Images binding. Upgrade
-    together with that re-pin, then run `python3 scripts/backup_wrangler_lock.py
-    --write` so the backup job follows.
+  - `wrangler` (dev): upgraded 4.120.0 to 4.151.3 on 2026-11-03 (#110), past the
+    two-week cooldown (published 2026-10-20). That fixes `sharp` ≤0.35.5-rc.1 (now
+    0.35.5) and `undici` ≤7.29.0 (now 7.29.1). Still open: later `undici` advisories
+    fixed in 7.30.1 (high, including a TLS-options bypass), which first ships in
+    Wrangler 4.153.0 (published 2026-10-26), and a moderate Wrangler advisory fixed
+    in the same release. Re-pin to 4.153.0 or later once it clears the cooldown.
+    Exposure: undici here is Wrangler's client to the Cloudflare API and the local
+    dev server. Wrangler holds Cloudflare credentials, so it moves only with a
+    reviewed re-pin: `brain/acquire_d1_snapshot.py` and `brain/d1_snapshot_bundle.py`
+    pin its version, package integrity, `cli.js` sha256 and its dependency closure in
+    `wiki/package-lock.json` (#87; the same closure `.github/backup-wrangler` holds,
+    so unrelated lockfile changes no longer break the acquirer). A re-pin adds an
+    acquirer generation to `brain/d1_snapshot_bundle.py`, which keeps older
+    acquisitions verifiable, and a profile to `brain/d1_source_export_profiles.json`;
+    then run `python3 scripts/backup_wrangler_lock.py --write`.
   - `vitest` (dev): upgraded 3.2.6 to 5.0.5 on 2026-11-02 (#91), past the two-week
     cooldown (published 2026-10-15). That clears `tinypool` ≤2.1.1 (critical,
     prototype pollution to RCE) and `@vitest/mocker` (moderate, path traversal).
@@ -225,11 +227,6 @@ and `cd wiki && npx wrangler secret list` (names only).
     Worker source; the generator does not use `$data`. Not upgraded.
   - `source-map-js` ≤1.2.1 (dev, high DoS on crafted source maps): 1.2.2 since #91,
     through `vite`'s `postcss`.
-- **Stale pin, already on `origin/main`:** `brain/acquire_d1_snapshot.py` and
-  `brain/d1_snapshot_bundle.py` pin `PACKAGE_LOCK_SHA256 = 533f09a6…`, which
-  `wiki/package-lock.json` has not matched since `d50f5da5`, so the operator D1
-  snapshot refuses to run until that pin is reviewed and updated (issue #87). Every
-  lockfile change moves the digest again.
 
 ## Outstanding production actions
 

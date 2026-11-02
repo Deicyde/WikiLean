@@ -25,9 +25,9 @@ REGISTRY = contracts.canonical_json_bytes({"our_data_license": {"annotations": "
 
 
 def toolchain(generation: int = 0) -> dict:
-    wrapper, dependencies = snapshots.REVIEWED_ACQUIRER_GENERATIONS[generation]
+    wrapper, dependencies, (schema, wrangler) = snapshots.REVIEWED_ACQUIRER_GENERATIONS[generation]
     return {
-        "schema": snapshots.TOOLCHAIN_SCHEMA,
+        "schema": schema,
         "invocation": {"config_sha256": snapshots.CONFIG_SHA256, "database_binding": snapshots.D1_BINDING,
                        "forwarded_environment": snapshots.FORWARDED_ENVIRONMENT,
                        "forced_environment": snapshots.FORCED_ENVIRONMENT},
@@ -35,9 +35,7 @@ def toolchain(generation: int = 0) -> dict:
         "python": {"implementation": "CPython", "version": "3.12.12", "sha256": "2" * 64,
                    "startup_flags": snapshots.REQUIRED_PYTHON_STARTUP_FLAGS},
         "local_dependencies": copy.deepcopy(list(dependencies)),
-        "wrangler": {"version": snapshots.WRANGLER_VERSION, "package_integrity": snapshots.WRANGLER_INTEGRITY,
-                     "cli_sha256": snapshots.WRANGLER_CLI_SHA256,
-                     "package_lock_sha256": snapshots.PACKAGE_LOCK_SHA256},
+        "wrangler": copy.deepcopy(wrangler),
         "wrapper": {"sha256": wrapper},
     }
 
@@ -115,6 +113,18 @@ class D1GenerationTests(unittest.TestCase):
                 value["local_dependencies"] = toolchain(other)["local_dependencies"]
                 with self.assertRaisesRegex(snapshots.SnapshotBundleError, "reviewed acquisition generation"):
                     snapshots._validate_toolchain(value)
+
+    def test_wrangler_pins_cannot_cross_generations(self) -> None:
+        current = len(snapshots.REVIEWED_ACQUIRER_GENERATIONS) - 1
+        historical = toolchain(0)
+        value = toolchain(current)
+        value["schema"], value["wrangler"] = historical["schema"], historical["wrangler"]
+        with self.assertRaisesRegex(snapshots.SnapshotBundleError, "reviewed acquisition generation"):
+            snapshots._validate_toolchain(value)
+        value = toolchain(0)
+        value["schema"], value["wrangler"] = toolchain(current)["schema"], toolchain(current)["wrangler"]
+        with self.assertRaisesRegex(snapshots.SnapshotBundleError, "reviewed acquisition generation"):
+            snapshots._validate_toolchain(value)
 
     def test_individually_recognized_dependency_hashes_cannot_be_mixed(self) -> None:
         value = toolchain()
