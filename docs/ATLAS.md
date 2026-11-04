@@ -1109,19 +1109,25 @@ The Worker reads through a one-method interface, `AtlasReader.text(key)`
 | `staticReader` | the tree copied under `wiki/public/atlas-store/`, served by `ASSETS` | no |
 | `memoryReader` | an in-memory map | tests and previews |
 
-**The binding is not in `wrangler.jsonc`**, by design: the bucket name is Jack's choice.
-To bind it, create the bucket and add:
+**The binding is in `wiki/wrangler.jsonc`**: `ATLAS` is a private bucket, with no r2.dev URL and
+no custom domain, under the proposed name `wikilean-atlas`, which the maintainer confirms when he
+creates the bucket (section 14, item 2). Another name changes the binding and
+`wiki/test/atlas-binding.test.ts`, which pins it.
 
 ```jsonc
 "r2_buckets": [
-  { "binding": "ATLAS", "bucket_name": "<chosen-name>" }
+  { "binding": "ATLAS", "bucket_name": "wikilean-atlas" }
 ]
 ```
 
-`src/wikipedia.ts` notes that **R2 was not enabled on the Cloudflare account** when the WP_HTML
-cache was built. Enabling R2 is an account action in the dashboard, and it may ask for a
-payment method. The free tier (10 GB, 1M writes and 10M reads a month) covers the atlas
-many times over.
+**The bucket must exist before the release that carries the binding is deployed.** Enabling
+R2 and creating the bucket are account actions in the dashboard. `src/wikipedia.ts` notes that
+R2 was not enabled on the Cloudflare account when the WP_HTML cache was built, and enabling it
+may ask for a payment method. The free tier (10 GB, 1M writes and 10M reads a month) covers
+the atlas many times over. A bound bucket with nothing in it shows no atlas data: until
+`current.json` is uploaded, the atlas answers as unpublished (below). The binding stays
+optional in the Worker (`env.ts`), so a configuration or a test harness without it keeps
+every route outside the atlas as it is.
 
 **Publishing** is an operator action, never the nightly and never the fleet host:
 
@@ -1692,8 +1698,12 @@ the improvement loop.
 - build-public still deletes a stale `wiki/public/atlas.html`, and baselines still forbid
   one. That matters now: assets are served before the Worker, and a leftover old
   `atlas.html` would shadow the new `/atlas`.
-- A release built from this branch with `ATLAS` unbound changes nothing a reader sees,
-  except that `/atlas` answers a 503 page instead of the 404 page.
+- The release that carries the binding (section 6) shows no atlas data until `current.json`
+  is uploaded: until then `/atlas` answers 503 "atlas store has no published build" and
+  article pages show no box. A build without the binding answers 503 "atlas store not
+  configured" on every atlas route instead, and nothing outside the atlas changes.
+- The same release links `/atlas` from every page's navigation (section 14, item 8), so until
+  the upload, or after `current.json` is deleted, that link leads to the 503 page.
 
 ## 12. Later: the D1 import (proposal §11.2, gated)
 
@@ -1730,11 +1740,14 @@ recommendation.
 1. **The End-goal amendment** (`docs/ROADMAP.md`, "Proposed amendment"). *Awaiting Jack's
    ratification*, before the upload. Everything here assumes it.
 2. **Store backend.** *Decided (Jack, 2026-11-02): R2, one private bucket* (no public URL, no
-   custom domain), bound as `ATLAS` in the release that binds the store. Data updates without
-   a Worker release, there is no per-version asset-count limit, and the free tier is ample. The
-   alternatives were KV (on the free plan its 1,000 writes a day cannot take a ~40k-object
-   upload) and static assets (every data update coupled to the ~5.5 h release chain, and the
-   asset-count limit of about 20,000 files on the free plan at full scale).
+   custom domain), bound as `ATLAS` in `wiki/wrangler.jsonc` (section 6). *Proposed, for Jack to
+   confirm:* the bucket's name, `wikilean-atlas`, which the binding gives. The maintainer creates
+   the bucket under that name before the release that carries the binding is deployed; a missing
+   bucket shows only at that deploy. Data updates without a Worker release, there is no
+   per-version asset-count limit, and the free tier is ample. The alternatives were KV (on the
+   free plan its 1,000 writes a day cannot take a ~40k-object upload) and static assets (every
+   data update coupled to the ~5.5 h release chain, and the asset-count limit of about 20,000
+   files on the free plan at full scale).
 3. **Who uploads, and from where.** *Decided (Jack, 2026-11-02):* the maintainer, from the
    operator Mac, with a token scoped to the one bucket (Object Read & Write, with an expiry,
    in `docs/SECRETS.md`'s register); never the fleet host, the nightly or GitHub Actions. The
@@ -1765,10 +1778,17 @@ recommendation.
    formal-companion's maintainer*, before the upload. Notes 1, 2, 8, 9, 12 and 13 describe what
    the producer's export at master writes; the others are WikiLean's readings where the
    agreed format (note 10) left a choice.
-8. **Navigation.** `/atlas` is linked from atlas pages and from the article box, but not yet
-   from the other shells' navigation. *Decided (Jack, 2026-11-02): add it in the release that
-   binds the store.* It changes cached bytes, so that release bumps `page:home`,
-   `page:articles` and the render cache keys.
+8. **Navigation.** *Decided (Jack, 2026-11-02): link `/atlas` from the site's navigation in the
+   release that binds the store.* Done with the binding: the header of every Worker page that
+   carries the site's navigation (article pages, `/`, `/articles`, `/about`, the pages of the
+   `pages.ts` shell such as `/stats`, `/recent-changes` and an article's history, and the two
+   Wikifunctions pages) links "Atlas" after Articles and before the Brain, as the atlas pages'
+   header does. That changed their cached bytes, so the render cache key and `page:home`,
+   `page:articles`, `page:about`, `page:stats`, `page:wikifunctions` and
+   `page:wikifunctions-verify` moved (`index.ts`). Pages with a navigation of their own keep it:
+   `/brain/api` and `/mcp` (the agent API's), `/repos` and the bulk-connections page
+   (`/quickstatements`). `/brain` comes from the frozen Brain release, and the 404 and Concepts
+   pages from the public baseline, so this change leaves them as they are.
 9. **The notice.** *Decided (Jack, 2026-11-02):* one line under every atlas page's header,
    "Preliminary: these links have not yet had an independent audit.", never a badge on a card.
    The figures an audit measured go in the "About this data" fold, from the store (section 8,
@@ -1958,6 +1978,18 @@ recommendation.
   reader assets' headers, and a route's own enforced policy kept with the framing ban beside it:
   `atlasCsp` on the reader and every other atlas page (the 429 and 503 ones too), its
   directives, and the shared set alone on the atlas's JSON and every other page.
+- `wiki/test/atlas-binding.test.ts` (in `npm run test:ci`) checks that `wrangler.jsonc` binds
+  `ATLAS`, and nothing else, to the bucket `wikilean-atlas`, and that the Worker reads the store
+  through the binding of the name the config gives. Without the binding, every GET route the app
+  registers answers the status it answers with it, except the atlas's own, which answer 503
+  "atlas store not configured"; the pages outside the atlas keep their bytes, and only an
+  article page reads the bucket (the publish switch and its title's index shard); the feedback
+  export, which reads only D1, keeps answering.
+- `wiki/test/site-nav.test.ts` (in `npm run test:ci`) checks the navigation's one "Atlas" link
+  in the header of a page of each shell that carries the site's navigation, after Articles and
+  before the Brain where those are listed; the moved cache keys, with the link in their cached
+  bytes and nothing left under the old ones; and the keys that did not move, the sitemap
+  leaving the atlas out.
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
@@ -1966,7 +1998,9 @@ recommendation.
   quote's ellipsis outside its highlight, the central-statements lines, the by-library
   order with the empty libraries' list opened at 375px (axe, no sideways scroll), the
   combined filters, feedback, live search,
-  a passage permalink, the Subject row's link and the article box, and runs those flows
+  a passage permalink, the Subject row's link, the article box and the site header's Atlas
+  link (from an article page to the dashboard, which alone marks it as the current page, and
+  the article page's header at 375px with no sideways scroll), and runs those flows
   again under the atlas's enforced policy as served (the header search among them) and the
   article box under the Worker's Report-Only CSP enforced, asserting no violation. Its "the atlas
   article reader" tests run on
