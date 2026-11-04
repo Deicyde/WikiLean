@@ -9,25 +9,35 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import {
   setup, get, post, blockNetwork, PIPELINE_TOKEN, REVID, SLUG, ORIGIN, type Harness,
 } from "./helpers/harness.js";
 import {
-  ATLAS_STORE_ROOT, atlasFixtureFiles, bindAtlas, fixtureArticle, FIXTURE_CAMPAIGN, FIXTURE_UNIVERSE_SHA, GADGET_PAGEID,
-  WIDGET_PAGEID,
+  ATLAS_STORE_ROOT, atlasFixtureFiles, atlasReaderFiles, bindAtlas, fixtureArticle, FIXTURE_CAMPAIGN, FIXTURE_UNIVERSE_SHA,
+  GADGET_PAGEID, READER_ORDER, readerHtml, WIDGET_PAGEID,
 } from "./helpers/atlas.js";
 import {
-  ATLAS_PSEUDONYM_DOMAIN, CAMPAIGN_RE, INDEX_CACHE_MS, atlasHref, kvReader, loadArticle, loadIndexShard, lookupTitle,
-  memoryReader, parsePageid, staticReader, titleKey, titleShard,
+  ATLAS_PSEUDONYM_DOMAIN, CAMPAIGN_RE, INDEX_CACHE_MS, MAX_SLUG_CACHE, NOT_PUBLISHED, SLUG_CACHE_MS, STORE_UNREADABLE,
+  atlasHref, kvReader, loadArticle, loadCurrent, loadIndexShard, lookupTitle, memoryReader, parsePageid, staticReader,
+  titleKey, titleShard, wikileanSlugFor, type AtlasLocation,
 } from "../src/atlas.js";
-import { atlasSummaryBox, campaignLabel, locationStatus } from "../src/atlas-render.js";
+import {
+  ATLAS_JS, ATLAS_NOTICE, ATLAS_READER_CSS, ATLAS_READER_JS, UNMEASURED, atlasSummaryBox, campaignLabel, locationStatus,
+  plainHead,
+} from "../src/atlas-render.js";
 import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectAtlasSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
-import { CSP_REPORT_ONLY, MAX_JSON_BODY_BYTES, SECURITY_HEADERS } from "../src/security.js";
+import {
+  ATLAS_FORM_PATH, ATLAS_INLINE_SCRIPT_HASHES, ATLAS_MEDIA_HOSTS, ATLAS_SCRIPT_PATHS, CSP_REPORT_ONLY, MAX_JSON_BODY_BYTES,
+  SECURITY_HEADERS, atlasCsp,
+} from "../src/security.js";
 
 blockNetwork();
+
+// The policy every atlas page enforces, for the origin the harness serves (app.request's).
+const ATLAS_CSP = atlasCsp(ORIGIN);
 
 const WIDGET_PATH = `/atlas/${WIDGET_PAGEID}/Widget_lemma`;
 // Response.json() is `unknown` under workers-types.
@@ -112,7 +122,80 @@ describe("atlas routes without a store", () => {
     const page = await get(h.env, "/atlas");
     expect(page.status).toBe(503);
     expect(await page.text()).toContain("atlas store has no published build");
-    expect((await get(h.env, "/api/atlas/current")).status).toBe(404);
+    const current = await get(h.env, "/api/atlas/current");
+    expect(current.status).toBe(503);
+    expect(await jsonOf(current)).toEqual({ ok: false, error: NOT_PUBLISHED });
+  });
+
+  it("without current.json, the store's publish switch, every atlas route answers 503 and article pages show no box", async () => {
+    // The data rollback deletes current.json alone (docs/ATLAS.md, "Publishing"): the bucket still
+    // holds every article, record set, marked revision and shard, and none of them is served.
+    const files = atlasReaderFiles();
+    files.delete("atlas/v1/current.json");
+    const h = setup();
+    const bucket = bindAtlas(h.env, files);
+    h.db.prepare("UPDATE articles SET wikipedia_title = 'Widget lemma' WHERE slug = ?").run(SLUG);
+    for (const path of [...PAGE_ROUTES, `${WIDGET_PATH}?view=cards`]) {
+      const res = await get(h.env, path);
+      expect(res.status, path).toBe(503);
+      expect(res.headers.get("Cache-Control"), path).toBe("no-store");
+      expect(res.headers.get("Content-Security-Policy"), path).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+      const html = await res.text();
+      expect(html, path).toContain(`The formalization atlas is unavailable: ${NOT_PUBLISHED}.`);
+      expect(html, path).toContain(ATLAS_NOTICE);
+    }
+    for (const path of API_ROUTES) {
+      const res = await get(h.env, path);
+      expect(res.status, path).toBe(503);
+      expect(res.headers.get("Cache-Control"), path).toBe("no-store");
+      expect(await jsonOf(res), path).toEqual({ ok: false, error: NOT_PUBLISHED });
+    }
+    const write = await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
+    expect(write.status).toBe(503);
+    expect(await jsonOf(write)).toEqual({ ok: false, error: NOT_PUBLISHED });
+    expect(feedbackRows(h)).toEqual([]);
+    expect(await (await get(h.env, `/${SLUG}`)).text()).not.toContain("wl-atlas-box");
+    // Nothing but the switch was read, once: its absence is kept a minute like any answer.
+    expect(bucket.gets).toEqual(["atlas/v1/current.json"]);
+    // The feedback export reads only D1, and keeps working.
+    expect((await get(h.env, "/api/atlas/feedback/export", { bearer: PIPELINE_TOKEN })).status).toBe(200);
+  });
+
+  it("a small object that does not parse is kept as that failure for a minute, so the routes without a budget read it once", async () => {
+    const files = atlasFixtureFiles();
+    files.set("atlas/v1/current.json", "{not json");
+    const h = setup();
+    const bucket = bindAtlas(h.env, files);
+    const log = vi.spyOn(console, "log").mockImplementation(() => {});
+    try {
+      for (let round = 0; round < 25; round += 1) {
+        for (const path of ["/atlas", `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`]) {
+          expect((await get(h.env, path)).status, path).toBe(503);
+        }
+      }
+    } finally {
+      log.mockRestore();
+    }
+    expect(bucket.gets).toEqual(["atlas/v1/current.json"]);
+    // The failure lasts the minute any answer does: a repaired object shows after it.
+    const reader = memoryReader(files);
+    await expect(loadCurrent(reader, 1_000)).rejects.toThrow("is not JSON");
+    files.set("atlas/v1/current.json", atlasFixtureFiles().get("atlas/v1/current.json")!);
+    await expect(loadCurrent(reader, 1_000 + INDEX_CACHE_MS - 1)).rejects.toThrow("is not JSON");
+    expect((await loadCurrent(reader, 1_000 + INDEX_CACHE_MS))?.campaign).toBe(FIXTURE_CAMPAIGN);
+  });
+
+  it("current.json is read once a minute per isolate, so a build published or withdrawn shows within INDEX_CACHE_MS", async () => {
+    const files = atlasFixtureFiles();
+    const reader = memoryReader(files);
+    const published = await loadCurrent(reader, 1_000);
+    expect(published?.campaign).toBe(FIXTURE_CAMPAIGN);
+    files.delete("atlas/v1/current.json");
+    expect(await loadCurrent(reader, 1_000 + INDEX_CACHE_MS - 1)).toBe(published);
+    expect(await loadCurrent(reader, 1_000 + INDEX_CACHE_MS)).toBeNull();
+    files.set("atlas/v1/current.json", JSON.stringify({ ...published, campaign: NEXT_CAMPAIGN }));
+    expect(await loadCurrent(reader, 1_000 + 2 * INDEX_CACHE_MS - 1)).toBeNull();
+    expect((await loadCurrent(reader, 1_000 + 2 * INDEX_CACHE_MS))?.campaign).toBe(NEXT_CAMPAIGN);
   });
 });
 
@@ -170,8 +253,15 @@ describe("atlas pages with the fixture store", () => {
     expect(res.status).toBe(200);
     const html = await res.text();
     expect(html).toContain("<title>WikiLean · Formalization atlas</title>");
-    expect(html).toContain("2 articles · 7 passages · 7 Lean locations · 1 related declaration");
-    expect(html).toContain('aria-label="7 passages: 4 formalized, 1 statement only, 1 not formalized, 1 undecided"');
+    // The passage with no status is in no count, status or bar: the totals say there is one more.
+    expect(html).toContain("2 articles · 6 passages · 7 Lean locations · 1 related declaration " +
+      '<span class="atlas-muted" id="atlas-unread">1 more passage has no status yet; it is left out until someone reads it.</span></p>');
+    expect(html).toContain('aria-label="6 passages: 4 formalized, 1 statement only, 1 not formalized"');
+    expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
+    // By importance and per article: the passages that have a status, and four status columns.
+    expect(html).toContain('<tr><th scope="row">High</th><td class="num">1</td><td class="num">3</td><td class="num" data-status="formalized">1</td>' +
+      '<td class="num" data-status="statement_only">1</td><td class="num" data-status="partial">0</td><td class="num" data-status="not_formalized">1</td></tr>');
+    expect(html).toMatch(/<a href="\/atlas\/1001\/Widget_lemma">Widget lemma<\/a><\/th><td class="num">3<\/td><td class="num" data-status="formalized">1<\/td>/);
     // By library: most passages first, then most complete locations, then by
     // name (FormalFrontier and TauCeti hold one passage each, and only
     // FormalFrontier's location is complete). Batteries holds only a related
@@ -194,8 +284,8 @@ describe("atlas pages with the fixture store", () => {
     // (subject and central passages), what the rest are, and the central ones
     // by status. The comma between two counts is an element, so the summary
     // box's ".atlas-mini + .atlas-mini" margin does not apply.
-    expect(html).toContain('</span></span></div>\n<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> 4 of the 7 passages, across 2 articles, ' +
-      "state an article's subject or a named result or definition; the other 3 are supporting (examples, setup). Of these 4: " +
+    expect(html).toContain('</span></span></div>\n<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> 4 of the 6 passages, across 2 articles, ' +
+      "state an article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of these 4: " +
       '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>3 formalized</span><span>,</span> ' +
       '<span class="atlas-mini" data-status="not_formalized"><span class="atlas-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n</section>');
     // Complete and incomplete locations are separate columns: TauCeti only
@@ -216,17 +306,25 @@ describe("atlas pages with the fixture store", () => {
       '<span class="atlas-libtag" title="TauCeti · https://github.com/TauCetiProject/TauCeti">TauCeti</span>');
     expect(html).toContain("data-library-names=\"{&quot;batteries&quot;:&quot;Batteries&quot;,&quot;ff-widgets&quot;");
     expect(html).toContain("&quot;mathlib&quot;:&quot;Mathlib&quot;");
-    expect(html).toContain('<p class="atlas-meta">Campaign fixture-2026-10 · <a href="/atlas/universe/');
-    // The bar's legend: each totals chip carries its fill's swatch.
-    expect(html).toContain('<span class="atlas-swatch" data-status="unresolved" aria-hidden="true"></span>');
+    // Provenance sits behind a closed fold (the display rule): the campaign, the build date
+    // and the record set are under "About this build", never in the open meta line.
+    expect(html).toContain('<p class="atlas-meta"><a href="/atlas/universe/');
+    expect(html).toContain(`<details class="atlas-about"><summary>About this build</summary><ul class="atlas-prov-list"><li>${UNMEASURED}</li><li>Campaign fixture-2026-10, from record sets exported 17 Oct 2026.</li><li>Campaign <code>fixture-2026-10</code>.</li>` +
+      '<li>Record set <code>fixture-set</code>, exported 17 Oct 2026 by formal-companion at commit <code title="3bceabcee0724ffdf50ce65dde3ab10048c72cba">3bceabc</code>.</li><li>Seal sha256 <code>');
+    expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
+    expect(html).not.toContain("<details class=\"atlas-about\" open");
+    // The bar's legend: each totals chip carries its fill's swatch, for the four statuses a passage can be given.
+    expect(html).toContain('<span class="atlas-swatch" data-status="not_formalized" aria-hidden="true"></span>');
+    expect(html.match(/<span class="atlas-chip is-static" data-status="/g)).toHaveLength(4);
     // Every table that can scroll sideways is a labelled, focusable region.
     for (const name of ["By library", "By WikiProject importance", "Articles"]) {
       expect(html).toContain(`<div class="atlas-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/atlas" aria-current="page">Atlas</a>');
-    expect(html).toContain('<script src="/assets/atlas.js?v=2"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=4">');
+    expect(html).toContain('<script src="/assets/atlas.js?v=4"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/atlas.css?v=9">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
+    expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
 
   it("the dashboard reads each index shard once a minute, not once per view", async () => {
@@ -267,8 +365,219 @@ describe("atlas pages with the fixture store", () => {
     const limited = await get(h.env, "/atlas?q=gadg", { ip: "198.51.100.4" });
     expect(limited.status).toBe(429);
     expect(limited.headers.get("Retry-After")).toBe("60");
+    expect(limited.headers.get("Cache-Control")).toBe("no-store");
     expect(await limited.text()).toContain("Too many atlas searches from this address in a minute.");
     expect((await get(h.env, "/atlas")).status).toBe(200);
+  });
+
+  // The routes that read an article: its page (the reader or the card list) and its two JSON views.
+  const ARTICLE_READS = [WIDGET_PATH, `/atlas/${WIDGET_PAGEID}`, `/api/atlas/article/${WIDGET_PAGEID}`, `/api/atlas/records/${WIDGET_PAGEID}`];
+
+  it("an article page and its two JSON views take one per-IP read budget, keyed apart from search", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const keys: string[] = [];
+    const record = { limit: async ({ key }: { key: string }) => { keys.push(key); return { success: true }; } };
+    Object.assign(h.env, { BRAIN_API_LIMITER: record });
+    for (const path of [...ARTICLE_READS, `${WIDGET_PATH}?view=cards`]) {
+      expect((await get(h.env, path, { ip: "2001:db8:1:2::a" })).status, path).toBe(200);
+    }
+    expect((await get(h.env, "/atlas?q=gadg", { ip: "2001:db8:1:2::b" })).status).toBe(200);
+    // A malformed or unknown id is still a 404, after the budget.
+    expect((await get(h.env, "/api/atlas/article/0x1", { ip: "198.51.100.4" })).status).toBe(404);
+    expect((await get(h.env, "/atlas/9999")).status).toBe(404);
+    expect(keys).toEqual([
+      ...Array(ARTICLE_READS.length + 1).fill("atlas-read:2001:db8:1:2::/64"), "atlas-q:2001:db8:1:2::/64",
+      "atlas-read:198.51.100.4", "atlas-read:unknown",
+    ]);
+    // The small JSON objects take a budget of their own, so the dashboard's live filter, which
+    // fetches every shard, never spends an article's; the dashboard without a search and the
+    // universe page take none.
+    keys.length = 0;
+    for (const path of ["/api/atlas/current", `/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, "/api/atlas/index/1"]) {
+      expect((await get(h.env, path, { ip: "2001:db8:1:2::a" })).status, path).toBe(200);
+    }
+    expect(keys).toEqual(Array(3).fill("atlas-meta:2001:db8:1:2::/64"));
+    keys.length = 0;
+    for (const path of ["/atlas", `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`]) {
+      expect((await get(h.env, path)).status, path).toBe(200);
+    }
+    expect(keys).toEqual([]);
+    // MCP_LIMITER, when bound, keeps the budget instead.
+    const mcp: string[] = [];
+    Object.assign(h.env, { MCP_LIMITER: { limit: async ({ key }: { key: string }) => { mcp.push(key); return { success: true }; } } });
+    expect((await get(h.env, WIDGET_PATH, { ip: "198.51.100.4" })).status).toBe(200);
+    expect(mcp).toEqual(["atlas-read:198.51.100.4"]);
+    expect(keys).toEqual([]);
+  });
+
+  it("over the meta budget the small JSON objects answer 429; the dashboard and the universe page still answer", async () => {
+    const h = setup({ brainApiLimiterAllows: false });
+    const bucket = bindAtlas(h.env);
+    for (const path of ["/api/atlas/current", `/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, "/api/atlas/index/1"]) {
+      const res = await get(h.env, path, { ip: "198.51.100.4" });
+      expect(res.status, path).toBe(429);
+      expect(res.headers.get("Retry-After"), path).toBe("60");
+      expect(res.headers.get("Cache-Control"), path).toBe("no-store");
+      expect(await jsonOf(res), path).toEqual({ ok: false, error: "too many atlas requests from this address; try again in a minute" });
+    }
+    expect(bucket.gets).toEqual([]);
+    expect((await get(h.env, "/atlas")).status).toBe(200);
+    expect((await get(h.env, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`)).status).toBe(200);
+  });
+
+  it("the small store objects are read once a minute per isolate, whatever the route, and only those current.json names", async () => {
+    const h = bound();
+    const files = atlasFixtureFiles();
+    const small = ["/atlas", `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, "/api/atlas/current",
+      `/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, "/api/atlas/index/1", "/api/atlas/index/8"];
+    for (let round = 0; round < 5; round += 1) {
+      for (const path of small) expect((await get(h.env, path)).status, path).toBe(200);
+    }
+    const once = ["atlas/v1/current.json", "atlas/v1/index/1.json", "atlas/v1/index/8.json",
+      `atlas/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`];
+    expect([...h.gets].sort()).toEqual(once);
+    // The JSON routes serve the stored bytes, from the cache.
+    for (const [path, key] of [["/api/atlas/current", "current.json"], [`/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`,
+      `universes/${FIXTURE_UNIVERSE_SHA}.json`], ["/api/atlas/index/8", "index/8.json"]]) {
+      const res = await get(h.env, path);
+      expect(res.headers.get("Content-Type"), path).toBe("application/json; charset=utf-8");
+      expect(await res.text(), path).toBe(files.get(`atlas/v1/${key}`));
+    }
+    // A sha or shard that current.json does not name is a 404 that reads nothing (a store holds
+    // the one universe its build names, and the shards it lists).
+    for (const path of [`/api/atlas/universe/${"f".repeat(64)}`, `/atlas/universe/${"f".repeat(64)}`, "/api/atlas/index/0",
+      "/api/atlas/index/ff"]) {
+      expect((await get(h.env, path)).status, path).toBe(404);
+    }
+    expect([...h.gets].sort()).toEqual(once);
+  });
+
+  it("a store object that does not parse, or lacks the shape the pages read, is the atlas's 503 page or JSON, never the site's 500", async () => {
+    const article = `atlas/v1/articles/${WIDGET_PAGEID}.json`;
+    const edit = (key: string, change: (doc: Record<string, unknown>) => void) => (files: Map<string, string>) => {
+      const doc = JSON.parse(files.get(key)!);
+      change(doc);
+      files.set(key, JSON.stringify(doc));
+    };
+    const records = `atlas/v1/records/${WIDGET_PAGEID}.jsonl`;
+    const shards = (change: (row: unknown[]) => void) => (files: Map<string, string>) => {
+      for (const key of [...files.keys()].filter((name) => name.startsWith("atlas/v1/index/"))) {
+        edit(key, (doc) => { (doc.articles as unknown[][]).forEach(change); })(files);
+      }
+    };
+    const cases: Array<[string, (files: Map<string, string>) => void, string[], string[]]> = [
+      // The JSON views check what they serve as the pages do: the view must parse, and the records
+      // must be the ones the view names.
+      ["a truncated article", (files) => files.set(article, files.get(article)!.slice(0, 400)),
+        [WIDGET_PATH, `${WIDGET_PATH}?view=cards`], [`/api/atlas/article/${WIDGET_PAGEID}`, `/api/atlas/records/${WIDGET_PAGEID}`]],
+      ["records cut short", (files) => files.set(records, files.get(records)!.slice(0, 200)), [], [`/api/atlas/records/${WIDGET_PAGEID}`]],
+      ["records missing", (files) => files.delete(records), [], [`/api/atlas/records/${WIDGET_PAGEID}`]],
+      // JSON can hold a lone surrogate, which no URL can carry (encodeURIComponent throws URIError).
+      ["an article title no URL can carry", edit(article, (doc) => { doc.title = `${doc.title}\ud800`; }),
+        [WIDGET_PATH, `${WIDGET_PATH}?view=cards`], []],
+      ["an index title no URL can carry", shards((row) => { row[0] = `${row[0]}\ud800`; }), ["/atlas"], []],
+      ["an article without its universe", edit(article, (doc) => { delete doc.universe; }), [WIDGET_PATH], []],
+      ["a truncated current.json", (files) => files.set("atlas/v1/current.json", '{"schema"'),
+        ["/atlas", WIDGET_PATH, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`],
+        ["/api/atlas/current", `/api/atlas/article/${WIDGET_PAGEID}`, "/api/atlas/index/1"]],
+      ["a current.json of another schema", (files) => files.set("atlas/v1/current.json", JSON.stringify({ schema: "x" })),
+        ["/atlas"], ["/api/atlas/current"]],
+      ["a universe of another shape", (files) => files.set(`atlas/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`, "[]"),
+        ["/atlas", `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`], [`/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`]],
+    ];
+    const logged: string[] = [];
+    const log = vi.spyOn(console, "log").mockImplementation((line: unknown) => { logged.push(String(line)); });
+    try {
+      for (const [label, damage, pages, apis] of cases) {
+        const files = atlasFixtureFiles();
+        damage(files);
+        const h = setup();
+        bindAtlas(h.env, files);
+        for (const path of pages) {
+          const res = await get(h.env, path);
+          expect(res.status, `${label}: ${path}`).toBe(503);
+          expect(res.headers.get("Content-Type"), `${label}: ${path}`).toMatch(/^text\/html/);
+          expect(res.headers.get("Cache-Control"), `${label}: ${path}`).toBe("no-store");
+          expect(res.headers.get("Content-Security-Policy"), `${label}: ${path}`).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+          const html = await res.text();
+          expect(html, `${label}: ${path}`).toContain(`The formalization atlas is unavailable: ${STORE_UNREADABLE}.`);
+          expect(html, `${label}: ${path}`).toContain(ATLAS_NOTICE);
+          expect(html, `${label}: ${path}`).not.toMatch(/SyntaxError|TypeError|Unexpected|atlas\/v1\//);
+        }
+        for (const path of apis) {
+          const res = await get(h.env, path);
+          expect(res.status, `${label}: ${path}`).toBe(503);
+          expect(res.headers.get("Cache-Control"), `${label}: ${path}`).toBe("no-store");
+          expect(await jsonOf(res), `${label}: ${path}`).toEqual({ ok: false, error: STORE_UNREADABLE });
+        }
+      }
+      // A feedback write against a damaged article stores nothing and says so.
+      const files = atlasFixtureFiles();
+      files.set(article, files.get(article)!.slice(0, 400));
+      const h = setup();
+      bindAtlas(h.env, files);
+      const write = await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
+      expect(write.status).toBe(503);
+      expect(await jsonOf(write)).toEqual({ ok: false, error: STORE_UNREADABLE });
+      expect(feedbackRows(h)).toEqual([]);
+    } finally {
+      log.mockRestore();
+    }
+    // Each one is logged with its route, never shown.
+    const events = logged.map((line) => { try { return JSON.parse(line); } catch { return null; } })
+      .filter((event) => event?.event === "atlas-store-error");
+    expect(events.length).toBeGreaterThanOrEqual(12);
+    expect(events.find((event) => event.route === "article-page")).toMatchObject({ pageid: String(WIDGET_PAGEID) });
+  });
+
+  it("an article whose lists are not lists renders without them, never a 500", async () => {
+    const files = atlasFixtureFiles();
+    const key = `atlas/v1/articles/${WIDGET_PAGEID}.json`;
+    const doc = JSON.parse(files.get(key)!);
+    doc.passages = "x";
+    files.set(key, JSON.stringify(doc));
+    const h = setup();
+    bindAtlas(h.env, files);
+    const res = await get(h.env, WIDGET_PATH);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Type")).toMatch(/^text\/html/);
+    expect(res.headers.get("Content-Security-Policy")).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+    const write = await post(h.env, "/api/atlas/feedback", feedback(), { user: "u-human" });
+    expect(write.status).toBe(404);
+    expect(await jsonOf(write)).toEqual({ ok: false, error: "unknown location_key" });
+  });
+
+  it("over the read budget an article page or JSON view answers 429 with Retry-After, before any store or D1 read", async () => {
+    const h = setup({ brainApiLimiterAllows: false });
+    const bucket = bindAtlas(h.env, atlasReaderFiles());
+    const sql: string[] = [];
+    const prepare = h.env.DB.prepare.bind(h.env.DB);
+    Object.assign(h.env.DB, { prepare: (query: string) => { sql.push(query); return prepare(query); } });
+    for (const path of ARTICLE_READS) {
+      const res = await get(h.env, path, { ip: "198.51.100.4", user: "u-human" });
+      expect(res.status, path).toBe(429);
+      expect(res.headers.get("Retry-After"), path).toBe("60");
+      expect(res.headers.get("Cache-Control"), path).toBe("no-store");
+      const body = await res.text();
+      if (path.startsWith("/api/")) {
+        expect(JSON.parse(body)).toEqual({ ok: false, error: "too many atlas requests from this address; try again in a minute" });
+      } else {
+        expect(res.headers.get("Content-Type")).toMatch(/^text\/html/);
+        expect(body).toContain("<title>WikiLean · Too many requests</title>");
+        expect(body).toContain("Too many atlas pages from this address in a minute.");
+      }
+      // Nothing about how the budget is kept: no binding, key, address or store path.
+      expect(body, path).not.toMatch(/LIMITER|atlas-read|198\.51\.100\.4|atlas\/v1|wikipedia_title/);
+    }
+    expect(bucket.gets).toEqual([]);
+    expect(sql).toEqual([]);
+    // Unbound, the pages are still "not configured" (503), and spend no budget.
+    const unbound = setup();
+    const keys: string[] = [];
+    Object.assign(unbound.env, { BRAIN_API_LIMITER: { limit: async ({ key }: { key: string }) => { keys.push(key); return { success: false }; } } });
+    for (const path of ARTICLE_READS) expect((await get(unbound.env, path)).status, path).toBe(503);
+    expect(keys).toEqual([]);
   });
 
   it("the dashboard search filters server-side through the index shards", async () => {
@@ -291,7 +600,9 @@ describe("atlas pages with the fixture store", () => {
     // h4 over related declarations.
     expect(html).toContain('<section class="atlas-strip" aria-labelledby="atlas-h-coverage">\n<h2 class="atlas-h2" id="atlas-h-coverage">Coverage</h2>');
     expect(html).toContain('<h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>');
-    expect(html.match(/<h3 class="atlas-p-h">/g)).toHaveLength(4);
+    // One h3 per passage with a status: the conjecture has none, so it is set aside until read.
+    expect(html.match(/<h3 class="atlas-p-h">/g)).toHaveLength(3);
+    expect(html).not.toContain('id="p-0c4d77b1"');
     // The article's subject passage is marked: a tag in its heading, a class on
     // its block, and a "Subject" row in the strip linking it. Other passages
     // keep their prominence in the eyebrow.
@@ -307,13 +618,22 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-subject">Subject</span>' +
       '<ul class="atlas-subject-list" aria-labelledby="atlas-h-subject"><li><a href="#p-3fa91c07">Theorem: “every finite widget admits a spanning gadget”</a> ' +
       '<span class="atlas-pill" data-status="formalized">');
-    expect(html).toContain("Searched <a href=\"/atlas/universe/" + FIXTURE_UNIVERSE_SHA + "\">universe u-fixture</a>: 5 libraries, frozen 2026-10-17, 1 excluded · campaign fixture-2026-10</p>");
+    expect(html).toContain("Searched <a href=\"/atlas/universe/" + FIXTURE_UNIVERSE_SHA + "\">universe u-fixture</a>: 5 libraries, frozen 2026-10-17, 1 excluded</p>");
+    // The campaign and the record set are under a closed "About this data" fold.
+    const fixtureRecordSet = fixtureArticle().record_set;
+    expect(html).toContain(`<details class="atlas-about"><summary>About this data</summary><ul class="atlas-prov-list"><li>${UNMEASURED}</li>` +
+      `<li>Campaign <code>fixture-2026-10</code>.</li><li>Seal sha256 <code>${fixtureRecordSet}</code>.</li>` +
+      "<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
+    expect(html).not.toContain(`record set <code title="${fixtureRecordSet}">`);
     expect(html).toContain('<h4 class="atlas-related-h">Related, but states something else</h4>');
     // Only the dashboard is the Atlas nav link's own page.
     expect(html).toContain('<a class="wl-navlink" href="/atlas">Atlas</a>');
     expect(html).not.toContain('aria-current="page"');
     // The footer claims only what the page shows.
-    expect(html).toContain("some are re-checked by a second AI pass, and each location says whether it was. Signed-in readers can confirm or report a location.");
+    expect(html).toContain("Each location&#x27;s Details name the locate run that found it and the challenge run that re-checked it, if one did. Signed-in readers can confirm or report a location.");
+    // No generic label anywhere a reader sees, and no voting data: no counts of others' verdicts.
+    expect(html).not.toMatch(/\bAI\b|pipeline|challenger/);
+    expect(html).not.toMatch(/\d+ (confirm|report|vote)/i);
     // Strip: counts by status and by library, as filter chips.
     expect(html).toContain('data-filter="status:formalized"');
     expect(html).toContain('data-filter="library:mathlib"');
@@ -321,7 +641,8 @@ describe("atlas pages with the fixture store", () => {
     // A zero count is shown but is not a filter.
     expect(html).not.toContain('data-filter="status:partial"');
     expect(html).toContain('<span class="atlas-chip is-static is-zero" data-status="partial">');
-    expect(html).toContain("4 passages checked, 3 Lean locations (and 1 related declaration).");
+    expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration). " +
+      '<span class="atlas-muted" id="atlas-unread">1 more passage has no status yet; it is left out until someone reads it.</span>');
     expect(html).toContain("Batteries <span class=\"atlas-n\">related only</span>");
     // The status in words is visible text beside the pill, not a hover-only
     // title, and the pill is not read twice.
@@ -329,17 +650,32 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<p class="atlas-why">Statement only: TauCeti states this exactly (statement only: the proof is not finished).</p>');
     expect(html).toContain('<span class="atlas-pill" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>Formalized</span>');
     expect(html).not.toContain('class="atlas-pill" data-status="formalized" title=');
-    expect(html.match(/class="atlas-why"/g)).toHaveLength(2); // the absence and the undecided passage have their own boxes
+    expect(html.match(/class="atlas-why"/g)).toHaveLength(2); // the absence has its own box
     // The producer's item id is markup, not reader-facing text.
     expect(html).toContain('data-item="In-text #3fa91c07"');
     expect(html).not.toMatch(/>In-text #/);
     // The status chips carry the coverage bar's fills as their legend.
     expect(html).toContain('<span class="atlas-swatch" data-status="statement_only" aria-hidden="true"></span>');
-    // Location card: library chip, short commit, relation, proof status, name, pinned source link.
+    // Location card: it leads with the Lean code (the declaration, then its module and lines),
+    // then the library chip, short commit, relation, proof status and pinned source link.
     const mathlib = fixtureArticle().passages[0].locations[0];
     const sha7 = mathlib.commit.slice(0, 7);
+    expect(html).toContain('<article class="atlas-card" data-library="mathlib" data-relation="exactMatch" data-proof="proved">\n' +
+      '<p class="atlas-decl-line"><code class="atlas-decl"><span class="atlas-ns">Widget.<wbr></span><b>exists_<wbr>spanning_<wbr>gadget</b></code> ' +
+      '<span class="atlas-rel" data-relation="exactMatch" title="States this exactly (exactMatch)">exact match</span></p>\n' +
+      '<p class="atlas-module">Mathlib.Combinatorics.Widget.Basic · lines 612–640</p>\n<div class="atlas-card-top">');
+    // Its provenance is specific and behind a closed Details fold, after the Lean code.
+    expect(html).toContain('<details class="atlas-prov"><summary>Details</summary><ul class="atlas-prov-list">' +
+      "<li>Found in campaign <code>fixture-2026-10</code>: candidate 1 for this passage, high confidence.</li>" +
+      "<li>Re-checked in challenge run (unnamed): it survived.</li>" +
+      "<li>The record set does not record the model or the operator that ran these runs.</li>" +
+      `<li>Location key <code title="${mathlib.location_key}">${mathlib.location_key.slice(0, 12)}</code>.</li></ul></details>`);
+    expect(html).not.toContain("<details class=\"atlas-prov\" open");
     expect(html).toContain(`<code class="atlas-commit" title="commit ${mathlib.commit}">@${sha7}</code>`);
-    expect(html).toContain('<span class="atlas-rel" title="states this exactly">exact match</span>');
+    // The relation is a badge beside the declaration, and the legend under Passages names each one.
+    expect(html).toContain('<div class="atlas-legend-rel"><p class="atlas-muted">How each Lean declaration relates to its passage:</p><ul>' +
+      '<li><span class="atlas-rel" data-relation="exactMatch" title="States this exactly (exactMatch)">exact match</span> states the passage exactly</li>');
+    expect(html).toContain('<span class="atlas-rel" data-relation="relatedMatch" title="States something related (relatedMatch)">related</span> states something related but different; never counted</li>');
     expect(html).toContain('<code class="atlas-decl"><span class="atlas-ns">Widget.<wbr></span><b>exists_<wbr>spanning_<wbr>gadget</b></code>');
     expect(html).toContain(`href="https://github.com/leanprover-community/mathlib4/blob/${mathlib.commit}/Mathlib/Combinatorics/Widget/Basic.lean#L612-L640"`);
     expect(html).toContain(`Source @${sha7}`);
@@ -355,12 +691,15 @@ describe("atlas pages with the fixture store", () => {
     expect(html).toContain('<p class="atlas-module">WidgetTheory.Spanning · line 88</p>');
     expect(html).toContain(`href="https://github.com/FormalFrontier/WidgetTheory/blob/${ff.commit}/WidgetTheory/Spanning.lean#L88"`);
     expect(html).toContain(`(opens FormalFrontier · WidgetTheory at commit ${ff.commit.slice(0, 7)}, line 88)`);
-    expect(html).toContain("a challenger downgraded it");
+    expect(html).toContain("<li>Re-checked in challenge run (unnamed), which downgraded it.</li>");
     expect(html).toContain('<p class="atlas-module">Mathlib.Combinatorics.Widget.Basic · lines 612–640</p>');
-    // Absence and undecided.
+    // An absence; no passage is labelled undecided, and no status chip offers it.
     expect(html).toContain(`Searched 5 libraries in universe <a href="/atlas/universe/${FIXTURE_UNIVERSE_SHA}">u-fixture</a> (2026-10-17) — not found.`);
     expect(html).toContain("Related, but states something else");
-    expect(html).toContain("Undecided — the pipeline could not settle");
+    expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
+    // The absence's receipt and challenge are under its own Details fold.
+    expect(html).toContain('<details class="atlas-prov atlas-absence-prov"><summary>Details</summary><ul class="atlas-prov-list">' +
+      "<li>Searched in campaign <code>fixture-2026-10</code>: the search receipt lists 4 queries and 2 candidates examined (receipt <code");
     // Quote, in context at the pinned revision.
     expect(html).toContain("<mark>every finite widget admits a spanning gadget</mark>");
     expect(html).toContain("https://en.wikipedia.org/w/index.php?title=Widget_lemma&amp;oldid=2002#:~:text=every%20finite%20widget");
@@ -382,14 +721,14 @@ describe("atlas pages with the fixture store", () => {
     const h = bound();
     const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
     expect(html).toContain('<span class="atlas-eyebrow">Definition</span><span class="atlas-sr"> · </span><span class="atlas-subject">Subject of the article</span></h3>');
-    const lead = html.slice(html.indexOf('id="p-7d2c9e10"'), html.indexOf("</li>", html.indexOf('id="p-7d2c9e10"')));
+    const lead = html.slice(html.indexOf('id="p-7d2c9e10"'), html.indexOf('<li class="atlas-passage', html.indexOf('id="p-7d2c9e10"')));
     expect(lead.length).toBeGreaterThan(0);
     expect(lead).not.toContain("atlas-section");
     expect(html).toContain('<a href="#p-7d2c9e10">Definition: “a gadget is a widget together with a chosen basepoint”</a>');
     expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
     // Its prominence was overturned to subject after the challenge ran: challenge_pending,
     // which reads as unchallenged.
-    expect(html).toContain("high confidence · not challenged yet (a challenge is pending)</span>");
+    expect(html).toContain("high confidence.</li><li>Not re-checked yet: a challenge is owed (the passage's prominence changed after the challenge ran).</li>");
     expect(html).not.toContain("challenge_pending");
     expect(html).toContain('aria-label="3 passages: 3 formalized"');
     expect(html).toContain("3 passages checked, 4 Lean locations.");
@@ -405,6 +744,43 @@ describe("atlas pages with the fixture store", () => {
     const single = await (await get(one.env, `/atlas/${GADGET_PAGEID}`)).text();
     expect(single).toContain('aria-label="1 passage: 1 formalized"');
     expect(single).toContain("1 passage checked, 1 Lean location.");
+  });
+
+  it("a partial status from an exact match says why: a definition passage needs a Lean definition", async () => {
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${GADGET_PAGEID}.json`)!);
+    // The producer's table: a proved theorem stating a definition passage leaves it partial.
+    Object.assign(article.passages[0].locations[0], { proof_status: "proved" });
+    article.passages[0].status = "partial";
+    files.set(`atlas/v1/articles/${GADGET_PAGEID}.json`, JSON.stringify(article));
+    bindAtlas(h.env, files);
+    const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
+    expect(html).toContain('<p class="atlas-why">Partial: Mathlib states this exactly, but as a proved theorem, not a definition; ' +
+      "a definition passage is formalized only by a Lean definition.</p>");
+    // A part relation needs no reason beyond its own words.
+    expect(html).not.toMatch(/states part of this, but/);
+  });
+
+  it("a card's note is labelled by its relation, never 'Convention' for every one", async () => {
+    const html = await (await get(bound().env, WIDGET_PATH)).text();
+    expect(html).toContain('<p class="atlas-note"><span class="atlas-k">Why close, not exact:</span> Counts gadgets from 1, where the article counts from 0.</p>');
+    expect(html).not.toContain("Convention:");
+  });
+
+  it("a quote's formula renders once, from its TeX, and the in-context link quotes its prose only", async () => {
+    const h = setup();
+    const files = atlasFixtureFiles();
+    const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
+    // The layer holds a formula twice: its MathML tokens, then its TeX annotation.
+    article.passages[0].quote = { exact: "every finite widget W {\\displaystyle W} admits a spanning gadget g : W → G {\\displaystyle g\\colon W\\to G}" };
+    files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+    bindAtlas(h.env, files);
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    expect(html).toContain('<mark>every finite widget <span class="atlas-math" title="TeX: W"><i>W</i></span> admits a spanning gadget ' +
+      '<span class="atlas-math" title="TeX: g\\colon W\\to G"><i>g</i>: <i>W</i> → <i>G</i></span></mark>');
+    expect(html).not.toContain("displaystyle");
+    expect(html).toContain("oldid=2002#:~:text=every%20finite%20widget,admits%20a%20spanning%20gadget\"");
   });
 
   it("the status sentence names the location that justifies the status, not rank 1", async () => {
@@ -454,9 +830,10 @@ describe("atlas pages with the fixture store", () => {
         expect(html).not.toContain(tag);
       }
     }
-    expect(page).toContain("AI pipeline · rank 0 ·");
+    expect(page).toContain(": candidate 0 for this passage,");
     expect(page).toContain('data-pageid="0"');
-    expect(dashboard).toContain("0 articles · 7 passages");
+    // The fixture's one passage with no status is in no count (7 passages, 6 with a status).
+    expect(dashboard).toContain("0 articles · 6 passages");
   });
 
   it("a universe list that is not an array never reaches the HTML and never breaks a page", async () => {
@@ -481,32 +858,44 @@ describe("atlas pages with the fixture store", () => {
       for (const html of [await page.text(), await universePage.text()]) {
         expect(html, label).not.toContain("<img src=x");
         expect(html, label).not.toContain("<b>9</b>");
-        expect(html, label).not.toContain(" excluded<");
+        // A hostile or missing exclusion list names no exclusions.
+        if (label.startsWith("excluded") || label === "no excluded key") expect(html, label).not.toContain(" excluded");
       }
     }
     const h = bound();
     expect(await (await get(h.env, `/atlas/${WIDGET_PAGEID}`)).text()).toContain("5 libraries, frozen 2026-10-17, 1 excluded");
   });
 
-  it("a passage whose only locations are related is undecided and keeps its related declarations", async () => {
-    // build_store's reading of proposal §2.6 "(none)": records without a status.
+  it("a passage with no status is set aside, with its related declarations, until someone reads it", async () => {
+    // build_store's reading of proposal §2.6 "(none)": records without a status, here the subject
+    // theorem's two locations made related. Like the unresolved conjecture, it is set aside: no
+    // block, no status, no count, no related declaration counted.
     const h = setup();
     const files = atlasFixtureFiles();
     const article = JSON.parse(files.get(`atlas/v1/articles/${WIDGET_PAGEID}.json`)!);
     const passage = article.passages[0];
     Object.assign(passage, { outcome: "unresolved", status: null, basis: null, unresolved: { challenge: "downgraded" } });
     for (const loc of passage.locations) loc.relation = "relatedMatch";
+    article.summary = { ...article.summary, locations: 1, related: 3,
+      by_status: { formalized: 0, statement_only: 1, partial: 0, not_formalized: 1, unresolved: 2 } };
+    article.summary.by_library = { ...article.summary.by_library,
+      mathlib: { locations: 0, complete: 0, incomplete: 0, passages: 0, related: 1 },
+      "ff-widgets": { locations: 0, complete: 0, incomplete: 0, passages: 0, related: 1 } };
     files.set(`atlas/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
     bindAtlas(h.env, files);
-    const html = await (await get(h.env, WIDGET_PATH)).text();
-    const block = html.slice(html.indexOf('<li class="atlas-passage is-subject" id="p-3fa91c07"'), html.indexOf("</li>", html.indexOf('id="p-3fa91c07"')));
-    expect(block.length).toBeGreaterThan(0);
-    expect(block).toContain('data-status="unresolved"');
-    expect(block).toContain("Related, but states something else");
-    expect(block).toContain("Widget.<wbr>");
-    expect(block).toContain("Undecided — the pipeline could not settle");
-    expect(block).not.toContain('class="atlas-why"');
-    expect(block).not.toContain('<div class="atlas-cards">');
+    for (const path of [WIDGET_PATH, `${WIDGET_PATH}?view=cards`]) {
+      const html = await (await get(h.env, path)).text();
+      expect(html, path).not.toContain('id="p-3fa91c07"');
+      expect(html, path).not.toContain("exists_<wbr>spanning_<wbr>gadget");
+      expect(html, path).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
+      expect(html, path).toContain("2 passages checked, 1 Lean location (and 1 related declaration). " +
+        '<span class="atlas-muted" id="atlas-unread">2 more passages have no status yet; they are left out until someone reads them.</span>');
+      expect(html, path).toContain('aria-label="2 passages: 1 statement only, 1 not formalized"');
+      // A library whose only related declarations were the set-aside passage's has no chip.
+      expect(html, path).not.toContain('data-filter="library:mathlib"');
+      expect(html, path).not.toContain(">Mathlib <span class=\"atlas-n\">related only</span>");
+      expect(html, path).toContain("Batteries <span class=\"atlas-n\">related only</span>");
+    }
   });
 
   it("a survived coverage claim says 'Formalized by N parts together' and lists its parts (decision D1)", async () => {
@@ -523,8 +912,8 @@ describe("atlas pages with the fixture store", () => {
     expect(block).toContain("<span class=\"atlas-muted\">(proved)</span></li>");
     // Each part is still a card that states part of it, and reads as checked: confirming the
     // claim confirms its parts (round three; build_store.confirmed_parts).
-    expect(block.match(/data-relation="hasPart"/g)?.length).toBe(2);
-    expect(block.match(/ · a challenger checked it<\/span>/g)?.length).toBe(2);
+    expect(block.match(/<article class="atlas-card"[^>]* data-relation="hasPart"/g)?.length).toBe(2);
+    expect(block.match(/<li>Re-checked in challenge run \(unnamed\): it survived\.<\/li>/g)?.length).toBe(2);
     // The theorem an equivalence states is formalized by that one data declaration.
     expect(html).toContain('<p class="atlas-why">Formalized: Mathlib states this exactly (a definition).</p>');
     expect(html.match(/parts together/g)?.length).toBe(1);
@@ -770,10 +1159,11 @@ describe("atlas pages with the fixture store", () => {
     expect(widget).toContain('<blockquote class="atlas-quote" data-quote="head">' +
       `<mark>Moreover, the number of spanning gadgets of a widget is at most</mark>${CUT}</blockquote>`);
     expect(widget.match(/data-quote-cut=""/g)).toHaveLength(1);
-    expect(widget.match(/data-quote="whole"/g)).toHaveLength(3);
+    // Two whole quotes: the conjecture, the third, has no status and is set aside.
+    expect(widget.match(/data-quote="whole"/g)).toHaveLength(2);
     expect(widget).toContain('<h2 class="atlas-h2" id="atlas-h-passages">Passages</h2>\n<p class="atlas-muted" id="atlas-quote-note">' +
-      "Quotes show at most the first 12 words of a passage. A … after the highlighted quote means the passage continues; " +
-      "“Read it in context on Wikipedia” shows the rest.</p>");
+      "Quotes show at most the first 12 words of a passage (the record format's quotation cap; a formula's MathML text counts toward it). " +
+      "A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. Hover a formula for its TeX.</p>");
     // A passage of exactly 12 words is quoted whole: at the cap, but no ellipsis and no note.
     const gadget = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
     expect(gadget).toContain('<blockquote class="atlas-quote" data-quote="whole">' +
@@ -805,7 +1195,7 @@ describe("atlas pages with the fixture store", () => {
       const quoted = `Theorem: “${article.passages[0].quote.exact}”`;
       expect(row, label).toContain(`<a href="#p-3fa91c07">${quoted}${capped ? CUT : ""}</a>`);
       // The card: a suffix keeps its own words, and a head's one ellipsis comes after it.
-      const block = html.slice(html.indexOf('id="p-3fa91c07"'), html.indexOf("</li>", html.indexOf('id="p-3fa91c07"')));
+      const block = html.slice(html.indexOf('id="p-3fa91c07"'), html.indexOf('<li class="atlas-passage', html.indexOf('id="p-3fa91c07"')));
       expect(block, label).toContain(`<span class="atlas-affix"> of minimal degree.</span>${capped ? CUT : ""}</blockquote>`);
       expect(html, label).not.toContain("<b>yes");
     }
@@ -851,31 +1241,32 @@ describe("atlas pages with the fixture store", () => {
   it("the Coverage box counts the central statements, the subject and central passages, by status", async () => {
     const h = bound();
     const widget = await (await get(h.env, WIDGET_PATH)).text();
-    // Next to the bar over all four passages, which stays.
-    expect(widget).toContain('<div class="atlas-bar" role="img" aria-label="4 passages: 1 formalized, 1 statement only, 1 not formalized, 1 undecided">');
+    // Next to the bar over all the passages it shows (the conjecture, with no status, is set aside), which stays.
+    expect(widget).toContain('<div class="atlas-bar" role="img" aria-label="3 passages: 1 formalized, 1 statement only, 1 not formalized">');
     // The bar is followed by its own legend (the Subject row, then the Status chips),
     // and only then by the line, so the first figures under the bar are the bar's.
-    expect(widget).toContain('title="1 undecided"></span></div>\n' +
+    expect(widget).toContain('title="1 not formalized"></span></div>\n' +
       '<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-subject">Subject</span>');
     expect(widget).toContain('<div class="atlas-chips" role="group" aria-labelledby="atlas-h-status">');
     expect(widget).toMatch(/aria-labelledby="atlas-h-status">.*?<\/div><\/div>\n<p class="atlas-strip-lead" id="atlas-central">.*?<\/p>\n<div class="atlas-strip-row"><span class="atlas-strip-h" id="atlas-h-where">/);
-    expect(widget).toContain('<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> 2 of the 4 passages ' +
-      "state the article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of these 2: " +
+    expect(widget).toContain('<p class="atlas-strip-lead" id="atlas-central"><b>Central statements:</b> 2 of the 3 passages ' +
+      "state the article's subject or a named result or definition; the other one is supporting (examples, setup). Of these 2: " +
       '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>1 formalized</span><span>,</span> ' +
       '<span class="atlas-mini" data-status="not_formalized"><span class="atlas-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n');
     const gadget = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
     expect(gadget).toContain("<b>Central statements:</b> 2 of the 3 passages state the article's subject or a named result or definition; " +
       "the other one is supporting (examples, setup). Of these 2: " +
       '<span class="atlas-mini" data-status="formalized"><span class="atlas-ico" aria-hidden="true">✓</span>2 formalized</span>.</p>');
-    // From the passages' prominence: every count and its grammar; a store whose passages
-    // carry no prominence (built before it was required) gets no line.
+    // From the prominence of the passages shown (the fourth, with no status, is set aside):
+    // every count and its grammar; a store whose passages carry no prominence (built before it
+    // was required) gets no line.
     const lineCases: Array<[string, Array<string | null>, string]> = [
       ["one central", ["subject", "supporting", "supporting", "supporting"],
-        "1 of the 4 passages states the article's subject or a named result or definition; the other 3 are supporting (examples, setup). Of this one: "],
-      ["all central", ["subject", "central", "central", "subject"], "All 4 passages state the article's subject or a named result or definition. Of these 4: "],
+        "1 of the 3 passages states the article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of this one: "],
+      ["all central", ["subject", "central", "central", "subject"], "All 3 passages state the article's subject or a named result or definition. Of these 3: "],
       // A passage without a prominence is neither: the supporting count says only what it is.
-      ["one without", ["subject", "central", "supporting", null],
-        "2 of the 4 passages state the article's subject or a named result or definition; 1 is supporting (examples, setup). Of these 2: "],
+      ["one without", ["subject", null, "supporting", "supporting"],
+        "1 of the 3 passages states the article's subject or a named result or definition; 1 is supporting (examples, setup). Of this one: "],
     ];
     for (const [label, prominences, expected] of lineCases) {
       const one = setup();
@@ -898,7 +1289,7 @@ describe("atlas pages with the fixture store", () => {
       const html = await (await get(one.env, WIDGET_PATH)).text();
       if (expected) expect(html, label).toContain(expected);
       else expect(html, label).not.toContain("Central statements");
-      expect(html, label).toContain('aria-label="4 passages: ');
+      expect(html, label).toContain('aria-label="3 passages: ');
     }
   });
 
@@ -909,7 +1300,7 @@ describe("atlas pages with the fixture store", () => {
       // No supporting bucket to count: the line leaves the rest unsaid.
       ["hostile", (counts) => {
         counts.by_prominence = { subject: { by_status: { formalized: "<b>9</b>", partial: 2 } }, central: "<i>x</i>" };
-      }, "2 of the 7 passages, across 2 articles, state an article's subject or a named result or definition. Of these 2: " +
+      }, "2 of the 6 passages, across 2 articles, state an article's subject or a named result or definition. Of these 2: " +
         '<span class="atlas-mini" data-status="partial"><span class="atlas-ico" aria-hidden="true">◔</span>2 partial</span>.</p>'],
       ["no central passages", (counts) => {
         for (const bucket of Object.values(counts.by_prominence) as Array<Record<string, any>>) {
@@ -1285,6 +1676,324 @@ describe("migration 0015", () => {
   });
 });
 
+// A store built from a cf-locate-recordset/2 set (build_store): the article names
+// its seal, each location its pair_key, and a bundle its relation and conjuncts.
+describe("a store built from a cf-locate-recordset/2 set", () => {
+  const SKILL = "d85385aa4eb2818373e9b6b8b41b765ffaf53750";
+  const RUN = "run:loc-tierA-x+chal-tierA-x";
+
+  function v2Store(): Map<string, string> {
+    const files = atlasFixtureFiles();
+    for (const [key, value] of files) {
+      if (!key.startsWith("atlas/v1/articles/")) continue;
+      const doc = JSON.parse(value);
+      doc.campaign = RUN;
+      doc.seal = { set_id: "tierA-x", schema: "cf-locate-recordset/2", status_rule: 3, created: "2026-11-01T14:25:17Z", skill_commit: SKILL };
+      for (const passage of doc.passages) {
+        for (const loc of passage.locations) loc.pair_key = "a".repeat(63) + "b";
+        if (passage.coverage) {
+          passage.coverage.relation = "broadMatch";
+          passage.coverage.conjuncts = passage.coverage.parts.map((part: string, i: number) => ({ id: `c${i + 1}`, text: `clause <${i + 1}>`, part }));
+        }
+      }
+      files.set(key, JSON.stringify(doc));
+    }
+    return files;
+  }
+
+  it("cites the seal and the pair key under Details, and shows each bundle part beside its clauses", async () => {
+    const h = setup();
+    bindAtlas(h.env, v2Store());
+    const page = await (await get(h.env, `/atlas/${GADGET_PAGEID}`)).text();
+    expect(page).toContain("<li>Locate run <code>loc-tierA-x</code>, re-checked by challenge run <code>chal-tierA-x</code>.</li>" +
+      "<li>Record set <code>tierA-x</code> (cf-locate-recordset/2, statuses by status rule 3), exported 1 Nov 2026 by formal-companion " +
+      `at commit <code title="${SKILL}">d85385a</code>.</li>`);
+    expect(page).toContain(`<li>Record set <code>tierA-x</code>, exported 1 Nov 2026 by formal-companion <code title="${SKILL}">d85385a</code>.</li>`);
+    expect(page).toContain(` · pair key <code title="${"a".repeat(63)}b">aaaaaaaaaaaa</code>.</li>`);
+    expect(page).toContain("Formalized by 2 parts together (more general):");
+    expect(page).toContain('<ul class="atlas-conjuncts" aria-label="Clauses this part states"><li>clause &lt;1&gt;</li></ul>');
+    expect(page).toContain("<li>clause &lt;2&gt;</li>");
+    expect(page).not.toMatch(/\bAI\b|pipeline|challenger/);
+  });
+
+  it("derives a store without a basis by the seal's status rule (R-BROAD under rule 3)", () => {
+    const data = { relation: "broadMatch", proof_status: "definition", statement: false } as unknown as AtlasLocation;
+    expect(locationStatus("theorem", data)).toBe("partial");
+    expect(locationStatus("theorem", data, 3)).toBe("formalized");
+    expect(locationStatus("definition", data, 2)).toBe("partial");
+    expect(locationStatus("definition", data, 3)).toBe("formalized");
+    const proved = { ...data, proof_status: "proved" };
+    expect(locationStatus("definition", proved, 3)).toBe("partial");
+    expect(locationStatus("theorem", { ...data, proof_status: "wanted" }, 3)).toBe("statement_only");
+  });
+});
+
+// The optional side files build_store merges (--passage-text, --signatures,
+// --provenance): every field they add is optional within v1, and the golden
+// store, built without them, renders as it always has. The values are synthetic.
+describe("a store built with the optional side files", () => {
+  const RUN = "run:loc-fx+chal-fx";
+  const BOUND = "enwiki-1001-2002::In-text #5b0e44a1";
+  const SIG = "theorem Widget.exists_spanning_gadget {W : Widget} :\n    W.Finite → ∃ g, W.Spans g";
+  const LOCATE = {
+    run_id: "loc-fx", mode: "locate", model: "model-x", model_name: "Model X", reviewer_model: "model-r",
+    reviewer_model_name: "Model R", operator: "alice", started: "2026-10-30T23:50:00Z", harvested: "2026-10-31T04:48:00Z",
+    skill_commit: "3bceabcee0724ffdf50ce65dde3ab10048c72cba",
+  };
+  const CHALLENGE = {
+    ...LOCATE, run_id: "chal-fx", mode: "locate-challenge", started: "2026-11-01T03:19:32Z", harvested: "2026-11-01T14:25:17Z",
+    sampling: { seed: 0, sample_rate: 0.2, strong_sample_rate: 0.5, absence_sample_rate: 0.25 },
+  };
+  const INVENTORY = { ...LOCATE, run_id: "inv-fx", mode: "locate-inventory", started: "2026-10-30T06:52:00Z", harvested: "2026-10-30T20:00:47Z" };
+  const SUPPLEMENTS = {
+    passage_text: { schema: "wikilean.atlas.passage-text/1", sha256: "a".repeat(64) },
+    signatures: { schema: "wikilean.atlas.signatures/1", sha256: "b".repeat(64), corpus_sha256: "c".repeat(64),
+      corpus_built: "2026-10-18T06:14:30Z", universe: "u-fixture" },
+    provenance: { schema: "wikilean.atlas.provenance/1", sha256: "d".repeat(64) },
+  };
+
+  // The golden store with the fields the side files add, edited in place (`edit` last).
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  function supplementedStore(edit: (article: any) => void = () => {}): Map<string, string> {
+    const files = atlasFixtureFiles();
+    for (const [key, value] of files) {
+      if (key !== "atlas/v1/current.json" && !key.startsWith("atlas/v1/articles/")) continue;
+      const doc = JSON.parse(value);
+      if (key === "atlas/v1/current.json") {
+        doc.provenance = { runs: [CHALLENGE, LOCATE] };
+        doc.supplements = { ...SUPPLEMENTS, passage_text: { ...SUPPLEMENTS.passage_text, passages: 1, shown: 1 } };
+        files.set(key, JSON.stringify(doc));
+        continue;
+      }
+      doc.campaign = RUN;
+      doc.provenance = { locate: LOCATE, challenge: CHALLENGE };
+      doc.supplements = SUPPLEMENTS;
+      for (const passage of doc.passages) {
+        if (passage.id === BOUND) {
+          passage.text = { layer: "(the layer slice)", segments: [
+            { text: "Moreover, the number of <spanning> gadgets of a widget is at most its rank" }, { ref: "[3]" },
+            { text: " " }, { tex: "\\le r", display: true }, { text: " ." }] };
+        }
+        for (const loc of passage.locations) {
+          if (loc.declaration === "Widget.exists_spanning_gadget") loc.signature = { text: SIG, elided: false };
+          if (loc.declaration === "Gadget.equivVertex") {
+            loc.signature = { text: "def Gadget.equivVertex {W : Widget} […] : W.Gadget ≃ W.Vertex", elided: true,
+              type: "{W : Widget} → [inst : W.Finite] → W.Gadget ≃ W.Vertex", deprecated_to: "Widget.gadgetEquiv" };
+          }
+        }
+      }
+      edit(doc);
+      files.set(key, JSON.stringify(doc));
+    }
+    return files;
+  }
+
+  async function page(path: string, files: Map<string, string>): Promise<string> {
+    const h = setup();
+    bindAtlas(h.env, files);
+    const res = await get(h.env, path);
+    expect(res.status).toBe(200);
+    return res.text();
+  }
+
+  // One location card's markup, by its declaration.
+  function card(html: string, declaration: string): string {
+    const leaf = declaration.slice(declaration.lastIndexOf(".") + 1).replace(/_/g, "_<wbr>");
+    const at = html.indexOf(`<b>${leaf}</b>`);
+    expect(at, declaration).toBeGreaterThanOrEqual(0);
+    const start = html.lastIndexOf('<article class="atlas-card"', at);
+    return html.slice(start, html.indexOf("</article>", at));
+  }
+
+  it("each card leads with its declaration, then its signature as a Lean code block that breaks between binders", async () => {
+    const html = await page(WIDGET_PATH, supplementedStore());
+    const lead = card(html, "Widget.exists_spanning_gadget");
+    // The store's line break is read as a space: the page flows the header, one piece per
+    // binder and per hypothesis, the header's colon ending the last binder's piece.
+    expect(lead).toContain('<span class="atlas-rel" data-relation="exactMatch" title="States this exactly (exactMatch)">exact match</span></p>\n' +
+      '<pre class="atlas-sig"><code><span class="atlas-sig-u">theorem Widget.exists_spanning_gadget</span> <span class="atlas-sig-u">{W : Widget} :</span> ' +
+      '<span class="atlas-sig-u">W.Finite →</span> <span class="atlas-sig-u">∃ g,</span> <span class="atlas-sig-u">W.Spans g</span></code></pre>\n' +
+      '<p class="atlas-module">Mathlib.Combinatorics.Widget.Basic · lines 612–640</p>');
+    expect(lead.indexOf("atlas-decl-line")).toBeLessThan(lead.indexOf("atlas-sig"));
+    expect(lead.indexOf("atlas-sig")).toBeLessThan(lead.indexOf("atlas-card-top"));
+    // Its Details say what the code is and where it is from; a card without one shows the name alone.
+    expect(lead).toContain("<li>Lean code: the declaration&#x27;s type as Lean prints it, laid out as a header (the corpus keeps no " +
+      "hypothesis names), from the declaration corpus of universe u-fixture at commit " +
+      '<code title="bcb35bd682db2d92ab4e8a54f5e183b8a0b6b795">bcb35bd</code>.</li>');
+    const bare = card(html, "WidgetTheory.spanning_gadget_exists");
+    expect(bare).not.toContain("atlas-sig");
+    expect(bare).not.toContain("Lean code:");
+    // The page says once what every card's code is, and that it is not the source text.
+    expect(html).toContain('<p class="atlas-muted" id="atlas-sig-note">Each card&#x27;s Lean code is its declaration&#x27;s type as Lean ' +
+      "prints it, from universe u-fixture&#x27;s declaration corpus at the card&#x27;s commit, laid out as a header: binders before the " +
+      "colon, then the hypotheses as arrows (the corpus keeps no hypothesis names) and the conclusion, in Mathlib&#x27;s notation " +
+      "(𝓝, π, R[X], Type*). It is not the source text; Source opens that.</p>");
+    // A header shortened to fit keeps the whole type under a fold; a deprecated name says what replaced it.
+    const gadget = card(await page(`/atlas/${GADGET_PAGEID}`, supplementedStore()), "Gadget.equivVertex");
+    expect(gadget).toContain('<pre class="atlas-sig"><code><span class="atlas-sig-u">def Gadget.equivVertex</span> ' +
+      '<span class="atlas-sig-u">{W : Widget}</span> <span class="atlas-sig-u">[…] :</span> <span class="atlas-sig-u">W.Gadget ≃ W.Vertex</span></code></pre>\n' +
+      '<details class="atlas-sig-full"><summary>Full type, as Lean prints it</summary><pre class="atlas-sig"><code>' +
+      '<span class="atlas-sig-u">{W : Widget} →</span> <span class="atlas-sig-u">[inst : W.Finite] →</span> <span class="atlas-sig-u">W.Gadget ≃ W.Vertex</span>' +
+      '</code></pre></details>\n' +
+      '<p class="atlas-deprecated">Deprecated at this commit, in favour of <code class="atlas-decl"><span class="atlas-ns">Widget.<wbr></span><b>gadgetEquiv</b></code>.</p>');
+  });
+
+  it("a passage with verified text is shown in full, formulas from their TeX; the others keep their quote", async () => {
+    const html = await page(WIDGET_PATH, supplementedStore());
+    expect(html).toContain('<blockquote class="atlas-quote atlas-text" data-quote="full">Moreover, the number of &lt;spanning&gt; ' +
+      'gadgets of a widget is at most its rank<sup class="atlas-ref">[3]</sup> <span class="atlas-math-display">' +
+      '<span class="atlas-math" title="TeX: \\le r">≤ <i>r</i></span></span>.</blockquote>');
+    // Its quote, the capped head, is not shown beside it, and the passage keeps its in-context link.
+    const block = html.slice(html.indexOf('id="p-5b0e44a1"'), html.indexOf('id="p-91aa02de"'));
+    expect(block).not.toContain("<mark>");
+    expect(block).not.toContain("data-quote-cut");
+    expect(block).toContain("Read it in context on Wikipedia");
+    // Every other passage shows its quote as before, and the notes say which is which.
+    expect(html).toContain('<blockquote class="atlas-quote" data-quote="whole"><span class="atlas-affix">…The widget lemma states that </span>' +
+      "<mark>every finite widget admits a spanning gadget</mark>");
+    expect(html).toContain('<p class="atlas-muted" id="atlas-text-note">1 passage is shown in full, as revision 2002 states it ' +
+      "(checked against its record&#x27;s span hash when the store was built). Formulas are drawn from their TeX; hover one to see it.</p>");
+    // The only capped quote is now shown in full, so the 12-word note goes.
+    expect(html).not.toContain('id="atlas-quote-note"');
+    expect(html).toContain("The quote and text fields of the JSON download and the quote fields of the JSONL download are excerpts of the same text and stay under that licence.");
+  });
+
+  it("a passage that is only part of a sentence is highlighted, the rest of its sentence in grey around it", async () => {
+    const html = await page(WIDGET_PATH, supplementedStore((article) => {
+      for (const passage of article.passages) {
+        if (passage.id !== BOUND) continue;
+        passage.text.before = { layer: "(slice)", segments: [{ text: "Lemma 2 shows this: " }], lead_in: true };
+        passage.text.after = { layer: "(slice)", segments: [{ text: ", and " }, { tex: "r \\ge 1" }, { text: " here" }], trimmed: true };
+      }
+    }));
+    expect(html).toContain('<blockquote class="atlas-quote atlas-text" data-quote="full" data-context=""><span class="atlas-affix">' +
+      "Lemma 2 shows this: <br></span><mark>Moreover, the number of &lt;spanning&gt; gadgets of a widget is at most its rank" +
+      '<sup class="atlas-ref">[3]</sup> <span class="atlas-math-display"><span class="atlas-math" title="TeX: \\le r">≤ <i>r</i></span>' +
+      '</span>.</mark><span class="atlas-affix">, and <span class="atlas-math" title="TeX: r \\ge 1"><i>r</i> ≥ 1</span> here…</span></blockquote>');
+    expect(html).toContain("Where a passage is only part of a sentence, it is highlighted and the rest of the sentence is shown in grey " +
+      "around it, from the same copy of the revision; a list item also shows the sentence that introduces it.");
+    // A context that does not render (a corrupt store) is left out; the passage still shows.
+    const broken = await page(WIDGET_PATH, supplementedStore((article) => {
+      for (const passage of article.passages) if (passage.id === BOUND) passage.text.before = { segments: "<b>" };
+    }));
+    expect(broken).toContain('<blockquote class="atlas-quote atlas-text" data-quote="full">Moreover, the number');
+    expect(broken).not.toContain("Where a passage is only part of a sentence");
+  });
+
+  it("Details cite the model, the operator and the dates of each run, and never call them unrecorded", async () => {
+    const html = await page(WIDGET_PATH, supplementedStore());
+    // A model's id never breaks at its hyphens.
+    const M = 'Model X <span class="atlas-nowrap">(model-x)</span>', R = 'Model R <span class="atlas-nowrap">(model-r)</span>';
+    expect(html).toContain(`<li>Found by ${M} on 30–31 Oct 2026 (UTC), locate run <code>loc-fx</code> by alice: ` +
+      `candidate 1 for this passage, high confidence.</li><li>Re-checked by ${M} on 1 Nov 2026 (UTC), challenge run ` +
+      "<code>chal-fx</code> by alice: it survived.</li>");
+    expect(html).toContain(`<li>Re-checked by ${M} on 1 Nov 2026 (UTC), challenge run <code>chal-fx</code> by alice, which downgraded it.</li>`);
+    expect(html).toContain(`<li>Not re-checked: sampled out of challenge run <code>chal-fx</code> by alice, in which ${M} ` +
+      "re-checked a sample on 1 Nov 2026 (UTC).</li>");
+    // The absence says who searched, and who re-checked that; the passage with no status is set aside.
+    expect(html).toContain(`<li>Searched by ${M} on 30–31 Oct 2026 (UTC), locate run <code>loc-fx</code> by alice: the search receipt lists`);
+    expect(html).toContain(`<li>Re-checked by ${M} on 1 Nov 2026 (UTC), challenge run <code>chal-fx</code> by alice: upheld.</li>`);
+    expect(html).not.toContain("Left undecided");
+    // About this data: each run once, to the minute, with both roles' models; the challenge
+    // run says what it re-checked in this article, so its rates and the shares agree; and
+    // what the store merged.
+    const about = html.slice(html.indexOf('<details class="atlas-about">'), html.indexOf("</details>", html.indexOf('<details class="atlas-about">')));
+    expect(about.split("<code>loc-fx</code>").length - 1).toBe(1);
+    expect(about).toContain(`<li>Locate run <code>loc-fx</code>, run by alice, 30 Oct 2026, 23:50 – 31 Oct 2026, 04:48 UTC: ` +
+      `worker ${M}, reviewer ${R}.</li><li>Challenge run <code>chal-fx</code>, run by alice, ` +
+      `1 Nov 2026, 03:19–14:25 UTC: worker ${M}, reviewer ${R}. In this article it re-checked every Lean location and absence ` +
+      "on a central or subject passage (2 locations and 1 absence); on supporting passages, a seeded sample (seed 0; drawn at 0.5 " +
+      "for strong matches, 0.2 for weaker links and 0.25 for absences): 1 of 1 locations. In all, 3 of 3 Lean locations (100%) and " +
+      "1 of 1 absences (100%) were re-checked.</li><li>Passage text: 1 of 3 passages shown in full");
+    expect(html).toContain("<li>Lean code: each declaration&#x27;s type, from the declaration corpus of universe " +
+      `u-fixture (built 18 Oct 2026, sha256 <code title="${"c".repeat(64)}">cccccccccccc</code>), at the commit its card links.</li>`);
+    expect(html).not.toContain("does not record the model");
+    expect(html).not.toMatch(/\bAI\b|pipeline|challenger/);
+    // Provenance stays folded: every citation is inside a closed <details>.
+    const open = html.replace(/<details[\s\S]*?<\/details>/g, "");
+    expect(open).not.toContain("Model X");
+    expect(open).not.toContain("alice");
+  });
+
+  it("the About folds cite the inventory run that chose the passages, when the store names one", async () => {
+    const M = 'Model X <span class="atlas-nowrap">(model-x)</span>', R = 'Model R <span class="atlas-nowrap">(model-r)</span>';
+    const line = `<li>Inventory run <code>inv-fx</code>, run by alice, 30 Oct 2026, 06:52–20:00 UTC: worker ${M}, reviewer ${R}. ` +
+      "It listed the formal passages, each with its kind and prominence, that the locate run then searched.</li>";
+    const files = supplementedStore((article) => { article.provenance.inventory = INVENTORY; });
+    const current = JSON.parse(files.get("atlas/v1/current.json")!);
+    current.provenance.runs = [CHALLENGE, INVENTORY, LOCATE];
+    files.set("atlas/v1/current.json", JSON.stringify(current));
+    // The article's fold names it first, before the runs that searched and re-checked its passages.
+    const about = (await page(WIDGET_PATH, files)).match(/<details class="atlas-about">.*?<\/details>/s)![0];
+    expect(about).toContain(`${line}<li>Locate run <code>loc-fx</code>`);
+    expect(await page("/atlas", files)).toContain(line);
+    // A store without it names none, as before.
+    expect(await page(WIDGET_PATH, supplementedStore())).not.toContain("Inventory run");
+  });
+
+  it("the dashboard dates the build, or, when the build took the record sets' export as its time, the export", async () => {
+    const files = atlasFixtureFiles();
+    const current = JSON.parse(files.get("atlas/v1/current.json")!);
+    files.set("atlas/v1/current.json", JSON.stringify({ ...current, built_at: "2026-11-03T09:00:00Z" }));
+    expect(await page("/atlas", files)).toContain("<li>Campaign fixture-2026-10, built 3 Nov 2026.</li>");
+    expect(await page("/atlas", atlasFixtureFiles())).toContain("<li>Campaign fixture-2026-10, from record sets exported 17 Oct 2026.</li>");
+  });
+
+  it("the dashboard's About this build lists each run and what the build merged", async () => {
+    const M = 'Model X <span class="atlas-nowrap">(model-x)</span>', R = 'Model R <span class="atlas-nowrap">(model-r)</span>';
+    const html = await page("/atlas", supplementedStore());
+    expect(html).toContain(`<li>Challenge run <code>chal-fx</code>, run by alice, 1 Nov 2026, 03:19–14:25 UTC: worker ${M}, ` +
+      `reviewer ${R}. It sampled with seed 0, at 0.5 for strong matches, 0.2 for weaker links and 0.25 for absences.</li>` +
+      `<li>Locate run <code>loc-fx</code>, run by alice, 30 Oct 2026, 23:50 – 31 Oct 2026, 04:48 UTC: worker ${M}, ` +
+      `reviewer ${R}.</li><li>Passage text: 1 of 6 passages shown in full`);
+    expect(html).not.toContain("does not record the model");
+    // With the build's own tallies (build_store recheck_tallies), it says what the challenge re-checked across the build.
+    const files = supplementedStore();
+    const current = JSON.parse(files.get("atlas/v1/current.json")!);
+    current.provenance.runs[0].rechecked = { central: { locations: [2109, 2109], absences: [723, 723] },
+      supporting: { locations: [1080, 1799], absences: [318, 1236] } };
+    files.set("atlas/v1/current.json", JSON.stringify(current));
+    expect(await page("/atlas", files)).toContain(`reviewer ${R}. Across the build it re-checked every Lean location and absence on a ` +
+      "central or subject passage (2109 locations and 723 absences); on supporting passages, a seeded sample (seed 0; drawn at 0.5 " +
+      "for strong matches, 0.2 for weaker links and 0.25 for absences): 1080 of 1799 locations and 318 of 1236 absences. " +
+      "In all, 3189 of 3908 Lean locations (82%) and 1041 of 1959 absences (53%) were re-checked.</li>");
+  });
+
+  it("a malformed side-file field never breaks the page: it falls back to what the record set alone shows", async () => {
+    const html = await page(WIDGET_PATH, supplementedStore((article) => {
+      article.provenance = { locate: { run_id: "loc-fx", model: 5 }, challenge: "x" };
+      for (const passage of article.passages) {
+        passage.text = { layer: "", segments: passage.id === BOUND ? [{ text: 1 }] : "<b>" };
+        for (const loc of passage.locations) loc.signature = { text: ["<script>"], elided: "yes" };
+      }
+    }));
+    expect(html).not.toContain("atlas-sig");
+    expect(html).not.toContain("atlas-text");
+    expect(html).toContain("<li>Found in locate run <code>loc-fx</code>: candidate 1 for this passage, high confidence.</li>");
+    expect(html).toContain("The record set does not record the model or the operator that ran these runs.");
+    expect(html).toContain('id="atlas-quote-note"');
+    expect(html).not.toContain("<script>\"");
+    // Store text in a signature or a passage is escaped, never markup.
+    const hostile = await page(WIDGET_PATH, supplementedStore((article) => {
+      article.passages[0].text = { layer: "", segments: [{ text: "<img src=x>" }, { tex: "</span><img>" }] };
+      article.passages[0].locations[0].signature = { text: "theorem X </code><img src=x>", elided: false };
+    }));
+    expect(hostile).not.toContain("<img");
+    expect(hostile).toContain("&lt;img src=x&gt;");
+  });
+
+  it("without the side files the page says what is unrecorded and shows the quotes, as it always has", async () => {
+    const html = await page(WIDGET_PATH, atlasFixtureFiles());
+    for (const absent of ["atlas-sig", "atlas-text", "atlas-undecided-prov", "Signature from", "Passage text:", "(UTC)"]) {
+      expect(html).not.toContain(absent);
+    }
+    expect(html).toContain('<li>Seal sha256 <code>');
+    expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
+    expect(html).toContain('id="atlas-quote-note"');
+    expect(html).toContain("The quote fields of the JSON and JSONL downloads are excerpts of the same text and stay under that licence.");
+  });
+});
+
 // SEAL.json's campaign is always a token: the campaign id, or for a run outside
 // any campaign "run:<run-id>[+<challenge-run-id>]" (build_store.CAMPAIGN_RE).
 describe("a record set from a run outside any campaign", () => {
@@ -1306,10 +2015,16 @@ describe("a record set from a run outside any campaign", () => {
     const h = setup();
     bindAtlas(h.env, runStore());
     const page = await (await get(h.env, WIDGET_PATH, { user: "u-human" })).text();
-    expect(page).toContain(" · run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign</p>");
+    // The runs are named, specifically, in the Details folds: the locate run that found a
+    // location and the challenge run that re-checked it.
+    expect(page).toContain("<li>Locate run <code>loc-smoke-2</code>, re-checked by challenge run <code>chal-smoke-2</code>.</li>");
+    expect(page).toContain("<li>Found in locate run <code>loc-smoke-2</code>: candidate 1 for this passage, high confidence.</li>" +
+      "<li>Re-checked in challenge run <code>chal-smoke-2</code>: it survived.</li>");
+    expect(page).not.toContain("Undecided");
+    expect(page).toContain("<li>Not re-checked: sampled out of challenge run <code>chal-smoke-2</code>.</li>");
     expect(page).toContain(`data-campaign="${RUN}"`);
     const dashboard = await (await get(h.env, "/atlas")).text();
-    expect(dashboard).toContain('<p class="atlas-meta">Run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign · ');
+    expect(dashboard).toContain(`<summary>About this build</summary><ul class="atlas-prov-list"><li>${UNMEASURED}</li><li>Run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign, from record sets exported 17 Oct 2026.</li>`);
     const res = await post(h.env, "/api/atlas/feedback", feedback({ campaign: RUN }), { user: "u-human" });
     expect(res.status).toBe(200);
     expect(feedbackRows(h)[0]).toMatchObject({ campaign: RUN, verdict: "confirm" });
@@ -1415,8 +2130,14 @@ describe("atlas feedback export", () => {
 // Report-Only policy would report, so enforcing that policy cannot break them
 // (e2e/atlas.spec.ts runs the flows with it enforced).
 describe("atlas security headers and CSP", () => {
+  // Every atlas HTML answer is an atlas page, which enforces atlasCsp beside the framing ban; the
+  // JSON answers carry the shared set alone.
   function expectSecurityHeaders(res: Response, label: string): void {
-    for (const [name, value] of Object.entries(SECURITY_HEADERS)) expect(res.headers.get(name), `${label}: ${name}`).toBe(value);
+    const page = (res.headers.get("Content-Type") ?? "").startsWith("text/html");
+    for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+      const want = name === "Content-Security-Policy" && page ? `${ATLAS_CSP}, ${value}` : value;
+      expect(res.headers.get(name), `${label}: ${name}`).toBe(want);
+    }
   }
 
   function sources(directive: string): string[] {
@@ -1458,6 +2179,14 @@ describe("atlas security headers and CSP", () => {
       const res = await get(h.env, path);
       expect(res.status, path).toBe(status);
       expectSecurityHeaders(res, path);
+    }
+
+    // Over the read budget.
+    const limited = bound({ brainApiLimiterAllows: false });
+    for (const path of ["/atlas?q=wid", WIDGET_PATH, `/api/atlas/article/${WIDGET_PAGEID}`, `/api/atlas/records/${WIDGET_PAGEID}`]) {
+      const res = await get(limited.env, path);
+      expect(res.status, path).toBe(429);
+      expectSecurityHeaders(res, `over the budget ${path}`);
     }
 
     const writes: Array<[() => Promise<Response>, number]> = [
@@ -1508,7 +2237,7 @@ describe("atlas security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/atlas.js?v=2"></script>');
+      expect(html, path).toContain('<script src="/assets/atlas.js?v=4"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/atlas.css');
@@ -1516,9 +2245,109 @@ describe("atlas security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/atlas.css?v=4"]);
+    expect(box.urls).toEqual(["/assets/atlas.css?v=9"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
+  });
+
+  it("every inline script an atlas page serves is one atlasCsp lists by hash, and it lists no other", async () => {
+    // A browser runs an inline script under atlasCsp only when the sha256 of its text is listed. If
+    // this fails, an inline script of the atlas shell changed (atlas-render.ts or
+    // engine/searchbox.ts SEARCHBOX_SCRIPT): update ATLAS_INLINE_SCRIPT_HASHES in src/security.ts.
+    const reader = setup();
+    bindAtlas(reader.env, atlasReaderFiles());
+    const limited = setup({ brainApiLimiterAllows: false });
+    bindAtlas(limited.env);
+    const pages: Array<[Harness, string]> = [
+      [reader, WIDGET_PATH], [reader, `${WIDGET_PATH}?view=cards`], [reader, "/atlas"], [reader, "/atlas?q=gadg"],
+      [reader, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`], [reader, "/atlas/9999"], [reader, `/atlas/universe/${"0".repeat(64)}`],
+      [limited, WIDGET_PATH], [setup(), "/atlas"],
+    ];
+    const listed = new Set(Object.values(ATLAS_INLINE_SCRIPT_HASHES));
+    const seen = new Set<string>();
+    for (const [h, path] of pages) {
+      const res = await get(h.env, path);
+      expect(res.headers.get("Content-Security-Policy"), path).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+      const html = await res.text();
+      const inline = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)].filter((m) => !/\ssrc=/.test(m[1]));
+      expect(inline.length, path).toBe(2);
+      for (const m of inline) {
+        expect(m[1], `${path}: an inline script carries no attribute`).toBe("");
+        const hash = `'sha256-${createHash("sha256").update(m[2], "utf8").digest("base64")}'`;
+        expect(listed.has(hash), `${path}: inline script ${JSON.stringify(m[2].slice(0, 40))} is ${hash}`).toBe(true);
+        seen.add(hash);
+      }
+    }
+    expect([...seen].sort()).toEqual([...listed].sort());
+  });
+
+  it("atlasCsp lets images and media load only from the hosts the builder lets a revision fetch from", () => {
+    const builder = readFileSync(new URL("../../scripts/atlas/build_store.py", import.meta.url), "utf8");
+    const fetch = builder.match(/^READER_FETCH = \(([^)]*)\)$/m);
+    expect(fetch, "build_store.READER_FETCH").not.toBeNull();
+    const hosts = [...fetch![1].matchAll(/"(https:\/\/[^"]+)\/"/g)].map((m) => m[1]);
+    expect(hosts).toEqual([...ATLAS_MEDIA_HOSTS]);
+    for (const directive of ["img-src", "media-src"]) {
+      const part = ATLAS_CSP.split("; ").find((d) => d.startsWith(directive + " "));
+      expect(part!.split(" ").slice(1)).toEqual(["'self'", ...hosts]);
+    }
+  });
+
+  it("every atlas HTML answer goes through atlasHtml, so none leaves without the policy", () => {
+    const src = readFileSync(new URL("../src/atlas.ts", import.meta.url), "utf8");
+    expect(src.match(/\bc\.html\(/g)).toHaveLength(1);
+    expect(src).toContain(`return c.html(html, status, { ...headers, "Content-Security-Policy": atlasCsp(new URL(c.req.url).origin) });`);
+    expect(src).not.toMatch(/new Response\([^)]*text\/html/);
+  });
+
+  it("the policy runs the atlas's two scripts by URL, not every same-origin script, and lets forms post only to /atlas", async () => {
+    const policy = new Map(atlasCsp("https://wikilean.example").split("; ").map((part) => {
+      const [name, ...values] = part.split(" ");
+      return [name, values] as [string, string[]];
+    }));
+    expect(policy.get("script-src")).toEqual([
+      "https://wikilean.example/assets/atlas.js", "https://wikilean.example/assets/atlas-reader.js",
+      ATLAS_INLINE_SCRIPT_HASHES.theme, ATLAS_INLINE_SCRIPT_HASHES.search, "https://static.cloudflareinsights.com",
+    ]);
+    expect(policy.get("script-src")).not.toContain("'self'");
+    expect(policy.get("form-action")).toEqual(["https://wikilean.example/atlas"]);
+    // The paths are the pages' script tags without their ?v= (a path source ignores the query).
+    expect(ATLAS_SCRIPT_PATHS).toEqual([ATLAS_JS, ATLAS_READER_JS].map((url) => url.split("?")[0]));
+    // Every script file an atlas page loads is one of them, and its one form posts to /atlas.
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const forms: string[] = [];
+    for (const path of [WIDGET_PATH, `${WIDGET_PATH}?view=cards`, "/atlas", "/atlas?q=gadg", `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, "/atlas/9999"]) {
+      const html = await (await get(h.env, path)).text();
+      for (const m of html.matchAll(/<script\b[^>]*\ssrc="([^"]+)"/g)) {
+        expect(ATLAS_SCRIPT_PATHS, `${path}: ${m[1]}`).toContain(new URL(m[1], ORIGIN).pathname);
+      }
+      for (const m of html.matchAll(/<form\b([^>]*)>/g)) forms.push(/\saction="([^"]*)"/.exec(m[1])?.[1] ?? "");
+    }
+    expect(forms).toEqual([ATLAS_FORM_PATH, ATLAS_FORM_PATH]);
+  });
+
+  it("a page's policy names the origin it was served from", async () => {
+    const h = bound();
+    const res = await app.request("https://wikilean.example/atlas", {}, h.env);
+    expect(res.status).toBe(200);
+    expect(res.headers.get("Content-Security-Policy")).toBe(
+      `${atlasCsp("https://wikilean.example")}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+  });
+
+  it("atlas pages load the site stylesheet at the version the article pages load it", async () => {
+    // engine/page.ts and atlas-render.ts STYLE_CSS name style.css's ?v= each: a change to style.css
+    // bumps both, or a reader page keeps a stale cached copy.
+    const h = bound();
+    const article = await (await get(h.env, `/${SLUG}`)).text();
+    const site = /<link rel="stylesheet" href="(\/assets\/style\.css\?v=[^"]+)">/.exec(article);
+    expect(site, "the article page's stylesheet").not.toBeNull();
+    const reader = setup();
+    bindAtlas(reader.env, atlasReaderFiles());
+    for (const [env, path] of [[h.env, "/atlas"], [h.env, WIDGET_PATH], [reader.env, WIDGET_PATH]] as const) {
+      const html = await (await get(env, path)).text();
+      expect(html.match(/\/assets\/style\.css\?v=[^"]+/g), path).toEqual([site![1]]);
+    }
   });
 
   it("atlas.js fetches only same-origin paths and never evaluates strings; atlas.css loads nothing", () => {
@@ -1544,13 +2373,20 @@ describe("article page summary box", () => {
     expect(html).toContain(`<a class="wl-atlas-box-link" href="${WIDGET_PATH}">See where`);
     // Its counts are the atlas's, not this page's annotations (the badges
     // above), and it names the page's revision when the atlas checked another.
-    expect(html).toContain("Separately from this page&#x27;s annotations, the atlas checked 4 passages of Wikipedia revision 2002 against Lean libraries:");
+    // Its counts are the passages with a status, as the article's own page counts them, and it says
+    // how many more there are; the one with none has no status here either.
+    expect(html).toContain("Separately from this page&#x27;s annotations, the atlas checked 3 passages of Wikipedia revision 2002 against Lean libraries:");
     expect(html).toContain(`<span class="wl-atlas-box-rev">This page shows revision ${REVID}.</span>`);
     expect(html).toContain("1 formalized");
-    expect(html).toContain("1 undecided");
+    expect(html).toContain("1 not formalized</span>. 1 more passage has no status yet. <span class=\"wl-atlas-box-rev\">");
+    expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
+    // The notice is the atlas pages' line under their header (one line, never a badge); the box
+    // carries no notice of its own.
+    expect(html).not.toContain(ATLAS_NOTICE);
+    expect(html).not.toContain("wl-atlas-box-note");
     expect(html.indexOf("wl-atlas-box")).toBeLessThan(html.indexOf('<main class="wl-article-body">'));
-    // One index-shard read, nothing else from the store.
-    expect(h.gets).toEqual(["atlas/v1/index/1.json"]);
+    // The publish switch and one index shard, nothing else from the store (each kept a minute).
+    expect(h.gets).toEqual(["atlas/v1/current.json", "atlas/v1/index/1.json"]);
     // The cached base page (render:v19) does not carry the box.
     const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v19:"));
     expect(cached).toHaveLength(1);
@@ -1573,7 +2409,13 @@ describe("article page summary box", () => {
     expect(atlasSummaryBox(entry, WIDGET_PATH, null)).not.toContain("wl-atlas-box-rev");
     expect(atlasSummaryBox(entry, WIDGET_PATH, 2003)).toContain("This page shows revision 2003.");
     const one = { ...entry, passages: 1, formalized: 1, statement_only: 0, not_formalized: 0, unresolved: 0 };
-    expect(atlasSummaryBox(one, WIDGET_PATH, 2002)).toContain("checked 1 passage of Wikipedia revision 2002");
+    expect(atlasSummaryBox(one, WIDGET_PATH, 2002)).toContain("checked 1 passage of Wikipedia revision 2002 against Lean libraries: ");
+    expect(atlasSummaryBox(one, WIDGET_PATH, 2002)).not.toContain("no status yet");
+    // Passages that all have no status yet: found, none with a status, and no count by status.
+    const unread = { ...entry, passages: 2, formalized: 0, statement_only: 0, not_formalized: 0, unresolved: 2 };
+    expect(atlasSummaryBox(unread, WIDGET_PATH, 2002)).toContain(
+      "Separately from this page&#x27;s annotations, the atlas found 2 passages in Wikipedia revision 2002, none with a status yet.");
+    expect(atlasSummaryBox(unread, WIDGET_PATH, 2002)).not.toMatch(/atlas-mini|undecided/);
   });
 
   it("injectAtlasSummary returns the page byte-for-byte when there is no box", () => {
@@ -1581,6 +2423,382 @@ describe("article page summary box", () => {
     expect(injectAtlasSummary(page, null)).toBe(page);
     expect(injectAtlasSummary(page, "<aside>B</aside>")).toBe('<html><body><aside>B</aside><main class="wl-article-body">x</main></body></html>');
     expect(injectAtlasSummary("<html><body><p>y</p></body></html>", "<aside>B</aside>")).toBe("<html><body>\n<aside>B</aside><p>y</p></body></html>");
+  });
+});
+
+describe("the atlas is kept out of search indexes", () => {
+  it("every answer under /atlas and /api/atlas carries X-Robots-Tag: noindex, whatever its status", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const limited = setup({ brainApiLimiterAllows: false });
+    bindAtlas(limited.env);
+    const unbound = setup();
+    const answers: Array<[string, () => Promise<Response>, number]> = [
+      ...([
+        [WIDGET_PATH, 200], [`${WIDGET_PATH}?view=cards`, 200], [`/atlas/${WIDGET_PAGEID}`, 200], ["/atlas", 200],
+        ["/atlas?q=gadg", 200], [`/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, 200], ["/atlas/9999", 404],
+        [`/atlas/universe/${"0".repeat(64)}`, 404],
+        // Paths no atlas route takes answer the site's 404, and are kept out too.
+        ["/atlas/abc", 404], [`${WIDGET_PATH}/extra`, 404], ["/api/atlas/nope", 404],
+        ["/api/atlas/current", 200], [`/api/atlas/article/${WIDGET_PAGEID}`, 200], [`/api/atlas/records/${WIDGET_PAGEID}`, 200],
+        [`/api/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, 200], ["/api/atlas/index/1", 200], ["/api/atlas/article/9999", 404],
+        ["/api/atlas/feedback/export", 403],
+      ] as Array<[string, number]>).map(([path, status]): [string, () => Promise<Response>, number] => [path, () => get(h.env, path), status]),
+      ["export", () => get(h.env, "/api/atlas/feedback/export", { bearer: PIPELINE_TOKEN }), 200],
+      ["feedback", () => post(h.env, "/api/atlas/feedback", feedback()), 401],
+      ["429 page", () => get(limited.env, WIDGET_PATH), 429],
+      ["429 view model", () => get(limited.env, `/api/atlas/article/${WIDGET_PAGEID}`), 429],
+      ["503 page", () => get(unbound.env, "/atlas"), 503],
+      ["503 reader", () => get(unbound.env, WIDGET_PATH), 503],
+      ["503 current", () => get(unbound.env, "/api/atlas/current"), 503],
+    ];
+    for (const [label, send, status] of answers) {
+      const res = await send();
+      expect(res.status, label).toBe(status);
+      expect(res.headers.get("X-Robots-Tag"), label).toBe("noindex");
+    }
+    // Nothing outside the atlas: WikiLean's article pages, the box on them included, stay indexable.
+    h.db.prepare("UPDATE articles SET wikipedia_title = 'Widget lemma' WHERE slug = ?").run(SLUG);
+    for (const path of [`/${SLUG}`, "/about", "/api/articles", "/atlasx", "/"]) {
+      expect((await get(h.env, path)).headers.get("X-Robots-Tag"), path).toBeNull();
+    }
+    expect(await (await get(h.env, `/${SLUG}`)).text()).not.toContain("noindex");
+  });
+
+  it("every atlas page says noindex in its head, once", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const limited = setup({ brainApiLimiterAllows: false });
+    bindAtlas(limited.env);
+    const pages: Array<[Harness, string]> = [
+      [h, WIDGET_PATH], [h, `${WIDGET_PATH}?view=cards`], [h, "/atlas"], [h, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`],
+      [h, "/atlas/9999"], [limited, WIDGET_PATH], [setup(), "/atlas"],
+    ];
+    for (const [env, path] of pages) {
+      const html = await (await get(env.env, path)).text();
+      const head = html.slice(0, html.indexOf("</head>"));
+      expect(head.match(/<meta name="robots" content="noindex">/g), path).toHaveLength(1);
+      expect(html.match(/<meta name="robots"/g), path).toHaveLength(1);
+    }
+  });
+});
+
+describe("the atlas's licence statements", () => {
+  const HISTORY = `https://en.wikipedia.org/w/index.php?curid=${WIDGET_PAGEID}&amp;action=history`;
+  const REVISION = `https://en.wikipedia.org/w/index.php?curid=${WIDGET_PAGEID}&amp;oldid=2002`;
+  const footer = (html: string) => html.slice(html.indexOf('<footer class="atlas-foot'), html.indexOf("</footer>") + 9);
+
+  it("the reader says it is an adaptation of the pinned revision under CC BY-SA 4.0, and what it changed", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const foot = footer(await (await get(h.env, WIDGET_PATH)).text());
+    expect(foot).toContain(`<p>This page is an adaptation of <a href="${REVISION}">revision 2002</a> of “Widget lemma” on ` +
+      `<a href="https://en.wikipedia.org/">Wikipedia</a>, by <a href="${HISTORY}">its contributors</a>, and is shared under ` +
+      `<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>, the revision&#x27;s licence.`);
+    // The changes: the highlights, the cards and links added, the links pointed, the images removed,
+    // and what the reader's stylesheet hides (atlas-reader.css: .navbox, .mw-editsection).
+    for (const change of ["highlights the revision&#x27;s formal passages", "adds a panel of Lean cards beside them with links to the Lean declarations",
+      "points the revision&#x27;s links to Wikipedia", "removes the Wikimedia logos and any image that is not free",
+      "hides the revision&#x27;s navigation boxes (rows of links to other articles) and any section edit links",
+      "Images and media keep their own licences"]) {
+      expect(foot).toContain(change);
+    }
+    const css = readFileSync(new URL("../../site/assets/atlas-reader.css", import.meta.url), "utf8");
+    expect(css).toMatch(/\.atlr-article \.navbox[^{]*\{ display: none; \}/);
+    expect(css).toMatch(/\.atlr-article \.mw-editsection \{ display: none; \}/);
+    // The mapping is CC0, apart from the text and the Lean code; only the page's own licence is rel="license".
+    expect(foot).toContain('is released under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>');
+    expect(foot).toContain("it is distinct from the article text, which keeps its own licence.");
+    expect(foot).toContain("The Lean code on the cards is quoted from its libraries and keeps each library&#x27;s own licence, " +
+      "which the universe page lists; the CC0 release does not cover it.");
+    expect(foot.match(/rel="license"/g)).toHaveLength(1);
+  });
+
+  it("the card list credits the revision it quotes, and every other atlas page the licence of its quotes", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const cards = footer(await (await get(h.env, `${WIDGET_PATH}?view=cards`)).text());
+    expect(cards).toContain(`<p>The passages shown are excerpts of <a href="${REVISION}">revision 2002</a> of “Widget lemma” on ` +
+      `<a href="https://en.wikipedia.org/">Wikipedia</a>, by <a href="${HISTORY}">its contributors</a>, shared under ` +
+      `<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.`);
+    expect(cards).not.toContain('rel="license"');
+    for (const path of ["/atlas", `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`]) {
+      const foot = footer(await (await get(h.env, path)).text());
+      expect(foot, path).toContain('available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.');
+      expect(foot, path).toContain("is released under <a href=\"https://creativecommons.org/publicdomain/zero/1.0/\">CC0</a>");
+      expect(foot, path).toContain("The Lean code on the cards is quoted from its libraries and keeps each library&#x27;s own licence");
+    }
+    expect(cards).toContain("The Lean code on the cards is quoted from its libraries and keeps each library&#x27;s own licence");
+  });
+
+  it("the reader lists the images and media it shows, each linked to its file page with its author and licence", async () => {
+    const h = setup();
+    const files = atlasReaderFiles();
+    const key = `atlas/v1/articles/${WIDGET_PAGEID}.json`;
+    const article = JSON.parse(files.get(key)!);
+    article.reader.images = [
+      { file: "Gadget_icon.svg", project: "en", licence: "Public domain", licence_url: null, author: null },
+      { file: "Newton's_<b>telescope</b>.jpg", project: "commons", licence: "CC BY-SA 4.0",
+        licence_url: "https://creativecommons.org/licenses/by-sa/4.0/", author: "A. <i>Widgetmaker</i>" },
+      { file: "Spin.webm", project: "commons", licence: null },
+      { file: "Lens.svg", project: "commons", licence: "CC BY-SA 3.0", licence_url: "http://creativecommons.org/licenses/by-sa/3.0/",
+        author: "C. Lens" },
+      { file: "Elsewhere.png", project: "de", licence: "PD" }, "x", null,
+    ];
+    files.set(key, JSON.stringify(article));
+    bindAtlas(h.env, files);
+    const foot = footer(await (await get(h.env, WIDGET_PATH)).text());
+    expect(foot).toContain("Images and media keep their own licences: each is listed below, linked to its file page, with its author where that page names one, and its licence.");
+    // The author is text, the licence links its own page (https only), and a store without them names the file page.
+    expect(foot).toContain('<details class="atlr-images"><summary>Images and media in this revision (4), each under its own licence</summary><ul>' +
+      '<li><a href="https://en.wikipedia.org/wiki/File:Gadget_icon.svg">Gadget icon.svg</a> (English Wikipedia): Public domain</li>' +
+      '<li><a href="https://commons.wikimedia.org/wiki/File:Newton&#x27;s_%3Cb%3Etelescope%3C%2Fb%3E.jpg">Newton\'s &lt;b&gt;telescope&lt;/b&gt;.jpg</a> by A. &lt;i&gt;Widgetmaker&lt;/i&gt; (Wikimedia Commons): ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></li>' +
+      '<li><a href="https://commons.wikimedia.org/wiki/File:Spin.webm">Spin.webm</a> (Wikimedia Commons): its licence on its file page</li>' +
+      '<li><a href="https://commons.wikimedia.org/wiki/File:Lens.svg">Lens.svg</a> by C. Lens (Wikimedia Commons): CC BY-SA 3.0</li></ul></details>');
+    expect(foot).not.toContain("Elsewhere");
+    // Without the list the footer says where the licences are, and lists nothing.
+    bindAtlas(h.env, atlasReaderFiles());
+    const plain = footer(await (await get(h.env, WIDGET_PATH)).text());
+    expect(plain).toContain("Images and media keep their own licences, which their file pages on Wikimedia give.");
+    expect(plain).not.toContain("atlr-images");
+  });
+
+  it("each article's JSON states its licences, and the pages name the one it gives the text", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    expect((await jsonOf(await get(h.env, `/api/atlas/article/${WIDGET_PAGEID}`))).licence)
+      .toEqual({ text: "CC-BY-SA-4.0", mapping: "CC0-1.0" });
+    const withLicence = (licence: unknown): Map<string, string> => {
+      const files = atlasReaderFiles();
+      const key = `atlas/v1/articles/${WIDGET_PAGEID}.json`;
+      files.set(key, JSON.stringify({ ...JSON.parse(files.get(key)!), licence }));
+      return files;
+    };
+    const cases: Array<[unknown, string]> = [
+      [{ text: "CC-BY-SA-3.0", mapping: "CC0-1.0" }, '<a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="license">CC BY-SA 3.0</a>'],
+      [{ text: "GFDL-1.3<i>", mapping: "CC0-1.0" }, "shared under GFDL-1.3&lt;i&gt;, the revision"],
+      [undefined, '<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>'],
+      ["CC-BY-SA-3.0", '<a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="license">CC BY-SA 4.0</a>'],
+    ];
+    for (const [licence, shown] of cases) {
+      bindAtlas(h.env, withLicence(licence));
+      expect(footer(await (await get(h.env, WIDGET_PATH)).text()), JSON.stringify(licence)).toContain(shown);
+    }
+  });
+});
+
+describe("the atlas says the links are preliminary, and what measured them", () => {
+  const ABOUT = /<details class="atlas-about"><summary>About this (?:data|build)<\/summary><ul class="atlas-prov-list">(.*?)<\/ul><\/details>/s;
+  // A made-up audit of the fixture build: its run, model, sample and two figures, one weighted.
+  const AUDIT = {
+    run_id: "audit-fx", operator: "alice", started: "2026-11-03T02:44:00Z", ended: "2026-11-03T05:07:00Z",
+    models: [{ model: "model-z", model_name: "Model Z" }], blind: true, independent: false, items: 20,
+    figures: [{ id: "strong", label: "Strong supporting cards judged right", share: 0.8, ci95: [0.62, 0.91],
+      weights: "relation and library", n_eff: 12.5, drawn: 16, population: 400 },
+    { id: "absences", label: "Absences judged right", share: 0.75, ci95: [0.301, 0.954], weights: null, n_eff: 4, drawn: 4,
+      population: 300 }],
+  };
+  function audited(audit: unknown = AUDIT): Map<string, string> {
+    const files = atlasReaderFiles();
+    for (const key of ["atlas/v1/current.json", `atlas/v1/articles/${WIDGET_PAGEID}.json`]) {
+      files.set(key, JSON.stringify({ ...JSON.parse(files.get(key)!), audit }));
+    }
+    return files;
+  }
+
+  it("every atlas page says it once, in one line under its header, and never on a card", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    const limited = setup({ brainApiLimiterAllows: false });
+    bindAtlas(limited.env);
+    const pages: Array<[Harness, string, number]> = [
+      [h, WIDGET_PATH, 200], [h, `${WIDGET_PATH}?view=cards`, 200], [h, `/atlas/${GADGET_PAGEID}`, 200], [h, "/atlas", 200],
+      [h, `/atlas/universe/${FIXTURE_UNIVERSE_SHA}`, 200], [h, "/atlas/9999", 404], [limited, WIDGET_PATH, 429],
+      [setup(), "/atlas", 503],
+    ];
+    for (const [env, path, status] of pages) {
+      const res = await get(env.env, path);
+      expect(res.status, path).toBe(status);
+      const html = await res.text();
+      // The reader heads its article column with it (beside the sticky panel, not above it);
+      // every other page has it right after the header.
+      const line = `<p class="atlas-notice" id="atlas-notice">${ATLAS_NOTICE}</p>\n`;
+      const reader = path === WIDGET_PATH && status === 200;
+      expect(html, path).toContain(reader ? `</header>\n<div class="atlr-layout"` : `</header>\n${line}`);
+      if (reader) expect(html, path).toContain(`<div class="atlr-head">\n${line}<nav class="atlas-crumbs"`);
+      expect(html.match(/Preliminary/g), path).toHaveLength(1);
+      expect(html.match(/independent audit/g), path).toHaveLength(1);
+    }
+    expect(ATLAS_NOTICE).toBe("Preliminary: these links have not yet had an independent audit.");
+  });
+
+  it("without an audit summary, About this data says plainly that the build carries no accuracy figure", async () => {
+    const h = setup();
+    bindAtlas(h.env, atlasReaderFiles());
+    for (const path of [WIDGET_PATH, `${WIDGET_PATH}?view=cards`, "/atlas"]) {
+      const about = ABOUT.exec(await (await get(h.env, path)).text());
+      expect(about, path).not.toBeNull();
+      expect(about![1], path).toContain(`<li>${UNMEASURED}</li>`);
+      expect(about![1], path).not.toContain("Accuracy, from an audit");
+    }
+    // A statement about the build, which says nothing of whether an audit of its links exists.
+    expect(UNMEASURED).toBe("This build carries no accuracy figure from an audit of its links.");
+  });
+
+  it("with an audit summary, About this data gives each figure and cites the run that measured it", async () => {
+    const h = setup();
+    bindAtlas(h.env, audited());
+    const lines = [
+      "<li>Accuracy, from an audit of a sample of 20 items (blind, not independent): Strong supporting cards judged right: " +
+        "80% (95% interval 62–91%), from 16 drawn of 400, weighted by relation and library, an effective sample of 12.5; " +
+        "Absences judged right: 75% (95% interval 30–95%), from 4 drawn of 300.</li>",
+      `<li>Audit run <code>audit-fx</code>, run by alice, 3 Nov 2026, 02:44–05:07 UTC: judged by Model Z <span class="atlas-nowrap">(model-z)</span>.</li>`,
+    ];
+    for (const path of [WIDGET_PATH, `${WIDGET_PATH}?view=cards`, "/atlas"]) {
+      const html = await (await get(h.env, path)).text();
+      const about = ABOUT.exec(html);
+      expect(about, path).not.toBeNull();
+      expect(about![1].startsWith(lines.join("")), path).toBe(true);
+      expect(about![1], path).not.toContain(UNMEASURED);
+      // The notice stays: the line under the header states the data's audit status, not the figure.
+      expect(html, path).toContain(`<p class="atlas-notice" id="atlas-notice">${ATLAS_NOTICE}</p>`);
+      // The figures are in the fold only, never on a card or a passage.
+      expect(html.match(/judged right/g), path).toHaveLength(2);
+    }
+    // A malformed audit reads as none, and its text never reaches the page.
+    for (const bad of [{ ...AUDIT, items: "20" }, { ...AUDIT, models: "Model Z" }, { ...AUDIT, run_id: 7 }, "audit", null]) {
+      bindAtlas(h.env, audited(bad));
+      const about = ABOUT.exec(await (await get(h.env, WIDGET_PATH)).text());
+      expect(about![1]).toContain(`<li>${UNMEASURED}</li>`);
+    }
+    // A figure is printed escaped, and one that is no estimate (a share outside its interval, or none)
+    // is left out; without both flags the run's standing is not said.
+    const figure = { share: 0.5, ci95: [0.2, 0.8], weights: null, n_eff: 2, drawn: 2, population: 9 };
+    bindAtlas(h.env, audited({ ...AUDIT, blind: "yes", figures: [{ ...figure, id: "x", label: "<b>bold</b>" },
+      { ...figure, id: "y", label: "Off", share: 0.9 }, { ...figure, id: "z", label: "Counted", share: undefined, right: 1, of: 2 }] }));
+    const about = ABOUT.exec(await (await get(h.env, WIDGET_PATH)).text())![1];
+    expect(about).toContain("from an audit of a sample of 20 items: &lt;b&gt;bold&lt;/b&gt;: 50% (95% interval 20–80%), from 2 drawn of 9.");
+    expect(about).not.toContain("Off:");
+    expect(about).not.toContain("Counted:");
+  });
+});
+
+describe("the WikiLean slug lookup (migration 0016 indexes articles.wikipedia_title)", () => {
+  it("with migration 0016 the lookup reads the matching rows through the index, not the table, and a re-run is a no-op", () => {
+    const src = readFileSync(new URL("../src/atlas.ts", import.meta.url), "utf8");
+    const query = "SELECT slug FROM articles WHERE wikipedia_title IN (?, ?) ORDER BY slug LIMIT 1";
+    expect(src).toContain(`"${query}"`);
+    const migration = readFileSync(new URL("../migrations/0016_articles_wikipedia_title.sql", import.meta.url), "utf8");
+    const plan = (db: DatabaseSync) => (db.prepare(`EXPLAIN QUERY PLAN ${query}`).all("a", "b") as Array<{ detail: string }>)
+      .map((row) => row.detail).join("\n");
+    // A database before it scans every article; with it (the harness applies every migration) the
+    // lookup searches the index.
+    const before = new DatabaseSync(":memory:");
+    before.exec(readFileSync(new URL("../migrations/0001_init.sql", import.meta.url), "utf8"));
+    expect(plan(before)).toMatch(/^SCAN articles/m);
+    before.exec(migration);
+    before.exec(migration);
+    expect(plan(before)).toContain("SEARCH articles USING INDEX idx_articles_wikipedia_title (wikipedia_title=?)");
+    before.close();
+    const h = setup();
+    expect(plan(h.db as unknown as DatabaseSync)).toContain("SEARCH articles USING INDEX idx_articles_wikipedia_title (wikipedia_title=?)");
+  });
+
+  // Every D1 statement the harness's database prepares, and the ones that look a title up.
+  function watchSql(h: Harness): { all: string[]; slugs: () => number } {
+    const all: string[] = [];
+    const prepare = h.env.DB.prepare.bind(h.env.DB);
+    Object.assign(h.env.DB, { prepare: (query: string) => { all.push(query); return prepare(query); } });
+    return { all, slugs: () => all.filter((query) => query.includes("wikipedia_title")).length };
+  }
+
+  it("an article page read again within a minute costs no D1 read, with or without a WikiLean article", async () => {
+    const h = bound();
+    h.db.prepare("UPDATE articles SET wikipedia_title = 'Widget lemma' WHERE slug = ?").run(SLUG);
+    const sql = watchSql(h);
+    for (let i = 0; i < 3; i += 1) {
+      const html = await (await get(h.env, WIDGET_PATH)).text();
+      expect(html).toContain(`<a href="/${SLUG}">Annotated article on WikiLean</a>`);
+    }
+    expect(sql.slugs()).toBe(1);
+    // An anonymous view reads nothing else from D1: the page read again costs none.
+    expect(sql.all).toHaveLength(1);
+    // The Gadget has no WikiLean article: that answer is kept too.
+    for (let i = 0; i < 3; i += 1) {
+      const html = await (await get(h.env, `/atlas/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
+      expect(html).not.toContain("Annotated article on WikiLean");
+    }
+    expect(sql.slugs()).toBe(2);
+    expect(sql.all).toHaveLength(2);
+    // The reader and the card list of one article share it.
+    const reader = setup();
+    bindAtlas(reader.env, atlasReaderFiles());
+    const watched = watchSql(reader);
+    for (const path of [WIDGET_PATH, `${WIDGET_PATH}?view=cards`, `/atlas/${WIDGET_PAGEID}`]) {
+      expect((await get(reader.env, path)).status, path).toBe(200);
+    }
+    expect(watched.slugs()).toBe(1);
+  });
+
+  it("is read again after SLUG_CACHE_MS, so a new WikiLean article gets its link within a minute", async () => {
+    const h = setup();
+    const sql = watchSql(h);
+    const t0 = 1_000_000;
+    expect(SLUG_CACHE_MS).toBe(INDEX_CACHE_MS);
+    expect(await wikileanSlugFor(h.env, "Widget lemma", t0)).toBeNull();
+    h.db.prepare("UPDATE articles SET wikipedia_title = 'Widget_lemma' WHERE slug = ?").run(SLUG);
+    // Within the minute the remembered answer stands; the title's spellings share one entry.
+    expect(await wikileanSlugFor(h.env, "Widget_lemma", t0 + SLUG_CACHE_MS - 1)).toBeNull();
+    expect(await wikileanSlugFor(h.env, " Widget lemma ", t0 + 1)).toBeNull();
+    expect(sql.slugs()).toBe(1);
+    expect(await wikileanSlugFor(h.env, "Widget lemma", t0 + SLUG_CACHE_MS)).toBe(SLUG);
+    expect(sql.slugs()).toBe(2);
+    // A clock that went back reads again rather than trusting the entry.
+    expect(await wikileanSlugFor(h.env, "Widget lemma", t0)).toBe(SLUG);
+    expect(sql.slugs()).toBe(3);
+  });
+
+  it("keeps at most MAX_SLUG_CACHE titles, dropping the one read longest ago", async () => {
+    const h = setup();
+    const sql = watchSql(h);
+    const now = 5_000_000;
+    for (let i = 0; i <= MAX_SLUG_CACHE; i += 1) await wikileanSlugFor(h.env, `Title ${i}`, now);
+    expect(sql.slugs()).toBe(MAX_SLUG_CACHE + 1);
+    // One more than it holds: the first title in was dropped. The others are kept, and a read
+    // moves a title last ("Title 1", the oldest, becomes the newest).
+    await wikileanSlugFor(h.env, `Title ${MAX_SLUG_CACHE}`, now);
+    await wikileanSlugFor(h.env, "Title 1", now);
+    expect(sql.slugs()).toBe(MAX_SLUG_CACHE + 1);
+    // "Title 0" is read again, and in its place goes the title read longest ago: "Title 2", not
+    // "Title 1", which was just read.
+    await wikileanSlugFor(h.env, "Title 0", now);
+    expect(sql.slugs()).toBe(MAX_SLUG_CACHE + 2);
+    await wikileanSlugFor(h.env, "Title 1", now);
+    expect(sql.slugs()).toBe(MAX_SLUG_CACHE + 2);
+    await wikileanSlugFor(h.env, "Title 2", now);
+    expect(sql.slugs()).toBe(MAX_SLUG_CACHE + 3);
+  });
+
+  it("is kept per D1 binding, and a failed lookup is not remembered", async () => {
+    const a = setup();
+    const b = setup();
+    b.db.prepare("UPDATE articles SET wikipedia_title = 'Widget lemma' WHERE slug = ?").run(SLUG);
+    expect(await wikileanSlugFor(a.env, "Widget lemma")).toBeNull();
+    expect(await wikileanSlugFor(b.env, "Widget lemma")).toBe(SLUG);
+    const failing = setup();
+    const prepare = failing.env.DB.prepare.bind(failing.env.DB);
+    let fail = true;
+    Object.assign(failing.env.DB, {
+      prepare: (query: string) => {
+        if (fail) throw new Error("D1 unavailable");
+        return prepare(query);
+      },
+    });
+    await expect(wikileanSlugFor(failing.env, "Widget lemma", 7_000)).rejects.toThrow("D1 unavailable");
+    fail = false;
+    failing.db.prepare("UPDATE articles SET wikipedia_title = 'Widget lemma' WHERE slug = ?").run(SLUG);
+    expect(await wikileanSlugFor(failing.env, "Widget lemma", 7_001)).toBe(SLUG);
   });
 });
 
@@ -1816,5 +3034,223 @@ describe("derived status rows", () => {
     }
     expect(plain.length).toBeGreaterThanOrEqual(30);
     expect(wrong).toEqual([]);
+  });
+});
+
+// The article reader (build_store --reader-html; docs/ATLAS.md, "Reader"): with the store's
+// marked revision the article route serves the article itself, its passages highlighted, and a
+// panel holding exactly the card list's cards; ?view=cards is the card list with a view switch;
+// a store without the revision, or with bytes the view does not name, serves the card list as
+// it always was.
+describe("the article reader", () => {
+  function withReader(opts: Parameters<typeof atlasReaderFiles>[0] = {}): Harness & { gets: string[] } {
+    const h = setup();
+    const bucket = bindAtlas(h.env, atlasReaderFiles(opts));
+    return { ...h, gets: bucket.gets };
+  }
+  // Every location card of a page, in order, as markup.
+  const cards = (html: string) => [...html.matchAll(/<article class="atlas-card"[\s\S]*?<\/article>/g)].map((m) => m[0]);
+  // The panel section of one passage.
+  function section(html: string, hex: string): string {
+    const start = html.indexOf(`<section class="atlas-passage atlr-pp`);
+    const at = html.indexOf(`id="atlr-pp-${hex}"`, start);
+    expect(at, `a panel section for ${hex}`).toBeGreaterThan(-1);
+    const open = html.lastIndexOf("<section", at);
+    return html.slice(open, html.indexOf("</section>", at) + "</section>".length);
+  }
+
+  it("serves the pinned revision as the page, verbatim, with the reader's stylesheet and script", async () => {
+    const h = withReader();
+    const res = await get(h.env, WIDGET_PATH);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    expect(html).toContain(`<article class="wl-article-body atlr-article" id="atlr-article" lang="en"`);
+    expect(html).toContain(readerHtml());
+    expect(html).toContain(`<link rel="stylesheet" href="${ATLAS_READER_CSS}">`);
+    expect(html).toContain(`<script src="${ATLAS_JS}"></script>\n<script src="${ATLAS_READER_JS}"></script>`);
+    expect(html).toContain(`<body class="atlas-body atlr-body">\n<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`);
+    // The view switch, the article current; the card list one link away.
+    expect(html).toContain(`<nav class="atlr-switch" aria-label="View"><a id="atlr-to-article" href="${WIDGET_PATH}" aria-current="page">Article</a>` +
+      `<a id="atlr-to-cards" href="${WIDGET_PATH}?view=cards">Card list</a></nav>`);
+    // The filters of the card list (status, library) and central only, in the header.
+    expect(html).toContain('<button type="button" class="atlas-chip" data-filter="status:formalized"');
+    expect(html).toContain('<button type="button" class="atlas-chip" data-filter="library:mathlib"');
+    expect(html).toContain('data-filter="central"');
+    // The footer credits the revision's text, by its history, under its licence.
+    expect(html).toContain(`This page is an adaptation of <a href="https://en.wikipedia.org/w/index.php?curid=${WIDGET_PAGEID}&amp;oldid=2002">revision 2002</a> of “Widget lemma”`);
+    expect(html).toContain(`https://en.wikipedia.org/w/index.php?curid=${WIDGET_PAGEID}&amp;action=history`);
+    expect(html).toContain("CC BY-SA 4.0");
+    expect(h.gets).toContain(`atlas/v1/reader/${WIDGET_PAGEID}.html`);
+  });
+
+  it("gives each passage a hidden panel section with exactly the card list's cards, Lean code first and Details closed", async () => {
+    const h = withReader();
+    const reader = await (await get(h.env, WIDGET_PATH)).text();
+    const list = await (await get(h.env, `${WIDGET_PATH}?view=cards`)).text();
+    expect(cards(reader).length).toBeGreaterThan(0);
+    expect(cards(reader).sort()).toEqual(cards(list).sort());
+    for (const hex of READER_ORDER) {
+      const s = section(reader, hex);
+      expect(s).toMatch(new RegExp(`^<section class="atlas-passage atlr-pp[^"]*" id="atlr-pp-${hex}" data-p="${hex}" data-status="[a-z_]+"`));
+      expect(s).toContain(" hidden>");
+      expect(s).toContain(`<h3 class="atlas-p-h" id="atlr-pp-h-${hex}" tabindex="-1">`);
+      expect(s).not.toContain("<details class=\"atlas-prov\" open");
+      expect(s).toContain(`<a href="${WIDGET_PATH}?view=cards#p-${hex}">Open in card list</a>`);
+      expect(s).toContain(`<button type="button" class="atlr-copy" data-p="${hex}">Copy link</button>`);
+    }
+    // The subject theorem: its Mathlib card leads with the declaration, then the module, then the library.
+    const subject = section(reader, "3fa91c07");
+    expect(subject).toContain('data-lead="Widget.exists_spanning_gadget" data-lead-lib="Mathlib" data-more="1" data-rel="exact match"');
+    expect(subject).toContain('data-first="every finite widget admits a spanning gadget"');
+    const card = cards(subject)[0];
+    expect(card.indexOf('<p class="atlas-decl-line">')).toBeLessThan(card.indexOf('<p class="atlas-module">'));
+    expect(card.indexOf('<p class="atlas-module">')).toBeLessThan(card.indexOf('<span class="atlas-lib"'));
+    expect(card).toContain('<details class="atlas-prov"><summary>Details</summary>');
+    // The absence says what was searched; the panel's text is clamped behind "Show all".
+    expect(section(reader, "91aa02de")).toContain('data-searched="5"');
+    expect(subject).toContain('<div class="atlr-clamp"><blockquote class="atlas-quote"');
+    expect(subject).toContain('<button type="button" class="atlr-more" aria-expanded="false" hidden>Show all</button>');
+    // The slot is the Confirm / Report root atlas.js binds (data-pageid, data-campaign).
+    expect(reader).toContain(`<div class="atlr-slot" id="atlas-article" data-pageid="${WIDGET_PAGEID}" data-campaign="${FIXTURE_CAMPAIGN}">`);
+    // Related declarations are folded under their own summary.
+    expect(section(reader, "91aa02de")).toContain('<details class="atlr-related"><summary class="atlas-related-h">Related, but states something else (1)</summary>');
+  });
+
+  it("lists the passages in the article's reading order, under its section headings", async () => {
+    const h = withReader();
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    const rows = [...html.matchAll(/<a class="atlr-row" href="#p-([0-9a-f]+)" data-p="\1"/g)].map((m) => m[1]);
+    expect(rows).toEqual(READER_ORDER);
+    const sections = [...html.matchAll(/<section class="atlas-passage atlr-pp[^"]*" id="atlr-pp-([0-9a-f]+)"/g)].map((m) => m[1]);
+    expect(sections).toEqual(READER_ORDER);
+    // The conjecture, with no status, is set aside: no row, no section, no heading of its own.
+    expect([...html.matchAll(/<h3 class="atlr-group-h">([^<]*)<\/h3>/g)].map((m) => m[1]))
+      .toEqual(["Statement", "Definitions", "Statement › Bounds"]);
+    expect(html).toContain('<a class="atlr-row" href="#p-91aa02de" data-p="91aa02de" data-status="not_formalized">');
+    expect(html).toContain("not found</span></a>");
+  });
+
+  it("names a passage the revision leaves unmarked, and still gives it its panel", async () => {
+    const h = withReader({ omit: ["5b0e44a1"] });
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    expect(html).not.toContain('data-p="5b0e44a1" data-status="statement_only" id="p-5b0e44a1"');
+    expect(html).toContain('<span class="atlr-row-note">not marked in the text</span>');
+    expect(html).toContain("(1 passage is listed in the panel only)");
+    expect(section(html, "5b0e44a1")).toContain('data-status="statement_only"');
+  });
+
+  it("a passage with no status is neither highlighted, listed nor counted, and its legend has no such highlight", async () => {
+    const h = withReader();
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    // The revision states it as plain text: no mark, no row, no panel section, no status anywhere.
+    expect(html).toContain("<p>It is conjectured that every balanced widget is the image of a regular one.</p>");
+    expect(html).not.toContain('data-p="0c4d77b1"');
+    expect(html).not.toContain('id="atlr-pp-0c4d77b1"');
+    expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
+    expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration). " +
+      '<span class="atlas-muted" id="atlas-unread">1 more passage has no status yet; it is left out until someone reads it.</span>');
+    expect(html).toContain('aria-label="3 passages: 1 formalized, 1 statement only, 1 not formalized"');
+    expect(html).not.toContain("listed in the panel only");
+    expect(html).toContain('data-passages="3"');
+    expect(html.match(/<li><span class="atlr-sample"/g)).toHaveLength(4);
+  });
+
+  it("?view=cards is the card list, with the switch and a link from each passage to its place in the article", async () => {
+    const h = withReader();
+    const html = await (await get(h.env, `${WIDGET_PATH}?view=cards`)).text();
+    expect(html).not.toContain('id="atlas-reader"');
+    expect(html).toContain('<main class="wl-atlas" id="atlas-article"');
+    expect(html).toContain(`<a id="atlr-to-cards" href="${WIDGET_PATH}?view=cards" aria-current="page">Card list</a>`);
+    for (const hex of READER_ORDER) expect(html).toContain(`<p class="atlas-context"><a href="${WIDGET_PATH}#p-${hex}">Show in article</a>`);
+    expect(html).toContain(`<link rel="stylesheet" href="${ATLAS_READER_CSS}">`);
+    expect(html).toContain(`<script src="${ATLAS_READER_JS}"></script>`);
+    // The card list reads no revision: the view's sha256 is enough to offer the reader, and the
+    // reader checks the bytes before it serves them.
+    expect(h.gets).not.toContain(`atlas/v1/reader/${WIDGET_PAGEID}.html`);
+    await get(h.env, WIDGET_PATH);
+    expect(h.gets.filter((key) => key === `atlas/v1/reader/${WIDGET_PAGEID}.html`)).toHaveLength(1);
+  });
+
+  it("?view=cards offers the reader only when the view names a revision; the reader then falls back to the cards", async () => {
+    // A view that names a revision the store lost: the card list still offers the switch (it reads
+    // nothing to know), and the reader route, which checks, serves the card list without one.
+    const files = atlasReaderFiles();
+    files.delete(`atlas/v1/reader/${WIDGET_PAGEID}.html`);
+    const lost = setup();
+    bindAtlas(lost.env, files);
+    expect(await (await get(lost.env, `${WIDGET_PATH}?view=cards`)).text()).toContain('<nav class="atlr-switch" aria-label="View">');
+    expect(await (await get(lost.env, WIDGET_PATH)).text()).not.toContain("atlr-switch");
+    // A view that names none: no switch on either.
+    const plain = bound();
+    expect(await (await get(plain.env, `${WIDGET_PATH}?view=cards`)).text()).not.toContain("atlr-switch");
+  });
+
+  it("without the store's marked revision, or with other bytes than the view names, the page is the card list as it always was", async () => {
+    const plain = bound();
+    const before = await (await get(plain.env, WIDGET_PATH)).text();
+    expect(before).not.toMatch(/atlr-|atlas-reader/);
+    expect(plain.gets).not.toContain(`atlas/v1/reader/${WIDGET_PAGEID}.html`);
+    // A view that names a revision the store does not hold, or holds other bytes of.
+    const missing = setup();
+    const files = atlasReaderFiles();
+    files.delete(`atlas/v1/reader/${WIDGET_PAGEID}.html`);
+    bindAtlas(missing.env, files);
+    const altered = withReader({ html: readerHtml().replace("widget lemma", "gadget lemma") });
+    for (const h of [missing, altered]) {
+      const html = await (await get(h.env, WIDGET_PATH)).text();
+      expect(html).not.toContain('id="atlas-reader"');
+      expect(html).toContain('<main class="wl-atlas" id="atlas-article"');
+      expect(html).not.toContain("atlr-switch");
+    }
+  });
+
+  it("loads only same-origin URLs around the revision, with no inline handlers, and its script parses nothing as HTML", async () => {
+    const h = withReader();
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
+    expect(scripts).toEqual([ATLAS_JS, ATLAS_READER_JS]);
+    const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
+    expect(sheets).toEqual(["/assets/style.css?v=10", "/assets/atlas.css?v=9", ATLAS_READER_CSS]);
+    expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
+    const js = readFileSync(new URL("../../site/assets/atlas-reader.js", import.meta.url), "utf8");
+    const css = readFileSync(new URL("../../site/assets/atlas-reader.css", import.meta.url), "utf8");
+    expect(js).not.toMatch(/\bfetch\(|XMLHttpRequest|innerHTML|outerHTML|insertAdjacentHTML|document\.write|DOMParser|createContextualFragment/);
+    expect(js).not.toMatch(/\beval\s*\(|\bnew\s+Function\b|\bset(Timeout|Interval)\(\s*["'`]/);
+    expect(js).not.toMatch(/https?:\/\/|["'`]\/\//);
+    expect(js).toMatch(/^[\x00-\x7f]*$/);
+    expect(css).not.toMatch(/url\(|@import/);
+  });
+
+  it("contains the revision: the article is a paint-contained box, so nothing in it paints over the page", () => {
+    // An absolutely positioned element of the revision with any z-index would otherwise cover the
+    // header, the panel and the footer (e2e/atlas.spec.ts checks it in Chromium). The rule is the
+    // article's own, at the top level, so it holds at every width.
+    const css = readFileSync(new URL("../../site/assets/atlas-reader.css", import.meta.url), "utf8");
+    const rules = [...css.matchAll(/^\.wl-article-body\.atlr-article \{([^}]*)\}/gm)];
+    expect(rules).toHaveLength(1);
+    const declarations = rules[0][1].split(";").map((d) => d.trim()).filter(Boolean);
+    expect(declarations).toEqual(expect.arrayContaining(["position: relative", "contain: paint"]));
+    // No later rule for the article (a phone width's, say) sets another containment.
+    expect(css).not.toMatch(/\.atlr-article\s*\{[^}]*\bcontain:\s*(?!paint\b)\S/);
+  });
+
+  it("carries the atlas pages' security headers, with atlasCsp enforced beside the framing ban", async () => {
+    const h = withReader();
+    for (const path of [WIDGET_PATH, `${WIDGET_PATH}?view=cards`]) {
+      const res = await get(h.env, path);
+      expect(res.status, path).toBe(200);
+      for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+        const want = name === "Content-Security-Policy" ? `${ATLAS_CSP}, ${value}` : value;
+        expect(res.headers.get(name), `${path}: ${name}`).toBe(want);
+      }
+    }
+  });
+
+  it("plainHead gives a passage's first words with each formula as its TeX", () => {
+    expect(plainHead({ quote: { exact: "every finite widget admits a spanning gadget" } })).toBe("every finite widget admits a spanning gadget");
+    expect(plainHead({ quote: { exact: "the gadget weight g ( w ) = w 3 {\\displaystyle g(w)=w^{3}} is odd" } })).toBe("the gadget weight g(w)=w^{3} is odd");
+    const long = plainHead({ quote: { exact: "word ".repeat(40).trim() } }, 30);
+    expect(long.endsWith("…")).toBe(true);
+    expect(long.length).toBeLessThanOrEqual(31);
   });
 });
