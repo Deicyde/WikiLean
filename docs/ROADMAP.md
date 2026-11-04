@@ -96,22 +96,20 @@ recommendation. Remove an item once its decision is recorded below.
       kind. Options: keep both, or choose other relations.
     - WikiLean records no Mathlib commit per link, so it exports no `noMatch`. Options:
       record one, or keep exporting none.
-16. **Formalization atlas (docs/ATLAS.md, built on branch `claude/formalization-atlas`).**
+16. **Formalization atlas (docs/ATLAS.md).**
     A read-only data plane for the locate pipeline's sealed record sets: a store builder,
-    `/atlas` pages and APIs behind an optional R2 binding `ATLAS` (unbound: every atlas
-    route answers 503), a per-request summary box on article pages, and a feedback table
-    (migration 0015). Open choices (docs/ATLAS.md §14):
+    `/atlas` pages and APIs behind the R2 binding `ATLAS` (`wiki/wrangler.jsonc`, a private
+    bucket under the proposed name `wikilean-atlas`; unbound, every atlas route answers 503),
+    a per-request summary box on article pages, and a feedback table (migration 0015). Decided
+    on 2026-11-02 (docs/ATLAS.md §14): R2 with one private bucket; uploads by the maintainer
+    from the operator Mac with a token scoped to that bucket; the public licence statement;
+    launch without absence feedback. Still open there:
     - The End-goal amendment above. Options: ratify, revise, or reject.
-    - Store backend. `src/wikipedia.ts` records that R2 was not enabled on the account.
-      Options: enable R2, use KV, or ship the store as static assets with each release.
-    - Who uploads a built store, and from which machine. Options: the operator Mac with a
-      bucket-scoped token, or another named host.
-    - Public licence wording: the pages state the mapping as CC0 and quote fields as
-      CC BY-SA 4.0 (proposal §10). Options: confirm, or change it.
+    - The bucket's name (§14, item 2): `wikilean-atlas` is proposed. Options: confirm it, or
+      name another (the binding and its test change with it).
+    - The producer contract notes (§14, item 7). Options: agree them, or change them.
     - Whether the bearer-only feedback export may carry readers' free-text notes. Options:
       keep them, or drop them as the research export does.
-    - Absence feedback ("this is formalized, here" against a "not found"). Options: build
-      it next, or later.
 
 ## End goal (verbatim from Jack)
 

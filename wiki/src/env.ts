@@ -42,9 +42,12 @@ export interface Env {
   };
 
   // Formalization atlas store (docs/ATLAS.md): an R2 bucket holding the static
-  // tree scripts/atlas/build_store.py writes (keys atlas/v1/...). Optional and
-  // read-only: when unbound every atlas route answers 503 "atlas store not
-  // configured". Binding it is an operator decision (docs/ATLAS.md, "Store").
+  // tree scripts/atlas/build_store.py writes (keys atlas/v1/...), which
+  // wrangler.jsonc binds to the private bucket wikilean-atlas (docs/ATLAS.md
+  // section 6). Read-only, and optional so a config or test harness without it
+  // keeps working: when unbound every atlas route but the feedback export (D1
+  // only) answers 503 "atlas store not configured", and article pages show no
+  // atlas box.
   ATLAS?: R2Bucket;
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
