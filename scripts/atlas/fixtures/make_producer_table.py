@@ -9,6 +9,7 @@ sample of two- and three-location cases, and writes the answers, so
 test_build_store.py can check the port against them without the producer installed.
 
     python3 scripts/atlas/fixtures/make_producer_table.py --producer <formal-companion checkout>
+    python3 scripts/atlas/fixtures/make_producer_table.py --producer <checkout> --status-rule 3
 
 Rerun it when the producer's rules change, then fix build_store.derive_status until the
 parity test passes. Each case is [kind, [[relation, proof_status, statement], ...], answer],
@@ -18,6 +19,11 @@ case (the maintainer's decision D1, for a producer whose derive_status takes a c
 claim) has a fourth element, {"parts": [indexes into the locations], "challenge": <value>}:
 the claim {complete: true, parts: those locations' keys, challenge}. Its parts are always
 hasPart locations, so the producer never refuses one.
+
+--status-rule 2 or 3 (a producer whose derive_status takes the keyword: formal-companion
+d85385a and later) writes producer_derive_status-<rule>.json instead, every answer derived by
+that rule: a coverage case's claim is then a bundle and carries its "relation" too (one of
+BUNDLE_RELATIONS, every survived pair under each of them), and the table names the rule.
 
 The producer's scripts/cflib must have no uncommitted change: the table names the commit
 its answers came from.
@@ -47,38 +53,56 @@ SAMPLE_SIZE = 300
 COVERAGE_SEED = 20261018
 COVERAGE_SAMPLE_SIZE = 200
 OTHER_CHALLENGES = ["downgraded", "not_required", "sampled_out", "challenge_pending"]
+# A bundle's relations under status rules 2 and 3 (cflib.vocab BUNDLE_RELATIONS), sorted.
+BUNDLE_RELATIONS = ["broadMatch", "closeMatch", "exactMatch"]
 
 
-def answer(vocab, kind: str, locations: list[list], coverage: dict | None = None) -> str | None:
+def answer(vocab, kind: str, locations: list[list], coverage: dict | None = None,
+           status_rule: int = 1) -> str | None:
     rows = [{"relation": r, "proof_status": p, "statement": s, "location_key": f"key{i}"}
             for i, (r, p, s) in enumerate(locations)]
+    # Status rule 1 is the producer's three- and four-argument call, as before the keyword existed.
+    rule = {} if status_rule == 1 else {"status_rule": status_rule}
     try:
         if coverage is None:
-            return vocab.derive_status(kind, rows, False)
+            return vocab.derive_status(kind, rows, False, **rule)
         claim = {"complete": True, "parts": [f"key{i}" for i in coverage["parts"]],
                  "challenge": coverage["challenge"]}
-        return vocab.derive_status(kind, rows, False, claim)
+        if "relation" in coverage:
+            claim["relation"] = coverage["relation"]
+        return vocab.derive_status(kind, rows, False, claim, **rule)
     except vocab.CfError:
         return "refused"
 
 
-def coverage_cases(vocab, valid: list[list]) -> list[list]:
-    """Cases with a coverage claim over hasPart locations, each answered by the producer."""
+def coverage_cases(vocab, valid: list[list], status_rule: int = 1) -> list[list]:
+    """Cases with a coverage claim over hasPart locations, each answered by the producer.
+
+    Under status rules 2 and 3 each claim is a bundle with a relation: every survived pair under
+    each of BUNDLE_RELATIONS, the other challenge values under each, and a sampled one for the rest.
+    """
+    relations = BUNDLE_RELATIONS if status_rule >= 2 else [None]
+
+    def claim_of(parts: list[int], challenge: str, relation: str | None) -> dict:
+        return {"parts": parts, "challenge": challenge, **({"relation": relation} if relation else {})}
+
     part_ends = [["hasPart", p, s] for _, p, s in valid if _ == "exactMatch"]  # one per (proof, flag)
     pairs = [[a, b] for a in part_ends for b in part_ends]
     out = []
     for kind in KINDS:
-        for pair in pairs:
-            claim = {"parts": [0, 1], "challenge": "survived"}
-            out.append([kind, [list(e) for e in pair], answer(vocab, kind, pair, claim), claim])
+        for relation in relations:
+            for pair in pairs:
+                claim = claim_of([0, 1], "survived", relation)
+                out.append([kind, [list(e) for e in pair], answer(vocab, kind, pair, claim, status_rule), claim])
     # Four representative ends (two finished, two unfinished), under every other challenge value.
     upgradable = [end for end in part_ends if end[1:] in (["proved", False], ["definition", False],
                                                            ["statement_only", False], ["definition", True])]
     for kind in ("theorem", "definition", "example"):
         for challenge in OTHER_CHALLENGES:
-            for pair in ([a, b] for a in upgradable for b in upgradable):
-                claim = {"parts": [0, 1], "challenge": challenge}
-                out.append([kind, [list(e) for e in pair], answer(vocab, kind, pair, claim), claim])
+            for relation in relations:
+                for pair in ([a, b] for a in upgradable for b in upgradable):
+                    claim = claim_of([0, 1], challenge, relation)
+                    out.append([kind, [list(e) for e in pair], answer(vocab, kind, pair, claim, status_rule), claim])
     rng = random.Random(COVERAGE_SEED)
     for _ in range(COVERAGE_SAMPLE_SIZE):
         kind = rng.choice(KINDS)
@@ -90,14 +114,20 @@ def coverage_cases(vocab, valid: list[list]) -> list[list]:
         claim = {"parts": list(range(start, start + n_parts)), "challenge": rng.choice(["survived", "survived",
                                                                                        *OTHER_CHALLENGES])}
         rng.shuffle(claim["parts"])
-        out.append([kind, locations, answer(vocab, kind, locations, claim), claim])
+        if status_rule >= 2:
+            claim["relation"] = rng.choice(BUNDLE_RELATIONS)
+        out.append([kind, locations, answer(vocab, kind, locations, claim, status_rule), claim])
     return out
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--producer", type=Path, required=True, help="formal-companion checkout")
+    parser.add_argument("--status-rule", type=int, choices=(1, 2, 3), default=1,
+                        help="the derivation to answer by (default 1; 2 and 3 write producer_derive_status-<rule>.json)")
     args = parser.parse_args()
+    rule = args.status_rule
+    out = OUT if rule == 1 else HERE / f"producer_derive_status-{rule}.json"
     sys.path.insert(0, str(args.producer / "scripts"))
     from cflib import vocab  # noqa: PLC0415 - the producer's module, from --producer
 
@@ -110,7 +140,7 @@ def main() -> int:
               f"{commit[:12]}:\n{changed}", file=sys.stderr)
         return 2
     ends = [[r, p, s] for r in RELATIONS for p in PROOF_STATUSES for s in (False, True)]
-    single = [[kind, [end], answer(vocab, kind, [end])] for kind in KINDS for end in ends]
+    single = [[kind, [end], answer(vocab, kind, [end], status_rule=rule)] for kind in KINDS for end in ends]
     # Multi-location cases: a fixed sample, without the refused flag (a single case covers it).
     valid = [end for end in ends if not (end[2] and end[1] == "proved")]
     rng = random.Random(SAMPLE_SEED)
@@ -118,20 +148,25 @@ def main() -> int:
     for _ in range(SAMPLE_SIZE):
         kind = rng.choice(KINDS)
         locations = [list(end) for end in rng.sample(valid, rng.choice((2, 3)))]
-        multi.append([kind, locations, answer(vocab, kind, locations)])
-    covered = (coverage_cases(vocab, valid)
-               if "coverage" in inspect.signature(vocab.derive_status).parameters else [])
+        multi.append([kind, locations, answer(vocab, kind, locations, status_rule=rule)])
+    parameters = inspect.signature(vocab.derive_status).parameters
+    if rule != 1 and "status_rule" not in parameters:
+        print(f"formal-companion {commit[:12]}'s derive_status takes no status_rule", file=sys.stderr)
+        return 2
+    covered = coverage_cases(vocab, valid, rule) if "coverage" in parameters else []
     table = {
-        "about": "cflib.vocab.derive_status(kind, locations, absent=False[, coverage]), generated by "
+        "about": "cflib.vocab.derive_status(kind, locations, absent=False[, coverage]"
+                 + ("" if rule == 1 else f", status_rule={rule}") + "), generated by "
                  "scripts/atlas/fixtures/make_producer_table.py",
         "producer": {"repository": "formal-companion", "commit": commit, "function": "scripts/cflib/vocab.py derive_status"},
+        **({} if rule == 1 else {"status_rule": rule}),
         "cases": single + multi + covered,
     }
     lines = ",\n".join(json.dumps(case, separators=(",", ":")) for case in table["cases"])
     head = json.dumps({k: v for k, v in table.items() if k != "cases"}, indent=1, sort_keys=True)[:-2]
-    OUT.write_text(f'{head},\n "cases": [\n{lines}\n ]\n}}\n', encoding="utf-8")
-    json.loads(OUT.read_text(encoding="utf-8"))
-    print(f"wrote {len(table['cases'])} cases from formal-companion {commit[:12]} to {OUT}")
+    out.write_text(f'{head},\n "cases": [\n{lines}\n ]\n}}\n', encoding="utf-8")
+    json.loads(out.read_text(encoding="utf-8"))
+    print(f"wrote {len(table['cases'])} cases from formal-companion {commit[:12]} to {out}")
     return 0
 
 

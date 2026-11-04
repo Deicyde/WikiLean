@@ -7,6 +7,12 @@ pass the vendored Literature Links schema, the committed golden store must equal
 fresh build, and each broken variant of the record set must be refused with a
 message naming the rule it breaks. The Worker tests (wiki/test/atlas.test.ts) read
 the same golden store, so the two languages share one contract fixture.
+
+A cf-locate-recordset/2 set (status rules 2 and 3) is the same fixture converted in a scratch
+copy (RecordSetTwoTests.to_v2): its revision-free keys, its coverage claim as a bundle and its
+seal's status rule, each checked and refused by name; the producer's own answers per rule
+(producer_derive_status-<rule>.json) and its parity tables (status_parity-<rule>.json) pin
+the rules. CombinedSetTests builds the fixture's two pages from two sets into one store.
 """
 from __future__ import annotations
 
@@ -14,6 +20,7 @@ import contextlib
 import hashlib
 import io
 import json
+import re
 import shutil
 import sys
 import tempfile
@@ -35,6 +42,28 @@ PRODUCER_TABLE = HERE / "fixtures" / "producer_derive_status.json"
 # the commit docs/ATLAS.md section 3, check 6 names, byte for byte.
 SHARED_TABLE = HERE / "fixtures" / "status_parity.json"
 SHARED_TABLE_SHA256 = "0e8d8adbabdb66e32eaa262e55dfa1e098beb6670b7324c59fae42d3b98edda4"
+# Status rules 2 and 3 (cf-locate-recordset/2): the producer's truth table per rule
+# (make_producer_table.py --status-rule) and its hand-written parity table per rule, copied from
+# formal-companion tests/data/locate/status-parity-{2,3}.json at PRODUCER_COMMIT, the commit both
+# Tier A batch 1 seals name as their skill_commit. Each copy is the producer's byte for byte but
+# for its decision's text, which is shortened here: per rule, the copy's sha256, and the sha256 of
+# the table with that text left out (parity_body_sha256), which the producer's file gives too.
+PRODUCER_COMMIT = "d85385aa4eb2818373e9b6b8b41b765ffaf53750"
+PRODUCER_TABLES = {rule: HERE / "fixtures" / f"producer_derive_status-{rule}.json" for rule in (2, 3)}
+SHARED_TABLES = {
+    2: (HERE / "fixtures" / "status_parity-2.json", "cd0cac59a9da22253ad024779a0a3ea00823ad891faa383c34f59de4818605bd",
+        "497bd9b7a24aa638052ef7da379561f0d6070b2c46424b2852a4b5bb6add5e3c"),
+    3: (HERE / "fixtures" / "status_parity-3.json", "675bc0402ee9355b4795d4e446c04aae6e7eebb3613131de07f5261c27aef207",
+        "247de420c45eb3f294258c6c757117a53564796dc0045fb236b4e5b635ff91cd"),
+}
+
+
+def parity_body_sha256(doc: dict) -> str:
+    """sha256 of a parity table with its decision's text left out, keys sorted, compact separators."""
+    body = json.loads(json.dumps(doc))
+    del body["decision"]["text"]
+    return hashlib.sha256(json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+                          .encode("utf-8")).hexdigest()
 LOCATE = build_store.LOCATE
 # How a stamped status that differs from the recomputed one is refused.
 DERIVES = "the derived-status rules (proposal §2.6 and vocabulary.md §1.11) derive"
@@ -164,6 +193,8 @@ class BuildTests(unittest.TestCase):
         article = json.loads(build_store.build(RECORDSET)["atlas/v1/articles/1001.json"])
         self.assertEqual(article["schema"], "wikilean.atlas.article/1")
         self.assertEqual((article["pageid"], article["title"], article["revision"]), (1001, "Widget lemma", 2002))
+        # The text it quotes is the source's, under the licence its records name; the mapping is CC0.
+        self.assertEqual(article["licence"], {"text": "CC-BY-SA-4.0", "mapping": "CC0-1.0"})
         self.assertEqual(article["campaign"], "fixture-2026-10")
         self.assertEqual([p["status"] for p in article["passages"]],
                          ["formalized", "statement_only", "not_formalized", None])
@@ -441,38 +472,46 @@ class DeriveStatusParityTests(unittest.TestCase):
         self.assertIn(["theorem", [["exactMatch", "definition", False]], "formalized"], singles)
 
     def test_builder_derives_exactly_the_producers_status(self):
-        mismatches = []
-        for kind, ends, expected, *claimed in self.table["cases"]:
-            problems = [build_store.statement_flag(statement, proof_status)[1] for _, proof_status, statement in ends]
-            if expected == "refused":
-                if not any(problems):
-                    mismatches.append((kind, ends, expected, "accepted"))
-                continue
-            if any(problems):
-                mismatches.append((kind, ends, expected, f"refused: {problems}"))
-                continue
-            locations = [{"relation": relation, "proof_status": proof_status, "statement": statement,
-                          "rank": rank, "library": "lib", "location_key": hashlib.sha256(b"key%d" % rank).hexdigest()}
-                         for rank, (relation, proof_status, statement) in enumerate(ends, 1)]
-            claim = None
-            if claimed:  # a coverage case: {parts: [indexes into the locations], challenge}
-                claim = {"complete": True, "challenge": claimed[0]["challenge"],
-                         "parts": [locations[i]["location_key"] for i in claimed[0]["parts"]]}
-                self.assertEqual(build_store.coverage_part_problems(claim, locations), [], (kind, ends, claimed))
-            status, basis = build_store.derive_status(kind, locations, claim)
-            if status != expected:
-                mismatches.append((kind, ends, expected, status, claimed))
-            elif status is None:
-                self.assertIsNone(basis)
-            elif basis == build_store.COVERAGE_BASIS:
-                # The claim is the basis only when it does better than every location.
-                self.assertEqual(build_store.coverage_status(kind, claim, locations), status)
-                self.assertFalse(any(build_store.location_status(kind, loc) == status for loc in locations))
-            else:
-                # The basis is the highest-ranked location that reaches the passage's status.
-                reaching = [loc for loc in locations if build_store.location_status(kind, loc) == status]
-                self.assertIs(basis, reaching[0], (kind, ends))
+        mismatches = producer_mismatches(self, self.table["cases"], 1)
         self.assertEqual(mismatches, [], f"{len(mismatches)} cases differ from the producer")
+
+
+def producer_mismatches(test: unittest.TestCase, cases: list, status_rule: int) -> list:
+    """build_store.derive_status (by `status_rule`) on each case of a producer table, against its answer."""
+    mismatches = []
+    for kind, ends, expected, *claimed in cases:
+        problems = [build_store.statement_flag(statement, proof_status)[1] for _, proof_status, statement in ends]
+        if expected == "refused":
+            if not any(problems):
+                mismatches.append((kind, ends, expected, "accepted"))
+            continue
+        if any(problems):
+            mismatches.append((kind, ends, expected, f"refused: {problems}"))
+            continue
+        locations = [{"relation": relation, "proof_status": proof_status, "statement": statement,
+                      "rank": rank, "library": "lib", "location_key": hashlib.sha256(b"key%d" % rank).hexdigest()}
+                     for rank, (relation, proof_status, statement) in enumerate(ends, 1)]
+        claim = None
+        if claimed:  # a coverage case: {parts: [indexes into the locations], challenge[, relation]}
+            claim = {"complete": True, "challenge": claimed[0]["challenge"],
+                     "parts": [locations[i]["location_key"] for i in claimed[0]["parts"]]}
+            if "relation" in claimed[0]:  # status rules 2 and 3: a bundle and its relation
+                claim["relation"] = claimed[0]["relation"]
+            test.assertEqual(build_store.coverage_part_problems(claim, locations), [], (kind, ends, claimed))
+        status, basis = build_store.derive_status(kind, locations, claim, status_rule)
+        if status != expected:
+            mismatches.append((kind, ends, expected, status, claimed))
+        elif status is None:
+            test.assertIsNone(basis)
+        elif basis == build_store.COVERAGE_BASIS:
+            # The claim is the basis only when it does better than every location.
+            test.assertEqual(build_store.coverage_status(kind, claim, locations, status_rule), status)
+            test.assertFalse(any(build_store.location_status(kind, loc, status_rule) == status for loc in locations))
+        else:
+            # The basis is the highest-ranked location that reaches the passage's status.
+            reaching = [loc for loc in locations if build_store.location_status(kind, loc, status_rule) == status]
+            test.assertIs(basis, reaching[0], (kind, ends))
+    return mismatches
 
 
 def _hex_key(key):
@@ -483,14 +522,21 @@ def _hex_key(key):
     return hashlib.sha256(key.encode("utf-8")).hexdigest() if isinstance(key, str) else key
 
 
-def _shared_case_status(case: dict):
-    """build_store.derive_passage_status on one case of the shared table: a status, None, or "refused"."""
+def _shared_case_status(case: dict, status_rule: int = 1):
+    """build_store.derive_passage_status on one case of the shared table: a status, None, or "refused".
+
+    A bundle's conjuncts name their parts by the case's keys too, so they are mapped alike.
+    """
     locations = [{**loc, "location_key": _hex_key(loc.get("location_key"))} for loc in case["locations"]]
     coverage = case["coverage"]
     if isinstance(coverage, dict) and isinstance(coverage.get("parts"), list):
         coverage = {**coverage, "parts": [_hex_key(key) for key in coverage["parts"]]}
+    if isinstance(coverage, dict) and isinstance(coverage.get("conjuncts"), list):
+        coverage["conjuncts"] = [{**c, "part": _hex_key(c["part"])} if isinstance(c, dict) and "part" in c else c
+                                 for c in coverage["conjuncts"]]
     try:
-        return build_store.derive_passage_status(case["passage_kind"], locations, case["absent"], coverage)
+        return build_store.derive_passage_status(case["passage_kind"], locations, case["absent"], coverage,
+                                                 status_rule)
     except build_store.StatusRefused:
         return "refused"
 
@@ -1862,6 +1908,15 @@ class LocateExtensionTests(SetCopyTest):
                 self.edit_widget(lambda rows, key=key: self.subject_ext(rows[0]).pop(key))
                 self.refuse(f"records/enwiki-1001-2002.jsonl:1: the subject end's {key}")
 
+    def test_the_records_of_an_article_name_one_licence(self):
+        # The licence is the source's, so the article view states it once (`licence.text`).
+        self.edit_widget(lambda rows: self.subject_ext(rows[2]).update(licence="CC-BY-SA-3.0"))
+        self.refuse("records/enwiki-1001-2002.jsonl: every record of an article names one licence, its source's "
+                    "(the subject end's licence): CC-BY-SA-3.0, CC-BY-SA-4.0")
+        self.fresh()
+        self.edit_widget(lambda rows: [self.subject_ext(row).update(licence="CC-BY-SA-3.0") for row in rows])
+        self.assertEqual(self.article()["licence"], {"text": "CC-BY-SA-3.0", "mapping": "CC0-1.0"})
+
     def test_a_receipt_count_is_an_integer(self):
         # 2.0 == 2 in Python, so a float count once passed as the list's length.
         for value in (2.0, True, "2", None):
@@ -2139,6 +2194,1938 @@ class MalformedValueTests(unittest.TestCase):
         self.assertEqual(self.build_outcome(), "built")
 
 
+class BundleParityTests(unittest.TestCase):
+    """Status rules 2 and 3 against the producer at PRODUCER_COMMIT: its truth tables and parity tables."""
+
+    def test_the_tables_are_the_producers(self):
+        for rule, (path, sha, body) in SHARED_TABLES.items():
+            with self.subTest(rule=rule):
+                self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), sha)
+                doc = json.loads(path.read_text(encoding="utf-8"))
+                self.assertEqual(parity_body_sha256(doc), body)
+                self.assertEqual((doc["schema"], doc["status_rule"]), (f"cf-locate-status-parity/{rule}", rule))
+                self.assertEqual(doc["decision"]["id"], {2: "Q9", 3: "R-BROAD"}[rule])
+                self.assertTrue(all(case["status_rule"] == rule for case in doc["cases"]))
+                table = json.loads(PRODUCER_TABLES[rule].read_text(encoding="utf-8"))
+                self.assertEqual((table["producer"]["commit"], table["status_rule"]), (PRODUCER_COMMIT, rule))
+                covered = [case for case in table["cases"] if len(case) == 4]
+                # Every kind x pair of part ends x bundle relation under a survived bundle.
+                survived = {(case[0], json.dumps(case[1]), case[3]["relation"]) for case in covered
+                            if case[3]["challenge"] == "survived" and case[3]["parts"] == [0, 1] and len(case[1]) == 2}
+                self.assertEqual(len(survived), 7 * 9 * 9 * 3)
+                self.assertTrue(all(case[3]["relation"] in build_store.BUNDLE_RELATIONS for case in covered))
+
+    def test_the_builder_derives_exactly_the_producers_status_by_each_rule(self):
+        for rule, path in PRODUCER_TABLES.items():
+            with self.subTest(rule=rule):
+                cases = json.loads(path.read_text(encoding="utf-8"))["cases"]
+                mismatches = producer_mismatches(self, cases, rule)
+                self.assertEqual(mismatches, [], f"{len(mismatches)} cases differ from the producer's rule {rule}")
+
+    def test_the_builder_derives_every_shared_case_by_each_rule(self):
+        for rule, (path, _, _) in SHARED_TABLES.items():
+            doc = json.loads(path.read_text(encoding="utf-8"))
+            mismatches = []
+            for case in doc["cases"]:
+                wanted = "refused" if case.get("refused") else case["expected"]
+                got = _shared_case_status(case, rule)
+                if got != wanted:
+                    mismatches.append((case["id"], wanted, got, case["rule"]))
+            self.assertEqual(mismatches, [], f"rule {rule}: {len(mismatches)} cases differ from the shared table")
+            # Each case also says what the rule before it derives: the builder agrees there too.
+            before = "expected_status_rule_1" if rule == 2 else "expected_status_rule_2"
+            for case in doc["cases"]:
+                if before in case and rule == 3:
+                    with self.subTest(rule=rule, case=case["id"]):
+                        self.assertEqual(_shared_case_status(case, 2), case[before])
+
+    def test_rule_3_changes_only_what_a_broad_match_gives(self):
+        two, three = (json.loads(PRODUCER_TABLES[rule].read_text(encoding="utf-8"))["cases"] for rule in (2, 3))
+        self.assertEqual([case[:2] for case in two], [case[:2] for case in three])
+        changed = [(a, b) for a, b in zip(two, three) if a[2] != b[2]]
+        self.assertGreater(len(changed), 0)
+        for a, b in changed:
+            broad = any(end[0] == "broadMatch" for end in a[1]) or (len(a) == 4 and a[3].get("relation") == "broadMatch")
+            self.assertTrue(broad, a)
+            self.assertEqual(b[2], "formalized", b)
+
+    def test_a_status_rule_the_builder_does_not_know_is_refused(self):
+        for rule in (0, 4, True, "3", None):
+            with self.subTest(rule=rule), self.assertRaises(build_store.StatusRefused):
+                build_store.derive_passage_status("theorem", [], False, None, rule)
+
+
+class RecordSetTwoTests(SetCopyTest):
+    """cf-locate-recordset/2: the fixture converted as the producer exports it under status rules 2 and 3."""
+
+    WIDGET = "records/enwiki-1001-2002.jsonl"
+    GADGET = "records/enwiki-1003-2004.jsonl"
+
+    def to_v2(self, status_rule: int = 3, seal: bool = True) -> None:
+        """Give the copy /2's shapes: the keys on every record, the claim as a bundle, the seal's rule."""
+        for path in sorted((self.set / "records").glob("*.jsonl")):
+            rows = read_jsonl(path)
+            for row in rows:
+                ext = row["extensions"][LOCATE]
+                subject = row["subject"][0]["extensions"][LOCATE]
+                ext["passage_key"] = build_store.passage_key(subject["pageid"], subject["span_sha256"])
+                if row.get("relation") not in (None, "noMatch"):
+                    end = row["object"][0]
+                    ext["pair_key"] = build_store.pair_key(ext["passage_key"], end["uri"], end["location"]["declaration"])
+            pairs = {row["extensions"][LOCATE].get("location_key"): row["extensions"][LOCATE].get("pair_key")
+                     for row in rows}
+            for row in rows:
+                claim = row["extensions"][LOCATE].get("coverage")
+                if claim is not None:
+                    claim["relation"] = "exactMatch"
+                    claim["conjuncts"] = [{"id": f"c{n}", "text": f"clause {n} of the conjunction", "part": key}
+                                          for n, key in enumerate(claim["parts"], 1)]
+                    claim["bundle_key"] = build_store.bundle_key(row["extensions"][LOCATE]["passage_key"],
+                                                                 [pairs[key] for key in claim["parts"]])
+            write_jsonl(path, rows)
+        reseal(self.set)
+        if seal:
+            self.edit_seal(lambda seal: seal.update(schema="cf-locate-recordset/2", status_rule=status_rule))
+
+    def edit_records(self, path: str, edit) -> None:
+        rows = read_jsonl(self.set / path)
+        edit(rows)
+        write_jsonl(self.set / path, rows)
+        reseal(self.set)
+        self.edit_seal(lambda seal: None)  # reseal() rewrites files only; the seal keeps its schema
+
+    def edit_v2(self, path: str, edit, status_rule: int = 3) -> None:
+        """Edit the converted records, then reseal as /2 under `status_rule`."""
+        rows = read_jsonl(self.set / path)
+        edit(rows)
+        write_jsonl(self.set / path, rows)
+        reseal(self.set)
+        self.edit_seal(lambda seal: seal.update(schema="cf-locate-recordset/2", status_rule=status_rule))
+
+    @staticmethod
+    def strip_v2(value):
+        """A /2 view model without what /2 adds, to compare with the /1 view."""
+        if isinstance(value, dict):
+            return {k: RecordSetTwoTests.strip_v2(v) for k, v in value.items()
+                    if k not in ("passage_key", "pair_key", "seal", "record_set", "records_sha256")}
+        if isinstance(value, list):
+            return [RecordSetTwoTests.strip_v2(v) for v in value]
+        return value
+
+    def test_a_v2_set_builds_the_v1_view_plus_its_keys(self):
+        v1 = build_store.build(self.set)
+        for rule in (2, 3):
+            with self.subTest(rule=rule):
+                self.fresh()
+                self.to_v2(rule)
+                tree = build_store.build(self.set)
+                self.assertEqual(sorted(tree), sorted(v1))
+                for pageid in (1001, 1003):
+                    old = json.loads(v1[f"atlas/v1/articles/{pageid}.json"])
+                    new = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+                    seal = json.loads((self.set / "SEAL.json").read_text())
+                    self.assertEqual(new["seal"], {"set_id": "fixture-set", "schema": "cf-locate-recordset/2",
+                                                   "status_rule": rule, "created": seal["created"],
+                                                   "skill_commit": seal["skill_commit"]})
+                    for passage in new["passages"]:
+                        claim = passage["coverage"]
+                        if claim is not None:
+                            self.assertEqual(claim["relation"], "exactMatch")
+                            self.assertEqual([c["id"] for c in claim["conjuncts"]], ["c1", "c2"])
+                            self.assertRegex(claim["bundle_key"], r"^[0-9a-f]{64}$")
+                            for key in ("relation", "conjuncts", "bundle_key"):
+                                del claim[key]
+                        self.assertRegex(passage["passage_key"], r"^[0-9a-f]{64}$")
+                        for loc in passage["locations"]:
+                            self.assertEqual(loc["pair_key"], build_store.pair_key(
+                                passage["passage_key"], loc["repo"], loc["declaration"]))
+                    self.assertEqual(self.strip_v2(new), self.strip_v2(old))
+                    self.assertEqual(new["record_set"], hashlib.sha256((self.set / "SEAL.json").read_bytes()).hexdigest())
+                current = json.loads(tree["atlas/v1/current.json"])
+                self.assertEqual((current["record_set"]["schema"], current["record_set"]["status_rule"]),
+                                 ("cf-locate-recordset/2", rule))
+                self.assertNotIn("record_sets", current)
+        # A /1 set's current.json names no schema or status rule: the golden store's bytes.
+        self.assertNotIn("status_rule", json.loads(v1["atlas/v1/current.json"])["record_set"])
+
+    def test_the_seal_names_its_status_rule(self):
+        self.to_v2(seal=False)
+        self.edit_seal(lambda seal: seal.update(schema="cf-locate-recordset/2"))
+        self.refuse("SEAL.json: missing 'status_rule'")
+        for rule in (1, 4, 0, True, "3", None, 2.0):
+            with self.subTest(rule=rule):
+                self.edit_seal(lambda seal, rule=rule: seal.update(status_rule=rule))
+                self.refuse("status_rule must be 2 or 3 under 'cf-locate-recordset/2'")
+        self.fresh()
+        self.edit_seal(lambda seal: seal.update(status_rule=1))
+        self.refuse("SEAL.json: unexpected 'status_rule'")
+        self.fresh()
+        self.edit_seal(lambda seal: seal.update(schema="cf-locate-recordset/3"))
+        self.refuse("schema must be 'cf-locate-recordset/1'")
+
+    def test_v2_records_under_a_v1_seal_are_refused_by_name(self):
+        self.to_v2(seal=False)
+        self.refuse("unexpected keys 'pair_key', 'passage_key' in a location record's locate extension")
+        self.refuse("unexpected key 'passage_key' in an absence record's locate extension")
+
+    def test_every_record_carries_its_passage_key(self):
+        self.to_v2()
+        self.edit_v2(self.WIDGET, lambda rows: rows[3]["extensions"][LOCATE].pop("passage_key"))
+        self.refuse(build_store.PASSAGE_KEY_RULE)
+        self.fresh()
+        self.to_v2()
+        self.edit_v2(self.WIDGET, lambda rows: rows[3]["extensions"][LOCATE].update(passage_key="0" * 64))
+        self.refuse(f"{build_store.PASSAGE_KEY_RULE}; this one is not")
+
+    def test_every_location_carries_its_pair_key_and_nothing_else_does(self):
+        self.to_v2()
+        self.edit_v2(self.WIDGET, lambda rows: rows[0]["extensions"][LOCATE].pop("pair_key"))
+        self.refuse(build_store.PAIR_KEY_RULE)
+        self.fresh()
+        self.to_v2()
+        self.edit_v2(self.WIDGET, lambda rows: rows[0]["extensions"][LOCATE].update(pair_key="f" * 64))
+        self.refuse(f"{build_store.PAIR_KEY_RULE}; this one is not")
+        # The absence (row 3) and the unresolved conjecture (row 5) name no declaration.
+        for row, level in ((3, "an absence record's"), (5, "an unresolved record's")):
+            with self.subTest(row=row):
+                self.fresh()
+                self.to_v2()
+                self.edit_v2(self.WIDGET, lambda rows, row=row: rows[row]["extensions"][LOCATE].update(pair_key="a" * 64))
+                self.refuse(f"unexpected key 'pair_key' in {level} locate extension")
+
+    def test_the_claim_is_a_bundle(self):
+        def bundle(edit):
+            self.fresh()
+            self.to_v2()
+            self.edit_v2(self.GADGET, lambda rows: [edit(rows[i]["extensions"][LOCATE]["coverage"]) for i in (1, 2)])
+        cases = [
+            (lambda claim: claim.pop("conjuncts"), "coverage: missing 'conjuncts'"),
+            (lambda claim: claim.pop("bundle_key"), "coverage: missing 'bundle_key'"),
+            (lambda claim: claim.update(note="two parts"), "coverage: unexpected 'note'"),
+            (lambda claim: claim.update(bundle_key="0" * 64), "coverage.bundle_key is not the sha256"),
+            (lambda claim: claim.update(bundle_key="k1+k2"), "coverage.bundle_key must be 64 lowercase hex"),
+            (lambda claim: claim.update(relation="hasPart"), "coverage.relation must be one of"),
+            (lambda claim: claim.update(relation=None), "coverage.relation must be one of"),
+            (lambda claim: claim["conjuncts"].reverse(), "coverage.conjuncts are c1..c2 in order"),
+            (lambda claim: claim["conjuncts"].pop(), "coverage.conjuncts must be 2 to 5"),
+            (lambda claim: claim["conjuncts"][1].update(part=claim["parts"][0]), "states no conjunct"),
+            (lambda claim: claim["conjuncts"][1].update(part="e" * 64), "which is not one of the bundle's parts"),
+            (lambda claim: claim["conjuncts"][0].update(text=" "), "text must be a non-empty string"),
+            (lambda claim: claim["conjuncts"][0].update(relation="exactMatch"), "must be exactly {id, text, part}"),
+        ]
+        for edit, fragment in cases:
+            with self.subTest(fragment=fragment):
+                bundle(edit)
+                self.refuse(fragment)
+        # Under /1 the bundle's keys are refused by name, as before.
+        self.fresh()
+        self.to_v2(seal=False)
+        for path in (self.WIDGET, self.GADGET):
+            self.edit_records(path, lambda rows: [row["extensions"][LOCATE].pop(key, None)
+                                                  for row in rows for key in ("passage_key", "pair_key")])
+        self.refuse("coverage: unexpected 'bundle_key', 'conjuncts', 'relation'")
+
+    def test_status_rule_3_lets_a_broad_match_formalize(self):
+        # The Gadget theorem an equivalence states (row 3, data) and the Gadget definition (row 0,
+        # a definition), each made a broadMatch: partial by status rules 1 and 2, formalized by 3.
+        for row in (3, 0):
+            def broad(rows, row=row):
+                rows[row]["relation"] = "broadMatch"
+            for rule, outcome in ((2, "derive partial"), (3, None)):
+                with self.subTest(row=row, rule=rule):
+                    self.fresh()
+                    self.to_v2(rule)
+                    self.edit_v2(self.GADGET, broad, rule)
+                    if outcome:
+                        self.refuse(f"status rule {rule}) {outcome}")
+                    else:
+                        passage = self.article(1003)["passages"][row if row == 0 else 2]
+                        self.assertEqual((passage["status"], passage["locations"][0]["relation"]),
+                                         ("formalized", "broadMatch"))
+
+    def test_a_survived_bundle_is_one_more_location_of_its_relation(self):
+        # The covered conjunction as a definition passage of two definition parts, its bundle broadMatch:
+        # partial by status rule 2 (a broadMatch to a definition), formalized by 3 (R-BROAD); and an
+        # exactMatch bundle formalizes it by either.
+        def as_definition(relation, status):
+            def edit(rows):
+                for row in rows[1:3]:
+                    row["kind"], row["status"] = "definition", status
+                    row["object"][0]["extensions"][LOCATE]["proof_status"] = "definition"
+                    row["extensions"][LOCATE]["coverage"]["relation"] = relation
+            return edit
+        for rule, relation, status in ((2, "broadMatch", "partial"), (3, "broadMatch", "formalized"),
+                                       (2, "exactMatch", "formalized"), (3, "closeMatch", "formalized")):
+            with self.subTest(rule=rule, relation=relation):
+                self.fresh()
+                self.to_v2(rule)
+                self.edit_v2(self.GADGET, as_definition(relation, status), rule)
+                passage = self.article(1003)["passages"][1]
+                self.assertEqual((passage["status"], passage["coverage"]["status"], passage["coverage"]["relation"]),
+                                 (status, status if status == "formalized" else "partial", relation))
+                self.assertEqual(passage["coverage"]["basis"], status == "formalized")
+        # A status the rule does not derive is refused, naming the rule.
+        self.fresh()
+        self.to_v2(2)
+        self.edit_v2(self.GADGET, as_definition("broadMatch", "formalized"), 2)
+        self.refuse("§1.11, status rule 2) derive partial for a definition passage with hasPart to definition, "
+                    "hasPart to definition, and a broadMatch bundle over 2 parts (challenge survived)")
+
+    def test_identifiers_carry_the_articles_qid_on_subject_passages_only(self):
+        # Row 0 is the Widget subject passage; row 2 a supporting one.
+        def qid(row, value):
+            return lambda rows: rows[row]["subject"][0].update(identifiers=value)
+        self.to_v2()
+        self.edit_v2(self.WIDGET, qid(0, {"wikidata": "Q99999001"}))
+        self.assertEqual(self.article(1001)["passages"][0]["prominence"], "subject")
+        for edit, fragment in ((qid(0, {"wikidata": "Q99999003"}), "identifiers must be {\"wikidata\": <its source's QID>}"),
+                               (qid(0, {"wikidata": "Q99999001", "viaf": "1"}), "identifiers must be"),
+                               (qid(2, {"wikidata": "Q99999001"}), "only a subject passage's records carry")):
+            with self.subTest(fragment=fragment):
+                self.fresh()
+                self.to_v2()
+                self.edit_v2(self.WIDGET, edit)
+                self.refuse(fragment)
+
+
+class CombinedSetTests(unittest.TestCase):
+    """Several sealed sets built into one store (build_store.combined_sets): the fixture's two pages as two sets."""
+
+    def setUp(self):
+        self.tmp = Path(tempfile.mkdtemp(prefix="atlas-combined-"))
+        self.a, self.b = self.tmp / "a", self.tmp / "b"
+        for target, keep, set_id, campaign in ((self.a, "enwiki-1001-2002", "fixture-a", "run:loc-a+chal-1"),
+                                               (self.b, "enwiki-1003-2004", "fixture-b", "run:loc-b+chal-1")):
+            shutil.copytree(RECORDSET, target)
+            for path in (target / "records").glob("*.jsonl"):
+                if path.stem != keep:
+                    path.unlink()
+            if keep != "enwiki-1001-2002":  # the receipt belongs to the Widget absence
+                shutil.rmtree(target / "receipts")
+            sources = [line for line in (target / "sources.jsonl").read_text().splitlines() if keep in line]
+            (target / "sources.jsonl").write_text("\n".join(sources) + "\n")
+            self.reseal(target, set_id=set_id, campaign=campaign)
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    @staticmethod
+    def reseal(target: Path, **fields) -> None:
+        reseal(target)
+        seal = json.loads((target / "SEAL.json").read_text())
+        seal.update(fields)
+        (target / "SEAL.json").write_text(json.dumps(seal, sort_keys=True, indent=2) + "\n")
+
+    def test_two_sets_build_one_store_and_each_article_keeps_its_own_set(self):
+        single = build_store.build(RECORDSET)
+        tree = build_store.build([self.b, self.a], campaign="fixture-batch")
+        self.assertEqual(sorted(tree), sorted(single))
+        current = json.loads(tree["atlas/v1/current.json"])
+        seals = {name: hashlib.sha256((path / "SEAL.json").read_bytes()).hexdigest()
+                 for name, path in (("a", self.a), ("b", self.b))}
+        self.assertEqual(current["campaign"], "fixture-batch")
+        # record_set keeps its v1 shape and is the first set's by set_id; record_sets lists both.
+        self.assertEqual(current["record_set"]["seal_sha256"], seals["a"])
+        self.assertEqual(set(current["record_set"]), set(json.loads(single["atlas/v1/current.json"])["record_set"]))
+        self.assertEqual([(r["set_id"], r["seal_sha256"], r["campaign"]) for r in current["record_sets"]],
+                         [("fixture-a", seals["a"], "run:loc-a+chal-1"), ("fixture-b", seals["b"], "run:loc-b+chal-1")])
+        self.assertEqual(current["counts"], json.loads(single["atlas/v1/current.json"])["counts"])
+        manifest = json.loads(tree["atlas/v1/manifest.json"])
+        self.assertEqual((manifest["record_set"], manifest["record_sets"]), (seals["a"], [seals["a"], seals["b"]]))
+        for pageid, name, campaign in ((1001, "a", "run:loc-a+chal-1"), (1003, "b", "run:loc-b+chal-1")):
+            article = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            self.assertEqual((article["campaign"], article["record_set"]), (campaign, seals[name]))
+            golden = json.loads(single[f"atlas/v1/articles/{pageid}.json"])
+            for key in ("campaign", "record_set"):
+                article.pop(key), golden.pop(key)
+            self.assertEqual(article, golden)
+        for path in single:
+            if "/index/" in path or "/records/" in path or "/universes/" in path:
+                self.assertEqual(tree[path], single[path], path)
+        # The order the sets are given in does not matter.
+        self.assertEqual(build_store.build([self.a, self.b], campaign="fixture-batch"), tree)
+
+    def test_sets_that_disagree_or_overlap_are_refused(self):
+        def refuse(fragment, sets=None, campaign="fixture-batch"):
+            with self.assertRaises(build_store.AtlasError) as caught:
+                build_store.build(sets or [self.a, self.b], campaign=campaign)
+            self.assertIn(fragment, str(caught.exception))
+        refuse("a build of several record sets needs --campaign", campaign=None)
+        refuse("a build of several record sets needs --campaign", campaign="run:loc-a")
+        with self.assertRaises(build_store.AtlasError) as caught:
+            build_store.build(self.a, campaign="fixture-batch")
+        self.assertIn("--campaign names a build of several record sets", str(caught.exception))
+        refuse("set_id appears twice", [self.a, self.a])
+        self.reseal(self.b, skill_commit="0" * 40)
+        refuse("SEAL.json skill_commit differs from fixture-a's")
+        self.reseal(self.b, skill_commit=json.loads((self.a / "SEAL.json").read_text())["skill_commit"],
+                    sourceset={"id": "ss-other", "manifest_sha256": "0" * 64})
+        refuse("SEAL.json sourceset differs from fixture-a's")
+        overlap = self.tmp / "overlap"
+        shutil.copytree(RECORDSET, overlap)
+        self.reseal(overlap, set_id="fixture-c")
+        refuse("page 1001 is also in fixture-a", [self.a, overlap])
+        # A refusal inside one set names that set.
+        (self.a / "sources.jsonl").write_text((self.a / "sources.jsonl").read_text().replace("Widget lemma", "X"))
+        refuse(f"record set {self.a}:\nsources.jsonl: sha256 does not match SEAL.json", [self.a, overlap])
+
+    def test_the_cli_builds_several_sets_into_one_store(self):
+        out = self.tmp / "store"
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            code = build_store.main(["--record-set", str(self.a), "--record-set", str(self.b),
+                                     "--campaign", "fixture-batch", "--out", str(out)])
+        self.assertEqual(code, 0, err.getvalue())
+        self.assertEqual(json.loads((out / "atlas/v1/current.json").read_text())["campaign"], "fixture-batch")
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            code = build_store.main(["--record-set", str(self.a), "--record-set", str(self.b), "--out", str(out),
+                                     "--check"])
+        self.assertEqual(code, 2)
+        self.assertIn("needs --campaign", err.getvalue())
+
+
+class SupplementTests(SetCopyTest):
+    """The optional side files (build_store.apply_supplements): present, absent, and refused when they do not check out.
+
+    Every side file here is synthetic and written from the fixture: the Widget bound's passage is
+    the one whose span_sha256 hashes known text, the conjecture's span_sha256 is set to a text with a
+    citation marker and a display formula, and the runs are invented (model-x, operator alice).
+    """
+
+    BOUND_ID = "enwiki-1001-2002::In-text #5b0e44a1"
+    BOUND_TEXT = "Moreover, the number of spanning gadgets of a widget is at most its rank."
+    CONJECTURE_ID = "enwiki-1001-2002::In-text #0c4d77b1"
+    # The layer slice of a passage with a formula: prose, a citation marker, the formula's MathML
+    # text and then its TeX annotation, as the web-html/3 layer holds every formula.
+    CONJECTURE_LAYER = "every balanced widget is the image of a regular one,[3] x 2 {\\displaystyle x^{2}} ."
+    CONJECTURE_SEGMENTS = [{"text": "every balanced widget is the image of a regular one,"}, {"ref": "[3]"},
+                           {"text": " "}, {"tex": "x^{2}", "display": True}, {"text": " ."}]
+    CAMPAIGN = "run:loc-fx+chal-fx"
+
+    def setUp(self):
+        super().setUp()
+        self.universe = json.loads((self.set / "universe.json").read_text())
+        self.commits = {lib["id"]: lib["commit"] for lib in self.universe["libraries"]}
+
+    # ---- the side files -------------------------------------------------------------------
+
+    def write(self, name: str, doc: dict) -> Path:
+        path = self.tmp / name
+        path.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+        return path
+
+    def supplements(self, **paths) -> build_store.Supplements:
+        return build_store.Supplements.read(**paths)
+
+    @staticmethod
+    def text_entry(pid: str, pageid: int, layer: str, segments: list | None = None) -> tuple[str, dict]:
+        span_sha = hashlib.sha256(layer.encode("utf-8")).hexdigest()
+        return build_store.passage_key(pageid, span_sha), {
+            "id": pid, "pageid": pageid, "span_sha256": span_sha, "layer": layer,
+            "segments": segments if segments is not None else [{"text": layer}]}
+
+    def passage_text_file(self, *entries: tuple[str, dict], schema: str = build_store.PASSAGE_TEXT_SCHEMA) -> Path:
+        return self.write("passage-text.json", {"schema": schema, "passages": dict(entries)})
+
+    def with_formula_passage(self) -> None:
+        """Give the conjecture's records the span_sha256 of a layer slice holding a formula."""
+        sha = hashlib.sha256(self.CONJECTURE_LAYER.encode("utf-8")).hexdigest()
+        self.edit_widget(lambda rows: [self.subject_ext(row).update(span_sha256=sha)
+                                       for row in rows if row["id"] == self.CONJECTURE_ID])
+
+    @staticmethod
+    def subject_ext(row: dict) -> dict:
+        return row["subject"][0]["extensions"][LOCATE]
+
+    def signature_file(self, table: dict, universe_sha: str | None = None) -> Path:
+        return self.write("signatures.json", {
+            "schema": build_store.SIGNATURES_SCHEMA,
+            "source": {"universe": self.universe["id"], "universe_sha256": universe_sha or self.universe["universe_sha256"],
+                       "corpus_sha256": "c" * 64, "corpus_built": "2026-10-18T06:14:30Z"},
+            "signatures": table})
+
+    def signature_table(self) -> dict:
+        mathlib = self.commits["mathlib"]
+        return {"mathlib": {mathlib: {
+            "Widget.exists_spanning_gadget": {
+                "signature": "theorem Widget.exists_spanning_gadget {W : Widget} :\n    W.Finite → ∃ g, W.Spans g",
+                "elided": False, "kind": "theorem", "proof_status": "proved",
+                "type": "∀ {W : Widget}, W.Finite → ∃ g, W.Spans g"},
+            "Gadget.equivVertex": {
+                "signature": "def Gadget.equivVertex {W : Widget} […] : W.Gadget ≃ W.Vertex",
+                "elided": True, "kind": "def", "proof_status": "definition", "deprecated_to": "Widget.gadgetEquiv",
+                "type": "{W : Widget} → [inst : W.Finite] → W.Gadget ≃ W.Vertex"},
+            "Not.On.Any.Card": {"signature": "theorem Not.On.Any.Card : True", "elided": False, "kind": "theorem",
+                                "proof_status": "proved", "type": "True"}}}}
+
+    # The fixture's runs harvested before this, and its seal was exported then (provenance_doc).
+    EXPORTED = "2026-11-01T14:25:17Z"
+
+    def run_doc(self, run_id: str, mode: str, start: str, end: str, model: str = "model-x") -> dict:
+        seal = json.loads((self.set / "SEAL.json").read_text())
+        run = {"run_id": run_id, "mode": mode, "operator": "alice", "model": model, "model_name": "Model X",
+               "roles": {"worker": {"model": model, "model_name": "Model X"},
+                         "reviewer": {"model": "model-x", "model_name": "Model X"}},
+               "model_evidence": {"observed": {"messages_by_model": {model: 12}}},
+               "window_utc": {"start": start, "end": end}, "times": {"harvested_at": end},
+               "skill": {"name": "formal-companion", "commit": seal["skill_commit"]},
+               "universe": {"id": self.universe["id"], "sha256": self.universe["universe_sha256"]}}
+        if mode == "locate-challenge":
+            run.update(challenged_runs=["loc-fx"], sampling={"seed": 0, "sample_rate": 0.2, "strong_sample_rate": 0.5,
+                                                              "absence_sample_rate": 0.25})
+        return run
+
+    def provenance_doc(self, inventory: bool = False) -> dict:
+        """The runs, the set and one entry per record line, written from the records here (not the builder).
+        With `inventory`, the locate run names the inventory run inv-fx, which the side file describes."""
+        self.edit_seal(lambda seal: seal.update(campaign=self.CAMPAIGN, created=self.EXPORTED))
+        records = {}
+        for path in sorted((self.set / "records").glob("*.jsonl")):
+            rows = []
+            for line, row in enumerate(read_jsonl(path)):
+                ext = row["extensions"][LOCATE]
+                relation, verdict = row.get("relation"), ext["challenge"]
+                checked = verdict in ("survived", "downgraded")
+                entry = {"line": line, "locate_run": "loc-fx",
+                         "shape": "unresolved" if relation is None else "absence" if relation == "noMatch" else "location",
+                         "challenge": {"verdict": verdict, "rechecked": checked, "run": "chal-fx" if checked else None}}
+                if verdict == "sampled_out":
+                    entry["challenge"]["sampled_out_of"] = "chal-fx"
+                if "location_key" in ext:
+                    entry["location_key"] = ext["location_key"]
+                rows.append(entry)
+            records[path.stem.split("-")[1]] = rows
+        seal_sha = hashlib.sha256((self.set / "SEAL.json").read_bytes()).hexdigest()
+        runs = {"loc-fx": self.run_doc("loc-fx", "locate", "2026-10-30T23:50:00Z", "2026-10-31T04:48:00Z"),
+                "chal-fx": self.run_doc("chal-fx", "locate-challenge", "2026-11-01T03:19:32Z", self.EXPORTED)}
+        if inventory:
+            runs["loc-fx"]["inventory_run"] = "inv-fx"
+            runs["inv-fx"] = self.run_doc("inv-fx", "locate-inventory", "2026-10-30T06:52:00Z", "2026-10-30T20:00:47Z")
+        return {"schema": build_store.PROVENANCE_SCHEMA, "runs": runs,
+                "record_sets": {"fixture-set": {"seal_sha256": seal_sha, "campaign": self.CAMPAIGN,
+                                                "locate_run": "loc-fx", "challenge_run": "chal-fx"}},
+                "records": records}
+
+    def refuse_with(self, fragment: str, **paths) -> None:
+        with self.assertRaises(build_store.AtlasError) as caught:
+            build_store.build(self.set, supplements=self.supplements(**paths))
+        self.assertIn(fragment, str(caught.exception))
+
+    @staticmethod
+    def without(value, keys=("text", "signature", "provenance", "supplements")):
+        """A view or current.json without what the side files add, to compare with the plain build
+        (the article's own `licence`, whose `text` is the source's licence, is kept as it is)."""
+        if isinstance(value, dict):
+            return {k: v if k == "licence" else SupplementTests.without(v, keys) for k, v in value.items()
+                    if k not in keys}
+        if isinstance(value, list):
+            return [SupplementTests.without(v, keys) for v in value]
+        return value
+
+    # ---- absent ---------------------------------------------------------------------------
+
+    def test_without_side_files_the_store_is_byte_for_byte_the_plain_build(self):
+        self.assertIsNone(build_store.Supplements.read())
+        tree = build_store.build(RECORDSET, supplements=None)
+        self.assertEqual(tree, build_store.build(RECORDSET))
+        for path, data in tree.items():
+            self.assertEqual(data, (STORE / path).read_bytes(), path)
+            for key in (b'"text":{', b'"signature":', b'"provenance":', b'"supplements":'):
+                self.assertNotIn(key, data, path)
+
+    # ---- passage text ---------------------------------------------------------------------
+
+    def test_passage_text_is_merged_where_it_checks_out_and_the_rest_keep_the_quote(self):
+        self.with_formula_passage()
+        plain = build_store.build(self.set)
+        bound = self.text_entry(self.BOUND_ID, 1001, self.BOUND_TEXT)
+        formula = self.text_entry(self.CONJECTURE_ID, 1001, self.CONJECTURE_LAYER, self.CONJECTURE_SEGMENTS)
+        stray = self.text_entry("enwiki-9-9::In-text #00000000", 9, "a passage of no page here")
+        path = self.passage_text_file(bound, formula, stray)
+        tree = build_store.build(self.set, supplements=self.supplements(passage_text=path))
+        self.assertEqual(sorted(tree), sorted(plain))
+        article = json.loads(tree["atlas/v1/articles/1001.json"])
+        texts = {p["id"]: p.get("text") for p in article["passages"]}
+        self.assertEqual(texts[self.BOUND_ID], {"layer": self.BOUND_TEXT, "segments": [{"text": self.BOUND_TEXT}]})
+        self.assertEqual(texts[self.CONJECTURE_ID], {"layer": self.CONJECTURE_LAYER, "segments": self.CONJECTURE_SEGMENTS})
+        self.assertEqual([pid for pid, text in texts.items() if text is None],
+                         ["enwiki-1001-2002::In-text #3fa91c07", "enwiki-1001-2002::In-text #91aa02de"])
+        sha = hashlib.sha256(path.read_bytes()).hexdigest()
+        identity = {"passage_text": {"schema": build_store.PASSAGE_TEXT_SCHEMA, "sha256": sha}}
+        for pageid in (1001, 1003):
+            view = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            self.assertEqual(view["supplements"], identity)
+            self.assertEqual(self.without(view), json.loads(plain[f"atlas/v1/articles/{pageid}.json"]))
+        current = json.loads(tree["atlas/v1/current.json"])
+        # The conjecture has no status, so of the two passages given their text one is shown: the
+        # dashboard counts the text it shows from `shown`.
+        self.assertEqual(current["supplements"], {"passage_text": {**identity["passage_text"], "passages": 2, "shown": 1}})
+        self.assertNotIn("provenance", current)
+        self.assertEqual(self.without(current), json.loads(plain["atlas/v1/current.json"]))
+        # Records, universes and the index never change.
+        for name in tree:
+            if "/articles/" not in name and not name.endswith(("current.json", "manifest.json")):
+                self.assertEqual(tree[name], plain[name], name)
+
+    def test_passage_text_that_does_not_check_out_is_refused(self):
+        self.with_formula_passage()
+        key, good = self.text_entry(self.CONJECTURE_ID, 1001, self.CONJECTURE_LAYER, self.CONJECTURE_SEGMENTS)
+        segment_rule = f"--passage-text: passages[{key}]: segment"
+        cases = [
+            ({"layer": self.CONJECTURE_LAYER.replace("regular", "irregular")}, "layer must be the passage's text"),
+            ({"id": self.BOUND_ID}, f"id must be the passage's record id {self.CONJECTURE_ID!r}"),
+            ({"span_sha256": "0" * 64}, "span_sha256 must be the record's span_sha256"),
+            ({"pageid": 1003}, "pageid must be the record's"),
+            # A word the slice does not say, a formula whose TeX is not its annotation's, a
+            # segment of two shapes, and segments that stop short or run on.
+            ({"segments": [{"text": "every balanced widget is the image of an ordinary one,"}, *self.CONJECTURE_SEGMENTS[1:]]},
+             f"{segment_rule} 0: segments spell the passage's layer slice in order"),
+            ({"segments": [*self.CONJECTURE_SEGMENTS[:3], {"tex": "y^{3}", "display": True}, {"text": " ."}]},
+             f"{segment_rule} 3: segments spell"),
+            ({"segments": [{"text": "every", "tex": "x"}]}, f"{segment_rule} 0: segments spell"),
+            ({"segments": self.CONJECTURE_SEGMENTS[:-1]}, "the segments stop before the layer slice does"),
+            ({"segments": [*self.CONJECTURE_SEGMENTS, {"text": "!"}]}, f"{segment_rule} 5: segments spell"),
+            ({"segments": [*self.CONJECTURE_SEGMENTS[:3], {"tex": "x^{2}", "display": False}, {"text": " ."}]},
+             f"{segment_rule} 3: display, when present, is true"),
+            ({"segments": []}, "segments must be a list of 1 to"),
+            ({"segments": "every balanced widget"}, "segments must be a list of 1 to"),
+        ]
+        for change, fragment in cases:
+            with self.subTest(change=change):
+                path = self.passage_text_file((key, {**good, **change}))
+                self.refuse_with(fragment, passage_text=path)
+        self.refuse_with("--passage-text: matches no passage of this build",
+                         passage_text=self.passage_text_file(self.text_entry("enwiki-9-9::In-text #00", 9, "elsewhere")))
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.supplements(passage_text=self.passage_text_file((key, good), schema="wikilean.atlas.passage-text/0"))
+        self.assertIn("schema must be 'wikilean.atlas.passage-text/1'", str(caught.exception))
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.supplements(passage_text=self.tmp / "missing.json")
+        self.assertIn("cannot be read", str(caught.exception))
+
+    def test_passage_context_is_merged_and_checked_as_far_as_the_record_allows(self):
+        # The sentence around a passage: its own text, spelled by segments, flagged where it
+        # was trimmed or leads into the passage from the block before.
+        key, bound = self.text_entry(self.BOUND_ID, 1001, self.BOUND_TEXT)
+        before = {"layer": "Lemma 2 is used as follows: ", "segments": [{"text": "Lemma 2 is used as follows: "}],
+                  "lead_in": True}
+        after = {"layer": " so the bound is sharp", "segments": [{"text": " so the bound is sharp"}], "trimmed": True}
+        path = self.passage_text_file((key, {**bound, "before": before, "after": after}))
+        tree = build_store.build(self.set, supplements=self.supplements(passage_text=path))
+        text = {p["id"]: p.get("text") for p in json.loads(tree["atlas/v1/articles/1001.json"])["passages"]}[self.BOUND_ID]
+        self.assertEqual(text, {"layer": self.BOUND_TEXT, "segments": [{"text": self.BOUND_TEXT}],
+                                "before": before, "after": after})
+        where = f"--passage-text: passages[{key}]: "
+        cases = [({"before": {**before, "page": 3}}, "before: is an object of"),
+                 ({"after": {**after, "lead_in": True}}, "after: is an object of"),
+                 ({"after": {**after, "trimmed": False}}, "after: trimmed, when present, is true"),
+                 ({"before": {**before, "segments": [{"text": "Lemma 3 is used as follows: "}]}},
+                  "before: segment 0: segments spell"),
+                 ({"before": {"layer": "x" * 2001, "segments": [{"text": "x" * 2001}]}}, "before: layer is the layer text")]
+        for change, fragment in cases:
+            with self.subTest(change=change):
+                self.refuse_with(where + fragment, passage_text=self.passage_text_file((key, {**bound, **change})))
+        # Where the record quotes the text before the passage, the context must end with it.
+        self.edit_widget(lambda rows: [row["subject"][0]["location"]["quote"].update(prefix="is used as follows: ")
+                                       for row in rows if row["id"] == self.BOUND_ID])
+        path = self.passage_text_file((key, {**bound, "before": before, "after": after}))
+        build_store.build(self.set, supplements=self.supplements(passage_text=path))
+        self.refuse_with(where + "before: the record's quote prefix must be where this context meets the passage",
+                         passage_text=self.passage_text_file((key, {**bound, "before": {
+                             "layer": "Lemma 2 is used thus: ", "segments": [{"text": "Lemma 2 is used thus: "}]}})))
+
+    # ---- signatures -----------------------------------------------------------------------
+
+    def test_signatures_are_merged_by_library_commit_and_declaration(self):
+        path = self.signature_file(self.signature_table())
+        tree = build_store.build(self.set, supplements=self.supplements(signatures=path))
+        found = {}
+        for pageid in (1001, 1003):
+            for passage in json.loads(tree[f"atlas/v1/articles/{pageid}.json"])["passages"]:
+                for loc in passage["locations"]:
+                    found[loc["declaration"]] = loc.get("signature")
+        table = self.signature_table()["mathlib"][self.commits["mathlib"]]
+        self.assertEqual(found.pop("Widget.exists_spanning_gadget"),
+                         {"text": table["Widget.exists_spanning_gadget"]["signature"], "elided": False})
+        # A shortened header keeps the whole type; a deprecated name says what replaced it.
+        self.assertEqual(found.pop("Gadget.equivVertex"),
+                         {"text": table["Gadget.equivVertex"]["signature"], "elided": True,
+                          "type": table["Gadget.equivVertex"]["type"], "deprecated_to": "Widget.gadgetEquiv"})
+        self.assertEqual(set(found.values()), {None})
+        current = json.loads(tree["atlas/v1/current.json"])
+        self.assertEqual(current["supplements"]["signatures"], {
+            "schema": build_store.SIGNATURES_SCHEMA, "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "corpus_sha256": "c" * 64, "corpus_built": "2026-10-18T06:14:30Z", "universe": "u-fixture",
+            "locations": 2, "declarations": 2})
+
+    def test_signatures_that_do_not_match_the_card_are_refused(self):
+        mathlib = self.commits["mathlib"]
+        where = f"--signatures: signatures[mathlib][{mathlib}][Widget.exists_spanning_gadget]: "
+
+        def table(**change) -> dict:
+            value = self.signature_table()
+            value["mathlib"][mathlib]["Widget.exists_spanning_gadget"].update(change)
+            return value
+        cases = [({"proof_status": "statement_only"}, "proof_status 'statement_only' is not the card's 'proved'"),
+                 ({"signature": "theorem Widget.exists_spanning_gadget' : True"},
+                  "signature must start with its keyword and the card's declaration"),
+                 ({"kind": "lemma"}, "kind must be one of"),
+                 ({"elided": "no"}, "elided must be true or false"),
+                 ({"elided": True, "type": ""}, "an elided signature keeps the whole type"),
+                 ({"deprecated_to": "two words"}, "deprecated_to, when present, is a declaration name"),
+                 ({"signature": "theorem Widget.exists_spanning_gadget " + "x" * 4000}, "signature must be a string")]
+        for change, fragment in cases:
+            with self.subTest(change=change):
+                self.refuse_with(where + fragment, signatures=self.signature_file(table(**change)))
+        self.refuse_with("--signatures: source.universe_sha256 must be the store's universe",
+                         signatures=self.signature_file(self.signature_table(), universe_sha="0" * 64))
+        self.refuse_with("--signatures: matches no location of this build",
+                         signatures=self.signature_file({"mathlib": {"0" * 40: {}}}))
+
+    # ---- provenance -----------------------------------------------------------------------
+
+    def test_provenance_names_each_runs_models_operator_and_dates(self):
+        path = self.write("provenance.json", self.provenance_doc())
+        tree = build_store.build(self.set, supplements=self.supplements(provenance=path))
+        seal = json.loads((self.set / "SEAL.json").read_text())
+        locate = {"run_id": "loc-fx", "mode": "locate", "model": "model-x", "model_name": "Model X",
+                  "reviewer_model": "model-x", "reviewer_model_name": "Model X", "operator": "alice",
+                  "started": "2026-10-30T23:50:00Z", "harvested": "2026-10-31T04:48:00Z",
+                  "skill_commit": seal["skill_commit"]}
+        challenge = {**locate, "run_id": "chal-fx", "mode": "locate-challenge", "started": "2026-11-01T03:19:32Z",
+                     "harvested": "2026-11-01T14:25:17Z",
+                     "sampling": {"seed": 0, "sample_rate": 0.2, "strong_sample_rate": 0.5, "absence_sample_rate": 0.25}}
+        for pageid in (1001, 1003):
+            view = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            self.assertEqual(view["provenance"], {"locate": locate, "challenge": challenge})
+        current = json.loads(tree["atlas/v1/current.json"])
+        # current.json's challenge run adds what it re-checked across the build, counted from
+        # the articles' own verdicts, central and supporting passages apart.
+        rechecked = {"central": {"locations": [0, 0], "absences": [0, 0]},
+                     "supporting": {"locations": [0, 0], "absences": [0, 0]}}
+        for pageid in (1001, 1003):
+            for passage in json.loads(tree[f"atlas/v1/articles/{pageid}.json"])["passages"]:
+                group = rechecked["central" if passage.get("prominence") in ("subject", "central") else "supporting"]
+                for loc in passage["locations"]:
+                    if loc["relation"] != "relatedMatch":
+                        group["locations"][1] += 1
+                        group["locations"][0] += loc["challenge"] in ("survived", "downgraded")
+                if passage.get("absence"):
+                    group["absences"][1] += 1
+                    group["absences"][0] += passage["absence"]["challenge"] in ("survived", "downgraded")
+        self.assertGreater(sum(n for g in rechecked.values() for pair in g.values() for n in pair), 0)
+        self.assertEqual(current["provenance"], {"runs": [{**challenge, "rechecked": rechecked}, locate]})
+        self.assertEqual(current["supplements"], {"provenance": {
+            "schema": build_store.PROVENANCE_SCHEMA, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}})
+
+    def test_provenance_that_does_not_describe_the_records_is_refused(self):
+        def refuse(edit, fragment):
+            self.fresh()
+            doc = self.provenance_doc()
+            edit(doc)
+            self.refuse_with(fragment, provenance=self.write("provenance.json", doc))
+
+        refuse(lambda d: d["record_sets"]["fixture-set"].update(seal_sha256="0" * 64),
+               "--provenance: record_sets[fixture-set]: seal_sha256 and campaign must be the record set's own")
+        refuse(lambda d: d["record_sets"]["fixture-set"].update(locate_run="loc-other"),
+               "locate_run and challenge_run must be the runs the campaign token names")
+        refuse(lambda d: d["record_sets"].clear(), "--provenance: record_sets[fixture-set]: is missing")
+        refuse(lambda d: d["records"]["1001"][1]["challenge"].update(verdict="survived"),
+               "--provenance: records[1001]: line 1 does not describe the record on that line")
+        refuse(lambda d: d["records"]["1003"][0].update(location_key="0" * 64),
+               "--provenance: records[1003]: line 0 does not describe the record on that line")
+        refuse(lambda d: d["records"]["1003"].pop(), "--provenance: records[1003]: lists 3 records, not the 4 lines of the records file")
+        # A model the run's own calls do not bear out is never cited.
+        refuse(lambda d: d["runs"]["loc-fx"]["model_evidence"]["observed"]["messages_by_model"].update({"model-y": 1}),
+               "--provenance: runs[loc-fx]: model_evidence.observed.messages_by_model must name only the models")
+        refuse(lambda d: d["runs"]["loc-fx"]["roles"]["worker"].update(model="model-y"),
+               "--provenance: runs[loc-fx]: roles.worker must be the run's model and model_name")
+        refuse(lambda d: d["runs"]["chal-fx"].update(mode="locate"),
+               "--provenance: runs[chal-fx]: mode must be 'locate-challenge'")
+        refuse(lambda d: d["runs"]["loc-fx"]["times"].update(harvested_at="2026-10-31T05:00:00Z"),
+               "--provenance: runs[loc-fx]: window_utc is {start, end}")
+        refuse(lambda d: d["runs"]["loc-fx"].update(operator="two words"),
+               "--provenance: runs[loc-fx]: operator must be the login that ran it")
+        refuse(lambda d: d["runs"]["loc-fx"]["skill"].update(commit="0" * 40),
+               "--provenance: runs[loc-fx]: skill.commit must be the seal's skill_commit")
+        refuse(lambda d: d["runs"]["chal-fx"].update(challenged_runs=["loc-other"]),
+               "--provenance: runs[chal-fx]: challenged_runs must name loc-fx")
+        refuse(lambda d: d["runs"]["chal-fx"]["sampling"].update(sample_rate=2),
+               "--provenance: runs[chal-fx]: sampling is")
+        refuse(lambda d: d["runs"].pop("chal-fx"), "--provenance: runs[chal-fx]: is missing")
+
+    def test_the_runs_windows_are_checked_against_the_seal_and_one_another(self):
+        # A run's harvest is no later than the export, the challenge starts after the locate run it
+        # re-checked was harvested, and times compare as times (a fraction of a second counts).
+        def refuse(edit, fragment):
+            self.fresh()
+            doc = self.provenance_doc()
+            edit(doc)
+            self.refuse_with(fragment, provenance=self.write("provenance.json", doc))
+
+        def window(run: str, start: str | None = None, end: str | None = None):
+            def edit(d):
+                w = d["runs"][run]["window_utc"]
+                w.update({k: v for k, v in (("start", start), ("end", end)) if v is not None})
+                d["runs"][run]["times"]["harvested_at"] = w["end"]
+            return edit
+
+        refuse(window("chal-fx", end="2026-11-01T14:25:18Z"),
+               "--provenance: runs[chal-fx]: window_utc.end, the harvest, must be no later than the seal's created")
+        refuse(window("loc-fx", start="2026-11-01T14:30:00Z", end="2026-11-01T15:00:00Z"),
+               "--provenance: runs[loc-fx]: window_utc.end, the harvest, must be no later than the seal's created")
+        refuse(window("chal-fx", start="2026-10-31T04:47:59Z"),
+               "--provenance: runs[chal-fx]: window_utc.start must be no earlier than the harvest of loc-fx, the locate "
+               "run it re-checked")
+        refuse(window("loc-fx", start="2026-10-31T04:48:00.5Z"),
+               "--provenance: runs[loc-fx]: window_utc is {start, end}: ISO 8601 UTC times, start first")
+        refuse(window("loc-fx", start="2026-13-30T23:50:00Z"), "--provenance: runs[loc-fx]: window_utc is {start, end}")
+        # The same instant, once with a fraction of a second, is still in order.
+        self.fresh()
+        doc = self.provenance_doc()
+        window("chal-fx", start="2026-10-31T04:48:00.000Z")(doc)
+        build_store.build(self.set, supplements=self.supplements(provenance=self.write("provenance.json", doc)))
+
+    def test_the_inventory_run_that_chose_the_passages_is_cited_and_checked(self):
+        path = self.write("provenance.json", self.provenance_doc(inventory=True))
+        tree = build_store.build(self.set, supplements=self.supplements(provenance=path))
+        seal = json.loads((self.set / "SEAL.json").read_text())
+        inventory = {"run_id": "inv-fx", "mode": "locate-inventory", "model": "model-x", "model_name": "Model X",
+                     "reviewer_model": "model-x", "reviewer_model_name": "Model X", "operator": "alice",
+                     "started": "2026-10-30T06:52:00Z", "harvested": "2026-10-30T20:00:47Z",
+                     "skill_commit": seal["skill_commit"]}
+        for pageid in (1001, 1003):
+            view = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            self.assertEqual(view["provenance"]["inventory"], inventory)
+        runs = json.loads(tree["atlas/v1/current.json"])["provenance"]["runs"]
+        self.assertEqual([run["run_id"] for run in runs], ["chal-fx", "inv-fx", "loc-fx"])
+        self.assertEqual(runs[1], inventory)
+
+        def refuse(edit, fragment):
+            self.fresh()
+            doc = self.provenance_doc(inventory=True)
+            edit(doc)
+            self.refuse_with(fragment, provenance=self.write("provenance.json", doc))
+
+        refuse(lambda d: d["runs"].pop("inv-fx"), "--provenance: runs[inv-fx]: is missing")
+        refuse(lambda d: d["runs"]["inv-fx"].update(mode="locate"),
+               "--provenance: runs[inv-fx]: mode must be 'locate-inventory': the locate run names it as its inventory run")
+        refuse(lambda d: d["runs"]["loc-fx"].update(inventory_run="inv fx"),
+               "--provenance: runs[loc-fx]: inventory_run names the inventory run whose passages it searched, or is null")
+        refuse(lambda d: d["runs"]["inv-fx"]["model_evidence"]["observed"]["messages_by_model"].update({"model-y": 1}),
+               "--provenance: runs[inv-fx]: model_evidence.observed.messages_by_model must name only the models")
+        refuse(lambda d: d["runs"]["inv-fx"].update(window_utc={"start": "2026-10-30T06:52:00Z",
+                                                                "end": "2026-10-30T23:50:01Z"},
+                                                    times={"harvested_at": "2026-10-30T23:50:01Z"}),
+               "--provenance: runs[inv-fx]: window_utc.end must be no later than the start of loc-fx, the locate run "
+               "that searched its passages")
+        # Without an inventory_run, the views name none, as before.
+        self.fresh()
+        tree = build_store.build(self.set, supplements=self.supplements(
+            provenance=self.write("provenance.json", self.provenance_doc())))
+        self.assertNotIn("inventory", json.loads(tree["atlas/v1/articles/1001.json"])["provenance"])
+
+    # ---- the audit summary ----------------------------------------------------------------
+
+    # A made-up audit's two figures: a share weighted by relation, and an unweighted one.
+    FIGURES = [{"id": "strong", "label": "Strong supporting cards judged right", "share": 0.8,
+                "ci95": [0.62, 0.91], "weights": "relation and library", "n_eff": 12.5, "drawn": 16, "population": 400},
+               {"id": "absences", "label": "Absences judged right", "share": 0.75, "ci95": [0.301, 0.954],
+                "weights": None, "n_eff": 4, "drawn": 4, "population": 300}]
+
+    def audit_doc(self) -> dict:
+        """A made-up audit of the fixture's set: its run, models, sample size and two figures."""
+        seal_sha = hashlib.sha256((self.set / "SEAL.json").read_bytes()).hexdigest()
+        return {"schema": build_store.AUDIT_SUMMARY_SCHEMA, "record_sets": [seal_sha],
+                "audit": {"run_id": "audit-fx", "operator": "alice",
+                          "window_utc": {"start": "2026-11-03T02:44:00Z", "end": "2026-11-03T05:07:00Z"},
+                          "models": [{"model": "model-z", "model_name": "Model Z"}], "blind": True, "independent": False},
+                "items": 20, "figures": json.loads(json.dumps(self.FIGURES))}
+
+    def test_an_audit_summary_is_cited_by_every_article_and_by_current_json(self):
+        plain = build_store.build(self.set)
+        path = self.write("audit.json", self.audit_doc())
+        tree = build_store.build(self.set, supplements=self.supplements(audit_summary=path))
+        audit = {"run_id": "audit-fx", "operator": "alice", "started": "2026-11-03T02:44:00Z",
+                 "ended": "2026-11-03T05:07:00Z", "models": [{"model": "model-z", "model_name": "Model Z"}],
+                 "blind": True, "independent": False, "items": 20, "figures": self.FIGURES}
+        identity = {"schema": build_store.AUDIT_SUMMARY_SCHEMA, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        current = json.loads(tree["atlas/v1/current.json"])
+        self.assertEqual((current["audit"], current["supplements"]), (audit, {"audit_summary": identity}))
+        self.assertEqual(self.without(current, ("audit", "supplements")), json.loads(plain["atlas/v1/current.json"]))
+        for pageid in (1001, 1003):
+            view = json.loads(tree[f"atlas/v1/articles/{pageid}.json"])
+            self.assertEqual((view["audit"], view["supplements"]), (audit, {"audit_summary": identity}))
+            self.assertEqual(self.without(view, ("audit", "supplements")),
+                             json.loads(plain[f"atlas/v1/articles/{pageid}.json"]))
+        # Records, index and universe are the plain build's.
+        changed = sorted(p for p in tree if tree[p] != plain[p])
+        self.assertEqual(changed, ["atlas/v1/articles/1001.json", "atlas/v1/articles/1003.json",
+                                   "atlas/v1/current.json", "atlas/v1/manifest.json"])
+
+    def test_an_audit_summary_that_does_not_describe_the_build_is_refused(self):
+        def refuse(edit, fragment):
+            doc = self.audit_doc()
+            edit(doc)
+            self.refuse_with(fragment, audit_summary=self.write("audit.json", doc))
+
+        refuse(lambda d: d.update(record_sets=["0" * 64]),
+               "--audit-summary: record_sets must list the seal sha256 of each record set of this build, each once")
+        refuse(lambda d: d["record_sets"].append(d["record_sets"][0]), "record_sets must list the seal sha256")
+        refuse(lambda d: d.update(record_sets=[]), "record_sets must list the seal sha256")
+        refuse(lambda d: d.update(note="the audit was fine"), "--audit-summary: unknown key 'note'")
+        refuse(lambda d: d["audit"].update(run_id="audit fx"), "audit.run_id must be a run id")
+        refuse(lambda d: d["audit"].update(operator="two words"), "audit.operator must be the login that ran it")
+        refuse(lambda d: d["audit"].pop("operator"), "audit is the run that judged the sample")
+        refuse(lambda d: d["audit"]["window_utc"].update(end="2026-11-02T00:00:00Z"), "audit.window_utc is {start, end}")
+        refuse(lambda d: d["audit"].update(models=[]), "audit.models lists 1 to 4 models")
+        refuse(lambda d: d["audit"]["models"].append({"model": "model-z", "model_name": "Model Z"}),
+               "audit.models lists 1 to 4 models")
+        refuse(lambda d: d["audit"]["models"][0].update(model_name="<b>Model</b>"), "audit.models lists 1 to 4 models")
+        refuse(lambda d: d.update(items=0), "items must be the number of items the audit judged")
+        refuse(lambda d: d.update(items=True), "items must be the number of items the audit judged")
+        refuse(lambda d: d.update(figures=[]), "figures must list 1 to 12 figures")
+        # A share and its interval: numbers from 0 to 1, the share inside the interval.
+        for change in ({"share": 1.2}, {"share": True}, {"share": "0.9"}, {"ci95": [0.9, 0.95]}, {"ci95": [0.5]},
+                       {"ci95": [0.5, 1.5]}, {"ci95": "0.5-0.9"}, {"ci95": [None, 0.9]}):
+            with self.subTest(change=str(change)):
+                refuse(lambda d: d["figures"][0].update(change), "figure 0: share is the share judged right")
+        # What a share rests on: drawn items of the sample (at most items), of a population at least as large.
+        for change in ({"drawn": 21}, {"drawn": 0}, {"drawn": 2.5}, {"population": 15}, {"population": None}):
+            with self.subTest(change=str(change)):
+                refuse(lambda d: d["figures"][0].update(change), "figure 0: drawn is how many of the sample's items")
+        # Weights leave an effective sample above 0 and at most drawn; without them it is drawn itself.
+        for figure, change in ((0, {"n_eff": 17}), (0, {"n_eff": 0}), (0, {"weights": "<b>x</b>"}), (0, {"weights": 3}),
+                               (1, {"n_eff": 3.5}), (0, {"n_eff": True})):
+            with self.subTest(change=str(change)):
+                refuse(lambda d: d["figures"][figure].update(change), f"figure {figure}: weights says what the items")
+        refuse(lambda d: d["figures"][0].update(label="<script>"), "figure 0: label must be plain text")
+        refuse(lambda d: d["figures"][1].update(id="strong"), "each figure's id is its own")
+        refuse(lambda d: d["figures"][0].update(weight=2), "figure 0 is exactly ['id', 'label', 'share', 'ci95'")
+        refuse(lambda d: d["figures"][0].pop("population"), "figure 0 is exactly")
+        # Whether it was blind and independent, said as true or false.
+        refuse(lambda d: d["audit"].update(blind="yes"), "audit.blind and audit.independent are true or false")
+        refuse(lambda d: d["audit"].pop("independent"), "audit is the run that judged the sample")
+        # An audit judges the sets as they were exported, so it starts no earlier than the latest seal's
+        # created; its times compare as times.
+        refuse(lambda d: d["audit"].update(window_utc={"start": "2020-01-01T00:00:00Z", "end": "2020-01-02T00:00:00Z"}),
+               "audit.window_utc.start must be no earlier than the created time of the latest seal it read")
+        refuse(lambda d: d["audit"].update(window_utc={"start": "2026-11-03T02:00:00.5Z", "end": "2026-11-03T02:00:00Z"}),
+               "audit.window_utc is {start, end}: ISO 8601 UTC times, start first")
+        doc = self.audit_doc()
+        doc["schema"] = "wikilean.atlas.audit-summary/0"
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.supplements(audit_summary=self.write("audit.json", doc))
+        self.assertIn(f"schema must be {build_store.AUDIT_SUMMARY_SCHEMA!r}", str(caught.exception))
+
+    def test_the_cli_merges_an_audit_summary_and_check_compares_with_it(self):
+        path = self.write("audit.json", self.audit_doc())
+        out = self.tmp / "store"
+
+        def run_main(*args: str) -> tuple[int, str]:
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = build_store.main(["--record-set", str(self.set), "--out", str(out), *args])
+            return code, err.getvalue()
+        self.assertEqual(run_main("--audit-summary", str(path)), (0, ""))
+        self.assertEqual(run_main("--audit-summary", str(path), "--check"), (0, ""))
+        self.assertEqual(json.loads((out / "atlas/v1/current.json").read_text())["audit"]["run_id"], "audit-fx")
+        code, err = run_main("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("differs: atlas/v1/current.json", err)
+
+    def test_no_malformed_side_file_value_crashes_the_builder(self):
+        # Every value a side file may carry wrongly is a refusal (or, where it only narrows what
+        # is merged, a build), never another exception: as MalformedValueTests for the record set.
+        self.with_formula_passage()
+        key, entry = self.text_entry(self.CONJECTURE_ID, 1001, self.CONJECTURE_LAYER, self.CONJECTURE_SEGMENTS)
+        mathlib = self.commits["mathlib"]
+        decl = ("signatures", "mathlib", mathlib, "Widget.exists_spanning_gadget")
+        docs = {
+            "passage_text": ({"schema": build_store.PASSAGE_TEXT_SCHEMA, "passages": {key: entry}},
+                             [("passages",), ("passages", key), *[("passages", key, k) for k in entry],
+                              ("passages", key, "segments", 0), ("passages", key, "segments", 3, "tex"),
+                              ("passages", key, "segments", 3, "display")]),
+            "signatures": (json.loads(self.signature_file(self.signature_table()).read_text()),
+                           [("source",), ("source", "universe_sha256"), ("source", "corpus_built"), ("signatures",),
+                            decl[:2], decl[:3], decl, *[(*decl, k) for k in ("signature", "kind", "elided",
+                                                                          "proof_status", "type")],
+                            (*decl[:3], "Gadget.equivVertex", "deprecated_to")]),
+            "provenance": (self.provenance_doc(inventory=True),
+                           [("runs",), ("runs", "loc-fx"), ("runs", "chal-fx", "sampling"),
+                            ("runs", "loc-fx", "inventory_run"), ("runs", "inv-fx"), ("runs", "inv-fx", "window_utc"),
+                            ("runs", "chal-fx", "challenged_runs"),
+                            *[("runs", "loc-fx", k) for k in ("run_id", "mode", "model", "model_name", "roles",
+                                                              "model_evidence", "operator", "window_utc", "times",
+                                                              "skill", "universe")],
+                            ("runs", "loc-fx", "roles", "reviewer"), ("record_sets",), ("record_sets", "fixture-set"),
+                            *[("record_sets", "fixture-set", k) for k in ("seal_sha256", "campaign", "locate_run",
+                                                                          "challenge_run")],
+                            ("records",), ("records", "1001"), ("records", "1001", 0),
+                            ("records", "1001", 1, "challenge"), ("records", "1001", 0, "line")]),
+            "audit_summary": (self.audit_doc(),
+                              [("record_sets",), ("record_sets", 0), ("audit",), ("items",), ("figures",),
+                               *[("audit", k) for k in ("run_id", "operator", "window_utc", "models", "blind",
+                                                        "independent")],
+                               ("audit", "window_utc", "start"), ("audit", "models", 0),
+                               ("audit", "models", 0, "model"), ("audit", "models", 0, "model_name"),
+                               ("figures", 0), *[("figures", 1, k) for k in build_store.AUDIT_FIGURE_KEYS],
+                               ("figures", 0, "ci95", 0)]),
+        }
+        for kind, (doc, paths) in docs.items():
+            for path in paths:
+                for value in MalformedValueTests.HOSTILE:
+                    with self.subTest(kind=kind, path=path, value=value):
+                        broken = json.loads(json.dumps(doc))
+                        target = broken
+                        for step in path[:-1]:
+                            target = target[step]
+                        target[path[-1]] = value
+                        side = self.write(f"{kind}.json", broken)
+                        try:
+                            build_store.build(self.set, supplements=self.supplements(**{kind: side}))
+                        except build_store.AtlasError:
+                            pass
+
+    # ---- all three, through the CLI -------------------------------------------------------
+
+    def test_the_cli_merges_the_side_files_and_check_compares_with_them(self):
+        self.with_formula_passage()
+        paths = {
+            "--passage-text": self.passage_text_file(
+                self.text_entry(self.CONJECTURE_ID, 1001, self.CONJECTURE_LAYER, self.CONJECTURE_SEGMENTS)),
+            "--signatures": self.signature_file(self.signature_table()),
+            "--provenance": self.write("provenance.json", self.provenance_doc()),
+        }
+        side = [arg for flag, path in paths.items() for arg in (flag, str(path))]
+        out = self.tmp / "store"
+
+        def run_main(*args: str) -> tuple[int, str]:
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = build_store.main(["--record-set", str(self.set), "--out", str(out), *args])
+            return code, err.getvalue()
+        self.assertEqual(run_main(*side), (0, ""))
+        self.assertEqual(run_main(*side, "--check"), (0, ""))
+        view = json.loads((out / "atlas/v1/articles/1001.json").read_text())
+        self.assertEqual(sorted(view["supplements"]), ["passage_text", "provenance", "signatures"])
+        # A check without the side files, or with one of them changed, finds the store differs.
+        code, err = run_main("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("differs: atlas/v1/articles/1001.json", err)
+        table = self.signature_table()
+        table["mathlib"][self.commits["mathlib"]]["Widget.exists_spanning_gadget"]["signature"] += " "
+        self.signature_file(table)
+        code, err = run_main(*side, "--check")
+        self.assertEqual(code, 1)
+        self.assertIn("differs: atlas/v1/current.json", err)
+        # A side file that cannot be read is a refusal (exit 2), and the store stays as it was.
+        before = (out / "atlas/v1/current.json").read_bytes()
+        code, err = run_main("--passage-text", str(self.tmp / "missing.json"), "--replace")
+        self.assertEqual(code, 2)
+        self.assertIn("--passage-text", err)
+        self.assertEqual((out / "atlas/v1/current.json").read_bytes(), before)
+
+
+
+class ReaderHtmlTests(SetCopyTest):
+    """--reader-html (build_store.attach_reader_html): each article's revision with its passages marked.
+
+    The Widget lemma's body here is synthetic: a hatnote, the four passages (the bound's text runs
+    through a link, so it is three marks; the conjecture holds a citation marker and a formula, each
+    wrapped whole) and a reference list. The records are given the spans and span_sha256 of those
+    passages on the body's layer, and sources.jsonl the layer's sha256, as an export pins them.
+    A passage with no status is never marked, so the conjecture, unresolved in the fixture, is a
+    statement-only exact match here (locate_conjecture); unlocate_conjecture puts it back.
+    """
+
+    STYLE = ('<style data-mw-deduplicate="TemplateStyles:r1">.mw-parser-output .hatnote{font-style:italic}'
+             '@media screen{body.ns-0 .mw-parser-output .navbox+.navbox{margin-top:-1px}}</style>')
+    FORMULA = ('<span class="mwe-math-element mwe-math-element-inline"><span class="mwe-math-mathml-a11y">'
+               '<math xmlns="http://www.w3.org/1998/Math/MathML" alttext="{\\displaystyle x^{2}}"><semantics><mrow>'
+               '<msup><mi>x</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">{\\displaystyle x^{2}}'
+               '</annotation></semantics></math></span></span>')
+    TEXTS = {"3fa91c07": "every finite widget admits a spanning gadget",
+             "5b0e44a1": "Moreover, the number of spanning gadgets of a widget is at most its rank.",
+             "91aa02de": "a widget is balanced if every gadget has equal weight",
+             "0c4d77b1": "every balanced widget is the image of a regular one,[3] x2{\\displaystyle x^{2}} ."}
+    STATUS = {"3fa91c07": "formalized", "5b0e44a1": "statement_only", "91aa02de": "not_formalized",
+              "0c4d77b1": "statement_only"}
+    IDS = {hex_: f"enwiki-1001-2002::In-text #{hex_}" for hex_ in TEXTS}
+    # A Commons file and an English Wikipedia upload as a body fetches them, and the licences the
+    # entry names for them (made up).
+    COMMONS = "https://upload.wikimedia.org/wikipedia/commons/a/ab/Widget_diagram.svg"
+    COMMONS_THUMB = "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ab/Widget_diagram.svg/220px-Widget_diagram.svg.png"
+    EN_THUMB = ("https://thumb.wikimedia.org/wikipedia/en/thumb/9/99/Gadget_icon.svg/40px-Gadget_icon.svg.png"
+                "?utm_source=en.wikipedia.org&utm_campaign=parser")
+    # Every file carries its file page's restrictions ([] for none), and an English Wikipedia upload
+    # also its categories, as the API lists them.
+    FREE = ["Category:All free media"]
+    # Each file's credit as the page lists it: its author as its file page names them, and a link to
+    # the licence where the licence has a text of its own (made up, as every value here).
+    CC_BY_SA_4 = "https://creativecommons.org/licenses/by-sa/4.0/"
+    NO_CREDIT = {"licence_url": None, "author": None}
+    IMAGES = {"Widget_diagram.svg": {"project": "commons", "licence": "CC BY-SA 4.0", "licence_id": "cc-by-sa-4.0",
+                                     "licence_url": CC_BY_SA_4, "author": "A. Widgetmaker", "restrictions": []},
+              "Gadget_icon.svg": {"project": "en", "licence": "Public domain", "licence_id": "pd", **NO_CREDIT,
+                                  "restrictions": [], "categories": FREE}}
+
+    def mark(self, hex_: str, inner: str, first: bool = True) -> str:
+        anchor = f' id="p-{hex_}"' if first else ""
+        return f'<mark class="atl" data-p="{hex_}" data-status="{self.STATUS[hex_]}"{anchor}>{inner}</mark>'
+
+    def body(self, omit: tuple[str, ...] = ()) -> str:
+        m = (lambda h, inner, first=True: inner if h in omit else self.mark(h, inner, first))
+        return (f'<div class="mw-parser-output">{self.STYLE}\n'
+                '<div role="note" class="hatnote">For gadgets, see <a href="/atlas/1003/Gadget_(mathematics)">'
+                'Gadget (mathematics)</a>.</div>\n'
+                f'<p>The widget lemma states that {m("3fa91c07", "every finite widget admits a spanning gadget")} '
+                'of minimal degree.<sup class="reference" id="cite_ref-1"><a href="#cite_note-1">[1]</a></sup></p>\n'
+                '<h2 id="Definitions">Definitions</h2>\n'
+                f'<p>In this article, {m("91aa02de", "a widget is balanced if every gadget has equal weight")}.</p>\n'
+                '<h2 id="Statement">Statement</h2>\n'
+                f'<p>{m("5b0e44a1", "Moreover, the number of ")}<a href="https://en.wikipedia.org/wiki/Spanning_tree" '
+                f'target="_blank" rel="noopener noreferrer">{m("5b0e44a1", "spanning gadgets", False)}</a>'
+                f'{m("5b0e44a1", " of a widget is at most its rank.", False)}</p>\n'
+                f'<ul><li>{m("0c4d77b1", "every balanced widget is the image of a regular one,")}'
+                f'{m("0c4d77b1", "<sup class=\"reference\"><a href=\"#cite_note-3\">[3]</a></sup>", False)} '
+                f'{m("0c4d77b1", self.FORMULA, False)} {m("0c4d77b1", ".", False)}</li></ul>\n'
+                '<ol class="references"><li id="cite_note-1"><span class="reference-text">A. Smith, <i>Widgets</i> '
+                '&amp; gadgets (2020).</span></li></ol>\n</div>')
+
+    @staticmethod
+    def layer_of(html_text: str) -> str:
+        """The layer the way a reader would compute it by hand: tags and style out, references decoded."""
+        import html as html_lib
+        text = re.sub(r"<style\b[^>]*>.*?</style>", "", html_text, flags=re.S)
+        return re.sub(r"\s+", " ", html_lib.unescape(re.sub(r"<[^>]+>", "", text))).strip()
+
+    def setUp(self):
+        super().setUp()
+        self.layer = self.layer_of(self.body())
+        self.spans = {}
+        for hex_, text in self.TEXTS.items():
+            start = self.layer.index(text)
+            self.assertEqual(self.layer.count(text), 1, text)
+            self.spans[hex_] = [start, start + len(text)]
+        layer_sha = hashlib.sha256(self.layer.encode("utf-8")).hexdigest()
+        sources = self.set / "sources.jsonl"
+        rows = [json.loads(line) for line in sources.read_text(encoding="utf-8").splitlines()]
+        rows[0]["layer_sha256"] = layer_sha
+        sources.write_text("".join(make_fixture.dumps(row) + "\n" for row in rows), encoding="utf-8")
+        self.source = rows[0]
+
+        def place(rows):
+            for row in rows:
+                hex_ = row["id"].rsplit("#", 1)[1]
+                ext = row["subject"][0]["extensions"][LOCATE]
+                ext["span"] = self.spans[hex_]
+                ext["layer_sha256"] = layer_sha
+                ext["span_sha256"] = hashlib.sha256(self.TEXTS[hex_].encode("utf-8")).hexdigest()
+        self.edit_widget(place)
+        self.edit_widget(self.locate_conjecture)
+
+    def locate_conjecture(self, rows: list[dict]) -> None:
+        """Make the conjecture's unresolved record an exact match to a statement-only declaration."""
+        bound = next(row for row in rows if row["id"] == self.IDS["5b0e44a1"])
+        for row in rows:
+            if row["id"] == self.IDS["0c4d77b1"]:
+                end = json.loads(json.dumps(bound["object"][0]))
+                end["location"]["declaration"] = "TauCeti.Widget.balanced_is_regular_image"
+                row.update(object=[end], relation="exactMatch", status="statement_only")
+                row["extensions"][LOCATE].update(rank=1, confidence="medium",
+                                                 location_key=hashlib.sha256(b"the conjecture's location").hexdigest())
+
+    def unlocate_conjecture(self) -> None:
+        """The conjecture as the fixture has it: one unresolved record, a passage with no status."""
+        original = next(row for row in read_jsonl(RECORDSET / "records/enwiki-1001-2002.jsonl")
+                        if row["id"] == self.IDS["0c4d77b1"])
+
+        def restore(rows):
+            for i, row in enumerate(rows):
+                if row["id"] == self.IDS["0c4d77b1"]:
+                    placed = row["subject"][0]["extensions"][LOCATE]
+                    back = json.loads(json.dumps(original))
+                    back["subject"][0]["extensions"][LOCATE].update(
+                        {key: placed[key] for key in ("span", "layer_sha256", "span_sha256")})
+                    rows[i] = back
+        self.edit_widget(restore)
+
+    def entry(self, html_text: str | None = None, **change) -> dict:
+        html_text = self.body() if html_text is None else html_text
+        return {"source_id": "enwiki-1001-2002", "revision": 2002, "html_sha256": self.source["html_sha256"],
+                "layer_sha256": self.source["layer_sha256"], "renderer": "web-html/1", "html": html_text,
+                "unplaced": [], **change}
+
+    def side_file(self, *entries: tuple[str, dict], schema: str = build_store.READER_HTML_SCHEMA) -> Path:
+        path = self.tmp / "reader-html.json"
+        path.write_text(json.dumps({"schema": schema, "articles": dict(entries)}, ensure_ascii=False), encoding="utf-8")
+        return path
+
+    def build_with(self, path: Path) -> dict[str, bytes]:
+        return build_store.build(self.set, supplements=build_store.Supplements.read(reader_html=path))
+
+    def refuse_html(self, fragment: str, html_text: str | None = None, **change) -> None:
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.build_with(self.side_file(("1001", self.entry(html_text, **change))))
+        self.assertIn(fragment, str(caught.exception))
+
+    # ---- present, absent --------------------------------------------------------------------
+
+    def test_without_the_side_file_the_store_is_the_plain_build(self):
+        self.assertIsNone(build_store.Supplements.read(reader_html=None))
+        tree = build_store.build(self.set)
+        self.assertFalse([name for name in tree if "/reader/" in name])
+        self.assertNotIn(b'"reader":', tree["atlas/v1/articles/1001.json"])
+
+    def test_the_marked_revision_is_stored_where_it_checks_out(self):
+        plain = build_store.build(self.set)
+        html_text = self.body()
+        path = self.side_file(("1001", self.entry()), ("9", self.entry(source_id="enwiki-9-9")))
+        tree = self.build_with(path)
+        data = html_text.encode("utf-8")
+        self.assertEqual(tree["atlas/v1/reader/1001.html"], data)
+        self.assertEqual(sorted(set(tree) - set(plain)), ["atlas/v1/reader/1001.html"])
+        view = json.loads(tree["atlas/v1/articles/1001.json"])
+        self.assertEqual(view["reader"], {"sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data), "marks": 9,
+                                          "passages": 4, "unplaced": []})
+        sha = hashlib.sha256(path.read_bytes()).hexdigest()
+        self.assertEqual(view["supplements"], {"reader_html": {"schema": build_store.READER_HTML_SCHEMA, "sha256": sha}})
+        self.assertNotIn("reader", json.loads(tree["atlas/v1/articles/1003.json"]))
+        current = json.loads(tree["atlas/v1/current.json"])
+        self.assertEqual(current["supplements"]["reader_html"],
+                         {"schema": build_store.READER_HTML_SCHEMA, "sha256": sha, "articles": 1, "passages": 4, "marks": 9})
+        manifest = json.loads(tree["atlas/v1/manifest.json"])
+        self.assertEqual(manifest["files"]["atlas/v1/reader/1001.html"],
+                         {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+        keys = ("reader", "supplements")
+        self.assertEqual(SupplementTests.without(view, keys), json.loads(plain["atlas/v1/articles/1001.json"]))
+        self.assertEqual(SupplementTests.without(current, keys), json.loads(plain["atlas/v1/current.json"]))
+        for name in plain:
+            if "/articles/" not in name and not name.endswith(("current.json", "manifest.json")):
+                self.assertEqual(tree[name], plain[name], name)
+        # The same inputs build the same bytes.
+        self.assertEqual(self.build_with(path), tree)
+
+    def test_a_passage_with_no_status_is_never_marked(self):
+        # It gets no highlight until it is read: its marks are refused, and unplaced lists it.
+        self.unlocate_conjecture()
+        unmarked = self.body(omit=("0c4d77b1",))
+        listed = [{"item": "In-text #0c4d77b1", "reason": "no status: not highlighted until it is read"}]
+        tree = self.build_with(self.side_file(("1001", self.entry(unmarked, unplaced=listed))))
+        reader = json.loads(tree["atlas/v1/articles/1001.json"])["reader"]
+        self.assertEqual((reader["passages"], reader["marks"], reader["unplaced"]), (3, 5, [self.IDS["0c4d77b1"]]))
+        for status in ("unresolved", "statement_only"):
+            with self.subTest(status=status):
+                marked = self.body().replace('data-p="0c4d77b1" data-status="statement_only"',
+                                             f'data-p="0c4d77b1" data-status="{status}"')
+                self.refuse_html("a mark on a passage with no status (it gets no highlight until it is read; "
+                                 "unplaced lists it)", marked, unplaced=listed)
+
+    def test_a_passage_left_unmarked_is_unplaced_and_must_be_listed(self):
+        html_text = self.body(omit=("0c4d77b1",))
+        listed = [{"item": "In-text #0c4d77b1", "reason": "the proof named it"}]
+        tree = self.build_with(self.side_file(("1001", self.entry(html_text, unplaced=listed))))
+        reader = json.loads(tree["atlas/v1/articles/1001.json"])["reader"]
+        self.assertEqual((reader["passages"], reader["marks"], reader["unplaced"]), (3, 5, [self.IDS["0c4d77b1"]]))
+        self.refuse_html("unplaced must list, as {item, reason}, exactly the passages the html leaves unmarked", html_text)
+        self.refuse_html("unplaced must list", unplaced=listed)
+
+    # ---- refused -----------------------------------------------------------------------------
+
+    def test_marks_that_are_not_their_passages_are_refused(self):
+        body = self.body()
+        first = self.mark("3fa91c07", "every finite widget admits a spanning gadget")
+        cases = [
+            # The text must be the revision's, every character.
+            (body.replace("minimal degree", "maximal degree"), "is not the revision's layer (layer_sha256)"),
+            (body.replace("&amp; gadgets", "&amp;amp; gadgets"), "is not the revision's layer"),
+            # A mark one character late or early covers text outside the span.
+            (body.replace(f"{first} of minimal", first[:-7] + " o</mark>f minimal"), "its marks cover layer["),
+            (body.replace(f"states that {first}", "states tha" + first.replace(">every", ">t every", 1)), "its marks cover layer["),
+            # A piece of the passage left unmarked between two of its marks.
+            (body.replace('<a href="https://en.wikipedia.org/wiki/Spanning_tree" target="_blank" rel="noopener noreferrer">'
+                          + self.mark("5b0e44a1", "spanning gadgets", False),
+                          '<a href="https://en.wikipedia.org/wiki/Spanning_tree" target="_blank" rel="noopener noreferrer">'
+                          "spanning gadgets"), "leave text of the passage unmarked"),
+            (body.replace('data-p="91aa02de" data-status="not_formalized"', 'data-p="91aa02de" data-status="partial"'),
+             "a mark's data-status is not its passage's status"),
+            (body.replace('data-p="91aa02de"', 'data-p="deadbeef"'), "a mark's data-p names no passage of this article"),
+            (body.replace(f"{first} of minimal", first.replace("spanning gadget", self.mark("91aa02de", "spanning gadget", False))
+                          + " of minimal"), "a mark is nested in another"),
+            (body.replace("weight</mark>.</p>", "weight.</p><p></mark>"), "crosses an element boundary"),
+            (body.replace(' id="p-3fa91c07"', ""), 'its first mark carries id="p-3fa91c07"'),
+            (body.replace('data-status="statement_only">spanning', 'data-status="statement_only" id="p-5b0e44a1">spanning'),
+             "only a passage's first mark carries its id"),
+            (body.replace(' id="p-3fa91c07">', ' id="p-3fa91c07" title="x">'), 'a mark carries class="atl", data-p'),
+        ]
+        for html_text, fragment in cases:
+            with self.subTest(fragment=fragment):
+                self.assertNotEqual(html_text, body)
+                self.refuse_html(fragment, html_text)
+
+    def test_html_a_page_must_not_serve_is_refused(self):
+        body = self.body()
+        end = "\n</div>"
+        cases = [
+            ('<script>alert(1)</script>', "a <script> element is not allowed in reader HTML"),
+            ('<iframe src="https://example.org/"></iframe>', "a <iframe> element is not allowed"),
+            ('<form action="/x"></form>', "a <form> element is not allowed"),
+            ('<p onclick="steal()">x</p>', "the onclick attribute (on a <p>) is not allowed"),
+            ('<a href="javascript:steal()">x</a>', "a href must be an in-page fragment, an http(s) page or an atlas article"),
+            ('<a href="//evil.example/">x</a>', "a href must be"),
+            ('<a href="https://example.org/" target="_blank">x</a>', 'target="_blank" and rel noopener'),
+            ('<img src="https://evil.example/x.png" alt="">', "a <img> src must be https on https://upload.wikimedia.org/"),
+            ('<img src="https://upload.wikimedia.org/a.png" srcset="//thumb.wikimedia.org/b.png 2x" alt="">', "a srcset URL must be"),
+            ('<span style="background:url(https://evil.example/)">x</span>', "a style attribute holds url()"),
+            ('<div style="position: fixed; inset: 0">x</div>', "a style attribute holds"),
+            ('<style>body{display:none}</style>', "the selector 'body' is not scoped to .mw-parser-output"),
+            ('<style>.mw-parser-output ~ footer{display:none}</style>', "is not scoped to .mw-parser-output"),
+            ('<style>@import url(https://upload.wikimedia.org/x.css);</style>', "a style element holds @import"),
+            ('<style>.mw-parser-output .x{background:url("//evil.example/x.png")}</style>', "a style element fetches"),
+            ('<style>@font-face{font-family:x}</style>', "the at-rule '@font-face' is not allowed"),
+            ('<!-- a comment -->', "a comment (the canonical body has none)"),
+            ('<div id="atlr-panel">x</div>', "the id 'atlr-panel' is the page's own"),
+            ('<span id="p-3fa91c07">x</span>', "the id 'p-3fa91c07' is the page's own"),
+            ('<span/>', "a self-closing <span/>"),
+            ('<math xlink:href="javascript:x()"><mi>x</mi></math>', "the xlink:href attribute"),
+        ]
+        for extra, fragment in cases:
+            with self.subTest(fragment=fragment):
+                self.refuse_html(fragment, body.replace(end, extra + end))
+        # The ones that add no text leave the layer alone: refused for themselves, not for that.
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.build_with(self.side_file(("1001", self.entry(body.replace(end, '<p onclick="x()"></p>' + end)))))
+        self.assertNotIn("layer_sha256", str(caught.exception))
+
+    def test_markup_a_browser_reads_differently_is_refused(self):
+        # html.parser reads a <style> as CSS wherever it is, and keeps every element where its tags
+        # are; a browser does neither inside MathML, and moves, closes and reopens elements by
+        # HTML's tree rules. What the builder checks must be what the page holds.
+        body = self.body()
+        end = "\n</div>"
+        wm = "https://upload.wikimedia.org/x.png"
+        cases = [
+            ("<math><style><img src=x onerror=alert(1)></style></math>", "a style element inside a formula"),
+            ("<math><mrow><style><img src=x onerror=alert(1)></style></mrow></math>", "a style element inside a formula"),
+            ('<math><semantics><mrow></mrow><annotation encoding="application/x-tex"><style><b>x</b></style>'
+             "</annotation></semantics></math>", "a style element inside a formula"),
+            ("<math><mi><style>.mw-parser-output a{x:y}</style></mi></math>", "a style element inside a formula"),
+            ("<math><mrow><b>x</b></mrow></math>", "a <b> inside a formula"),
+            ("<style>.mw-parser-output a{x:y}<img></style>", "a style element holds '<'"),
+            ("<mi>x</mi>", "a <mi> outside a formula"),
+            ("<div>", "an element is never closed (<div>)"),
+            ("<table><tbody><tr><td>", "a </div> closes a <div> with a <td> still open inside it"),
+            ('<a href="https://evil.example/">', "a </div> closes a <div> with a <a> still open inside it"),
+            ("<p><b>x</p></b>", "a </p> closes a <p> with a <b> still open inside it"),
+            ("<b><p>x</b></p>", "a </b> closes a <b> with a <p> still open inside it"),
+            ("<p>x</br></p>", "an end tag </br> of a void element"),
+            ('<a href="#a">x<a href="#b">y</a></a>', "a link inside a link"),
+            ("<p><span><div>x</div></span></p>", "a <div> inside a <p>"),
+            ("<h3><h4>x</h4></h3>", "a heading inside a heading"),
+            ("<ul><li><li>x</li></li></ul>", "a <li> inside a <li> of the same list"),
+            ("<dl><dd><dt>x</dt></dd></dl>", "a <dt> inside a <dd> of the same list"),
+            (f'<table><tbody><tr><td></td></tr></tbody><img src="{wm}" alt=""></table>',
+             "a <img> directly in a <table>"),
+            ("<table><tbody><tr>x<td></td></tr></tbody></table>", "text directly in a <tr>"),
+            ("<div><td>x</td></div>", "a <td> outside its place in a table"),
+            (f'<img name="getElementById" src="{wm}" alt="">', "the name attribute (on a <img>) is not allowed"),
+            (f'<img src="{wm}" alt="" referrerpolicy="unsafe-url">', "a referrerpolicy must be no-referrer"),
+            ('<video autoplay src="https://upload.wikimedia.org/x.webm"></video>', "the autoplay attribute"),
+            (f'<a href="{wm}" download>x</a>', "the download attribute"),
+            ("<span>\x00</span>", "html holds a control character"),
+        ]
+        for extra, fragment in cases:
+            with self.subTest(fragment=fragment, extra=extra):
+                self.refuse_html(fragment, body.replace(end, extra + end))
+        # Left open at the very end, an element runs on into the page around the article.
+        for extra, fragment in (("<table><tbody><tr><td>", "an element is never closed (<tbody>, <tr>, <td>)"),
+                                ('<a href="https://evil.example/">', "an element is never closed (<a>)")):
+            with self.subTest(fragment=fragment):
+                self.refuse_html(fragment, body + extra)
+
+    # ---- what a browser does that html.parser cannot see: requests, paths, the page's own classes ----
+
+    def builds(self, html_text: str, **change) -> dict[str, bytes]:
+        return self.build_with(self.side_file(("1001", self.entry(html_text, **change))))
+
+    def test_an_attribute_outside_the_reader_list_is_refused(self):
+        # An attribute is allowed only by name (READER_ATTRS, data-*, aria-*): a browser may give a
+        # new one an effect. attributionsrc makes Chromium send a request to the hosts it names.
+        body = self.body()
+        end = "\n</div>"
+        wm = "https://upload.wikimedia.org/x.png"
+        cases = [
+            (f'<img src="{wm}" attributionsrc="https://evil.example/r" alt="">', "the attributionsrc attribute (on a <img>)"),
+            (f'<img src="{wm}" attributionsrc alt="">', "the attributionsrc attribute (on a <img>)"),
+            ('<a href="https://example.org/" attributionsrc="https://evil.example/r"></a>', "the attributionsrc attribute (on a <a>)"),
+            (f'<img src="{wm}" browsingtopics alt="">', "the browsingtopics attribute (on a <img>)"),
+            (f'<img src="{wm}" sharedstoragewritable alt="">', "the sharedstoragewritable attribute (on a <img>)"),
+            (f'<img src="{wm}" lowsrc="https://evil.example/l.png" alt="">', "the lowsrc attribute (on a <img>)"),
+            (f'<img src="{wm}" usemap="#m" alt="">', "the usemap attribute (on a <img>)"),
+            (f'<img src="{wm}" crossorigin="use-credentials" alt="">', "the crossorigin attribute (on a <img>)"),
+            ('<span popovertarget="atlr-panel"></span>', "the popovertarget attribute (on a <span>)"),
+            ('<a href="#x" interestfor="atlr-panel"></a>', "the interestfor attribute (on a <a>)"),
+            # The name is read as written, entity and all, by html.parser and a browser alike.
+            (f'<img src="{wm}" o&#110;error="alert(1)" alt="">', "the o&#110;error attribute (on a <img>)"),
+        ]
+        for extra, fragment in cases:
+            with self.subTest(extra=extra):
+                self.refuse_html(fragment + " is not allowed", body.replace(end, extra + end))
+        # What Wikipedia's parse HTML and its MathML carry still builds, data-* and aria-* among it.
+        kept = (f'<figure typeof="mw:File/Thumb"><span><img src="{self.COMMONS_THUMB}" srcset="{self.COMMONS} 2x" decoding="async" '
+                f'loading="lazy" width="220" height="165" data-file-width="400" data-file-height="300" class="mw-file-element" '
+                'alt="" referrerpolicy="no-referrer"></span></figure>'
+                '<table class="wikitable" border="1" cellpadding="2" role="presentation"><tbody><tr align="center" valign="top">'
+                '<th scope="col" colspan="2" rowspan="1" data-sort-value="1"></th></tr></tbody></table>'
+                '<span aria-hidden="true" title="" lang="la" dir="ltr" data-mw-x="1"></span>'
+                '<math xmlns="http://www.w3.org/1998/Math/MathML" display="block" alttext="x"><mstyle displaystyle="true" '
+                'scriptlevel="0" mathcolor="#000"><mo stretchy="false" fence="true" form="prefix" lspace="0" rspace="0" '
+                'minsize="1.2em" maxsize="1.2em" symmetric="true" movablelimits="false" accent="false"></mo>'
+                '<mtable columnalign="left" columnspacing="1em" rowspacing="4pt" rowlines="none" columnlines="none">'
+                '</mtable><mpadded width="0" height="0" depth="0"></mpadded><mfrac linethickness="0"></mfrac>'
+                '<menclose notation="box"></menclose></mstyle></math>')
+        self.builds(body.replace(end, kept + end), images={"Widget_diagram.svg": self.IMAGES["Widget_diagram.svg"]})
+        listed = build_store.READER_ATTRS
+        self.assertFalse(listed & build_store.READER_ACTIVE_ATTRS)
+        self.assertFalse([name for name in listed if name.startswith("on") or ":" in name or name == "name"])
+        self.assertFalse([name for name in ("href", "src", "srcset", "poster", "cite", "style", "id", "class") if name not in listed])
+
+    def test_an_atlas_link_keeps_to_the_slug_grammar(self):
+        # /atlas/<pageid>[/<slug>], the slug one path segment as atlasSlug writes it. A browser
+        # removes dot segments, %2e ones too, so /atlas/1/../../stats is /stats: a link would
+        # leave the atlas for another path of the site. html.parser decodes the attribute first,
+        # as the browser does.
+        body = self.body()
+        end = "\n</div>"
+        refused = [
+            "/atlas/1/../../stats", "/atlas/1/%2e%2e/%2e%2e/stats", "/atlas/1/%2E%2e/stats", "/atlas/1/.%2e/x",
+            "/atlas/1/Gadget/../../stats", "/atlas/1003/Gadget_(mathematics)/x", "/atlas/1/", "/atlas/1//stats",
+            "/atlas/1/Gadget?view=cards", "/atlas/1/Gadget\\..\\..\\stats", "/atlas/1/.\t./stats", "/atlas/1/%2", "/atlas/x",
+            "/atlas/1/&#46;&#46;/&#46;&#46;/stats",
+        ]
+        for href in refused:
+            with self.subTest(href=href):
+                self.refuse_html("a link into the atlas is /atlas/<pageid> or /atlas/<pageid>/<slug>",
+                                 body.replace(end, f'<a href="{href}"></a>' + end))
+        # A whole segment that is a dot segment: a browser resolves /atlas/1/.. to /atlas/.
+        for href in ("/atlas/1/..", "/atlas/1/.", "/atlas/1/%2e", "/atlas/1/%2E%2E", "/atlas/1/.%2E", "/atlas/1/..#p-3fa91c07"):
+            with self.subTest(href=href):
+                self.refuse_html("a link into the atlas has a dot segment", body.replace(end, f'<a href="{href}"></a>' + end))
+        # What atlasSlug writes builds: the bare page id, escapes, and a fragment.
+        for href in ("/atlas/1003", "/atlas/1003/Gadget_(mathematics)", "/atlas/1003/M%C3%B6bius_strip#Properties",
+                     "/atlas/1003/Euler's_identity", "/atlas/1003/1%2F2_%2B_1%2F4", "/atlas/1003/..._(ellipsis)"):
+            with self.subTest(href=href):
+                self.builds(body.replace(end, f'<a href="{href}"></a>' + end))
+
+    def test_a_link_to_this_site_itself_is_refused(self):
+        # The reader reaches the site only through atlas articles: an absolute link to its own
+        # host reaches every other path of it. A host is plain ASCII, so no escape, user or
+        # backslash reads as another host to the check and as this one to a browser.
+        body = self.body()
+        end = "\n</div>"
+        for href in ("https://wikilean.jackmccarthy.org/stats", "http://wikilean.jackmccarthy.org/stats",
+                     "https://WikiLean.JackMcCarthy.org./stats", "https://wikilean.jackmccarthy.org:443/stats",
+                     "https://wikilean.jackmccarthy.org", "https://wikilean.jackmccarthy.org?x", "https://wikilean.jackmccarthy.org#x"):
+            with self.subTest(href=href):
+                self.refuse_html("a link to this site itself", body.replace(end, f'<a href="{href}"></a>' + end))
+        for href in ("https://wikilean.jackmccarthy.org\\@evil.example/", "https://evil.example\\@wikilean.jackmccarthy.org/",
+                     "https://x@wikilean.jackmccarthy.org/stats", "https://wikilean%2ejackmccarthy.org/stats",
+                     "https://wikilean。jackmccarthy。org/stats", "https://wikilean.jackmccarthy.org/st\tats",
+                     "https:/wikilean.jackmccarthy.org/stats", "https:wikilean.jackmccarthy.org/stats"):
+            with self.subTest(href=href):
+                self.refuse_html("a href must be an in-page fragment, an http(s) page or an atlas article",
+                                 body.replace(end, f'<a href="{href}"></a>' + end))
+        for href in ("https://en.wikipedia.org/wiki/Gadget", "http://example.org:8080/a?b=c#d", "https://wikilean.example.org/stats",
+                     "https://jackmccarthy.org/", "https://doi.org/10.1000/182"):
+            with self.subTest(href=href):
+                self.builds(body.replace(end, f'<a href="{href}"></a>' + end))
+
+    def test_the_pages_own_classes_are_refused(self):
+        # The article must not wear the page's classes: .atlr-peek and .atlr-fab are position:fixed
+        # over the page, .atlas-chip[data-filter] a filter control, .wl-header the sticky header.
+        body = self.body()
+        end = "\n</div>"
+        for value, token in (("atlr-fab atlas-chip", "atlr-fab"), ("x atlr-peek", "atlr-peek"), ("WL-header", "WL-header"),
+                             ("atlas-fb", "atlas-fb"), ("mw-parser-output\tatlr-panel", "atlr-panel")):
+            with self.subTest(value=value):
+                self.refuse_html(f"the class {token!r} is the page's own", body.replace(end, f'<div class="{value}"></div>' + end))
+        # Wikipedia's own, and a prefix only as a whole token's start.
+        self.builds(body.replace(end, '<div class="mw-halign-right skin-invert latlas-x x-atlr hatnote"></div>' + end))
+
+    def test_a_file_is_shown_only_with_its_licence_and_never_a_wikimedia_mark(self):
+        # Commons is free by its policy; an English Wikipedia upload may not be, so it is shown only
+        # with a free licence named. Every file the body fetches, a TemplateStyles url() included,
+        # is named in `images`, which the view lists for the page's attribution.
+        body = self.body()
+        end = "\n</div>"
+        lock = "https://upload.wikimedia.org/wikipedia/commons/6/65/Lock-green.svg"
+        media = (f'<figure typeof="mw:File/Thumb"><a href="https://en.wikipedia.org/wiki/File:Widget_diagram.svg" '
+                 f'target="_blank" rel="noopener noreferrer"><img src="{self.COMMONS_THUMB}" srcset="{self.COMMONS} 2x" '
+                 f'alt=""></a><figcaption></figcaption></figure><span typeof="mw:File"><img src="{self.EN_THUMB}" alt="">'
+                 '</span><video poster="https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Spin.webm/220px--Spin.webm.jpg" '
+                 'controls preload="none"><source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c6/Spin.webm/'
+                 'Spin.webm.480p.vp9.webm" type="video/webm"></video>'
+                 f'<style>.mw-parser-output .lock a{{background:url("{lock}")right 0.1em center/9px no-repeat}}</style>')
+        # Spin.webm's licence has no id and is free by its name; it asks for its author's name.
+        images = {**self.IMAGES, "Spin.webm": {"project": "commons", "licence": "Attribution", "licence_id": None,
+                                               "licence_url": None, "author": "B. Spinner", "restrictions": []},
+                  "Lock-green.svg": {"project": "commons", "licence": "Public domain", "licence_id": "pd",
+                                     **self.NO_CREDIT, "restrictions": ["personality"]}}
+        html_text = body.replace(end, media + end)
+        tree = self.builds(html_text, images=images)
+        self.assertEqual(tree["atlas/v1/reader/1001.html"], html_text.encode("utf-8"))
+        self.assertEqual(json.loads(tree["atlas/v1/articles/1001.json"])["reader"]["images"], [
+            {"file": "Gadget_icon.svg", "project": "en", "licence": "Public domain", "licence_url": None, "author": None},
+            {"file": "Lock-green.svg", "project": "commons", "licence": "Public domain", "licence_url": None, "author": None},
+            {"file": "Spin.webm", "project": "commons", "licence": "Attribution", "licence_url": None,
+             "author": "B. Spinner"},
+            {"file": "Widget_diagram.svg", "project": "commons", "licence": "CC BY-SA 4.0", "licence_url": self.CC_BY_SA_4,
+             "author": "A. Widgetmaker"}])
+        # A body that shows no file has no list.
+        self.assertNotIn("images", json.loads(self.builds(body)["atlas/v1/articles/1001.json"])["reader"])
+
+        def refuse(fragment, extra="", **listed):
+            self.refuse_html(fragment, body.replace(end, extra + end), images=listed.get("images", images))
+
+        en = f'<span typeof="mw:File"><img src="{self.EN_THUMB}" alt=""></span>'
+        refuse("images names no licence for File:Gadget_icon.svg (an English Wikipedia upload)", en, images={})
+        refuse("File:Gadget_icon.svg is an English Wikipedia upload without a free licence (licence_id 'cc-by-nc-4.0')", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "en", "licence": "CC BY-NC 4.0",
+                                           "licence_id": "cc-by-nc-4.0", "restrictions": [],
+                                           "categories": ["Category:All non-free media"]}})
+        refuse("File:Gadget_icon.svg is an English Wikipedia upload without a free licence (licence_id None)", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "en", "licence": None, "licence_id": None,
+                                           "restrictions": [], "categories": self.FREE}})
+        refuse("images names no licence for File:Gadget_icon.svg (an English Wikipedia upload)", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "commons", "licence": "PD", "licence_id": "pd",
+                                           "restrictions": []}})
+        refuse("File:Widget_diagram.svg's licence id 'cc-by-nc-sa-3.0' is not a free licence", f'<img src="{self.COMMONS}" alt="">',
+               images={"Widget_diagram.svg": {**self.NO_CREDIT, "project": "commons", "licence": "CC BY-NC-SA 3.0",
+                                              "licence_id": "cc-by-nc-sa-3.0", "restrictions": []}})
+        refuse("images names no licence for File:Widget_diagram.svg (a Commons file)", f'<img src="{self.COMMONS}" alt="">',
+               images={})
+        refuse("images lists File:Gadget_icon.svg, which the html does not show", "",
+               images={"Gadget_icon.svg": self.IMAGES["Gadget_icon.svg"]})
+        refuse("images[Gadget_icon.svg]: licence is the licence's printable name or null", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "en", "licence": "<b>PD</b>", "licence_id": "pd",
+                                           "restrictions": [], "categories": self.FREE}})
+        refuse("images names no licence for File:Gadget_icon.svg", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "en", "licence": "PD", "licence_id": "pd",
+                                           "restrictions": [], "categories": self.FREE, "note": "x"}})
+        # Every file names its restrictions; an English Wikipedia upload names its categories, and a
+        # Commons file names none.
+        refuse("images names no licence for File:Gadget_icon.svg (an English Wikipedia upload)", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "en", "licence": "Public domain", "licence_id": "pd",
+                                           "restrictions": []}})
+        refuse("images names no licence for File:Gadget_icon.svg (an English Wikipedia upload)", en,
+               images={"Gadget_icon.svg": {**self.NO_CREDIT, "project": "en", "licence": "Public domain", "licence_id": "pd",
+                                           "categories": self.FREE}})
+        refuse("images names no licence for File:Widget_diagram.svg (a Commons file)", f'<img src="{self.COMMONS}" alt="">',
+               images={"Widget_diagram.svg": {**self.NO_CREDIT, "project": "commons", "licence": "CC BY-SA 4.0",
+                                              "licence_id": "cc-by-sa-4.0"}})
+        refuse("images names no licence for File:Widget_diagram.svg (a Commons file)", f'<img src="{self.COMMONS}" alt="">',
+               images={"Widget_diagram.svg": {**self.IMAGES["Widget_diagram.svg"], "categories": self.FREE}})
+        for categories in ("Category:All free media", [3], ["All free media"], ["Category:<b>x</b>"],
+                           ["Category:x"] * 201):
+            with self.subTest(categories=str(categories)[:40]):
+                refuse("images[Gadget_icon.svg]: categories is the list of the upload's categories", en,
+                       images={"Gadget_icon.svg": {**self.IMAGES["Gadget_icon.svg"], "categories": categories}})
+        for restrictions in ("trademarked", [3], ["Trademarked"], ["trademarked", "trademarked"], ["x y"],
+                             ["personality"] * 17):
+            with self.subTest(restrictions=str(restrictions)[:40]):
+                refuse("images[Widget_diagram.svg]: restrictions is the list of the file page's restrictions",
+                       f'<img src="{self.COMMONS}" alt="">',
+                       images={"Widget_diagram.svg": {**self.IMAGES["Widget_diagram.svg"], "restrictions": restrictions}})
+        # A file page that marks a file trademarked makes it a mark whatever its name, its project or its
+        # licence; a restriction on its use (personality rights, say) does not make it non-free.
+        for name, project, url in (
+                ("Gadget_seal.svg", "commons", "https://upload.wikimedia.org/wikipedia/commons/7/7e/Gadget_seal.svg"),
+                ("Gadget_icon.svg", "en", self.EN_THUMB)):
+            with self.subTest(trademarked=name):
+                entry = {**(self.IMAGES["Widget_diagram.svg"] if project == "commons" else self.IMAGES["Gadget_icon.svg"]),
+                         "restrictions": ["personality", "trademarked"]}
+                refuse(f"File:{name}'s file page marks it trademarked, so it is a mark", f'<img src="{url}" alt="">',
+                       images={name: entry})
+        self.builds(body.replace(end, f'<img src="{self.COMMONS}" alt="">' + end),
+                    images={"Widget_diagram.svg": {**self.IMAGES["Widget_diagram.svg"], "restrictions": ["personality"]}})
+        # A free licence id alone does not make an upload free everywhere. This is the shape of the API's
+        # record of a photo English Wikipedia hosts under freedom of panorama (free in the United States
+        # only), the file made up: its licence id is free, its categories say what it is, and the reader
+        # leaves it out.
+        photo = "Gadget_tower_photo.jpg"
+        photo_url = "https://upload.wikimedia.org/wikipedia/en/thumb/4/4f/Gadget_tower_photo.jpg/220px-Gadget_tower_photo.jpg"
+        refuse(f"File:{photo} is an English Wikipedia upload that is not free everywhere (it is in "
+               "'Category:All free in US media')", f'<img src="{photo_url}" alt="">',
+               images={photo: {**self.NO_CREDIT, "project": "en", "licence": "CC-BY-SA-2.5", "licence_id": "cc-by-sa-2.5",
+                               "restrictions": [],
+                               "categories": ["Category:All free in US media", "Category:All free media",
+                                              "Category:Wikipedia files not suitable for Commons",
+                                              "Category:Wikipedia images using freedom of panorama"]}})
+        for barred in ("Category:Wikipedia files not suitable for Commons",
+                       "Category:Wikipedia images using freedom of panorama", "Category:All non-free media"):
+            with self.subTest(category=barred):
+                refuse(f"File:Gadget_icon.svg is an English Wikipedia upload that is not free everywhere (it is in "
+                       f"{barred!r})", en,
+                       images={"Gadget_icon.svg": {**self.IMAGES["Gadget_icon.svg"], "categories": [*self.FREE, barred]}})
+        refuse("File:Gadget_icon.svg is an English Wikipedia upload that is not free everywhere (it is not in "
+               "'Category:All free media')", en,
+               images={"Gadget_icon.svg": {**self.IMAGES["Gadget_icon.svg"], "categories": []}})
+        refuse("images must map each file the html shows", en, images=["Gadget_icon.svg"])
+        # A Commons file is shown only with a free licence named: by its id, or by its name when the API
+        # gives it no id. Hosting on Commons is not a licence (a file page whose licence template is
+        # broken gives the API none).
+        diagram = f'<img src="{self.COMMONS}" alt="">'
+        widget = self.IMAGES["Widget_diagram.svg"]
+        refuse("File:Widget_diagram.svg is a Commons file whose licence images does not name", diagram,
+               images={"Widget_diagram.svg": {**widget, "licence": None, "licence_id": None}})
+        refuse("File:Widget_diagram.svg's licence 'CC BY-NC-SA 3.0' has no licence id and is no free licence by its name",
+               diagram, images={"Widget_diagram.svg": {**widget, "licence": "CC BY-NC-SA 3.0", "licence_id": None}})
+        for name, author in (("GPL", "C. Coder"), ("LGPL", "C. Coder"), ("Copyrighted free use", None),
+                             ("Public domain", None)):
+            with self.subTest(free_by_name=name):
+                self.builds(body.replace(end, diagram + end), images={"Widget_diagram.svg": {
+                    **widget, "licence": name, "licence_id": None, "author": author,
+                    "licence_url": "https://www.gnu.org/licenses/gpl.html" if "GPL" in name else None}})
+        # The licences that ask for it: the author's name, and the licence's own page for those with a text.
+        refuse("File:Widget_diagram.svg is under CC BY-SA 4.0, which asks for its author's name with every copy, and "
+               "images names no author", diagram, images={"Widget_diagram.svg": {**widget, "author": None}})
+        refuse("File:Widget_diagram.svg is under Attribution, which asks for its author's name", diagram,
+               images={"Widget_diagram.svg": {**widget, "licence": "Attribution", "licence_id": None, "author": None,
+                                              "licence_url": None}})
+        refuse("File:Widget_diagram.svg is under CC BY-SA 4.0, whose terms ask for a link to the licence with every copy, "
+               "and images gives no licence_url", diagram, images={"Widget_diagram.svg": {**widget, "licence_url": None}})
+        refuse("File:Gadget_icon.svg is under Cc-by-sa-3.0, which asks for its author's name", en,
+               images={"Gadget_icon.svg": {**self.IMAGES["Gadget_icon.svg"], "licence": "Cc-by-sa-3.0",
+                                           "licence_id": "cc-by-sa-3.0"}})
+        # Every free licence but the public domain and CC0 asks for the author's name, whatever its id.
+        for licence_id in ("cc-by-2.0", "cc-by-sa-3.0-de", "gfdl-1.2", "gpl-2.0+", "lgpl", "fal", "ogl-3",
+                           "attribution"):
+            with self.subTest(attribution=licence_id):
+                refuse("which asks for its author's name", diagram,
+                       images={"Widget_diagram.svg": {**widget, "licence": "Some licence", "licence_id": licence_id,
+                                                      "author": None}})
+        for licence_id in ("pd", "pd-self", "cc0"):
+            with self.subTest(no_attribution=licence_id):
+                self.builds(body.replace(end, diagram + end), images={"Widget_diagram.svg": {
+                    **widget, "licence": "Some licence", "licence_id": licence_id, "author": None, "licence_url": None}})
+        for author in ("<b>A. Widgetmaker</b>", " A. Widgetmaker", "A.\nWidgetmaker", "x" * 301, 7, ""):
+            with self.subTest(author=str(author)[:40]):
+                refuse("images[Widget_diagram.svg]: author is the file's author as its file page credits them", diagram,
+                       images={"Widget_diagram.svg": {**widget, "author": author}})
+        for url in ("http://creativecommons.org/licenses/by-sa/4.0/", "https://evil.example/licenses/by-sa/4.0/",
+                    "https://creativecommons.org/licenses/by-sa/4.0/?x=1", "https://creativecommons.org.evil.example/",
+                    "https://creativecommons.org", "javascript:alert(1)", 3):
+            with self.subTest(licence_url=str(url)[:50]):
+                refuse("images[Widget_diagram.svg]: licence_url is the licence's own page, https on", diagram,
+                       images={"Widget_diagram.svg": {**widget, "licence_url": url}})
+        # The Wikimedia projects' marks and the Foundation's (logos, wordmarks, icons, the Wikipedia W),
+        # wherever they are hosted and however listed, whether or not "logo" is in the name.
+        for name, url in (
+                ("Commons-logo.svg", "https://thumb.wikimedia.org/wikipedia/en/thumb/4/4a/Commons-logo.svg/40px-Commons-logo.svg.png"),
+                ("Wiktionary-logo-en-v2.svg", "https://upload.wikimedia.org/wikipedia/commons/9/99/Wiktionary-logo-en-v2.svg"),
+                ("Wikiversity_logo_2017.svg", "https://upload.wikimedia.org/wikipedia/commons/0/0b/Wikiversity_logo_2017.svg"),
+                ("Wiki_letter_w_cropped.svg", "https://upload.wikimedia.org/wikipedia/commons/1/1c/Wiki_letter_w_cropped.svg"),
+                ("Wikipedia-W-bold-in-square.svg", "https://upload.wikimedia.org/wikipedia/commons/5/5a/Wikipedia-W-bold-in-square.svg"),
+                ("Wikipedia_wordmark.svg", "https://upload.wikimedia.org/wikipedia/commons/b/bb/Wikipedia_wordmark.svg"),
+                ("Wiktionary_small.svg", "https://upload.wikimedia.org/wikipedia/commons/f/f9/Wiktionary_small.svg"),
+                ("MediaWiki-2020-icon.svg", "https://upload.wikimedia.org/wikipedia/commons/a/a3/MediaWiki-2020-icon.svg"),
+                ("Wikimedia_Foundation_logo.svg", "https://upload.wikimedia.org/wikipedia/commons/8/81/Wikimedia_Foundation_logo.svg"),
+                ("Notification-icon-Wikipedia-logo.svg",
+                 "https://upload.wikimedia.org/wikipedia/commons/6/6d/Notification-icon-Wikipedia-logo.svg"),
+                ("WMF_logo.svg", "https://upload.wikimedia.org/wikipedia/commons/2/2e/WMF_logo.svg"),
+                ("CommonsLogo.svg", "https://upload.wikimedia.org/wikipedia/commons/3/3c/CommonsLogo.svg")):
+            with self.subTest(mark=name):
+                refuse(f"File:{name} is a Wikimedia logo or mark", f'<img src="{url}" alt="">',
+                       images={name: {**self.NO_CREDIT, "project": "commons", "licence": "CC BY-SA 3.0",
+                                      "licence_id": "cc-by-sa-3.0",
+                                      "restrictions": []}})
+        # A name is a mark's only as a project's name, not a longer word, and a project word needs a
+        # mark word beside it unless it is a project's own name.
+        for name in ("Wikipedian_gadget_chart.svg", "Commons_widget_area.svg", "Widget_icon.svg", "Metawidget_logo.svg"):
+            with self.subTest(not_a_mark=name):
+                self.builds(body.replace(end, f'<img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/{name}" alt="">' + end),
+                            images={name: {**self.NO_CREDIT, "project": "commons", "licence": "CC0", "licence_id": "cc0",
+                                           "restrictions": []}})
+        ws = "https://upload.wikimedia.org/wikipedia/commons/4/4c/Wikisource-logo.svg"
+        refuse("File:Wikisource-logo.svg is a Wikimedia logo or mark",
+               f'<style>.mw-parser-output .ws a{{background:url("{ws}")}}</style>', images={})
+        # A URL on an upload host that names no file is refused too.
+        refuse("a <img> fetches 'https://upload.wikimedia.org/math/x.png', which is no file of Wikimedia Commons",
+               '<img src="https://upload.wikimedia.org/math/x.png" alt="">', images={})
+        refuse("a <style> fetches 'https://upload.wikimedia.org/x.svg', which is no file",
+               '<style>.mw-parser-output .x{background:url("https://upload.wikimedia.org/x.svg")}</style>', images={})
+
+    def test_more_hostile_cases_stay_refused(self):
+        # Hostile cases this class did not yet hold by name, kept as named regressions (each was
+        # refused already, and stays refused).
+        body = self.body()
+        end = "\n</div>"
+        evil = "https://evil.example"
+        cases = [
+            (f'<meta http-equiv="refresh" content="0;url={evil}">', "a <meta> element is not allowed"),
+            (f'<base href="{evil}/">', "a <base> element is not allowed"),
+            ("<svg onload=alert(1)></svg>", "a <svg> element is not allowed"),
+            (f'<link rel="stylesheet" href="{evil}/x.css">', "a <link> element is not allowed"),
+            (f'<button formaction="{evil}/"></button>', "a <button> element is not allowed"),
+            ('<a href="&#106;avascript:alert(1)"></a>', "a href must be an in-page fragment"),
+            ('<a href="java\tscript:alert(1)"></a>', "a href must be an in-page fragment"),
+            ('<a href="JAVASCRIPT:alert(1)"></a>', "a href must be an in-page fragment"),
+            ('<a href=" javascript:alert(1)"></a>', "a href must be an in-page fragment"),
+            ('<a href="data:text/html,x"></a>', "a href must be an in-page fragment"),
+            ('<a href="/\\evil.example/"></a>', "a href must be an in-page fragment"),
+            ('<math href="javascript:alert(1)"><mi></mi></math>', "a href must be an in-page fragment"),
+            (f'<math><mi href="{evil}/"></mi></math>', "a href must be an in-page fragment"),
+            (f'<math><style><form action={evil}/><button>go</button></form></style></math>', "a style element inside a formula"),
+            (f'<math><style><link rel=stylesheet href={evil}/x.css></style></math>', "a style element inside a formula"),
+            ('<math><mtext><table><mglyph><style><img src=x onerror=alert(1)></style></mglyph></table></mtext></math>',
+             "a <table> inside a formula"),
+            ('<math><semantics><mrow></mrow><annotation-xml encoding="text/html"><img src=x onerror=alert(1)></annotation-xml>'
+             '</semantics></math>', "a <annotation-xml> element is not allowed"),
+            ('<noscript><p title="</noscript><img src=x onerror=alert(1)>"></p></noscript>', "a <noscript> element is not allowed"),
+            ('<noembed><p title="</noembed><img src=x onerror=alert(1)>"></p></noembed>', "a <noembed> element is not allowed"),
+            ("<xmp><img src=x onerror=alert(1)></xmp>", "a <xmp> element is not allowed"),
+            ("<template><img src=x onerror=alert(1)></template>", "a <template> element is not allowed"),
+            ("<textarea><img src=x onerror=alert(1)></textarea>", "a <textarea> element is not allowed"),
+            ("<title><img src=x onerror=alert(1)></title>", "a <title> element is not allowed"),
+            ("<details open ontoggle=alert(1)></details>", "a <details> element is not allowed"),
+            (f'<object data="{evil}/x"></object>', "a <object> element is not allowed"),
+            (f'<embed src="{evil}/x">', "a <embed> element is not allowed"),
+            (f'<math><mglyph src="{evil}/x.png"></mglyph></math>', "a <mglyph> element is not allowed"),
+            ('<style>.mw-parser-output a{content:"</style><img src=x onerror=alert(1)>"}</style>', "a style string is never closed"),
+            ('<img src="https://upload.wikimedia.org@evil.example/x.png" alt="">', "a <img> src must be https on"),
+            ('<img src="https://upload.wikimedia.org\\@evil.example/x.png" alt="">', "a <img> src must be https on"),
+            ('<img src="https://upload.wikimedia.org/x.png" srcset="https://upload.wikimedia.org/a.png 1x, '
+             f'{evil}/b.png 2x" alt="">', "a srcset URL must be https on"),
+            (f'<img src="https://upload.wikimedia.org/x.png" srcset="data:image/png;base64,AAAA 2x" alt="">', "a srcset URL must be"),
+            (f'<a href="https://example.org/" ping="{evil}/p"></a>', "the ping attribute (on a <a>) is not allowed"),
+            (f'<video poster="{evil}/p.png"></video>', "a <video> poster must be https on"),
+            (f'<video><source src="{evil}/v.webm"></video>', "a <source> src must be https on"),
+            (f'<video><track src="{evil}/t.vtt"></video>', "a <track> src must be https on"),
+            (f'<audio src="{evil}/a.mp3"></audio>', "a <audio> src must be https on"),
+            (f'<table background="{evil}/x.png"><tbody><tr><td></td></tr></tbody></table>', "the background attribute"),
+            ('<span style="width:expression(alert(1))"></span>', "a style attribute holds"),
+            ('<style>@layer x{.mw-parser-output .a{color:red}}</style>', "the at-rule '@layer x' is not allowed"),
+            ('<style>@container (min-width:1px){.mw-parser-output .a{color:red}}</style>', "the at-rule '@container"),
+            ("<style>@media screen{.wl-header{display:none}}</style>", "is not scoped to .mw-parser-output"),
+            ("<style>:where(.mw-parser-output) .a{color:red}</style>", "is not scoped to .mw-parser-output"),
+            ("<style>:root{--paper:red}</style>", "is not scoped to .mw-parser-output"),
+        ]
+        for extra, fragment in cases:
+            with self.subTest(extra=extra):
+                self.refuse_html(fragment, body.replace(end, extra + end))
+
+    def test_css_that_fetches_escapes_its_scope_or_hides_from_the_check_is_refused(self):
+        evil = "https://evil.example"
+        cases = [
+            # An escape spells a keyword or a function no pattern on the text would see.
+            (f'@\\69mport "{evil}/x.css"', "a CSS escape outside a string"),
+            (f".mw-parser-output a{{background:u\\72l({evil}/p.png)}}", "a CSS escape outside a string"),
+            (".mw-parser-output\\,body{x:y}", "a CSS escape outside a string"),
+            # The last statement needs no ';'.
+            (f'@import "{evil}/x.css"', "a style element holds @import"),
+            (".mw-parser-output a{x:y}@charset \"x\"", "stands outside any rule"),
+            # A string that is a URL, and url() however it is spelled.
+            (f'.mw-parser-output a{{background-image:image-set("{evil}/p.png" 1x)}}', "image-set()"),
+            (f'.mw-parser-output a{{background:-webkit-image-set("{evil}/p.png" 1x)}}', "image-set()"),
+            (f'.mw-parser-output a{{background:image("{evil}/p.png")}}', "image()"),
+            (f".mw-parser-output a{{background:URL({evil}/p.png)}}", f"a style element fetches '{evil}/p.png'"),
+            ('.mw-parser-output a{background:url("\\68ttps://evil.example/p.png")}',
+             f"a style element fetches '{evil}/p.png'"),
+            (".mw-parser-output a{content:attr(title)}", "attr()"),
+            # The scope inside a pseudo-class or an attribute matches elements outside the article.
+            (":not(.mw-parser-output){outline:5px solid red}", "is not scoped to .mw-parser-output"),
+            ("html:has(.mw-parser-output) .atlas-notice{display:none}", "is not scoped to .mw-parser-output"),
+            (":is(.mw-parser-output, body) .wl-header{display:none}", "is not scoped to .mw-parser-output"),
+            ('[title=".mw-parser-output"] ~ *{display:none}', "is not scoped to .mw-parser-output"),
+            (".mw-parser-output:is(*) ~ footer{display:none}", "is not scoped to .mw-parser-output"),
+            ("@media print{body{display:none}}", "the selector 'body' is not scoped"),
+            # CSS nesting reaches the article's siblings from inside a scoped rule.
+            (".mw-parser-output{& + footer{display:none}}", "nested in another rule"),
+            (".mw-parser-output{@media print{x:y}}", "nested in a rule"),
+            # Strings and comments must end.
+            ('.mw-parser-output a{content:"x}', "a style string is never closed"),
+            (".mw-parser-output a{x:y}/*", "a style comment is never closed"),
+        ]
+        for css, fragment in cases:
+            with self.subTest(css=css):
+                self.assertTrue(any(fragment in problem for problem in build_store.reader_css_problems(css)),
+                                build_store.reader_css_problems(css))
+        # Strings and comments hold what they like; escapes in a string are the string's.
+        good = ('.mw-parser-output .a::after{content:"\\a0 } { ;"}/* } { ; */.mw-parser-output .b{font-family:"x,y"}'
+                '.mw-parser-output :is(.c, .d) > .e{x:y}.mw-parser-output .f:not(.g, .h){x:y}')
+        self.assertEqual(build_store.reader_css_problems(good), [])
+        for value, ok in (("color:red;padding:0 4px", True), ('font-family:"a;b"', True),
+                          (f"background:u\\72l({evil}/p.png)", False), (f"background-image:image-set('{evil}' 1x)", False),
+                          (f"background:URL({evil})", False), ("position:sticky", False), ("x:y}body{x:y", False)):
+            with self.subTest(style=value):
+                self.assertEqual(build_store.reader_style_attr_problems(value) == [], ok)
+        # In the page: a style block that does not check out refuses the article.
+        body = self.body()
+        self.refuse_html("a CSS escape outside a string",
+                         body.replace("\n</div>", f'<style>@\\69mport "{evil}/x.css"</style>\n</div>'))
+        self.refuse_html("a CSS escape outside a string",
+                         body.replace("\n</div>", f'<span style="background:u\\72l({evil}/p.png)"></span>\n</div>'))
+
+    def test_a_passage_context_is_the_revisions_text_next_to_its_span(self):
+        # With the reader html the build has proven the revision's text layer (its sha256 is the
+        # records' layer_sha256), so a passage's context, which the page shows in grey as the same
+        # revision's text, must be that layer's text right before or after the passage's span. Without
+        # the reader html, only the context's shape is checked (SupplementTests).
+        def text_entry(hex_: str, **context: str) -> tuple[str, dict]:
+            text = self.TEXTS[hex_]
+            sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
+            entry = {"id": self.IDS[hex_], "pageid": 1001, "span_sha256": sha, "layer": text,
+                     "segments": [{"text": text}]}
+            for side, layer in context.items():
+                entry[side] = {"layer": layer, "segments": [{"text": layer}]}
+            return build_store.passage_key(1001, sha), entry
+
+        def passage_text(*entries: tuple[str, dict]) -> Path:
+            path = self.tmp / "passage-text.json"
+            path.write_text(json.dumps({"schema": build_store.PASSAGE_TEXT_SCHEMA, "passages": dict(entries)}),
+                            encoding="utf-8")
+            return path
+
+        reader = self.side_file(("1001", self.entry()))
+
+        def build(path: Path, with_reader: bool = True) -> dict[str, bytes]:
+            return build_store.build(self.set, supplements=build_store.Supplements.read(
+                passage_text=path, reader_html=reader if with_reader else None))
+
+        start = self.spans["3fa91c07"][0]
+        self.assertTrue(self.layer[:start].endswith("For gadgets, see Gadget (mathematics). The widget lemma states that "))
+        # The rest of the passage's sentence, and a context reaching back into the block before.
+        tree = build(passage_text(text_entry("3fa91c07", before="The widget lemma states that ", after=" of minimal degree."),
+                                  text_entry("91aa02de", before="Definitions In this article, ", after=".")))
+        texts = {p["id"]: p.get("text") for p in json.loads(tree["atlas/v1/articles/1001.json"])["passages"]}
+        self.assertEqual(texts[self.IDS["3fa91c07"]]["before"]["layer"], "The widget lemma states that ")
+        self.assertEqual(texts[self.IDS["3fa91c07"]]["after"]["layer"], " of minimal degree.")
+        self.assertEqual(texts[self.IDS["91aa02de"]]["before"]["layer"], "Definitions In this article, ")
+        cases = [
+            # One word off, with the record's quote prefix still where the context meets the passage.
+            ("91aa02de", "before", "Notations In this article, "),
+            ("3fa91c07", "before", "For widgets, see Gadget (mathematics). The widget lemma states that "),
+            # The article's own text, from elsewhere in it (the bound's record quotes no prefix or suffix).
+            ("5b0e44a1", "before", "The widget lemma states that "),
+            ("5b0e44a1", "after", " of minimal degree."),
+        ]
+        for hex_, side, layer in cases:
+            entry = text_entry(hex_, **{side: layer})
+            with self.subTest(passage=hex_, side=side, context=layer):
+                with self.assertRaises(build_store.AtlasError) as caught:
+                    build(passage_text(entry))
+                self.assertIn(f"--passage-text: passages[{entry[0]}]: {side}: is not the revision's text right {side} "
+                              "the passage", str(caught.exception))
+                # Without the reader html the build cannot see the layer: the shape alone is checked.
+                plain = json.loads(build(passage_text(entry), with_reader=False)["atlas/v1/articles/1001.json"])
+                self.assertEqual({p["id"]: p.get("text") for p in plain["passages"]}[self.IDS[hex_]][side]["layer"], layer)
+
+    def test_a_url_holding_a_space_a_browser_keeps_is_refused(self):
+        # HTML's srcset parser and CSS's url() skip ASCII whitespace alone. A browser keeps U+00A0,
+        # U+3000 and the like inside the URL, which then resolves against the page (a request to the
+        # site itself, which img-src 'self' allows), while Python's str.strip() or a Unicode \s would
+        # drop the character and check a clean Wikimedia URL. Each such URL is refused by name.
+        body, end = self.body(), "\n</div>"
+        for space in (" ", "　", " ", "\u0085"):
+            for markup, tag, name in (
+                    (f'<img alt="" srcset=" {space}{self.COMMONS} 2x">', "img", "srcset"),
+                    (f'<img alt="" srcset="{self.COMMONS}{space}2x">', "img", "srcset"),
+                    (f'<img alt="" src="{self.COMMONS}{space}">', "img", "src"),
+                    (f'<video poster="{space}{self.COMMONS_THUMB}"></video>', "video", "poster"),
+                    (f'<a href="https://en.wikipedia.org/wiki/Widget{space}">x</a>', "a", "href"),
+                    (f'<q cite="https://example.org/{space}x">x</q>', "q", "cite")):
+                with self.subTest(space=f"U+{ord(space):04X}", markup=markup[:24]):
+                    self.refuse_html(f"a <{tag}> {name} holds a space character other than ASCII whitespace",
+                                     body.replace(end, markup + end))
+            # In a TemplateStyles url(), CSS skips only its own whitespace: the URL checked is the URL
+            # fetched, the character included, and it is refused for not being on the upload hosts.
+            lock = "https://upload.wikimedia.org/wikipedia/commons/6/65/Lock-green.svg"
+            for css in (f".mw-parser-output .lock a{{background:url({space}{lock})}}",
+                        f".mw-parser-output .lock a{{background:url( {space}{lock} )}}"):
+                with self.subTest(space=f"U+{ord(space):04X}", css=css[:40]):
+                    media: list[str] = []
+                    problems = build_store.reader_css_problems(css, media)
+                    self.assertIn(f"a style element fetches {(space + lock)[:60]!r}: only https on", problems[0])
+                    self.assertEqual(media, [])
+        # ASCII whitespace still separates a srcset's candidates and descriptors, and pads a url().
+        scan = build_store.ReaderScan({}, frozenset())
+        scan.feed(f'<img alt="" srcset="{self.COMMONS} 1x,\t{self.COMMONS_THUMB}\n2x , \f{self.COMMONS}\r3x">')
+        scan.finish()
+        self.assertEqual(scan.problems(), [])
+        self.assertEqual(scan.media, [("img", self.COMMONS), ("img", self.COMMONS_THUMB), ("img", self.COMMONS)])
+        media = []
+        self.assertEqual(build_store.reader_css_problems(
+            ".mw-parser-output .lock a{background:url( \t\n" + self.COMMONS + "\f )}", media), [])
+        self.assertEqual(media, [self.COMMONS])
+        # A space spelled as an escape inside a quoted URL is the string's, and refused as before.
+        self.assertIn(f"a style element fetches {chr(0xa0) + self.COMMONS[:59]!r}",
+                      build_store.reader_css_problems(
+                          '.mw-parser-output .x{background:url("\\a0 ' + self.COMMONS + '")}')[0])
+
+    def test_an_entry_for_another_revision_or_of_another_shape_is_refused(self):
+        cases = [
+            ({"source_id": "enwiki-1001-2001"}, "source_id must be the article's 'enwiki-1001-2002'"),
+            ({"revision": 2001}, "revision must be the article's 2002"),
+            ({"html_sha256": "0" * 64}, "html_sha256 must be the article's"),
+            ({"layer_sha256": "0" * 64}, "layer_sha256 must be the article's"),
+            ({"renderer": "web-html/3"}, "renderer must be the records' 'web-html/1'"),
+            ({"marks": 6}, "marks says 6; the html has 9"),
+            ({"passages": 5}, "passages says 5; the html has 4"),
+            ({"page": 1}, "unknown key 'page'"),
+            ({"html": ""}, "html must be the article's body"),
+            ({"html": 7}, "html must be the article's body"),
+        ]
+        for change, fragment in cases:
+            with self.subTest(change=change):
+                self.refuse_html(fragment, **change)
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.build_with(self.side_file(("1001", "not an object")))
+        self.assertIn("an article is an object", str(caught.exception))
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.build_with(self.side_file(("9", self.entry())))
+        self.assertIn("--reader-html: matches no article of this build", str(caught.exception))
+        path = self.tmp / "articles-list.json"
+        path.write_text(json.dumps({"schema": build_store.READER_HTML_SCHEMA, "articles": []}))
+        with self.assertRaises(build_store.AtlasError) as caught:
+            self.build_with(path)
+        self.assertIn("articles must be an object of entries keyed by page id", str(caught.exception))
+        with self.assertRaises(build_store.AtlasError) as caught:
+            build_store.Supplements.read(reader_html=self.side_file(("1001", self.entry()), schema="x/1"))
+        self.assertIn(f"schema must be {build_store.READER_HTML_SCHEMA!r}", str(caught.exception))
+
+    def test_every_style_block_of_the_fixture_kind_is_scoped(self):
+        # TemplateStyles qualify the scope (body.ns-0, html.skin-...) and combine siblings inside it.
+        good = (".mw-parser-output .a{x:y}body.ns-0 .mw-parser-output .hatnote+.hatnote{x:y}"
+                "html.skin-theme-clientpref-night .mw-parser-output .b:not(.c){x:y}"
+                "@media screen and (min-width:640px){.mw-parser-output tr+tr>.navbox-list{x:y}}"
+                ".mw-parser-output .d[class~=e]{x:y}.mw-parser-output li:nth-child(2n+1){x:y}"
+                '.mw-parser-output .lock{background:url("https://upload.wikimedia.org/x.svg")}')
+        self.assertEqual(build_store.reader_css_problems(good), [])
+        self.assertEqual(len(build_store.reader_css_problems(".mw-parser-output+div{x:y}")), 1)
+        self.assertEqual(len(build_store.reader_css_problems("{x:y}")), 1)
+
+    def test_the_cli_merges_the_side_file_and_check_compares_with_it(self):
+        path = self.side_file(("1001", self.entry()))
+        out = self.tmp / "store"
+
+        def run_main(*args: str) -> tuple[int, str]:
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                code = build_store.main(["--record-set", str(self.set), "--out", str(out), *args])
+            return code, err.getvalue()
+        self.assertEqual(run_main("--reader-html", str(path)), (0, ""))
+        self.assertEqual(run_main("--reader-html", str(path), "--check"), (0, ""))
+        self.assertTrue((out / "atlas/v1/reader/1001.html").is_file())
+        code, err = run_main("--check")
+        self.assertEqual(code, 1)
+        self.assertIn("unexpected: atlas/v1/reader/1001.html", err)
+        broken = self.side_file(("1001", self.entry(self.body().replace("minimal", "maximal"))))
+        code, err = run_main("--reader-html", str(broken), "--replace")
+        self.assertEqual(code, 2)
+        self.assertIn("--reader-html: articles[1001]", err)
+        self.assertTrue((out / "atlas/v1/reader/1001.html").is_file())
+
 class CliTests(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="atlas-cli-"))
@@ -2211,6 +4198,30 @@ class CliTests(unittest.TestCase):
         self.assertEqual(code, 2)
         self.assertIn("SEAL.json is missing", err)
         self.assertFalse(out.exists())
+
+    def test_only_cpython_3_12_13_or_a_later_3_12_builds(self):
+        # ReaderScan's rules were checked against that html.parser; 3.9's reads attributes by
+        # another grammar, so the builder refuses any other interpreter before it reads anything.
+        self.assertIsNone(build_store.interpreter_problem())    # the one running these tests (CI's 3.12)
+        for version in ((3, 12, 13), (3, 12, 15), (3, 12, 40)):
+            self.assertIsNone(build_store.interpreter_problem(version, "cpython"), version)
+        for version, implementation in (((3, 9, 6), "cpython"), ((3, 12, 12), "cpython"), ((3, 12, 0), "cpython"),
+                                        ((3, 11, 15), "cpython"), ((3, 13, 13), "cpython"), ((3, 14, 0), "cpython"),
+                                        ((3, 12, 13), "pypy")):
+            with self.subTest(version=version, implementation=implementation):
+                problem = build_store.interpreter_problem(version, implementation)
+                self.assertIn("build_store needs CPython 3.12.13 or a later 3.12", problem)
+                self.assertIn(f"this is {implementation} {'.'.join(map(str, version))}", problem)
+        original = build_store.interpreter_problem
+        build_store.interpreter_problem = lambda: original((3, 9, 6), "cpython")
+        try:
+            code, err = self.run_main("--record-set", str(RECORDSET), "--out", str(self.tmp / "o"))
+        finally:
+            build_store.interpreter_problem = original
+        self.assertEqual(code, 3)
+        self.assertIn("atlas: build_store needs CPython 3.12.13 or a later 3.12", err)
+        self.assertIn("nothing was written", err)
+        self.assertFalse((self.tmp / "o").exists())
 
 
 if __name__ == "__main__":
