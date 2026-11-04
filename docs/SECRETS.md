@@ -47,7 +47,7 @@ and `BETTER_AUTH_URL` are plain vars in `wiki/wrangler.jsonc`, not secrets.
 | `BETTER_AUTH_SECRET` | Jack | Signs every better-auth session cookie | Worker only | Rotation signs everyone out | unknown; rotation pending (P0 3) |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth app owner (wiki login) | Identity only (`read:user`, `user:email`, `auth.ts`) | Worker login | Generate a new client secret in the OAuth app, put it, then delete the old one in GitHub | GitHub OAuth client secrets do not expire |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | — | Google sign-in | — | — | not set |
-| `GITHUB_API_TOKEN` | its creator (unrecorded) | Should be a no-scope classic or read-only fine-grained PAT; `/api/review` GET reads, `/api/repos/github` | Worker only | New PAT with no scopes, put, revoke old | unknown; whether it is set is unverified |
+| `GITHUB_API_TOKEN` | Jack | Should be a no-scope classic or read-only fine-grained PAT; `/api/review` GET reads, `/api/repos/github` | Worker only | New PAT with no scopes, put, revoke old | about 2027-01-31; set 2026-11-02 on an undeployed version, live from the next promotion |
 | `REVIEW_GITHUB_CLIENT_ID`, `REVIEW_GITHUB_CLIENT_SECRET` | owner of GitHub App `wikilean-review` | User-to-server tokens with `issues: write`, `pull_requests: write` where the App is installed | `/review` posting | New client secret in the App settings, put, delete old | App client secrets do not expire |
 | `REVIEW_GITHUB_APP_SLUG` | same | Not secret (builds the install URL) | `/review` | — | — |
 | `REVIEW_TOKEN_KEY` | Jack | Seals stored review GitHub tokens at rest (`review.ts`: HKDF → AES-256-GCM, cookie id as additional data, KV key = SHA-256 of the cookie id). At least 32 characters | Worker only | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter) signs reviewers out of `/review` posting (they reconnect). Unset, tokens are stored as plaintext JSON | not set yet ([P1](#p1-seal-review-tokens-and-give-them-their-own-kv-namespace)) |
@@ -79,10 +79,10 @@ Repository `Deicyde/WikiLean`. `ci.yml` uses none of them (validation only).
 |---|---|---|---|---|---|---|
 | `CLOUDFLARE_API_TOKEN` | secret | Jack (Cloudflare) | Should be an account API token with **D1 Edit on this account only** (`wrangler d1 export` POSTs) | `backup-d1.yml` export step | New token in the Cloudflare dashboard with only that permission, `gh secret set CLOUDFLARE_API_TOKEN --repo Deicyde/WikiLean` (paste at the prompt), delete the old token | set 2026-06-10; never rotated; set an expiry when you rotate |
 | `PIPELINE_TOKEN` | secret | Jack | Worker bearer (above) | `backup-d1.yml` research export; `wikidata-poll.yml` as `WIKILEAN_API_TOKEN` (queue publish) | With the Worker secret | set 2026-06-20 |
-| `MATHLIB_FORK_PAT` | secret | Deicyde | Classic PAT, `public_repo` + `workflow` (`bot/README.md`, "Token rotation") | `wikidata-poll.yml` | `bot/README.md` steps; record the expiry there | set 2026-06-23; most likely expired 2026-09-21 |
+| `MATHLIB_FORK_PAT` | secret | Deicyde | Classic PAT, `public_repo` + `workflow` (`bot/README.md`, "Token rotation") | `wikidata-poll.yml` | `bot/README.md` steps; record the expiry there | set 2026-11-01; expires about 2027-01-29 |
 | `CLAUDE_CODE_OAUTH_TOKEN` | secret | Jack (Max subscription) | Claude usage on the Max plan | `bot/triage.py` (tool-less child) | `claude setup-token`, then `gh secret set CLAUDE_CODE_OAUTH_TOKEN` | set 2026-06-20; validity unknown, record it here |
 | `QUICKSTATEMENTS_TOKEN` | secret | Jack (Wikidata account "Mynus grey") | Wikidata edits | none today (`WIKILEAN_PUSH_PROPERTY: "0"`) | Delete it until the push is switched on: `gh secret delete QUICKSTATEMENTS_TOKEN --repo Deicyde/WikiLean` | set 2026-07-02 |
-| `BACKUP_AGE_RECIPIENTS` | **variable** (public keys) | Jack | Encryption recipients for backups | `backup-d1.yml`, `wiki/scripts/backup-d1.sh` | `docs/BACKUP.md`, "Key rotation" | **not set** (P0 1) |
+| `BACKUP_AGE_RECIPIENTS` | **variable** (public keys) | Jack | Encryption recipients for backups | `backup-d1.yml`, `wiki/scripts/backup-d1.sh` | `docs/BACKUP.md`, "Key rotation" | set 2026-10-19 |
 | `GITHUB_TOKEN` | automatic | GitHub | Per-workflow `permissions:` | all workflows | automatic | per job |
 
 ## Nightly host and operator machine
@@ -156,7 +156,8 @@ and `cd wiki && npx wrangler secret list` (names only).
 
 | Name | Last rotated | Expires | Recorded by |
 |---|---|---|---|
-| (one row per secret, filled in by the PR that rotates it) | | | |
+| `GITHUB_API_TOKEN` (Worker) | 2026-11-02, [version-only](#rotating-a-worker-secret-without-bypassing-the-promoter); live from the next promotion | about 2027-01-31 (90 days) | Jack |
+| `MATHLIB_FORK_PAT` (Actions) | 2026-11-01 UTC (2026-10-31 US Eastern) | about 2027-01-29 (90 days); reminder in `bot/README.md`, "Token rotation" | Jack |
 
 ## Security notes
 
@@ -200,10 +201,10 @@ and `cd wiki && npx wrangler secret list` (names only).
   - `hono` (runtime): upgraded 4.12.34 to 4.13.12 on 2026-10-17, then to 4.13.13 on
     2026-10-19 (#92), once it was past the two-week cooldown (published 2026-10-04).
     `npm audit --omit=dev` is clean at that commit.
-  - `wrangler` (dev): upgraded 4.120.0 to 4.151.3 in #110, past the two-week
-    cooldown (published 2026-10-20). That fixes `sharp` ≤0.35.5-rc.1 (now
-    0.35.5) and `undici` ≤7.29.0 (now 7.29.1). Still open: later `undici` advisories
-    fixed in 7.30.1 (high, including a TLS-options bypass), which first ships in
+  - `wrangler` (dev): upgraded 4.120.0 to 4.151.3 on 2026-11-02 (#110), the day before
+    it cleared the two-week cooldown (published 2026-10-20). That fixes `sharp`
+    ≤0.35.5-rc.1 (now 0.35.5) and `undici` ≤7.29.0 (now 7.29.1). Still open: later `undici`
+    advisories fixed in 7.30.1 (high, including a TLS-options bypass), which first ships in
     Wrangler 4.153.0 (published 2026-10-26), and a moderate Wrangler advisory fixed
     in the same release. Re-pin to 4.153.0 or later once it clears the cooldown.
     Exposure: undici here is Wrangler's client to the Cloudflare API and the local
