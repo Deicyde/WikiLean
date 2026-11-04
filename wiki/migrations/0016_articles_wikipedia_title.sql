@@ -1,0 +1,15 @@
+-- Index articles.wikipedia_title. An atlas article page links the WikiLean article that has its
+-- Wikipedia title (src/atlas.ts wikileanSlugFor:
+--   SELECT slug FROM articles WHERE wikipedia_title IN (?, ?) ORDER BY slug LIMIT 1),
+-- and without an index that lookup scans the whole table. The Worker keeps each title's answer
+-- for a minute per isolate, which bounds repeat views of one page but not a crawl across titles.
+-- With the index the lookup reads the matching rows alone (docs/ATLAS.md section 7).
+--
+-- Optional and idempotent: no Worker version, test or release check needs it (the query and its
+-- answers are the same with or without it; only the rows D1 reads change), and IF NOT EXISTS
+-- makes a re-run a no-op. The operator may apply it at any time after a D1 backup: before, with
+-- or after the release that ships the atlas.
+--
+-- NB deploy: remote migration tracking is out of sync — apply remote via
+--   wrangler d1 execute wikilean --remote --file=migrations/0016_articles_wikipedia_title.sql
+CREATE INDEX IF NOT EXISTS idx_articles_wikipedia_title ON articles (wikipedia_title);
