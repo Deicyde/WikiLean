@@ -1,0 +1,16 @@
+-- Agent contributions (0017, docs/AGENT-CONTRIBUTIONS.md): the agent that filed a
+-- proposal, so a patroller sees who proposed it and can act on the agent. NULL
+-- for the pipeline bearer, which identifies itself by run_id/model instead.
+--
+-- Not idempotent: SQLite has no ADD COLUMN IF NOT EXISTS, so this runs once.
+-- Apply it (and 0017) before promoting any Worker built from a commit that
+-- contains this file: that Worker writes proposals.proposed_by on every bearer
+-- save that files a proposal. The promoter refuses such a commit until the
+-- column exists.
+--
+-- NB deploy: remote migration tracking is out of sync. After a D1 backup
+-- (`npm run backup:d1`, see docs/BACKUP.md), apply remote once via
+--   wrangler d1 execute wikilean --remote --file=migrations/0018_proposals_proposed_by.sql
+-- and verify:
+--   SELECT name FROM pragma_table_info('proposals') WHERE name = 'proposed_by';
+ALTER TABLE proposals ADD COLUMN proposed_by TEXT;

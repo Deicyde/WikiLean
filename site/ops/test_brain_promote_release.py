@@ -1144,8 +1144,10 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 command = tuple(str(value) for value in args)
                 inner.calls.append((command, cwd, dict(env or {})))
                 if command[:4] == ("git", "-C", str(self.repo), "ls-tree"):
-                    self.assertEqual(command[4:], ("--name-only", COMMIT, "--", migration))
-                    output = (migration + "\n").encode() if inner.listed else b""
+                    self.assertEqual(command[4:7], ("--name-only", COMMIT, "--"))
+                    self.assertIn(command[7], promote.D1_REQUIRED_COLUMNS)
+                    listed = inner.listed and command[7] == migration
+                    output = (migration + "\n").encode() if listed else b""
                     return promote.RunResult(command, 0, output, b"")
                 if inner.d1 is None:
                     raise AssertionError(command)
@@ -1162,7 +1164,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
         without = D1Runner(listed=False)
         check(without)
-        self.assertEqual(len(without.calls), 1)
+        self.assertEqual(len(without.calls), len(promote.D1_REQUIRED_COLUMNS))
 
         applied = D1Runner(listed=True, d1=rows("schema_version", "source_revid"))
         with mock.patch.dict(os.environ, {"CLOUDFLARE_API_TOKEN": "token"}):

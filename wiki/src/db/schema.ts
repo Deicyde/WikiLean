@@ -88,6 +88,7 @@ export const proposals = sqliteTable(
     reason: text("reason"),
     runId: text("run_id"),
     model: text("model"),
+    proposedBy: text("proposed_by"), // users.id of the agent that filed it (migration 0018); null for the pipeline
     status: text("status").notNull().default("pending"), // pending | approved | rejected | stale
     rejectReason: text("reject_reason"), // human's enum on reject
     createdAt: integer("created_at").notNull(), // ms
@@ -311,6 +312,27 @@ export const userRepos = sqliteTable(
   ],
 );
 export type UserRepoRow = typeof userRepos.$inferSelect;
+
+// Agent API tokens (migration 0017; agents.ts, the /agents page). A signed-in
+// person mints one token per AI agent; the agent writes as its own users row
+// (role 'agent'). Only the token's SHA-256 is stored. Blocking the owner or the
+// agent, or setting revoked_at, disables the token (auth.ts getUser).
+export const agentTokens = sqliteTable(
+  "agent_tokens",
+  {
+    agentId: text("agent_id")
+      .primaryKey()
+      .references(() => users.id),
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => users.id),
+    tokenHash: text("token_hash").notNull().unique(),
+    createdAt: integer("created_at").notNull(), // ms
+    lastUsedAt: integer("last_used_at"), // ms, refreshed at most hourly
+    revokedAt: integer("revoked_at"), // ms
+  },
+  (t) => [index("idx_agent_tokens_owner").on(t.ownerId)],
+);
 
 export type ArticleRow = typeof articles.$inferSelect;
 export type RevisionRow = typeof revisions.$inferSelect;

@@ -337,7 +337,8 @@ export async function readBodyCapped(req: Request, max: number): Promise<string 
 //   atlasFeedback: one location verdict (atlas.ts): a 64-hex location key, a
 //     page id, a campaign of at most 128 characters and a note of at most
 //     MAX_FLAG_COMMENT_LEN characters (about 3.3 KB even if every note
-//     character is \u-escaped).
+//     character is \u-escaped);
+//   agents: one agent name of at most AGENT_NAME_MAX characters (agents.ts).
 export const MAX_JSON_BODY_BYTES = {
   flag: 16 * 1024,
   flagResolve: 16 * 1024,
@@ -349,6 +350,7 @@ export const MAX_JSON_BODY_BYTES = {
   repos: 256 * 1024,
   reviewPost: 1024 * 1024,
   atlasFeedback: 4 * 1024,
+  agents: 4 * 1024,
 } as const;
 
 export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };

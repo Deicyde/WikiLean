@@ -13,6 +13,7 @@ import {
   flags,
   pipelineRuns,
   watchlist,
+  agentTokens,
   type ArticleRow,
   type AnnotationEventInsert,
 } from "./db/schema.js";
@@ -46,6 +47,7 @@ import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
+import { AGENT_PENDING_PER_ARTICLE, registerAgentRoutes } from "./agents.js";
 import { registerCompanionRoutes } from "./companion.js";
 import { atlasHref, atlasSummaryFor, registerAtlasRoutes } from "./atlas.js";
 import { atlasSummaryBox } from "./atlas-render.js";
@@ -113,6 +115,7 @@ const RESERVED = new Set([
   "articles",
   "mcp",
   "repos",
+  "agents",
   "about",
   // Static assets in wiki/public/ + the names of the DELETED old-graph-stack
   // routes (/map, /map-v2, /graph, /article-graph, graph_data.json,
@@ -142,6 +145,7 @@ registerBrainApiRoutes(app);
 registerMcpRoutes(app);
 registerQueueRoutes(app);
 registerRepoRoutes(app);
+registerAgentRoutes(app);
 registerCompanionRoutes(app);
 registerVersionRoutes(app);
 registerAtlasRoutes(app);
@@ -952,7 +956,7 @@ app.get("/u/:id", async (c) => {
     db
       .select({ n: sql<number>`count(*)` })
       .from(revisions)
-      .where(and(eq(revisions.userId, profile.id), eq(revisions.kind, "edit"))),
+      .where(and(eq(revisions.userId, profile.id), inArray(revisions.kind, ["edit", "agent"]))),
   ]);
 
   const recent = await db
@@ -978,6 +982,21 @@ app.get("/u/:id", async (c) => {
       .where(eq(watchlist.userId, profile.id))
       .orderBy(desc(watchlist.createdAt));
     watching = ws.map((r) => r.slug);
+  }
+
+  // An agent's profile names the person who minted it (agents.ts).
+  let operator: { id: string; name: string | null } | null = null;
+  if (profile.role === "agent") {
+    const owners = alias(users, "owners");
+    operator =
+      (
+        await db
+          .select({ id: owners.id, name: owners.name })
+          .from(agentTokens)
+          .innerJoin(owners, eq(owners.id, agentTokens.ownerId))
+          .where(eq(agentTokens.agentId, profile.id))
+          .limit(1)
+      )[0] ?? null;
   }
 
   const html = userProfilePage(
@@ -1007,6 +1026,7 @@ app.get("/u/:id", async (c) => {
     ),
     watching,
     isSelf,
+    operator,
   );
   return c.html(html);
 });
@@ -1072,9 +1092,12 @@ async function pendingProposalRows(db: ReturnType<typeof drizzle>): Promise<{ to
       fields: proposals.fields,
       reason: proposals.reason,
       model: proposals.model,
+      proposedBy: proposals.proposedBy,
+      proposerName: users.name,
       createdAt: proposals.createdAt,
     })
     .from(proposals)
+    .leftJoin(users, eq(users.id, proposals.proposedBy))
     .where(eq(proposals.status, "pending"))
     .orderBy(desc(proposals.createdAt))
     .limit(200);
@@ -1165,6 +1188,8 @@ async function pendingProposalRows(db: ReturnType<typeof drizzle>): Promise<{ to
       provenance,
       reason: p.reason ?? "",
       model: p.model,
+      proposedBy: p.proposedBy,
+      proposerName: p.proposerName,
       createdAt: p.createdAt,
     };
   });
@@ -1310,10 +1335,11 @@ app.get("/:slug/diff/:fromId/:toId", async (c) => {
 // everyone EXCEPT the bearer-authenticated pipeline — mirroring the rendered
 // page (engine/page.ts buildClientData), so vetoed content can't be read back
 // out through the API. The bearer bot gets the full array because the runner
-// must echo tombstones verbatim or its next save 422s. The {.+\.json} suffix
-// pattern wins over the catch-all /:slug routes by registration order, so a
-// slug literally named "x.json" can't shadow this route (it'd be served at
-// /api/article/x.json.json).
+// must echo tombstones verbatim or its next save 422s; an agent bearer gets the
+// editor view a signed-in person's article page carries, for the same reason.
+// The {.+\.json} suffix pattern wins over the catch-all /:slug routes by
+// registration order, so a slug literally named "x.json" can't shadow this
+// route (it'd be served at /api/article/x.json.json).
 app.get("/api/article/:slug{.+\\.json}", async (c) => {
   const slug = c.req.param("slug").replace(/\.json$/, "");
   const db = drizzle(c.env.DB);
@@ -1322,6 +1348,13 @@ app.get("/api/article/:slug{.+\\.json}", async (c) => {
   const user = await getUser(c);
   const annotations = JSON.parse(row.annotations) as unknown[];
   const full = user?.role === "bot";
+  // An agent gets the human editor's view: tombstones included (it must post
+  // human ones back unchanged), private metadata left out (the save restores it).
+  const items = full
+    ? annotations
+    : user?.role === "agent"
+      ? editorItems(annotations as AnnRecord[])
+      : publicItems(annotations as AnnRecord[]);
   return c.json({
     slug: row.slug,
     wikipedia_title: row.wikipediaTitle,
@@ -1331,7 +1364,7 @@ app.get("/api/article/:slug{.+\\.json}", async (c) => {
     revid: row.revid,
     latest_revid: row.latestRevid,
     schema_version: row.schemaVersion,
-    annotations: full ? annotations : publicItems(annotations as AnnRecord[]),
+    annotations: items,
   });
 });
 
@@ -1498,6 +1531,12 @@ app.post("/api/article/:slug", async (c) => {
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const isBot = user.role === "bot";
+  // An agent token (agents.ts) writes under the pipeline's rules (base_version
+  // required, human annotations protected, proposals for the rest) but holds
+  // none of its powers: no revid re-pin, no proposal decisions, no review stamp.
+  const isAgent = user.role === "agent";
+  const isAi = isBot || isAgent;
+  const revisionKind = isBot ? "pipeline" : isAgent ? "agent" : "edit";
   const { success: allowed } = await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
   if (!allowed) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
   const slug = c.req.param("slug");
@@ -1733,8 +1772,8 @@ app.post("/api/article/:slug", async (c) => {
 
     if (posted.action !== "endorse") return c.json({ ok: false, error: "unknown action" }, 400);
     // endorse stays session-only: it flips provenance to 'human', and a bot
-    // endorsing (minting 'human') would launder attribution — hard line.
-    if (isBot) return c.json({ ok: false, error: "forbidden" }, 403);
+    // or agent endorsing (minting 'human') would launder attribution — hard line.
+    if (isAi) return c.json({ ok: false, error: "forbidden" }, 403);
     const annotationId = posted.annotation_id;
     if (typeof annotationId !== "string" || !ANNOTATION_ID_RE.test(annotationId)) {
       return c.json({ ok: false, error: "bad annotation_id" }, 400);
@@ -1825,14 +1864,18 @@ app.post("/api/article/:slug", async (c) => {
     return c.json({ ok: false, error: "explicit native migration required" }, 409);
   }
 
-  // Pipeline-only request fields. Bearer saves must rebase explicitly (no
-  // back-compat carve-out) and may re-pin the article's Wikipedia revid and
-  // attach run metadata for the revision log.
+  // Bearer request fields. Bearer saves (pipeline and agents) must rebase
+  // explicitly (no back-compat carve-out) and may attach metadata for the
+  // revision log; only the pipeline may re-pin the article's Wikipedia revid.
+  // An agent may not claim a run_id: revert-run selects revisions by it.
   let postedRevid: number | null = null;
   let metaJson: string | null = null;
-  if (isBot) {
+  if (isAi) {
     if (typeof posted.base_version !== "number") {
       return c.json({ ok: false, error: "base_version required for pipeline writes" }, 400);
+    }
+    if (isAgent && posted.revid !== undefined) {
+      return c.json({ ok: false, error: "revid is pipeline-only" }, 400);
     }
     if (posted.revid !== undefined) {
       if (typeof posted.revid !== "number" || !Number.isSafeInteger(posted.revid) || posted.revid <= 0) {
@@ -1843,6 +1886,9 @@ app.post("/api/article/:slug", async (c) => {
     if (posted.meta !== undefined) {
       if (typeof posted.meta !== "object" || posted.meta === null || Array.isArray(posted.meta)) {
         return c.json({ ok: false, error: "meta must be an object" }, 400);
+      }
+      if (isAgent && "run_id" in posted.meta) {
+        return c.json({ ok: false, error: "meta.run_id is pipeline-only" }, 400);
       }
       metaJson = JSON.stringify(posted.meta);
       if (metaJson.length > MAX_META_BYTES) return c.json({ ok: false, error: "meta too large" }, 413);
@@ -1862,9 +1908,9 @@ app.post("/api/article/:slug", async (c) => {
 
   const stored = JSON.parse(row.annotations) as AnnRecord[];
   let finalAnnotations: AnnRecord[];
-  if (isBot) {
+  if (isAi) {
     // Human-preservation assertion (server-side _preserve_human twin): a bot
-    // write may never lose or alter a stored provenance='human' annotation —
+    // or agent write may never lose or alter a stored provenance='human' annotation —
     // tombstones (status='rejected') included; they are human vetoes.
     // A pin advance moves every active article-local source; that move is
     // article metadata, so human items are compared in their repinned form.
@@ -1876,9 +1922,13 @@ app.post("/api/article/:slug", async (c) => {
     }
     // Human ownership can be retained only from the protected stored record.
     // A client (including an imported annotation extension) cannot mint endorsement.
-    finalAnnotations = postedAnnotations.map(a => ({ ...a,
-      ...(a.provenance === "human" && findMatch(a, stored)?.provenance !== "human" ? { provenance: "ai" } : {}),
-    }));
+    // An agent's new and changed annotations are stamped 'ai' outright: it
+    // cannot mint 'ai-moderated' either, which only a proposal decision earns.
+    finalAnnotations = isAgent
+      ? stampProvenance(stored, postedAnnotations, "ai")
+      : postedAnnotations.map(a => ({ ...a,
+        ...(a.provenance === "human" && findMatch(a, stored)?.provenance !== "human" ? { provenance: "ai" } : {}),
+      }));
   } else {
     // Session saves: provenance is stamped server-side from the actor — new or
     // changed annotations become 'human'; unchanged ones keep their stored
@@ -1902,7 +1952,7 @@ app.post("/api/article/:slug", async (c) => {
   // no-op short-circuit so a "reviewed, changed nothing but proposed X" pass is
   // captured. Never touches articles.annotations.
   const incomingProposals =
-    isBot && posted.meta && typeof posted.meta === "object"
+    isAi && posted.meta && typeof posted.meta === "object"
       ? (posted.meta as { ladder?: { proposals?: unknown } }).ladder?.proposals
       : undefined;
   let proposalReconciliationStatements: BatchItem<"sqlite">[] = [];
@@ -1911,7 +1961,8 @@ app.post("/api/article/:slug", async (c) => {
   // Runs on EVERY bot save (not only ones carrying new proposals): the
   // staleness sweep below must fire even when meta.ladder.proposals is empty,
   // or a dead-target pending proposal survives until someone clicks approve.
-  if (isBot) {
+  // Agent saves run it too: they file proposals the same way.
+  if (isAi) {
     const pnow = Date.now();
     const ms = (await db.select().from(moderationState).where(eq(moderationState.slug, slug)).limit(1))[0];
     expectedProposalJson = ms?.proposal ?? null;
@@ -1962,10 +2013,16 @@ app.post("/api/article/:slug", async (c) => {
       run_id?: unknown;
       model?: unknown;
     };
-    const { merged, droppedNoDelta } = mergeProposals(stillPending, parseRejected(ms?.rejectedProposals), incomingProposals, {
+    // An agent keeps at most AGENT_PENDING_PER_ARTICLE proposals pending per
+    // article, so no one agent can fill the article's queue (MAX_PENDING).
+    const incoming = isAgent && Array.isArray(incomingProposals)
+      ? incomingProposals.slice(0, Math.max(0, AGENT_PENDING_PER_ARTICLE - stillPending.filter((p) => p.proposedBy === user.id).length))
+      : incomingProposals;
+    const { merged, droppedNoDelta } = mergeProposals(stillPending, parseRejected(ms?.rejectedProposals), incoming, {
       now: pnow,
       runId: typeof postedMeta.run_id === "string" ? postedMeta.run_id : undefined,
       model: typeof postedMeta.model === "string" ? postedMeta.model : undefined,
+      proposedBy: isAgent ? user.id : undefined,
       validIds: liveIds,
       liveById,
     });
@@ -2003,6 +2060,7 @@ app.post("/api/article/:slug", async (c) => {
             reason: p.reason || null,
             runId: p.runId ?? null,
             model: p.model ?? null,
+            proposedBy: p.proposedBy ?? null,
             status: "pending",
             createdAt: p.createdAt,
           }),
@@ -2026,9 +2084,10 @@ app.post("/api/article/:slug", async (c) => {
   // EXCEPTION: a bot no-op still stamps moderation_state (last_reviewed_at/
   // version), otherwise a reviewed-but-unchanged article never leaves the
   // review queue (and the F2 recency-aware flagged tier never releases it).
-  // Session no-op saves skip the stamp.
+  // An agent no-op writes only its proposals (it is not the review the queue
+  // tracks); session no-op saves skip the stamp.
   if (deepEqual(stored, finalAnnotations) && (postedRevid === null || postedRevid === row.revid)) {
-    if (isBot) {
+    if (isAi) {
       const now = Date.now();
       const noopBatch: WriteBatch = [
         db
@@ -2038,14 +2097,18 @@ app.post("/api/article/:slug", async (c) => {
           })
           .where(eq(articles.slug, slug)),
         ...proposalReconciliationStatements,
-        db
-          .insert(moderationState)
-          .values({ slug, lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now })
-          .onConflictDoUpdate({
-            target: moderationState.slug,
-            set: { lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now },
-          }),
       ];
+      if (isBot) {
+        noopBatch.push(
+          db
+            .insert(moderationState)
+            .values({ slug, lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now })
+            .onConflictDoUpdate({
+              target: moderationState.slug,
+              set: { lastReviewedAt: now, lastReviewedVersion: row.version, updatedAt: now },
+            }),
+        );
+      }
       const stale = await runGuardedArticleBatch(c, db, slug, row, noopBatch);
       if (stale) return stale;
     }
@@ -2054,7 +2117,7 @@ app.post("/api/article/:slug", async (c) => {
         event: "save-noop",
         slug,
         user_id: user.id,
-        kind: isBot ? "pipeline" : "edit",
+        kind: revisionKind,
         version: row.version,
       }),
     );
@@ -2089,7 +2152,7 @@ app.post("/api/article/:slug", async (c) => {
       .update(articles)
       .set({
         annotations: annJson,
-        version: isBot
+        version: isAi
           ? guardedBotSaveVersion(slug, row.version, newVersion, expectedProposalJson)
           : sql`CASE WHEN ${articles.version} = ${row.version} THEN ${newVersion} ELSE NULL END`,
         updatedAt: now,
@@ -2104,7 +2167,7 @@ app.post("/api/article/:slug", async (c) => {
       sourceRevid: newRevid,
       schemaVersion: row.schemaVersion,
       comment: comment || null,
-      kind: isBot ? "pipeline" : "edit",
+      kind: revisionKind,
       meta: metaJson,
       parentId: prior?.id ?? null,
       createdAt: now,
@@ -2116,7 +2179,9 @@ app.post("/api/article/:slug", async (c) => {
       eventRowsFromChanges(diffAnnotations(stored, finalAnnotations), {
         revisionId: newRevisionId(slug),
         slug,
-        actorType: isBot ? "pipeline" : "human",
+        // 'pipeline' is the schema's only AI actor label (0005 CHECK); agent
+        // events are told apart by user_id and their revision's kind.
+        actorType: isAi ? "pipeline" : "human",
         userId: user.id,
         now,
       }),
@@ -2161,7 +2226,7 @@ app.post("/api/article/:slug", async (c) => {
       event: "save",
       slug,
       user_id: user.id,
-      kind: isBot ? "pipeline" : "edit",
+      kind: revisionKind,
       version: newVersion,
       matched: matchedCount,
       total: annotations.length,
@@ -2285,8 +2350,9 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
 //   * HUMAN-PRESERVATION: if a human revision (kind 'edit'/'revert') landed
 //     AFTER the run's last touch of a slug, that slug is SKIPPED
 //     ('human-edited-since'). We never clobber human work to undo a bot batch;
-//     the human can revert the offending revision themselves. Seed/pipeline
-//     revisions after the run do NOT block (they aren't human work).
+//     the human can revert the offending revision themselves. An agent's
+//     revision (kind 'agent') blocks the same way: it is not the run's work.
+//     Seed/pipeline revisions after the run do NOT block (they aren't human work).
 //   * ALREADY-REVERTED (the re-run guard): if this endpoint has already
 //     reverted a slug for THIS run, its latest revision is our own marker
 //     (kind='revert', comment `revert-run:<runId>`). A second call detects that
@@ -2377,7 +2443,7 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
 
     // HUMAN-PRESERVATION: a human edit/revert landed after the run's last touch.
     const humanAfter = revs.some(
-      (r) => r.id > latest && !runIds.has(r.id) && (r.kind === "edit" || r.kind === "revert" || r.kind === "proposal-approved"),
+      (r) => r.id > latest && !runIds.has(r.id) && (r.kind === "edit" || r.kind === "agent" || r.kind === "revert" || r.kind === "proposal-approved"),
     );
     if (humanAfter) {
       skipped.push({ slug, reason: "human-edited-since" });
@@ -3022,11 +3088,11 @@ app.get("/api/research/export.jsonl", async (c) => {
 });
 
 // ---- mark a human revision patrolled (P2a patrol polish) --------------------
-// patroller/admin only. Only kind='edit' revisions take a patrol mark (seed/
-// pipeline/revert rows aren't patrol targets; 'contribution' joins when that
-// flow ships). CAS-ish: the UPDATE is guarded on patrolled_by IS NULL, so a
-// repeat (or a raced double-click) returns 200 {ok:true, duplicate:true} and
-// never overwrites the first patroller's mark.
+// patroller/admin only. Only kind='edit' and kind='agent' revisions take a
+// patrol mark (seed/pipeline/revert rows aren't patrol targets; 'contribution'
+// joins when that flow ships). CAS-ish: the UPDATE is guarded on
+// patrolled_by IS NULL, so a repeat (or a raced double-click) returns 200
+// {ok:true, duplicate:true} and never overwrites the first patroller's mark.
 app.post("/api/revision/:id/patrol", async (c) => {
   const originErr = checkOrigin(c);
   if (originErr) return originErr;
@@ -3043,7 +3109,9 @@ app.post("/api/revision/:id/patrol", async (c) => {
       .limit(1)
   )[0];
   if (!rev) return c.json({ ok: false, error: "unknown revision" }, 404);
-  if (rev.kind !== "edit") return c.json({ ok: false, error: "only human edits are patrolled" }, 400);
+  if (rev.kind !== "edit" && rev.kind !== "agent") {
+    return c.json({ ok: false, error: "only human and agent edits are patrolled" }, 400);
+  }
   const now = Date.now();
   const updated = await db
     .update(revisions)
