@@ -1760,7 +1760,7 @@ recommendation.
 6. **Absence feedback.** Readers cannot yet say "this is formalized, here" against a "not
    found". That is the safety metric's most valuable label (false-not-formalized, §8.2). It
    needs a passage-level key, for example `(record id, universe sha)`. *Decided (Jack,
-   2026-11-02): launch without it, and build it next*, as a second verdict target.
+   2026-11-02): launch without it.* *Recommendation:* build it next, as a second verdict target.
 7. **The producer contract notes** (section 3). *Awaiting Jack's agreement as
    formal-companion's maintainer*, before the upload. Notes 1, 2, 8, 9, 12 and 13 describe what
    the producer's export at master writes; the others are WikiLean's readings where the
