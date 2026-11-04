@@ -20,6 +20,27 @@
     });
   }
 
+  // ---- a formula wider than its passage (a phone) scrolls sideways inside its own box;
+  // such a box takes keyboard focus, so a keyboard user can scroll it too ----
+  function focusWide() {
+    var boxes = document.querySelectorAll(".atlas-math-display, .atlas-math .m-env");
+    for (var i = 0; i < boxes.length; i++) {
+      var box = boxes[i];
+      if (box.scrollWidth > box.clientWidth) box.setAttribute("tabindex", "0");
+      else box.removeAttribute("tabindex");
+    }
+  }
+  focusWide();
+  var wideTimer = null;
+  function focusWideSoon() {
+    clearTimeout(wideTimer);
+    wideTimer = setTimeout(focusWide, 150);
+  }
+  window.addEventListener("load", focusWide);
+  window.addEventListener("resize", focusWideSoon);
+  // A phone may lay the page out again at its own width after this script ran.
+  if (typeof ResizeObserver === "function" && document.body) new ResizeObserver(focusWideSoon).observe(document.body);
+
   function el(tag, cls, text) {
     var node = document.createElement(tag);
     if (cls) node.className = cls;
@@ -179,7 +200,9 @@
     var count = document.getElementById("atlas-count");
     var total = Number(table.getAttribute("data-total")) || 0;
     var shards = (table.getAttribute("data-shards") || "").split(/\s+/).filter(Boolean);
-    var STATUSES = ["formalized", "statement_only", "partial", "not_formalized", "unresolved"];
+    // The statuses a passage can be given: one with no status yet is in no column and no count,
+    // as the server-rendered rows have it (atlas-render.ts ARTICLE_STATUSES).
+    var STATUSES = ["formalized", "statement_only", "partial", "not_formalized"];
     var libraryNames = {};
     try { libraryNames = JSON.parse(table.getAttribute("data-library-names") || "{}") || {}; } catch (e) { libraryNames = {}; }
     var LIMIT = 200;
@@ -208,7 +231,8 @@
       a.href = "/atlas/" + entry.pageid + "/" + encodeURIComponent(titleKey(entry.title).replace(/ /g, "_"));
       th.appendChild(a);
       tr.appendChild(th);
-      var passagesCell = el("td", "num", entry.passages);
+      var shown = (Number(entry.passages) || 0) - (Number(entry.unresolved) || 0);
+      var passagesCell = el("td", "num", shown > 0 ? shown : 0);
       tr.appendChild(passagesCell);
       STATUSES.forEach(function (s) {
         var td = el("td", "num", entry[s] || 0);

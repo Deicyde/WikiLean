@@ -32,6 +32,8 @@
 .atlas-foot { max-width: 1000px; margin: 8px auto 40px; padding: 12px 28px 0; box-sizing: border-box; border-top: 1px solid var(--line-strong); color: var(--muted); font-size: 12px; line-height: 1.5; }
 .atlas-foot p { margin: 4px 0; }
 .atlas-foot a { text-decoration: underline; }
+/* The data's audit status: one line under the header of every atlas page, never on a card. */
+.atlas-notice { margin: 0; padding: 6px 28px; border-bottom: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 13px; line-height: 1.45; text-align: center; }
 
 /* ---- coverage strip ---- */
 .atlas-strip { margin: 16px 0 18px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; }
@@ -92,15 +94,106 @@
 .atlas-quote { margin: 8px 0 4px; padding: 0 0 0 12px; border-left: 3px solid var(--line-strong); font-family: var(--serif); font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
 .atlas-quote mark { background: var(--st-bg); color: inherit; padding: 0 2px; border-radius: 2px; }
 .atlas-affix { color: var(--muted); }
+/* A formula in a quote, rendered once from its TeX (wiki/src/atlas-math.ts): serif
+   letters, italic variables, small scripts that keep the line height, stacked
+   fractions and a radical with its bar. The TeX is the span's title. */
+.atlas-math { font-family: var(--serif); white-space: normal; }
+.atlas-math sub, .atlas-math sup { font-size: .72em; line-height: 0; }
+.atlas-math .m-text { font-style: normal; }
+.atlas-math .m-sf { font-family: system-ui, sans-serif; }
+.atlas-math .m-tt { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em; }
+.atlas-math .m-frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .8em; line-height: 1.15; margin: 0 .1em; }
+.atlas-math .m-num { border-bottom: 1px solid currentColor; padding: 0 .15em; }
+.atlas-math .m-frac.is-binom .m-num { border-bottom: 0; }
+.atlas-math .m-den { padding: 0 .15em; }
+.atlas-math .m-rad { border-top: 1px solid currentColor; padding: 0 .1em; margin-left: .05em; }
+.atlas-math .m-root { margin-right: -.3em; }
+.atlas-math .m-over { border-top: 1px solid currentColor; }
+.atlas-math .m-under { border-bottom: 1px solid currentColor; }
+.atlas-math .m-cancel { text-decoration: line-through; }
+/* An accent drawn over its body at a size that reads at 1x (data-mark; the combining
+   mark itself is in the text, visually hidden). */
+.atlas-math .m-acc { position: relative; display: inline-block; }
+.atlas-math .m-acc::after { content: attr(data-mark); position: absolute; left: 0; right: 0; top: -.16em; text-align: center; font-style: normal; font-weight: 700; font-size: 1em; line-height: 1; pointer-events: none; }
+.atlas-math .m-acc.is-it::after { left: .2em; }
+.atlas-math .m-acc.is-arrow::after { top: -.62em; font-size: .7em; font-weight: 400; }
+/* Matrices, cases and aligned rows (atlas-math envHtml): an inline table of rows and
+   columns between delimiters that stretch over the rows. */
+.atlas-math .m-env { display: inline-flex; align-items: stretch; vertical-align: middle; max-width: 100%; margin: .05em .1em; padding: .2em 0; overflow-x: auto; overflow-y: hidden; }
+.atlas-math-display:focus-visible, .atlas-math .m-env:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.atlas-math .m-env.is-small { font-size: .8em; }
+.atlas-math .m-table { display: inline-table; border-collapse: collapse; min-width: 0; }
+.atlas-math .m-row { display: table-row; }
+.atlas-math .m-cell { display: table-cell; padding: .08em 0; vertical-align: baseline; text-align: center; overflow-wrap: normal; line-height: 1.35; white-space: nowrap; }
+.atlas-math .m-cell .m-text { white-space: normal; }
+.atlas-math .m-cell + .m-cell { padding-left: .9em; }
+.atlas-math .m-cell[data-a="l"] { text-align: left; }
+.atlas-math .m-cell[data-a="r"] { text-align: right; }
+.atlas-math .m-env[data-layout="cases"] .m-cell + .m-cell { padding-left: 1.4em; }
+.atlas-math .m-env[data-layout="align"] .m-cell + .m-cell { padding-left: 1.6em; }
+.atlas-math .m-env[data-layout="align"] .m-cell.is-tight { padding-left: .28em; }
+.atlas-math .m-delim { flex: none; display: flex; align-items: center; justify-content: center; position: relative; }
+.atlas-math .m-delim[data-d="paren"] { width: .4em; }
+.atlas-math .m-delim[data-d="paren"][data-side="l"] { border-left: .09em solid currentColor; border-radius: .45em 0 0 .45em / 50% 0 0 50%; margin-right: .12em; }
+.atlas-math .m-delim[data-d="paren"][data-side="r"] { border-right: .09em solid currentColor; border-radius: 0 .45em .45em 0 / 0 50% 50% 0; margin-left: .12em; }
+.atlas-math .m-delim[data-d="brack"] { width: .25em; border: .08em solid currentColor; }
+.atlas-math .m-delim[data-d="brack"][data-side="l"] { border-right: 0; margin-right: .2em; }
+.atlas-math .m-delim[data-d="brack"][data-side="r"] { border-left: 0; margin-left: .2em; }
+.atlas-math .m-delim[data-d="vert"] { width: 0; border-left: .08em solid currentColor; margin: 0 .25em; }
+.atlas-math .m-delim[data-d="dvert"] { width: 0; border-left: 3px double currentColor; margin: 0 .25em; }
+.atlas-math .m-delim[data-d="brace"] { width: .55em; }
+.atlas-math .m-dglyph { display: inline-block; line-height: 1; transform: scaleY(calc(var(--m-rows, 1) * 1.45)); font-weight: 300; }
+/* A base with both a sub- and a superscript stacks them, as TeX does (∑ from i = 0 to n − 1). */
+.atlas-math .m-ss { display: inline-flex; flex-direction: column; vertical-align: -.45em; font-size: .72em; line-height: 1.05; margin-left: .05em; }
+.atlas-math .m-ss.is-limits { align-items: center; }
+.atlas-math .m-ss > span { display: block; }
+/* A display formula breaks after a relation, never inside a term unless one term is
+   wider than the line. */
+.atlas-math-display .m-chunk { display: inline-block; max-width: 100%; }
+/* A highlighted passage highlights its display formulas and tables too (an inline mark
+   paints only the line boxes it holds). */
+.atlas-quote mark .atlas-math-display { background: var(--st-bg); border-radius: 2px; }
+/* An inline table taller than its line: the highlight over the passage's own surface,
+   opaque, so the mark's band across its middle row does not show through twice. */
+.atlas-quote mark > .atlas-math > .m-env { background: linear-gradient(var(--st-bg), var(--st-bg)), var(--surface); border-radius: 2px; }
 .atlas-context { margin: 2px 0 0; font-size: 12px; }
+/* A passage in full (build_store --passage-text): the revision's own words, a display
+   formula on a line of its own, citation markers small and quiet. */
+.atlas-text { color: var(--ink); }
+.atlas-math-display { display: block; margin: 6px 0; text-align: center; max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+.atlas-ref { font-size: .68em; line-height: 0; color: var(--muted); font-family: system-ui, -apple-system, sans-serif; }
+/* Inside a highlighted passage a citation marker takes the passage's ink, for contrast on the highlight. */
+.atlas-quote mark .atlas-ref { color: inherit; }
+
+/* The declaration's Lean header (build_store --signatures), under its name: monospace,
+   flowed at the card's width with a four-column continuation indent (Mathlib's), each
+   binder and each hypothesis kept on one line unless it alone is wider than the card. */
+.atlas-sig { margin: 4px 0; padding: 6px 9px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: break-word; tab-size: 4; }
+.atlas-sig code { display: block; font: inherit; color: inherit; background: none; padding: 0 0 0 4ch; text-indent: -4ch; }
+.atlas-sig-u { display: inline-block; max-width: 100%; text-indent: 0; vertical-align: top; }
+.atlas-nowrap { white-space: nowrap; }
+.atlas-sig-full { margin: 0 0 4px; font-size: 12px; color: var(--muted); }
+.atlas-sig-full > summary { cursor: pointer; width: max-content; max-width: 100%; }
+.atlas-deprecated { margin: 2px 0 4px; font-size: 12px; color: var(--c-partial-ink); overflow-wrap: anywhere; }
+.atlas-deprecated .atlas-decl { font-size: 12px; }
 
 .atlas-cards { display: grid; gap: 10px; margin: 10px 0 0; }
 .atlas-card { padding: 9px 12px; background: var(--paper); border: 1px solid var(--line); border-radius: 6px; min-width: 0; }
 .atlas-cards.is-related .atlas-card { border-style: dashed; }
-.atlas-card-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; font-size: 12px; }
+/* Under the Lean code: library, commit, relation, proof status, source link. */
+.atlas-card-top { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: baseline; margin: 6px 0 0; font-size: 12px; }
 .atlas-lib { padding: 0 6px; border: 1px solid var(--line-strong); border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); background: var(--surface); }
 .atlas-commit { font-size: 11px; color: var(--muted); }
-.atlas-rel { color: var(--ink); }
+/* The relation: a badge beside the declaration, its stroke by strength (solid for
+   exact and close, dashed for more general, special case and part, dotted grey
+   for related), and the same badges in the legend under the Passages heading. */
+.atlas-rel { display: inline-block; margin-left: 6px; padding: 0 8px; border: 1.5px solid var(--accent); border-radius: 999px; color: var(--accent); font: 700 12px/1.55 system-ui, -apple-system, sans-serif; white-space: nowrap; vertical-align: 1px; }
+.atlas-rel[data-relation="broadMatch"], .atlas-rel[data-relation="narrowMatch"], .atlas-rel[data-relation="hasPart"] { border-style: dashed; }
+.atlas-rel[data-relation="relatedMatch"] { border-style: dotted; border-color: var(--line-strong); color: var(--muted); }
+.atlas-legend-rel { margin: 0 0 12px; font-size: 12.5px; }
+.atlas-legend-rel p { margin: 0 0 4px; }
+.atlas-legend-rel ul { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 0; list-style: none; color: var(--muted); }
+.atlas-legend-rel .atlas-rel { margin: 0 4px 0 0; }
 .atlas-ps { font-size: 11px; color: var(--muted); }
 /* An unfinished proof is the statement-only amber with its dashed stroke, not
    the not-formalized red: the declaration exists, its proof does not. */
@@ -108,6 +201,7 @@
 .atlas-src { margin-left: auto; }
 .atlas-src.is-none { color: var(--muted); }
 .atlas-decl-line { margin: 6px 0 2px; overflow-wrap: anywhere; }
+.atlas-card > .atlas-decl-line:first-child { margin-top: 0; }
 .atlas-decl { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; color: var(--ink); }
 .atlas-ns { color: var(--muted); }
 .atlas-decl b { font-weight: 700; }
@@ -115,6 +209,14 @@
 .atlas-note { margin: 6px 0 0; font-size: 13px; }
 .atlas-k { font-weight: 700; }
 .atlas-card-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 6px 12px; margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+/* Provenance, closed by default (the display rule): a quiet fold under the card. */
+.atlas-prov, .atlas-about { margin: 8px 0 0; font-size: 12px; color: var(--muted); }
+.atlas-prov > summary, .atlas-about > summary { cursor: pointer; width: max-content; max-width: 100%; color: var(--muted); }
+.atlas-prov > summary:hover, .atlas-about > summary:hover { color: var(--accent); }
+.atlas-prov-list { margin: 4px 0 0; padding-left: 18px; line-height: 1.45; }
+.atlas-prov-list code { font-size: 11px; overflow-wrap: anywhere; }
+.atlas-about { margin: 4px 0 10px; }
+.atlas-conjuncts { margin: 2px 0 4px; padding-left: 18px; font-size: 12.5px; color: var(--muted); }
 .atlas-fb { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .atlas-fb-btn { min-height: 28px; padding: 2px 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; cursor: pointer; }
 .atlas-fb-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -127,12 +229,10 @@
 .atlas-fb-signin { font-size: 12px; }
 .atlas-fb-help { font-size: 12px; max-width: 75ch; }
 
-.atlas-absence, .atlas-undecided { margin: 10px 0 0; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+.atlas-absence { margin: 10px 0 0; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
 .atlas-absence { border: 3px double var(--c-not_formalized); }
 .atlas-absence > .atlas-ico { color: var(--c-not_formalized-ink); margin-right: 4px; }
 .atlas-absence .atlas-muted { display: block; margin-top: 2px; font-size: 12px; }
-.atlas-undecided { border: 1.5px dashed var(--c-untouched); color: var(--muted); }
-.atlas-undecided > .atlas-ico { margin-right: 4px; }
 .atlas-related-h { margin: 12px 0 0; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .atlas-libtag { display: inline-block; padding: 0 5px; border: 1px solid var(--line-strong); border-radius: 4px; font-size: 11px; font-weight: 600; white-space: nowrap; }
 
@@ -141,6 +241,12 @@
 .atlas-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line-strong); font-size: 13px; }
 .atlas-table th, .atlas-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .atlas-table thead th { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+/* The articles list: its status headings wrap under their icon and its library
+   tags wrap within the cell, so the table fits the page column at desktop widths. */
+.atlas-list th, .atlas-list td { padding: 6px 7px; }
+.atlas-list thead th.num { white-space: normal; min-width: 4em; }
+.atlas-list td:nth-last-child(2) { min-width: 9em; }
+.atlas-list .atlas-libtag { margin: 0 0 2px; }
 .atlas-table tbody th { font-weight: 600; }
 .atlas-table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .atlas-table code { font-size: 11.5px; overflow-wrap: anywhere; }
@@ -165,6 +271,7 @@
 @media (max-width: 720px) {
   .wl-atlas { padding: 16px 16px 40px; font-size: 14px; }
   .atlas-foot { padding: 12px 16px 0; }
+  .atlas-notice { padding: 6px 16px; text-align: left; }
   .wl-atlas-box { padding: 8px 16px; }
   .wl-atlas-box-link { margin-left: 0; }
   .atlas-passage { padding: 10px 12px; }
@@ -173,6 +280,13 @@
   .atlas-strip-h { flex-basis: 100%; }
   .atlas-search input { font-size: 16px; max-width: none; }
   .atlas-fb-form textarea { font-size: 16px; }
+  .atlas-sig { font-size: 11.5px; padding: 5px 7px; line-height: 1.45; }
+  .atlas-sig code { padding-left: 2ch; text-indent: -2ch; }
+  /* An environment of many columns (alignedat) is wider than a phone: its rows stay
+     stacked, each row's cells flowing as a line. */
+  .atlas-math .m-env[data-wide] .m-table, .atlas-math .m-env[data-wide] .m-row { display: block; }
+  .atlas-math .m-env[data-wide] .m-cell { display: inline; white-space: normal; padding: 0; }
+  .atlas-math .m-env[data-wide] .m-cell + .m-cell:not(.is-tight) { padding-left: .5em; }
   /* The phone header wraps to about 106px. */
   .atlas-passage { scroll-margin-top: 120px; }
   /* A wide table scrolls sideways inside its region; the row label stays put. */
@@ -181,5 +295,7 @@
 
 @media (prefers-contrast: more) {
   .atlas-passage, .atlas-card, .atlas-chip, .atlas-table { border-color: var(--ink); }
-  .atlas-muted, .atlas-meta, .atlas-ns, .atlas-module, .atlas-coverage-parts { color: var(--ink); }
+  .atlas-muted, .atlas-meta, .atlas-ns, .atlas-module, .atlas-coverage-parts, .atlas-prov, .atlas-about,
+  .atlas-prov > summary, .atlas-about > summary, .atlas-ref, .atlas-sig-full { color: var(--ink); }
+  .atlas-sig { border-color: var(--ink); }
 }
