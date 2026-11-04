@@ -853,8 +853,21 @@ many times over.
 
 While an upload is running, readers can see a newer article next to an older index. Each
 article stays internally consistent, so the worst case is a short-lived 404 from the index
-for a newly added page. No upload script exists yet, deliberately: it is a remote write,
-and who runs it is an open decision (section 14).
+for a newly added page. `scripts/atlas/upload_store.py` runs these steps through R2's S3 API
+(usage: `scripts/atlas/UPLOAD.md`). It needs the atlas reader's Worker and builder, merged first
+(`UPLOAD.md`, "What you need"), and sends a reader store's pages (`reader/<pageid>.html`, from the
+reader's `--reader-html`) after the records and before the articles; while a later upload runs,
+an article whose new reader page has landed before its new view shows its card list until the
+view lands. It is a dry run unless given `--execute`. It runs the
+builder's `--check` first and checks each upload by its ETag. It deletes only under `atlas/v1/`
+and only once `current.json` is in place, then checks every object against `manifest.json`.
+`--rollback-to` re-publishes a kept build the same way. `current.json` is the publish switch:
+without it every atlas route but the feedback export answers 503 "atlas store has no published
+build" and article pages show no box, whatever else the bucket holds. Each Worker isolate keeps
+what it read of `current.json`, its absence included, for up to a minute, so deleting it takes
+every atlas route to 503 within about a minute, and `--unpublish` removes everything: it deletes
+every object under `atlas/v1/`, `current.json` first. It is a remote write, and only the
+operator runs it (section 14).
 
 ## 7. Worker routes
 
@@ -1168,7 +1181,9 @@ Each decision below comes with a recommendation.
      asset-count limit (about 20,000 files on the free plan) at full scale.
 3. **Who uploads, and from where.** *Recommendation:* the operator Mac, with a scoped R2
    token (Object Read & Write on the one bucket), never the fleet host and never the
-   nightly. The upload script is not built; it would follow section 6.
+   nightly. The upload script, `scripts/atlas/upload_store.py`, follows section 6. It takes the
+   token's S3 credentials from the environment or a 0600 file, never from the command line
+   (`scripts/atlas/UPLOAD.md`).
 4. **Public licence statement.** The page footer states the mapping as CC0, like WikiLean's
    annotations, and the quote fields as CC BY-SA 4.0. Proposal §10 requires that wording
    for a CC0 consumer. Confirm it before launch.
@@ -1287,3 +1302,18 @@ Each decision below comes with a recommendation.
 - `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
   body caps and scans `wiki/src` so that no route reads a JSON body except through
   `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry.
+- `scripts/atlas/test_upload_store.py` (in `scripts/ci-python.sh`) runs the uploader against an
+  in-process fake S3 endpoint. The endpoint refuses any request whose SigV4 signature
+  (recomputed from the request as received), payload hash or Content-MD5 does not match, and
+  the signer is pinned to AWS's documented examples. The tests check: `current.json` after
+  every other object and the deletes after it; a dry run that writes nothing; no credential in
+  any output or in the builder's environment; refusal when `--check` fails or exits 0 without
+  its report; a wrong ETag, bytes that change after upload, a lost object and a delete that did
+  nothing; retries; deletes confined to `atlas/v1/`, with keys a server could read as other keys
+  refused; a listing that returns keys outside `atlas/v1/`, whether it plans the run, feeds the
+  deletes or is the final check's, never acted on, and one that does not say its keys are
+  URL-encoded refused when a key reads differently decoded; what each failure reports (nothing
+  written, or what the bucket holds and what readers see, on a first publish and over a live
+  build), and a re-run converging after each; `--unpublish`, `current.json` first; and a
+  rollback, with `--store` refusing a build older than the live one, `--rollback-to` one newer,
+  and the rollback command a publish prints working as printed.

@@ -95,6 +95,7 @@ Repository `Deicyde/WikiLean`. `ci.yml` uses none of them (validation only).
 | Claude CLI login | keychain of the desktop session | nightly review | broken since 2026-09-18 (P0 6) |
 | `wrangler login` (OAuth) | wrangler's local auth store | nightly KV pushes, promoter, `d1 execute` | broad account scopes by default; prefer a scoped `CLOUDFLARE_API_TOKEN` exported only for the command |
 | `CLOUDFLARE_API_TOKEN` (local) | operator | promoter (`site/ops/brain-promote-release.sh`), `brain/acquire-d1-snapshot.sh` (needs only D1 Read) | export for the one command; never in a file the nightly reads |
+| `WIKILEAN_ATLAS_R2_ACCESS_KEY_ID`, `WIKILEAN_ATLAS_R2_SECRET_ACCESS_KEY` (the S3 pair of an R2 API token) | Jack | `scripts/atlas/upload_store.py`, publishing the atlas store (`scripts/atlas/UPLOAD.md`) | Object Read & Write on the atlas bucket only, with an expiry (add it to the register below); from the environment or a 0600 file on the operator machine only, never argv, Actions or the fleet host; not created yet |
 | age private key (`wikilean-backup.key`) | Jack, offline | decrypting backups | never on GitHub or a runner (`docs/BACKUP.md`) |
 | `gh auth` login | operator | `bot/poll.py --decide`, maintainer commands below | — |
 | `ANTHROPIC_API_KEY` | — | must be **unset** for Max auth | `WIKILEAN_KEEP_API_KEY=1` is the explicit API-billing opt-in |
