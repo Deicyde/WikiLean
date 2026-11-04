@@ -110,6 +110,8 @@ recommendation. Remove an item once its decision is recorded below.
     - The producer contract notes (§14, item 7). Options: agree them, or change them.
     - Whether the bearer-only feedback export may carry readers' free-text notes. Options:
       keep them, or drop them as the research export does.
+    - When to build absence feedback ("this is formalized, here" against a "not found").
+      Options: build it next, or later.
 
 ## End goal (verbatim from Jack)
 
