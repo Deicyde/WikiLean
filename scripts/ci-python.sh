@@ -11,7 +11,8 @@ export PYTHONDONTWRITEBYTECODE=1
 export TZ=UTC
 
 # CI must never inherit credentials that could turn an offline test into a live call.
-unset ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN PIPELINE_TOKEN CLOUDFLARE_API_TOKEN
+unset ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN PIPELINE_TOKEN CLOUDFLARE_API_TOKEN \
+  WIKILEAN_ATLAS_R2_ACCESS_KEY_ID WIKILEAN_ATLAS_R2_SECRET_ACCESS_KEY
 
 run_check() {
   local name="$1"
@@ -78,6 +79,7 @@ run_check "D1 annotation mirror tests" "$PYTHON_BIN" wiki/scripts/test_pull_anno
 run_check "Local D1 backup fail-closed tests" "$PYTHON_BIN" wiki/scripts/test_backup_d1.py
 run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
 run_check "Formalization atlas store builder tests" "$PYTHON_BIN" scripts/atlas/test_build_store.py
+run_check "Formalization atlas store uploader tests" "$PYTHON_BIN" scripts/atlas/test_upload_store.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
