@@ -120,10 +120,18 @@ body {
    The Wikimedia SVGs use fill="currentColor", which doesn't inherit through
    <img> boundaries — they render as invisible boxes outside MW's own skin.
    Fix: swap them — show the MathML (every modern browser renders it natively)
-   and hide the broken SVGs. */
+   and hide the broken SVGs. Older pinned bodies class the MathML's span
+   .mwe-math-mathml-inline or -display; current parse output classes it only
+   .mwe-math-mathml-a11y, so a display formula is known by its outer
+   .mwe-math-element-block wrapper, where the MathML is a centred block. */
 .mwe-math-mathml-display,
-.mwe-math-mathml-inline {
+.mwe-math-mathml-inline,
+.mwe-math-mathml-a11y {
   display: inline !important;
+}
+.mwe-math-element-block .mwe-math-mathml-a11y {
+  display: block !important;
+  text-align: center;
 }
 .mwe-math-element-block {
   display: block;
@@ -349,6 +357,8 @@ body.show-dim .anno .mwe-math-element-block            { opacity: 1; }
   /* Wikipedia tables/infoboxes are wider than a phone viewport: scroll them
      in place instead of overflowing the page. */
   .wl-article-body table { display: block; overflow-x: auto; max-width: 100%; }
+  /* A display formula wider than the phone scrolls in its own box, as tables do. */
+  .mwe-math-element-block { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
   /* iOS zooms the whole page when a focused input's font-size is < 16px. */
   #wl-tooltip .tt-flag-comment { font-size: 16px; }
 }

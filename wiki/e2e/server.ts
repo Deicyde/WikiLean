@@ -9,7 +9,7 @@ import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
 import { installBrainFixture } from "../test/helpers/brain-fixture.js";
 import { bindAtlas } from "../test/helpers/atlas.js";
-import { SEED_ANNOTATIONS, WP_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
+import { FORMULA_SLUG, SEED_ANNOTATIONS, WP_FIXTURE, WP_FORMULA_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
 
 const HOST = "127.0.0.1";
 const PORT = Number.parseInt(process.env.WIKILEAN_E2E_PORT ?? "4173", 10);
@@ -90,6 +90,10 @@ bindAtlas(harness.env);
 harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,3,1,?,?)")
   .run("Widget_lemma", "Widget lemma", "Widget lemma", REVID, "[]", Date.now(), Date.now());
 await harness.wpHtml.put(`wp:Widget_lemma:${REVID}`, WP_FIXTURE);
+// An article whose body holds formulas in both shapes of MediaWiki's parse output.
+harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,3,1,?,?)")
+  .run(FORMULA_SLUG, "Formula article", "Formula article", REVID, "[]", Date.now(), Date.now());
+await harness.wpHtml.put(`wp:${FORMULA_SLUG}:${REVID}`, WP_FORMULA_FIXTURE);
 const runtimeFetch = globalThis.fetch;
 globalThis.fetch = (async (input: RequestInfo | URL) => {
   throw new Error(`browser harness attempted an external fetch: ${String(input)}`);

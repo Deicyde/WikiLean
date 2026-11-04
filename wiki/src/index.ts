@@ -180,7 +180,9 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // legend popover (engine/page.ts; CSS/JS inline in the page shell).
   // v17: attribution links are always underlined so they do not rely on color.
   // v18: native Literature Links occurrences, complete-match telemetry, direct formal links.
-  const cacheKey = `render:v18:${slug}:${row.version}`;
+  // v19: style.css?v=10, which draws the MathML of Wikipedia's current formula
+  // markup (a span classed only mwe-math-mathml-a11y); with v=9 formulas were blank.
+  const cacheKey = `render:v19:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 

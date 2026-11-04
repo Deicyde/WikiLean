@@ -25,7 +25,7 @@ import {
 // Asset versions: bump with any change to site/assets/atlas.{css,js}.
 export const ATLAS_CSS = "/assets/atlas.css?v=4";
 export const ATLAS_JS = "/assets/atlas.js?v=2";
-const STYLE_CSS = "/assets/style.css?v=9";
+const STYLE_CSS = "/assets/style.css?v=10";
 
 const text = (s: string) => htmlEscape(String(s ?? ""), false);
 const attr = (s: string) => htmlEscape(String(s ?? ""), true);
