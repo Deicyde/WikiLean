@@ -96,6 +96,7 @@ const FORBIDDEN_BASELINE_PATHS = new Set([
   "graph_data.json",
   "atlas.html",
   "atlas_data.json",
+  "articles.html",
   "article-graph.html",
   "article-graph-data.json",
   "map_data.json",
@@ -621,11 +622,13 @@ export function buildPublic(options: BuildPublicOptions): BuildPublicResult {
     };
   } else {
     // Preserve the historical shadow-build behavior for wiki/public.
-    // atlas.css/atlas.js: the formalization atlas pages (docs/ATLAS.md), and
-    // atlas-reader.css/atlas-reader.js its article reader. They are not in
-    // REQUIRED_BASELINE_PATHS: a page without them still renders, and promotion
-    // baselines frozen before the atlas existed stay valid.
-    const fromSite = ["style.css", "script.js", "review.css", "atlas.css", "atlas.js", "atlas-reader.css", "atlas-reader.js"];
+    // articles.css/articles.js: the formalization reader's pages
+    // (docs/ARTICLES.md), and articles-reader.css/articles-reader.js its article
+    // reader. They were atlas{,-reader}.{css,js} until the rename of 2026-11-05.
+    // They are not in REQUIRED_BASELINE_PATHS: a page without them still renders,
+    // and promotion baselines frozen before the reader existed stay valid.
+    const fromSite = ["style.css", "script.js", "review.css",
+      "articles.css", "articles.js", "articles-reader.css", "articles-reader.js"];
     for (const file of fromSite) {
       const source = resolve(site, "assets", file);
       if (existsSync(source)) copyFileSync(source, resolve(pubAssets, file));
@@ -664,7 +667,11 @@ export function buildPublic(options: BuildPublicOptions): BuildPublicResult {
     // wiki/public is generated-but-never-wiped: an older checkout may have left
     // pages that would shadow the Worker's intended routes.
     for (const file of [
-      "map.html", "graph.html", "atlas.html", "about.html", "map_data.json", "map_data_v2.json",
+      "map.html", "graph.html", "atlas.html", "articles.html", "about.html",
+      "map_data.json", "map_data_v2.json",
+      // The reader's assets under their old names, from a checkout built before
+      // the rename of 2026-11-05.
+      "assets/atlas.css", "assets/atlas.js", "assets/atlas-reader.css", "assets/atlas-reader.js",
     ]) {
       rmSync(resolve(pub, file), { force: true });
     }

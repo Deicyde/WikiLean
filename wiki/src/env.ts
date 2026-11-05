@@ -27,10 +27,10 @@ export interface Env {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
   // Anonymous /mcp JSON-RPC limiter, keyed mcp:<CF-Connecting-IP> (an IPv6 /64). Optional so
-  // deploys predating the binding fall back to BRAIN_API_LIMITER (mcp.ts). The atlas's
-  // anonymous reads take the same budget under their own keys (atlas.ts readAllowed):
-  // atlas-q:<ip> for a ?q= search, atlas-read:<ip> for an article page and its JSON views,
-  // atlas-meta:<ip> for the small JSON objects (current.json, the universe, an index shard).
+  // deploys predating the binding fall back to BRAIN_API_LIMITER (mcp.ts). The plane's
+  // anonymous reads take the same budget under their own keys (articles.ts readAllowed):
+  // articles-q:<ip> for a ?q= search, articles-read:<ip> for an article page and its JSON views,
+  // articles-meta:<ip> for the small JSON objects (current.json, the universe, an index shard).
   MCP_LIMITER?: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
@@ -41,14 +41,14 @@ export interface Env {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
 
-  // Formalization atlas store (docs/ATLAS.md): an R2 bucket holding the static
-  // tree scripts/atlas/build_store.py writes (keys atlas/v1/...), which
-  // wrangler.jsonc binds to the private bucket wikilean-atlas (docs/ATLAS.md
+  // The formalization reader's store (docs/ARTICLES.md): an R2 bucket holding the static
+  // tree scripts/articles/build_store.py writes (keys articles/v1/...), which
+  // wrangler.jsonc binds to the private bucket wikilean-articles (docs/ARTICLES.md
   // section 6). Read-only, and optional so a config or test harness without it
-  // keeps working: when unbound every atlas route but the feedback export (D1
-  // only) answers 503 "atlas store not configured", and article pages show no
-  // atlas box.
-  ATLAS?: R2Bucket;
+  // keeps working: when unbound every articles route but the feedback export (D1
+  // only) answers 503 "articles store not configured", and article pages show no
+  // articles box.
+  ARTICLES?: R2Bucket;
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 

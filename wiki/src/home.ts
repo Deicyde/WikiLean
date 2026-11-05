@@ -2,9 +2,11 @@
 // Replaces the static site/out/ pages that build-public.ts used to copy into
 // wiki/public/ — articles created via PUT /api/article/:slug now appear
 // without a static rebuild. index.ts serves brainLanding() cached in
-// RENDER_CACHE ('page:home:v11', TTL 300s), homePage() ('page:articles:v4',
-// TTL 300s), aboutPage() ('page:about:v3', TTL 300s), and sitemapXml()
-// ('page:sitemap:v4', TTL 3600s).
+// RENDER_CACHE ('page:home:v11', TTL 300s), aboutPage() ('page:about:v3',
+// TTL 300s) and sitemapXml() ('page:sitemap:v5', TTL 3600s). homePage() served
+// /articles under 'page:articles' until 2026-11-05, when the formalization
+// reader took that path over (src/articles.ts); it is kept here, unrouted, with
+// the rest of the old article system.
 //
 // Visual language: warm academic-minimalist — paper background, serif display
 // headings (system stacks only, no external fonts), one deep-blue accent, and
@@ -196,7 +198,6 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
     This is the <b>Brain</b>: every concept joined to its Lean code, databases, and literature.</span></span>
   <nav class="wl-nav" aria-label="Site">
     <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
-    <a href="/atlas">Atlas</a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/stats">Stats</a>
     <a href="/concepts">Concepts</a>
@@ -429,7 +430,7 @@ footer a:hover { text-decoration:underline; }
   <nav class="wl-nav" aria-label="Site">
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
-    <a href="/atlas">Atlas</a>
+    <a href="/articles">Articles</a>
     <a href="/brain">Brain</a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/stats">Stats</a>
@@ -645,7 +646,6 @@ footer p { margin:4px 0; }
   <a class="wl-brand" href="/">WikiLean</a>
   <nav class="wl-nav" aria-label="Site">
     <a class="wl-navlink" href="/articles">Articles</a>
-    <a class="wl-navlink" href="/atlas">Atlas</a>
     <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink" href="/recent-changes">Recent changes</a>
     <a class="wl-navlink" href="/stats">Stats</a>
@@ -776,8 +776,10 @@ export function sitemapXml(rows: SitemapRow[]): string {
   const newest = rows.reduce((m, r) => (r.updatedAt > m ? r.updatedAt : m), 0);
   const rootMod = newest ? `<lastmod>${new Date(newest).toISOString().slice(0, 10)}</lastmod>` : "";
   const rootUrl = `  <url><loc>${SITE_ORIGIN}/</loc>${rootMod}<priority>1.0</priority></url>`;
-  // Flagship pages (the old /map + /article-graph routes are deleted — not listed).
-  const staticUrls = ["brain", "mcp", "articles", "concepts", "about"].map(
+  // Flagship pages (the old /map + /article-graph routes are deleted — not listed;
+  // /articles is the formalization reader since 2026-11-05 and asks not to be
+  // indexed, src/articles.ts ARTICLES_ROBOTS, so it is not listed either).
+  const staticUrls = ["brain", "mcp", "concepts", "about"].map(
     (p) => `  <url><loc>${SITE_ORIGIN}/${p}</loc><priority>0.8</priority></url>`,
   );
   const urls = [

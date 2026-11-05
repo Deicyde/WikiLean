@@ -39,7 +39,7 @@ describe("GET /about", () => {
   it("carries the unified nav plus Concepts + MCP, contribution copy, and licenses", async () => {
     const h = setup();
     const html = await (await get(h.env, "/about")).text();
-    for (const href of ["/articles", "/atlas", "/brain", "/recent-changes", "/stats", "/concepts", "/mcp"]) {
+    for (const href of ["/articles", "/brain", "/recent-changes", "/stats", "/concepts", "/mcp"]) {
       expect(html).toContain(`href="${href}"`);
     }
     // The stale "corrections via the source repository" limitation copy is

@@ -226,7 +226,7 @@ export interface Atom {
 // ---- small utilities ---------------------------------------------------------
 
 // own-property read — a JSON.parse'd map must never serve inherited names
-// (__proto__/constructor/toString), same gotcha as /api/atlas/:key.
+// (__proto__/constructor/toString), same gotcha as /api/articles/:key.
 function own<T>(map: Record<string, T> | undefined, key: string): T | undefined {
   return map && Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
 }
