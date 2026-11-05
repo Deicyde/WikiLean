@@ -9,6 +9,7 @@ import contextlib
 import gzip
 import io
 import json
+import socket
 import subprocess
 import sys
 import tempfile
@@ -45,6 +46,10 @@ class Response:
 
 class RevokeTests(unittest.TestCase):
     def setUp(self):
+        # A test that reaches the network fails instead of posting to GitHub.
+        guard = mock.patch.object(socket, "create_connection", side_effect=AssertionError("network call in a test"))
+        guard.start()
+        self.addCleanup(guard.stop)
         self.tmp = Path(tempfile.mkdtemp())
         self.posts = []
         self.d1_argv: list[list[str]] = []
@@ -101,7 +106,7 @@ class RevokeTests(unittest.TestCase):
                                   "--d1-sql", "SELECT access_token FROM accounts")
         self.assertEqual(code, 0)
         self.assert_no_token(out)
-        self.assertIn("3 distinct tokens (1 github_pat, 1 gho, 1 ghu)", out)
+        self.assertIn("3 distinct tokens (1 gho, 1 ghu, 1 github_pat)", out)
         line = next(l for l in out.splitlines() if rgt.digest(GHU) in l)
         self.assertIn(str(gz), line)
         self.assertIn("d1:wikilean", line)

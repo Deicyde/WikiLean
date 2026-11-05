@@ -105,7 +105,7 @@ def collect(files: list[Path], d1: str | None, d1_sql: str | None, wiki_dir: Pat
     return found
 
 
-def revoke(tokens: list[str], opener=urllib.request.urlopen) -> list[int]:
+def revoke(tokens: list[str]) -> list[int]:
     """POST the tokens in batches, unauthenticated. Returns each request's HTTP status."""
     statuses = []
     for start in range(0, len(tokens), BATCH):
@@ -117,7 +117,7 @@ def revoke(tokens: list[str], opener=urllib.request.urlopen) -> list[int]:
             "User-Agent": "wikilean-revoke-github-tokens",
         })
         try:
-            with opener(request, timeout=60) as response:
+            with urllib.request.urlopen(request, timeout=60) as response:
                 statuses.append(response.status)
         except urllib.error.HTTPError as error:
             statuses.append(error.code)
