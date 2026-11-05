@@ -170,7 +170,7 @@ describe("the agent bearer", () => {
   it("resolves to the agent and stamps last use", async () => {
     const h = setup();
     const agent = await mint(h);
-    expect(await me(h, agent.token)).toEqual({ id: agent.id, name: "Claude (agent)", role: "agent" });
+    expect(await me(h, agent.token)).toEqual({ id: agent.id, name: "Claude (agent)", role: "agent", ownerId: "u-human" });
     const used = h.db.prepare("SELECT last_used_at FROM agent_tokens").get() as { last_used_at: number | null };
     expect(used.last_used_at).not.toBeNull();
   });

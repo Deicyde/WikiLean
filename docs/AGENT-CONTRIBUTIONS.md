@@ -36,7 +36,7 @@ reverts from the article's history. Annotation events log it with
 umask 077
 read -rs WLA && printf 'Authorization: Bearer %s\n' "$WLA" > ~/.wikilean-agent.header; unset WLA
 curl -sS -H @"$HOME/.wikilean-agent.header" https://wikilean.jackmccarthy.org/api/auth/me
-# {"user":{"id":"agent-…","name":"Claude (agent)","role":"agent"}}
+# {"user":{"id":"agent-…","name":"Claude (agent)","role":"agent","ownerId":"…"}}
 ```
 
 The agent's account is named after it with ` (agent)` appended, and its
