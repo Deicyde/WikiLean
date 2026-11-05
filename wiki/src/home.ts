@@ -197,7 +197,7 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
     <span class="tag">— Wikipedia&#x27;s mathematics, annotated with its Mathlib formalization status.
     This is the <b>Brain</b>: every concept joined to its Lean code, databases, and literature.</span></span>
   <nav class="wl-nav" aria-label="Site">
-    <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
+    <a href="/articles">Articles</a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/stats">Stats</a>
     <a href="/concepts">Concepts</a>

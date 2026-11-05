@@ -28,8 +28,7 @@ const PAGES: Array<{ path: string; user?: string }> = [
   { path: "/wikifunctions/verify" }, // wikifunctions-verify.ts
 ];
 
-// The landing page labels the same link "Browse N articles"; every other shell "Articles".
-const ARTICLES_HREF = /href="\/articles"/g;
+const ARTICLES_HREF = /<a (?:class="wl-navlink" )?href="\/articles">Articles<\/a>/g;
 
 function header(html: string): string {
   const start = html.indexOf('<header class="wl-header"');

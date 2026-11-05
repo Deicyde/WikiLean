@@ -1353,7 +1353,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   refuses a malformed one. The store and the page show a survived claim ("Formalized by 2
   parts together", with the parts listed). The parity table is regenerated from
   formal-companion `b33f17f`, the producer commit that implements D1. Three literal
-  readings Jack has not confirmed (Q1–Q3) are listed in docs/ATLAS.md, contract note 11.
+  readings Jack has not confirmed (Q1–Q3) are listed in docs/ARTICLES.md, contract note 11.
   Parity round two: the skill's hand-written table (97 cases) is pinned in WikiLean and runs
   through the builder's own checks (`derive_passage_status`); round one's three differences
   (an owed claim, a claim with a note, a location key twice) are now refused on both sides,
@@ -1379,7 +1379,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   the fixed stand-in it always was.
 
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
-  (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
+  (docs/ARTICLES.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
   release. Not deployed, and no store has been uploaded. The End-goal amendment and the
   plane's choices are Waiting on Jack item 16. The branch is stacked on
   `claude/security-hardening` (#84, which merges first): the feedback route reads its body
