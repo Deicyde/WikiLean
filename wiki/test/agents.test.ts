@@ -263,7 +263,7 @@ describe("agent article saves", () => {
     const veto = echo(SEED_ANNOTATIONS).map((a) => (a.id === AI_ID ? { ...a, status: "rejected" } : a));
     expect((await save(h.env, { annotations: veto, base_version: 1 }, { user: "u-human" })).status).toBe(200);
     const items = await editorView(h, agent.token);
-    const again = { ...items.find((a) => a.id === AI_ID)!, status: "formalized", label: "Abelian group again" };
+    const again: Record<string, unknown> = { ...items.find((a) => a.id === AI_ID)!, status: "formalized", label: "Abelian group again" };
     delete again.id;
     const res = await save(h.env, { annotations: [...items, again], base_version: 2 }, as(agent.token));
     expect(res.status).toBe(422);
