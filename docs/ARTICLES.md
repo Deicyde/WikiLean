@@ -1184,9 +1184,19 @@ newer article next to an older index. Each article stays internally consistent, 
 cases are short-lived: a 404 from the index for a newly added page; an article whose new reader
 page has landed before its new view, which names the old page's sha256, shows its card list
 (`loadReaderHtml` logs `articles-reader-mismatch`) until its view lands; and records that have
-landed before their view answer 503 from `/api/articles/records` until it does. No upload script
-exists yet, deliberately: it is a remote write, which the maintainer runs from the operator Mac
-(section 14, item 3).
+landed before their view answer 503 from `/api/articles/records` until it does.
+
+`scripts/articles/upload_store.py` runs these steps through R2's S3 API (usage:
+`scripts/articles/UPLOAD.md`). It sends a reader store's pages (`reader/<pageid>.html`, from the
+builder's `--reader-html`) after the records and before the articles, so the window above is the
+one it leaves. It is a dry run unless given `--execute`. It runs the builder's `--check` first
+and checks each upload by its ETag. It deletes only under `articles/v1/` and only once
+`current.json` is in place, then checks every object against `manifest.json`. `--rollback-to`
+re-publishes a kept build the same way, and `--unpublish` deletes every object under
+`articles/v1/`, `current.json` first, which takes the plane to 503 within about a minute. It
+takes the R2 token's S3 credentials from `WIKILEAN_ARTICLES_R2_ACCESS_KEY_ID` and
+`WIKILEAN_ARTICLES_R2_SECRET_ACCESS_KEY`, or from a 0600 file, never from the command line. It
+is a remote write, and only the maintainer runs it, from the operator Mac (section 14, item 3).
 
 ## 7. Worker routes
 
@@ -1792,7 +1802,9 @@ recommendation.
 3. **Who uploads, and from where.** *Decided (Jack, 2026-11-02):* the maintainer, from the
    operator Mac, with a token scoped to the one bucket (Object Read & Write, with an expiry,
    in `docs/SECRETS.md`'s register); never the fleet host, the nightly or GitHub Actions. The
-   upload follows section 6.
+   upload follows section 6, through `scripts/articles/upload_store.py`, which takes the
+   token's S3 credentials from the environment or a 0600 file, never from the command line
+   (`scripts/articles/UPLOAD.md`).
 4. **Public licence statement.** *Decided (Jack, 2026-11-02):* the reader says the page is an
    adaptation of the pinned revision, shared under CC BY-SA 4.0, with the article's title, a
    link to the revision, its history for the contributors, the licence link and the list of
@@ -2072,3 +2084,18 @@ recommendation.
 - `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
   body caps and scans `wiki/src` so that no route reads a JSON body except through
   `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry.
+- `scripts/articles/test_upload_store.py` (in `scripts/ci-python.sh`) runs the uploader against an
+  in-process fake S3 endpoint. The endpoint refuses any request whose SigV4 signature
+  (recomputed from the request as received), payload hash or Content-MD5 does not match, and
+  the signer is pinned to AWS's documented examples. The tests check: `current.json` after
+  every other object and the deletes after it; a dry run that writes nothing; no credential in
+  any output or in the builder's environment; refusal when `--check` fails or exits 0 without
+  its report; a wrong ETag, bytes that change after upload, a lost object and a delete that did
+  nothing; retries; deletes confined to `articles/v1/`, with keys a server could read as other
+  keys refused; a listing that returns keys outside `articles/v1/`, whether it plans the run,
+  feeds the deletes or is the final check's, never acted on, and one that does not say its keys
+  are URL-encoded refused when a key reads differently decoded; what each failure reports
+  (nothing written, or what the bucket holds and what readers see, on a first publish and over a
+  live build), and a re-run converging after each; `--unpublish`, `current.json` first; and a
+  rollback, with `--store` refusing a build older than the live one, `--rollback-to` one newer,
+  and the rollback command a publish prints working as printed.
