@@ -7,19 +7,23 @@
 // contract is the same: the normal clean article-404 page — never a redirect,
 // never a 500, and never article creation under an old URL.
 //
-// /atlas itself is live again as the formalization atlas dashboard
-// (src/atlas.ts, test/atlas.test.ts); it is still RESERVED, so no article can
-// be created under it. The old graph's /api/atlas and /api/atlas/<slug> data
-// paths stay plain 404s: the atlas APIs live under /api/atlas/<kind>/<id>.
+// /atlas is the one exception, and not the old graph's: it carried the
+// formalization reader from 2026-11-02 until the reader moved to /articles on
+// 2026-11-05 (src/articles.ts, docs/ARTICLES.md), so it and every path under it
+// now answer 301 to the new path (test/articles-redirects.test.ts). It is still
+// RESERVED, so no article can be created under it. The old graph's bare
+// /api/atlas and /api/atlas/<slug> data paths stay plain 404s, as does
+// /atlas_data.json.
 
 import { describe, it, expect } from "vitest";
 import { setup, get, botCreate, articleRow, blockNetwork } from "./helpers/harness.js";
 
 blockNetwork();
 
-// Every path the deleted tombstone handlers used to answer.
+// Every path the deleted tombstone handlers used to answer, less /atlas and the
+// /api/atlas/<sub> paths the reader's move redirects.
 const DELETED_PAGE_PATHS = ["/map", "/map-v2", "/graph", "/article-graph"];
-const DELETED_DATA_PATHS = ["/graph_data.json", "/atlas_data.json", "/api/atlas", "/api/atlas/algebra"];
+const DELETED_DATA_PATHS = ["/graph_data.json", "/atlas_data.json", "/api/atlas"];
 
 describe("deleted old-graph-stack routes", () => {
   it("every deleted path answers the plain 404 page — no redirect, no 410, no 500", async () => {

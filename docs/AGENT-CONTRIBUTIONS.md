@@ -16,7 +16,7 @@ moderation powers. Code: `wiki/src/agents.ts` (tokens and the page),
 | Propose a change to a human annotation, for a patroller or the nightly resolver to decide | Decide proposals, endorse, or mint `human` or `ai-moderated` provenance |
 | Add Brain edges and nodes; they go live with `actor_type` `ai` | Declare `actor_type` `human` |
 | Delete AI-made Brain edges and nodes | Delete human-made ones |
-| Read every public route, flag an annotation, watch an article | Create articles, re-pin an article's Wikipedia revision, revert runs, register repos, give atlas feedback |
+| Read every public route, flag an annotation, watch an article | Create articles, re-pin an article's Wikipedia revision, revert runs, register repos, give feedback in the formalization reader (`/articles`) |
 
 Every agent edit is a revision of kind `agent`: it shows under
 `/recent-changes?kind=agent`, takes a patrol mark like a human edit, and

@@ -1,7 +1,7 @@
 // Trust signals (P2): the N/M human-reviewed header badge + the "?" legend
-// popover on article pages (engine/page.ts, render:v19), and the landing
+// popover on article pages (engine/page.ts, render:v20), and the landing
 // page's "Least recently reviewed" strip (home.ts brainLanding via GET /,
-// page:home:v10). Badge/legend math is unit-tested on renderArticlePage
+// page:home:v11). Badge/legend math is unit-tested on renderArticlePage
 // directly; the strip's query (NULLS FIRST ordering, parked-state exclusion,
 // XSS at the title sink) is exercised end-to-end through the app.
 
@@ -113,7 +113,7 @@ describe("legend popover (P2)", () => {
 describe("trust signals through the app", () => {
   blockNetwork();
 
-  it("article pages carry the badge and cache under render:v19", async () => {
+  it("article pages carry the badge and cache under render:v20", async () => {
     const h = setup();
     const res = await get(h.env, `/${SLUG}`);
     expect(res.status).toBe(200);
@@ -122,11 +122,11 @@ describe("trust signals through the app", () => {
     expect(html).toContain(">0/2 human-reviewed<");
     expect(html).toContain('id="wl-legend-btn"');
     const keys = [...h.renderCache.store.keys()];
-    expect(keys.some((k) => k.startsWith("render:v19:"))).toBe(true);
-    expect(keys.some((k) => k.startsWith("render:v18:"))).toBe(false);
+    expect(keys.some((k) => k.startsWith("render:v20:"))).toBe(true);
+    expect(keys.some((k) => k.startsWith("render:v18:") || k.startsWith("render:v19:"))).toBe(false);
   });
 
-  it("landing strip orders NULLS FIRST, excludes parked states, caches under page:home:v10", async () => {
+  it("landing strip orders NULLS FIRST, excludes parked states, caches under page:home:v11", async () => {
     const h = setup();
     const now = Date.now();
     // Seed Test_Article has no moderation row → never reviewed.
@@ -150,8 +150,8 @@ describe("trust signals through the app", () => {
     const res = await get(h.env, "/");
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(h.renderCache.store.has("page:home:v10")).toBe(true);
-    expect(h.renderCache.store.has("page:home:v9")).toBe(false);
+    expect(h.renderCache.store.has("page:home:v11")).toBe(true);
+    expect(h.renderCache.store.has("page:home:v10")).toBe(false);
 
     // Never-reviewed rows (slug-ordered) precede reviewed rows, oldest review
     // first; parked slugs never appear.
