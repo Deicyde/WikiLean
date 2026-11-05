@@ -2080,9 +2080,10 @@ describe("articles feedback export", () => {
     expect(lines).toHaveLength(2);
     // Domain-separated from the research export's sha256(user_id + salt), so a
     // note that names its author cannot be joined to that export.
-    const pseudonym = (id: string) => createHash("sha256").update("articles-feedback\0" + id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
+    const pseudonym = (id: string) => createHash("sha256").update("atlas-feedback\0" + id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
     const research = (id: string) => createHash("sha256").update(id + PIPELINE_TOKEN).digest("hex").slice(0, 12);
-    expect(ARTICLES_PSEUDONYM_DOMAIN).toBe("articles-feedback\0");
+    // The domain names the D1 table, which keeps its name, so no pseudonym is re-keyed.
+    expect(ARTICLES_PSEUDONYM_DOMAIN).toBe("atlas-feedback\0");
     expect(pseudonym("u-human")).not.toBe(research("u-human"));
     const article = fixtureArticle();
     expect(lines[0]).toEqual({
@@ -2372,10 +2373,10 @@ describe("article page summary box", () => {
     expect(html).toContain('<aside class="wl-articles-box" aria-label="Formalization">');
     expect(html).toContain(`<a class="wl-articles-box-link" href="${WIDGET_PATH}">See where`);
     // Its counts are the plane's, not this page's annotations (the badges
-    // above), and it names the page's revision when the articles checked another.
+    // above), and it names the page's revision when the plane checked another.
     // Its counts are the passages with a status, as the article's own page counts them, and it says
     // how many more there are; the one with none has no status here either.
-    expect(html).toContain("Separately from this page&#x27;s annotations, the articles checked 3 passages of Wikipedia revision 2002 against Lean libraries:");
+    expect(html).toContain("Separately from this page&#x27;s annotations, WikiLean checked 3 passages of Wikipedia revision 2002 against Lean libraries:");
     expect(html).toContain(`<span class="wl-articles-box-rev">This page shows revision ${REVID}.</span>`);
     expect(html).toContain("1 formalized");
     expect(html).toContain("1 not formalized</span>. 1 more passage has no status yet. <span class=\"wl-articles-box-rev\">");
@@ -2414,7 +2415,7 @@ describe("article page summary box", () => {
     // Passages that all have no status yet: found, none with a status, and no count by status.
     const unread = { ...entry, passages: 2, formalized: 0, statement_only: 0, not_formalized: 0, unresolved: 2 };
     expect(articlesSummaryBox(unread, WIDGET_PATH, 2002)).toContain(
-      "Separately from this page&#x27;s annotations, the articles found 2 passages in Wikipedia revision 2002, none with a status yet.");
+      "Separately from this page&#x27;s annotations, WikiLean found 2 passages in Wikipedia revision 2002, none with a status yet.");
     expect(articlesSummaryBox(unread, WIDGET_PATH, 2002)).not.toMatch(/articles-mini|undecided/);
   });
 

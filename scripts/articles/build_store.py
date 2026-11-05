@@ -2928,7 +2928,7 @@ READER_FILE_NAME = re.compile(r"^[^\x00-\x1f\x7f/#?<>\[\]{}|\s]{1,240}\Z")
 # (".", "..", or either spelled with %2e), which a browser resolves away, so /articles/1/../../<path> and
 # its %2e%2e form reach another path of the site. A fragment may follow.
 READER_ARTICLES_LINK = re.compile(r"^/articles/[1-9][0-9]{0,9}(?:/((?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+))?"
-                               r"(?:#[^\s\"'<>\\]*)?\Z")
+                                  r"(?:#[^\s\"'<>\\]*)?\Z")
 # An http(s) link's host is plain ASCII letters, digits, dots and hyphens, with no user, escape or
 # backslash, so the host checked is the host a browser goes to (it reads https://<this site>\@x/ as
 # this site and percent-decodes a host), and the URL holds no whitespace or backslash.

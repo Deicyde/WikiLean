@@ -1575,7 +1575,7 @@ list, which `?view=cards` always gives.
   the index, from its top. With the sheet open the header drops its second row (the switch and
   chips come back when it closes), the sheet's handle, nav and ✕ share one strip, and it leaves
   out the passage's text, which the article shows just above it; below 600px the header leaves
-  out the search box and the "Formalization articles" link (the breadcrumb names it). Every
+  out the search box and the "Articles" title link (the breadcrumb names it). Every
   in-page jump, Wikipedia's own `[1]`, `↑` and section links among them, stops below the sticky
   header (`scroll-padding-top`, set to its measured height), and the note a link jumped to is
   marked. Without the script the panel follows the article and `#p-<hex>` still scrolls to

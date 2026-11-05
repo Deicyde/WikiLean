@@ -694,7 +694,9 @@ function arrayOf<T>(value: T[] | null | undefined): T[] {
 // ---- feedback --------------------------------------------------------------
 
 const FEEDBACK_VERDICTS = new Set(["confirm", "report", "withdraw"]);
-export const ARTICLES_PSEUDONYM_DOMAIN = "articles-feedback\0";
+// The domain that keeps these pseudonyms apart from the research export's. Its value is
+// the D1 table's name, which the 2026-11-05 rename left alone, so no pseudonym is re-keyed.
+export const ARTICLES_PSEUDONYM_DOMAIN = "atlas-feedback\0";
 const MAX_NOTE_CHARS = MAX_FLAG_COMMENT_LEN; // 500, the flag form's cap
 // SEAL.json's campaign, as build_store.CAMPAIGN_RE: a campaign id, or for a run
 // outside any campaign "run:<run-id>[+<challenge-run-id>]".
