@@ -50,8 +50,9 @@ class RevokeTests(unittest.TestCase):
         guard = mock.patch.object(socket, "create_connection", side_effect=AssertionError("network call in a test"))
         guard.start()
         self.addCleanup(guard.stop)
-        self.tmp = Path(tempfile.mkdtemp())
+        self.tmp = Path(self.enterContext(tempfile.TemporaryDirectory()))
         self.posts = []
+        self.urlopen = self.fake_urlopen
         self.d1_argv: list[list[str]] = []
         self.d1_env: dict[str, str] = {}
         self.d1_stdout = ""
@@ -75,7 +76,7 @@ class RevokeTests(unittest.TestCase):
     def run_main(self, *argv: str, stdin: bytes = b"") -> tuple[int, str]:
         out = io.StringIO()
         with mock.patch.object(rgt.subprocess, "run", self.fake_run), \
-                mock.patch.object(rgt.urllib.request, "urlopen", self.fake_urlopen), \
+                mock.patch.object(rgt.urllib.request, "urlopen", self.urlopen), \
                 mock.patch.object(rgt.sys, "stdin", io.TextIOWrapper(io.BytesIO(stdin))), \
                 contextlib.redirect_stdout(out):
             code = rgt.main(list(argv))
@@ -143,7 +144,7 @@ class RevokeTests(unittest.TestCase):
         self.assertEqual(json.loads(request.data)["credentials"], [GHO])
 
     def test_submit_posts_unauthenticated_batches(self):
-        tokens = [fake("gho", i) for i in range(rgt.BATCH + 5)]
+        tokens = [fake("gho", i) for i in range(100, 100 + rgt.BATCH + 5)]  # none is OWN
         dump = self.write("many.sql", " ".join(tokens))
         code, out = self.run_main("--file", str(dump), "--submit")
         self.assertEqual(code, 0)
@@ -171,9 +172,8 @@ class RevokeTests(unittest.TestCase):
     def test_http_error_fails_the_run(self):
         def reject(request, timeout=None):
             raise rgt.urllib.error.HTTPError(request.full_url, 422, "bad", {}, io.BytesIO(b""))
-        dump = self.write("x.sql", GHO)
-        with mock.patch.object(rgt.urllib.request, "urlopen", reject):
-            code, out = self.run_main("--file", str(dump), "--submit")
+        self.urlopen = reject
+        code, out = self.run_main("--file", str(self.write("x.sql", GHO)), "--submit")
         self.assertEqual(code, 1)
         self.assertIn("GitHub answered 422", out)
 
