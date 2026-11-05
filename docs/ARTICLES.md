@@ -1699,7 +1699,8 @@ answers 503, not 500.
 403). It returns every verdict as NDJSON, paged from D1, with `pair_key`, `record_set`,
 `relation` and `provenance` on each line. Consumers take the newest row per
 `(location_key, campaign, pseudonym)`. Users appear only as
-`sha256("articles-feedback\0" + user_id + salt)[:12]`, where the salt is the research
+`sha256("atlas-feedback\0" + user_id + salt)[:12]` (the domain is the D1 table's name,
+which this rename left alone, so no pseudonym was re-keyed), where the salt is the research
 export's (`src/security.ts` `researchExportSalt`: the `RESEARCH_EXPORT_SALT` secret, or
 `PIPELINE_TOKEN` until it is set; `docs/SECRETS.md`). The domain prefix keeps these
 pseudonyms apart from the research export's `sha256(user_id + salt)[:12]`:

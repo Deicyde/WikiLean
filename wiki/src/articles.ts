@@ -1093,7 +1093,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
   // Benchmark seeding (docs/ARTICLES.md, "Feedback"): every verdict, id-ascending,
   // paged from D1 so the response never materializes in memory; a consumer takes
   // the newest row per (location_key, campaign, pseudonym), where "withdraw" means
-  // none. Pipeline bearer only. Users appear only as pseudonyms, sha256("articles-feedback\0" +
+  // none. Pipeline bearer only. Users appear only as pseudonyms, sha256(ARTICLES_PSEUDONYM_DOMAIN +
   // user_id + salt) truncated to 12 hex, with the research export's salt
   // (security.ts researchExportSalt: RESEARCH_EXPORT_SALT, else PIPELINE_TOKEN).
   // The domain prefix keeps them apart from the research export's

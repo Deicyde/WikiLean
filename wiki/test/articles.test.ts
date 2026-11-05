@@ -2108,7 +2108,7 @@ describe("articles feedback export", () => {
       expect(res.status).toBe(200);
       return JSON.parse((await res.text()).trim()).pseudonym as string;
     };
-    const articles = (salt: string) => createHash("sha256").update("articles-feedback\0" + "u-human" + salt).digest("hex").slice(0, 12);
+    const articles = (salt: string) => createHash("sha256").update(ARTICLES_PSEUDONYM_DOMAIN + "u-human" + salt).digest("hex").slice(0, 12);
     const research = (salt: string) => createHash("sha256").update("u-human" + salt).digest("hex").slice(0, 12);
     expect(await pseudonymOf()).toBe(articles(PIPELINE_TOKEN));
 
@@ -2862,11 +2862,12 @@ describe("library registry", () => {
     const core = { id: "lean-core", repo: "https://github.com/leanprover/lean4", commit: COMMIT, display_name: "Lean 4 core (Init, Std, Lean)" };
     expect(libraryInfo(core.repo).name).toBe("Lean core");
     expect(libraryInfo(core.repo, core).name).toBe("Lean core");
-    // An unseeded repository may carry a display name, unless it names a seeded library.
+    // An unseeded repository may carry a display name, unless it names a seeded library
+    // ("ATLAS" below is facebookresearch's seeded library, which keeps its name).
     const other = { id: "x", repo: "https://github.com/someone/lean-thing", commit: COMMIT };
     expect(libraryInfo(other.repo, { ...other, display_name: "  Lean   Thing (fork) " }).name).toBe("Lean Thing (fork)");
     expect(libraryInfo(other.repo, { ...other, display_name: "Lean Thing (fork)" }).short).toBe("Lean Thing");
-    for (const display of ["Mathlib", "mathlib", " MATHLIB ", "Mathlib (official)", "Batteries", "ARTICLES", "Lean core", "FormalFrontier · WidgetTheory"]) {
+    for (const display of ["Mathlib", "mathlib", " MATHLIB ", "Mathlib (official)", "Batteries", "ATLAS", "Lean core", "FormalFrontier · WidgetTheory"]) {
       expect(libraryInfo(other.repo, { ...other, display_name: display }).name, display).toBe("someone/lean-thing");
     }
   });
@@ -2911,10 +2912,11 @@ describe("library registry", () => {
   it("a display_name cannot read as a seeded library through invisible or look-alike characters", () => {
     const repo = "https://github.com/evil-org/lean-stuff";
     const entry = { id: "x", repo, commit: COMMIT };
+    // "Atlas" spoofs the seeded ATLAS (atlas-lean), facebookresearch's library, not this plane.
     const spoofs = [
       "Mathlib\u200b", "M\u0430thlib", "Mathlib\u00ad", "Batteries\u200b", "Lean core\u2060", "\ufeffMathlib",
       "Mathlib4", "Mathlib 4", "MathIib", "Math1ib", "Math-lib", "mathlib4 (leanprover-community)",
-      "leanprover-community/mathlib4", "Tau Ceti", "Formal Conjectures fork", "Articles", "Lean\tcore",
+      "leanprover-community/mathlib4", "Tau Ceti", "Formal Conjectures fork", "Atlas", "Lean\tcore",
       "Formal Frontier tools", "Bat-teries (official)", "x".repeat(101),
     ];
     for (const display_name of spoofs) {
