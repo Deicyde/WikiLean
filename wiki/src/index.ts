@@ -152,10 +152,11 @@ registerArticlesRoutes(app);
 // /atlas → /articles, /atlas/<rest> → /articles/<rest>, /api/atlas/<rest> →
 // /api/articles/<rest>. The old graph stack's own names are NOT this plane's and
 // keep the plain 404 they have answered since 2026-08-04 (test/retired-routes):
-// the bare /api/atlas, /api/atlas (no sub-path) and /atlas_data.json, which no
-// pattern here matches. Registered before the /:slug catch-all, which the
-// RESERVED set keeps off "atlas" anyway.
-function atlasRedirect(c: Context<{ Bindings: Env }>): Response {
+// the bare /api/atlas and /atlas_data.json, which no prefix below matches — and
+// if a trailing wildcard did match the bare one, moved stays null and the
+// handler falls through to the same 404. Registered before the /:slug
+// catch-all, which the RESERVED set keeps off "atlas" anyway.
+function atlasRedirect(c: Context<{ Bindings: Env }>): Response | Promise<Response> {
   const url = new URL(c.req.url);
   const path = url.pathname;
   let moved: string | null = null;
