@@ -8,7 +8,7 @@ import type { Env } from "../src/env.js";
 import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
 import { installBrainFixture } from "../test/helpers/brain-fixture.js";
-import { atlasReaderFiles, bindAtlas } from "../test/helpers/atlas.js";
+import { articlesReaderFiles, bindArticles } from "../test/helpers/articles.js";
 import { FORMULA_SLUG, SEED_ANNOTATIONS, WP_FIXTURE, WP_FORMULA_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
 
 const HOST = "127.0.0.1";
@@ -19,10 +19,10 @@ const SOURCE_ASSETS = new Map<string, { path: string; contentType: string }>([
   ["/assets/style.css", { path: resolve(ROOT, "../site/assets/style.css"), contentType: "text/css; charset=utf-8" }],
   ["/assets/script.js", { path: resolve(ROOT, "../site/assets/script.js"), contentType: "text/javascript; charset=utf-8" }],
   ["/assets/review.css", { path: resolve(ROOT, "../site/assets/review.css"), contentType: "text/css; charset=utf-8" }],
-  ["/assets/atlas.css", { path: resolve(ROOT, "../site/assets/atlas.css"), contentType: "text/css; charset=utf-8" }],
-  ["/assets/atlas.js", { path: resolve(ROOT, "../site/assets/atlas.js"), contentType: "text/javascript; charset=utf-8" }],
-  ["/assets/atlas-reader.css", { path: resolve(ROOT, "../site/assets/atlas-reader.css"), contentType: "text/css; charset=utf-8" }],
-  ["/assets/atlas-reader.js", { path: resolve(ROOT, "../site/assets/atlas-reader.js"), contentType: "text/javascript; charset=utf-8" }],
+  ["/assets/articles.css", { path: resolve(ROOT, "../site/assets/articles.css"), contentType: "text/css; charset=utf-8" }],
+  ["/assets/articles.js", { path: resolve(ROOT, "../site/assets/articles.js"), contentType: "text/javascript; charset=utf-8" }],
+  ["/assets/articles-reader.css", { path: resolve(ROOT, "../site/assets/articles-reader.css"), contentType: "text/css; charset=utf-8" }],
+  ["/assets/articles-reader.js", { path: resolve(ROOT, "../site/assets/articles-reader.js"), contentType: "text/javascript; charset=utf-8" }],
   ["/assets/editor.js", { path: resolve(ROOT, "assets/editor.js"), contentType: "text/javascript; charset=utf-8" }],
 ]);
 
@@ -86,9 +86,9 @@ nativeSeed[1].unlinked.push({ type: "html", uri: "https://example.net/narrative.
 harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,4,1,?,?)")
   .run("Native_Article", "Native Article", "Native Article", REVID, JSON.stringify(nativeSeed), Date.now(), Date.now());
 await harness.wpHtml.put(`wp:Native_Article:${REVID}`, WP_FIXTURE);
-// The formalization atlas: the golden fixture store (scripts/atlas/fixtures),
-// plus an article whose Wikipedia title the atlas covers, for the summary box.
-bindAtlas(harness.env);
+// The formalization reader: the golden fixture store (scripts/articles/fixtures),
+// plus an article whose Wikipedia title the articles covers, for the summary box.
+bindArticles(harness.env);
 harness.db.prepare("INSERT INTO articles (slug,wikipedia_title,display_title,revid,annotations,schema_version,version,created_at,updated_at) VALUES (?,?,?,?,?,3,1,?,?)")
   .run("Widget_lemma", "Widget lemma", "Widget lemma", REVID, "[]", Date.now(), Date.now());
 await harness.wpHtml.put(`wp:Widget_lemma:${REVID}`, WP_FIXTURE);
@@ -174,14 +174,14 @@ const server = serve({ fetch: (request) => fetch(request), hostname: HOST, port:
 const oauthServer = serve({ fetch: oauthFetch, hostname: HOST, port: OAUTH_PORT }, (info) => {
   console.log(`WikiLean oauth-mode browser harness listening on http://${HOST}:${info.port}`);
 });
-// The atlas article reader (e2e/atlas.spec.ts): a third loopback listener, the same database
+// The articles article reader (e2e/articles.spec.ts): a third loopback listener, the same database
 // and assets, with the golden store plus the Widget lemma's marked revision
-// (test/helpers/atlas.ts atlasReaderFiles), so the main listener keeps the card list.
+// (test/helpers/articles.ts articlesReaderFiles), so the main listener keeps the card list.
 const READER_PORT = PORT + 2;
 const readerEnv: Env = { ...harness.env };
-bindAtlas(readerEnv, atlasReaderFiles());
+bindArticles(readerEnv, articlesReaderFiles());
 const readerServer = serve({ fetch: (request) => fetch(request, readerEnv), hostname: HOST, port: READER_PORT }, (info) => {
-  console.log(`WikiLean atlas-reader browser harness listening on http://${HOST}:${info.port}`);
+  console.log(`WikiLean articles-reader browser harness listening on http://${HOST}:${info.port}`);
 });
 
 function shutdown(): void {

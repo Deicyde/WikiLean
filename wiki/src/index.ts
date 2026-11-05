@@ -22,7 +22,7 @@ import { getWikipediaHtml } from "./wikipedia.js";
 import { getUser, requireRole, registerAuthRoutes } from "./auth.js";
 import { scheduled } from "./drift.js";
 import {
-  injectAtlasSummary,
+  injectArticlesSummary,
   injectAuthAndEditor,
   historyPage,
   recentChangesPage,
@@ -36,7 +36,7 @@ import {
   type StatsEventCell,
   type UserProfileRow,
 } from "./pages.js";
-import { aboutPage, brainLanding, homePage, sitemapXml } from "./home.js";
+import { aboutPage, brainLanding, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
@@ -47,8 +47,8 @@ import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
 import { registerCompanionRoutes } from "./companion.js";
-import { atlasHref, atlasSummaryFor, registerAtlasRoutes } from "./atlas.js";
-import { atlasSummaryBox } from "./atlas-render.js";
+import { articlesHref, articlesSummaryFor, registerArticlesRoutes } from "./articles.js";
+import { articlesSummaryBox } from "./articles-render.js";
 import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
@@ -108,9 +108,9 @@ const RESERVED = new Set([
   "u",
   "decl",
   "proposals",
-  "atlas", // the formalization atlas (src/atlas.ts, docs/ATLAS.md)
+  "atlas", // still reserved: /atlas 301s to /articles (src/articles.ts, docs/ARTICLES.md)
   "brain",
-  "articles",
+  "articles", // the formalization reader (src/articles.ts, docs/ARTICLES.md)
   "mcp",
   "repos",
   "about",
@@ -119,8 +119,9 @@ const RESERVED = new Set([
   // atlas_data.json — handlers deleted 2026-08-04; they now fall through to
   // the /:slug catch-all and 404). The names stay squatted here so an article
   // can never be created under an old URL (the invariant: every non-article
-  // top-level path is listed here). /atlas itself is live again: since the
-  // formalization atlas it is the dashboard (src/atlas.ts), not the old graph.
+  // top-level path is listed here). /atlas is not one of them any more: it
+  // carried the formalization reader until the reader moved to /articles, and
+  // now 301s there (atlasRedirect below), so it stays squatted too.
   "concepts",
   "map",
   "map-v2",
@@ -144,7 +145,30 @@ registerQueueRoutes(app);
 registerRepoRoutes(app);
 registerCompanionRoutes(app);
 registerVersionRoutes(app);
-registerAtlasRoutes(app);
+registerArticlesRoutes(app);
+
+// The formalization reader was at /atlas until 2026-11-05 (docs/ARTICLES.md,
+// "The rename"). Every URL it answered 301s to its new path, query string kept:
+// /atlas → /articles, /atlas/<rest> → /articles/<rest>, /api/atlas/<rest> →
+// /api/articles/<rest>. The old graph stack's own names are NOT this plane's and
+// keep the plain 404 they have answered since 2026-08-04 (test/retired-routes):
+// the bare /api/atlas and /atlas_data.json, which no prefix below matches — and
+// if a trailing wildcard did match the bare one, moved stays null and the
+// handler falls through to the same 404. Registered before the /:slug
+// catch-all, which the RESERVED set keeps off "atlas" anyway.
+function atlasRedirect(c: Context<{ Bindings: Env }>): Response | Promise<Response> {
+  const url = new URL(c.req.url);
+  const path = url.pathname;
+  let moved: string | null = null;
+  if (path === "/atlas") moved = "/articles";
+  else if (path.startsWith("/atlas/")) moved = `/articles/${path.slice("/atlas/".length)}`;
+  else if (path.startsWith("/api/atlas/")) moved = `/api/articles/${path.slice("/api/atlas/".length)}`;
+  if (moved === null) return c.notFound();
+  return c.redirect(moved + url.search, 301);
+}
+app.all("/atlas", atlasRedirect);
+app.all("/atlas/*", atlasRedirect);
+app.all("/api/atlas/*", atlasRedirect);
 
 // Renders (and KV-caches) the anonymous base page for an article. Takes the
 // already-SELECTed row so the cached base and the caller's injected editor
@@ -182,7 +206,10 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // v18: native Literature Links occurrences, complete-match telemetry, direct formal links.
   // v19: style.css?v=10, which draws the MathML of Wikipedia's current formula
   // markup (a span classed only mwe-math-mathml-a11y); with v=9 formulas were blank.
-  const cacheKey = `render:v19:${slug}:${row.version}`;
+  // v20: /articles is the formalization reader (docs/ARTICLES.md), so the
+  // header's "Articles" link leads somewhere else; bumped so no reader keeps a
+  // page cached from before the move.
+  const cacheKey = `render:v20:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -576,9 +603,9 @@ async function leastReviewedRows(c: Context<{ Bindings: Env }>) {
     .limit(8);
 }
 
-// the landing page IS the Brain (embedded); the article directory moved to /articles
+// the landing page IS the Brain (embedded); /articles is the formalization reader
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v10";  // v10: least-recently-reviewed strip (P2 trust signals)
+  const cacheKey = "page:home:v11";  // v11: the navigation links the formalization reader (/articles)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const [rows, leastReviewed] = await Promise.all([homeRows(c), leastReviewedRows(c)]);
@@ -587,20 +614,18 @@ app.get("/", async (c) => {
   return c.html(html);
 });
 
-app.get("/articles", async (c) => {
-  const cacheKey = "page:articles:v3";  // v3: Wikidata property named (P14534)
-  const cached = await c.env.RENDER_CACHE.get(cacheKey);
-  if (cached) return c.html(cached);
-  const html = homePage(await homeRows(c));
-  await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
-  return c.html(html);
-});
+// /articles is the formalization reader's own list (registerArticlesRoutes
+// above, src/articles.ts). It replaced the D1 article directory home.ts
+// homePage() served here until 2026-11-05, and its 'page:articles' render-cache
+// key is retired with it: the list is built from the store, not from D1, and is
+// not KV-cached. homePage() itself is still in home.ts, unrouted, with the rest
+// of the old article system (its removal is a later change).
 
 // ---- /api/articles — compact article index for the header search box -------
 // Same query shape as homeRows minus updated_at, serialized as arrays to keep
 // the payload small ([slug, display_title, n_formalized, n_partial,
 // n_not_formalized]; count columns pass through null pre-backfill). KV-cached
-// like the directory page, plus browser/CDN Cache-Control so a reader's
+// in RENDER_CACHE, plus browser/CDN Cache-Control so a reader's
 // session fetches it at most once per page view.
 app.get("/api/articles", async (c) => {
   const cacheKey = "page:articles-index:v1";  // v1: initial [slug,title,f,p,n] shape
@@ -634,7 +659,7 @@ app.get("/api/articles", async (c) => {
 // static wiki/public/about.html asset, which used to shadow this path with
 // stats baked at build time). One aggregate over the D-C5 count columns.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v2";  // v2: moderation copy matches Human-at-boundaries
+  const cacheKey = "page:about:v3";  // v3: the navigation links the formalization reader (/articles)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -654,7 +679,7 @@ app.get("/about", async (c) => {
 });
 
 app.get("/sitemap.xml", async (c) => {
-  const cacheKey = "page:sitemap:v4";  // v4: − article-graph, + /mcp docs
+  const cacheKey = "page:sitemap:v5";  // v5: − /articles, which is now noindex
   const headers = { "Content-Type": "application/xml; charset=utf-8" };
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.body(cached, 200, headers);
@@ -694,7 +719,7 @@ app.get("/favicon.ico", (c) =>
 // is KV-cached with a long TTL; bump the cache key suffix when the page or the
 // embedded data changes.
 app.get("/wikifunctions", async (c) => {
-  const cacheKey = "page:wikifunctions:v3";  // v3: retired /article-graph nav link removed
+  const cacheKey = "page:wikifunctions:v4";  // v4: the navigation links the formalization reader (/articles)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
@@ -708,7 +733,7 @@ app.get("/wikifunctions", async (c) => {
 // cache pattern; bump the suffix when the page copy changes. Registered before
 // the /:slug catch-all (which only matches a single path segment anyway).
 app.get("/wikifunctions/verify", async (c) => {
-  const cacheKey = "page:wikifunctions-verify:v3";  // v3: retired /article-graph nav link removed
+  const cacheKey = "page:wikifunctions-verify:v4";  // v4: the navigation links the formalization reader (/articles)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsVerifyPage();
@@ -722,7 +747,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v6"; // v6: AI-review freshness rows + recent pipeline runs table
+  const cacheKey = "page:stats:v7"; // v7: the navigation links the formalization reader (/articles)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -3084,14 +3109,14 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
       proposals = parsePending(ms?.proposal);
     }
   }
-  // Formalization atlas summary box: per request, never in the cached base
-  // (pages.ts injectAtlasSummary). Null when ATLAS is unbound or the title has
-  // no atlas entry; a store failure never breaks the article page.
-  const atlas = await atlasSummaryFor(c.env, row.wikipediaTitle);
-  const atlasBox = atlas ? atlasSummaryBox(atlas, atlasHref(atlas.pageid, atlas.title), row.revid) : null;
+  // Formalization summary box: per request, never in the cached base
+  // (pages.ts injectArticlesSummary). Null when ARTICLES is unbound or the
+  // title has no entry; a store failure never breaks the article page.
+  const entry = await articlesSummaryFor(c.env, row.wikipediaTitle);
+  const formalizationBox = entry ? articlesSummaryBox(entry, articlesHref(entry.pageid, entry.title), row.revid) : null;
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
-  const page = injectAtlasSummary(injectAuthAndEditor(base, {
+  const page = injectArticlesSummary(injectAuthAndEditor(base, {
     slug,
     user,
     annotations: editorItems(annotations as unknown as AnnRecord[]) as unknown as Annotation[],
@@ -3102,7 +3127,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
     revid: row.revid,
     isWatching,
     proposals,
-  }), atlasBox);
+  }), formalizationBox);
   return c.html(page);
 }
 

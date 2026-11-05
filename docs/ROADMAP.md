@@ -96,22 +96,28 @@ recommendation. Remove an item once its decision is recorded below.
       kind. Options: keep both, or choose other relations.
     - WikiLean records no Mathlib commit per link, so it exports no `noMatch`. Options:
       record one, or keep exporting none.
-16. **Formalization atlas (docs/ATLAS.md, built on branch `claude/formalization-atlas`).**
+16. **The formalization reader at `/articles` (docs/ARTICLES.md).**
     A read-only data plane for the locate pipeline's sealed record sets: a store builder,
-    `/atlas` pages and APIs behind an optional R2 binding `ATLAS` (unbound: every atlas
-    route answers 503), a per-request summary box on article pages, and a feedback table
-    (migration 0015). Open choices (docs/ATLAS.md §14):
+    `/articles` pages and APIs behind the R2 binding `ARTICLES` (`wiki/wrangler.jsonc`, a
+    private bucket under the proposed name `wikilean-articles`; unbound, every route of the
+    plane answers 503), a per-request summary box on the old article pages, and a feedback
+    table (migration 0015). Decided on 2026-11-02 (docs/ARTICLES.md §14): R2 with one private
+    bucket; uploads by the maintainer from the operator Mac with a token scoped to that
+    bucket; the public licence statement; launch without absence feedback. Decided on
+    2026-11-05: the reader replaces the old article system and takes `/articles`, and the
+    "atlas" name is dropped (it collided with facebookresearch's atlas-lean, which the
+    reader's own library universe lists as "Atlas"); release 1 is the rename and the move,
+    deleting the old system is later. Still open there:
     - The End-goal amendment above. Options: ratify, revise, or reject.
-    - Store backend. `src/wikipedia.ts` records that R2 was not enabled on the account.
-      Options: enable R2, use KV, or ship the store as static assets with each release.
-    - Who uploads a built store, and from which machine. Options: the operator Mac with a
-      bucket-scoped token, or another named host.
-    - Public licence wording: the pages state the mapping as CC0 and quote fields as
-      CC BY-SA 4.0 (proposal §10). Options: confirm, or change it.
+    - The bucket's name (§14, item 2): `wikilean-articles` is proposed. Options: confirm it,
+      or name another (the binding and its test change with it).
+    - The producer contract notes (§14, item 7). Options: agree them, or change them.
     - Whether the bearer-only feedback export may carry readers' free-text notes. Options:
       keep them, or drop them as the research export does.
-    - Absence feedback ("this is formalized, here" against a "not found"). Options: build
-      it next, or later.
+    - When to build absence feedback ("this is formalized, here" against a "not found").
+      Options: build it next, or later.
+    - When to delete the old article system (`/:slug` pages, `home.ts homePage()`, which is
+      now unrouted). Options: next, or after the reader has real data.
 
 ## End goal (verbatim from Jack)
 
@@ -124,7 +130,8 @@ These are Jack's words, recorded 2026-10-17; they are not yet ratified. If ratif
 become the End goal: "where" means the library (Mathlib, Lean core and Batteries, TauCeti,
 the FormalFrontier libraries and others), the declaration and the commit, and the knowledge
 graph is built from those located passages. The first deliverable is the read-only
-formalization atlas (docs/ATLAS.md), fed by the formal-companion skill's locate pipeline.
+formalization reader at `/articles` (docs/ARTICLES.md), fed by the formal-companion
+skill's locate pipeline.
 The three routine operations and the human+AI moderation experiment below would serve that
 goal rather than define it. Ratification (or rejection) is recorded in the status log and
 closes Waiting on Jack item 16. Nothing below is deleted; the End goal as stated on
@@ -1320,6 +1327,24 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-05: **The formalization reader is renamed to "articles" and serves `/articles`**
+  (branch `articles/rename`, not deployed). Jack's decision: the reader replaces WikiLean's
+  old article system and takes over `/articles`, and "atlas" is dropped because
+  facebookresearch's Lean library atlas-lean appears in the reader's own library universe as
+  "Atlas". This release renames and moves it; deleting the old system is a later one. The
+  reader's list is `/articles` in place of the D1 article directory (`home.ts homePage()`,
+  kept but unrouted, and its `page:articles` cache key retired); its article pages are
+  `/articles/<pageid>[/<slug>]`, its universe page `/articles/universe/<sha>` and its JSON
+  views `/api/articles/<sub>`. Every old `/atlas`, `/atlas/*` and `/api/atlas/*` URL 301s to
+  its new path; `atlas` stays in `RESERVED`; the old graph stack's bare `/api/atlas` and
+  `/atlas_data.json` keep their 404. The exact path `/api/articles` (the header search box's
+  index) is unchanged. The R2 binding is `ARTICLES`, the bucket `wikilean-articles`, the
+  store prefix `articles/v1/` and the schema ids `wikilean.articles.*`; the Worker modules,
+  the assets, `scripts/articles/` and `docs/ARTICLES.md` move with them. Two names keep
+  theirs: the D1 table `atlas_feedback` (migration 0015 is applied in production; renaming a
+  table needs a migration) and everything about atlas-lean. Also brought over from PR #125,
+  which had been merged into `atlas/reader` rather than main: the R2 binding in
+  `wiki/wrangler.jsonc` and the site navigation's link to the reader.
 - 2026-10-18: **Atlas status rules follow Jack's decision D1** (branch
   `claude/formalization-atlas`, not deployed). Jack's decision: "Formalized when the hasPart
   locations together cover every clause (challenger confirms coverage), and when an
@@ -1328,7 +1353,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   refuses a malformed one. The store and the page show a survived claim ("Formalized by 2
   parts together", with the parts listed). The parity table is regenerated from
   formal-companion `b33f17f`, the producer commit that implements D1. Three literal
-  readings Jack has not confirmed (Q1–Q3) are listed in docs/ATLAS.md, contract note 11.
+  readings Jack has not confirmed (Q1–Q3) are listed in docs/ARTICLES.md, contract note 11.
   Parity round two: the skill's hand-written table (97 cases) is pinned in WikiLean and runs
   through the builder's own checks (`derive_passage_status`); round one's three differences
   (an owed claim, a claim with a note, a location key twice) are now refused on both sides,
@@ -1354,7 +1379,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   the fixed stand-in it always was.
 
 - 2026-10-17: **Formalization atlas data plane built** on branch `claude/formalization-atlas`
-  (docs/ATLAS.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
+  (docs/ARTICLES.md). Release-affecting (Worker, assets, migration 0015), so it ships only in a
   release. Not deployed, and no store has been uploaded. The End-goal amendment and the
   plane's choices are Waiting on Jack item 16. The branch is stacked on
   `claude/security-hardening` (#84, which merges first): the feedback route reads its body

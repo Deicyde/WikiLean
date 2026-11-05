@@ -1,8 +1,8 @@
 // Browser security headers (src/security.ts). Pins: every Worker response
 // (HTML page, KV-cache hit, JSON API, 404, redirect) carries HSTS, nosniff,
 // the enforced framing ban, Referrer-Policy, and the Report-Only CSP; the CSP
-// allows what the pages actually load; a route's own enforced policy (the atlas
-// pages' atlasCsp, on the reader and every other atlas page) is kept with the
+// allows what the pages actually load; a route's own enforced policy (the
+// reader's articlesCsp, on the reader and every other page of the articles plane) is kept with the
 // framing ban listed beside it, never in place of it; the headers never enter RENDER_CACHE
 // bytes (so no render-cache key bump); the /api/csp-report sink logs both
 // report shapes and caps its input and its per-IP request rate; and the static-asset `_headers` file that
@@ -15,11 +15,11 @@ import { app } from "../src/index.js";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import {
-  ATLAS_FORM_PATH,
-  ATLAS_INLINE_SCRIPT_HASHES,
-  ATLAS_MEDIA_HOSTS,
-  ATLAS_SCRIPT_PATHS,
-  atlasCsp,
+  ARTICLES_FORM_PATH,
+  ARTICLES_INLINE_SCRIPT_HASHES,
+  ARTICLES_MEDIA_HOSTS,
+  ARTICLES_SCRIPT_PATHS,
+  articlesCsp,
   BRAIN_CSP_EXTRA_SOURCES,
   BRAIN_CSP_REPORT_ONLY,
   CSP_REPORT_ONLY,
@@ -32,12 +32,12 @@ import {
   staticAssetHeadersFile,
 } from "../src/security.js";
 import type { Env } from "../src/env.js";
-import { atlasReaderFiles, bindAtlas, WIDGET_PAGEID } from "./helpers/atlas.js";
+import { articlesReaderFiles, bindArticles, WIDGET_PAGEID } from "./helpers/articles.js";
 
 blockNetwork();
 
-// The atlas pages' policy for the origin the harness serves (app.request's).
-const ATLAS_CSP = atlasCsp(ORIGIN);
+// The articles pages' policy for the origin the harness serves (app.request's).
+const ARTICLES_CSP = articlesCsp(ORIGIN);
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -160,10 +160,10 @@ describe("security headers", () => {
   });
 });
 
-// The formalization atlas's pages enforce atlasCsp (src/atlas.ts atlasHtml), listed beside the
-// framing ban; every other header is the shared set. test/atlas.test.ts checks the policy against
-// what the pages hold, and e2e/atlas.spec.ts runs the reader under it in Chromium.
-describe("the atlas pages' enforced policy", () => {
+// The formalization reader's pages enforce articlesCsp (src/articles.ts articlesHtml), listed beside the
+// framing ban; every other header is the shared set. test/articles.test.ts checks the policy against
+// what the pages hold, and e2e/articles.spec.ts runs the reader under it in Chromium.
+describe("the articles pages' enforced policy", () => {
   function policy(text: string): Map<string, string[]> {
     return new Map(text.split("; ").map((part) => {
       const [name, ...sources] = part.split(" ");
@@ -171,60 +171,60 @@ describe("the atlas pages' enforced policy", () => {
     }));
   }
 
-  it("is served on the reader and every other atlas page, beside the framing ban and with every shared header", async () => {
+  it("is served on the reader and every other articles page, beside the framing ban and with every shared header", async () => {
     const h = setup();
-    bindAtlas(h.env, atlasReaderFiles());
+    bindArticles(h.env, articlesReaderFiles());
     const pages = [
-      `/atlas/${WIDGET_PAGEID}/Widget_lemma`, `/atlas/${WIDGET_PAGEID}`, `/atlas/${WIDGET_PAGEID}/Widget_lemma?view=cards`,
-      "/atlas", "/atlas?q=wid", "/atlas/9999",
+      `/articles/${WIDGET_PAGEID}/Widget_lemma`, `/articles/${WIDGET_PAGEID}`, `/articles/${WIDGET_PAGEID}/Widget_lemma?view=cards`,
+      "/articles", "/articles?q=wid", "/articles/9999",
     ];
     for (const path of pages) {
       const res = await get(h.env, path);
       expect(res.headers.get("Content-Type"), path).toMatch(/^text\/html/);
-      expect(res.headers.get("Content-Security-Policy"), path).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+      expect(res.headers.get("Content-Security-Policy"), path).toBe(`${ARTICLES_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
       for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
         if (name !== "Content-Security-Policy") expect(res.headers.get(name), `${path}: ${name}`).toBe(value);
       }
     }
-    // An unbound store's 503 pages and an over-budget 429 page are atlas pages too.
+    // An unbound store's 503 pages and an over-budget 429 page are articles pages too.
     const unbound = setup();
-    for (const path of [`/atlas/${WIDGET_PAGEID}/Widget_lemma`, "/atlas", "/atlas/universe/" + "0".repeat(64)]) {
+    for (const path of [`/articles/${WIDGET_PAGEID}/Widget_lemma`, "/articles", "/articles/universe/" + "0".repeat(64)]) {
       const res = await get(unbound.env, path);
       expect(res.status, path).toBe(503);
-      expect(res.headers.get("Content-Security-Policy"), path).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+      expect(res.headers.get("Content-Security-Policy"), path).toBe(`${ARTICLES_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
     }
     const limited = setup({ brainApiLimiterAllows: false });
-    bindAtlas(limited.env, atlasReaderFiles());
-    const over = await get(limited.env, `/atlas/${WIDGET_PAGEID}/Widget_lemma`);
+    bindArticles(limited.env, articlesReaderFiles());
+    const over = await get(limited.env, `/articles/${WIDGET_PAGEID}/Widget_lemma`);
     expect(over.status).toBe(429);
-    expect(over.headers.get("Content-Security-Policy")).toBe(`${ATLAS_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
-    // The atlas's JSON and every page outside the atlas keep the ban alone.
-    for (const path of [`/api/atlas/article/${WIDGET_PAGEID}`, "/api/atlas/current"]) {
+    expect(over.headers.get("Content-Security-Policy")).toBe(`${ARTICLES_CSP}, ${SECURITY_HEADERS["Content-Security-Policy"]}`);
+    // The plane's JSON and every page outside it keep the ban alone.
+    for (const path of [`/api/articles/article/${WIDGET_PAGEID}`, "/api/articles/current"]) {
       expectSecurityHeaders(await get(h.env, path));
     }
     expectSecurityHeaders(await get(h.env, "/Test_Article"));
     expectSecurityHeaders(await get(h.env, "/about"));
   });
 
-  it("allows no script but the atlas's two files and the shell's two inline ones, nothing from another host but the beacon and Wikimedia media", () => {
-    const p = policy(ATLAS_CSP);
+  it("allows no script but the plane's two files and the shell's two inline ones, nothing from another host but the beacon and Wikimedia media", () => {
+    const p = policy(ARTICLES_CSP);
     expect(p.get("default-src")).toEqual(["'none'"]);
-    // The atlas's script files by URL on the page's own origin, never 'self' (every same-origin script).
-    expect(ATLAS_SCRIPT_PATHS).toEqual(["/assets/atlas.js", "/assets/atlas-reader.js"]);
+    // The plane's script files by URL on the page's own origin, never 'self' (every same-origin script).
+    expect(ARTICLES_SCRIPT_PATHS).toEqual(["/assets/articles.js", "/assets/articles-reader.js"]);
     expect(p.get("script-src")).toEqual([
-      ...ATLAS_SCRIPT_PATHS.map((path) => ORIGIN + path),
-      ATLAS_INLINE_SCRIPT_HASHES.theme, ATLAS_INLINE_SCRIPT_HASHES.search, "https://static.cloudflareinsights.com",
+      ...ARTICLES_SCRIPT_PATHS.map((path) => ORIGIN + path),
+      ARTICLES_INLINE_SCRIPT_HASHES.theme, ARTICLES_INLINE_SCRIPT_HASHES.search, "https://static.cloudflareinsights.com",
     ]);
-    for (const hash of Object.values(ATLAS_INLINE_SCRIPT_HASHES)) expect(hash).toMatch(/^'sha256-[A-Za-z0-9+/]{43}='$/);
+    for (const hash of Object.values(ARTICLES_INLINE_SCRIPT_HASHES)) expect(hash).toMatch(/^'sha256-[A-Za-z0-9+/]{43}='$/);
     expect(p.get("connect-src")).toEqual(["'self'", "https://cloudflareinsights.com"]);
-    expect(p.get("img-src")).toEqual(["'self'", ...ATLAS_MEDIA_HOSTS]);
-    expect(p.get("media-src")).toEqual(["'self'", ...ATLAS_MEDIA_HOSTS]);
-    expect(ATLAS_MEDIA_HOSTS).toEqual(["https://upload.wikimedia.org", "https://thumb.wikimedia.org"]);
+    expect(p.get("img-src")).toEqual(["'self'", ...ARTICLES_MEDIA_HOSTS]);
+    expect(p.get("media-src")).toEqual(["'self'", ...ARTICLES_MEDIA_HOSTS]);
+    expect(ARTICLES_MEDIA_HOSTS).toEqual(["https://upload.wikimedia.org", "https://thumb.wikimedia.org"]);
     // The revision's TemplateStyles and style attributes, and the coverage bar's widths.
     expect(p.get("style-src")).toEqual(["'self'", "'unsafe-inline'"]);
     expect(p.get("font-src")).toEqual(["'self'"]);
-    // The dashboard's search, the one form an atlas page has.
-    expect(p.get("form-action")).toEqual([ORIGIN + ATLAS_FORM_PATH]);
+    // The dashboard's search, the one form an articles page has.
+    expect(p.get("form-action")).toEqual([ORIGIN + ARTICLES_FORM_PATH]);
     expect(p.get("base-uri")).toEqual(["'none'"]);
     expect(p.get("object-src")).toEqual(["'none'"]);
     expect(p.get("report-uri")).toEqual(["/api/csp-report"]);
@@ -233,9 +233,9 @@ describe("the atlas pages' enforced policy", () => {
     // one policy (the ban is the second).
     expect(p.get("script-src")).not.toContain("'unsafe-inline'");
     expect(p.get("script-src")).not.toContain("'self'");
-    expect(ATLAS_CSP).not.toMatch(/'unsafe-eval'|'unsafe-hashes'|'wasm-unsafe-eval'|'strict-dynamic'|\*|data:|blob:/);
+    expect(ARTICLES_CSP).not.toMatch(/'unsafe-eval'|'unsafe-hashes'|'wasm-unsafe-eval'|'strict-dynamic'|\*|data:|blob:/);
     expect([...p.keys()].filter((name) => /^(?:frame-src|child-src|worker-src|frame-ancestors|sandbox)$/.test(name))).toEqual([]);
-    expect(ATLAS_CSP).not.toContain(",");
+    expect(ARTICLES_CSP).not.toContain(",");
   });
 });
 
@@ -417,8 +417,8 @@ describe("static asset _headers", () => {
     const file = staticAssetHeadersFile();
     for (const path of [
       "/", "/concepts", "/robots.txt", "/404.html", "/assets/brain/current.json", "/assets/style.css",
-      // The formalization atlas's assets (build-public copies them from site/assets).
-      "/assets/atlas.css", "/assets/atlas.js", "/assets/atlas-reader.css", "/assets/atlas-reader.js",
+      // The formalization reader's assets (build-public copies them from site/assets).
+      "/assets/articles.css", "/assets/articles.js", "/assets/articles-reader.css", "/assets/articles-reader.js",
     ]) {
       const headers = applyStaticHeaders(file, path);
       expectSecurityHeaders(new Response(null, { headers }));

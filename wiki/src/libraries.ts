@@ -1,10 +1,10 @@
-// Library registry for the formalization atlas: a Lean library's repository
+// Library registry for the articles plane: a Lean library's repository
 // URI → its display name and the template that turns (commit, path, lines)
-// into a pinned source link. The atlas never shows a docs page as evidence:
+// into a pinned source link. The plane never shows a docs page as evidence:
 // doc-gen4 pages exist only for a library's latest build, so the pinned
 // evidence is the source blob at the record's commit.
 //
-// Naming and links come from WikiLean, not from the record set (docs/ATLAS.md,
+// Naming and links come from WikiLean, not from the record set (docs/ARTICLES.md,
 // contract note 6). A library is named by the seeds below, then the
 // FormalFrontier organisation pattern, then owner/repo for any other GitHub
 // repository. A universe entry's display_name is used only for a repository
@@ -75,7 +75,8 @@ const SEEDS: Seed[] = [
   { repo: "https://github.com/leanprover-community/batteries", name: "Batteries" },
   { repo: "https://github.com/TauCetiProject/TauCeti", name: "TauCeti" },
   { repo: "https://github.com/google-deepmind/formal-conjectures", name: "Formal Conjectures" },
-  // facebookresearch's ATLAS library, not WikiLean's atlas plane.
+  // facebookresearch's ATLAS library, not WikiLean's articles plane (its name is
+  // why the plane stopped calling itself the atlas, docs/ARTICLES.md).
   { repo: "https://github.com/facebookresearch/atlas-lean", name: "ATLAS (atlas-lean)" },
 ];
 
@@ -167,7 +168,7 @@ function rootsLabel(roots: unknown): string | null {
 }
 
 // Every library of a universe by id, each named by libraryInfo. Libraries are
-// keyed by id and a repository may be several of them (docs/ATLAS.md section 3:
+// keyed by id and a repository may be several of them (docs/ARTICLES.md section 3:
 // proposal §2.3 splits lean-core into Init and Std at one commit), so two
 // libraries can come out with one name ("Lean core" for both). Those that would
 // read alike (one chip label, as libraries of one repository always do) are
@@ -212,7 +213,7 @@ const COMMIT_RE = /^[0-9a-f]{40}$/;
 // The pinned source link for one location, or null when the library has no
 // template or any part fails validation. Every substituted part is encoded,
 // so a hostile path can neither leave the repository nor break an attribute.
-// end_line is optional (an index such as atlas's records only line): without
+// end_line is optional (an index such as atlas-lean's records only line): without
 // it the link names the one line, #L<line>.
 export function sourceUrl(
   info: LibraryInfo,

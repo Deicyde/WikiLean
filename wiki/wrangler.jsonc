@@ -60,9 +60,9 @@
       },
       // Anonymous MCP endpoint limiter: 120 JSON-RPC calls per minute, keyed
       // mcp:<CF-Connecting-IP>, an IPv6 address by its /64 (read-only surface;
-      // agents burst tools/call). It also caps the formalization atlas's
-      // anonymous reads under atlas-q:<ip> (a ?q= search), atlas-read:<ip>
-      // (an article page and its JSON views) and atlas-meta:<ip> (the small
+      // agents burst tools/call). It also caps the formalization reader's
+      // anonymous reads under articles-q:<ip> (a ?q= search), articles-read:<ip>
+      // (an article page and its JSON views) and articles-meta:<ip> (the small
       // JSON objects); changing the limit or the period changes them too.
       {
         "name": "MCP_LIMITER",
@@ -101,6 +101,21 @@
     {
       "binding": "WP_HTML",
       "id": "53b1cbbfe7fc43ae844192201f6926bf"
+    }
+  ],
+  // The formalization reader's store (src/articles.ts; docs/ARTICLES.md section 6):
+  // the static tree scripts/articles/build_store.py writes, under articles/v1/, which
+  // the maintainer uploads. A private bucket, with no r2.dev URL and no custom
+  // domain; the Worker only reads it. Its name is proposed, for the maintainer
+  // to confirm when he creates the bucket, which must exist under that name
+  // before a deploy that carries this binding. Until its current.json is
+  // uploaded, every articles route but the feedback export (which reads only D1)
+  // answers 503 "articles store has no published build", and old article pages
+  // show no formalization box.
+  "r2_buckets": [
+    {
+      "binding": "ARTICLES",
+      "bucket_name": "wikilean-articles"
     }
   ]
 }

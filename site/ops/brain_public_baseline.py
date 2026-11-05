@@ -86,6 +86,9 @@ FORBIDDEN_PATHS = frozenset(
         "graph_data.json",
         "atlas.html",
         "atlas_data.json",
+        # /articles is the formalization reader (wiki/src/articles.ts) since
+        # 2026-11-05; a static articles.html would shadow it.
+        "articles.html",
         "article-graph.html",
         "article-graph-data.json",
         "map_data.json",

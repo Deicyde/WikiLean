@@ -122,15 +122,15 @@ export function injectAuthAndEditor(
   return idx === -1 ? page + inject : page.slice(0, idx) + inject + page.slice(idx);
 }
 
-// The formalization atlas summary box (docs/ATLAS.md, "Article pages"),
+// The formalization summary box (docs/ARTICLES.md, "Article pages"),
 // injected per request like the staleness banner and NEVER baked into the
-// cached base page: the atlas store changes independently of articles.version,
+// cached base page: the articles store changes independently of articles.version,
 // so a cached box would go stale for up to 30 days. The cached base bytes are
-// unchanged, so no render-cache key bump. `box` is atlasSummaryBox() output or
-// null (no atlas entry, or ATLAS unbound), in which case the page is returned
+// unchanged, so no render-cache key bump. `box` is articlesSummaryBox() output or
+// null (no articles entry, or ARTICLES unbound), in which case the page is returned
 // byte-for-byte unchanged. Placed just above the article body, outside <main>,
 // so the wrap engine, script.js and the editor never see it.
-export function injectAtlasSummary(page: string, box: string | null): string {
+export function injectArticlesSummary(page: string, box: string | null): string {
   if (!box) return page;
   const at = page.indexOf('<main class="wl-article-body">');
   if (at !== -1) return page.slice(0, at) + box + page.slice(at);

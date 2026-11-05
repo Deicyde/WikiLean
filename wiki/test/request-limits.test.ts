@@ -21,7 +21,7 @@ import { MAX_MCP_BODY_BYTES } from "../src/mcp.js";
 import { MAX_QUEUE_BODY_BYTES, MAX_QUEUE_ITEMS } from "../src/queue.js";
 import { MAX_JSON_BODY_BYTES } from "../src/security.js";
 import { blockNetwork, get, post, setup, PIPELINE_TOKEN, SLUG, type Harness } from "./helpers/harness.js";
-import { bindAtlas } from "./helpers/atlas.js";
+import { bindArticles } from "./helpers/articles.js";
 
 blockNetwork();
 
@@ -291,11 +291,11 @@ describe("JSON body caps on the remaining write routes", () => {
     { name: "repo removal", method: "DELETE", path: "/api/repos", headers: { Cookie: "wl_dev_user=u-human" }, max: MAX_JSON_BODY_BYTES.repos },
     { name: "review post", method: "POST", path: "/api/review/octo/repo/1", headers: review, max: MAX_JSON_BODY_BYTES.reviewPost },
     {
-      name: "atlas feedback",
+      name: "articles feedback",
       method: "POST",
-      path: "/api/atlas/feedback",
+      path: "/api/articles/feedback",
       headers: { Cookie: "wl_dev_user=u-human" },
-      max: MAX_JSON_BODY_BYTES.atlasFeedback,
+      max: MAX_JSON_BODY_BYTES.articlesFeedback,
     },
   ];
 
@@ -304,7 +304,7 @@ describe("JSON body caps on the remaining write routes", () => {
     h.env.REVIEW_GITHUB_CLIENT_ID = "Iv1.test";
     h.env.REVIEW_GITHUB_CLIENT_SECRET = "secret";
     h.renderCache.store.set("reviewtok:review-session", JSON.stringify({ token: "gho_test", login: "reviewer" }));
-    bindAtlas(h.env); // without a store, /api/atlas/feedback answers 503 before reading
+    bindArticles(h.env); // without a store, /api/articles/feedback answers 503 before reading
     return h;
   }
 
@@ -350,7 +350,7 @@ describe("every JSON request body in wiki/src is read through readJsonCapped", (
   it("has no c.req.json() or private body reader, and every cap is a used MAX_JSON_BODY_BYTES entry", () => {
     const src = fileURLToPath(new URL("../src/", import.meta.url));
     const files = readdirSync(src, { recursive: true, encoding: "utf8" }).filter((f) => f.endsWith(".ts")).sort();
-    expect(files).toEqual(expect.arrayContaining(["index.ts", "security.ts", "atlas.ts", "brain-edits.ts", "review.ts"]));
+    expect(files).toEqual(expect.arrayContaining(["index.ts", "security.ts", "articles.ts", "brain-edits.ts", "review.ts"]));
     const problems: string[] = [];
     const used = new Set<string>();
     for (const rel of files) {
