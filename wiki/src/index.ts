@@ -47,7 +47,7 @@ import { registerBrainApiRoutes } from "./brain-api.js";
 import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
-import { AGENT_PENDING_PER_ARTICLE, registerAgentRoutes } from "./agents.js";
+import { AGENT_MODEL_MAX, AGENT_PENDING_PER_ARTICLE, AGENT_PENDING_TOTAL, editLimitKey, registerAgentRoutes } from "./agents.js";
 import { registerCompanionRoutes } from "./companion.js";
 import { atlasHref, atlasSummaryFor, registerAtlasRoutes } from "./atlas.js";
 import { atlasSummaryBox } from "./atlas-render.js";
@@ -68,6 +68,7 @@ import {
   MAX_FLAG_COMMENT_LEN,
   MAX_META_BYTES,
   MAX_TEXT_LEN,
+  anchorSig,
   deepEqual,
   diffAnnotations,
   findLostHuman,
@@ -984,20 +985,18 @@ app.get("/u/:id", async (c) => {
     watching = ws.map((r) => r.slug);
   }
 
-  // An agent's profile names the person who minted it (agents.ts).
-  let operator: { id: string; name: string | null } | null = null;
-  if (profile.role === "agent") {
-    const owners = alias(users, "owners");
-    operator =
-      (
-        await db
-          .select({ id: owners.id, name: owners.name })
-          .from(agentTokens)
-          .innerJoin(owners, eq(owners.id, agentTokens.ownerId))
-          .where(eq(agentTokens.agentId, profile.id))
-          .limit(1)
-      )[0] ?? null;
-  }
+  // An agent's profile names the person who minted it (agents.ts), blocked
+  // agents included: that is when a patroller needs the owner.
+  const owners = alias(users, "owners");
+  const operator =
+    (
+      await db
+        .select({ id: owners.id, name: owners.name })
+        .from(agentTokens)
+        .innerJoin(owners, eq(owners.id, agentTokens.ownerId))
+        .where(eq(agentTokens.agentId, profile.id))
+        .limit(1)
+    )[0] ?? null;
 
   const html = userProfilePage(
     {
@@ -1537,7 +1536,7 @@ app.post("/api/article/:slug", async (c) => {
   const isAgent = user.role === "agent";
   const isAi = isBot || isAgent;
   const revisionKind = isBot ? "pipeline" : isAgent ? "agent" : "edit";
-  const { success: allowed } = await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+  const { success: allowed } = await c.env.EDIT_LIMITER.limit({ key: editLimitKey(user) });
   if (!allowed) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
   const slug = c.req.param("slug");
   const db = drizzle(c.env.DB);
@@ -1935,6 +1934,34 @@ app.post("/api/article/:slug", async (c) => {
     // provenance. Clients can't launder provenance in either direction.
     finalAnnotations = stampProvenance(stored, postedAnnotations);
   }
+  if (isAgent) {
+    // stampProvenance matches an id-less item to its stored twin by anchor
+    // signature, so a second copy of a human annotation would keep 'human'.
+    // Each stored annotation lends its provenance to one posted item: the one
+    // carrying its id, else the first id-less match (healAnnotationIds pairs
+    // them the same way). Every other item is the agent's own: 'ai'.
+    const byId = new Map(stored.filter((a) => typeof a.id === "string").map((a): [unknown, AnnRecord] => [a.id, a]));
+    const claimed = new Set<AnnRecord>(finalAnnotations.flatMap((a) => (byId.has(a.id) ? [byId.get(a.id)!] : [])));
+    const fresh = new Set<AnnRecord>();
+    finalAnnotations = finalAnnotations.map((a) => {
+      if (byId.has(a.id)) return a;
+      const twin = findMatch(a, stored);
+      if (twin && !claimed.has(twin)) {
+        claimed.add(twin);
+        return a;
+      }
+      const own = { ...a, provenance: "ai" };
+      fresh.add(own);
+      return own;
+    });
+    // A human tombstone vetoes its statement: an agent may not annotate it anew
+    // (the pipeline's prompt carries the same rule, site/batch_annotate.py).
+    const vetoed = new Set(stored.filter((a) => a.provenance === "human" && a.status === "rejected").map(anchorSig));
+    const revived = [...fresh].filter((a) => a.status !== "rejected" && vetoed.has(anchorSig(a)));
+    if (revived.length > 0) {
+      return c.json({ ok: false, error: "statement vetoed by a person", vetoed: revived.map((a) => a.label ?? anchorSig(a)) }, 422);
+    }
+  }
   // C1 lazy-heal (both branches): adopt the stored twin's id for annotations
   // posted without one, mint fresh ids for truly-new annotations. Runs after
   // the helpers above (they match posted-without-id to stored-by-signature)
@@ -2013,15 +2040,32 @@ app.post("/api/article/:slug", async (c) => {
       run_id?: unknown;
       model?: unknown;
     };
-    // An agent keeps at most AGENT_PENDING_PER_ARTICLE proposals pending per
-    // article, so no one agent can fill the article's queue (MAX_PENDING).
-    const incoming = isAgent && Array.isArray(incomingProposals)
-      ? incomingProposals.slice(0, Math.max(0, AGENT_PENDING_PER_ARTICLE - stillPending.filter((p) => p.proposedBy === user.id).length))
-      : incomingProposals;
+    // An agent proposes only on human annotations (it edits the rest itself),
+    // and keeps at most AGENT_PENDING_PER_ARTICLE pending on one article and
+    // AGENT_PENDING_TOTAL overall, so no agent can fill an article's queue
+    // (MAX_PENDING) or push other proposals out of the 200-row review window.
+    let incoming = incomingProposals;
+    if (isAgent && Array.isArray(incomingProposals)) {
+      const [{ pendingTotal }] = await db
+        .select({ pendingTotal: sql<number>`COUNT(*)` })
+        .from(proposals)
+        .where(and(eq(proposals.proposedBy, user.id), eq(proposals.status, "pending")));
+      const room = Math.min(
+        AGENT_PENDING_PER_ARTICLE - stillPending.filter((p) => p.proposedBy === user.id).length,
+        AGENT_PENDING_TOTAL - pendingTotal,
+      );
+      incoming = incomingProposals
+        .filter((p) => {
+          const id = (p as { annotationId?: unknown } | null)?.annotationId;
+          return typeof id === "string" && liveById.get(id)?.provenance === "human";
+        })
+        .slice(0, Math.max(0, room));
+    }
+    const postedModel = typeof postedMeta.model === "string" ? postedMeta.model : undefined;
     const { merged, droppedNoDelta } = mergeProposals(stillPending, parseRejected(ms?.rejectedProposals), incoming, {
       now: pnow,
       runId: typeof postedMeta.run_id === "string" ? postedMeta.run_id : undefined,
-      model: typeof postedMeta.model === "string" ? postedMeta.model : undefined,
+      model: isAgent ? postedModel?.slice(0, AGENT_MODEL_MAX) : postedModel,
       proposedBy: isAgent ? user.id : undefined,
       validIds: liveIds,
       liveById,
@@ -2389,13 +2433,14 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
 
   const db = drizzle(c.env.DB);
   // Every revision the run stamped, keyed by run_id in meta (the LIKE fallback
-  // catches rows whose meta is null — comment ends in `:<runId>`). Drizzle's
-  // sql template parameterizes runId, so it's injection-safe.
+  // catches pipeline rows whose meta is null — comment ends in `:<runId>`; a
+  // session or agent writes its own comment, so it may not claim a run that
+  // way). Drizzle's sql template parameterizes runId, so it's injection-safe.
   const runRevs = await db
     .select({ id: revisions.id, slug: revisions.slug })
     .from(revisions)
     .where(
-      sql`json_extract(${revisions.meta}, '$.run_id') = ${runId} OR (${revisions.meta} IS NULL AND ${revisions.comment} LIKE ${"%:" + runId})`,
+      sql`json_extract(${revisions.meta}, '$.run_id') = ${runId} OR (${revisions.meta} IS NULL AND ${revisions.kind} = 'pipeline' AND ${revisions.comment} LIKE ${"%:" + runId})`,
     );
 
   // Group the run's revisions by slug; track the earliest and latest run

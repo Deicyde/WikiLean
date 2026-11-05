@@ -14,6 +14,7 @@ import { and, eq, or, inArray } from "drizzle-orm";
 import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
+import { editLimitKey } from "./agents.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import {
   BrainReleaseUnavailableError,
@@ -273,12 +274,12 @@ async function resolveNodeEndpoint(
   return { error: droppedEndpointError(id) ?? "endpoint is not a known brain node" };
 }
 
-// The looser API limiter is the pipeline bearer's; agents and sessions share
-// the per-user EDIT_LIMITER.
+// The looser API limiter is the pipeline bearer's; sessions and agents take the
+// EDIT_LIMITER (all of one person's agents share one key, agents.ts).
 function brainWriteLimit(c: Context<{ Bindings: Env }>, user: AuthUser): Promise<{ success: boolean }> {
   return user.role === "bot"
     ? c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
-    : c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+    : c.env.EDIT_LIMITER.limit({ key: editLimitKey(user) });
 }
 
 // actor_type: the human-vs-AI switch. A browser/OAuth submission is a person,

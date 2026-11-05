@@ -5,7 +5,8 @@
 -- Not idempotent: SQLite has no ADD COLUMN IF NOT EXISTS, so this runs once.
 -- Apply it (and 0017) before promoting any Worker built from a commit that
 -- contains this file: that Worker writes proposals.proposed_by on every bearer
--- save that files a proposal. The promoter refuses such a commit until the
+-- save that files a proposal and reads it for /proposals and GET /api/proposals
+-- (both answer 500 without it). The promoter refuses such a commit until the
 -- column exists.
 --
 -- NB deploy: remote migration tracking is out of sync. After a D1 backup

@@ -31,7 +31,7 @@ import {
 import { _resetBrainEditCaches } from "../src/brain-edits.js";
 import { _resetBrainAssetMemo } from "../src/brain.js";
 import { installBrainFixture } from "./helpers/brain-fixture.js";
-import { AGENT_CAP, AGENT_PENDING_PER_ARTICLE } from "../src/agents.js";
+import { AGENT_CAP, AGENT_MODEL_MAX, AGENT_PENDING_PER_ARTICLE, AGENT_PENDING_TOTAL } from "../src/agents.js";
 import { parsePending } from "../src/proposals.js";
 
 blockNetwork();
@@ -120,9 +120,9 @@ describe("minting, listing and revoking agents", () => {
     expect((await post(h.env, "/api/agents", { name: "x" }, { user: "u-human", origin: "http://evil.example" })).status).toBe(403);
   });
 
-  it("rejects an empty, overlong or control-character name", async () => {
+  it("rejects an empty, overlong, control-character or bidi-override name", async () => {
     const h = setup();
-    for (const name of ["", "   ", "x".repeat(61), "a\nb", 7]) {
+    for (const name of ["", "   ", "x".repeat(61), "a\nb", 7, "Claude\u202e", "a\u200bb", "a\u2028b"]) {
       expect((await post(h.env, "/api/agents", { name }, { user: "u-human" })).status).toBe(400);
     }
     expect(h.db.prepare("SELECT COUNT(*) AS n FROM agent_tokens").get()).toEqual({ n: 0 });
@@ -150,6 +150,20 @@ describe("minting, listing and revoking agents", () => {
     expect(await again.json()).toEqual({ ok: true, already_revoked: true });
     expect((await post(h.env, "/api/agents/nope/revoke", {}, { user: "u-human" })).status).toBe(400);
   });
+
+  it("revoking retires the agent's pending proposals", async () => {
+    const h = setup();
+    const agent = await mint(h);
+    await endorseHuman(h);
+    const items = await editorView(h, agent.token);
+    const fields = { mathlib: { decl: "Foo.bar", module: "Mathlib.Foo", match_kind: "exact" } };
+    await save(h.env, { annotations: items, base_version: 2, meta: { ladder: { proposals: [{ annotationId: HUMAN_ID, fields, reason: "r" }] } } }, as(agent.token));
+    expect(h.db.prepare("SELECT status FROM proposals").all()).toEqual([{ status: "pending" }]);
+    expect((await post(h.env, `/api/agents/${agent.id}/revoke`, {}, { user: "u-human" })).status).toBe(200);
+    expect(h.db.prepare("SELECT status FROM proposals").all()).toEqual([{ status: "stale" }]);
+    const queue = await (await get(h.env, "/api/proposals", { bearer: "test-pipeline-token" })).json();
+    expect(queue).toMatchObject({ total: 0, rows: [] });
+  });
 });
 
 describe("the agent bearer", () => {
@@ -170,6 +184,20 @@ describe("the agent bearer", () => {
     expect(await me(h, agent.token)).not.toBeNull();
     h.db.prepare("UPDATE users SET role = 'blocked' WHERE id = ?").run(agent.id);
     expect(await me(h, agent.token)).toBeNull();
+  });
+
+  it("shares one rate-limit key among all of a person's agents", async () => {
+    const h = setup();
+    const keys: string[] = [];
+    (h.env as unknown as { EDIT_LIMITER: { limit: (o: { key: string }) => Promise<{ success: boolean }> } }).EDIT_LIMITER = {
+      limit: async ({ key }) => (keys.push(key), { success: true }),
+    };
+    const one = await mint(h, "One");
+    const two = await mint(h, "Two");
+    const annotations = await editorView(h, one.token);
+    await save(h.env, { annotations, base_version: 1 }, as(one.token));
+    await save(h.env, { annotations, base_version: 1 }, as(two.token));
+    expect(keys.filter((k) => k.startsWith("agents-of:"))).toEqual(["agents-of:u-human", "agents-of:u-human"]);
   });
 
   it("an unknown agent-shaped token is nobody, even beside a session cookie", async () => {
@@ -213,6 +241,49 @@ describe("agent article saves", () => {
     expect(articleRow(h.db)!.version).toBe(1);
   });
 
+  it("cannot copy a human annotation into a new one marked human", async () => {
+    const h = setup();
+    const agent = await mint(h);
+    await endorseHuman(h);
+    const items = await editorView(h, agent.token);
+    const copy = { ...items.find((a) => a.id === HUMAN_ID)! };
+    delete copy.id;
+    const res = await save(h.env, { annotations: [...items, copy], base_version: 2 }, as(agent.token));
+    expect(res.status).toBe(200);
+    const stored = storedAnnotations(h.db).filter((a) => a.label === copy.label);
+    expect(stored.map((a) => [a.id === HUMAN_ID, a.provenance])).toEqual([
+      [true, "human"],
+      [false, "ai"],
+    ]);
+  });
+
+  it("cannot annotate a statement a person vetoed", async () => {
+    const h = setup();
+    const agent = await mint(h);
+    const veto = echo(SEED_ANNOTATIONS).map((a) => (a.id === AI_ID ? { ...a, status: "rejected" } : a));
+    expect((await save(h.env, { annotations: veto, base_version: 1 }, { user: "u-human" })).status).toBe(200);
+    const items = await editorView(h, agent.token);
+    const again = { ...items.find((a) => a.id === AI_ID)!, status: "formalized", label: "Abelian group again" };
+    delete again.id;
+    const res = await save(h.env, { annotations: [...items, again], base_version: 2 }, as(agent.token));
+    expect(res.status).toBe(422);
+    expect(await res.json()).toMatchObject({ error: "statement vetoed by a person" });
+    expect(articleRow(h.db)!.version).toBe(2);
+  });
+
+  it("cannot claim a pipeline run through a revision comment", async () => {
+    const h = setup();
+    const agent = await mint(h);
+    expect((await botSaveRun(h.env, { annotations: [...echo(SEED_ANNOTATIONS), echo(EXTRA_ANNOTATION)], base_version: 1 }, "run-1")).status).toBe(200);
+    const human = echo(storedAnnotations(h.db)).map((a) => (a.id === AI_ID ? { ...a, label: "Human label" } : a));
+    expect((await save(h.env, { annotations: human, base_version: 2 }, { user: "u-human" })).status).toBe(200);
+    const items = (await editorView(h, agent.token)).map((a) => (a.id === HUMAN_ID ? { ...a, label: "agent label" } : a));
+    expect((await save(h.env, { annotations: items, base_version: 3, comment: "fix:run-1" }, as(agent.token))).status).toBe(200);
+    const res = await post(h.env, "/api/admin/revert-run/run-1", {}, { user: "u-admin" });
+    expect(await res.json()).toMatchObject({ reverted: [], skipped: [{ slug: SLUG, reason: "human-edited-since" }] });
+    expect(storedAnnotations(h.db).find((a) => a.id === AI_ID)?.label).toBe("Human label");
+  });
+
   it("cannot change a human annotation, and file a proposal that names the agent instead", async () => {
     const h = setup();
     const agent = await mint(h);
@@ -225,14 +296,22 @@ describe("agent article saves", () => {
     const fields = { status: "formalized", mathlib: { decl: "Foo.bar", module: "Mathlib.Foo", match_kind: "exact" } };
     const res = await save(
       h.env,
-      { annotations: items, base_version: 2, meta: { model: "claude-x", ladder: { proposals: [{ annotationId: HUMAN_ID, fields, reason: "r" }] } } },
+      {
+        annotations: items,
+        base_version: 2,
+        meta: {
+          model: "claude-x" + "y".repeat(300),
+          ladder: { proposals: [{ annotationId: HUMAN_ID, fields, reason: "r" }, { annotationId: AI_ID, fields, reason: "not human" }] },
+        },
+      },
       as(agent.token),
     );
     expect(res.status).toBe(200);
     expect(await res.json()).toMatchObject({ noop: true });
-    expect(pendingProposals(h)).toMatchObject([{ annotationId: HUMAN_ID, proposedBy: agent.id, model: "claude-x" }]);
+    const model = ("claude-x" + "y".repeat(300)).slice(0, AGENT_MODEL_MAX);
+    expect(pendingProposals(h)).toMatchObject([{ annotationId: HUMAN_ID, proposedBy: agent.id, model }]);
     expect(h.db.prepare("SELECT proposed_by, run_id, model FROM proposals").all()).toEqual([
-      { proposed_by: agent.id, run_id: null, model: "claude-x" },
+      { proposed_by: agent.id, run_id: null, model },
     ]);
     expect(articleRow(h.db)!.version).toBe(2);
     const queue = await (await get(h.env, "/proposals", { user: "u-patroller" })).text();
@@ -256,6 +335,21 @@ describe("agent article saves", () => {
     const more = await save(h.env, { annotations: items, base_version: 2, meta: { ladder: { proposals: proposals(12, 3) } } }, as(agent.token));
     expect(more.status).toBe(200);
     expect(pendingProposals(h)).toHaveLength(AGENT_PENDING_PER_ARTICLE);
+  });
+
+  it(`keep at most ${AGENT_PENDING_TOTAL} of one agent's proposals pending overall`, async () => {
+    const h = setup();
+    const agent = await mint(h);
+    await endorseHuman(h);
+    const ins = h.db.prepare(
+      "INSERT INTO proposals (id, slug, annotation_id, fields, fields_sig, status, created_at, proposed_by) VALUES (?, 'Other', 'cccccccccccc', '{}', ?, 'pending', 1, ?)",
+    );
+    for (let i = 0; i < AGENT_PENDING_TOTAL; i++) ins.run(i.toString(16).padStart(12, "0"), `sig${i}`, agent.id);
+    const items = await editorView(h, agent.token);
+    const fields = { mathlib: { decl: "Foo.bar", module: "Mathlib.Foo", match_kind: "exact" } };
+    const res = await save(h.env, { annotations: items, base_version: 2, meta: { ladder: { proposals: [{ annotationId: HUMAN_ID, fields, reason: "r" }] } } }, as(agent.token));
+    expect(res.status).toBe(200);
+    expect(pendingProposals(h)).toHaveLength(0);
   });
 
   it("cannot endorse, decide proposals, create articles or revert runs", async () => {
@@ -321,10 +415,12 @@ describe("person-only surfaces refuse agents", () => {
     expect((await get(h.env, "/api/repos", { bearer: agent.token })).status).toBe(403);
   });
 
-  it("an agent's profile names its operator", async () => {
+  it("an agent's profile names its operator, blocked or not", async () => {
     const h = setup();
     const agent = await mint(h);
-    const html = await (await get(h.env, `/u/${agent.id}`)).text();
-    expect(html).toContain('AI agent operated by <a href="/u/u-human">Human Tester</a>');
+    const owner = 'AI agent operated by <a href="/u/u-human">Human Tester</a>';
+    expect(await (await get(h.env, `/u/${agent.id}`)).text()).toContain(owner);
+    h.db.prepare("UPDATE users SET role = 'blocked' WHERE id = ?").run(agent.id);
+    expect(await (await get(h.env, `/u/${agent.id}`)).text()).toContain(owner);
   });
 });

@@ -2129,6 +2129,19 @@ def test_resolver_r2_rename_needs_new_present_AND_old_gone():
     assert a == "pending"
 
 
+def test_resolver_r2_leaves_an_agent_rename_to_a_human():
+    from resolve_proposals import verdict
+    row = {"noChange": False, "changed": [{"field": "mathlib"}], "proposedBy": "agent-0123456789ab",
+           "current": {"mathlib": {"decl": "Basis"}}, "fields": {"mathlib": {"decl": "Module.Basis"}}}
+    a, w = verdict(row, {"Module.Basis"}, set())
+    assert a == "pending" and "agent" in w, (a, w)
+    # the same rename onto a proof_wanted stub with 'partial' is not approved through R3 either
+    a, _ = verdict({**row, "changed": [{"field": "mathlib"}, {"field": "status"}],
+                    "fields": {"mathlib": {"decl": "Module.Basis"}, "status": "partial"}},
+                   {"Module.Basis"}, {"Module.Basis"})
+    assert a == "pending"
+
+
 def test_resolver_r3_proof_wanted_partial_approves_formalized_waits():
     from resolve_proposals import verdict
     base = {"noChange": False, "changed": [{"field": "status"}],

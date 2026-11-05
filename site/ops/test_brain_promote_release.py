@@ -1129,6 +1129,15 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
             self.assertEqual(evidence[key]["bytes"], len(raw[key]))
 
+    def test_every_required_migration_creates_its_listed_columns(self):
+        root = Path(__file__).resolve().parents[2]
+        for migration, (table, columns) in promote.D1_REQUIRED_COLUMNS.items():
+            with self.subTest(migration=migration):
+                text = (root / migration).read_text(encoding="utf-8")
+                self.assertIn(table, text)
+                for column in columns:
+                    self.assertRegex(text, rf"\b{column}\b")
+
     def test_commit_with_0014_requires_its_columns_on_remote_d1(self):
         migration = "wiki/migrations/0014_native_companions.sql"
         tools = node_executables_identity(self.base)

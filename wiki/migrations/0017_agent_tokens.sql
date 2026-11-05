@@ -12,7 +12,8 @@
 -- their attribution.
 --
 -- Idempotent. Apply it before promoting any Worker built from a commit that
--- contains this file: that Worker reads agent_tokens on every bearer request.
+-- contains this file: that Worker reads agent_tokens for every agent-token
+-- request, every profile page and /agents.
 -- The promoter refuses such a commit until the table exists.
 --
 -- NB deploy: remote migration tracking is out of sync. After a D1 backup

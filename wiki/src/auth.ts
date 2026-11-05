@@ -20,6 +20,7 @@ export interface AuthUser {
   id: string;
   name: string;
   role: string;
+  ownerId?: string; // role 'agent' only: the person who minted it (agents.ts)
 }
 
 const DEV_COOKIE = "wl_dev_user";
@@ -154,21 +155,21 @@ export async function agentTokenHash(token: string): Promise<string> {
 // stop one agent) and its owner must not be blocked (which stops all of theirs).
 async function agentUser(c: Ctx, token: string): Promise<AuthUser | null> {
   const res = await c.env.DB.prepare(
-    "SELECT t.agent_id AS id, t.last_used_at AS last_used_at, a.name AS name, a.role AS role, o.role AS owner_role " +
+    "SELECT t.agent_id AS id, t.owner_id AS owner_id, t.last_used_at AS last_used_at, a.name AS name, a.role AS role, o.role AS owner_role " +
       "FROM agent_tokens t JOIN users a ON a.id = t.agent_id JOIN users o ON o.id = t.owner_id " +
       "WHERE t.token_hash = ? AND t.revoked_at IS NULL",
   )
     .bind(await agentTokenHash(token))
     .all();
   const row = res.results?.[0] as
-    | { id: string; last_used_at: number | null; name: string | null; role: string; owner_role: string }
+    | { id: string; owner_id: string; last_used_at: number | null; name: string | null; role: string; owner_role: string }
     | undefined;
   if (!row || row.role !== "agent" || row.owner_role === "blocked") return null;
   const now = Date.now();
   if (row.last_used_at === null || now - row.last_used_at > LAST_USED_REFRESH_MS) {
     await c.env.DB.prepare("UPDATE agent_tokens SET last_used_at = ? WHERE agent_id = ?").bind(now, row.id).run();
   }
-  return { id: row.id, name: row.name ?? row.id, role: "agent" };
+  return { id: row.id, name: row.name ?? row.id, role: "agent", ownerId: row.owner_id };
 }
 
 function availableProviders(env: Env): string[] {

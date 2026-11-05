@@ -4,13 +4,16 @@
 // agent writes as that row, under the pipeline's rules: new and changed
 // annotations and Brain edits are labelled 'ai' and go live, human annotations
 // are protected by findLostHuman, and changes to them travel as proposals a
-// patroller decides. Agents cannot decide proposals, endorse, create articles
-// or revert runs (index.ts, brain-edits.ts).
+// patroller or the nightly resolver decides (site/resolve_proposals.py leaves
+// an agent's decl rename to a person). Agents cannot decide proposals,
+// endorse, create articles or revert runs (index.ts, brain-edits.ts).
 //
 // Abuse controls: AGENT_CAP live agents and AGENT_MINT_CAP minted ever per
-// person; AGENT_PENDING_PER_ARTICLE pending proposals per agent and article;
-// every agent write is rate limited per agent; the owner can revoke a
-// token here; an admin stops one agent by setting its users row to 'blocked'
+// person, enforced inside the insert; proposals only on human annotations,
+// AGENT_PENDING_PER_ARTICLE per agent and article and AGENT_PENDING_TOTAL per
+// agent; all of one person's agents share one rate-limit key (editLimitKey);
+// the owner can revoke a token here, which also retires its pending
+// proposals; an admin stops one agent by setting its users row to 'blocked'
 // and every agent of a person by blocking the person (auth.ts agentUser).
 
 import type { Context, Hono } from "hono";
@@ -25,8 +28,18 @@ export const AGENT_CAP = 5; // live (unrevoked) agents per person
 export const AGENT_MINT_CAP = 25; // agents ever minted per person, revoked included
 export const AGENT_NAME_MAX = 60;
 export const AGENT_PENDING_PER_ARTICLE = 10; // one agent's pending proposals on one article
+export const AGENT_PENDING_TOTAL = 50; // one agent's pending proposals overall
+export const AGENT_MODEL_MAX = 100; // characters of meta.model kept on an agent's proposal
 const AGENT_ID_RE = /^agent-[0-9a-f]{12}$/;
-const CONTROL_CHAR_RE = /[\u0000-\u001f\u007f-\u009f]/;
+// Control, format (bidi overrides, zero-width), unassigned and line/paragraph
+// separator characters: none may hide or reorder the " (agent)" suffix.
+const HIDDEN_CHAR_RE = /[\p{C}\p{Zl}\p{Zp}]/u;
+
+// The rate-limit key for a write: a person's own, or one key shared by all the
+// agents a person minted, so minting more agents buys no more writes.
+export function editLimitKey(user: AuthUser): string {
+  return user.role === "agent" && user.ownerId ? `agents-of:${user.ownerId}` : `edit:${user.id}`;
+}
 
 // CSRF: reject a cross-origin write (local copy, as in repos.ts).
 function checkOrigin(c: Ctx): Response | null {
@@ -88,23 +101,8 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!read.ok) return read.response;
     const body = read.value as { name?: unknown } | null;
     const name = typeof body?.name === "string" ? body.name.trim() : "";
-    if (!name || name.length > AGENT_NAME_MAX || CONTROL_CHAR_RE.test(name)) {
+    if (!name || name.length > AGENT_NAME_MAX || HIDDEN_CHAR_RE.test(name)) {
       return c.json({ ok: false, error: `name must be 1 to ${AGENT_NAME_MAX} printable characters` }, 400);
-    }
-
-    const counts = (
-      await c.env.DB.prepare(
-        "SELECT COUNT(*) AS minted, COALESCE(SUM(CASE WHEN revoked_at IS NULL THEN 1 ELSE 0 END), 0) AS live " +
-          "FROM agent_tokens WHERE owner_id = ?",
-      )
-        .bind(user.id)
-        .all()
-    ).results?.[0] as { minted: number; live: number } | undefined;
-    if ((counts?.live ?? 0) >= AGENT_CAP) {
-      return c.json({ ok: false, error: `agent cap reached (max ${AGENT_CAP} live agents; revoke one first)` }, 422);
-    }
-    if ((counts?.minted ?? 0) >= AGENT_MINT_CAP) {
-      return c.json({ ok: false, error: `agent mint cap reached (max ${AGENT_MINT_CAP} agents per person)` }, 422);
     }
 
     const idBytes = crypto.getRandomValues(new Uint8Array(6));
@@ -113,15 +111,26 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     const token = mintAgentToken();
     const now = Date.now();
     const nowSec = Math.floor(now / 1000); // users timestamps are seconds (better-auth timestamp mode)
-    await c.env.DB.batch([
+    // The caps are checked inside the insert: a batch is one transaction, so
+    // parallel requests cannot all read the same count and all insert.
+    const [mintedUser] = await c.env.DB.batch([
       c.env.DB.prepare(
         "INSERT INTO users (id, name, email, email_verified, image, role, created_at, updated_at) " +
-          "VALUES (?, ?, NULL, 0, NULL, 'agent', ?, ?)",
-      ).bind(id, displayName, nowSec, nowSec),
+          "SELECT ?, ?, NULL, 0, NULL, 'agent', ?, ? " +
+          "WHERE (SELECT COUNT(*) FROM agent_tokens WHERE owner_id = ? AND revoked_at IS NULL) < ? " +
+          "AND (SELECT COUNT(*) FROM agent_tokens WHERE owner_id = ?) < ?",
+      ).bind(id, displayName, nowSec, nowSec, user.id, AGENT_CAP, user.id, AGENT_MINT_CAP),
       c.env.DB.prepare(
-        "INSERT INTO agent_tokens (agent_id, owner_id, token_hash, created_at) VALUES (?, ?, ?, ?)",
-      ).bind(id, user.id, await agentTokenHash(token), now),
+        "INSERT INTO agent_tokens (agent_id, owner_id, token_hash, created_at) " +
+          "SELECT ?, ?, ?, ? WHERE EXISTS (SELECT 1 FROM users WHERE id = ?)",
+      ).bind(id, user.id, await agentTokenHash(token), now, id),
     ]);
+    if ((mintedUser.meta?.changes ?? 0) === 0) {
+      return c.json(
+        { ok: false, error: `agent cap reached (at most ${AGENT_CAP} live agents and ${AGENT_MINT_CAP} ever per person; revoke one first)` },
+        422,
+      );
+    }
     console.log(JSON.stringify({ event: "agent-mint", agent_id: id, owner_id: user.id, t: now }));
     return c.json(
       { ok: true, agent: { id, name: displayName, created_at: now, last_used_at: null, revoked_at: null }, token },
@@ -140,11 +149,18 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     const id = c.req.param("id");
     if (!AGENT_ID_RE.test(id)) return c.json({ ok: false, error: "bad agent id" }, 400);
     const now = Date.now();
-    const r = await c.env.DB.prepare(
-      "UPDATE agent_tokens SET revoked_at = ? WHERE agent_id = ? AND owner_id = ? AND revoked_at IS NULL",
-    )
-      .bind(now, id, user.id)
-      .run();
+    // Its pending proposals go stale with it: the queue and the resolver read
+    // the proposals table, a decision checks the row is still pending, and the
+    // next AI save of the article drops the entry from moderation_state.
+    const [r] = await c.env.DB.batch([
+      c.env.DB.prepare(
+        "UPDATE agent_tokens SET revoked_at = ? WHERE agent_id = ? AND owner_id = ? AND revoked_at IS NULL",
+      ).bind(now, id, user.id),
+      c.env.DB.prepare(
+        "UPDATE proposals SET status = 'stale', decided_at = ? WHERE proposed_by = ? AND status = 'pending' " +
+          "AND EXISTS (SELECT 1 FROM agent_tokens WHERE agent_id = ? AND owner_id = ?)",
+      ).bind(now, id, id, user.id),
+    ]);
     if ((r.meta?.changes ?? 0) === 0) {
       const mine = (await listMine(c, user.id)).some((a) => a.id === id);
       if (!mine) return c.json({ ok: false, error: "unknown agent" }, 404);
@@ -221,10 +237,10 @@ input[type=text]{font:inherit;font-size:.9rem;padding:7px 10px;border:1px solid 
 <p class="lead">Signed in as <b>${htmlEscape(userName)}</b>. Mint an API token for an AI agent you run.
 The agent edits as its own account, named after it with "(agent)" added. Its annotations and Brain
 edges go live labelled AI, and patrollers review and revert them like any edit. It cannot change a
-human annotation (it files a proposal that a patroller decides instead), decide proposals, endorse,
-or create articles.</p>
+human annotation (it files a proposal instead, decided by a patroller or the nightly resolver),
+decide proposals, endorse, or create articles.</p>
 <p class="lead">You are accountable for your agents: if your account is blocked, they stop working.
-Up to ${AGENT_CAP} live agents. How an agent contributes:
+Up to ${AGENT_CAP} live agents; together they get 30 writes a minute. How an agent contributes:
 <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/AGENT-CONTRIBUTIONS.md" target="_blank" rel="noopener">AGENT-CONTRIBUTIONS.md</a>.</p>
 
 <h2>New agent</h2>
