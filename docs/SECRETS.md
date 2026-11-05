@@ -42,8 +42,8 @@ and `BETTER_AUTH_URL` are plain vars in `wiki/wrangler.jsonc`, not secrets.
 
 | Name | Holder | Scope / power | Consumers | Rotation | Expiry |
 |---|---|---|---|---|---|
-| `PIPELINE_TOKEN` | Jack (Cloudflare account); copies below | Full `bot` role: PUT/POST articles, decide proposals, `/api/work`, `/api/runs`, `/api/admin/revert-run`, `/api/research/export.jsonl`, `/api/atlas/feedback/export`, `/api/queue` | nightly host (`wiki/.dev.vars`), Actions secret `PIPELINE_TOKEN` (backup job, poller as `WIKILEAN_API_TOKEN`) | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter), then update every copy (step 5 there). Emergency: the kill switch below | none (static); last set 2026-06-10/11 (ROADMAP) |
-| `RESEARCH_EXPORT_SALT` | Jack | Salt for the pseudonyms of the research export and the atlas feedback export (`security.ts researchExportSalt`; the atlas ones are domain-separated) | Worker only | Setting or changing it re-keys every pseudonym once. Unset, the salt falls back to `PIPELINE_TOKEN` | not set yet |
+| `PIPELINE_TOKEN` | Jack (Cloudflare account); copies below | Full `bot` role: PUT/POST articles, decide proposals, `/api/work`, `/api/runs`, `/api/admin/revert-run`, `/api/research/export.jsonl`, `/api/articles/feedback/export`, `/api/queue` | nightly host (`wiki/.dev.vars`), Actions secret `PIPELINE_TOKEN` (backup job, poller as `WIKILEAN_API_TOKEN`) | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter), then update every copy (step 5 there). Emergency: the kill switch below | none (static); last set 2026-06-10/11 (ROADMAP) |
+| `RESEARCH_EXPORT_SALT` | Jack | Salt for the pseudonyms of the research export and the formalization feedback export (`security.ts researchExportSalt`; the feedback ones are domain-separated) | Worker only | Setting or changing it re-keys every pseudonym once. Unset, the salt falls back to `PIPELINE_TOKEN` | not set yet |
 | `BETTER_AUTH_SECRET` | Jack | Signs every better-auth session cookie | Worker only | Rotation signs everyone out | unknown; rotation pending (P0 3) |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth app owner (wiki login) | Identity only (`read:user`, `user:email`, `auth.ts`) | Worker login | Generate a new client secret in the OAuth app, put it, then delete the old one in GitHub | GitHub OAuth client secrets do not expire |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | — | Google sign-in | — | — | not set |
@@ -139,7 +139,7 @@ version-only path instead; it rides the next reviewed promotion:
    hours): `gh secret set PIPELINE_TOKEN --repo Deicyde/WikiLean < ~/.wikilean-rotate.tmp`,
    then replace the `PIPELINE_TOKEN=` line in `wiki/.dev.vars` on the nightly host
    with an editor, then `rm ~/.wikilean-rotate.tmp`. Set `RESEARCH_EXPORT_SALT`
-   first (once, same procedure) so research and atlas feedback pseudonyms do not change
+   first (once, same procedure) so research and formalization-feedback pseudonyms do not change
    with the bearer.
 6. Record the date in the [expiry register](#expiry-register).
 
@@ -189,19 +189,19 @@ and `cd wiki && npx wrangler secret list` (names only).
   script and `connect-src` for `en.wikipedia.org` summaries and `www.wikidata.org` search),
   so the landing page's `/brain?embed=1` frame no longer reports on every view. A test checks
   that list against `site/build_brain_page.py`'s external scripts and fetches.
-- **Atlas pages enforce a policy.** Every `/atlas` page enforces `atlasCsp`
-  (`wiki/src/security.ts`) beside the framing ban: scripts only the atlas's two files
-  (`/assets/atlas.js` and `/assets/atlas-reader.js` on the page's own origin, not every
+- **The articles plane's pages enforce a policy.** Every `/articles` page enforces
+  `articlesCsp` (`wiki/src/security.ts`) beside the framing ban: scripts only its two files
+  (`/assets/articles.js` and `/assets/articles-reader.js` on the page's own origin, not every
   same-origin script), the Web Analytics beacon and the shell's two inline scripts by sha256;
-  forms only to the dashboard's search (`/atlas`); images and media only from the site and
+  forms only to the list's search (`/articles`); images and media only from the site and
   Wikimedia's upload hosts. A reader page serves a stored Wikipedia revision, so the policy
-  backs up the builder's sanitiser (`docs/ATLAS.md`, section 8).
+  backs up the builder's sanitiser (`docs/ARTICLES.md`, section 8).
 - **Request caps.** `/api/queue` 2 MiB and 1000 items; `/mcp` 64 KiB; a POST to `/api/auth/*`
   (anonymous, forwarded to better-auth in oauth mode) 16 KiB (`wiki/src/auth.ts`
   `MAX_AUTH_BODY_BYTES`); every other JSON body
   through `readJsonCapped` (`wiki/src/security.ts` `MAX_JSON_BODY_BYTES`): `/api/flag` 16 KiB
   (anonymous), article create/save 4 MiB, `/api/runs` 64 KiB, Brain edge/node 64 KiB,
-  quickstatements 1 MiB, `/api/repos` 256 KiB, `/review` posting 1 MiB, `/api/atlas/feedback`
+  quickstatements 1 MiB, `/api/repos` 256 KiB, `/review` posting 1 MiB, `/api/articles/feedback`
   4 KiB. Each answers 413 on a declared or streamed body past its cap, after the route's
   auth and rate-limit checks.
 - **Dependency advisories** (`npm audit` in `wiki/`, 2026-10-17):

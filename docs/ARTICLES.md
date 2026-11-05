@@ -1,25 +1,53 @@
-# The formalization articles
+# The formalization reader: WikiLean's articles plane
 
-**Status (2026-11-02): not deployed.** The Worker code, assets and migration 0015 are
+**Status (2026-11-05): not deployed.** The Worker code, assets and migration 0015 are
 release-affecting and ship only in a release (section 11). Nothing is uploaded anywhere. The
 decisions Jack has made, and the two that wait on his ratification, are in section 14.
 
-The articles answers one question per passage of a WikiProject Mathematics article: **is this
-formalized in Lean, in which library, at which commit, and how closely?** The answers
-come from the formal-companion skill's locate pipeline
+The articles plane answers one question per passage of a WikiProject Mathematics article:
+**is this formalized in Lean, in which library, at which commit, and how closely?** The
+answers come from the formal-companion skill's locate pipeline
 (`docs/proposals/wikipedia-locate.md` in that repository, "the proposal" below), which
 exports sealed sets of Literature Links 2.0 records. WikiLean receives them as a separate,
 read-only data plane, as proposal §11.2 asks.
 
-Two names to keep apart:
+## 0. The rename (2026-11-05)
 
-- This is not the old graph-stack "articles" (`/articles`, `/atlas_data.json`, `/api/articles` and
-  an older `wiki/src/articles.ts`), retired 2026-07-10 and deleted 2026-08-04. Older documents
-  such as `docs/BRAIN.md` describe that one. The old bare `/api/articles` and
-  `/api/articles/<slug>` paths still answer 404.
-- It is not facebookresearch's ATLAS Lean library (`atlas-lean`). That library appears
-  here only as a universe library, and the proposal's example universe excludes it because
-  its licence forbids ML evaluation use.
+This plane was built as "the formalization atlas" and served `/atlas`. Jack decided on
+2026-11-05 that it replaces WikiLean's old article system and takes over `/articles`, and
+that the "atlas" name is dropped: facebookresearch's Lean library `atlas-lean` appears in
+the plane's own library universe as "Atlas", so a page could show both names at once.
+Release 1, this one, is the rename and the move. Deleting the old article system is a later
+release: its pages at `/:slug` work unchanged, and `home.ts homePage()`, the directory that
+served `/articles` until now, is kept in the tree but no longer routed.
+
+What the rename moved, and what it did not:
+
+| was | is |
+|---|---|
+| `/atlas` (the list) | `/articles`, in place of the D1 article directory |
+| `/atlas/:pageid[/:slug]`, `/atlas/universe/:sha` | the same under `/articles` |
+| `/api/atlas/<sub>` | `/api/articles/<sub>` |
+| — | every old URL above answers **301** to its new path, query string kept |
+| R2 binding `ATLAS`, bucket `wikilean-atlas` | `ARTICLES`, `wikilean-articles` |
+| store prefix `atlas/v1/`, schema ids `wikilean.atlas.*` | `articles/v1/`, `wikilean.articles.*` |
+| `wiki/src/atlas{,-render,-math}.ts`, `site/assets/atlas{,-reader}.{css,js}`, `scripts/atlas/`, `docs/ATLAS.md` | the same with `articles` |
+| the D1 table `atlas_feedback` | **unchanged.** Migration 0015 is applied in production and renaming a table needs a migration; its indexes and the `atlas_feedback_latest` view keep their names too |
+| `atlas-lean`, and the "ATLAS" its registry entry shows | **unchanged.** It is facebookresearch's library, and this rename exists so that nothing else is called that |
+| `atlas` in `RESERVED` (`index.ts`) | **still reserved**, so no article can be created under the old name |
+| the old graph stack's bare `/api/atlas` and `/atlas_data.json` | **unchanged**: a plain 404, as since 2026-08-04 |
+| `/api/articles` (the header search box's index of WikiLean's own articles) | **unchanged**, and not noindexed: the plane's robots middleware skips that exact path |
+
+Two consequences worth stating. `/articles` now asks not to be indexed, as every page of
+this plane does, so `sitemapXml` no longer lists it (`page:sitemap:v5`). And `/articles`
+answers 503 while `ARTICLES` is unbound or the store has no `current.json`, where the old
+directory always answered from D1.
+
+One name to keep apart: facebookresearch's ATLAS Lean library (`atlas-lean`). It appears
+here only as a universe library, and the proposal's example universe excludes it because
+its licence forbids ML evaluation use. The old graph-stack "atlas" (`/atlas_data.json`, the
+bare `/api/atlas`, an older `wiki/src/atlas.ts`), retired 2026-07-10 and deleted
+2026-08-04, is a third thing again; older documents such as `docs/BRAIN.md` describe it.
 
 ## 1. Why a separate plane
 
@@ -1124,10 +1152,10 @@ creates the bucket (section 14, item 2). Another name changes the binding and
 R2 and creating the bucket are account actions in the dashboard. `src/wikipedia.ts` notes that
 R2 was not enabled on the Cloudflare account when the WP_HTML cache was built, and enabling it
 may ask for a payment method. The free tier (10 GB, 1M writes and 10M reads a month) covers
-the articles many times over. A bound bucket with nothing in it shows no articles data: until
-`current.json` is uploaded, the articles answers as unpublished (below). The binding stays
+the plane many times over. A bound bucket with nothing in it shows no data: until
+`current.json` is uploaded, the plane answers as unpublished (below). The binding stays
 optional in the Worker (`env.ts`), so a configuration or a test harness without it keeps
-every route outside the articles as it is.
+every route outside the plane as it is.
 
 **Publishing** is an operator action, never the nightly and never the fleet host:
 
@@ -1143,10 +1171,10 @@ every route outside the articles as it is.
    set.
 3. Upload `current.json` last, then delete objects the new manifest no longer lists.
 
-**`current.json` is the publish switch.** Until it is in the bucket, every articles route but the
+**`current.json` is the publish switch.** Until it is in the bucket, every route of the plane but the
 feedback export answers 503 "articles store has no published build" and no article page shows a
 box, whatever else the bucket holds, so a first upload goes live only when `current.json` lands.
-Deleting `current.json` alone takes the articles down the same way, with no release: that is the
+Deleting `current.json` alone takes the plane down the same way, with no release: that is the
 data rollback (or re-upload the previous build, which is why each build is kept). Each isolate
 keeps what it read of `current.json`, its absence included, for a minute (section 7), so either
 shows within a minute.
@@ -1175,6 +1203,13 @@ exists yet, deliberately: it is a remote write, which the maintainer runs from t
 | `GET /api/articles/index/:shard` | one of the index shards `current.json` lists (used by the dashboard's live filter); takes the meta budget | `public, max-age=300` |
 | `POST /api/articles/feedback` | section 10 | none |
 | `GET /api/articles/feedback/export` | section 10 | `no-store` |
+| `ALL /atlas`, `/atlas/*`, `/api/atlas/*` | **301** to the same path under `/articles` or `/api/articles/`, query string kept (`index.ts atlasRedirect`; section 0). Reads nothing, so it answers whether or not `ARTICLES` is bound | none |
+
+Two paths under these prefixes are **not** this plane's and are untouched: the exact
+`/api/articles` (the header search box's index of WikiLean's own articles, `index.ts`), which
+the plane's `X-Robots-Tag` middleware skips by name, and the old graph stack's bare
+`/api/atlas` and `/atlas_data.json`, which keep the plain 404 they have answered since
+2026-08-04.
 
 **The article read budget.** An article page reads its view model, its universe and its
 marked revision from the store, hashes the revision and renders it; its two JSON views serve the
@@ -1203,10 +1238,10 @@ their view, answer that 503, not a 200 that browsers and caches keep for five mi
 unknown or malformed page id, sha or shard answers 404, and a sha or shard that `current.json`
 does not name is a 404 that reads nothing. `articles` was already in `RESERVED`, so no article can take the name. The
 security middleware (`src/security.ts`) adds its headers to every one of these responses, and
-every articles page also enforces `articlesCsp` (section 8).
+every page of the plane also enforces `articlesCsp` (section 8).
 
 **Indexing.** Every answer under `/articles` and `/api/articles` carries `X-Robots-Tag: noindex`,
-whatever its status (the site's 404 for a path no articles route takes among them), and every articles
+whatever its status (the site's 404 for a path no route of the plane takes among them), and every
 page also has `<meta name="robots" content="noindex">`: a reader page copies a whole pinned
 Wikipedia revision, a card list its passages, and the JSON views the same text. Links on the
 pages are still followed, and `robots.txt` still lets crawlers fetch the paths, which is how they
@@ -1231,7 +1266,7 @@ table. Nothing requires it: the query and its answers are the same without it (o
 reads change, a scan of the table instead of a search of the index), the index is not unique, so
 no write to `articles` depends on it, and no test, release check or promoter step looks for it
 (the promoter's D1 schema check, `D1_REQUIRED_COLUMNS`, covers 0014's columns alone). So the
-operator may apply it at any time, before, with or after the release that ships the articles, after
+operator may apply it at any time, before, with or after the release that ships the plane, after
 a D1 backup like the others (`wrangler d1 execute wikilean --remote
 --file=migrations/0016_articles_wikipedia_title.sql`, `CLAUDE.md`, "Site / D1"); it is idempotent,
 so a second run is a no-op.
@@ -1346,12 +1381,12 @@ and the live list filter.
   record's note, labelled by what it explains for that relation ("Note" for an exact match,
   "Why close, not exact", "Why more general", "Why a special case", "Why only part", "How it
   differs"), and the provenance under a closed **Details** fold.
-- **The notice (the maintainer's decision, 2026-11-02).** Every articles page (the dashboard, a
+- **The notice (the maintainer's decision, 2026-11-02).** Every page of the plane (the list, a
   reader, a card list, the universe page and the 404, 429 and 503 pages) has one line under its
   header, exactly "Preliminary: these links have not yet had an independent audit."
   (`ARTICLES_NOTICE`); the reader puts it at the top of its article column, beside the sticky
   panel rather than above it, so the panel still fills the window below the header. It
-  states the dataset's audit status, so it is never a badge on a card, and it is the articles pages'
+  states the dataset's audit status, so it is never a badge on a card, and it is these pages'
   own line: the article box (section 9) does not carry it. The notice changes only with a
   release.
 - **Accuracy.** What an audit measured is in the "About this data" fold (the dashboard's "About
@@ -1368,7 +1403,7 @@ and the live list filter.
   CC BY-SA 4.0 for Wikipedia's text, the one link marked `rel="license"`): it names the article
   and links the revision, its history (the contributors) and the licence, then lists what the
   articles changed (the passages highlighted, a panel of Lean cards added with their links, the
-  revision's links pointed to Wikipedia or to the articles, the Wikimedia logos and any image that
+  revision's links pointed to Wikipedia or to a page of this plane, the Wikimedia logos and any image that
   is not free removed, its navigation boxes (rows of links to other articles) and any section
   edit links hidden) and says that images and media keep their own licences. The card list's
   footer credits the same revision for the passages it shows, and every other page's names the
@@ -1496,7 +1531,7 @@ and the live list filter.
   only through `textContent` and `createElement`. The pages keep two inline scripts
   byte-identical to the other shells (the theme bootstrap and the header search), and the
   coverage bar uses `style="width:…"`.
-- **Content-Security-Policy.** Every articles page (`articlesHtml` in `src/articles.ts`: the dashboard,
+- **Content-Security-Policy.** Every page of the plane (`articlesHtml` in `src/articles.ts`: the list,
   the reader, the card list, the universe page and the 404, 429 and 503 pages) enforces a
   policy of its own, `articlesCsp` (`src/security.ts`), for the origin it was served from, which
   the security middleware lists beside the framing ban (`<policy>, frame-ancestors 'none'`: a
@@ -1509,15 +1544,15 @@ and the live list filter.
   upload hosts only (the hosts the builder lets a revision fetch from, `READER_FETCH`); styles
   from the site and inline (the revision's TemplateStyles and style attributes, which the
   builder checks, and the bar's widths); fetches to the site and `cloudflareinsights.com`;
-  forms only to the dashboard's search (`ARTICLES_FORM_PATH`, `/articles`, the one form an articles page
+  forms only to the dashboard's search (`ARTICLES_FORM_PATH`, `/articles`, the one form one of these pages
   has); no base, object or frame. Violations go to `/api/csp-report`. A reader
   page serves the stored revision as the builder checked it, not re-sanitised, so the policy is
   the second barrier: were the stored bytes ever hostile, no script but the plane's own would
   run and nothing would load from another host. `test/articles.test.ts` recomputes the two hashes
-  from every articles page, so changing either script fails until its hash in `security.ts` is
+  from every page of the plane, so changing either script fails until its hash in `security.ts` is
   updated. Anything else Cloudflare injects into a page as inline script would be refused and
   reported, so after a deploy the Workers Logs' `csp-report` events for `/articles` pages are the
-  check. The article page's summary box is not an articles page and keeps the site's Report-Only
+  check. The old article page's summary box is not one of these pages and keeps the site's Report-Only
   policy. `articles.css` and `articles.js` are static assets, so they get the security headers from
   the generated `_headers` file, like every other asset.
 
@@ -1601,11 +1636,11 @@ page shows a compact box above the body: passages checked, counts by status and 
 where →" linking `/articles/<pageid>/<slug>`, whose page carries the plane's notice under its
 header (section 8). The page's header badges count WikiLean's own
 annotations, so the box says its counts are separate from them ("Separately from this
-page's annotations, the articles checked N passages of Wikipedia revision R…"), and when the
+page's annotations, WikiLean checked N passages of Wikipedia revision R…"), and when the
 articles checked another revision than the page shows it adds "This page shows revision
-R′.". Its counts are the passages that have a status, as the article's own articles page counts
+R′.". Its counts are the passages that have a status, as the article's own page in the plane counts
 them: a passage with none yet is in no count and has no status, and the box adds how many more
-there are ("1 more passage has no status yet."), or, when no passage has one, that the articles
+there are ("1 more passage has no status yet."), or, when no passage has one, that the plane
 found N passages, none with a status yet. `serveArticle` adds it **per request**, like
 the staleness banner (`pages.ts injectArticlesSummary`), and never bakes it into
 the render cache (`render:v<N>`, `index.ts`). The articles changes independently of `articles.version`, so a cached box
@@ -1615,12 +1650,16 @@ key bump is needed**, and the legacy annotation rendering is untouched.
 The box costs at most two R2 reads per article view when bound, `current.json` (the publish
 switch: no box without it) and one index shard, each cached for a minute per isolate, and
 nothing when unbound. A store failure is logged and drops the box; it never breaks the page. The match
-is by title, because D1 stores no page id, so a page renamed after the articles build loses
+is by title, because D1 stores no page id, so a page renamed after the store was built loses
 its box until the next build.
 
 ## 10. Feedback, and how it becomes benchmark seeds
 
-**Table** (`wiki/migrations/0015_atlas_feedback.sql`): `id, location_key, pair_key, pageid,
+**Table** (`wiki/migrations/0015_atlas_feedback.sql`). The table, its indexes and its view
+keep the `atlas_feedback` name the rename of 2026-11-05 gave the rest of this plane up:
+migration 0015 is applied in production, renaming a SQLite table needs a migration of its
+own, and a migration file is never edited (`CLAUDE.md`, "Site / D1"). Columns: `id,
+location_key, pair_key, pageid,
 revision, campaign, record_set, relation, verdict ('confirm'|'report'|'withdraw'), note (at
 most 500 characters), provenance ('human'), user_id, created_at`. It is append-only: one row
 per verdict, never updated. A person's current verdict on one judgment is the newest row for
@@ -1693,15 +1732,16 @@ the improvement loop.
 
 - `articles.css`, `articles.js`, `articles-reader.css` and `articles-reader.js` are copied by
   build-public but are not in the required baseline lists, so baselines frozen before the
-  articles stay valid. The next baseline freeze includes them, against the source attestation,
+  plane existed stay valid. The next baseline freeze includes them, against the source attestation,
   which names each with its sha256 and bytes and is regenerated in the change that ships it.
 - build-public still deletes a stale `wiki/public/atlas.html`, and baselines still forbid
-  one. That matters now: assets are served before the Worker, and a leftover old
-  `atlas.html` would shadow the new `/articles`.
-- The release that carries the binding (section 6) shows no articles data until `current.json`
+  one; the rename adds `articles.html` to both, and deletes the reader's assets under their
+  old `atlas*` names. That matters: assets are served before the Worker, so a leftover
+  `articles.html` would shadow `/articles` and a leftover `atlas.css` would be served stale.
+- The release that carries the binding (section 6) shows no data until `current.json`
   is uploaded: until then `/articles` answers 503 "articles store has no published build" and
   article pages show no box. A build without the binding answers 503 "articles store not
-  configured" on every articles route instead, and nothing outside the articles changes.
+  configured" on every route of the plane instead, and nothing outside it changes.
 - The same release links `/articles` from every page's navigation (section 14, item 8), so until
   the upload, or after `current.json` is deleted, that link leads to the 503 page.
 
@@ -1723,7 +1763,7 @@ applied and the cutover done). The importer would live in a release-neutral dire
 
 ## 13. The Brain path (proposal §11.3)
 
-The articles never writes the Brain. Locate output reaches it only (a) as
+The articles plane never writes the Brain. Locate output reaches it only (a) as
 `brain/proposals/*.jsonl` through the offline fold, or (b) after Jack chooses a release-gate
 mode for content changes. Concept edges come only from `subject` passages whose own QID was
 validated against a sealed Wikidata bundle, and each library maps to one `brain_lib` token.
@@ -1778,18 +1818,22 @@ recommendation.
    formal-companion's maintainer*, before the upload. Notes 1, 2, 8, 9, 12 and 13 describe what
    the producer's export at master writes; the others are WikiLean's readings where the
    agreed format (note 10) left a choice.
-8. **Navigation.** *Decided (Jack, 2026-11-02): link `/articles` from the site's navigation in the
-   release that binds the store.* Done with the binding: the header of every Worker page that
-   carries the site's navigation (article pages, `/`, `/articles`, `/about`, the pages of the
-   `pages.ts` shell such as `/stats`, `/recent-changes` and an article's history, and the two
-   Wikifunctions pages) links "Articles" after Articles and before the Brain, as the articles pages'
-   header does. That changed their cached bytes, so the render cache key and `page:home`,
-   `page:articles`, `page:about`, `page:stats`, `page:wikifunctions` and
-   `page:wikifunctions-verify` moved (`index.ts`). Pages with a navigation of their own keep it:
+8. **Navigation.** *Decided (Jack, 2026-11-02): link the plane from the site's navigation in
+   the release that binds the store.* Done with the binding, and then absorbed by the rename
+   (section 0): the header of every Worker page that carries the site's navigation (article
+   pages, `/`, `/about`, the pages of the `pages.ts` shell such as `/stats`,
+   `/recent-changes` and an article's history, and the two Wikifunctions pages) links
+   "Articles" before the Brain, as the plane's own header does. On the shells that already
+   had an "Articles" link that link simply leads here now; the two Wikifunctions pages gain
+   one. The render cache key and `page:home`, `page:about`, `page:stats`,
+   `page:wikifunctions` and `page:wikifunctions-verify` moved with PR #125 and stay moved,
+   conservatively: a reader following that link now lands somewhere else.
+   `page:articles` is retired, not moved, with the directory it cached. Pages with a
+   navigation of their own keep it:
    `/brain/api` and `/mcp` (the agent API's), `/repos` and the bulk-connections page
    (`/quickstatements`). `/brain` comes from the frozen Brain release, and the 404 and Concepts
    pages from the public baseline, so this change leaves them as they are.
-9. **The notice.** *Decided (Jack, 2026-11-02):* one line under every articles page's header,
+9. **The notice.** *Decided (Jack, 2026-11-02):* one line under the header of every page of the plane,
    "Preliminary: these links have not yet had an independent audit.", never a badge on a card.
    The figures an audit measured go in the "About this data" fold, from the store (section 8,
    "Accuracy").
@@ -1916,14 +1960,15 @@ recommendation.
   query plan (the slug lookup a search of the index, a re-run a no-op), the slug lookup's
   per-isolate memo (one D1 read for repeated views, with or without a WikiLean article, read
   again after a minute, at most `MAX_SLUG_CACHE` titles, per binding, no failure kept),
-  `X-Robots-Tag: noindex` on every answer under `/articles` and `/api/articles` (pages, JSON, 404, 429,
-  503 and the site's 404 there) and on none outside, and each articles page's robots meta, the
+  `X-Robots-Tag: noindex` on every answer under `/articles` and `/api/articles/` (pages, JSON, 404,
+  429, 503 and the site's 404 there), on none outside and never on `/api/articles` itself, and
+  each page's robots meta, the
   footers' licence statements (the reader an adaptation of its revision under the licence the
   article's JSON gives its text, with what changed, `rel="license"` once, and its images and media
   listed with their file pages, authors and licences, each licence linked over https only, a
   malformed entry left out and a name escaped; the
   card list crediting its revision; the mapping's CC0 on every page), the notice
-  (once under the header of every articles page, 404, 429 and 503 ones included, at the top of the
+  (once under the header of every page of the plane, 404, 429 and 503 ones included, at the top of the
   reader's article column, and never in the article box or on a card) and the "About" folds'
   accuracy lines (the figures as estimates and the audit run from an audit summary, a malformed
   one read as none and escaped, else that the build carries no accuracy figure), the "About"
@@ -1935,8 +1980,8 @@ recommendation.
   store, a verdict not pressed in the next campaign and not overwritten by its verdict,
   migration 0015 on an empty database, on a re-run and on the superseded table, the export
   and its domain-separated pseudonyms and their
-  `RESEARCH_EXPORT_SALT` salt, the security headers on every articles response and the pages'
-  CSP fit (same-origin loads only, no inline handlers; `articlesCsp` on every articles page, its two
+  `RESEARCH_EXPORT_SALT` salt, the security headers on every response of the plane and the pages'
+  CSP fit (same-origin loads only, no inline handlers; `articlesCsp` on every page of the plane, its two
   inline-script hashes recomputed from each page, its media hosts the builder's `READER_FETCH`,
   and every HTML answer through `articlesHtml`), the article box with its cache
   isolation and revision note, the readers, non-array universe lists, passages with no status set
@@ -1972,26 +2017,32 @@ recommendation.
   sha256 alone, the reader then the card list when the file is gone), a store without the file
   or with other bytes serving the card list, the same-origin loads and an `articles-reader.js` that
   fetches and parses nothing, the article's paint containment, and the security headers; the
-  policy's script files by URL and never `'self'` (every script an articles page loads among them),
+  policy's script files by URL and never `'self'` (every script one of its pages loads among them),
   its one form (`/articles`) and the origin it names, and the site stylesheet at the article pages'
   `?v=`. `wiki/test/security-headers.test.ts` covers the two
   reader assets' headers, and a route's own enforced policy kept with the framing ban beside it:
-  `articlesCsp` on the reader and every other articles page (the 429 and 503 ones too), its
+  `articlesCsp` on the reader and every other page of the plane (the 429 and 503 ones too), its
   directives, and the shared set alone on the plane's JSON and every other page.
 - `wiki/test/articles-binding.test.ts` (in `npm run test:ci`) checks that `wrangler.jsonc` binds
   `ARTICLES`, and nothing else, to the bucket `wikilean-articles`, and that the Worker reads the store
   through the binding of the name the config gives. Without the binding, every GET route the app
   registers answers the status it answers with it, except the plane's own, which answer 503
-  "articles store not configured"; the pages outside the articles keep their bytes, and only an
+  "articles store not configured"; the pages outside the plane keep their bytes, and only an
   article page reads the bucket (the publish switch and its title's index shard); the feedback
   export, which reads only D1, keeps answering.
-- `wiki/test/site-nav.test.ts` (in `npm run test:ci`) checks the navigation's one "Articles" link
-  in the header of a page of each shell that carries the site's navigation, after Articles and
-  before the Brain where those are listed; the moved cache keys, with the link in their cached
-  bytes and nothing left under the old ones; and the keys that did not move, the sitemap
-  leaving the articles out.
-- `wiki/test/retired-routes.test.ts` now excludes `/articles` from the deleted paths, but still
-  checks that `articles` is reserved.
+- `wiki/test/site-nav.test.ts` (in `npm run test:ci`) checks the navigation's one `/articles`
+  link in the header of a page of each shell that carries the site's navigation, before the
+  Brain where that is listed and with no `/atlas` link left anywhere; the moved cache keys,
+  with the link in their cached bytes and nothing left under the old ones; that nothing writes
+  the retired `page:articles` key; and that `/api/articles` keeps its key while the sitemap
+  drops `/articles`, which now asks not to be indexed.
+- `wiki/test/articles-redirects.test.ts` (in `npm run test:ci`) checks that every URL the
+  reader answered under `/atlas` and `/api/atlas/<sub>` 301s to its new path, query string and
+  all, with or without the binding and reading nothing from the store; that the old graph
+  stack's bare `/api/atlas` and `/atlas_data.json` keep their plain 404; and that
+  `/api/articles` answers exactly as it did, with no `X-Robots-Tag`.
+- `wiki/test/retired-routes.test.ts` keeps `/atlas` out of the deleted paths (it redirects now),
+  but still checks that `atlas` is reserved, so no article can be created under it.
 - `wiki/e2e/articles.spec.ts` (the required browser job since PR #72) runs axe in both colour
   schemes at desktop width and at 375px (the Gadget page with its coverage claim's parts
   list included), plus the parts list itself, a passage heading's accessible name, a capped
@@ -1999,10 +2050,10 @@ recommendation.
   order with the empty libraries' list opened at 375px (axe, no sideways scroll), the
   combined filters, feedback, live search,
   a passage permalink, the Subject row's link, the article box and the site header's Articles
-  link (from an article page to the dashboard, which alone marks it as the current page, and
+  link (from an old article page to the reader's list, which alone marks it as the current page, and
   the article page's header at 375px with no sideways scroll), and runs those flows
   again under the plane's enforced policy as served (the header search among them) and the
-  article box under the Worker's Report-Only CSP enforced, asserting no violation. Its "the articles
+  article box under the Worker's Report-Only CSP enforced, asserting no violation. Its "the
   article reader" tests run on
   the harness's third listener (port + 2, the store with the Widget lemma's marked revision):
   axe in both colour schemes with and without a passage selected, a click opening the passage's
