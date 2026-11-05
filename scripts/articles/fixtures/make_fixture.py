@@ -57,8 +57,14 @@ SET_ID = "fixture-set"
 
 
 def fake_hex(label: str, length: int) -> str:
-    """A stable fake digest or commit for a label (fixture values only)."""
-    return hashlib.sha256(("wikilean articles fixture: " + label).encode()).hexdigest()[:length]
+    """A stable fake digest or commit for a label (fixture values only).
+
+    The prefix is a hash input nobody reads, and every synthetic commit and digest of the
+    sealed record set comes out of it, so the 2026-11-05 rename left it alone: changing it
+    would re-roll the whole committed fixture and every digest the Python and Worker tests
+    pin against it, for no visible difference.
+    """
+    return hashlib.sha256(("wikilean atlas fixture: " + label).encode()).hexdigest()[:length]
 
 
 def dumps(value: object) -> str:
