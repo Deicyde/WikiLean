@@ -102,5 +102,20 @@
       "binding": "WP_HTML",
       "id": "53b1cbbfe7fc43ae844192201f6926bf"
     }
+  ],
+  // The formalization atlas's store (src/atlas.ts; docs/ATLAS.md section 6):
+  // the static tree scripts/atlas/build_store.py writes, under atlas/v1/, which
+  // the maintainer uploads. A private bucket, with no r2.dev URL and no custom
+  // domain; the Worker only reads it. Its name is proposed, for the maintainer
+  // to confirm when he creates the bucket, which must exist under that name
+  // before a deploy that carries this binding. Until its current.json is
+  // uploaded, every atlas route but the feedback export (which reads only D1)
+  // answers 503 "atlas store has no published build", and article pages show
+  // no atlas box.
+  "r2_buckets": [
+    {
+      "binding": "ATLAS",
+      "bucket_name": "wikilean-atlas"
+    }
   ]
 }

@@ -2387,8 +2387,8 @@ describe("article page summary box", () => {
     expect(html.indexOf("wl-atlas-box")).toBeLessThan(html.indexOf('<main class="wl-article-body">'));
     // The publish switch and one index shard, nothing else from the store (each kept a minute).
     expect(h.gets).toEqual(["atlas/v1/current.json", "atlas/v1/index/1.json"]);
-    // The cached base page (render:v19) does not carry the box.
-    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v19:"));
+    // The cached base page (render:v20) does not carry the box.
+    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v20:"));
     expect(cached).toHaveLength(1);
     expect(String(cached[0][1])).not.toContain("wl-atlas-box");
   });

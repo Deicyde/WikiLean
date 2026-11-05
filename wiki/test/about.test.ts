@@ -4,7 +4,7 @@
 // rows), the unified nav + Concepts + MCP links, the rewritten contribution
 // copy, the moderation copy (Human-at-boundaries, ROADMAP 2026-08-06), the
 // Wikidata property name (P14534), licensing notices, and the KV cache
-// (page:about:v2, TTL 300, TTL-only invalidation). The harness ASSETS binding
+// (page:about:v3, TTL 300, TTL-only invalidation). The harness ASSETS binding
 // always 404s, so a 200 here also proves the route no longer depends on the
 // retired asset.
 
@@ -39,7 +39,7 @@ describe("GET /about", () => {
   it("carries the unified nav plus Concepts + MCP, contribution copy, and licenses", async () => {
     const h = setup();
     const html = await (await get(h.env, "/about")).text();
-    for (const href of ["/articles", "/brain", "/recent-changes", "/stats", "/concepts", "/mcp"]) {
+    for (const href of ["/articles", "/atlas", "/brain", "/recent-changes", "/stats", "/concepts", "/mcp"]) {
       expect(html).toContain(`href="${href}"`);
     }
     // The stale "corrections via the source repository" limitation copy is
@@ -103,11 +103,11 @@ describe("GET /about", () => {
     expect(html).not.toContain("NaN");
   });
 
-  it("is KV-cached under page:about:v2 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:about:v3 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/about")).text();
-    expect(h.renderCache.store.has("page:about:v2")).toBe(true);
-    expect(h.renderCache.store.has("page:about:v1")).toBe(false);
+    expect(h.renderCache.store.has("page:about:v3")).toBe(true);
+    expect(h.renderCache.store.has("page:about:v2")).toBe(false);
     insertArticle(h.db, "After_Cache");
     const second = await (await get(h.env, "/about")).text();
     expect(second).toBe(first);

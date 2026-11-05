@@ -182,7 +182,8 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // v18: native Literature Links occurrences, complete-match telemetry, direct formal links.
   // v19: style.css?v=10, which draws the MathML of Wikipedia's current formula
   // markup (a span classed only mwe-math-mathml-a11y); with v=9 formulas were blank.
-  const cacheKey = `render:v19:${slug}:${row.version}`;
+  // v20: the header's navigation links the formalization atlas (/atlas).
+  const cacheKey = `render:v20:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -578,7 +579,7 @@ async function leastReviewedRows(c: Context<{ Bindings: Env }>) {
 
 // the landing page IS the Brain (embedded); the article directory moved to /articles
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v10";  // v10: least-recently-reviewed strip (P2 trust signals)
+  const cacheKey = "page:home:v11";  // v11: the navigation links the formalization atlas (/atlas)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const [rows, leastReviewed] = await Promise.all([homeRows(c), leastReviewedRows(c)]);
@@ -588,7 +589,7 @@ app.get("/", async (c) => {
 });
 
 app.get("/articles", async (c) => {
-  const cacheKey = "page:articles:v3";  // v3: Wikidata property named (P14534)
+  const cacheKey = "page:articles:v4";  // v4: the navigation links the formalization atlas (/atlas)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = homePage(await homeRows(c));
@@ -634,7 +635,7 @@ app.get("/api/articles", async (c) => {
 // static wiki/public/about.html asset, which used to shadow this path with
 // stats baked at build time). One aggregate over the D-C5 count columns.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v2";  // v2: moderation copy matches Human-at-boundaries
+  const cacheKey = "page:about:v3";  // v3: the navigation links the formalization atlas (/atlas)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);
@@ -694,7 +695,7 @@ app.get("/favicon.ico", (c) =>
 // is KV-cached with a long TTL; bump the cache key suffix when the page or the
 // embedded data changes.
 app.get("/wikifunctions", async (c) => {
-  const cacheKey = "page:wikifunctions:v3";  // v3: retired /article-graph nav link removed
+  const cacheKey = "page:wikifunctions:v4";  // v4: the navigation links the formalization atlas (/atlas)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
@@ -708,7 +709,7 @@ app.get("/wikifunctions", async (c) => {
 // cache pattern; bump the suffix when the page copy changes. Registered before
 // the /:slug catch-all (which only matches a single path segment anyway).
 app.get("/wikifunctions/verify", async (c) => {
-  const cacheKey = "page:wikifunctions-verify:v3";  // v3: retired /article-graph nav link removed
+  const cacheKey = "page:wikifunctions-verify:v4";  // v4: the navigation links the formalization atlas (/atlas)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsVerifyPage();
@@ -722,7 +723,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v6"; // v6: AI-review freshness rows + recent pipeline runs table
+  const cacheKey = "page:stats:v7"; // v7: the navigation links the formalization atlas (/atlas)
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);

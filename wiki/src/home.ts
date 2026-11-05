@@ -2,8 +2,8 @@
 // Replaces the static site/out/ pages that build-public.ts used to copy into
 // wiki/public/ — articles created via PUT /api/article/:slug now appear
 // without a static rebuild. index.ts serves brainLanding() cached in
-// RENDER_CACHE ('page:home:v10', TTL 300s), homePage() ('page:articles:v3',
-// TTL 300s), aboutPage() ('page:about:v2', TTL 300s), and sitemapXml()
+// RENDER_CACHE ('page:home:v11', TTL 300s), homePage() ('page:articles:v4',
+// TTL 300s), aboutPage() ('page:about:v3', TTL 300s), and sitemapXml()
 // ('page:sitemap:v4', TTL 3600s).
 //
 // Visual language: warm academic-minimalist — paper background, serif display
@@ -196,6 +196,7 @@ iframe { flex:1; border:0; width:100%; min-height:420px; }
     This is the <b>Brain</b>: every concept joined to its Lean code, databases, and literature.</span></span>
   <nav class="wl-nav" aria-label="Site">
     <a href="/articles"><b>Browse ${fmtInt(rows.length)} articles</b></a>
+    <a href="/atlas">Atlas</a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/stats">Stats</a>
     <a href="/concepts">Concepts</a>
@@ -428,6 +429,7 @@ footer a:hover { text-decoration:underline; }
   <nav class="wl-nav" aria-label="Site">
     <a href="/concepts">Concepts</a>
     <a href="/wikifunctions">Wikifunctions</a>
+    <a href="/atlas">Atlas</a>
     <a href="/brain">Brain</a>
     <a href="/recent-changes">Recent changes</a>
     <a href="/stats">Stats</a>
@@ -565,7 +567,7 @@ export interface AboutStats {
   nNotFormalized: number;
 }
 
-// The About & method page, served dynamically from D1 (KV 'page:about:v2',
+// The About & method page, served dynamically from D1 (KV 'page:about:v3',
 // TTL 300s). Replaces the static site/out/about.html asset (retired from
 // build_static_pages.py) whose baked stats went stale the day it was built.
 // Visual shell reproduced from that page: self-contained inline CSS, warm
@@ -643,6 +645,7 @@ footer p { margin:4px 0; }
   <a class="wl-brand" href="/">WikiLean</a>
   <nav class="wl-nav" aria-label="Site">
     <a class="wl-navlink" href="/articles">Articles</a>
+    <a class="wl-navlink" href="/atlas">Atlas</a>
     <a class="wl-navlink" href="/brain">Brain</a>
     <a class="wl-navlink" href="/recent-changes">Recent changes</a>
     <a class="wl-navlink" href="/stats">Stats</a>
