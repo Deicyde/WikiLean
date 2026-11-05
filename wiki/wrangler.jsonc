@@ -60,7 +60,10 @@
       },
       // Anonymous MCP endpoint limiter: 120 JSON-RPC calls per minute, keyed
       // mcp:<CF-Connecting-IP>, an IPv6 address by its /64 (read-only surface;
-      // agents burst tools/call).
+      // agents burst tools/call). It also caps the formalization atlas's
+      // anonymous reads under atlas-q:<ip> (a ?q= search), atlas-read:<ip>
+      // (an article page and its JSON views) and atlas-meta:<ip> (the small
+      // JSON objects); changing the limit or the period changes them too.
       {
         "name": "MCP_LIMITER",
         "type": "ratelimit",

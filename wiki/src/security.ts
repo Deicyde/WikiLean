@@ -27,6 +27,9 @@
 // A Report-Only frame-ancestors only reports, so the framing ban rides a
 // separate, enforced Content-Security-Policy header (alongside the legacy
 // X-Frame-Options for older browsers).
+//
+// The formalization atlas's pages are the exception: they enforce a strict
+// policy of their own, atlasCsp below, listed beside the framing ban.
 
 import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
@@ -71,6 +74,56 @@ export const BRAIN_CSP_EXTRA_SOURCES: Readonly<Record<string, readonly string[]>
   "connect-src": ["https://en.wikipedia.org", "https://www.wikidata.org"],
 };
 export const BRAIN_CSP_REPORT_ONLY = reportOnlyPolicy(BRAIN_CSP_EXTRA_SOURCES);
+
+// The formalization atlas's pages (atlas.ts atlasHtml) enforce a policy of their
+// own, atlasCsp. A reader page serves a stored Wikipedia revision as the builder
+// checked it (scripts/atlas/build_store.py --reader-html), not re-sanitised; this
+// policy is the second barrier, so that were the stored bytes ever hostile, no
+// script but the atlas's own would run and nothing would load from another host.
+// Scripts: the atlas's two script files by URL (ATLAS_SCRIPT_PATHS on the page's
+// own origin; a path source matches that one file, whatever its ?v= query), not
+// 'self', which would admit every same-origin script (the article editor's, the
+// review page's, the Brain's); the Cloudflare Web Analytics beacon; and the atlas
+// shell's two inline scripts by their sha256 (the theme bootstrap in
+// atlas-render.ts and the header search, engine/searchbox.ts SEARCHBOX_SCRIPT). No
+// 'unsafe-inline', so no other inline script and no inline handler runs.
+// test/atlas.test.ts recomputes the hashes from the served pages: change either
+// script and update its hash here. Forms may submit only to the dashboard's search
+// (ATLAS_FORM_PATH, a GET to /atlas), the one form an atlas page has. Images and
+// media: same-origin and Wikimedia's upload hosts, the hosts the builder lets a
+// revision fetch from (READER_FETCH). Styles keep 'unsafe-inline': the revision
+// carries Wikipedia's TemplateStyles and style attributes, which the builder
+// checks, and the coverage bar is sized by style="width". Nothing may frame the
+// pages (the separate framing ban) or be framed by them, and violations are
+// reported to CSP_REPORT_PATH like the site's Report-Only ones.
+export const ATLAS_INLINE_SCRIPT_HASHES: Readonly<Record<"theme" | "search", string>> = {
+  theme: "'sha256-DMaJR+iV63dY3QeNP+nRCqzJfeb9K2eVniDB9Ze1MWU='",
+  search: "'sha256-/tMIUG71SaA6Sj3wRXe56bcJ5WHvJEJvv63Q2nMvywM='",
+};
+export const ATLAS_MEDIA_HOSTS: readonly string[] = ["https://upload.wikimedia.org", "https://thumb.wikimedia.org"];
+// atlas-render.ts ATLAS_JS and ATLAS_READER_JS without their queries (test/atlas.test.ts pins it).
+export const ATLAS_SCRIPT_PATHS: readonly string[] = ["/assets/atlas.js", "/assets/atlas-reader.js"];
+export const ATLAS_FORM_PATH = "/atlas";
+
+// The policy for an atlas page served from `origin` (the request URL's, "https://host[:port]").
+export function atlasCsp(origin: string): string {
+  const directives: ReadonlyArray<readonly [string, string]> = [
+    ["default-src", "'none'"],
+    ["script-src", [...ATLAS_SCRIPT_PATHS.map((path) => origin + path), ATLAS_INLINE_SCRIPT_HASHES.theme,
+      ATLAS_INLINE_SCRIPT_HASHES.search, "https://static.cloudflareinsights.com"].join(" ")],
+    ["style-src", "'self' 'unsafe-inline'"],
+    ["img-src", `'self' ${ATLAS_MEDIA_HOSTS.join(" ")}`],
+    ["media-src", `'self' ${ATLAS_MEDIA_HOSTS.join(" ")}`],
+    ["font-src", "'self'"],
+    ["connect-src", "'self' https://cloudflareinsights.com"],
+    ["form-action", origin + ATLAS_FORM_PATH],
+    ["base-uri", "'none'"],
+    ["object-src", "'none'"],
+    ["report-uri", CSP_REPORT_PATH],
+    ["report-to", "csp"],
+  ];
+  return directives.map(([name, value]) => `${name} ${value}`).join("; ");
+}
 
 export const SECURITY_HEADERS: Readonly<Record<string, string>> = {
   "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
@@ -122,8 +175,18 @@ export function staticAssetHeadersFile(): string {
   return lines.join("\n") + "\n";
 }
 
+// A response may carry an enforced policy of its own (the atlas pages'
+// atlasCsp). It is kept, and the framing ban is listed beside it as a second
+// policy ("A, B": a browser enforces every policy a response lists), so no route
+// can lift the ban; any other response gets the ban alone.
 function applyHeaders(headers: Headers): void {
+  const own = headers.get("Content-Security-Policy");
   for (const [name, value] of Object.entries(SECURITY_HEADERS)) headers.set(name, value);
+  const ban = SECURITY_HEADERS["Content-Security-Policy"];
+  if (own && own !== ban) {
+    const listed = own.split(",").map((policy) => policy.trim());
+    headers.set("Content-Security-Policy", listed.includes(ban) ? own : `${own}, ${ban}`);
+  }
 }
 
 // Violation reports arrive in two shapes: the legacy report-uri body

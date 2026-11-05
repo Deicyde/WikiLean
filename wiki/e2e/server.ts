@@ -8,7 +8,7 @@ import type { Env } from "../src/env.js";
 import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
 import { installBrainFixture } from "../test/helpers/brain-fixture.js";
-import { bindAtlas } from "../test/helpers/atlas.js";
+import { atlasReaderFiles, bindAtlas } from "../test/helpers/atlas.js";
 import { FORMULA_SLUG, SEED_ANNOTATIONS, WP_FIXTURE, WP_FORMULA_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
 
 const HOST = "127.0.0.1";
@@ -21,6 +21,8 @@ const SOURCE_ASSETS = new Map<string, { path: string; contentType: string }>([
   ["/assets/review.css", { path: resolve(ROOT, "../site/assets/review.css"), contentType: "text/css; charset=utf-8" }],
   ["/assets/atlas.css", { path: resolve(ROOT, "../site/assets/atlas.css"), contentType: "text/css; charset=utf-8" }],
   ["/assets/atlas.js", { path: resolve(ROOT, "../site/assets/atlas.js"), contentType: "text/javascript; charset=utf-8" }],
+  ["/assets/atlas-reader.css", { path: resolve(ROOT, "../site/assets/atlas-reader.css"), contentType: "text/css; charset=utf-8" }],
+  ["/assets/atlas-reader.js", { path: resolve(ROOT, "../site/assets/atlas-reader.js"), contentType: "text/javascript; charset=utf-8" }],
   ["/assets/editor.js", { path: resolve(ROOT, "assets/editor.js"), contentType: "text/javascript; charset=utf-8" }],
 ]);
 
@@ -172,9 +174,19 @@ const server = serve({ fetch: (request) => fetch(request), hostname: HOST, port:
 const oauthServer = serve({ fetch: oauthFetch, hostname: HOST, port: OAUTH_PORT }, (info) => {
   console.log(`WikiLean oauth-mode browser harness listening on http://${HOST}:${info.port}`);
 });
+// The atlas article reader (e2e/atlas.spec.ts): a third loopback listener, the same database
+// and assets, with the golden store plus the Widget lemma's marked revision
+// (test/helpers/atlas.ts atlasReaderFiles), so the main listener keeps the card list.
+const READER_PORT = PORT + 2;
+const readerEnv: Env = { ...harness.env };
+bindAtlas(readerEnv, atlasReaderFiles());
+const readerServer = serve({ fetch: (request) => fetch(request, readerEnv), hostname: HOST, port: READER_PORT }, (info) => {
+  console.log(`WikiLean atlas-reader browser harness listening on http://${HOST}:${info.port}`);
+});
 
 function shutdown(): void {
   oauthServer.close();
+  readerServer.close();
   server.close(() => {
     globalThis.fetch = runtimeFetch;
     harness.db.close();

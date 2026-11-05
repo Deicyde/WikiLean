@@ -1,7 +1,7 @@
 // The formalization atlas: a separate, read-only data plane that shows which
 // WikiProject Mathematics passages are formalized in Lean, in which library, at
 // which commit (design: docs/ATLAS.md). The store is a static tree that
-// scripts/atlas/build_store.py builds from one sealed locate record set; the
+// scripts/atlas/build_store.py builds from sealed locate record sets; the
 // Worker reads it through the optional R2 binding ATLAS and never writes it.
 //
 // What this plane deliberately does not do: no D1 annotation writes, no item
@@ -12,18 +12,24 @@
 // those rows as benchmark seeds.
 //
 // Unbound ATLAS → every atlas page and API route answers 503 "atlas store not
-// configured" (the feedback export, which reads only D1, keeps working).
+// configured" (the feedback export, which reads only D1, keeps working). Bound
+// without current.json, the store's publish switch → the same routes answer 503
+// "atlas store has no published build" and article pages show no box, whatever
+// else the bucket holds.
 
 import type { Context, Hono } from "hono";
+import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { getUser, requireRole } from "./auth.js";
 import type { Env } from "./env.js";
 import type { UniverseLibrary } from "./libraries.js";
-import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
+import type { PassageSegment } from "./atlas-math.js";
+import { atlasCsp, checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
   atlasArticlePage,
   atlasDashboardPage,
   atlasMessagePage,
+  atlasReaderPage,
   atlasUniversePage,
   type DashboardRow,
 } from "./atlas-render.js";
@@ -62,15 +68,111 @@ export interface AtlasLocation {
   confidence: string;
   challenge: string;
   location_key: string;
-  // The producer's revision- and commit-free key for the judgment. The builder
-  // does not carry it yet, so feedback rows hold NULL until a store does.
+  // The producer's revision- and commit-free key for the judgment: a store
+  // built from a cf-locate-recordset/2 set carries it (build_store), and
+  // feedback rows copy it; a /1 store has none, so its rows hold NULL.
   pair_key?: string | null;
   note: string | null;
+  // Optional (build_store --signatures): the declaration's Lean header, from the
+  // universe's declaration corpus at this commit. `elided` marks a header that
+  // was shortened to fit, which then keeps the whole type in `type`;
+  // `deprecated_to` names what the library deprecated it in favour of. Absent
+  // from a store built without the side file: the card then shows the name only.
+  signature?: { text: string; elided: boolean; type?: string; deprecated_to?: string } | null;
+}
+
+// One run as a store's provenance cites it (build_store --provenance): its
+// model (the worker's) and reviewer model, the login that ran it, and its
+// window, from the run's start to its harvest (ISO 8601 UTC).
+export interface AtlasRun {
+  run_id: string;
+  mode: string;
+  model: string;
+  model_name: string;
+  reviewer_model: string;
+  reviewer_model_name: string;
+  operator: string;
+  started: string;
+  harvested: string;
+  skill_commit: string;
+  sampling?: { seed?: number; sample_rate?: number; strong_sample_rate?: number; absence_sample_rate?: number };
+  // A challenge run in current.json: what it re-checked across the build, by the
+  // passages' prominence (build_store recheck_tallies).
+  rechecked?: RecheckTallies;
+}
+
+// [re-checked, of] per kind of record, for central (subject or central) passages and
+// supporting ones.
+export interface RecheckTallies {
+  central: { locations: [number, number]; absences: [number, number] };
+  supporting: { locations: [number, number]; absences: [number, number] };
+}
+
+// The side files a store merged (build_store apply_supplements), by kind.
+export interface AtlasSupplements {
+  // `passages` got their full text; `shown` is how many of those have a status, the ones a page
+  // shows (absent from stores built before it).
+  passage_text?: { schema: string; sha256: string; passages?: number; shown?: number };
+  signatures?: {
+    schema: string; sha256: string; corpus_sha256: string; corpus_built: string; universe: string;
+    locations?: number; declarations?: number;
+  };
+  provenance?: { schema: string; sha256: string };
+  reader_html?: { schema: string; sha256: string; articles?: number; passages?: number; marks?: number };
+  audit_summary?: { schema: string; sha256: string };
+}
+
+// Optional (build_store --audit-summary): what an audit of the build's links measured, in
+// every article and in current.json. The run that judged a sample of `items` items, whether it
+// was blind and whether it was independent of the runs it judged, and each figure as an
+// estimate: the share judged right with its 95% interval, from `drawn` items standing for
+// `population`, weighed by `weights` (null: unweighted) to an effective sample of `n_eff`.
+export interface AtlasAudit {
+  run_id: string;
+  operator: string;
+  started: string;
+  ended: string;
+  models: Array<{ model: string; model_name: string }>;
+  blind: boolean;
+  independent: boolean;
+  items: number;
+  figures: AuditFigure[];
+}
+
+export interface AuditFigure {
+  id: string;
+  label: string;
+  share: number;
+  ci95: [number, number];
+  weights: string | null;
+  n_eff: number;
+  drawn: number;
+  population: number;
+}
+
+// Optional (build_store --reader-html): the article's pinned revision, sanitised, with
+// every placed passage's text wrapped in <mark class="atl" data-p="<item hex>"
+// data-status="<status>">, stored as reader/<pageid>.html. The builder checked that its
+// text is the revision's layer and each passage's marks its span; `sha256` is of the
+// file's UTF-8 bytes, which the page checks before it serves them. `unplaced` lists the
+// passage ids the file leaves unmarked, and `images` the files it shows (Wikimedia Commons or
+// English Wikipedia uploads), each with its licence's name, the licence's own page where it has
+// one, and its author as its file page credits them (null where its licence asks for none), which
+// the page lists for attribution. Absent: the page is the card list alone.
+export interface AtlasReaderInfo {
+  sha256: string;
+  bytes: number;
+  marks: number;
+  passages: number;
+  unplaced: string[];
+  images?: Array<{ file: string; project: string; licence: string | null; licence_url?: string | null; author?: string | null }>;
 }
 
 export interface AtlasPassage {
   id: string;
   item: string;
+  // A /2 store's revision-free passage key (build_store); absent from /1 stores.
+  passage_key?: string;
   kind: string;
   // The passage's heading path ([] in the lead) and prominence
   // (subject | central | supporting): every record of the agreed format carries
@@ -111,7 +213,19 @@ export interface AtlasPassage {
     challenge: string;
   } | null;
   unresolved: { challenge: string } | null;
+  // Optional (build_store --passage-text): the passage in full, the layer slice
+  // its record's span_sha256 hashes (`layer`) and the same text as segments the
+  // page renders, formulas from their TeX. Absent: the page shows the quote.
+  text?: {
+    layer: string; segments: PassageSegment[];
+    // The rest of the sentence around a passage that is only part of one (and, for a
+    // list item or a lower-case fragment, the sentence that leads into it), from the
+    // same local copy of the revision (build_store passage_text_entry).
+    before?: PassageContext; after?: PassageContext;
+  } | null;
 }
+
+export interface PassageContext { layer: string; segments: PassageSegment[]; trimmed?: boolean; lead_in?: boolean }
 
 export interface AtlasCoverage {
   complete: boolean;
@@ -119,6 +233,11 @@ export interface AtlasCoverage {
   challenge: string;
   status: string | null;
   basis: boolean;
+  // A /2 store's bundle: its relation (its weakest part's), its conjuncts beside
+  // the part (location key) stating each, and its key. Absent from /1 stores.
+  relation?: string;
+  conjuncts?: Array<{ id: string; text: string; part: string }>;
+  bundle_key?: string;
 }
 
 // One prominence's passages and their statuses (build_store._prominence_counts).
@@ -149,6 +268,22 @@ export interface AtlasArticle {
   universe: { id: string; sha256: string; frozen: string; libraries: number };
   record_set: string;
   records_sha256: string;
+  // The licences of what the view holds (build_store MAPPING_LICENCE): the text it quotes is
+  // under `text`, its records' subject licence (an SPDX id, null for an article with no
+  // records), and the mapping under `mapping`, CC0-1.0. Absent from stores built before it.
+  licence?: { text: string | null; mapping: string } | null;
+  // A /2 store's seal summary (build_store.seal_summary), which the page's
+  // Details cite; absent from /1 stores. The seal records no model or operator.
+  seal?: { set_id: string; schema: string; status_rule: number; created: string; skill_commit: string } | null;
+  // Optional (build_store --provenance): the runs that made this article's
+  // records, which the Details folds cite by model, operator and date, and the
+  // inventory run that chose its passages, when the locate run names one.
+  provenance?: { locate: AtlasRun; challenge: AtlasRun | null; inventory?: AtlasRun | null } | null;
+  supplements?: AtlasSupplements | null;
+  // Optional (build_store --reader-html): the article itself, marked (AtlasReaderInfo).
+  reader?: AtlasReaderInfo | null;
+  // Optional (build_store --audit-summary): what an audit of the build measured (AtlasAudit).
+  audit?: AtlasAudit | null;
   summary: {
     passages: number;
     // Locations exclude relatedMatch declarations, which are counted in `related`.
@@ -179,8 +314,16 @@ export interface AtlasCurrent {
   campaign: string;
   built_at: string;
   universe: { id: string; sha256: string; frozen: string; libraries: number };
-  // set_id and byte_budget (0 = the export had none) come from SEAL.json.
-  record_set: { seal_sha256: string; set_id?: string; created: string; skill_commit: string; byte_budget?: number };
+  // set_id and byte_budget (0 = the export had none) come from SEAL.json; a /2
+  // store adds the seal's schema and status_rule.
+  record_set: AtlasRecordSet;
+  // A build of several record sets lists each (build_store --record-set ... --campaign).
+  record_sets?: Array<AtlasRecordSet & { campaign: string }>;
+  // Optional (build_store --provenance and the other side files): every run the
+  // build's articles cite, and what was merged, with counts.
+  provenance?: { runs: AtlasRun[] } | null;
+  supplements?: AtlasSupplements | null;
+  audit?: AtlasAudit | null;
   counts: {
     articles: number;
     passages: number;
@@ -193,6 +336,16 @@ export interface AtlasCurrent {
     by_importance: Record<string, { articles: number; passages: number; by_status: Record<SummaryStatus, number> }>;
   };
   index: { hex: number; shards: string[]; entries: number };
+}
+
+export interface AtlasRecordSet {
+  seal_sha256: string;
+  set_id?: string;
+  created: string;
+  skill_commit: string;
+  byte_budget?: number;
+  schema?: string;
+  status_rule?: number;
 }
 
 export interface IndexEntry {
@@ -253,7 +406,7 @@ export function memoryReader(files: ReadonlyMap<string, string> | Record<string,
   return { text: async (key: string) => map.get(ATLAS_PREFIX + key) ?? null };
 }
 
-// One reader per bound bucket object, so the index-shard cache below survives
+// One reader per bound bucket object, so the store-object cache below survives
 // across the requests an isolate serves with that binding. (Were the runtime to
 // hand each request a fresh binding object, the cache would simply miss.)
 const READERS = new WeakMap<object, AtlasReader>();
@@ -268,16 +421,64 @@ export function atlasReader(env: Env): AtlasReader | null {
   return reader;
 }
 
-class AtlasStoreError extends Error {}
+export class AtlasStoreError extends Error {}
 
-async function readJson<T extends { schema: string }>(reader: AtlasReader, key: string, schema: string): Promise<T | null> {
-  const text = await reader.text(key);
-  if (text === null) return null;
-  const value = JSON.parse(text) as T;
+function parseJson<T extends { schema: string }>(text: string, key: string, schema: string): T {
+  let value: T;
+  try {
+    value = JSON.parse(text) as T;
+  } catch {
+    throw new AtlasStoreError(`atlas store object ${key} is not JSON`);
+  }
   if (!value || typeof value !== "object" || value.schema !== schema) {
     throw new AtlasStoreError(`atlas store object ${key} is not ${schema}`);
   }
   return value;
+}
+
+async function readJson<T extends { schema: string }>(reader: AtlasReader, key: string, schema: string): Promise<T | null> {
+  const text = await reader.text(key);
+  return text === null ? null : parseJson<T>(text, key, schema);
+}
+
+// The store's small objects (current.json, a universe, an index shard), per reader, for
+// INDEX_CACHE_MS: each read is kept with its text, which the JSON routes serve as stored, and its
+// parsed value, null for a missing object. Without it every anonymous view would re-read them from
+// R2 (review finding: about 18 Class-B reads and several MB of parsing per dashboard view, and one
+// read per request on the JSON routes). Only settled values are kept, never a pending promise,
+// since a Worker must not await another request's I/O, and never a failed read (R2 answered with
+// an error, which the next request tries again). An object that was read but does not parse is
+// kept as that failure, which every request in the minute re-throws: the dashboard and the
+// universe page take no read budget, so a damaged object must not cost one R2 read per request.
+// A newly published store, a withdrawn one (current.json deleted) or a repaired object shows
+// within a minute, the staleness /api/atlas/current already allows (max-age=60).
+export const INDEX_CACHE_MS = 60_000;
+interface CachedObject<T> { at: number; text: string | null; value: T | null; failure?: unknown }
+const OBJECT_CACHE = new WeakMap<AtlasReader, Map<string, CachedObject<unknown>>>();
+
+async function cachedObject<T>(reader: AtlasReader, key: string, parse: (text: string) => T, now: number): Promise<CachedObject<T>> {
+  // Created and registered before any await: concurrent loads of one request must share one
+  // map, or the last to finish would drop the others.
+  let cache = OBJECT_CACHE.get(reader);
+  if (!cache) {
+    cache = new Map();
+    OBJECT_CACHE.set(reader, cache);
+  }
+  const hit = cache.get(key) as CachedObject<T> | undefined;
+  if (hit && now - hit.at >= 0 && now - hit.at < INDEX_CACHE_MS) {
+    if ("failure" in hit) throw hit.failure;
+    return hit;
+  }
+  const text = await reader.text(key);
+  let entry: CachedObject<T>;
+  try {
+    entry = { at: now, text, value: text === null ? null : parse(text) };
+  } catch (failure) {
+    cache.set(key, { at: now, text: null, value: null, failure });
+    throw failure;
+  }
+  cache.set(key, entry);
+  return entry;
 }
 
 const PAGEID_RE = /^[1-9][0-9]{0,9}$/;
@@ -291,43 +492,56 @@ export function parsePageid(raw: string | undefined): number | null {
   return value <= 2 ** 31 ? value : null;
 }
 
-export const loadCurrent = (reader: AtlasReader) => readJson<AtlasCurrent>(reader, "current.json", CURRENT_SCHEMA);
+// current.json is the store's publish switch: every atlas route but the feedback export, and the
+// article box, answer as if the store held nothing until it is there, and again within a minute
+// of its deletion (docs/ATLAS.md, "Publishing"), whatever other objects the bucket still holds.
+const loadCurrentObject = (reader: AtlasReader, now = Date.now()) =>
+  cachedObject(reader, "current.json", (text) => parseJson<AtlasCurrent>(text, "current.json", CURRENT_SCHEMA), now);
+export const loadCurrent = async (reader: AtlasReader, now = Date.now()) => (await loadCurrentObject(reader, now)).value;
 export const loadArticle = (reader: AtlasReader, pageid: number) =>
   readJson<AtlasArticle>(reader, `articles/${pageid}.json`, ARTICLE_SCHEMA);
-export const loadUniverse = (reader: AtlasReader, sha: string) =>
-  SHA_RE.test(sha) ? readJson<AtlasUniverse>(reader, `universes/${sha}.json`, UNIVERSE_SCHEMA) : Promise.resolve(null);
+const loadUniverseObject = (reader: AtlasReader, sha: string, now = Date.now()) =>
+  cachedObject(reader, `universes/${sha}.json`,
+    (text) => parseJson<AtlasUniverse>(text, `universes/${sha}.json`, UNIVERSE_SCHEMA), now);
+export const loadUniverse = async (reader: AtlasReader, sha: string, now = Date.now()) =>
+  SHA_RE.test(sha) ? (await loadUniverseObject(reader, sha, now)).value : null;
 
-// Parsed index shards, per reader, for INDEX_CACHE_MS. The dashboard reads
-// every shard and each article page one, so without this every anonymous view
-// re-reads and re-parses them from R2 (review finding: about 18 Class-B reads
-// and several MB of parsing per dashboard view). Only settled values are kept,
-// never a pending promise, since a Worker must not await another request's
-// I/O. A newly published store shows up within a minute, the staleness
-// /api/atlas/current already allows (max-age=60).
-export const INDEX_CACHE_MS = 60_000;
-const SHARD_CACHE = new WeakMap<AtlasReader, Map<string, { at: number; entries: IndexEntry[] | null }>>();
+// Whether the article's view names a marked revision (build_store --reader-html): a sha256
+// of 64 hex and a valid page id. The card list needs no more to offer the reader.
+export function readerNamed(article: AtlasArticle): boolean {
+  const info = article.reader;
+  return !!info && typeof info === "object" && typeof info.sha256 === "string" && SHA_RE.test(info.sha256)
+    && parsePageid(String(article.pageid)) !== null;
+}
+
+// The article's marked revision, or null: when the view names none, when the file is
+// missing, or when its bytes are not the ones the view names (a store written in part). The
+// path is built from the page id, never read from the store.
+export async function loadReaderHtml(reader: AtlasReader, article: AtlasArticle): Promise<string | null> {
+  if (!readerNamed(article)) return null;
+  const info = article.reader as AtlasReaderInfo;
+  const pageid = parsePageid(String(article.pageid)) as number;
+  const html = await reader.text(`reader/${pageid}.html`);
+  if (html === null) return null;
+  if ((await sha256Hex(html)) !== info.sha256) {
+    console.log(JSON.stringify({ event: "atlas-reader-mismatch", pageid }));
+    return null;
+  }
+  return html;
+}
+
+// Parsed index shards, in the store-object cache (INDEX_CACHE_MS): the dashboard reads every
+// shard and each article box one, and /api/atlas/index/:shard serves a shard's text from there.
+const loadIndexShardObject = (reader: AtlasReader, shard: string, now = Date.now()) =>
+  cachedObject(reader, `index/${shard}.json`, (text) => parseIndexShard(text, shard), now);
 
 export async function loadIndexShard(reader: AtlasReader, shard: string, now = Date.now()): Promise<IndexEntry[] | null> {
   if (!SHARD_RE.test(shard)) return null;
-  // Created and registered before any await: concurrent shard loads of one
-  // request must share one map, or the last to finish would drop the others.
-  let cache = SHARD_CACHE.get(reader);
-  if (!cache) {
-    cache = new Map();
-    SHARD_CACHE.set(reader, cache);
-  }
-  const hit = cache.get(shard);
-  if (hit && now - hit.at >= 0 && now - hit.at < INDEX_CACHE_MS) return hit.entries;
-  const entries = await parseIndexShard(reader, shard);
-  cache.set(shard, { at: now, entries });
-  return entries;
+  return (await loadIndexShardObject(reader, shard, now)).value;
 }
 
-async function parseIndexShard(reader: AtlasReader, shard: string): Promise<IndexEntry[] | null> {
-  const raw = await readJson<{ schema: string; fields: string[]; articles: unknown[][] }>(
-    reader, `index/${shard}.json`, INDEX_SCHEMA,
-  );
-  if (!raw) return null;
+function parseIndexShard(text: string, shard: string): IndexEntry[] {
+  const raw = parseJson<{ schema: string; fields: string[]; articles: unknown[][] }>(text, `index/${shard}.json`, INDEX_SCHEMA);
   if (!Array.isArray(raw.fields) || !Array.isArray(raw.articles)) {
     throw new AtlasStoreError(`atlas index shard ${shard} lacks fields/articles`);
   }
@@ -397,11 +611,13 @@ export function atlasHref(pageid: number, title: string): string {
 }
 
 // The article page's compact summary box (pages.ts injectAtlasSummary). Never
-// throws: an unbound, empty or broken store simply means no box.
+// throws: an unbound, unpublished (no current.json), empty or broken store
+// simply means no box.
 export async function atlasSummaryFor(env: Env, wikipediaTitle: string): Promise<IndexEntry | null> {
   const reader = atlasReader(env);
   if (!reader) return null;
   try {
+    if (!(await loadCurrent(reader))) return null;
     return await lookupTitle(reader, wikipediaTitle);
   } catch (error) {
     console.log(JSON.stringify({ event: "atlas-box-error", msg: String(error) }));
@@ -412,15 +628,67 @@ export async function atlasSummaryFor(env: Env, wikipediaTitle: string): Promise
 // ---- responses -------------------------------------------------------------
 
 export const NOT_CONFIGURED = "atlas store not configured";
+export const NOT_PUBLISHED = "atlas store has no published build";
+export const STORE_UNREADABLE = "an atlas store object could not be read";
 const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "public, max-age=300" };
+
+// Every atlas page is the atlas shell (atlas-render.ts), and every one enforces the
+// atlas's own policy, security.ts atlasCsp, for the page's own origin; the security
+// middleware lists the framing ban beside it. Every HTML answer below goes through here.
+function atlasHtml(c: Ctx, html: string, status: ContentfulStatusCode = 200, headers: Record<string, string> = {}): Response {
+  return c.html(html, status, { ...headers, "Content-Security-Policy": atlasCsp(new URL(c.req.url).origin) });
+}
 
 function notConfiguredJson(c: Ctx, error = NOT_CONFIGURED): Response {
   return c.json({ ok: false, error }, 503, { "Cache-Control": "no-store" });
 }
 
+const UNAVAILABLE_DETAIL: Record<string, string> = {
+  [NOT_CONFIGURED]: "This deployment has no atlas store bound (docs/ATLAS.md, “Store”).",
+  [NOT_PUBLISHED]: "The atlas store holds no published build (docs/ATLAS.md, “Publishing”).",
+  [STORE_UNREADABLE]: "Try again shortly.",
+};
+
 function notConfiguredHtml(c: Ctx, error = NOT_CONFIGURED): Response {
-  return c.html(atlasMessagePage("Atlas unavailable", `The formalization atlas is unavailable: ${error}.`,
-    "This deployment has no atlas store bound (docs/ATLAS.md, “Store”)."), 503, { "Cache-Control": "no-store" });
+  return atlasHtml(c, atlasMessagePage("Atlas unavailable", `The formalization atlas is unavailable: ${error}.`,
+    UNAVAILABLE_DETAIL[error] ?? ""), 503, { "Cache-Control": "no-store" });
+}
+
+// A store object that does not parse, or does not have the shape the pages read (a truncated
+// upload, a damaged object): the atlas's own 503 page or JSON, never the site's generic 500, and
+// the error goes only to the log. That includes a string no URL can carry (a lone surrogate, which
+// JSON can hold and encodeURIComponent refuses with a URIError) and a value out of every range the
+// pages read (a RangeError). Anything else is a bug and propagates.
+function isStoreError(error: unknown): boolean {
+  return error instanceof AtlasStoreError || error instanceof SyntaxError || error instanceof TypeError
+    || error instanceof URIError || error instanceof RangeError;
+}
+
+async function storeGuard(c: Ctx, json: boolean, where: Record<string, unknown>, run: () => Promise<Response>): Promise<Response> {
+  try {
+    return await run();
+  } catch (error) {
+    if (!isStoreError(error)) throw error;
+    console.log(JSON.stringify({ event: "atlas-store-error", ...where, msg: String(error) }));
+    return json ? notConfiguredJson(c, STORE_UNREADABLE) : notConfiguredHtml(c, STORE_UNREADABLE);
+  }
+}
+
+// One store read of a route that also writes D1 (feedback): a store error is the atlas's 503
+// JSON, and anything the route does besides is left to the site's error handler.
+async function storeRead<T>(c: Ctx, read: () => Promise<T>): Promise<T | Response> {
+  try {
+    return await read();
+  } catch (error) {
+    if (!isStoreError(error)) throw error;
+    console.log(JSON.stringify({ event: "atlas-store-error", route: "feedback", msg: String(error) }));
+    return notConfiguredJson(c, STORE_UNREADABLE);
+  }
+}
+
+// A store list: anything but an array is empty (a store object is cast, not validated).
+function arrayOf<T>(value: T[] | null | undefined): T[] {
+  return Array.isArray(value) ? value : [];
 }
 
 // ---- feedback --------------------------------------------------------------
@@ -458,12 +726,45 @@ async function viewerVerdicts(env: Env, userId: string, pageid: number, campaign
   }
 }
 
-async function wikileanSlugFor(env: Env, title: string): Promise<string | null> {
+// The WikiLean article of an atlas article's Wikipedia title, for the page's
+// "Annotated article on WikiLean" link. Migration 0016 indexes
+// articles.wikipedia_title, so a lookup reads the matching rows (without it, the
+// whole table: the query is the same). Each isolate keeps what it read, a title with
+// no WikiLean article included, for SLUG_CACHE_MS, and at most MAX_SLUG_CACHE
+// titles (the one read longest ago goes first), so a page read again within a
+// minute costs no D1 read and a new WikiLean article gets its link within a
+// minute. The cache is per D1 binding object, as the store-object cache is per
+// reader; it keeps only settled values, never a pending query, and never an
+// error.
+export const SLUG_CACHE_MS = INDEX_CACHE_MS;
+export const MAX_SLUG_CACHE = 1024;
+const SLUG_CACHE = new WeakMap<object, Map<string, { at: number; slug: string | null }>>();
+
+export async function wikileanSlugFor(env: Pick<Env, "DB">, title: string, now = Date.now()): Promise<string | null> {
   const key = titleKey(title);
+  let cache = SLUG_CACHE.get(env.DB);
+  if (!cache) {
+    cache = new Map();
+    SLUG_CACHE.set(env.DB, cache);
+  }
+  // The map's order is the order of last use: a title read goes last, so a full
+  // cache drops the title read longest ago, never a page that is being read.
+  const hit = cache.get(key);
+  cache.delete(key);
+  if (hit && now - hit.at >= 0 && now - hit.at < SLUG_CACHE_MS) {
+    cache.set(key, hit);
+    return hit.slug;
+  }
   const { results } = await env.DB.prepare(
     "SELECT slug FROM articles WHERE wikipedia_title IN (?, ?) ORDER BY slug LIMIT 1",
   ).bind(key, key.replaceAll(" ", "_")).all<{ slug: string }>();
-  return results[0]?.slug ?? null;
+  const slug = results[0]?.slug ?? null;
+  cache.set(key, { at: now, slug });
+  for (const oldest of cache.keys()) {
+    if (cache.size <= MAX_SLUG_CACHE) break;
+    cache.delete(oldest);
+  }
+  return slug;
 }
 
 function foldForSearch(s: string): string {
@@ -483,78 +784,171 @@ function entryKeys(entry: IndexEntry): { key: string; folded: string } {
 
 const MAX_DASHBOARD_ROWS = 200;
 
-// A ?q= search scans every index entry, so it takes the anonymous read budget
-// /api/brain/* and /mcp use: per IP (an IPv6 /64), MCP_LIMITER when bound, else
-// BRAIN_API_LIMITER (120/min), under its own key prefix.
-async function searchAllowed(c: Ctx): Promise<boolean> {
+// The anonymous read budget /api/brain/* and /mcp use: per IP (an IPv6 client by
+// its /64, limiterIp), MCP_LIMITER when bound, else BRAIN_API_LIMITER (120/min),
+// under a key prefix of its own per use. A ?q= search scans every index entry
+// (atlas-q:<ip>). An article view reads its view model, its universe and its
+// marked revision from the store, hashes the revision and renders it, and its
+// two JSON views serve the view model and the records (atlas-read:<ip>, one
+// budget for the three). The small JSON objects (current.json, the published
+// universe, an index shard) share a budget of their own (atlas-meta:<ip>), so the
+// dashboard's live filter, which fetches every shard, never spends an article's.
+// The dashboard without a search and the universe page take none: they read only
+// those small objects, through the store-object cache, at most once a minute each,
+// whether an object parses or not (a damaged one is kept as its failure).
+type ReadBudget = "atlas-q" | "atlas-read" | "atlas-meta";
+async function readAllowed(c: Ctx, budget: ReadBudget): Promise<boolean> {
   const limiter = c.env.MCP_LIMITER ?? c.env.BRAIN_API_LIMITER;
   const ip = limiterIp(c.req.header("CF-Connecting-IP")) || "unknown";
-  const { success } = await limiter.limit({ key: `atlas-q:${ip}` });
+  const { success } = await limiter.limit({ key: `${budget}:${ip}` });
   return success;
+}
+
+// Over the budget: 429 with Retry-After (the limiters' period is 60 seconds),
+// never stored by a cache, and saying nothing of how the budget is kept.
+const RETRY_AFTER_SECONDS = 60;
+const LIMITED_HEADERS = { "Retry-After": String(RETRY_AFTER_SECONDS), "Cache-Control": "no-store" };
+
+function limitedJson(c: Ctx): Response {
+  return c.json({ ok: false, error: "too many atlas requests from this address; try again in a minute" }, 429, LIMITED_HEADERS);
+}
+
+function limitedHtml(c: Ctx, title: string, message: string, detail: string): Response {
+  return atlasHtml(c, atlasMessagePage(title, message, detail), 429, LIMITED_HEADERS);
+}
+
+// The index shards current.json names (the builder lists every shard it wrote), at most
+// MAX_INDEX_SHARDS: what the dashboard reads and /api/atlas/index serves.
+function publishedShards(current: AtlasCurrent): string[] {
+  return (Array.isArray(current.index?.shards) ? current.index.shards : [])
+    .filter((s) => typeof s === "string" && SHARD_RE.test(s)).slice(0, MAX_INDEX_SHARDS);
 }
 
 // ---- routes ----------------------------------------------------------------
 
+// Search engines are asked to index nothing of the atlas: a reader page copies a
+// whole pinned Wikipedia revision, a card list its passages, and the JSON views
+// the same text. Every answer under /atlas and /api/atlas carries X-Robots-Tag,
+// whatever its status (the site's 404 for a path the atlas does not route among
+// them), and every atlas page also says so in a robots meta tag (atlas-render.ts
+// shell). Links on the pages are still followed.
+export const ATLAS_ROBOTS = "noindex";
+export const ATLAS_ROBOTS_PATHS: readonly string[] = ["/atlas", "/atlas/*", "/api/atlas/*"];
+
 export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
-  // Store objects keep their builder's bytes; the API serves them as stored.
-  const serveText = async (c: Ctx, key: string, contentType: string, cache: string, missing: string) => {
+  // First, so it wraps every atlas route below.
+  for (const path of ATLAS_ROBOTS_PATHS) {
+    app.use(path, async (c, next) => {
+      await next();
+      try {
+        c.res.headers.set("X-Robots-Tag", ATLAS_ROBOTS);
+      } catch {
+        // Immutable headers (a Response passed through from a fetch): re-wrap.
+        c.res = new Response(c.res.body, c.res);
+        c.res.headers.set("X-Robots-Tag", ATLAS_ROBOTS);
+      }
+    });
+  }
+
+  // Store objects keep their builder's bytes; the API serves them as stored, once they are what the
+  // store says they are (an article view that parses as one, records whose sha256 is the one their
+  // view names), so a damaged or partly written object is the atlas's 503 with no-store
+  // (storeGuard), as the pages answer it, never a 200 that browsers and caches keep.
+  const serveStored = (c: Ctx, text: string, contentType: string) =>
+    c.body(text, 200, { "Content-Type": contentType, "Cache-Control": JSON_HEADERS["Cache-Control"] });
+  // A small object's text from the store-object cache.
+  const serveCached = (c: Ctx, text: string | null, cache: string, missing: string) =>
+    text === null ? c.json({ ok: false, error: missing }, 404)
+      : c.body(text, 200, { "Content-Type": JSON_HEADERS["Content-Type"], "Cache-Control": cache });
+
+  // current.json, the published universe and the published index shards, under the meta budget.
+  // Only what current.json names is served: another sha or shard is a 404 that reads nothing.
+  app.get("/api/atlas/current", (c) => storeGuard(c, true, { route: "current" }, async () => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredJson(c);
+    if (!(await readAllowed(c, "atlas-meta"))) return limitedJson(c);
+    const current = await loadCurrentObject(reader);
+    if (current.value === null) return notConfiguredJson(c, NOT_PUBLISHED);
+    return serveCached(c, current.text, "public, max-age=60", NOT_PUBLISHED);
+  }));
+
+  // The view model and the records take the article's read budget before any
+  // store read. The records route also reads the view, which names their sha256.
+  app.get("/api/atlas/article/:pageid", (c) => storeGuard(c, true, { route: "article" }, async () => {
+    const reader = atlasReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    if (!(await readAllowed(c, "atlas-read"))) return limitedJson(c);
+    if (!(await loadCurrent(reader))) return notConfiguredJson(c, NOT_PUBLISHED);
+    const pageid = parsePageid(c.req.param("pageid"));
+    if (pageid === null) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    const key = `articles/${pageid}.json`;
     const text = await reader.text(key);
-    if (text === null) return c.json({ ok: false, error: missing }, 404);
-    return c.body(text, 200, { "Content-Type": contentType, "Cache-Control": cache });
-  };
+    if (text === null) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    parseJson<AtlasArticle>(text, key, ARTICLE_SCHEMA);
+    return serveStored(c, text, JSON_HEADERS["Content-Type"]);
+  }));
 
-  app.get("/api/atlas/current", (c) =>
-    serveText(c, "current.json", JSON_HEADERS["Content-Type"], "public, max-age=60", "atlas store has no published build"));
-
-  app.get("/api/atlas/article/:pageid", (c) => {
+  app.get("/api/atlas/records/:pageid", (c) => storeGuard(c, true, { route: "records" }, async () => {
+    const reader = atlasReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    if (!(await readAllowed(c, "atlas-read"))) return limitedJson(c);
+    if (!(await loadCurrent(reader))) return notConfiguredJson(c, NOT_PUBLISHED);
     const pageid = parsePageid(c.req.param("pageid"));
-    if (!atlasReader(c.env)) return notConfiguredJson(c);
     if (pageid === null) return c.json({ ok: false, error: "unknown pageid" }, 404);
-    return serveText(c, `articles/${pageid}.json`, JSON_HEADERS["Content-Type"], JSON_HEADERS["Cache-Control"], "unknown pageid");
-  });
-
-  app.get("/api/atlas/records/:pageid", (c) => {
-    const pageid = parsePageid(c.req.param("pageid"));
-    if (!atlasReader(c.env)) return notConfiguredJson(c);
-    if (pageid === null) return c.json({ ok: false, error: "unknown pageid" }, 404);
-    return serveText(c, `records/${pageid}.jsonl`, "application/x-ndjson; charset=utf-8", JSON_HEADERS["Cache-Control"], "unknown pageid");
-  });
+    // The records are the ones the article's view names (records_sha256), or the store is damaged:
+    // missing, cut short, or uploaded ahead of their view.
+    const article = await loadArticle(reader, pageid);
+    if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    const text = await reader.text(`records/${pageid}.jsonl`);
+    if (text === null || (await sha256Hex(text)) !== article.records_sha256) {
+      throw new AtlasStoreError(`atlas records/${pageid}.jsonl is missing or not the records its view names`);
+    }
+    return serveStored(c, text, "application/x-ndjson; charset=utf-8");
+  }));
 
   // Not immutable: the key is the producer's universe_sha256, which covers the
   // libraries' ids, commits and index shas but not the metadata stored beside
   // them (display_name, roots, toolchain, licence, exclusions), so a later
-  // campaign on the same frozen universe may rewrite the object.
-  app.get("/api/atlas/universe/:sha", (c) => {
+  // campaign on the same frozen universe may rewrite the object. A store holds one
+  // universe, the one current.json names (the sets of a build share it).
+  app.get("/api/atlas/universe/:sha", (c) => storeGuard(c, true, { route: "universe" }, async () => {
+    const reader = atlasReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    if (!(await readAllowed(c, "atlas-meta"))) return limitedJson(c);
+    const current = await loadCurrent(reader);
+    if (!current) return notConfiguredJson(c, NOT_PUBLISHED);
     const sha = c.req.param("sha");
-    if (!atlasReader(c.env)) return notConfiguredJson(c);
-    if (!SHA_RE.test(sha)) return c.json({ ok: false, error: "unknown universe" }, 404);
-    return serveText(c, `universes/${sha}.json`, JSON_HEADERS["Content-Type"], JSON_HEADERS["Cache-Control"], "unknown universe");
-  });
+    if (!SHA_RE.test(sha) || sha !== current.universe?.sha256) return c.json({ ok: false, error: "unknown universe" }, 404);
+    return serveCached(c, (await loadUniverseObject(reader, sha)).text, JSON_HEADERS["Cache-Control"], "unknown universe");
+  }));
 
-  app.get("/api/atlas/index/:shard", (c) => {
+  app.get("/api/atlas/index/:shard", (c) => storeGuard(c, true, { route: "index" }, async () => {
+    const reader = atlasReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    if (!(await readAllowed(c, "atlas-meta"))) return limitedJson(c);
+    const current = await loadCurrent(reader);
+    if (!current) return notConfiguredJson(c, NOT_PUBLISHED);
     const shard = c.req.param("shard");
-    if (!atlasReader(c.env)) return notConfiguredJson(c);
-    if (!SHARD_RE.test(shard)) return c.json({ ok: false, error: "unknown shard" }, 404);
-    return serveText(c, `index/${shard}.json`, JSON_HEADERS["Content-Type"], JSON_HEADERS["Cache-Control"], "unknown shard");
-  });
+    if (!SHARD_RE.test(shard) || !publishedShards(current).includes(shard)) {
+      return c.json({ ok: false, error: "unknown shard" }, 404);
+    }
+    return serveCached(c, (await loadIndexShardObject(reader, shard)).text, JSON_HEADERS["Cache-Control"], "unknown shard");
+  }));
 
   // ---- pages ----
 
-  app.get("/atlas", async (c) => {
+  app.get("/atlas", (c) => storeGuard(c, false, { route: "dashboard" }, async () => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredHtml(c);
     const current = await loadCurrent(reader);
-    if (!current) return notConfiguredHtml(c, "atlas store has no published build");
+    if (!current) return notConfiguredHtml(c, NOT_PUBLISHED);
     const q = (c.req.query("q") ?? "").trim().slice(0, 200);
-    if (q && !(await searchAllowed(c))) {
-      return c.html(atlasMessagePage("Too many searches", "Too many atlas searches from this address in a minute.",
-        "Try again shortly, or browse the list without a search."), 429, { "Retry-After": "60" });
+    if (q && !(await readAllowed(c, "atlas-q"))) {
+      return limitedHtml(c, "Too many searches", "Too many atlas searches from this address in a minute.",
+        "Try again shortly, or browse the list without a search.");
     }
     const universe = await loadUniverse(reader, current.universe.sha256);
-    const shards = (Array.isArray(current.index?.shards) ? current.index.shards : [])
-      .filter((s) => typeof s === "string" && SHARD_RE.test(s)).slice(0, MAX_INDEX_SHARDS);
+    const shards = publishedShards(current);
     const loaded = await Promise.all(shards.map((s) => loadIndexShard(reader, s)));
     let rows: IndexEntry[] = loaded.flatMap((entries) => entries ?? []);
     const total = rows.length;
@@ -566,38 +960,55 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
     keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : a.row.pageid - b.row.pageid));
     const shown: DashboardRow[] = keyed.slice(0, MAX_DASHBOARD_ROWS)
       .map(({ row }) => ({ ...row, href: atlasHref(row.pageid, row.title) }));
-    return c.html(atlasDashboardPage({ current, universe, q, rows: shown, matched: keyed.length, total, shards }));
-  });
+    return atlasHtml(c, atlasDashboardPage({ current, universe, q, rows: shown, matched: keyed.length, total, shards }));
+  }));
 
-  app.get("/atlas/universe/:sha", async (c) => {
+  app.get("/atlas/universe/:sha", (c) => storeGuard(c, false, { route: "universe-page" }, async () => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredHtml(c);
-    const universe = await loadUniverse(reader, c.req.param("sha"));
+    const current = await loadCurrent(reader);
+    if (!current) return notConfiguredHtml(c, NOT_PUBLISHED);
+    const sha = c.req.param("sha");
+    const universe = sha === current.universe?.sha256 ? await loadUniverse(reader, sha) : null;
     if (!universe) {
-      return c.html(atlasMessagePage("Unknown universe", "No atlas universe has that sha256.", ""), 404);
+      return atlasHtml(c, atlasMessagePage("Unknown universe", "No atlas universe has that sha256.", ""), 404);
     }
-    return c.html(atlasUniversePage(universe));
-  });
+    return atlasHtml(c, atlasUniversePage(universe));
+  }));
 
-  const articlePage = async (c: Ctx) => {
+  // An article view takes the read budget before it reads the store or D1.
+  const articlePage = (c: Ctx) => storeGuard(c, false, { route: "article-page", pageid: c.req.param("pageid") }, async () => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredHtml(c);
+    if (!(await readAllowed(c, "atlas-read"))) {
+      return limitedHtml(c, "Too many requests", "Too many atlas pages from this address in a minute.",
+        "Try again shortly.");
+    }
+    if (!(await loadCurrent(reader))) return notConfiguredHtml(c, NOT_PUBLISHED);
     const pageid = parsePageid(c.req.param("pageid"));
     const article = pageid === null ? null : await loadArticle(reader, pageid);
     if (!article) {
-      return c.html(atlasMessagePage("No atlas entry",
+      return atlasHtml(c, atlasMessagePage("No atlas entry",
         `The atlas has no entry for Wikipedia page id ${pageid === null ? "(invalid)" : pageid}.`,
-        "Only articles the locate pipeline has processed appear here."), 404);
+        "Only articles a locate run has processed appear here."), 404);
     }
     const universe = await loadUniverse(reader, article.universe.sha256);
     const viewer = await getUser(c);
     const user = viewer && viewer.role !== "bot" ? viewer : null;
     const verdicts = user ? await viewerVerdicts(c.env, user.id, article.pageid, article.campaign) : new Map<string, string>();
     const wikileanSlug = await wikileanSlugFor(c.env, article.title);
-    return c.html(atlasArticlePage({
-      article, universe, user, verdicts, wikileanSlug, selfHref: atlasHref(article.pageid, article.title),
-    }));
-  };
+    const selfHref = atlasHref(article.pageid, article.title);
+    // With the store's marked revision (--reader-html) the page is the article itself, its
+    // passages highlighted, and ?view=cards the card list; without it, the card list alone. The
+    // card list reads no revision: it offers the switch when the view names one, and the reader
+    // checks the bytes before it serves them (and is the card list when they are not the ones named).
+    const cards = c.req.query("view") === "cards";
+    const html = cards ? null : await loadReaderHtml(reader, article);
+    const readerHref = (cards ? readerNamed(article) : html !== null) ? selfHref : null;
+    const input = { article, universe, user, verdicts, wikileanSlug, selfHref, readerHref };
+    if (html !== null) return atlasHtml(c, atlasReaderPage({ ...input, html }));
+    return atlasHtml(c, atlasArticlePage(input));
+  });
   app.get("/atlas/:pageid{[0-9]+}", articlePage);
   app.get("/atlas/:pageid{[0-9]+}/:slug", articlePage);
 
@@ -607,12 +1018,16 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
   // pipeline bearer is refused: these rows are human labels), same-origin
   // (checkOrigin), rate limited per user, byte-capped after those checks
   // (readJsonCapped, MAX_JSON_BODY_BYTES.atlasFeedback: 413 past it), and checked
-  // against the current store so a key that is not on the page cannot be stored.
+  // against the current store so a key that is not on the page cannot be stored
+  // (503 while the store has no published build, as every atlas route answers).
   // Append-only: one row per verdict, never updated. What the person judged
   // (revision, campaign, record set, relation, pair key) is copied from the store.
   app.post("/api/atlas/feedback", async (c) => {
     const reader = atlasReader(c.env);
     if (!reader) return notConfiguredJson(c);
+    const published = await storeRead(c, () => loadCurrent(reader));
+    if (published instanceof Response) return published;
+    if (!published) return notConfiguredJson(c, NOT_PUBLISHED);
     const originErr = checkOrigin(c);
     if (originErr) return originErr;
     const user = await getUser(c);
@@ -641,12 +1056,14 @@ export function registerAtlasRoutes(app: Hono<{ Bindings: Env }>): void {
       note = body.note.trim() || null;
     }
 
-    const article = await loadArticle(reader, pageid);
+    const article = await storeRead(c, () => loadArticle(reader, pageid));
+    if (article instanceof Response) return article;
     if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
     if (article.campaign !== campaign) {
       return c.json({ ok: false, error: "stale: the atlas changed since this page loaded", campaign: article.campaign }, 409);
     }
-    const location = article.passages.flatMap((p) => p.locations).find((loc) => loc.location_key === key);
+    const location = arrayOf(article.passages).flatMap((p) => arrayOf(p?.locations))
+      .find((loc) => loc && typeof loc === "object" && loc.location_key === key);
     if (!location) return c.json({ ok: false, error: "unknown location_key" }, 404);
 
     const now = Date.now();

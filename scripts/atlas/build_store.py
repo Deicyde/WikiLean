@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build WikiLean's read-only formalization-atlas store from one sealed locate record set.
+"""Build WikiLean's read-only formalization-atlas store from one or more sealed locate record sets.
 
 New code. Design and contracts: docs/ATLAS.md. The input is the sealed record set
 the formal-companion skill's locate pipeline exports, in exactly the record-set
@@ -15,17 +15,43 @@ through the optional ATLAS binding (wiki/src/atlas.ts):
     <out>/atlas/v1/articles/<pageid>.json       one article's view model
     <out>/atlas/v1/records/<pageid>.jsonl       that article's Literature Links records, verbatim
     <out>/atlas/v1/index/<shard>.json           title -> page id + summary, hash-sharded
+    <out>/atlas/v1/reader/<pageid>.html         optional (--reader-html): the revision, its passages marked
 
-Usage (Python 3.12, standard library plus the CI's pinned jsonschema, through
-site/native_annotations.py):
+Usage (CPython 3.12.13 or a later 3.12, standard library plus the CI's pinned jsonschema, through
+site/native_annotations.py; any other interpreter is refused, exit 3, because the reader's checks
+rely on that html.parser):
 
     python3 scripts/atlas/build_store.py --record-set <set-dir> --out <store-dir>
     python3 scripts/atlas/build_store.py --record-set <set-dir> --out <store-dir> --check
     python3 scripts/atlas/build_store.py --record-set <set-dir> --out <store-dir> --replace
+    python3 scripts/atlas/build_store.py --record-set <set-a> --record-set <set-b> \
+        --campaign <campaign-id> --out <store-dir>
+    python3 scripts/atlas/build_store.py --record-set <set-dir> --out <store-dir> \
+        [--passage-text <file>] [--signatures <file>] [--provenance <file>] [--reader-html <file>] \
+        [--audit-summary <file>]
 
-The build is a pure function of the record set's bytes (and of --built-at, which
-defaults to SEAL.json's `created`), so --check rebuilds in memory and compares
-byte for byte. Exit codes: 0 success, 1 --check found differences, 2 the record
+A set is cf-locate-recordset/1, or cf-locate-recordset/2 (formal-companion
+references/locate-documents.md §6, "The record set of status rule 2"): /1 plus SEAL.json's
+status_rule (2 or 3), the revision-free passage_key and pair_key on its records and the
+coverage claim as a bundle, each recomputed here, with every status derived by the seal's
+rule. A /1 set builds byte for byte as before. Several sets that share a universe,
+sourceset, producer commit, schema and status rule, and no page, build into one store
+(combined_sets): each article keeps its own seal's campaign and record set.
+
+Five optional side files (apply_supplements) add what a record set does not hold, each checked
+against the records it describes: a passage's full text (its span's layer slice, by its
+span_sha256), a card's Lean signature (by library, commit and declaration, from a corpus of the
+store's universe), the models, operator and dates of the runs that made each set and of the
+inventory run that chose its passages, each article's pinned revision with its passages marked
+(its text the records' layer, each passage's marks its span; attach_reader_html) with each image
+it shows credited as its licence asks, and what an audit of the build's links estimated, each
+figure a share with its interval (by the seal sha256 of each record set it read; audit_view).
+Without them the store is byte for byte what it was before they existed.
+
+The build is a pure function of the record set's bytes, of the side files given and of
+--built-at (which defaults to SEAL.json's `created`, the latest one's for several sets, so a
+dashboard then dates the export, not a build), so --check rebuilds in memory and
+compares byte for byte. Exit codes: 0 success, 1 --check found differences, 2 the record
 set was refused, 3 the builder itself failed (a bug; the store is untouched). Nothing here touches the network, D1 or any Worker binding;
 uploading the tree is a separate operator action (docs/ATLAS.md, "Publishing").
 """
@@ -40,19 +66,38 @@ import shutil
 import sys
 import tempfile
 import unicodedata
+from bisect import bisect_right
 from collections import Counter
 from dataclasses import dataclass, field
+from datetime import datetime
+from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from typing import Any
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qs, unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
 VENDOR = ROOT / "wiki" / "src" / "vendor" / "literature-links"
 
 LOCATE = "org.mathlib-initiative.formal-companion.locate"
 SEAL_SCHEMA = "cf-locate-recordset/1"
+# The record set of status rules 2 and 3 (formal-companion references/locate-documents.md §6,
+# "The record set of status rule 2"; scripts/locate/export.py SEAL_SCHEMA_BUNDLE): /1's shapes
+# plus the revision-free passage_key on every record, a location record's pair_key, a coverage
+# claim as its bundle, and SEAL.json's status_rule. Status rule 3 (R-BROAD) exports the same
+# shapes; only the statuses its records carry were derived by the later rule.
+SEAL_SCHEMA_BUNDLE = "cf-locate-recordset/2"
+# The derivation a record set's statuses were derived by (cflib.vocab STATUS_RULE_D1,
+# STATUS_RULE_BUNDLE, STATUS_RULE_BROAD): 1 is every /1 set; a /2 set's seal names 2 or 3.
+STATUS_RULE_D1 = 1
+STATUS_RULE_BUNDLE = 2
+STATUS_RULE_BROAD = 3
+BUNDLE_STATUS_RULES = (STATUS_RULE_BUNDLE, STATUS_RULE_BROAD)
 STORE_PREFIX = "atlas/v1"
 ARTICLE_SCHEMA = "wikilean.atlas.article/1"
+# The mapping (which passage is formalized where) is WikiLean's, released under CC0 like its
+# annotations; the text it quotes is its source's, under the licence each record's subject end
+# names. Each article view states both (`licence`), so its JSON says which is which.
+MAPPING_LICENCE = "CC0-1.0"
 CURRENT_SCHEMA = "wikilean.atlas.current/1"
 UNIVERSE_SCHEMA = "wikilean.atlas.universe/1"
 INDEX_SCHEMA = "wikilean.atlas.index/1"
@@ -97,6 +142,18 @@ DATA_MATCH_RELATIONS = frozenset({"exactMatch", "closeMatch"})
 # challenge}, on every record of the passage or on none; it counts only once it survived its
 # challenge, and a claim the challenger refutes is removed, its parts staying hasPart.
 COVERAGE_KEYS = ("complete", "parts", "challenge")
+# Under /2 the claim is a bundle (records.bundle_ext, cflib.vocab COVERAGE_RECORD_KEYS_BUNDLE):
+# the three keys, the bundle's relation (its weakest part's, one of BUNDLE_RELATIONS), its
+# conjuncts [{id, text, part}] (MIN_CONJUNCTS..MAX_CONJUNCTS, ids c1..cN in order, each beside
+# the one part stating it, every part stating at least one) and its bundle_key.
+COVERAGE_KEYS_BUNDLE = (*COVERAGE_KEYS, "relation", "conjuncts", "bundle_key")
+BUNDLE_RELATIONS = frozenset({"exactMatch", "closeMatch", "broadMatch"})
+CONJUNCT_KEYS = frozenset({"id", "text", "part"})
+MIN_CONJUNCTS = 2
+MAX_CONJUNCTS = 5
+# A cap on a conjunct's text, which the export holds to its free-text rule (the longest in
+# Tier A batch 1 is 198 characters); the builder only keeps an unbounded string off the page.
+MAX_CONJUNCT_CHARS = 1000
 COVERAGE_RELATION = "hasPart"
 MIN_COVERAGE_PARTS = 2
 COVERAGE_SURVIVED = "survived"
@@ -163,6 +220,9 @@ CAMPAIGN_RE = re.compile(rf"^(?:run:{RUN_ID}(?:\+{RUN_ID})?|(?!run:)[A-Za-z0-9][
 # universe.json, each library and each exclusion. Any other key is refused by name.
 SEAL_KEYS = ("schema", "set_id", "campaign", "universe", "sourceset", "skill_commit", "created",
              "byte_budget", "files")
+# A /2 seal: /1's keys and the status rule its records' statuses were derived by
+# (formal-companion scripts/locate/export.py SEAL_KEYS_BUNDLE).
+SEAL_KEYS_BUNDLE = (*SEAL_KEYS, "status_rule")
 SEAL_UNIVERSE_KEYS = ("id", "universe_sha256")
 SEAL_SOURCESET_KEYS = ("id", "manifest_sha256")
 UNIVERSE_KEYS = ("id", "universe_sha256", "frozen", "libraries", "excluded")
@@ -190,6 +250,11 @@ RECORD_EXT_KEYS = ("item", "universe", "universe_sha256", "challenge", "section"
 # there, because every part of a claim is a hasPart location of its own passage.
 RECORD_EXT_OPTIONAL = ("coverage",)
 SHAPE_EXT_KEYS = {"location": ("location_key", "rank", "confidence"), "absence": ("receipt",), "unresolved": ()}
+# Under /2 every record also carries its passage_key and a location record its pair_key
+# (formal-companion references/locate-documents.md §6); an absence or unresolved record has no pair.
+RECORD_EXT_KEYS_BUNDLE = (*RECORD_EXT_KEYS, "passage_key")
+SHAPE_EXT_KEYS_BUNDLE = {"location": (*SHAPE_EXT_KEYS["location"], "pair_key"), "absence": ("receipt",),
+                         "unresolved": ()}
 SHAPE_LEVELS = {"location": "a location record's locate extension", "absence": "an absence record's locate extension",
                 "unresolved": "an unresolved record's locate extension", None: "the record's locate extension"}
 RECEIPT_KEYS = ("sha256", "queries", "candidates")
@@ -225,6 +290,24 @@ DISPLAY_NAME_RE = re.compile(r"^[A-Za-z0-9 ,.()\u00b7/+:'&_-]{1,100}\Z")
 RENDERER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:/+-]{0,63}\Z")
 
 
+#: The interpreter the builder runs under. ReaderScan's tree and attribute rules were checked against
+#: the HTML5-aligned html.parser of CPython 3.12.13; an older one reads attributes by another grammar
+#: (3.9's takes "=+" between a name and its value), so the same checks could pass markup a browser
+#: reads differently. CI runs a later 3.12 (scripts/ci-python.sh asserts 3.12).
+REQUIRED_PYTHON = (3, 12, 13)
+
+
+def interpreter_problem(version: tuple[int, ...] | None = None, implementation: str | None = None) -> str | None:
+    """Why this interpreter may not build a store (None: it may): CPython 3.12, 3.12.13 or later."""
+    version = tuple(sys.version_info[:3]) if version is None else tuple(version[:3])
+    implementation = sys.implementation.name if implementation is None else implementation
+    if implementation == "cpython" and version[:2] == REQUIRED_PYTHON[:2] and version >= REQUIRED_PYTHON:
+        return None
+    need = ".".join(map(str, REQUIRED_PYTHON))
+    return (f"build_store needs CPython {need} or a later 3.12: ReaderScan relies on that html.parser "
+            f"(this is {implementation} {'.'.join(map(str, version))})")
+
+
 class AtlasError(Exception):
     """The record set breaks the input contract; the message names every problem found."""
 
@@ -238,6 +321,29 @@ class StatusRefused(ValueError):
 
 def sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def passage_key(pageid: int, span_sha256: str) -> str:
+    """A /2 record's revision-free passage key: sha256("<pageid>\\n<span_sha256>")
+    (formal-companion cflib.hashing.passage_key, restated in scripts/locate/records.py)."""
+    return sha256_hex(f"{pageid}\n{span_sha256}".encode("utf-8"))
+
+
+def pair_key(passage: str, repository: str, declaration: str) -> str:
+    """A /2 location's pair key: sha256("<passage_key>\\n<repository>\\n<declaration>"), the
+    repository the lean end's uri (cflib.hashing.pair_key)."""
+    return sha256_hex("\n".join([passage, repository, declaration]).encode("utf-8"))
+
+
+def bundle_key(passage: str, pair_keys: list[str]) -> str:
+    """A /2 bundle's key: the passage key and its parts' pair keys, sorted, one per line
+    (cflib.hashing.bundle_key)."""
+    return sha256_hex("\n".join([passage, *sorted(pair_keys)]).encode("utf-8"))
+
+
+def seal_status_rule(seal: dict) -> int:
+    """The status rule a sealed set's statuses were derived by: 1 for /1, the seal's under /2."""
+    return seal["status_rule"] if seal.get("schema") == SEAL_SCHEMA_BUNDLE else STATUS_RULE_D1
 
 
 def canonical(value: Any) -> bytes:
@@ -317,6 +423,17 @@ def is_https(uri: Any) -> bool:
     return isinstance(uri, str) and re.match(r"^https://[A-Za-z0-9.-]+(?::[0-9]+)?/\S*$", uri) is not None
 
 
+def utc_time(value: Any) -> datetime | None:
+    """An ISO 8601 UTC time (CREATED_RE) as a time, or None when it is not one (a 13th month, say).
+    Times are compared as times, never as strings: "02:00:00.5Z" is after "02:00:00Z"."""
+    if not (isinstance(value, str) and CREATED_RE.match(value)):
+        return None
+    try:
+        return datetime.fromisoformat(value)
+    except ValueError:
+        return None
+
+
 def is_repo_url(uri: Any) -> bool:
     """A repository URL the Worker can name and link: no dot segments, no query, no fragment."""
     return (isinstance(uri, str) and REPO_RE.match(uri) is not None
@@ -386,11 +503,18 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
         raise AtlasError(f"SEAL.json: not valid JSON ({exc})") from exc
     if not isinstance(seal, dict):
         raise AtlasError("SEAL.json: not an object")
-    for message in key_problems(seal, SEAL_KEYS):
+    # /1's keys exactly, or under /2 those and status_rule (a /1 seal naming one is refused by name).
+    bundled = seal.get("schema") == SEAL_SCHEMA_BUNDLE
+    for message in key_problems(seal, SEAL_KEYS_BUNDLE if bundled else SEAL_KEYS):
         problems.add("SEAL.json", message)
     # A missing key is reported once, above; the checks below judge the values present.
-    if "schema" in seal and seal["schema"] != SEAL_SCHEMA:
-        problems.add("SEAL.json", f"schema must be {SEAL_SCHEMA!r}")
+    if "schema" in seal and seal["schema"] not in (SEAL_SCHEMA, SEAL_SCHEMA_BUNDLE):
+        problems.add("SEAL.json", f"schema must be {SEAL_SCHEMA!r} (or {SEAL_SCHEMA_BUNDLE!r} with its status_rule)")
+    if bundled and "status_rule" in seal and (type(seal["status_rule"]) is not int
+                                              or seal["status_rule"] not in BUNDLE_STATUS_RULES):
+        problems.add("SEAL.json", f"status_rule must be {STATUS_RULE_BUNDLE} or {STATUS_RULE_BROAD} under "
+                                  f"{SEAL_SCHEMA_BUNDLE!r}, the derivation its records' statuses came from "
+                                  f"(status rule {STATUS_RULE_D1} exports {SEAL_SCHEMA!r})")
     if "set_id" in seal and (not isinstance(seal["set_id"], str) or not TOKEN_RE.match(seal["set_id"])):
         problems.add("SEAL.json", f"set_id must be {TOKEN_RULE}")
     if "campaign" in seal and (not isinstance(seal["campaign"], str) or not CAMPAIGN_RE.match(seal["campaign"])):
@@ -688,6 +812,13 @@ class Context:
     schema_error: Any
     location_keys: set[str] = field(default_factory=set)
     receipts_used: set[str] = field(default_factory=set)
+    # The seal's status rule (seal_status_rule): 1 for a /1 set, whose records keep /1's shapes.
+    status_rule: int = STATUS_RULE_D1
+
+    @property
+    def bundled(self) -> bool:
+        """Whether the set is /2: revision-free keys on its records, a coverage claim as a bundle."""
+        return self.status_rule >= STATUS_RULE_BUNDLE
 
 
 def _locate_ext(node: dict) -> dict | None:
@@ -902,21 +1033,90 @@ COVERAGE_RULE = ('coverage, on a passage with a claim, is {"complete": true, "pa
                  '"challenge": <challenge value>}, and is absent (never null) on a passage without one')
 
 
-def coverage_claim(ext: dict, at: str, problems: Problems) -> dict | None:
+BUNDLE_RULE = ('coverage, on a passage with a claim, is its bundle {"complete": true, "parts": [<location_key>, ...], '
+               '"challenge", "relation", "conjuncts": [{"id", "text", "part"}], "bundle_key"} under '
+               f'{SEAL_SCHEMA_BUNDLE}, and is absent (never null) on a passage without one')
+
+
+def bundle_problems(claim: dict, parts: Any, relation_required: bool) -> list[str]:
+    """Why a /2 claim is not a bundle: its relation, conjuncts and bundle_key (their shapes only).
+
+    The relation is the bundle's, its weakest part's, one of BUNDLE_RELATIONS. The conjuncts are
+    MIN_CONJUNCTS..MAX_CONJUNCTS objects {id, text, part}, ids c1..cN in order, each text
+    non-empty, each part one of the claim's parts and every part stating at least one; the
+    bundle_key is 64 lowercase hex, recomputed over the parts' pair keys in build_passages. Each
+    is judged when present: a record's claim must carry all three (coverage_claim's key check
+    names a missing one), and the producer's derive_status, which derive_passage_status mirrors,
+    requires only the relation (cflib.vocab._bundle_fields), so ``relation_required`` names it.
+    """
+    found = []
+    if "relation" not in claim:
+        if relation_required:
+            found.append("coverage.relation is missing: a bundle carries its relation, its weakest part's")
+    elif not member(claim["relation"], BUNDLE_RELATIONS):
+        found.append(f"coverage.relation must be one of {sorted(BUNDLE_RELATIONS)} (the bundle's, its weakest "
+                     "part's: every part states its conjuncts strongly)")
+    if "conjuncts" in claim:
+        conjuncts = claim["conjuncts"]
+        if not isinstance(conjuncts, list) or not MIN_CONJUNCTS <= len(conjuncts) <= MAX_CONJUNCTS:
+            found.append(f"coverage.conjuncts must be {MIN_CONJUNCTS} to {MAX_CONJUNCTS} {{id, text, part}} objects "
+                         "(a bundle stands only on a compound statement)")
+        else:
+            named = set()
+            for number, conjunct in enumerate(conjuncts, 1):
+                if not isinstance(conjunct, dict) or set(conjunct) != CONJUNCT_KEYS:
+                    found.append(f"coverage.conjuncts[{number - 1}] must be exactly {{id, text, part}}")
+                    continue
+                if conjunct["id"] != f"c{number}":
+                    found.append(f"coverage.conjuncts are c1..c{len(conjuncts)} in order; conjunct {number} is "
+                                 f"{conjunct['id']!r}")
+                message = _string_problem(conjunct["text"], MAX_CONJUNCT_CHARS)
+                if message:
+                    found.append(f"coverage.conjuncts {conjunct['id']!r} text {message} (at most "
+                                 f"{MAX_CONJUNCT_CHARS} characters)")
+                if isinstance(parts, list) and conjunct["part"] not in parts:
+                    found.append(f"coverage.conjuncts {conjunct['id']!r} names part {str(conjunct['part'])[:12]}, "
+                                 "which is not one of the bundle's parts")
+                if isinstance(conjunct["part"], str):
+                    named.add(conjunct["part"])
+            if isinstance(parts, list):
+                idle = [key for key in parts if key not in named]
+                if idle:
+                    found.append(f"coverage: bundle part {str(idle[0])[:12]} states no conjunct (a bundle's parts "
+                                 "partition its conjuncts, each stating at least one)")
+    if "bundle_key" in claim and (not isinstance(claim["bundle_key"], str) or not HEX64.match(claim["bundle_key"])):
+        found.append("coverage.bundle_key must be 64 lowercase hex: the sha256 of the passage key and the parts' "
+                     "pair keys, sorted, one per line")
+    return found
+
+
+def coverage_claim(ext: dict, at: str, problems: Problems, status_rule: int = STATUS_RULE_D1,
+                   exported: bool = True) -> dict | None:
     """One record's copy of its passage's coverage claim (decision D1), or None when it carries none.
 
     The claim's own shape is checked here: exactly complete, parts and challenge; complete is
     true; parts names at least MIN_COVERAGE_PARTS distinct location keys; challenge is a challenge
     value. That each part is a hasPart location of the same passage is checked over the passage's
     records (coverage_part_problems). A malformed claim is reported and dropped.
+
+    Under status rules 2 and 3 (/2) the claim is a bundle: COVERAGE_KEYS_BUNDLE exactly when
+    ``exported`` (a record's claim), within them otherwise (derive_passage_status, the producer's
+    signature), and bundle_problems judges what the bundle adds.
     """
     if "coverage" not in ext:
         return None
     claim = ext["coverage"]
+    bundled = status_rule >= STATUS_RULE_BUNDLE
     if not isinstance(claim, dict):
-        problems.add(at, COVERAGE_RULE)
+        problems.add(at, BUNDLE_RULE if bundled else COVERAGE_RULE)
         return None
-    found = [f"coverage: {message}" for message in key_problems(claim, COVERAGE_KEYS)]
+    if not bundled:
+        found = [f"coverage: {message}" for message in key_problems(claim, COVERAGE_KEYS)]
+    elif exported:
+        found = [f"coverage: {message}" for message in key_problems(claim, COVERAGE_KEYS_BUNDLE)]
+    else:
+        found = [f"coverage: {message}" for message in key_problems(claim, COVERAGE_KEYS,
+                                                                    COVERAGE_KEYS_BUNDLE[len(COVERAGE_KEYS):])]
     if "complete" in claim and claim["complete"] is not True:
         found.append("coverage.complete must be true: the claim is that the parts together state every clause")
     parts = claim.get("parts")
@@ -935,11 +1135,21 @@ def coverage_claim(ext: dict, at: str, problems: Problems) -> dict | None:
                      "claim (no challenge judged it yet) is not exported")
     elif "challenge" in claim and not member(claim["challenge"], CHALLENGES):
         found.append(f"coverage.challenge must be one of {sorted(CHALLENGES)} (only survived counts)")
+    if bundled:
+        found.extend(bundle_problems(claim, parts, relation_required=not exported))
     for message in found:
         problems.add(at, message)
     if found:
         return None
-    return {"complete": True, "parts": list(parts), "challenge": claim["challenge"]}
+    out = {"complete": True, "parts": list(parts), "challenge": claim["challenge"]}
+    if bundled:
+        # The bundle's own fields, as exported (a record always carries all three; the
+        # one-passage form may lack conjuncts and bundle_key, as the producer's call may).
+        out["relation"] = claim["relation"]
+        for key in ("conjuncts", "bundle_key"):
+            if key in claim:
+                out[key] = [dict(c) for c in claim[key]] if key == "conjuncts" else claim[key]
+    return out
 
 
 def coverage_part_problems(claim: dict, locations: list[dict]) -> list[str]:
@@ -954,6 +1164,45 @@ def coverage_part_problems(claim: dict, locations: list[dict]) -> list[str]:
         elif relation != COVERAGE_RELATION:
             found.append(f"coverage names {key}, whose relation is {relation}: every part is a "
                          f"{COVERAGE_RELATION} location of this passage")
+    return found
+
+
+PASSAGE_KEY_RULE = ('passage_key must be sha256("<pageid>\\n<span_sha256>") of its subject end, 64 lowercase hex '
+                    f"({SEAL_SCHEMA_BUNDLE}: every record carries its passage's revision-free key)")
+PAIR_KEY_RULE = ('pair_key must be sha256("<passage_key>\\n<repository>\\n<declaration>"), the repository the lean '
+                 f"end's uri, 64 lowercase hex ({SEAL_SCHEMA_BUNDLE}: every location record carries one)")
+
+
+def record_passage_key(ext: dict, source: dict, span_sha: str | None, at: str, problems: Problems) -> str | None:
+    """A /2 record's passage_key, recomputed from its source's page id and its span_sha256; None if refused."""
+    value = ext.get("passage_key")
+    if not isinstance(value, str) or not HEX64.match(value):
+        problems.add(at, PASSAGE_KEY_RULE)
+        return None
+    if span_sha is not None and HEX64.match(span_sha) and value != passage_key(source["pageid"], span_sha):
+        problems.add(at, f"{PASSAGE_KEY_RULE}; this one is not")
+        return None
+    return value
+
+
+def identifiers_problems(end: dict, source: dict, prominence: str | None) -> list[str]:
+    """The subject end's optional identifiers under /2: the article's QID on a subject passage only.
+
+    The maintainer's decision B5 (formal-companion scripts/locate/records.py, article_qid): only a
+    subject passage's records carry their source's wikidata, as identifiers.wikidata, and not every
+    one does (a challenge_pending record, or a source with no QID, carries none), so absence is
+    never refused.
+    """
+    if "identifiers" not in end:
+        return []
+    found = []
+    qid = source["wikidata"]
+    if qid is None or end["identifiers"] != {"wikidata": qid}:
+        found.append("the subject end's identifiers must be {\"wikidata\": <its source's QID>} (sources.jsonl "
+                     "wikidata; decision B5)")
+    if prominence != "subject":
+        found.append("only a subject passage's records carry the article's QID as identifiers.wikidata "
+                     "(decision B5)")
     return found
 
 
@@ -974,9 +1223,12 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     relation = record.get("relation")
     shape = ("unresolved" if relation is None else "absence" if relation == "noMatch"
              else "location" if member(relation, LOCATION_RELATIONS) else None)
-    shape_keys = SHAPE_EXT_KEYS[shape] if shape else tuple(k for keys in SHAPE_EXT_KEYS.values() for k in keys)
+    # Under /2 every shape adds passage_key and a location pair_key; under /1 both are refused by name.
+    shapes = SHAPE_EXT_KEYS_BUNDLE if ctx.bundled else SHAPE_EXT_KEYS
+    record_keys = RECORD_EXT_KEYS_BUNDLE if ctx.bundled else RECORD_EXT_KEYS
+    shape_keys = shapes[shape] if shape else tuple(k for keys in shapes.values() for k in keys)
     for message in (*foreign_extensions(record, "the record", rid),
-                    *unexpected_keys(ext, RECORD_EXT_KEYS + RECORD_EXT_OPTIONAL + shape_keys, SHAPE_LEVELS[shape],
+                    *unexpected_keys(ext, record_keys + RECORD_EXT_OPTIONAL + shape_keys, SHAPE_LEVELS[shape],
                                      rid)):
         problems.add(at, message)
     item = ext.get("item")
@@ -1006,7 +1258,7 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     if not member(prominence, PROMINENCES):
         problems.add(at, f"prominence must be one of {sorted(PROMINENCES)}")
         prominence = None
-    coverage = coverage_claim(ext, at, problems)
+    coverage = coverage_claim(ext, at, problems, ctx.status_rule)
 
     subjects = record["subject"]
     if len(subjects) != 1 or subjects[0].get("type") != "html":
@@ -1040,14 +1292,23 @@ def classify_record(record: Any, source: dict, ctx: Context, at: str, problems: 
     if span is not None:
         for message in span_problems(span, quote, span_sha):
             problems.add(at, message)
+    key = None
+    if ctx.bundled:
+        key = record_passage_key(ext, source, span_sha, at, problems)
+        for message in identifiers_problems(end, source, prominence):
+            problems.add(at, message)
 
     base = {"item": item, "id": record.get("id"), "kind": kind, "section": section, "prominence": prominence,
+            # /2's revision-free passage key (None under /1), a passage field like the rest.
+            "passage_key": key,
             "quote": {key: quote[key] for key in ("exact", "prefix", "suffix") if key in quote},
             # Passage fields every record of the passage carries alike (build_passages). The view
             # model copies neither: quote_extent reads them to tell a capped quote from a whole
             # passage, and the records keep them verbatim.
             "span": span, "span_sha256": span_sha,
-            "subject_uri": uri, "challenge": challenge, "coverage": coverage}
+            "subject_uri": uri, "challenge": challenge, "coverage": coverage,
+            # The source's licence, as the subject end names it: the article view states it once.
+            "licence": subject_ext.get("licence") if isinstance(subject_ext.get("licence"), str) else None}
     objects = record["object"]
     if relation is None:
         if objects or "status" in record:
@@ -1198,6 +1459,18 @@ def _location(record: dict, base: dict, objects: list, ext: dict, relation: str,
     }
     if end_line is not None:  # optional in the view model too: absent means "line N" only
         view["end_line"] = end_line
+    if ctx.bundled:
+        # The revision- and commit-free key a verdict on this pair is stored by (wiki/src/atlas.ts
+        # copies it into each feedback row), recomputed from the passage key, uri and declaration.
+        pair = ext.get("pair_key")
+        if not isinstance(pair, str) or not HEX64.match(pair):
+            problems.add(at, PAIR_KEY_RULE)
+            pair = None
+        elif base["passage_key"] is not None and isinstance(end.get("uri"), str) \
+                and pair != pair_key(base["passage_key"], end["uri"], location["declaration"]):
+            problems.add(at, f"{PAIR_KEY_RULE}; this one is not")
+            pair = None
+        view["pair_key"] = pair
     return {**base, "type": "location", "status": status, "location": view}
 
 
@@ -1224,7 +1497,7 @@ def _rank_key(loc: dict) -> int:
     return loc["rank"] if type(loc["rank"]) is int else 99
 
 
-def _theorem_row(loc: dict) -> str:
+def _theorem_row(loc: dict, status_rule: int = STATUS_RULE_D1) -> str:
     """One location of a theorem or conjecture passage (cflib.vocab._theorem_row)."""
     if loc["relation"] in PART_RELATIONS:
         return "partial"
@@ -1237,15 +1510,23 @@ def _theorem_row(loc: dict) -> str:
         return "statement_only"
     # Data (a definition without the statement flag): decision D1 makes an exact or close
     # match to an equivalence or data declaration that states the theorem formalized (CRT's
-    # RingEquiv); the table's "broadMatch to a definition" stays partial. Data resting on sorry
-    # has proof_status statement_only, above.
-    return "formalized" if loc["relation"] in DATA_MATCH_RELATIONS else "partial"
+    # RingEquiv); the table's "broadMatch to a definition" stays partial under status rules 1
+    # and 2, and formalizes it under 3 (R-BROAD: the relation alone, never the declaration's
+    # kind, decides between the strong three). Data resting on sorry has proof_status
+    # statement_only, above.
+    if loc["relation"] in DATA_MATCH_RELATIONS or status_rule >= STATUS_RULE_BROAD:
+        return "formalized"
+    return "partial"
 
 
-def _definition_row(loc: dict) -> str:
+def _definition_row(loc: dict, status_rule: int = STATUS_RULE_D1) -> str:
     """One location of a definition passage (cflib.vocab._definition_row)."""
-    if loc["relation"] in PART_RELATIONS or loc["relation"] == "broadMatch":
+    if loc["relation"] in PART_RELATIONS:
         return "partial"
+    if loc["relation"] == "broadMatch":
+        # Status rule 3 (R-BROAD): a broadMatch to a definition formalizes it, as an exact or
+        # close match does; a broadMatch to anything else stays partial, as under rules 1 and 2.
+        return "formalized" if status_rule >= STATUS_RULE_BROAD and loc["proof_status"] == "definition" else "partial"
     # exactMatch, closeMatch
     if loc["proof_status"] == "definition":
         return "formalized"
@@ -1255,15 +1536,15 @@ def _definition_row(loc: dict) -> str:
     return "partial"
 
 
-def location_status(kind: str, loc: dict) -> str | None:
+def location_status(kind: str, loc: dict, status_rule: int = STATUS_RULE_D1) -> str | None:
     """The status one location gives a passage of `kind`; None for a relatedMatch, which never counts."""
     if loc["relation"] == "relatedMatch":
         return None
     rows = []
     if kind in THEOREM_KINDS or kind in EITHER_KINDS:
-        rows.append(_theorem_row(loc))
+        rows.append(_theorem_row(loc, status_rule))
     if kind in DEFINITION_KINDS or kind in EITHER_KINDS:
-        rows.append(_definition_row(loc))
+        rows.append(_definition_row(loc, status_rule))
     return min(rows, key=STATUS_RANK.__getitem__) if rows else None
 
 
@@ -1277,8 +1558,8 @@ def part_finished(part: dict) -> bool:
     return part["proof_status"] == "proved" or (part["proof_status"] == "definition" and not part["statement"])
 
 
-def coverage_location(row: str, parts: list[dict]) -> dict:
-    """The one exactMatch location a survived claim acts as, on the theorem or definition row.
+def coverage_location(row: str, parts: list[dict], relation: str = COVERAGE_ACTS_AS) -> dict:
+    """The one location a survived claim acts as, on the theorem or definition row.
 
     It is a fixed stand-in, not any one part's own proof status and flag: when every part is
     finished it is proved on the theorem row and data (definition, no flag) on the definition
@@ -1289,23 +1570,28 @@ def coverage_location(row: str, parts: list[dict]) -> dict:
     definition row: a claim of proved parts formalizes a definition passage, where an exact match
     to a proved theorem is partial, and one with a Prop-valued-definition part is statement_only,
     where an exact match to that definition formalizes it.
+
+    Its relation is exactMatch under status rule 1 (decision D1) and, under status rules 2 and 3,
+    the bundle's own relation, its weakest part's (decision Q9; cflib.vocab.derive_status).
     """
     if not all(part_finished(part) for part in parts):
         proof_status = "statement_only"
     else:
         proof_status = "proved" if row == "theorem" else "definition"
-    return {"relation": COVERAGE_ACTS_AS, "proof_status": proof_status, "statement": False}
+    return {"relation": relation, "proof_status": proof_status, "statement": False}
 
 
-def coverage_status(kind: str, claim: dict | None, locations: list[dict]) -> str | None:
+def coverage_status(kind: str, claim: dict | None, locations: list[dict],
+                    status_rule: int = STATUS_RULE_D1) -> str | None:
     """The status a coverage claim gives a passage of `kind` on its own; None when it gives none.
 
     Only a claim whose challenge is survived counts: one pending, unjudged (not_required,
     sampled_out) or downgraded upgrades nothing, and a refuted claim is not exported at all. A
     survived claim is judged as its coverage_location on the passage kind's row of the table, an
     example or `other` passage taking the better of the two rows exactly as for an ordinary
-    location (Q1), so it gives formalized when every part is finished and statement_only
-    otherwise.
+    location (Q1), so under status rule 1 it gives formalized when every part is finished and
+    statement_only otherwise. Under status rules 2 and 3 the stand-in has the bundle's relation,
+    so a broadMatch bundle is judged as one broadMatch location of that rule.
     """
     if claim is None or claim["challenge"] != COVERAGE_SURVIVED:
         return None
@@ -1314,15 +1600,17 @@ def coverage_status(kind: str, claim: dict | None, locations: list[dict]) -> str
     if (len(parts) < MIN_COVERAGE_PARTS or any(part is None or part["relation"] != COVERAGE_RELATION
                                                for part in parts)):
         return None  # refused by coverage_part_problems; never counted
+    relation = claim["relation"] if status_rule >= STATUS_RULE_BUNDLE else COVERAGE_ACTS_AS
     rows = []
     if kind in THEOREM_KINDS or kind in EITHER_KINDS:
-        rows.append(_theorem_row(coverage_location("theorem", parts)))
+        rows.append(_theorem_row(coverage_location("theorem", parts, relation), status_rule))
     if kind in DEFINITION_KINDS or kind in EITHER_KINDS:
-        rows.append(_definition_row(coverage_location("definition", parts)))
+        rows.append(_definition_row(coverage_location("definition", parts, relation), status_rule))
     return min(rows, key=STATUS_RANK.__getitem__) if rows else None
 
 
-def derive_status(kind: str, locations: list[dict], coverage: dict | None = None) -> tuple[str | None, Any]:
+def derive_status(kind: str, locations: list[dict], coverage: dict | None = None,
+                  status_rule: int = STATUS_RULE_D1) -> tuple[str | None, Any]:
     """Proposal §2.6's derived status of a located passage, recomputed from its locations.
 
     A port of formal-companion's cflib.vocab.derive_status (scripts/cflib/vocab.py, which
@@ -1332,6 +1620,10 @@ def derive_status(kind: str, locations: list[dict], coverage: dict | None = None
     survived coverage claim over the passage's hasPart locations counts as one more exactMatch
     location, a fixed stand-in that is finished only when every part is (coverage_location,
     coverage_status); and the passage takes the best of them. `locations` are in rank order.
+
+    ``status_rule`` is the seal's (seal_status_rule): 1 is all of the above; 2 makes a survived
+    bundle one more location of its own relation; 3 (R-BROAD) is 2 with a broadMatch to data
+    formalizing a theorem passage and a broadMatch to a definition formalizing a definition one.
 
     Returns (status, basis): the one status the producer stamps, and what justifies it: the
     highest-ranked location reaching it, or COVERAGE_BASIS when only the coverage claim
@@ -1344,10 +1636,10 @@ def derive_status(kind: str, locations: list[dict], coverage: dict | None = None
     best: str | None = None
     basis: Any = None
     for loc in locations:
-        status = location_status(kind, loc)
+        status = location_status(kind, loc, status_rule)
         if status is not None and (best is None or STATUS_RANK[status] < STATUS_RANK[best]):
             best, basis = status, loc
-    claimed = coverage_status(kind, coverage, locations)
+    claimed = coverage_status(kind, coverage, locations, status_rule)
     if claimed is not None and (best is None or STATUS_RANK[claimed] < STATUS_RANK[best]):
         best, basis = claimed, COVERAGE_BASIS
     return best, basis
@@ -1361,28 +1653,31 @@ def _shape(locations: list[dict], coverage: dict | None = None) -> str:
     shown = [f"{loc['relation']} to {declaration(loc)}" for loc in locations if loc["relation"] != "relatedMatch"]
     text = ", ".join(shown) or "relatedMatch only"
     if coverage is not None:
-        text += f", and a coverage claim over {len(coverage['parts'])} parts (challenge {coverage['challenge']})"
+        bundle = f" {coverage['relation']} bundle" if "relation" in coverage else " coverage claim"
+        text += f", and a{bundle} over {len(coverage['parts'])} parts (challenge {coverage['challenge']})"
     return text
 
 
 def status_problems(kind: str | None, status: str, locations: list[dict],
-                    coverage: dict | None = None) -> tuple[list[str], Any]:
+                    coverage: dict | None = None, status_rule: int = STATUS_RULE_D1) -> tuple[list[str], Any]:
     """Compare a located passage's stamped status with the recomputed one; returns (problems, basis)."""
     if status == "not_formalized":
         return ["not_formalized needs a checked absence (noMatch record)"], None
     if not member(kind, KINDS):
         return [], None  # already reported by classify_record
-    derived, basis = derive_status(kind, locations, coverage)
+    derived, basis = derive_status(kind, locations, coverage, status_rule)
     if derived is None:
         return [f"proposal §2.6 gives a {kind} passage with {_shape(locations)} no status: it is unresolved, "
                 f"and its records carry no status (docs/ATLAS.md, contract note 9)"], None
     if derived != status:
+        rule = "" if status_rule == STATUS_RULE_D1 else f", status rule {status_rule}"
         return [f"the records say {status}, but the derived-status rules (proposal §2.6 and vocabulary.md "
-                f"§1.11) derive {derived} for a {kind} passage with {_shape(locations, coverage)}"], None
+                f"§1.11{rule}) derive {derived} for a {kind} passage with {_shape(locations, coverage)}"], None
     return [], basis
 
 
-def derive_passage_status(kind: Any, locations: list[dict], absent: bool, coverage: Any = None) -> str | None:
+def derive_passage_status(kind: Any, locations: list[dict], absent: bool, coverage: Any = None,
+                          status_rule: int = STATUS_RULE_D1) -> str | None:
     """One passage's derived status by the producer's signature, through the builder's own checks.
 
     The function the two sides' shared parity table is written for (fixtures/status_parity.json,
@@ -1398,7 +1693,13 @@ def derive_passage_status(kind: Any, locations: list[dict], absent: bool, covera
     otherwise it returns derive_status's status, "not_formalized" for a checked absence, or None
     (no status: unresolved). build() itself runs these checks record by record and reports every
     problem; this is the one-passage form, so the parity test runs the builder's rules, not a copy.
+
+    ``status_rule`` is the producer's keyword of the same name, the seal's: under 2 and 3 the
+    claim is a bundle with its relation, and conjuncts and bundle_key are checked when given, as
+    the producer checks them (fixtures/status_parity-2.json and -3.json, its tables for them).
     """
+    if type(status_rule) is not int or status_rule not in (STATUS_RULE_D1, *BUNDLE_STATUS_RULES):
+        raise StatusRefused(f"status rule {status_rule!r} is not one this builder derives by")
     if not member(kind, KINDS):
         raise StatusRefused(f"kind must be one of {sorted(KINDS)}")
     rows = []
@@ -1425,13 +1726,13 @@ def derive_passage_status(kind: Any, locations: list[dict], absent: bool, covera
     claim = None
     if coverage is not None:
         problems = Problems()
-        claim = coverage_claim({"coverage": coverage}, "the claim", problems)
+        claim = coverage_claim({"coverage": coverage}, "the claim", problems, status_rule, exported=False)
         found = problems.items or coverage_part_problems(claim, rows)
         if found:
             raise StatusRefused("; ".join(found))
     if absent:
         return "not_formalized"
-    return derive_status(kind, rows, claim)[0]
+    return derive_status(kind, rows, claim, status_rule)[0]
 
 
 def confirmed_parts(claim: dict, locations: list[dict]) -> list[dict]:
@@ -1455,7 +1756,20 @@ def confirmed_parts(claim: dict, locations: list[dict]) -> list[dict]:
             for loc in locations]
 
 
-def build_passages(classified: list[dict], source: dict, problems: Problems) -> list[dict]:
+def bundle_key_problems(claim: dict, passage: str | None, locations: list[dict]) -> list[str]:
+    """Whether a /2 bundle's bundle_key is the sha256 of its passage key and its parts' pair keys."""
+    pairs = {loc["location_key"]: loc.get("pair_key") for loc in locations}
+    keys = [pairs.get(key) for key in claim["parts"]]
+    if passage is None or not all(isinstance(key, str) for key in keys):
+        return []  # a refused passage or pair key is reported already
+    if claim["bundle_key"] != bundle_key(passage, keys):
+        return ["coverage.bundle_key is not the sha256 of the passage key and the parts' pair keys, sorted, one "
+                "per line (cflib.hashing.bundle_key)"]
+    return []
+
+
+def build_passages(classified: list[dict], source: dict, problems: Problems,
+                   status_rule: int = STATUS_RULE_D1) -> list[dict]:
     """Group records by passage id (first-appearance order) and check the outcome rules."""
     groups: dict[str, list[dict]] = {}
     for record in classified:
@@ -1468,7 +1782,7 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             # The coverage claim is a passage field like the rest: every record carries the
             # same claim, or none does. So are the subject end's span and span_sha256, which the
             # page's ellipsis reads (quote_extent), so that no record order decides it.
-            for key in ("kind", "quote", "section", "prominence", "coverage", "span", "span_sha256"):
+            for key in ("kind", "quote", "section", "prominence", "coverage", "span", "span_sha256", "passage_key"):
                 if other[key] != first[key]:
                     problems.add(at, f"records of one passage disagree on {key}"
                                  + (" (every record of the passage carries the same claim, or none does)"
@@ -1496,6 +1810,8 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         claim = first["coverage"]
         if claim is not None:
             found = coverage_part_problems(claim, locations)
+            if not found and status_rule >= STATUS_RULE_BUNDLE:
+                found = bundle_key_problems(claim, first["passage_key"], locations)
             for message in found:
                 problems.add(at, message)
             if found:
@@ -1517,7 +1833,7 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         else:
             outcome = "located"
             if status is not None and first["coverage"] is claim:  # a refused claim is reported already
-                found, basis = status_problems(first["kind"], status, locations, claim)
+                found, basis = status_problems(first["kind"], status, locations, claim, status_rule)
                 for message in found:
                     problems.add(at, message)
         coverage = None
@@ -1525,7 +1841,7 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
             # The claim as exported, plus what it gives on its own (formalized or statement_only
             # once it survived, null otherwise) and whether it is what justifies the passage's
             # status; its parts' challenge values then read as confirmed by it.
-            coverage = {**claim, "status": (coverage_status(first["kind"], claim, locations)
+            coverage = {**claim, "status": (coverage_status(first["kind"], claim, locations, status_rule)
                                             if member(first["kind"], KINDS) else None),
                         "basis": basis == COVERAGE_BASIS}
             locations = confirmed_parts(claim, locations)
@@ -1533,7 +1849,9 @@ def build_passages(classified: list[dict], source: dict, problems: Problems) -> 
         if absences:
             absence = {"universe": None, "universe_sha256": None, "libraries": None,
                        "receipt": absences[0]["receipt"], "challenge": absences[0]["challenge"]}
+        extra = {"passage_key": first["passage_key"]} if status_rule >= STATUS_RULE_BUNDLE else {}
         passages.append({
+            **extra,
             "id": pid, "item": first["item"], "kind": first["kind"], "section": first["section"],
             "prominence": first["prominence"], "quote": first["quote"],
             # quote_capped: the quote is the capped head of a longer passage, so the page marks
@@ -1564,8 +1882,13 @@ def _prominence_counts() -> dict[str, dict]:
 
 
 def article_view(source: dict, passages: list[dict], universe: dict, seal: dict, seal_sha: str,
-                 records_sha: str) -> dict:
-    """The article's view model. Runs only on a set that passed every check."""
+                 records_sha: str, licence: str | None = None) -> dict:
+    """The article's view model. Runs only on a set that passed every check.
+
+    `licence` is the source's, as its records' subject ends name it: the view's `licence` says
+    that the text it quotes (each passage's quote, and its text when a side file gives it) is
+    under it, and the mapping under MAPPING_LICENCE.
+    """
     by_status = _status_counts()
     by_prominence = _prominence_counts()
     by_library: dict[str, dict[str, int]] = {}
@@ -1600,7 +1923,7 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
                     seen_here.add(loc["library"])
             by_proof[loc["proof_status"]] += 1
             by_relation[loc["relation"]] += 1
-    return {
+    view = {
         "schema": ARTICLE_SCHEMA,
         "pageid": source["pageid"], "title": source["title"], "revision": source["revision"],
         "source_id": source["source_id"], "wikidata": source["wikidata"], "assessment": source["assessment"],
@@ -1610,11 +1933,24 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
         "universe": {"id": universe["id"], "sha256": universe["sha256"], "frozen": universe["frozen"],
                      "libraries": len(universe["libraries"])},
         "record_set": seal_sha, "records_sha256": records_sha,
+        "licence": {"text": licence, "mapping": MAPPING_LICENCE},
         "summary": {"passages": len(passages), "locations": n_locations, "related": n_related, "by_status": by_status,
                     "by_prominence": by_prominence, "by_library": by_library, "by_proof_status": dict(by_proof),
                     "by_relation": dict(by_relation)},
         "passages": passages,
     }
+    if seal.get("schema") == SEAL_SCHEMA_BUNDLE:
+        # What a page's provenance names beside the campaign token, optional within v1 (a /1
+        # set's view is unchanged): the seal's set, schema, status rule, export time and the
+        # producer's commit. The seal records no model and no operator, so neither is here.
+        view["seal"] = seal_summary(seal)
+    return view
+
+
+def seal_summary(seal: dict) -> dict:
+    """A /2 seal's provenance fields, as a view model and current.json's record_sets carry them."""
+    return {"set_id": seal["set_id"], "schema": seal["schema"], "status_rule": seal["status_rule"],
+            "created": seal["created"], "skill_commit": seal["skill_commit"]}
 
 
 def check_budget(budget: int, path: str, files: dict[str, bytes], classified: list[dict],
@@ -1635,20 +1971,32 @@ def check_budget(budget: int, path: str, files: dict[str, bytes], classified: li
                            f"{budget} that SEAL.json says the export kept to")
 
 
-def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
-    """Return the store tree, {relative path: bytes}, for one sealed record set."""
-    validate, schema_error, provenance = schema_validator()
+@dataclass
+class BuiltSet:
+    """One sealed record set that passed every check, and its articles' view models."""
+    seal: dict
+    seal_sha: str
+    universe: dict
+    universe_bytes: bytes
+    # (view model, records file bytes) per source, in sources.jsonl order.
+    articles: list[tuple[dict, bytes]]
+    # Optional (--reader-html): page id -> the article's marked revision, reader/<pageid>.html.
+    reader_files: dict[int, bytes] = field(default_factory=dict)
+    # And page id -> that revision's text layer, which the body's text was proven to be (its sha256
+    # is the records' layer_sha256): what a passage's context is checked against.
+    reader_layers: dict[int, str] = field(default_factory=dict)
+
+
+def build_set(set_dir: Path, validate: Any, schema_error: Any) -> BuiltSet:
+    """Check one sealed record set and build its articles' view models (AtlasError when refused)."""
     seal, seal_sha, files = read_record_set(set_dir)
     problems = Problems()
     universe = load_universe(seal, files, problems)
     sources = load_sources(files, problems)
     problems.raise_if_any()
-    if built_at is None:
-        built_at = seal["created"]
-    elif not CREATED_RE.match(built_at):
-        raise AtlasError("--built-at must be an ISO 8601 UTC time ending in Z")
 
-    ctx = Context(universe=universe, files=files, validate=validate, schema_error=schema_error)
+    ctx = Context(universe=universe, files=files, validate=validate, schema_error=schema_error,
+                  status_rule=seal_status_rule(seal))
     built: list[tuple[dict, list[dict]]] = []
     for source in sources:
         path = f"records/{source['source_id']}.jsonl"
@@ -1672,7 +2020,12 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
             if reduced is not None:
                 classified.append(reduced)
         check_budget(seal["byte_budget"], path, files, classified, problems)
-        built.append((source, build_passages(classified, source, problems)))
+        licences = sorted({r["licence"] for r in classified if r["licence"] is not None})
+        if len(licences) > 1:
+            problems.add(path, f"every record of an article names one licence, its source's (the subject end's "
+                               f"licence): {', '.join(licences)}")
+        built.append((source, build_passages(classified, source, problems, ctx.status_rule),
+                      licences[0] if len(licences) == 1 else None))
     for receipt in sorted(p for p in files if p.startswith("receipts/")):
         if receipt not in ctx.receipts_used:
             problems.add(receipt, "receipt referenced by no absence record")
@@ -1680,9 +2033,1779 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
             problems.add(receipt, "a receipt's file name is the sha256 of its bytes")
     # Every check has run: a refused set never reaches the view code, which assumes the contract.
     problems.raise_if_any()
-    articles = [article_view(source, passages, universe, seal, seal_sha,
-                             sha256_hex(files[f"records/{source['source_id']}.jsonl"]))
-                for source, passages in built]
+    articles = []
+    for source, passages, licence in built:
+        records = files[f"records/{source['source_id']}.jsonl"]
+        articles.append((article_view(source, passages, universe, seal, seal_sha, sha256_hex(records), licence),
+                         records))
+    return BuiltSet(seal=seal, seal_sha=seal_sha, universe=universe, universe_bytes=files["universe.json"],
+                    articles=articles)
+
+
+# What several record sets built into one store share (combined_sets), as SEAL.json names it.
+SHARED_SEAL_FIELDS = ("schema", "universe", "sourceset", "skill_commit")
+COMBINED_RULE = ("record sets built into one store share their universe (universe.json byte for byte), sourceset, "
+                 "skill_commit, schema and status_rule, and no page id or title key")
+
+
+def combined_sets(sets: list[BuiltSet]) -> list[BuiltSet]:
+    """Several record sets as one store's sets, in set_id order; AtlasError unless they agree.
+
+    Two locate runs need two tallies and two exports, so a batch can arrive as several sealed
+    sets. They build into one store only when nothing about the Lean side differs (one universe,
+    one sourceset, one producer commit, one schema and status rule) and their pages are disjoint
+    by page id and by title key, so every index entry and article has exactly one set. Each
+    article keeps its own seal's campaign and record_set, which the feedback route checks.
+    """
+    problems = Problems()
+    ordered = sorted(sets, key=lambda built: built.seal["set_id"])
+    first = ordered[0]
+    seen_ids: set[str] = set()
+    seen_shas: set[str] = set()
+    pages: dict[int, str] = {}
+    titles: dict[str, str] = {}
+    for built in ordered:
+        set_id = built.seal["set_id"]
+        if set_id in seen_ids:
+            problems.add(f"record set {set_id}", "set_id appears twice: each record set is built in once")
+        if built.seal_sha in seen_shas:
+            problems.add(f"record set {set_id}", "the same SEAL.json is given twice")
+        seen_ids.add(set_id)
+        seen_shas.add(built.seal_sha)
+        if built.universe_bytes != first.universe_bytes:
+            problems.add(f"record set {set_id}", f"universe.json differs from {first.seal['set_id']}'s: {COMBINED_RULE}")
+        for key in (*SHARED_SEAL_FIELDS, "status_rule"):
+            if built.seal.get(key) != first.seal.get(key):
+                problems.add(f"record set {set_id}", f"SEAL.json {key} differs from {first.seal['set_id']}'s: "
+                                                     f"{COMBINED_RULE}")
+        for article, _ in built.articles:
+            other = pages.setdefault(article["pageid"], set_id)
+            if other != set_id:
+                problems.add(f"record set {set_id}", f"page {article['pageid']} is also in {other}: {COMBINED_RULE}")
+            other = titles.setdefault(title_key(article["title"]), set_id)
+            if other != set_id:
+                problems.add(f"record set {set_id}", f"title {article['title']!r} has a title key also in {other}: "
+                                                     f"{COMBINED_RULE}")
+    problems.raise_if_any()
+    return ordered
+
+
+def record_set_entry(seal: dict, seal_sha: str) -> dict:
+    """current.json's record_set: one seal's identity (and, under /2, the rule its statuses came by)."""
+    entry = {"seal_sha256": seal_sha, "set_id": seal["set_id"], "created": seal["created"],
+             "skill_commit": seal["skill_commit"], "byte_budget": seal["byte_budget"],
+             "sourceset": {"id": seal["sourceset"]["id"], "manifest_sha256": seal["sourceset"]["manifest_sha256"]}}
+    if seal.get("schema") == SEAL_SCHEMA_BUNDLE:
+        entry.update(schema=seal["schema"], status_rule=seal["status_rule"])
+    return entry
+
+
+# ---- supplements: optional side files merged into the view (docs/ATLAS.md, "Supplements") -----
+#
+# A record set carries a passage's first 12 words, a declaration's name and the runs' ids. Optional
+# side files, each read only and each checked against the records it describes, add what the
+# record set does not hold: the passage's full text, the declaration's signature, who and what
+# made each record, the article's marked revision, and what an audit of the links measured. A
+# build without them is byte for byte the build it always was; a side file that does not check
+# out is refused like a broken record set, never merged in part.
+
+PASSAGE_TEXT_SCHEMA = "wikilean.atlas.passage-text/1"
+SIGNATURES_SCHEMA = "wikilean.atlas.signatures/1"
+PROVENANCE_SCHEMA = "wikilean.atlas.provenance/1"
+READER_HTML_SCHEMA = "wikilean.atlas.reader-html/1"
+AUDIT_SUMMARY_SCHEMA = "wikilean.atlas.audit-summary/1"
+SUPPLEMENT_FLAGS = {"passage_text": "--passage-text", "signatures": "--signatures", "provenance": "--provenance",
+                    "reader_html": "--reader-html", "audit_summary": "--audit-summary"}
+SUPPLEMENT_SCHEMAS = {"passage_text": PASSAGE_TEXT_SCHEMA, "signatures": SIGNATURES_SCHEMA,
+                      "provenance": PROVENANCE_SCHEMA, "reader_html": READER_HTML_SCHEMA,
+                      "audit_summary": AUDIT_SUMMARY_SCHEMA}
+
+# A passage's text as segments that spell its layer slice in order.
+SEGMENT_SHAPES = (frozenset({"text"}), frozenset({"ref"}), frozenset({"tex"}), frozenset({"tex", "display"}),
+                  frozenset({"tex", "cut"}))
+MAX_SEGMENTS = 1000
+MAX_TEX_CHARS = 4000       # atlas-math's MAX_TEX_LENGTH: a longer formula would not render
+# A passage's context (the rest of its sentence, or the sentence leading into a list item):
+# what the page shows around it, at most this many characters of the layer a side.
+MAX_CONTEXT_CHARS = 2000
+CONTEXT_KEYS = {"before": frozenset({"layer", "segments", "trimmed", "lead_in"}),
+                "after": frozenset({"layer", "segments", "trimmed"})}
+TEX_ANNOTATION = re.compile(r"\{\\(?:displaystyle|textstyle|scriptstyle)(?![A-Za-z])")
+TEX_STYLE_OR_SPACE = re.compile(r"\s+|\\(?:displaystyle|textstyle|scriptstyle)(?![A-Za-z])")
+SEGMENT_RULE = ('segments spell the passage\'s layer slice in order: {"text"} and {"ref"} are its text verbatim, '
+                '{"tex"} (with "display": true for a display formula) is one formula, standing for its MathML text '
+                'and the TeX annotation after it, which holds its TeX, and {"tex", "cut"} is a formula the '
+                'passage\'s edge cuts, "cut" being its text inside the passage')
+
+# A declaration's signature: the Lean header the corpus's pretty-printed type lays out.
+LEAN_KEYWORDS = frozenset({"theorem", "def", "abbrev", "instance", "class", "structure", "inductive", "axiom",
+                           "opaque"})
+MAX_SIGNATURE_CHARS = 4000
+MAX_TYPE_CHARS = 20000
+LEAN_NAME_RE = re.compile(r"^[^\s\x00-\x1f\x7f]{1,300}\Z")
+
+# Who and what made a record: the runs a campaign token names, and the inventory run whose
+# passages the locate run searched (the run.yaml's inventory_run), which chose each passage, its
+# kind and its prominence.
+RUN_MODES = {"locate": "locate", "challenge": "locate-challenge", "inventory": "locate-inventory"}
+SAMPLING_KEYS = ("seed", "sample_rate", "strong_sample_rate", "absence_sample_rate")
+
+# What an audit of the build's links measured (--audit-summary): the record sets it read, the run
+# that judged a sample of them (its id, operator, window and models, and whether it was blind and
+# whether it was independent of the runs it judged) and its figures. Each figure estimates a share
+# of the build: the share judged right and its 95% interval, the weights its items were drawn and
+# weighed by (null for none) with the Kish effective sample size they leave (the number drawn when
+# there are none), the items drawn and the population they stand for. The pages show it under
+# "About this data"; without it they say the build carries no accuracy figure.
+AUDIT_SUMMARY_KEYS = ("schema", "record_sets", "audit", "items", "figures")
+AUDIT_RUN_KEYS = ("run_id", "operator", "window_utc", "models", "blind", "independent")
+AUDIT_FIGURE_KEYS = ("id", "label", "share", "ci95", "weights", "n_eff", "drawn", "population")
+MAX_AUDIT_MODELS = 4
+MAX_AUDIT_FIGURES = 12
+AUDIT_LABEL_RE = re.compile(r"^[A-Za-z0-9 ,.()\u00b7/+:;'&%_-]{1,160}\Z")
+RUN_ID_RE = re.compile(rf"^{RUN_ID}\Z")
+
+
+@dataclass
+class Supplements:
+    """The side files a build merges, each as (parsed document, sha256 of its bytes); None when not given."""
+    passage_text: tuple[dict, str] | None = None
+    signatures: tuple[dict, str] | None = None
+    provenance: tuple[dict, str] | None = None
+    reader_html: tuple[dict, str] | None = None
+    audit_summary: tuple[dict, str] | None = None
+
+    @classmethod
+    def read(cls, passage_text: Path | None = None, signatures: Path | None = None,
+             provenance: Path | None = None, reader_html: Path | None = None,
+             audit_summary: Path | None = None) -> "Supplements | None":
+        """Read the side files given (AtlasError when one cannot be read or names another schema)."""
+        paths = {"passage_text": passage_text, "signatures": signatures, "provenance": provenance,
+                 "reader_html": reader_html, "audit_summary": audit_summary}
+        if all(path is None for path in paths.values()):
+            return None
+        return cls(**{kind: read_supplement(Path(path), kind) for kind, path in paths.items() if path is not None})
+
+    def given(self) -> list[str]:
+        return [kind for kind in SUPPLEMENT_FLAGS if getattr(self, kind) is not None]
+
+
+def read_supplement(path: Path, kind: str) -> tuple[dict, str]:
+    flag, schema = SUPPLEMENT_FLAGS[kind], SUPPLEMENT_SCHEMAS[kind]
+    try:
+        data = path.read_bytes()
+    except OSError as exc:
+        raise AtlasError(f"{flag} {path}: cannot be read ({exc.strerror or exc})") from exc
+    try:
+        doc = strict_json(data.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise AtlasError(f"{flag} {path}: not UTF-8 JSON ({exc})") from exc
+    if not isinstance(doc, dict) or doc.get("schema") != schema:
+        raise AtlasError(f"{flag} {path}: schema must be {schema!r}")
+    return doc, sha256_hex(data)
+
+
+def record_rows(records: bytes) -> list[dict]:
+    """What a supplement joins on, per line of a records file whose set passed every check."""
+    rows = []
+    for line in records.decode("utf-8").splitlines():
+        record = json.loads(line)
+        ext = record["extensions"][LOCATE]
+        subject = record["subject"][0]["extensions"][LOCATE]
+        relation = record.get("relation")
+        quote = (record["subject"][0].get("location") or {}).get("quote") or {}
+        rows.append({"id": record["id"], "quote": {key: quote.get(key) for key in ("exact", "prefix", "suffix") if key in quote},
+                     "shape": "unresolved" if relation is None else "absence" if relation == "noMatch" else "location",
+                     "pageid": subject["pageid"], "span": subject.get("span"), "span_sha256": subject["span_sha256"],
+                     "passage_key": ext.get("passage_key"), "location_key": ext.get("location_key"),
+                     "pair_key": ext.get("pair_key"), "challenge": ext["challenge"]})
+    return rows
+
+
+def tex_group_end(s: str, i: int) -> int:
+    """The end (past "}") of the balanced-brace group that starts at s[i] == "{", or -1 (atlas-math groupEnd)."""
+    depth = 0
+    j = i
+    while j < len(s):
+        ch = s[j]
+        if ch == "\\":
+            j += 2
+            continue
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return j + 1
+        j += 1
+    return -1
+
+
+def text_segments(segments: Any, layer: str) -> tuple[list[dict] | None, list[str]]:
+    """The segments, checked to spell `layer` exactly: every prose, reference and cut piece is the
+    layer's own text at the point the segments before it reach, and every whole formula runs from
+    there to the end of the next TeX annotation, which holds its TeX (style commands and whitespace
+    aside). So no word is shown that the verified slice does not say, and none of it is skipped."""
+    if not isinstance(segments, list) or not 1 <= len(segments) <= MAX_SEGMENTS:
+        return None, [f"segments must be a list of 1 to {MAX_SEGMENTS} segments"]
+    out, cursor = [], 0
+    for n, seg in enumerate(segments):
+        if not isinstance(seg, dict) or frozenset(seg) not in SEGMENT_SHAPES:
+            return None, [f"segment {n}: {SEGMENT_RULE}"]
+        if "tex" in seg:
+            tex = seg["tex"]
+            if not isinstance(tex, str) or not tex.strip() or len(tex) > MAX_TEX_CHARS:
+                return None, [f"segment {n}: tex must be a formula's TeX, at most {MAX_TEX_CHARS} characters"]
+            if "display" in seg and seg["display"] is not True:
+                return None, [f"segment {n}: display, when present, is true"]
+        if "tex" in seg and "cut" not in seg:
+            match = TEX_ANNOTATION.search(layer, cursor)
+            end = tex_group_end(layer, match.start()) if match else -1
+            if end < 0 or TEX_STYLE_OR_SPACE.sub("", seg["tex"]) not in TEX_STYLE_OR_SPACE.sub("", layer[match.start():end]):
+                return None, [f"segment {n}: {SEGMENT_RULE}"]
+            cursor = end
+        else:
+            piece = seg.get("text", seg.get("ref", seg.get("cut")))
+            if not isinstance(piece, str) or not piece or not layer.startswith(piece, cursor):
+                return None, [f"segment {n}: {SEGMENT_RULE}"]
+            cursor += len(piece)
+        out.append({key: seg[key] for key in sorted(seg)})
+    if cursor != len(layer):
+        return None, [f"the segments stop before the layer slice does: {SEGMENT_RULE}"]
+    return out, []
+
+
+def passage_text_entry(entry: Any, pid: str, row: dict, layer_text: str | None = None) -> tuple[dict | None, list[str]]:
+    """One --passage-text entry as the passage's `text`, checked against its record and, when the
+    build proved the article's text layer (`layer_text`, from its reader html), its context against
+    that layer."""
+    if not isinstance(entry, dict):
+        return None, ["an entry is an object"]
+    found = []
+    if entry.get("id") != pid:
+        found.append(f"id must be the passage's record id {pid!r}")
+    if "pageid" in entry and entry["pageid"] != row["pageid"]:
+        found.append("pageid must be the record's")
+    if entry.get("span_sha256") != row["span_sha256"]:
+        found.append("span_sha256 must be the record's span_sha256")
+    if "span" in entry and row["span"] is not None and entry["span"] != row["span"]:
+        found.append("span must be the record's span")
+    layer = entry.get("layer")
+    if not isinstance(layer, str) or sha256_hex(layer.encode("utf-8")) != row["span_sha256"]:
+        found.append("layer must be the passage's text: the layer slice whose UTF-8 bytes the record's "
+                     "span_sha256 is the sha256 of")
+        return None, found
+    segments, messages = text_segments(entry.get("segments"), layer)
+    found += messages
+    view = {"layer": layer, "segments": segments}
+    # Optional context: the layer text just before and after the passage that the page shows
+    # around it. The record hashes only the passage, so the builder checks the context's own
+    # shape (its segments spell its text; it neither repeats nor overlaps the passage; the
+    # record's quote prefix and suffix, where it has them, are where they must be). When the
+    # build also proved the revision's layer (the article's reader html, whose text hashes to the
+    # records' layer_sha256) and the record gives the passage's span, each context must be that
+    # layer's own text right before or after the span; without them the side file's maker vouches
+    # for it.
+    for side in ("before", "after"):
+        if side not in entry:
+            continue
+        context, messages = context_entry(entry[side], side, row)
+        found += [f"{side}: {message}" for message in messages]
+        if context is not None and layer_text is not None and row["span"] is not None:
+            problem = context_layer_problem(context["layer"], side, row["span"], layer_text)
+            if problem:
+                found.append(f"{side}: {problem}")
+                continue
+        if context is not None:
+            view[side] = context
+    return (None, found) if found else (view, [])
+
+
+def context_layer_problem(context: str, side: str, span: list[int], layer_text: str) -> str | None:
+    """Why a context is not the revision's text right `side` the passage's span on the proven layer,
+    or None. A space at the edge that meets the passage may differ (the layer has one where a
+    block ends; the context may keep it or not)."""
+    start, end = span
+    if side == "before":
+        head = layer_text[:start]
+        if head.endswith(context) or head.rstrip(" ").endswith(context.rstrip(" ")):
+            return None
+    else:
+        tail = layer_text[end:]
+        if tail.startswith(context) or tail.lstrip(" ").startswith(context.lstrip(" ")):
+            return None
+    return (f"is not the revision's text right {side} the passage: the layer its reader html proves has other "
+            f"text there (a context is the layer next to the passage's span)")
+
+
+def context_entry(raw: Any, side: str, row: dict) -> tuple[dict | None, list[str]]:
+    """One side of a passage's context, checked as far as the record allows."""
+    if not isinstance(raw, dict) or not set(raw) <= CONTEXT_KEYS[side] or "layer" not in raw or "segments" not in raw:
+        return None, [f"is an object of {sorted(CONTEXT_KEYS[side])}, with layer and segments"]
+    layer = raw["layer"]
+    if not isinstance(layer, str) or not 0 < len(layer) <= MAX_CONTEXT_CHARS:
+        return None, [f"layer is the layer text {side} the passage, 1 to {MAX_CONTEXT_CHARS} characters"]
+    found = []
+    for flag in ("trimmed", "lead_in"):
+        if flag in raw and raw[flag] is not True:
+            found.append(f"{flag}, when present, is true")
+    quote = row.get("quote") or {}
+    affix = quote.get("prefix" if side == "before" else "suffix")
+    # The quote is the passage's head: its prefix meets the passage's start, and its suffix
+    # meets the passage's end only when the quote is the whole passage.
+    whole = isinstance(quote.get("exact"), str) and sha256_hex(quote["exact"].encode("utf-8")) == row["span_sha256"]
+    if isinstance(affix, str) and affix and (side == "before" or whole):
+        near = affix[-len(layer):] if side == "before" else affix[:len(layer)]
+        if not (layer.endswith(near) if side == "before" else layer.startswith(near)):
+            found.append(f"the record's quote {'prefix' if side == 'before' else 'suffix'} must be where this "
+                         f"context meets the passage")
+    segments, messages = text_segments(raw["segments"], layer)
+    found += messages
+    if found:
+        return None, found
+    view = {"layer": layer, "segments": segments}
+    view.update({flag: True for flag in ("trimmed", "lead_in") if raw.get(flag) is True})
+    return view, []
+
+
+def attach_passage_text(doc: dict, sets: list[BuiltSet], problems: Problems) -> tuple[int, int]:
+    """Give each passage the side file has a verified entry for its full text; the others keep the quote.
+    Returns how many passages got their text, and how many of those have a status (the pages show only
+    a passage with one, so the dashboard counts the text it shows from these)."""
+    entries = doc.get("passages")
+    if not isinstance(entries, dict):
+        problems.add("--passage-text", "passages must be an object of entries keyed by passage_key")
+        return 0, 0
+    attached = shown = 0
+    for built in sets:
+        for view, records in built.articles:
+            rows = {row["id"]: row for row in record_rows(records)}
+            for passage in view["passages"]:
+                row = rows[passage["id"]]
+                key = passage_key(row["pageid"], row["span_sha256"])
+                if key not in entries:
+                    continue
+                text, messages = passage_text_entry(entries[key], passage["id"], row,
+                                                    built.reader_layers.get(view["pageid"]))
+                for message in messages:
+                    problems.add(f"--passage-text: passages[{key}]", message)
+                if text is not None:
+                    passage["text"] = text
+                    attached += 1
+                    shown += passage["status"] in STATUSES
+    return attached, shown
+
+
+def signature_entry(entry: Any, loc: dict) -> tuple[dict | None, list[str]]:
+    """One --signatures entry as the location's `signature`, checked against the card."""
+    if not isinstance(entry, dict):
+        return None, ["an entry is an object"]
+    found = []
+    sig, kind, elided = entry.get("signature"), entry.get("kind"), entry.get("elided")
+    if not member(kind, LEAN_KEYWORDS):
+        found.append(f"kind must be one of {sorted(LEAN_KEYWORDS)}")
+    if not isinstance(sig, str) or not 0 < len(sig) <= MAX_SIGNATURE_CHARS:
+        found.append(f"signature must be a string of at most {MAX_SIGNATURE_CHARS} characters")
+    elif isinstance(kind, str):
+        head = f"{kind} {loc['declaration']}"
+        if not (sig == head or sig.startswith(head + " ") or sig.startswith(head + "\n")):
+            found.append("signature must start with its keyword and the card's declaration")
+    if type(elided) is not bool:
+        found.append("elided must be true or false")
+    if entry.get("proof_status") != loc["proof_status"]:
+        found.append(f"proof_status {entry.get('proof_status')!r} is not the card's {loc['proof_status']!r}: "
+                     "the corpus row describes another declaration")
+    full = entry.get("type")
+    if elided is True and not (isinstance(full, str) and 0 < len(full) <= MAX_TYPE_CHARS):
+        found.append(f"an elided signature keeps the whole type in type (at most {MAX_TYPE_CHARS} characters)")
+    deprecated = entry.get("deprecated_to")
+    if deprecated is not None and not (isinstance(deprecated, str) and LEAN_NAME_RE.match(deprecated)):
+        found.append("deprecated_to, when present, is a declaration name")
+    if found:
+        return None, found
+    view: dict = {"text": sig, "elided": elided}
+    if elided:
+        view["type"] = full
+    if deprecated is not None:
+        view["deprecated_to"] = deprecated
+    return view, []
+
+
+def attach_signatures(doc: dict, sets: list[BuiltSet], universe: dict,
+                      problems: Problems) -> tuple[dict | None, int, int]:
+    """Give each location the side file names (library, commit, declaration) for its signature."""
+    source = doc.get("source")
+    if not isinstance(source, dict) or source.get("universe_sha256") != universe["sha256"]:
+        problems.add("--signatures", f"source.universe_sha256 must be the store's universe {universe['sha256']}: "
+                                     "a signature is the type at the commit a card links")
+        return None, 0, 0
+    identity = {"corpus_sha256": source.get("corpus_sha256"), "corpus_built": source.get("corpus_built"),
+                "universe": source.get("universe")}
+    if not HEX64.match(str(identity["corpus_sha256"])) or not CREATED_RE.match(str(identity["corpus_built"])) \
+            or identity["universe"] != universe["id"]:
+        problems.add("--signatures", "source names its corpus: corpus_sha256 (64 hex), corpus_built (an ISO 8601 "
+                                     "UTC time) and universe (the store's universe id)")
+        return None, 0, 0
+    table = doc.get("signatures")
+    if not isinstance(table, dict):
+        problems.add("--signatures", "signatures must be an object: library -> commit -> declaration -> entry")
+        return None, 0, 0
+    count, declarations = 0, set()
+    for built in sets:
+        for view, _ in built.articles:
+            for passage in view["passages"]:
+                for loc in passage["locations"]:
+                    commits = table.get(loc["library"])
+                    names = commits.get(loc["commit"]) if isinstance(commits, dict) else None
+                    if not isinstance(names, dict) or loc["declaration"] not in names:
+                        continue
+                    signature, messages = signature_entry(names[loc["declaration"]], loc)
+                    where = f"--signatures: signatures[{loc['library']}][{loc['commit']}][{loc['declaration']}]"
+                    for message in messages:
+                        problems.add(where, message)
+                    if signature is not None:
+                        loc["signature"] = signature
+                        count += 1
+                        declarations.add((loc["library"], loc["commit"], loc["declaration"]))
+    return identity, count, len(declarations)
+
+
+def _dig(value: Any, *keys: str) -> Any:
+    """value[k1][k2]..., or None as soon as a level is not an object."""
+    for key in keys:
+        value = value.get(key) if isinstance(value, dict) else None
+    return value
+
+
+def _role(roles: Any, name: str) -> tuple[Any, Any]:
+    return _dig(roles, name, "model"), _dig(roles, name, "model_name")
+
+
+def run_view(runs: Any, run_id: str, role: str, seal: dict, universe: dict, problems: Problems) -> dict | None:
+    """One run of --provenance as the page cites it: its models, operator and dates, checked.
+
+    What the side file says of the run's model and operator is its maker's reading of the run's
+    run.yaml and receipt: checked here for consistency (each role's model, the models the run's own
+    calls name) and against the seal where the seal can say (the skill commit, the universe, and a
+    harvest no later than the export), but the seal itself records neither."""
+    run = runs.get(run_id) if isinstance(runs, dict) else None
+    where = f"--provenance: runs[{run_id}]"
+    named = ("the locate run names it as its inventory run" if role == "inventory"
+             else f"the campaign names it as the {role} run")
+    if not isinstance(run, dict):
+        problems.add(where, "is missing: the side file describes every run the record set's campaign names, and "
+                            "the inventory run its locate run names")
+        return None
+    found = []
+    if run.get("run_id") != run_id:
+        found.append(f"run_id must be {run_id!r}")
+    if run.get("mode") != RUN_MODES[role]:
+        found.append(f"mode must be {RUN_MODES[role]!r}: {named}")
+    model, name, operator = run.get("model"), run.get("model_name"), run.get("operator")
+    worker, reviewer = _role(run.get("roles"), "worker"), _role(run.get("roles"), "reviewer")
+    if not (isinstance(model, str) and TOKEN_RE.match(model)) or not (isinstance(name, str) and DISPLAY_NAME_RE.match(name)):
+        found.append(f"model and model_name must be a model id ({TOKEN_RULE}) and its printable name")
+    if worker != (model, name):
+        found.append("roles.worker must be the run's model and model_name")
+    if not (isinstance(reviewer[0], str) and TOKEN_RE.match(reviewer[0])
+            and isinstance(reviewer[1], str) and DISPLAY_NAME_RE.match(reviewer[1])):
+        found.append("roles.reviewer names its model and model_name")
+    observed = _dig(run, "model_evidence", "observed", "messages_by_model")
+    configured = {name for name in (model, reviewer[0]) if isinstance(name, str)}
+    if not isinstance(observed, dict) or not observed or not set(observed) <= configured:
+        found.append("model_evidence.observed.messages_by_model must name only the models the run's roles were "
+                     "configured with: a model the run's own calls do not bear out is never cited")
+    if not (isinstance(operator, str) and TOKEN_RE.match(operator)):
+        found.append(f"operator must be the login that ran it ({TOKEN_RULE})")
+    start, end = _dig(run, "window_utc", "start"), _dig(run, "window_utc", "end")
+    began, harvested, exported = utc_time(start), utc_time(end), utc_time(seal.get("created"))
+    if not (began is not None and harvested is not None and began <= harvested
+            and _dig(run, "times", "harvested_at") == end):
+        found.append("window_utc is {start, end}: ISO 8601 UTC times, start first, end the harvest (times.harvested_at)")
+    elif exported is None or harvested > exported:
+        found.append("window_utc.end, the harvest, must be no later than the seal's created: a record set holds what "
+                     "its runs had harvested when it was exported")
+    if _dig(run, "skill", "commit") != seal["skill_commit"]:
+        found.append("skill.commit must be the seal's skill_commit")
+    if _dig(run, "universe", "sha256") != universe["sha256"]:
+        found.append("universe.sha256 must be the store's universe")
+    sampling = None
+    if role == "challenge":
+        raw = run.get("sampling")
+        sampling = {key: raw.get(key) for key in SAMPLING_KEYS if key in raw} if isinstance(raw, dict) else {}
+        if type(sampling.get("seed")) is not int or any(
+                not (type(value) in (int, float) and 0 <= value <= 1) for key, value in sampling.items() if key != "seed"):
+            found.append("sampling is {seed: <int>, sample_rate, strong_sample_rate, absence_sample_rate: 0 to 1}")
+    for message in found:
+        problems.add(where, message)
+    if found:
+        return None
+    view = {"run_id": run_id, "mode": run["mode"], "model": model, "model_name": name,
+            "reviewer_model": reviewer[0], "reviewer_model_name": reviewer[1], "operator": operator,
+            "started": start, "harvested": end, "skill_commit": seal["skill_commit"]}
+    if sampling is not None:
+        view["sampling"] = sampling
+    return view
+
+
+def record_provenance_problems(described: Any, rows: list[dict], locate: str, challenge: str | None) -> list[str]:
+    """Whether the side file's per-line entries describe exactly these records."""
+    if not isinstance(described, list) or len(described) != len(rows):
+        return [f"lists {len(described) if isinstance(described, list) else 'no'} records, not the "
+                f"{len(rows)} lines of the records file"]
+    found = []
+    for line, (entry, row) in enumerate(zip(described, rows)):
+        # A record a challenge run judged names that run; one it sampled out may name it apart.
+        rechecked = row["challenge"] in ("survived", "downgraded")
+        expected = {"line": line, "shape": row["shape"], "locate_run": locate, "verdict": row["challenge"],
+                    "rechecked": rechecked, "run": challenge if rechecked else None,
+                    "sampled_out_of": challenge if row["challenge"] == "sampled_out" else None}
+        verdict = _dig(entry, "challenge")
+        got = {"line": _dig(entry, "line"), "shape": _dig(entry, "shape"), "locate_run": _dig(entry, "locate_run"),
+               **{key: _dig(verdict, key) for key in ("verdict", "rechecked", "run")},
+               "sampled_out_of": _dig(verdict, "sampled_out_of") if isinstance(verdict, dict)
+               and "sampled_out_of" in verdict else expected["sampled_out_of"]}
+        keys = [key for key in ("passage_key", "location_key", "pair_key") if row[key] is not None]
+        if got != expected or any(_dig(entry, key) != row[key] for key in keys):
+            found.append(f"line {line} does not describe the record on that line (its line, shape, keys, locate "
+                         "run and challenge verdict and run)")
+    return found
+
+
+def attach_provenance(doc: dict, sets: list[BuiltSet], universe: dict, problems: Problems) -> list[dict]:
+    """Give each article the runs that made its records; returns every run cited, for current.json."""
+    described_sets = doc.get("record_sets") if isinstance(doc.get("record_sets"), dict) else {}
+    described_records = doc.get("records") if isinstance(doc.get("records"), dict) else {}
+    cited: dict[str, dict] = {}
+    for built in sets:
+        seal = built.seal
+        entry = described_sets.get(seal["set_id"])
+        where = f"--provenance: record_sets[{seal['set_id']}]"
+        if not isinstance(entry, dict):
+            problems.add(where, "is missing: the side file describes every record set of the build")
+            continue
+        runs = re.match(r"^run:([^+]+)(?:\+(.+))?\Z", seal["campaign"])
+        locate, challenge = entry.get("locate_run"), entry.get("challenge_run")
+        if entry.get("seal_sha256") != built.seal_sha or entry.get("campaign") != seal["campaign"]:
+            problems.add(where, "seal_sha256 and campaign must be the record set's own")
+            continue
+        if runs and (locate, challenge) != (runs.group(1), runs.group(2)):
+            problems.add(where, "locate_run and challenge_run must be the runs the campaign token names")
+            continue
+        if not isinstance(locate, str) or not (challenge is None or isinstance(challenge, str)):
+            problems.add(where, "locate_run names a run, and challenge_run a run or null")
+            continue
+        locate_view = run_view(doc.get("runs"), locate, "locate", seal, universe, problems)
+        challenge_view = run_view(doc.get("runs"), challenge, "challenge", seal, universe, problems) if challenge else None
+        # The inventory run that chose the passages the locate run searched, when its run.yaml names one.
+        inventory = _dig(doc.get("runs"), locate, "inventory_run")
+        if inventory is not None and not (isinstance(inventory, str) and RUN_ID_RE.match(inventory)):
+            problems.add(f"--provenance: runs[{locate}]", "inventory_run names the inventory run whose passages it "
+                                                          "searched, or is null")
+            continue
+        inventory_view = run_view(doc.get("runs"), inventory, "inventory", seal, universe, problems) if inventory else None
+        if challenge and challenge_view is not None:
+            challenged = doc["runs"][challenge].get("challenged_runs")
+            if not isinstance(challenged, list) or locate not in challenged:
+                problems.add(f"--provenance: runs[{challenge}]", f"challenged_runs must name {locate}")
+                continue
+        if locate_view is None or (challenge and challenge_view is None) or (inventory and inventory_view is None):
+            continue
+        # The runs follow one another: the inventory's harvest before the locate run starts, and the
+        # challenge after the locate run it re-checked was harvested.
+        if inventory_view is not None and utc_time(inventory_view["harvested"]) > utc_time(locate_view["started"]):
+            problems.add(f"--provenance: runs[{inventory}]", f"window_utc.end must be no later than the start of "
+                                                             f"{locate}, the locate run that searched its passages")
+            continue
+        if challenge_view is not None and utc_time(challenge_view["started"]) < utc_time(locate_view["harvested"]):
+            problems.add(f"--provenance: runs[{challenge}]", f"window_utc.start must be no earlier than the harvest of "
+                                                             f"{locate}, the locate run it re-checked")
+            continue
+        for view, records in built.articles:
+            for message in record_provenance_problems(described_records.get(str(view["pageid"])), record_rows(records),
+                                                      locate, challenge):
+                problems.add(f"--provenance: records[{view['pageid']}]", message)
+            view["provenance"] = {"locate": locate_view, "challenge": challenge_view}
+            if inventory_view is not None:
+                view["provenance"]["inventory"] = inventory_view
+        for run in (inventory_view, locate_view, challenge_view):
+            if run is not None:
+                cited[run["run_id"]] = run
+    return [cited[run_id] for run_id in sorted(cited)]
+
+
+def recheck_tallies(sets: list[BuiltSet]) -> dict[str, dict]:
+    """What each challenge run re-checked across the build, from the articles it challenged:
+    [re-checked, of] for the Lean locations (related declarations aside) and the absences of
+    central (subject or central) passages and of supporting ones. The challenge samples the
+    supporting passages, so its rates alone do not say how much of the build it re-checked."""
+    out: dict[str, dict] = {}
+    for built in sets:
+        for view, _ in built.articles:
+            run = (view.get("provenance") or {}).get("challenge")
+            if not run:
+                continue
+            t = out.setdefault(run["run_id"], {"central": {"locations": [0, 0], "absences": [0, 0]},
+                                               "supporting": {"locations": [0, 0], "absences": [0, 0]}})
+            for passage in view["passages"]:
+                group = t["central" if passage.get("prominence") in ("subject", "central") else "supporting"]
+                for loc in passage["locations"]:
+                    if loc["relation"] == "relatedMatch":
+                        continue
+                    group["locations"][1] += 1
+                    group["locations"][0] += loc["challenge"] in ("survived", "downgraded")
+                absence = passage.get("absence")
+                if absence:
+                    group["absences"][1] += 1
+                    group["absences"][0] += absence["challenge"] in ("survived", "downgraded")
+    return out
+
+
+def audit_share(value: Any) -> float | None:
+    """A share: a finite number from 0 to 1, never a bool; None when it is not one."""
+    return value if type(value) in (int, float) and math.isfinite(value) and 0 <= value <= 1 else None
+
+
+def audit_figure_problems(n: int, figure: dict, items: int | None) -> list[str]:
+    """What is wrong with one --audit-summary figure (AUDIT_FIGURE_KEYS), as messages."""
+    found = []
+    if not (isinstance(figure["id"], str) and TOKEN_RE.match(figure["id"])):
+        found.append(f"figure {n}: id must be {TOKEN_RULE}")
+    if not (isinstance(figure["label"], str) and AUDIT_LABEL_RE.match(figure["label"])):
+        found.append(f"figure {n}: label must be plain text, letters, digits, spaces and ,.()·/+:;'&%_- "
+                     "(at most 160 characters)")
+    share, ci = audit_share(figure["share"]), figure["ci95"]
+    low, high = (audit_share(ci[0]), audit_share(ci[1])) if isinstance(ci, list) and len(ci) == 2 else (None, None)
+    if share is None or low is None or high is None or not low <= share <= high:
+        found.append(f"figure {n}: share is the share judged right, from 0 to 1, and ci95 its 95% interval "
+                     "[low, high], low <= share <= high")
+    drawn, population, weights, n_eff = figure["drawn"], figure["population"], figure["weights"], figure["n_eff"]
+    if not (type(drawn) is int and drawn >= 1 and (items is None or drawn <= items)
+            and type(population) is int and population >= drawn):
+        found.append(f"figure {n}: drawn is how many of the sample's items it rests on (1 to items), and population "
+                     "how many the share is of (at least drawn)")
+    elif not (weights is None or (isinstance(weights, str) and AUDIT_LABEL_RE.match(weights))) \
+            or not (type(n_eff) in (int, float) and math.isfinite(n_eff) and 0 < n_eff <= drawn
+                    and (weights is not None or n_eff == drawn)):
+        found.append(f"figure {n}: weights says what the items were weighed by, plain text, or is null for none, and "
+                     "n_eff is the Kish effective sample size, above 0 and at most drawn (drawn itself without weights)")
+    return found
+
+
+def audit_view(doc: dict, sets: list[BuiltSet], problems: Problems) -> dict | None:
+    """--audit-summary as the pages cite it: the run that audited the build's links and its figures, checked.
+
+    The run is the maker's reading of the audit's own records, as a run's provenance is; it is checked
+    for its shape and against the seals, which an audit must post-date: it judges the sets as exported."""
+    where = "--audit-summary"
+    found = [f"unknown key {key!r}" for key in sorted(set(doc) - set(AUDIT_SUMMARY_KEYS))]
+    want = sorted(built.seal_sha for built in sets)
+    shas = doc.get("record_sets")
+    if not (isinstance(shas, list) and all(isinstance(sha, str) for sha in shas) and sorted(shas) == want):
+        found.append(f"record_sets must list the seal sha256 of each record set of this build, each once "
+                     f"({', '.join(want)}): an audit's figures describe the sets it read")
+    exported = [utc_time(built.seal.get("created")) for built in sets]
+    run = doc.get("audit")
+    models: list[dict] = []
+    if not isinstance(run, dict) or set(run) != set(AUDIT_RUN_KEYS):
+        found.append(f"audit is the run that judged the sample: exactly {list(AUDIT_RUN_KEYS)}")
+        run = {}
+    else:
+        if not (isinstance(run["run_id"], str) and RUN_ID_RE.match(run["run_id"])):
+            found.append("audit.run_id must be a run id (letters, digits and ._-, at most 64)")
+        if not (isinstance(run["operator"], str) and TOKEN_RE.match(run["operator"])):
+            found.append(f"audit.operator must be the login that ran it ({TOKEN_RULE})")
+        began, ended = utc_time(_dig(run, "window_utc", "start")), utc_time(_dig(run, "window_utc", "end"))
+        if not (isinstance(run["window_utc"], dict) and set(run["window_utc"]) == {"start", "end"}
+                and began is not None and ended is not None and began <= ended):
+            found.append("audit.window_utc is {start, end}: ISO 8601 UTC times, start first")
+        elif None in exported or began < max(exported):
+            found.append("audit.window_utc.start must be no earlier than the created time of the latest seal it read: "
+                         "an audit judges the record sets as they were exported")
+        if type(run["blind"]) is not bool or type(run["independent"]) is not bool:
+            found.append("audit.blind and audit.independent are true or false: whether its judges were blind to the "
+                         "runs and to each other, and whether they were independent of the runs they judged")
+        raw = run["models"]
+        if not (isinstance(raw, list) and 1 <= len(raw) <= MAX_AUDIT_MODELS
+                and all(isinstance(m, dict) and set(m) == {"model", "model_name"}
+                        and isinstance(m["model"], str) and TOKEN_RE.match(m["model"])
+                        and isinstance(m["model_name"], str) and DISPLAY_NAME_RE.match(m["model_name"]) for m in raw)
+                and len({m["model"] for m in raw}) == len(raw)):
+            found.append(f"audit.models lists 1 to {MAX_AUDIT_MODELS} models that judged, each {{model, model_name}}: "
+                         "a model id and its printable name, each model once")
+        else:
+            models = [{"model": m["model"], "model_name": m["model_name"]} for m in raw]
+    items = doc.get("items")
+    if type(items) is not int or items < 1:
+        found.append("items must be the number of items the audit judged, at least 1")
+        items = None
+    figures = doc.get("figures")
+    out_figures: list[dict] = []
+    if not isinstance(figures, list) or not 1 <= len(figures) <= MAX_AUDIT_FIGURES:
+        found.append(f"figures must list 1 to {MAX_AUDIT_FIGURES} figures")
+    else:
+        for n, figure in enumerate(figures):
+            if not isinstance(figure, dict) or set(figure) != set(AUDIT_FIGURE_KEYS):
+                found.append(f"figure {n} is exactly {list(AUDIT_FIGURE_KEYS)}")
+                continue
+            found += audit_figure_problems(n, figure, items)
+            out_figures.append({key: figure[key] for key in AUDIT_FIGURE_KEYS})
+        if len({f["id"] for f in out_figures if isinstance(f["id"], str)}) != len(out_figures):
+            found.append("each figure's id is its own")
+    for message in found:
+        problems.add(where, message)
+    if found:
+        return None
+    return {"run_id": run["run_id"], "operator": run["operator"], "started": run["window_utc"]["start"],
+            "ended": run["window_utc"]["end"], "models": models, "blind": run["blind"],
+            "independent": run["independent"], "items": items, "figures": out_figures}
+
+
+# ---- the reader: each article's pinned revision with its passages marked (--reader-html) -----
+#
+# A record set carries a passage as a span on its revision's text layer, never the article. The
+# side file holds, per article, the revision itself (the sourceset's body.html, whose sha256 every
+# record pins as html_sha256), sanitised for serving, with each passage's text wrapped in
+#     <mark class="atl" data-p="<item hex>" data-status="<status>">
+# split at element boundaries, a formula or a citation marker wrapped whole, and the passage's
+# first mark carrying id="p-<item hex>" (the card list's anchor). The builder takes none of it on
+# trust. It reads the HTML with the standard library's html.parser and
+#   - refuses any element outside READER_TAGS, any attribute outside READER_ATTRS (data-* and
+#     aria-* aside; event handlers and the other active attributes never), any URL a page would
+#     fetch that is not https on Wikimedia's upload hosts, any link that is not an in-page
+#     fragment, an atlas article (one slug segment, no dot segment) or an http(s) page on another
+#     host than the site's (reader_link_problem), the page's own ids and classes, and any
+#     TemplateStyles rule not scoped to .mw-parser-output (reader_css_problems, on the CSS as a
+#     browser tokenizes it, so no escape hides a keyword);
+#   - refuses markup a browser's tree builder would read differently from html.parser
+#     (ReaderScan._tree): a style element or an HTML element inside MathML, an element closed out
+#     of order or left open, a block in a paragraph, a table part out of place, and the like;
+#   - rebuilds the revision's text layer from it the way web-html/3 does (the decoded text in
+#     document order, nothing from style, one LF dropped after pre and listing, each White_Space
+#     run one space, the ends stripped): it must hash to the records' layer_sha256, so every
+#     character served is the pinned revision's;
+#   - places every mark on that layer: a passage's marks, in document order, cover exactly its
+#     span (the layer slice whose sha256 is its record's span_sha256) with at most a space between
+#     two of them; each carries its passage's status; none nests in another, crosses an element
+#     boundary or shares a character with another passage's; a passage with no status has none
+#     (no highlight until it is read);
+#   - shows no file that is not free: every file it fetches (src, srcset, poster, a TemplateStyles
+#     url()) is a Wikimedia Commons file or an English Wikipedia upload, never a Wikimedia or
+#     Foundation mark (by its name, or its file page's trademarked restriction), and is named in
+#     the entry's `images` with its licence and restrictions; an English Wikipedia upload only
+#     with a free licence and categories that make it free everywhere (reader_images).
+# A passage with no mark is unplaced (the side file lists the same ones, with its reason). The
+# view gains reader {sha256, bytes, marks, passages, unplaced[, images]}, and the store the file
+# reader/<pageid>.html, the side file's html byte for byte.
+
+READER_WS = frozenset(chr(code) for code in (
+    *range(0x09, 0x0E), 0x20, 0x85, 0xA0, 0x1680, *range(0x2000, 0x200B), 0x2028, 0x2029, 0x202F, 0x205F, 0x3000))
+READER_WS_RUN = re.compile("[" + "".join(re.escape(ch) for ch in sorted(READER_WS)) + "]+")
+# ASCII whitespace, the only space HTML's attribute parsers (a srcset's candidates) and CSS's tokenizer
+# (a url()) skip. A browser keeps any other space character (U+00A0, U+3000 and the like) inside a
+# URL, which then resolves against the page, where Python's str.strip() and a Unicode \s would drop
+# it and check another URL. So URLs are split at these alone, and a URL attribute holding another
+# space character is refused (READER_URL_ATTRS).
+READER_ASCII_WS = "\t\n\f\r "
+READER_ASCII_WS_RUN = re.compile(r"[\t\n\f\r ]+")
+READER_URL_ATTRS = frozenset({"href", "cite", "src", "srcset", "poster"})
+MAX_READER_HTML_BYTES = 4 * 1024 * 1024
+READER_TAGS = frozenset((
+    "a abbr audio b bdi bdo big blockquote br caption cite code col colgroup dd del dfn div dl dt em figcaption "
+    "figure h2 h3 h4 h5 h6 hr i img ins kbd li mark ol p pre q s samp small source span strong style sub sup "
+    "table tbody td tfoot th thead time tr track u ul var video wbr "
+    # MathML (every formula keeps its MathML and its TeX annotation)
+    "math semantics annotation mrow mi mn mo ms mtext mspace mfrac msqrt mroot msub msup msubsup munder mover "
+    "munderover mtable mtr mtd mstyle mpadded mphantom menclose merror mmultiscripts mprescripts none").split())
+READER_MATHML = frozenset(("math semantics annotation mrow mi mn mo ms mtext mspace mfrac msqrt mroot msub msup "
+                           "msubsup munder mover munderover mtable mtr mtd mstyle mpadded mphantom menclose merror "
+                           "mmultiscripts mprescripts none").split())
+READER_VOID = frozenset({"br", "col", "hr", "img", "source", "track", "wbr"})
+READER_EAT_LF = frozenset({"pre", "listing"})
+READER_ACTIVE_ATTRS = frozenset({"srcdoc", "formaction", "action", "background", "ping", "autofocus", "http-equiv",
+                                 "is", "nonce", "manifest", "contenteditable", "tabindex", "accesskey", "popover",
+                                 "autoplay", "download"})
+# The attributes a reader body may carry, by name: what Wikipedia's parse HTML and its MathML use on
+# READER_TAGS (every one batch 1's 48 bodies hold, and their like), each inert or value-checked in
+# ReaderScan._attribute, plus data-* and aria-* (READER_ATTR_FAMILY). Anything else is refused, so an
+# attribute a browser gives an effect (attributionsrc sends a request to the hosts it names,
+# browsingtopics and sharedstoragewritable hand the image host browser state) is refused until it
+# is reviewed and listed here.
+READER_ATTRS = frozenset((
+    # HTML: global, links, images and media, tables, lists, edits and dates
+    "class id lang dir title role style translate typeof about property resource rel "
+    "href target hreflang type cite alt src srcset sizes width height decoding loading referrerpolicy "
+    "poster controls preload muted loop srclang kind label "
+    "colspan rowspan scope headers abbr axis span align valign char charoff bgcolor border cellpadding "
+    "cellspacing frame rules summary nowrap clear start reversed value datetime "
+    # MathML (presentation markup and its annotations)
+    "xmlns display alttext encoding mathvariant mathcolor mathbackground mathsize displaystyle scriptlevel "
+    "scriptminsize scriptsizemultiplier accent accentunder fence separator stretchy symmetric largeop "
+    "movablelimits form lspace rspace minsize maxsize linethickness numalign denomalign bevelled "
+    "columnalign columnlines columnspacing columnspan rowalign rowlines rowspacing framespacing equalrows "
+    "equalcolumns side minlabelspacing depth voffset notation subscriptshift superscriptshift").split())
+READER_ATTR_FAMILY = re.compile(r"^(?:data-[a-z0-9][a-z0-9._-]*|aria-[a-z]+)\Z")
+READER_FETCH = ("https://upload.wikimedia.org/", "https://thumb.wikimedia.org/")
+# What a reader body may show: a file of Wikimedia Commons or an English Wikipedia upload, by its
+# upload URL (the original, a thumbnail or a transcode, with any query). Commons hosts only files
+# that are free in the United States and in their source country; an English Wikipedia upload may
+# be non-free (fair use) or free in the United States only, so one is shown only when the entry's
+# `images` names it with a free licence and with categories that make it free everywhere
+# (READER_IMAGE_KEYS), as its maker took them from the MediaWiki API. Every file the body fetches is
+# named in `images`: its project, its licence (by name, with a link to the licence where it has one)
+# and its author, which the page lists for attribution. The Wikimedia projects' marks and the
+# Foundation's (their logos, wordmarks and icons, the Wikipedia W) are refused whatever their host and
+# however they are listed: the Foundation's trademark policy covers them whatever their copyright licence.
+READER_MEDIA_URL = re.compile(r"^https://(?:upload|thumb)\.wikimedia\.org/wikipedia/(commons|en)/"
+                              r"(?:(?:thumb|transcoded)/)?[0-9a-f]/[0-9a-f]{2}/([^/?#\s]+)(?:/[^/?#\s]+)?"
+                              r"(?:\?[^#\s]*)?\Z")
+# A file is such a mark by its name when the name starts with a project's or the Foundation's name as
+# a word (Wikipedia-W-bold-in-square.svg, Wikipedia_wordmark.svg, Wiktionary_small.svg,
+# MediaWiki-2020-icon.svg, Wiki_letter_w.svg, Wikimedia_Foundation_logo.svg: "Wiki" alone counts, a
+# longer word such as "Wikipedian" does not), or when it names a project or the Foundation and a logo,
+# wordmark or icon in either order (Commons-logo.svg, Notification-icon-Wikipedia-logo.svg,
+# WMF_logo.svg). Whatever its name, a file whose page marks it trademarked is refused too
+# (READER_BARRED_RESTRICTIONS), so a mark under another name is caught by its file page.
+READER_MARK_LEAD = ("Wiki|Wikimedia|Wikipedia|Wiktionary|Wikibooks|Wikiquote|Wikisource|Wikiversity|Wikivoyage|"
+                    "Wikinews|Wikidata|Wikispecies|Wikifunctions|Wikimania|Wikitech|MediaWiki")
+READER_MARK_PROJECT = READER_MARK_LEAD + "|Commons|Meta|Meta-Wiki|Incubator|WMF"
+READER_WIKIMEDIA_MARK = re.compile(
+    rf"^(?i:{READER_MARK_LEAD})(?![a-z])"
+    rf"|^(?=.*(?<![A-Za-z])(?i:{READER_MARK_PROJECT})(?![a-z]))"
+    r"(?=.*(?:(?<![A-Za-z])(?i:logo|wordmark|icon)|Logo|Wordmark|Icon)(?![a-z]))")
+# The free licences, as the API's License field names them (lower case): public domain and CC0,
+# Creative Commons BY and BY-SA of any version and port, the GFDL, the GPL and LGPL, the Free Art
+# Licence and the like. NonCommercial and NoDerivatives licences are not free, nor is none.
+READER_FREE_LICENCE = re.compile(r"^(?:pd(?:-[a-z0-9.-]+)?|cc0(?:-1\.0)?|cc-by(?:-sa)?(?:-[0-9.]+(?:-[a-z]{2,3})?)?|"
+                                 r"gfdl(?:-[a-z0-9.-]+)?|l?gpl(?:-[a-z0-9.+-]+)?|fal|ogl(?:-[a-z0-9.-]+)?|attribution)\Z")
+READER_IMAGE_PROJECTS = ("commons", "en")
+# What `images` gives each file, by its project: its restrictions, and an English Wikipedia upload also
+# its categories, as the API lists them. A free licence id alone does not make an upload free
+# everywhere: one free in the United States only (freedom of panorama, a work out of copyright there
+# alone) keeps its free licence id, and English Wikipedia files it under these categories, so an upload
+# is shown only when its categories include READER_FREE_CATEGORY and none of READER_NOT_FREE_CATEGORIES.
+READER_IMAGE_KEYS = {"commons": frozenset({"project", "licence", "licence_id", "licence_url", "author",
+                                           "restrictions"}),
+                     "en": frozenset({"project", "licence", "licence_id", "licence_url", "author", "restrictions",
+                                      "categories"})}
+# A Commons file is free by its licence id (READER_FREE_LICENCE) or, when the API gives it none, by its
+# licence's name alone, as Commons names a few free licences (the GPL and LGPL, the GFDL, the
+# "Attribution" licence, copyrighted free use, the public domain). Any other name, or no licence at
+# all, is refused: Commons hosting a file is not a licence, and a file is shown only with one.
+READER_FREE_LICENCE_NAMES = frozenset({"public domain", "pd", "cc0", "gpl", "lgpl", "gfdl", "attribution",
+                                       "copyrighted free use", "free art license", "fal"})
+# The licences that ask for the author's name with every copy (Creative Commons BY and BY-SA of every
+# version, the GFDL, the GPL and LGPL, the Free Art Licence, the Open Government Licence, the
+# "Attribution" licence), by id or, without one, by name: every free licence READER_FREE_LICENCE names
+# but the public domain and CC0. A file under one is shown only with its author. Those with a licence
+# text of their own (Creative Commons, the GFDL, the GPL and LGPL) are shown only with a link to it, as
+# their terms ask.
+READER_ATTRIBUTION_LICENCE = re.compile(r"^(?:cc-by(?:-sa)?(?:-[0-9.]+(?:-[a-z]{2,3})?)?|gfdl(?:-[a-z0-9.-]+)?|"
+                                        r"l?gpl(?:-[a-z0-9.+-]+)?|fal|ogl(?:-[a-z0-9.-]+)?|attribution)\Z")
+READER_LICENCE_TEXT = re.compile(r"^(?:cc-by|gfdl|l?gpl)")
+# A file's author as its file page credits them (the API's Artist with its markup stripped): plain text.
+READER_AUTHOR_RE = re.compile(r"^(?=\S)[^\x00-\x1f\x7f<>]{1,300}(?<=\S)\Z")
+# The licence's own page (the API's LicenseUrl), https on the hosts that publish these licences.
+READER_LICENCE_URL = re.compile(r"^https://([A-Za-z0-9.-]+)/[A-Za-z0-9._~%/+-]*\Z")
+READER_LICENCE_HOSTS = frozenset({"creativecommons.org", "www.gnu.org", "gnu.org", "artlibre.org"})
+# A file page's restrictions beside its licence, as the API's extmetadata Restrictions field lists them
+# (split at "|"; [] for none): "trademarked", "personality", "insignia" and the like. A trademarked file
+# is a mark, the Foundation's or another's, and is refused whatever its name or licence; the others
+# restrict a use, not the copy, and leave a file free.
+READER_BARRED_RESTRICTIONS = frozenset({"trademarked"})
+READER_RESTRICTION_RE = re.compile(r"^[a-z][a-z0-9-]{0,63}\Z")
+MAX_READER_RESTRICTIONS = 16
+READER_FREE_CATEGORY = "Category:All free media"
+READER_NOT_FREE_CATEGORIES = frozenset({
+    "Category:All free in US media", "Category:Wikipedia files not suitable for Commons",
+    "Category:Wikipedia images using freedom of panorama", "Category:All non-free media"})
+READER_CATEGORY_RE = re.compile(r"^Category:[^\x00-\x1f\x7f<>\[\]{}|]{1,250}\Z")
+MAX_READER_CATEGORIES = 200
+READER_FILE_NAME = re.compile(r"^[^\x00-\x1f\x7f/#?<>\[\]{}|\s]{1,240}\Z")
+# A link (href or cite) is an in-page fragment, an atlas article or an http(s) page on another host.
+# An atlas article is /atlas/<pageid> or /atlas/<pageid>/<slug>, the slug one path segment as atlasSlug
+# (atlas.ts) writes it: the characters encodeURIComponent leaves and %XX escapes, never a dot segment
+# (".", "..", or either spelled with %2e), which a browser resolves away, so /atlas/1/../../<path> and
+# its %2e%2e form reach another path of the site. A fragment may follow.
+READER_ATLAS_LINK = re.compile(r"^/atlas/[1-9][0-9]{0,9}(?:/((?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+))?"
+                               r"(?:#[^\s\"'<>\\]*)?\Z")
+# An http(s) link's host is plain ASCII letters, digits, dots and hyphens, with no user, escape or
+# backslash, so the host checked is the host a browser goes to (it reads https://<this site>\@x/ as
+# this site and percent-decodes a host), and the URL holds no whitespace or backslash.
+READER_WEB_LINK = re.compile(r"^https?://([A-Za-z0-9.-]+)(?::[0-9]{1,5})?(?:[/?#][^\s\\]*)?\Z")
+# The site that serves the reader: an absolute link to it reaches every other path of the site, so the
+# reader links into the site only through atlas articles.
+READER_SITE_HOSTS = frozenset({"wikilean.jackmccarthy.org"})
+READER_LINK_RULE = "a {name} must be an in-page fragment, an http(s) page or an atlas article, on a link"
+# CSS is matched on its text with the comments out and every string a placeholder (reader_css_text),
+# so a pattern sees the keywords and functions a browser sees: an escape outside a string, which can
+# spell any of them (u\72l(, @\69mport), is refused there. These fetch, run or escape the article:
+# @import and the functions that take a URL as a string (image-set, image, src); url() is checked by
+# its value (reader_css_urls).
+READER_CSS_ACTIVE = (r"@import|expression\s*\(|javascript:|behavior\s*:|-moz-binding|image-set\s*\(|"
+                     r"(?<![\w-])(?:image|src|attr|element|cross-fade)\s*\(")
+READER_STYLE_ATTR = re.compile(READER_CSS_ACTIVE + r"|(?<![\w-])url\s*\(|position\s*:\s*(?:fixed|sticky)|[{}]", re.I)
+READER_CSS_BANNED = re.compile(READER_CSS_ACTIVE + r"|position\s*:\s*fixed", re.I)
+# A url() as CSS tokenizes it: ASCII letters in any case, and only CSS's whitespace (READER_ASCII_WS)
+# around the URL, so a U+00A0 before it stays in the URL checked, as it stays in the one fetched.
+READER_CSS_URL_CALL = re.compile(r"(?<![\w-])url\(", re.I | re.ASCII)
+READER_CSS_URL = re.compile(r"(?<![\w-])url\([\t\n\f\r ]*(?:\"#(\d+)\"|([^\t\n\f\r \"'()]*))[\t\n\f\r ]*\)",
+                            re.I | re.ASCII)
+READER_CSS_HEX = re.compile(r"([0-9a-fA-F]{1,6})(?:\r\n|[ \t\r\n\f])?")
+READER_SCOPE = re.compile(r"\.mw-parser-output(?![\w-])")
+# Characters a browser's tokenizer changes or drops (NUL becomes U+FFFD), so html.parser and the
+# browser would read different text or tag names.
+READER_CONTROL = re.compile(r"[\x00-\x08\x0b\x0e-\x1f\x7f]")
+# What a browser's tree builder does that html.parser does not (HTML's "in body" rules): a start
+# tag of these closes an open <p> (READER_CLOSES_P), and these scopes stop that search.
+READER_CLOSES_P = frozenset(("address article aside blockquote center details dialog dir div dl fieldset "
+                             "figcaption figure footer header hgroup main menu nav ol p pre listing search "
+                             "section summary table ul h1 h2 h3 h4 h5 h6 hr xmp").split())
+READER_SCOPES = frozenset({"table", "td", "th", "caption", "button", "math", "object", "applet", "marquee",
+                           "template", "html"})
+READER_HEADINGS = frozenset({"h1", "h2", "h3", "h4", "h5", "h6"})
+# A table's own children (anything else, or text other than whitespace, a browser moves out in
+# front of the table).
+READER_TABLE_KIDS = {"table": frozenset({"caption", "colgroup", "thead", "tbody", "tfoot", "tr", "style"}),
+                     "thead": frozenset({"tr", "style"}), "tbody": frozenset({"tr", "style"}),
+                     "tfoot": frozenset({"tr", "style"}), "tr": frozenset({"td", "th", "style"}),
+                     "colgroup": frozenset({"col"})}
+READER_TABLE_PARENTS = {"caption": ("table",), "colgroup": ("table",), "thead": ("table",), "tbody": ("table",),
+                        "tfoot": ("table",), "tr": ("table", "thead", "tbody", "tfoot"), "td": ("tr",),
+                        "th": ("tr",), "col": ("colgroup",)}
+READER_MARK_ATTRS = frozenset({"class", "data-p", "data-status", "id"})
+READER_ANCHOR_ID = re.compile(r"^p-[0-9a-f]{8,16}\Z")
+# The page's own ids and classes (atlas-render: atlas-*, atlr-*; the site header: wl-*) are never the
+# article's: its stylesheets position .atlr-peek and .atlr-fab fixed over the page, make
+# .atlas-chip[data-filter] a filter control and .wl-header the sticky header. A class is matched
+# per token, split at ASCII whitespace as a browser splits it, and in any case.
+READER_CHROME_ID = re.compile(r"^(?:atlas-|atlr-|wl-)")
+READER_CHROME_CLASS = re.compile(r"^(?:atlas-|atlr-|wl-)", re.I)
+READER_CLASS_SPLIT = re.compile(r"[\t\n\f\r ]+")
+ITEM_HEX_RE = re.compile(r"^In-text #([0-9a-f]{8,16})\Z")
+READER_ENTRY_KEYS = frozenset({"source_id", "revision", "html_sha256", "layer_sha256", "renderer", "html", "marks",
+                               "passages", "unplaced", "images"})
+
+
+def reader_css_text(css: str) -> tuple[str, list[str], list[str]]:
+    """CSS as a browser tokenizes it: (its text, its strings, problems).
+
+    The text has each comment as a space and each string as the placeholder "#<n>", n indexing the
+    strings' decoded values, so a pattern on it matches only what is outside comments and strings.
+    Outside a string nothing may be escaped: an escape spells any keyword, function or selector
+    (u\\72l( is url(, @\\69mport is @import), and no pattern on the text would see it.
+    """
+    out: list[str] = []
+    strings: list[str] = []
+    found: list[str] = []
+    i, n = 0, len(css)
+    while i < n:
+        ch = css[i]
+        if css.startswith("/*", i):
+            end = css.find("*/", i + 2)
+            if end < 0:
+                found.append("a style comment is never closed")
+                break
+            out.append(" ")
+            i = end + 2
+        elif ch in "\"'":
+            value: list[str] = []
+            j, closed = i + 1, False
+            while j < n:
+                c = css[j]
+                if c == ch:
+                    closed = True
+                    break
+                if c in "\n\r\f":
+                    break
+                if c == "\\":
+                    if j + 1 >= n:
+                        break
+                    if css[j + 1] in "\n\r\f":           # an escaped newline continues the string
+                        j += 3 if css.startswith("\r\n", j + 1) else 2
+                        continue
+                    hexa = READER_CSS_HEX.match(css, j + 1)
+                    if hexa:
+                        code = int(hexa.group(1), 16)
+                        value.append(chr(code) if 0 < code <= 0x10FFFF and not 0xD800 <= code <= 0xDFFF else "�")
+                        j = hexa.end()
+                    else:
+                        value.append(css[j + 1])
+                        j += 2
+                    continue
+                value.append(c)
+                j += 1
+            if not closed:
+                found.append("a style string is never closed")
+                break
+            out.append(f'"#{len(strings)}"')
+            strings.append("".join(value))
+            i = j + 1
+        elif ch == "\\":
+            found.append("a CSS escape outside a string (an escape can spell any keyword, function or selector)")
+            i += 2
+        else:
+            out.append(ch)
+            i += 1
+    return "".join(out), strings, found
+
+
+def reader_css_urls(text: str, strings: list[str], where: str, media: list[str] | None = None) -> list[str]:
+    """Every url() of a scanned CSS text must fetch https on Wikimedia's upload hosts; each one that
+    does is added to `media`, so the file it names is held to the reader's image rules."""
+    found = []
+    readable = 0
+    for match in READER_CSS_URL.finditer(text):
+        readable += 1
+        url = strings[int(match.group(1))] if match.group(1) is not None else match.group(2)
+        if not url.startswith(READER_FETCH):
+            found.append(f"{where} fetches {url[:60]!r}: only https on {', '.join(READER_FETCH)}")
+        elif media is not None:
+            media.append(url)
+    if readable != len(READER_CSS_URL_CALL.findall(text)):
+        found.append(f"{where} has a url() that is not one quoted or plain URL")
+    return found
+
+
+def reader_split_selectors(head: str) -> list[str]:
+    """A selector list split at its own commas, not those inside :is(), :not() or an attribute."""
+    parts, depth, piece = [], 0, []
+    for ch in head:
+        if ch in "([":
+            depth += 1
+        elif ch in ")]":
+            depth = max(0, depth - 1)
+        if ch == "," and depth == 0:
+            parts.append("".join(piece))
+            piece = []
+        else:
+            piece.append(ch)
+    parts.append("".join(piece))
+    return parts
+
+
+def reader_selector_scoped(selector: str) -> bool:
+    """A selector reaches only .mw-parser-output and what it holds.
+
+    The scope must be a compound of the selector itself, not an argument of :not(), :has(), :is()
+    or :where() or the value of an attribute (those match elements outside it: html:has(.mw-parser-
+    output) .banner is the banner), and the combinator after its compound is a descendant or child
+    one, never a sibling one.
+    """
+    bare = re.sub(r"\[[^\]]*\]", "", selector)
+    while True:
+        inner = re.sub(r"\([^()]*\)", "", bare)
+        if inner == bare:
+            break
+        bare = inner
+    if "(" in bare or ")" in bare:
+        return False
+    scope = READER_SCOPE.search(bare)
+    if scope is None:
+        return False
+    rest = bare[scope.end():]
+    after = rest[re.match(r"[^\s>+~]*", rest).end():].lstrip()
+    return not after.startswith(("+", "~"))
+
+
+def reader_css_problems(css: str, media: list[str] | None = None) -> list[str]:
+    """A TemplateStyles block's problems: what it must not hold, and every rule scoped to .mw-parser-output.
+    The URLs its url() calls fetch are added to `media`."""
+    text, strings, found = reader_css_text(css)
+    if "<" in css:
+        found.append("a style element holds '<' (TemplateStyles never do; markup there is a parser trick)")
+    if READER_CSS_BANNED.search(text):
+        found.append("a style element holds @import, expression(), a javascript: URL, a binding, an image-set(), "
+                     "image(), src(), attr() or element(), or a fixed position")
+    found += reader_css_urls(text, strings, "a style element", media)
+    stack: list[str] = []
+    buffer: list[str] = []
+    for ch in text:
+        if ch == "{":
+            head = "".join(buffer).strip()
+            buffer = []
+            if head.startswith("@"):
+                if stack and stack[-1] == "rule":
+                    found.append(f"the at-rule {head[:40]!r} is nested in a rule")
+                elif not re.match(r"@(?:media|supports)(?![\w-])", head):
+                    found.append(f"the at-rule {head[:40]!r} is not allowed (only @media and @supports)")
+                stack.append("at")
+                continue
+            if stack and stack[-1] == "rule":
+                # CSS nesting: `& + footer` inside a scoped rule is a sibling of the article.
+                found.append(f"the rule {head[:40]!r} is nested in another rule (CSS nesting is not allowed)")
+            else:
+                for selector in reader_split_selectors(head):
+                    if not reader_selector_scoped(selector):
+                        found.append(f"the selector {selector.strip()[:60]!r} is not scoped to .mw-parser-output")
+            stack.append("rule")
+        elif ch == "}":
+            buffer = []
+            if not stack:
+                found.append("a style element closes a block it never opened")
+            else:
+                stack.pop()
+        elif ch == ";" and (not stack or stack[-1] == "at"):
+            statement = "".join(buffer).strip()
+            buffer = []
+            if statement:
+                found.append(f"the statement {statement[:40]!r} stands outside any rule")
+        else:
+            buffer.append(ch)
+    if stack:
+        found.append("a style element leaves a block open")
+    elif "".join(buffer).strip():
+        # The last statement needs no ';' (`@import "x"` at the end of the block still imports).
+        found.append(f"the statement {''.join(buffer).strip()[:40]!r} stands outside any rule")
+    return found
+
+
+def reader_link_problem(name: str, tag: str, url: str) -> str | None:
+    """Why a link attribute (href or cite, its value decoded) is not one a reader body may carry, or None.
+
+    An href is on an <a>. A fragment stays on the page; an atlas article keeps to READER_ATLAS_LINK
+    and has no dot segment; an http(s) page keeps to READER_WEB_LINK and is on another host than
+    READER_SITE_HOSTS.
+    """
+    rule = f"{READER_LINK_RULE.format(name=name)} (a <{tag}> has {url[:60]!r})"
+    if name == "href" and tag != "a":
+        return rule
+    if url.startswith("#"):
+        return None
+    if url.startswith("/atlas/"):
+        match = READER_ATLAS_LINK.match(url)
+        if match is None:
+            return ("a link into the atlas is /atlas/<pageid> or /atlas/<pageid>/<slug>, its slug one path segment "
+                    f"as atlasSlug writes it ({url[:60]!r} is not)")
+        slug = match.group(1)
+        if slug is not None and slug.lower().replace("%2e", ".") in (".", ".."):
+            return f"a link into the atlas has a dot segment, which a browser resolves out of the article ({url[:60]!r})"
+        return None
+    web = READER_WEB_LINK.match(url)
+    if web is None:
+        return rule
+    if web.group(1).lower().rstrip(".") in READER_SITE_HOSTS:
+        return (f"a link to this site itself ({url[:60]!r}): the reader links into the site only as "
+                "/atlas/<pageid>/<slug>")
+    return None
+
+
+def reader_style_attr_problems(value: str) -> list[str]:
+    """A style attribute's problems: no escape, no URL of any kind, nothing that fetches or escapes the article."""
+    text, strings, found = reader_css_text(value)
+    if READER_STYLE_ATTR.search(text) or "<" in value:
+        found.append("a style attribute holds url(), image-set(), expression(), a javascript: URL, a binding, "
+                     "a block or a fixed or sticky position")
+    return found
+
+
+class ReaderScan(HTMLParser):
+    """One pass over a reader body: what it may hold, its text layer's raw text, and its marks.
+
+    ``statuses`` maps each passage's item hex to the status its marks must carry. The raw text is
+    web-html/3's: decoded text in document order, nothing from style, one LF dropped after pre and
+    listing (the canonical body has no script, template or comment, and the scan refuses them).
+    """
+
+    def __init__(self, statuses: dict[str, str], no_status: frozenset[str] = frozenset()):
+        super().__init__(convert_charrefs=True)
+        self.statuses = statuses
+        self.no_status = no_status                          # item hexes of passages with no status
+        self.pieces: list[str] = []
+        self.length = 0
+        self.stack: list[str] = []
+        self.css: list[str] = []
+        self.eat_lf = False
+        self.mark: dict | None = None
+        self.marks: list[tuple[int, int, str]] = []        # (raw start, raw end, item hex), document order
+        self.anchored: dict[str, bool] = {}                 # item hex -> its first mark carries id="p-<hex>"
+        self.found: dict[str, int] = {}                     # problem -> how many times
+        self.media: list[tuple[str, str]] = []              # (tag, URL) of every file the body fetches
+        self.css_media: list[str] = []                      # the URLs its TemplateStyles fetch
+
+    def flag(self, message: str) -> None:
+        self.found[message] = self.found.get(message, 0) + 1
+
+    def problems(self) -> list[str]:
+        return [message if n == 1 else f"{message} ({n} times)" for message, n in self.found.items()]
+
+    # -- attributes ------------------------------------------------------------------------
+    def _attribute(self, tag: str, name: str, value: str) -> None:
+        if name == "name":
+            # <img name="getElementById"> shadows document.getElementById for every script on the page.
+            self.flag(f"the name attribute (on a <{tag}>) is not allowed: a named element shadows the page's "
+                      "document properties")
+        elif (name.startswith("on") or name in READER_ACTIVE_ATTRS or name.startswith("xlink:") or ":" in name
+              or not (name in READER_ATTRS or READER_ATTR_FAMILY.match(name))):
+            self.flag(f"the {name} attribute (on a <{tag}>) is not allowed")
+        elif name in READER_URL_ATTRS and any(ch in READER_WS and ch not in READER_ASCII_WS for ch in value):
+            self.flag(f"a <{tag}> {name} holds a space character other than ASCII whitespace (a browser keeps it in "
+                      "the URL, which then is not the URL checked)")
+        elif name in ("href", "cite"):
+            problem = reader_link_problem(name, tag, value)
+            if problem:
+                self.flag(problem)
+        elif name in ("src", "poster"):
+            if not value.startswith(READER_FETCH):
+                self.flag(f"a <{tag}> {name} must be https on {' or '.join(READER_FETCH)} (it is {value[:60]!r})")
+            else:
+                self.media.append((tag, value))
+        elif name == "srcset":
+            for candidate in value.split(","):
+                # A candidate's URL runs to the first ASCII whitespace (HTML's srcset parser).
+                url = READER_ASCII_WS_RUN.split(candidate.strip(READER_ASCII_WS))[0]
+                if not url.startswith(READER_FETCH):
+                    self.flag(f"a srcset URL must be https on {' or '.join(READER_FETCH)} (it is {url[:60]!r})")
+                else:
+                    self.media.append((tag, url))
+        elif name == "style":
+            for message in reader_style_attr_problems(value):
+                self.flag(message)
+        elif name == "id" and tag != "mark" and (READER_ANCHOR_ID.match(value) or READER_CHROME_ID.match(value)):
+            self.flag(f"the id {value!r} is the page's own (a passage anchor or the page's chrome)")
+        elif name == "class":
+            for token in READER_CLASS_SPLIT.split(value):
+                if READER_CHROME_CLASS.match(token):
+                    self.flag(f"the class {token!r} is the page's own (its stylesheets and scripts give the page's "
+                              "classes their place and behaviour)")
+        elif name == "referrerpolicy" and value != "no-referrer":
+            self.flag(f"a referrerpolicy must be no-referrer (a <{tag}> has {value[:30]!r})")
+
+    def _open_mark(self, attrs: dict[str, str]) -> None:
+        if set(attrs) - READER_MARK_ATTRS or attrs.get("class") != "atl":
+            self.flag('a mark carries class="atl", data-p, data-status and (the first of a passage) its id, nothing else')
+        key = attrs.get("data-p") or ""
+        if key in self.no_status:
+            self.flag("a mark on a passage with no status (it gets no highlight until it is read; unplaced lists it)")
+            key = ""
+        elif key not in self.statuses:
+            self.flag("a mark's data-p names no passage of this article (its item hex)")
+            key = ""
+        elif attrs.get("data-status") != self.statuses[key]:
+            self.flag("a mark's data-status is not its passage's status")
+        if self.mark is not None:
+            self.flag("a mark is nested in another")
+        if key and key not in self.anchored:
+            self.anchored[key] = attrs.get("id") == f"p-{key}"
+        elif "id" in attrs:
+            self.flag("only a passage's first mark carries its id")
+        if "id" in attrs and attrs["id"] != f"p-{key}":
+            self.flag("a mark's id is p-<its data-p>")
+        self.mark = {"key": key, "start": self.length, "depth": len(self.stack)}
+
+    # -- events ----------------------------------------------------------------------------
+    def handle_starttag(self, tag, attrs):
+        self._start(tag, attrs, False)
+
+    def handle_startendtag(self, tag, attrs):
+        self._start(tag, attrs, True)
+
+    def _tree(self, tag: str) -> None:
+        """Refuse a start tag a browser's tree builder would place elsewhere than html.parser does.
+
+        html.parser keeps every element where its tags are; a browser closes, reopens and moves
+        elements by HTML's tree-construction rules. Where the two trees differ, what the builder
+        checked is not what the page holds: inside MathML a <style>'s content is markup, not CSS,
+        and an HTML element there leaves the formula; a <p> closes before a block; a table moves
+        what is not its own child out in front of it. The canonical bodies do none of this.
+        """
+        stack = self.stack
+        if "math" in stack:
+            if tag == "style":
+                self.flag("a style element inside a formula (inside MathML its content is markup, not CSS)")
+            elif tag not in READER_MATHML:
+                self.flag(f"a <{tag}> inside a formula (a browser moves an HTML element out of the MathML)")
+            return
+        if tag in READER_MATHML and tag != "math":
+            self.flag(f"a <{tag}> outside a formula")
+        parent = stack[-1] if stack else None
+        if parent in READER_TABLE_KIDS and tag not in READER_TABLE_KIDS[parent]:
+            self.flag(f"a <{tag}> directly in a <{parent}> (a browser moves it out in front of the table)")
+        if tag in READER_TABLE_PARENTS and parent not in READER_TABLE_PARENTS[tag]:
+            self.flag(f"a <{tag}> outside its place in a table (a browser drops or moves it)")
+        if tag == "a" and "a" in stack:
+            self.flag("a link inside a link (a browser closes the first)")
+        if tag in READER_CLOSES_P:
+            for name in reversed(stack):
+                if name in READER_SCOPES:
+                    break
+                if name == "p":
+                    self.flag(f"a <{tag}> inside a <p> (a browser closes the paragraph before it)")
+                    break
+        if tag in READER_HEADINGS and parent in READER_HEADINGS:
+            self.flag("a heading inside a heading (a browser closes the first)")
+        if tag == "li" or tag in ("dd", "dt"):
+            lists = ("ul", "ol") if tag == "li" else ("dl",)
+            for name in reversed(stack):
+                if name in lists or name in READER_SCOPES:
+                    break
+                if (name == "li") if tag == "li" else name in ("dd", "dt"):
+                    self.flag(f"a <{tag}> inside a <{name}> of the same list (a browser closes the first)")
+                    break
+
+    def _start(self, tag: str, attrs: list, closed: bool) -> None:
+        self.eat_lf = False
+        if tag not in READER_TAGS:
+            self.flag(f"a <{tag}> element is not allowed in reader HTML")
+        else:
+            self._tree(tag)
+        values = {name: value if value is not None else "" for name, value in attrs}
+        if len(values) != len(attrs):
+            self.flag(f"a <{tag}> repeats an attribute")
+        for name, value in values.items():
+            self._attribute(tag, name, value)
+        if tag == "a" and "target" in values:
+            if values["target"] != "_blank" or "noopener" not in values.get("rel", "").split():
+                self.flag('a link that opens a new page has target="_blank" and rel noopener')
+        if tag == "mark":
+            if closed:
+                self.flag("a mark is self-closing")
+                return
+            self._open_mark(values)
+        if tag in READER_VOID:
+            return
+        if closed:
+            # HTML5 honours the self-closing flag only in MathML (and SVG, which is not allowed here).
+            if tag not in READER_MATHML:
+                self.flag(f"a self-closing <{tag}/>, which a browser reads as an open element")
+            return
+        self.stack.append(tag)
+        if tag in READER_EAT_LF:
+            self.eat_lf = True
+
+    def handle_endtag(self, tag):
+        self.eat_lf = False
+        if tag in READER_VOID:
+            # A browser reads </br> as <br> and drops the others.
+            self.flag(f"an end tag </{tag}> of a void element")
+            return
+        at = next((i for i in range(len(self.stack) - 1, -1, -1) if self.stack[i] == tag), -1)
+        if at < 0:
+            self.flag(f"a </{tag}> closes nothing")
+            return
+        if at != len(self.stack) - 1:
+            # Every element is closed by its own end tag, innermost first: a browser closes, and for
+            # <a>, <b>, <i> and the like reopens, what an end tag skips, past the article's end.
+            self.flag(f"a </{tag}> closes a <{tag}> with a <{self.stack[-1]}> still open inside it")
+        if self.mark is not None:
+            depth = self.mark["depth"]
+            if tag == "mark" and at == depth:
+                if len(self.stack) - 1 > depth:
+                    self.flag("a mark ends with elements inside it still open")
+                if self.mark["key"]:
+                    self.marks.append((self.mark["start"], self.length, self.mark["key"]))
+                self.mark = None
+            elif at <= depth:
+                self.flag("an element ends inside a mark it encloses (a mark crosses an element boundary)")
+        if tag == "style":
+            for message in reader_css_problems("".join(self.css), self.css_media):
+                self.flag(message)
+            self.css = []
+        del self.stack[at:]
+
+    def handle_data(self, data):
+        if self.eat_lf:
+            self.eat_lf = False
+            for newline in ("\r\n", "\r", "\n"):
+                if data.startswith(newline):
+                    data = data[len(newline):]
+                    break
+        if "style" in self.stack:
+            self.css.append(data)
+            return
+        if self.stack and self.stack[-1] in READER_TABLE_KIDS and data.strip(" \t\n\r\f"):
+            self.flag(f"text directly in a <{self.stack[-1]}> (a browser moves it out in front of the table)")
+        if data:
+            self.pieces.append(data)
+            self.length += len(data)
+
+    def handle_comment(self, data):
+        self.flag("a comment (the canonical body has none)")
+
+    def handle_decl(self, decl):
+        self.flag("a declaration (a reader body is a fragment)")
+
+    def handle_pi(self, data):
+        self.flag("a processing instruction")
+
+    def unknown_decl(self, data):
+        self.flag("a CDATA section or unknown declaration")
+
+    def finish(self) -> str:
+        self.close()
+        if self.mark is not None:
+            self.flag("a mark is never closed")
+        if "style" in self.stack:
+            for message in reader_css_problems("".join(self.css), self.css_media):
+                self.flag(message)
+            self.flag("a style element is never closed")
+        if self.stack:
+            # An element left open runs on into the page: <table><tr><td> takes in the panel, and an
+            # <a href> makes the page after the article one link.
+            self.flag(f"an element is never closed (<{'>, <'.join(self.stack[-3:])}>)")
+        return "".join(self.pieces)
+
+
+def reader_layer(raw: str) -> tuple[str, Any]:
+    """web-html/3's layer of a raw text, and the layer offset of each non-White_Space raw offset."""
+    runs = [(m.start(), m.end()) for m in READER_WS_RUN.finditer(raw)]
+    ends = [end for _, end in runs]
+    dropped = [0]
+    for start, end in runs:
+        dropped.append(dropped[-1] + (end - start if start == 0 else end - start - 1))
+
+    def offset(i: int) -> int:
+        return i - dropped[bisect_right(ends, i)]
+
+    return READER_WS_RUN.sub(" ", raw).strip(" "), offset
+
+
+def reader_licence_url(url: Any) -> bool:
+    """Whether `url` is a licence's own page the reader may link (READER_LICENCE_URL, READER_LICENCE_HOSTS)."""
+    if not (isinstance(url, str) and len(url) <= 300):
+        return False
+    m = READER_LICENCE_URL.match(url)
+    return m is not None and m.group(1) in READER_LICENCE_HOSTS
+
+
+def reader_images(entry: dict, media: list[tuple[str, str]]) -> tuple[list[dict], list[str]]:
+    """The files a body shows, each with its project, licence and author: (the view's list, problems).
+
+    Every URL must name a file (READER_MEDIA_URL), never a Wikimedia or Foundation mark by its name
+    (READER_WIKIMEDIA_MARK), that the entry's `images` names under its own project with its
+    restrictions, none of them barred (READER_BARRED_RESTRICTIONS: a trademarked file is a mark
+    whatever its name); an English Wikipedia upload must have a free licence there
+    (READER_FREE_LICENCE) and categories that make it free everywhere (READER_FREE_CATEGORY, none
+    of READER_NOT_FREE_CATEGORIES), and a Commons file a free licence by its id or, with none, by its
+    name (READER_FREE_LICENCE_NAMES). A file under a licence that asks for its author's name has one
+    (READER_ATTRIBUTION_LICENCE), and one whose licence has a text of its own links it (licence_url).
+    `images` names no file the body does not show.
+    """
+    found: list[str] = []
+    listed = entry.get("images", {})
+    if not isinstance(listed, dict):
+        return [], ["images must map each file the html shows to {project, licence, licence_id, licence_url, author, "
+                    "restrictions} (an English Wikipedia upload's also to its categories)"]
+    shown: dict[str, str] = {}
+    for tag, url in media:
+        m = READER_MEDIA_URL.match(url)
+        if m is None:
+            found.append(f"a <{tag}> fetches {url[:80]!r}, which is no file of Wikimedia Commons or of English "
+                         "Wikipedia (an upload URL: the original, a thumbnail or a transcode)")
+            continue
+        name = unquote(m.group(2))
+        if READER_WIKIMEDIA_MARK.search(name):
+            found.append(f"File:{name} is a Wikimedia logo or mark, which the reader leaves out (the Foundation's "
+                         "trademark policy covers them)")
+            continue
+        if shown.setdefault(name, m.group(1)) != m.group(1):
+            found.append(f"File:{name} is fetched from both Commons and English Wikipedia")
+    out = []
+    for name, project in sorted(shown.items()):
+        info = listed.get(name)
+        if not isinstance(info, dict) or set(info) != READER_IMAGE_KEYS[project] or info["project"] != project:
+            what = "a Commons file" if project == "commons" else "an English Wikipedia upload"
+            found.append(f"images names no licence for File:{name} ({what}): every file the html shows is listed, "
+                         "under its project, as {project, licence, licence_id, licence_url, author, restrictions}, an "
+                         "English Wikipedia upload with its categories too")
+            continue
+        licence, licence_id = info["licence"], info["licence_id"]
+        if not (licence is None or (isinstance(licence, str) and DISPLAY_NAME_RE.match(licence))) \
+                or not (licence_id is None or isinstance(licence_id, str)):
+            found.append(f"images[{name}]: licence is the licence's printable name or null, licence_id its id or null")
+            continue
+        restrictions = info["restrictions"]
+        if not isinstance(restrictions, list) or len(restrictions) > MAX_READER_RESTRICTIONS \
+                or not all(isinstance(r, str) and READER_RESTRICTION_RE.match(r) for r in restrictions) \
+                or len(set(restrictions)) != len(restrictions):
+            found.append(f"images[{name}]: restrictions is the list of the file page's restrictions as the API gives "
+                         f"them (lower-case words such as \"trademarked\", each once, at most {MAX_READER_RESTRICTIONS}; "
+                         "[] for none)")
+            continue
+        marked = sorted(set(restrictions) & READER_BARRED_RESTRICTIONS)
+        if marked:
+            found.append(f"File:{name}'s file page marks it {marked[0]}, so it is a mark, which the reader leaves out "
+                         "whatever its name or licence")
+            continue
+        free = isinstance(licence_id, str) and READER_FREE_LICENCE.match(licence_id) is not None
+        if project == "en" and not (free and isinstance(licence, str)):
+            found.append(f"File:{name} is an English Wikipedia upload without a free licence (licence_id "
+                         f"{licence_id!r}): only a free one may be shown")
+            continue
+        if project == "en":
+            categories = info["categories"]
+            if not isinstance(categories, list) or len(categories) > MAX_READER_CATEGORIES \
+                    or not all(isinstance(c, str) and READER_CATEGORY_RE.match(c) for c in categories):
+                found.append(f"images[{name}]: categories is the list of the upload's categories as the API gives "
+                             f"them (\"Category:...\", at most {MAX_READER_CATEGORIES})")
+                continue
+            barred = sorted(set(categories) & READER_NOT_FREE_CATEGORIES)
+            if barred or READER_FREE_CATEGORY not in categories:
+                why = (f"it is in {barred[0]!r}" if barred else f"it is not in {READER_FREE_CATEGORY!r}")
+                found.append(f"File:{name} is an English Wikipedia upload that is not free everywhere ({why}): only "
+                             "one free in its source country as well as in the United States may be shown")
+                continue
+        if project == "commons" and not isinstance(licence, str):
+            found.append(f"File:{name} is a Commons file whose licence images does not name: a file is shown only "
+                         "with its licence, and Commons hosting it is not one")
+            continue
+        if project == "commons" and licence_id is not None and not free:
+            found.append(f"File:{name}'s licence id {licence_id!r} is not a free licence")
+            continue
+        if project == "commons" and licence_id is None and licence.lower() not in READER_FREE_LICENCE_NAMES:
+            found.append(f"File:{name}'s licence {licence!r} has no licence id and is no free licence by its name "
+                         f"({', '.join(sorted(READER_FREE_LICENCE_NAMES))})")
+            continue
+        author, licence_url = info["author"], info["licence_url"]
+        if not (author is None or (isinstance(author, str) and READER_AUTHOR_RE.match(author))):
+            found.append(f"images[{name}]: author is the file's author as its file page credits them, plain text (at "
+                         "most 300 characters, no markup), or null")
+            continue
+        if not (licence_url is None or reader_licence_url(licence_url)):
+            found.append(f"images[{name}]: licence_url is the licence's own page, https on "
+                         f"{', '.join(sorted(READER_LICENCE_HOSTS))}, or null")
+            continue
+        terms = (licence_id if isinstance(licence_id, str) else licence).lower()
+        if READER_ATTRIBUTION_LICENCE.match(terms) and author is None:
+            found.append(f"File:{name} is under {licence}, which asks for its author's name with every copy, and "
+                         "images names no author")
+            continue
+        if READER_LICENCE_TEXT.match(terms) and licence_url is None:
+            found.append(f"File:{name} is under {licence}, whose terms ask for a link to the licence with every copy, "
+                         "and images gives no licence_url")
+            continue
+        if not READER_FILE_NAME.match(name):
+            found.append(f"File:{name[:60]} is not a file name the page can cite")
+            continue
+        out.append({"file": name, "project": project, "licence": licence, "licence_url": licence_url,
+                    "author": author})
+    for name in sorted(set(listed) - set(shown)):
+        found.append(f"images lists File:{str(name)[:80]}, which the html does not show")
+    return out, found
+
+
+def passage_status_word(passage: dict) -> str:
+    """The status a passage's marks carry: the page's (atlas-render passageStatus). A passage with
+    none ("unresolved") carries no mark: it gets no highlight until it is read."""
+    if passage["outcome"] == "unresolved" or passage.get("status") not in STATUSES:
+        return "unresolved"
+    return passage["status"]
+
+
+def reader_entry(entry: Any, view: dict, rows: list[dict]) -> tuple[dict | None, bytes | None, str | None, list[str]]:
+    """One --reader-html article, checked against its view and records: (reader view, file bytes, the text
+    layer its body was proven to be, problems)."""
+    if not isinstance(entry, dict):
+        return None, None, None, ["an article is an object"]
+    found = [f"unknown key {key!r}" for key in sorted(set(entry) - READER_ENTRY_KEYS)]
+    source = view["source"]
+    for key, want in (("source_id", view["source_id"]), ("revision", view["revision"]),
+                      ("html_sha256", source["html_sha256"]), ("layer_sha256", source["layer_sha256"])):
+        if entry.get(key) != want:
+            found.append(f"{key} must be the article's {want!r}: the revision whose body the records pin")
+    if source["renderer"] is not None and entry.get("renderer") != source["renderer"]:
+        found.append(f"renderer must be the records' {source['renderer']!r}")
+    html = entry.get("html")
+    try:
+        data = html.encode("utf-8") if isinstance(html, str) else b""
+    except UnicodeEncodeError:      # a lone surrogate from the JSON
+        data = b""
+    if not isinstance(html, str) or not 0 < len(data) <= MAX_READER_HTML_BYTES:
+        found.append(f"html must be the article's body, at most {MAX_READER_HTML_BYTES} bytes of UTF-8")
+        return None, None, None, found
+    if READER_CONTROL.search(html):
+        found.append("html holds a control character (a browser reads NUL and the like differently from html.parser)")
+    span_of = {row["id"]: (row["span"], row["span_sha256"]) for row in rows}
+    statuses: dict[str, str] = {}
+    no_status: set[str] = set()
+    passage_of: dict[str, dict] = {}
+    for passage in view["passages"]:
+        match = ITEM_HEX_RE.match(str(passage.get("item", "")))
+        if not match or match.group(1) in passage_of:
+            found.append(f"{passage['id']}: its item must be In-text #<hex>, one hex per passage of the article")
+            continue
+        # A passage with no status (unresolved) gets no highlight until it is read: it has no mark.
+        word = passage_status_word(passage)
+        if word == "unresolved":
+            no_status.add(match.group(1))
+        else:
+            statuses[match.group(1)] = word
+        passage_of[match.group(1)] = passage
+    scan = ReaderScan(statuses, frozenset(no_status))
+    scan.feed(html)
+    raw = scan.finish()
+    found += scan.problems()
+    images, messages = reader_images(entry, scan.media + [("style", url) for url in scan.css_media])
+    found += messages
+    layer, offset = reader_layer(raw)
+    if sha256_hex(layer.encode("utf-8")) != source["layer_sha256"]:
+        found.append("its text, read as web-html/3 reads a body, is not the revision's layer (layer_sha256): "
+                     "the html must change no character of the pinned revision")
+        return None, None, None, found
+    ranges: dict[str, list[tuple[int, int]]] = {}
+    for start, end, key in scan.marks:
+        first = next((i for i in range(start, end) if raw[i] not in READER_WS), None)
+        if first is None:
+            continue    # a space between two runs of the passage, wrapped like the rest
+        last = next(i for i in range(end - 1, start - 1, -1) if raw[i] not in READER_WS)
+        ranges.setdefault(key, []).append((offset(first), offset(last) + 1))
+    for key, anchored in scan.anchored.items():
+        if not anchored:
+            found.append(f"{passage_of[key]['id']}: its first mark carries id=\"p-{key}\" (the card list's anchor)")
+    placed = []
+    for key, pieces in ranges.items():
+        passage = passage_of[key]
+        span, span_sha = span_of[passage["id"]]
+        gaps = [layer[a[1]:b[0]] for a, b in zip(pieces, pieces[1:])]
+        start, end = pieces[0][0], pieces[-1][1]
+        if any(b[0] < a[1] for a, b in zip(pieces, pieces[1:])) or any(gap not in ("", " ") for gap in gaps):
+            found.append(f"{passage['id']}: its marks, in document order, leave text of the passage unmarked or "
+                         "run backwards")
+        elif sha256_hex(layer[start:end].encode("utf-8")) != span_sha or (span is not None and [start, end] != span):
+            found.append(f"{passage['id']}: its marks cover layer[{start}:{end}], which is not its span "
+                         "(the layer slice its record's span_sha256 hashes)")
+        else:
+            placed.append((start, end, passage["id"]))
+    placed.sort()
+    for (_, end_a, a), (start_b, _, b) in zip(placed, placed[1:]):
+        if start_b < end_a:
+            found.append(f"{a} and {b}: two passages' marks share text")
+    unplaced = [passage["id"] for key, passage in passage_of.items() if key not in ranges]
+    listed = entry.get("unplaced")
+    if not isinstance(listed, list) or not all(isinstance(u, dict) and isinstance(u.get("item"), str)
+                                               and isinstance(u.get("reason"), str) for u in listed) \
+            or sorted(u["item"] for u in listed) != sorted(passage_of[k]["item"] for k in passage_of if k not in ranges):
+        found.append("unplaced must list, as {item, reason}, exactly the passages the html leaves unmarked")
+    n_marks = sum(1 for _ in scan.marks)
+    for key, value in (("marks", n_marks), ("passages", len(ranges))):
+        if key in entry and entry[key] != value:
+            found.append(f"{key} says {entry[key]!r}; the html has {value}")
+    if found:
+        return None, None, None, found
+    view = {"sha256": sha256_hex(data), "bytes": len(data), "marks": n_marks, "passages": len(placed),
+            "unplaced": unplaced}
+    if images:
+        view["images"] = images
+    return view, data, layer, []
+
+
+def attach_reader_html(doc: dict, sets: list[BuiltSet], problems: Problems) -> dict[str, int]:
+    """Give each article the side file has a verified body for its reader; counts of what was attached."""
+    entries = doc.get("articles")
+    counts = {"articles": 0, "passages": 0, "marks": 0}
+    if not isinstance(entries, dict):
+        problems.add("--reader-html", "articles must be an object of entries keyed by page id")
+        return counts
+    for built in sets:
+        for view, records in built.articles:
+            pageid = view["pageid"]
+            if str(pageid) not in entries:
+                continue
+            reader, data, layer, messages = reader_entry(entries[str(pageid)], view, record_rows(records))
+            for message in messages:
+                problems.add(f"--reader-html: articles[{pageid}]", message)
+            if reader is not None:
+                view["reader"] = reader
+                built.reader_files[pageid] = data
+                built.reader_layers[pageid] = layer
+                counts["articles"] += 1
+                counts["passages"] += reader["passages"]
+                counts["marks"] += reader["marks"]
+    return counts
+
+
+def apply_supplements(sets: list[BuiltSet], universe: dict, supplements: Supplements) -> dict:
+    """Merge the side files into the sets' view models; current.json's `supplements` and `provenance`.
+
+    Every article names what was merged (`supplements`, each side file's schema and sha256); a
+    passage's `text`, a location's `signature` and an article's `provenance` appear only where the
+    side file has a checked entry, and `audit` (in every article and in current.json) only with an
+    audit summary. AtlasError, listing every problem, when one does not check out.
+    """
+    problems = Problems()
+    identity: dict[str, dict] = {}
+    counts: dict[str, dict] = {}
+    extra: dict = {}
+    for kind in supplements.given():
+        doc, sha = getattr(supplements, kind)
+        identity[kind] = {"schema": doc["schema"], "sha256": sha}
+    # The reader html first: the text layer it proves for an article is what that article's passage
+    # contexts are checked against (passage_text_entry).
+    if supplements.reader_html is not None:
+        counts["reader_html"] = attach_reader_html(supplements.reader_html[0], sets, problems)
+        if not counts["reader_html"]["articles"] and not problems.items:
+            problems.add("--reader-html", "matches no article of this build (articles are keyed by page id)")
+    if supplements.passage_text is not None:
+        attached, shown = attach_passage_text(supplements.passage_text[0], sets, problems)
+        if not attached:
+            problems.add("--passage-text", "matches no passage of this build (entries are keyed by passage_key)")
+        counts["passage_text"] = {"passages": attached, "shown": shown}
+    if supplements.signatures is not None:
+        source, located, declarations = attach_signatures(supplements.signatures[0], sets, universe, problems)
+        if source is not None and not located:
+            problems.add("--signatures", "matches no location of this build (library -> commit -> declaration)")
+        identity["signatures"].update(source or {})
+        counts["signatures"] = {"locations": located, "declarations": declarations}
+    if supplements.provenance is not None:
+        runs = attach_provenance(supplements.provenance[0], sets, universe, problems)
+        tallies = recheck_tallies(sets)
+        extra["provenance"] = {"runs": [{**run, "rechecked": tallies[run["run_id"]]} if run["run_id"] in tallies else run
+                                        for run in runs]}
+    audit = audit_view(supplements.audit_summary[0], sets, problems) if supplements.audit_summary is not None else None
+    problems.raise_if_any()
+    for built in sets:
+        for view, _ in built.articles:
+            view["supplements"] = {kind: dict(value) for kind, value in identity.items()}
+            if audit is not None:
+                # Each article page cites the audit from its own view, as it cites its runs.
+                view["audit"] = audit
+    if audit is not None:
+        extra["audit"] = audit
+    extra["supplements"] = {kind: {**value, **counts.get(kind, {})} for kind, value in identity.items()}
+    return extra
+
+
+def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str | None = None,
+          supplements: Supplements | None = None) -> dict[str, bytes]:
+    """Return the store tree, {relative path: bytes}, for one sealed record set or several.
+
+    One set builds exactly as it always has, under its seal's campaign. Several (a list of
+    directories) build into one store when combined_sets accepts them: ``campaign`` names the
+    combined build (required, a CAMPAIGN_RE token), current.json's record_set is the first set's
+    by set_id and its record_sets lists every set, and each article keeps its own seal's campaign
+    and record_set. built_at defaults to the latest seal's created. ``supplements`` merges the side
+    files given (apply_supplements); without them the tree is exactly what it was before they existed.
+    """
+    dirs = [set_dir] if isinstance(set_dir, (str, Path)) else list(set_dir)
+    if not dirs:
+        raise AtlasError("no record set to build")
+    if built_at is not None and not CREATED_RE.match(built_at):
+        raise AtlasError("--built-at must be an ISO 8601 UTC time ending in Z")
+    if len(dirs) == 1 and campaign is not None:
+        raise AtlasError("--campaign names a build of several record sets; one set builds under its seal's campaign")
+    # A combined build is no one run's, so its name is a campaign id, never a run token.
+    if len(dirs) > 1 and (not isinstance(campaign, str) or not CAMPAIGN_RE.match(campaign)
+                          or campaign.startswith("run:")):
+        raise AtlasError("a build of several record sets needs --campaign: the campaign id naming the combined "
+                         "build (letters, digits and ._:-, at most 128, not starting 'run:')")
+    validate, schema_error, provenance = schema_validator()
+    sets = []
+    for directory in dirs:
+        try:
+            sets.append(build_set(Path(directory), validate, schema_error))
+        except AtlasError as exc:
+            if len(dirs) == 1:
+                raise
+            raise AtlasError(f"record set {directory}:\n{exc}") from exc
+    if len(sets) > 1:
+        sets = combined_sets(sets)
+    first = sets[0]
+    seal, seal_sha, universe = first.seal, first.seal_sha, first.universe
+    if built_at is None:
+        built_at = max(built.seal["created"] for built in sets)
+    articles = [pair for built in sets for pair in built.articles]
+    # Optional within v1, like record_sets: a build without side files adds nothing.
+    extra = apply_supplements(sets, universe, supplements) if supplements is not None else {}
 
     tree: dict[str, bytes] = {}
     prefix = STORE_PREFIX + "/"
@@ -1690,10 +3813,13 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
     shards: dict[str, list[list]] = {}
     totals = {"articles": len(articles), "passages": 0, "locations": 0, "related": 0, "by_status": _status_counts(),
               "by_prominence": _prominence_counts(), "by_library": {}, "by_importance": {}}
-    for article in articles:
+    reader_files = {pageid: data for built in sets for pageid, data in built.reader_files.items()}
+    for article, records in articles:
         pageid = article["pageid"]
         tree[f"{prefix}articles/{pageid}.json"] = canonical(article)
-        tree[f"{prefix}records/{pageid}.jsonl"] = files[f"records/{article['source_id']}.jsonl"]
+        tree[f"{prefix}records/{pageid}.jsonl"] = records
+        if pageid in reader_files:
+            tree[f"{prefix}reader/{pageid}.html"] = reader_files[pageid]
         summary = article["summary"]
         importance = (article["assessment"] or {}).get("importance")
         # Libraries holding a location (not only a related declaration), in universe order.
@@ -1730,23 +3856,27 @@ def build(set_dir: Path, built_at: str | None = None) -> dict[str, bytes]:
             raise AtlasError(f"index shard {shard} is {len(data)} bytes; the v1 store caps a shard at "
                              f"{MAX_INDEX_SHARD_BYTES} (raise INDEX_HEX in a v2 store)")
         tree[f"{prefix}index/{shard}.json"] = data
-    tree[f"{prefix}current.json"] = canonical({
-        "schema": CURRENT_SCHEMA, "campaign": seal["campaign"], "built_at": built_at, "builder": BUILDER,
+    current = {
+        "schema": CURRENT_SCHEMA, "campaign": seal["campaign"] if len(sets) == 1 else campaign,
+        "built_at": built_at, "builder": BUILDER,
         "universe": {"id": universe["id"], "sha256": universe["sha256"], "frozen": universe["frozen"],
                      "libraries": len(universe["libraries"])},
-        "record_set": {"seal_sha256": seal_sha, "set_id": seal["set_id"], "created": seal["created"],
-                       "skill_commit": seal["skill_commit"], "byte_budget": seal["byte_budget"],
-                       "sourceset": {"id": seal["sourceset"]["id"],
-                                     "manifest_sha256": seal["sourceset"]["manifest_sha256"]}},
+        "record_set": record_set_entry(seal, seal_sha),
         "literature_links": {"version": provenance["version"], "commit": provenance["commit"],
                              "schema_sha256": provenance["sha256"]},
         "counts": totals,
         "index": {"hex": INDEX_HEX, "shards": sorted(shards), "entries": len(articles)},
-    })
-    tree[f"{prefix}manifest.json"] = canonical({
-        "schema": MANIFEST_SCHEMA, "record_set": seal_sha,
-        "files": {path: {"bytes": len(data), "sha256": sha256_hex(data)} for path, data in sorted(tree.items())},
-    })
+    }
+    manifest = {"schema": MANIFEST_SCHEMA, "record_set": seal_sha}
+    if len(sets) > 1:
+        # Optional within v1: readers look fields up by name, and record_set keeps its shape.
+        current["record_sets"] = [{**record_set_entry(built.seal, built.seal_sha), "campaign": built.seal["campaign"]}
+                                  for built in sets]
+        manifest["record_sets"] = [built.seal_sha for built in sets]
+    current.update(extra)
+    tree[f"{prefix}current.json"] = canonical(current)
+    manifest["files"] = {path: {"bytes": len(data), "sha256": sha256_hex(data)} for path, data in sorted(tree.items())}
+    tree[f"{prefix}manifest.json"] = canonical(manifest)
     return tree
 
 
@@ -1807,16 +3937,43 @@ def check_tree(out: Path, tree: dict[str, bytes]) -> list[str]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    problem = interpreter_problem()
+    if problem:
+        # Before anything is read: like any other builder failure, nothing is written (exit 3).
+        print(f"atlas: {problem}; nothing was written", file=sys.stderr)
+        return 3
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("--record-set", type=Path, required=True, help="sealed record set directory")
+    parser.add_argument("--record-set", type=Path, required=True, action="append",
+                        help="sealed record set directory; repeat it to build several sets into one store")
     parser.add_argument("--out", type=Path, required=True, help="store directory (holds atlas/v1/...)")
     parser.add_argument("--built-at", help="ISO 8601 UTC build time for current.json (default: SEAL created)")
+    parser.add_argument("--campaign", help="the campaign id naming a build of several record sets "
+                                           "(current.json's campaign; each article keeps its own seal's)")
+    parser.add_argument("--passage-text", type=Path, metavar="FILE",
+                        help=f"optional side file ({PASSAGE_TEXT_SCHEMA}): each passage's full text, checked against "
+                             "its record's span_sha256")
+    parser.add_argument("--signatures", type=Path, metavar="FILE",
+                        help=f"optional side file ({SIGNATURES_SCHEMA}): each card's Lean signature, by library, "
+                             "commit and declaration in the store's universe")
+    parser.add_argument("--provenance", type=Path, metavar="FILE",
+                        help=f"optional side file ({PROVENANCE_SCHEMA}): the models, operator and dates of the runs "
+                             "that made each record set")
+    parser.add_argument("--reader-html", type=Path, metavar="FILE",
+                        help=f"optional side file ({READER_HTML_SCHEMA}): each article's pinned revision, sanitised, "
+                             "with its passages marked; its text must be the records' layer and each passage's marks "
+                             "its span")
+    parser.add_argument("--audit-summary", type=Path, metavar="FILE",
+                        help=f"optional side file ({AUDIT_SUMMARY_SCHEMA}): what an audit of this build's links "
+                             "measured, the run that judged them and the record sets it read")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--check", action="store_true", help="compare --out with a fresh build; write nothing")
     mode.add_argument("--replace", action="store_true", help="replace an existing --out")
     args = parser.parse_args(argv)
     try:
-        tree = build(args.record_set, args.built_at)
+        sets = args.record_set
+        supplements = Supplements.read(args.passage_text, args.signatures, args.provenance, args.reader_html,
+                                       args.audit_summary)
+        tree = build(sets[0] if len(sets) == 1 else sets, args.built_at, args.campaign, supplements=supplements)
         if args.check:
             differences = check_tree(args.out, tree)
             for line in differences:

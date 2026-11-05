@@ -27,7 +27,10 @@ export interface Env {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
   // Anonymous /mcp JSON-RPC limiter, keyed mcp:<CF-Connecting-IP> (an IPv6 /64). Optional so
-  // deploys predating the binding fall back to BRAIN_API_LIMITER (mcp.ts).
+  // deploys predating the binding fall back to BRAIN_API_LIMITER (mcp.ts). The atlas's
+  // anonymous reads take the same budget under their own keys (atlas.ts readAllowed):
+  // atlas-q:<ip> for a ?q= search, atlas-read:<ip> for an article page and its JSON views,
+  // atlas-meta:<ip> for the small JSON objects (current.json, the universe, an index shard).
   MCP_LIMITER?: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };

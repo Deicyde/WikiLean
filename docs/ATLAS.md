@@ -1,9 +1,8 @@
 # The formalization atlas
 
-**Status (2026-10-18): built on branch `claude/formalization-atlas`, not deployed.** The
-Worker code, assets and migration 0015 are release-affecting and ship only in a release
-(section 11). Nothing is uploaded anywhere. The decisions this needs from Jack are in
-section 14.
+**Status (2026-11-02): not deployed.** The Worker code, assets and migration 0015 are
+release-affecting and ship only in a release (section 11). Nothing is uploaded anywhere. The
+decisions Jack has made, and the two that wait on his ratification, are in section 14.
 
 The atlas answers one question per passage of a WikiProject Mathematics article: **is this
 formalized in Lean, in which library, at which commit, and how closely?** The answers
@@ -34,7 +33,7 @@ would collide with every invariant at once. The plane avoids that:
 |---|---|
 | Writes `articles.annotations` and bumps `version` | Never writes annotations; its only D1 table is `atlas_feedback` |
 | 256 KB cap per article (`MAX_ANNOTATIONS_BYTES`) and 500 items | No cap: one static object per article |
-| `EDIT_LIMITER` on every write, 30/min | Feedback writes take `EDIT_LIMITER`; a dashboard search takes the per-IP anonymous read budget (section 7); other reads are not limited, and index shards are cached per isolate |
+| `EDIT_LIMITER` on every write, 30/min | Feedback writes take `EDIT_LIMITER`; a dashboard search, an article page and its two JSON views take the per-IP anonymous read budget (section 7); other reads are not limited, and index shards and the WikiLean slug lookup are cached per isolate |
 | Item identity: 12-hex ids, `findMatch` re-pairing, `findLostHuman` 422 | No identity coupling: keyed by Wikipedia page id and the producer's `location_key` |
 | The nightly moderation job reviews and may rewrite items | The nightly never reads or writes the store, so it cannot overwrite it |
 | `articles.revid` advances only with re-anchored annotations | The store pins its own revision per article and never moves `articles.revid` |
@@ -259,6 +258,41 @@ lean ends carry no `extensions` at all. Keys of the Literature Links format itse
 `type`, `uri`, `version`, `role`, `location`, `citation`) are the vendored schema's to check
 (check 4).
 
+### The `/2` record set (status rules 2 and 3)
+
+A locate run of status rule 2 or 3 exports `cf-locate-recordset/2` (formal-companion
+`references/locate-documents.md` §6, "The record set of status rule 2"; the builder reads it
+from formal-companion `d85385a`). It is `/1` with these differences, and the builder accepts
+exactly them; a `/1` set builds byte for byte as before.
+
+- `SEAL.json` carries `/1`'s keys and `status_rule`, an integer, 2 or 3: the derivation every
+  status was derived by. `/2` without it, `/1` with it, rule 1 under `/2` and any other value
+  are refused.
+- Every record's locate extension carries `passage_key` = sha256(`<pageid>\n<span_sha256>`),
+  and a location record's `pair_key` = sha256(`<passage_key>\n<lean end uri>\n<declaration>`);
+  the builder recomputes both. A `pair_key` on an absence or an unresolved record, and either
+  key under `/1`, is refused by name.
+- A coverage claim is a **bundle**, exactly `{complete, parts, challenge, relation, conjuncts,
+  bundle_key}`: `relation` the bundle's (its weakest part's: exactMatch, closeMatch or
+  broadMatch); `conjuncts` 2 to 5 `{id, text, part}` in id order `c1`..`cN`, each `part` one of
+  `parts`, every part stating at least one; `bundle_key` = sha256 of the passage key and the
+  parts' pair keys, sorted, one per line, recomputed. Under `/1` the claim stays the three keys.
+- Statuses: under rule 2 a survived bundle is one more location **of its own relation** (rule 1
+  makes it one more exactMatch). Rule 3 (R-BROAD) is rule 2 plus two rows: a broadMatch to data
+  formalizes a theorem passage, and a broadMatch to a `definition` formalizes a definition
+  passage. The parity tables are formal-companion's `status-parity-2.json` and `-3.json`
+  (`scripts/atlas/fixtures/status_parity-{2,3}.json`, the producer's byte for byte but for
+  their decision texts, shortened here; the tests pin both) and the producer's own answers per rule
+  (`producer_derive_status-{2,3}.json`, `make_producer_table.py --status-rule`).
+- A subject end may carry `identifiers: {wikidata: <the source's QID>}`, on a subject passage's
+  records only (decision B5); anything else there is refused.
+
+The view model stays `wikilean.atlas.article/1`, with optional fields: each location's
+`pair_key` (which the feedback route copies into its row), each passage's `passage_key`, the
+bundle's `relation`, `conjuncts` and `bundle_key` in `coverage`, and the article's `seal`
+(`set_id`, `schema`, `status_rule`, `created`, `skill_commit`). `current.json`'s `record_set`
+gains `schema` and `status_rule`.
+
 ### What the builder checks
 
 `scripts/atlas/build_store.py` refuses the whole set, listing every problem it found, when
@@ -425,7 +459,8 @@ any of these fails:
    An `example` or `other` passage is judged by both columns and takes the better answer.
    A located passage whose only locations are `relatedMatch`, with no checked absence, has
    no status (the table's "(none)" row): its records carry none, and the builder stores it
-   as outcome `unresolved`, counted as undecided (never as not formalized), with its
+   as outcome `unresolved` (counted under `unresolved` in the store's counts, never as not
+   formalized; the pages show it with no status until someone reads it, section 8), with its
    related declarations kept. Such a passage whose records stamp a status is refused. The
    location that justifies the status, the highest-ranked one whose own status is the
    passage's, is stored as the passage's `basis`, so the page names it rather than
@@ -438,7 +473,7 @@ any of these fails:
    unfinished, under each other challenge value, and 200 sampled claims with three parts
    or with other locations beside the parts). It is generated by `make_producer_table.py`
    from formal-companion at `4fc2aa0` (branch `locate/d1`, which implements D1 as parity
-   round three reads it, with review four's reopen ordering; not yet on its master), and
+   round three reads it, with review four's reopen ordering, and is now on its master), and
    the builder is tested against every case. Regenerated at `4fc2aa0`, every answer is the
    one `3225e95` gave (only the commit stamp moved: the reopen ordering changes exported
    challenge values, never a derived status). Against the table from the pre-D1 producer
@@ -468,15 +503,20 @@ any of these fails:
 
 ### Contract notes for formal-companion
 
-These are where the builder departs from, or adds to, the proposal as written. The
-record-set format itself (above: the seal, the universe's list shape, the campaign token,
-the byte budget, optional `end_line`, `section` and `prominence`, closeMatch notes and
-minimal absence ends) is agreed with the skill (note 10); the rest still needs its
-agreement before real record sets arrive:
+These are where the builder departs from, or adds to, the proposal as written. They were
+checked on 2026-11-02 against formal-companion's master, whose locate code is the one at
+`d85385a`, the commit the `/2` section names (master since changed only the Literature Links
+version its comments name). The record-set format itself (above: the seal, the universe's list
+shape, the campaign token, the byte budget, optional `end_line`, `section` and `prominence`,
+closeMatch notes and minimal absence ends) is agreed with the skill (note 10), and the
+producer's export at master writes what notes 1, 2, 8, 9, 12 and 13 ask. The rest are
+WikiLean's readings where the agreed format left a choice; they wait on the agreement of the
+producer's maintainer before the first real set is published (section 14, item 7):
 
 1. **CSL citations need an `id`.** The vendored schema requires `citation.id` and
    `citation.type`. Proposal §2.7's example citation has no `id` and fails validation as
-   written. The fixture uses the source id.
+   written. The fixture uses the source id, and so does the producer's export
+   (`records.subject_end`).
 2. **`section` and `prominence` ride in every record's locate extension** (agreed;
    required): `section` is the passage's heading path (`[]` in the lead), `prominence` is
    `subject|central|supporting`. §2.7's example record shows neither, and the sealed set
@@ -511,10 +551,10 @@ agreement before real record sets arrive:
    repository root (Lean core's records say `src/Init/...`), so there is no `src_dir`
    either: a set carrying one is refused, and the registry prefixes nothing.
 7. **WikiLean recomputes the derived status** (section 3, check 6) with the producer's
-   rules, as `cflib.vocab.derive_status` implements them at formal-companion `4fc2aa0`,
-   with the maintainer's decision D1 (2026-10-18) as parity round three reads it (note
-   11). That code is not yet on
-   formal-companion's master, and `references/vocabulary.md` §1.11 marks its other
+   rules, as `cflib.vocab.derive_status` implements them on formal-companion's master: status
+   rule 1 as at `4fc2aa0`, with the maintainer's decision D1 (2026-10-18) as parity round three
+   reads it (note 11), and status rules 2 and 3 as at `d85385a` (the `/2` section).
+   `references/vocabulary.md` §1.11 there still marks its other
    decisions as conservative, "until the maintainer says otherwise": a construction or
    notation passage is a definition passage, an example or `other` passage takes the
    better of the two rows, and a definition passage matched to a proved theorem is
@@ -531,12 +571,14 @@ agreement before real record sets arrive:
    lean end at export but does not list `statement`. The builder reads it from the same
    place (`object[0].extensions.‹locate›.statement`). Without it, a theorem passage
    matched to a Prop-valued definition, which the producer stamps `statement_only`,
-   recomputes as `partial` and the set is refused, so the export must carry it.
+   recomputes as `partial` and the set is refused, so the export must carry it. It does
+   (`records.lean_end` writes `statement: true` on such an end).
 9. **A passage with only `relatedMatch` locations** (no checked absence) has no derived
-   status, and the producer's export for it is not built yet. WikiLean reads it as
-   `relatedMatch` location records without a `status`, which it stores as an unresolved
-   passage that keeps its related declarations. An unresolved record (`object: []`)
-   beside them is refused, as is a status on them.
+   status. The producer's export writes it as exactly what WikiLean reads: its
+   `relatedMatch` location records without a `status`, and no absence
+   (`records.passage_records`), which the builder stores as an unresolved passage that keeps
+   its related declarations, and which the pages set aside until it is read (section 8). An
+   unresolved record (`object: []`) beside them is refused, as is a status on them.
 10. **The agreed record-set format** (2026-10-18, after smoke 2, whose export WikiLean
     refused on seven mismatches). Both sides implement section 3 exactly. Where the
     agreement named a field but not its spelling, WikiLean chose: the budget is SEAL's
@@ -551,8 +593,10 @@ agreement before real record sets arrive:
     location's lean end, receipt counts as list lengths, and `challenge_pending` among the
     challenge values. The producer is asked to enforce each where the value is first
     chosen (`cf sourceset create`, `cf corpus add`, `cf plan-locate`), so a set is not
-    refused only after every run has been paid for. Any other key is refused, so a change
-    to the format is a change on both sides at once.
+    refused only after every run has been paid for. The token grammar is enforced so at
+    master (`cflib.vocab.RECORDSET_TOKEN`, in `cf sourceset create`, the campaign planner and
+    the export). Any other key is refused, so a change to the format is a change on both
+    sides at once.
 11. **The coverage claim's export** (decision D1, 2026-10-18). The agreed spec puts the
     claim in "the passage's record extensions[locate].coverage" as `{complete, parts,
     challenge}`, `parts` as location keys, valid only with at least two parts, each a
@@ -632,15 +676,15 @@ agreement before real record sets arrive:
     "The locate extension's keys", as section 3 always said, and names the key, its place and
     the record id. The keys are the ones proposal §2.7 shows, with the absence's `receipt`
     (note 3), `statement` (note 8) and `coverage` (note 11), so an export in the agreed
-    format builds as it did. formal-companion's split-frontend commit
-    `722b30f` ("F5", `scripts/locate/records.py` `subject_end` and `_span`, documented in its
-    `references/locate-documents.md` §6) adds the passage's `span` and `layer_sha256` to every
-    subject end; WikiLean accepts them as optional, both or neither, in exactly that shape,
-    and checks them (section 3, above), so sets from before and after F5 both build.
-    `722b30f` also writes `prominence` only when the passage's outcome row has one; WikiLean
-    still requires it on every record (note 2), so the export should refuse such a passage by
-    name rather than omit the key. Checked on the real sets: `smoke-2-d1e`, its port
-    re-export `smoke-2-p3` and an F5-shaped copy of `smoke-2-p3` (its 917 records given the
+    format builds as it did. F5 (`scripts/locate/records.py` `subject_end` and `passage_span`
+    at master, documented in the producer's `references/locate-documents.md` §6; first commit
+    `722b30f`, on a branch since retired, and on master since) adds the passage's `span` and
+    `layer_sha256` to every subject end; WikiLean accepts them as optional, both or neither, in
+    exactly that shape, and checks them (section 3, above), so sets from before and after F5
+    both build. `722b30f` also wrote `prominence` only when the passage's outcome row had one;
+    WikiLean still requires it on every record (note 2), and the export at master refuses such
+    a passage by name rather than omit the key (`records.passage_problem`). Checked on the real
+    sets: `smoke-2-d1e`, its port re-export `smoke-2-p3` and an F5-shaped copy of `smoke-2-p3` (its 917 records given the
     spans of the run's outcome rows and the layer sha, each span verified against
     `span_sha256` on the run's own layers) build byte for byte the stores the previous
     builder built (31 files each), and the copy's misspelt `span`, a stray key at the record
@@ -677,13 +721,20 @@ atlas/v1/universes/<universe-sha>.json   libraries by id (id, brain_lib, display
 atlas/v1/articles/<pageid>.json          the article's view model (below)
 atlas/v1/records/<pageid>.jsonl          that article's records, byte for byte as sealed
 atlas/v1/index/<shard>.json              title -> page id and summary counts, sharded
+atlas/v1/reader/<pageid>.html            optional (--reader-html): the article's pinned revision, its passages marked
 ```
 
 - **Article view model** (`wikilean.atlas.article/1`): `pageid`, `title`, `revision`,
   `source_id`, `wikidata`, `assessment`, `campaign`, `universe {id, sha256, frozen,
-  libraries}`, `record_set` (the SEAL's sha256), `records_sha256`, `summary` (passages,
-  locations, related, by status, by prominence, by library, by proof status, by relation)
-  and `passages`. Each passage has `item`, `kind`, `section`, `prominence`, `quote`,
+  libraries}`, `record_set` (the SEAL's sha256), `records_sha256`, `licence {text, mapping}`,
+  `summary` (passages, locations, related, by status, by prominence, by library, by proof
+  status, by relation) and `passages`. `licence` says which licence covers what the view holds:
+  `text` is its records' subject licence (an SPDX id, `CC-BY-SA-4.0` for Wikipedia's text; every
+  record of an article names the same one, or the set is refused; null for an article with no
+  records), and covers the passages' `quote` and `text` and the reader's revision; `mapping` is
+  `CC0-1.0` and covers the mapping (statuses, relations, locations, notes, provenance). A
+  location's `signature` is an excerpt of its library's Lean code and keeps that library's
+  licence, which the universe lists (its libraries' `licence`), not CC0. Each passage has `item`, `kind`, `section`, `prominence`, `quote`,
   `quote_capped`, `passage_ends_in_suffix`, `subject_uri`, `outcome` (located, absent or
   unresolved), `status`,
   `basis` (the `location_key` of the location that justifies the status, or null),
@@ -711,7 +762,10 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   that proves them. Every library in the view model is a universe library id (a location's
   `library`, both `by_library` maps, the index rows' `libraries`), so two libraries of one
   repository (Init and Std, contract note 13) are two entries; a location also carries its
-  `repo` and `commit`.
+  `repo` and `commit`. A build with `--reader-html` (section 5) gives an article it has a
+  checked body for `reader {sha256, bytes, marks, passages, unplaced[, images]}`: the sha256 and
+  size of `reader/<pageid>.html`, its marks, the passages it places, the ids of those it leaves
+  unmarked and, when it shows any, the files it shows with their licences and authors.
 - **`quote_capped`** is true when the passage's quote is the capped head of a longer
   passage (section 3, "The quote is capped"), and false when it is the whole passage
   (`build_store.quote_extent`). A quote under 12 words is whole, because the passage ended
@@ -779,7 +833,9 @@ atlas/v1/index/<shard>.json              title -> page id and summary counts, sh
   shard over 1 MiB is refused; a wider key would be a v2 store.
 - **Determinism.** Output is canonical JSON (sorted keys, compact, UTF-8, newline) in a
   stable order: passages in record order, locations by rank, index rows by title.
-  `built_at` defaults to SEAL's `created`, so the same set always builds the same bytes.
+  `built_at` defaults to SEAL's `created` (the latest one, for a build of several), so the same
+  set always builds the same bytes; the dashboard then dates the record sets' export, not a
+  build (section 8). Pass `--built-at` to date the build.
 
 ## 5. Building
 
@@ -789,9 +845,16 @@ python3 scripts/atlas/build_store.py --record-set <set> --out <store> --check   
 python3 scripts/atlas/build_store.py --record-set <set> --out <store> --replace  # rebuild in place
 ```
 
+The builder runs only under CPython 3.12.13 or a later 3.12 (CI runs a later 3.12;
+`scripts/ci-python.sh` asserts 3.12): the reader's checks (`ReaderScan`) were proven against
+that `html.parser`, and an older one reads attributes by another grammar (3.9's takes `=+`
+between a name and its value), so the same checks could pass markup a browser reads
+differently. Under any other interpreter it writes nothing and exits 3
+(`interpreter_problem`).
+
 Exit codes: 0 is success, 1 means `--check` found differences, 2 means the record set
-was refused (the reasons go to stderr), and 3 means the builder itself failed (a bug;
-nothing was written). Every check runs before any view is computed, and a value of the
+was refused (the reasons go to stderr), and 3 means the builder itself failed (a bug, or the
+wrong interpreter; nothing was written). Every check runs before any view is computed, and a value of the
 wrong type (a list where a vocabulary word belongs, a number where `excluded` lists
 belong, `1e400`) is reported and dropped rather than used, so a malformed set is always a 2,
 never a crash that could be read as "`--check` found differences". A test sets nine
@@ -803,6 +866,228 @@ itself: `--replace` refuses a directory that holds anything besides `atlas/v1/`,
 pointing it one level too high (at `wiki/public`, say) cannot delete unrelated files. `--built-at <ISO-Z>` overrides the
 build time (pass the same value to `--check`). `scripts/` is release-neutral, so the
 builder can change without a release.
+
+Several sealed sets build into one store when one batch arrives as several exports (two locate
+runs need two tallies and two exports):
+
+```bash
+python3 scripts/atlas/build_store.py --record-set <set-a> --record-set <set-b> --campaign <id> --out <store>
+```
+
+The sets must share `universe.json` byte for byte, the sourceset, `skill_commit`, the schema
+and the status rule, and no page id or title key. `--campaign` (a campaign id, never a
+`run:` token) names the combined build in `current.json`; `record_set` there keeps its shape
+and is the first set's by `set_id`, and an optional `record_sets` lists every set (its seal
+sha, set id, campaign, created, skill commit, byte budget). Each article keeps its own seal's
+`campaign` and `record_set`, which the feedback route checks against.
+
+### Supplements: five optional side files
+
+A record set holds a passage's first 12 words, a declaration's name and the runs' ids, and
+never the article, and says nothing of how accurate it is. Five optional side files add what it does not hold. Each is read only, each is checked against the
+records it describes, and one that does not check out is refused (exit 2) like a broken record
+set, never merged in part. A build without them is byte for byte the build it always was.
+
+The side files' makers are operator tools that run beside the record sets, outside this
+repository (the reader's maker runs the producer's own renderer). They write the schemas named
+below; the builder trusts none of what they write and checks each against the records and the
+seal as far as those can say. The runs' models, operators and dates are the one part they cannot
+settle: the seal records none of them, so the provenance's are its maker's reading of each run's
+own `run.yaml` and receipt, checked for consistency and against the seal's times and commits, until
+the seal carries its runs' citations.
+
+```bash
+python3 scripts/atlas/build_store.py --record-set <set> --out <store> \
+    --passage-text <file> --signatures <file> --provenance <file> --reader-html <file> \
+    --audit-summary <file>                                                              # any of them
+```
+
+- **`--passage-text`** (`wikilean.atlas.passage-text/1`): `passages`, keyed by passage key
+  (sha256(`<pageid>\n<span_sha256>`)), each `{id, span_sha256, layer, segments}`. `layer`
+  must hash to the record's `span_sha256` (the passage's slice of the web-html/3 layer, UTF-8,
+  no normalisation), `id` and `span_sha256` (and `pageid`, `span` when given) must be the
+  record's, and `segments` must spell `layer` exactly: `{text}` and `{ref}` (a citation
+  marker) are its text verbatim, `{tex}` (`display: true` for a display formula) is one
+  formula, standing for its MathML text and the TeX annotation after it, which holds its TeX
+  (style commands and whitespace aside), and `{tex, cut}` is a formula the passage's edge cuts.
+  A passage with a checked entry gains `text: {layer, segments}`; one without keeps only its
+  quote. An entry for no passage of the build is ignored, and a file that matches none is
+  refused. An entry may also carry `before` and `after`, the text the page shows around a
+  passage that is only part of a sentence: each `{layer, segments[, trimmed]}` (`before` may
+  add `lead_in`, the sentence of the block before that introduces a list item), at most 2,000
+  characters, its segments spelling its own `layer`. The record hashes only the passage, so the
+  builder checks a context's shape and, where the record's quote has a prefix (or, for a quote
+  that is the whole passage, a suffix), that the context meets the passage there. When the
+  build also has the article's `--reader-html`, whose text it proves to be the revision's layer
+  (its sha256 is the records' `layer_sha256`), and the record gives the passage's `span`, each
+  context must be that layer's own text right before or after the span (a space where it meets
+  the passage may differ), so the grey text the page shows is the revision's: a context one word
+  off, or text from elsewhere in the article, is refused (`context_layer_problem`). The reader
+  html is therefore checked first. Without it the side file's maker vouches for the rest.
+- **`--signatures`** (`wikilean.atlas.signatures/1`): `signatures[library][commit]
+  [declaration]` = `{signature, kind, elided, proof_status, type[, deprecated_to]}`, and a
+  `source` naming the corpus (`corpus_sha256`, `corpus_built`, `universe`, and
+  `universe_sha256`, which must be the store's). The lookup is the card's exact library, commit
+  and declaration; the signature must start with its Lean keyword and that declaration, and its
+  `proof_status` must be the card's (else the corpus row is another declaration's). A location
+  with one gains `signature: {text, elided[, type][, deprecated_to]}`: `text` is the Lean
+  header (binders before the colon, no proof or value), `type` the whole corpus type when the
+  header was shortened (`elided`).
+- **`--provenance`** (`wikilean.atlas.provenance/1`): `runs` by run id, `record_sets` by
+  set id and `records` by page id, one entry per records line. Every set of the build must be
+  described: its seal sha and campaign, and the runs its campaign token names, and the
+  inventory run its locate run names (`inventory_run`, the run that chose the passages, each
+  one's kind and its prominence), when it names one. Each run must check: its mode (locate,
+  locate-challenge for the challenge run, whose `challenged_runs` name the locate run, or
+  locate-inventory), its worker's model is the run's, its observed calls name only the models
+  its roles were configured with (a model its own calls do not bear out is never cited), its
+  operator, its window (`window_utc`, ending at its harvest), its producer commit (the seal's)
+  and its universe. The windows are compared as times, never as strings, and must follow the
+  record set: each run's harvest no later than the seal's `created`, the inventory harvested
+  before the locate run starts, and the challenge started after the locate run it re-checked was
+  harvested. Each record entry must name its line, shape, keys, locate run and challenge verdict
+  and run. Every article gains `provenance: {locate, challenge[, inventory]}`, each `{run_id,
+  mode, model, model_name, reviewer_model, reviewer_model_name, operator, started, harvested,
+  skill_commit[, sampling]}`, and `current.json` gains `provenance.runs`, where a challenge run
+  adds `rechecked`: `[re-checked, of]` for the Lean locations (related declarations aside) and
+  the absences of central (subject or central) passages and of supporting ones, counted from the
+  build's own verdicts, since the challenge samples the supporting passages and its rates alone
+  do not say how much it re-checked.
+- **`--reader-html`** (`wikilean.atlas.reader-html/1`): `articles` by page id, each
+  `{source_id, revision, html_sha256, layer_sha256, renderer, html, unplaced[, marks,
+  passages, images]}`. `html` is the article's pinned revision (the sourceset's `body.html`, whose
+  sha256 the records pin as `html_sha256`), sanitised for serving, with each passage's text in
+  `<mark class="atl" data-p="<item hex>" data-status="<status>">`, split at element boundaries,
+  a formula or citation marker wrapped whole, the passage's first mark carrying
+  `id="p-<item hex>"` (the card list's anchor). Its maker places the marks from the
+  producer's own renderer and proves them; the builder takes none of it on trust
+  (`attach_reader_html`, `ReaderScan`):
+  - the source fields must be the article's (its source id, revision, `html_sha256`,
+    `layer_sha256` and renderer);
+  - nothing a page must not serve: an element outside `READER_TAGS` (HTML phrasing and flow
+    content, tables, figures, media and MathML; no script, iframe, form, object, base, link or
+    meta); an attribute outside `READER_ATTRS` (the ones Wikipedia's parse HTML and its MathML
+    use, each inert or checked, plus `data-*` and `aria-*`), so an event handler, another active
+    attribute or one a browser gives an effect (`attributionsrc` sends a request to the hosts it
+    names) is refused until it is reviewed and listed; a `src`, `srcset` or `poster` that is not
+    https on `upload.wikimedia.org` or `thumb.wikimedia.org`, a srcset split at ASCII whitespace
+    alone as HTML's parser splits it, and any `href`, `cite`, `src`, `srcset` or `poster` that
+    holds a space character other than ASCII whitespace (U+00A0, U+3000 and the like: a browser
+    keeps one inside the URL, which then resolves against the page, where `str.strip()` would
+    drop it and check a clean Wikimedia URL); a link that is not an in-page
+    fragment, an atlas article or an http(s) page on another host (`reader_link_problem`): an
+    atlas article is `/atlas/<pageid>` or `/atlas/<pageid>/<slug>`, its slug one path segment as
+    `atlasSlug` writes it and never a dot segment, which a browser resolves to another path of
+    the site (`/atlas/1/../../<path>`, and its `%2e%2e` form, is `/<path>`), and an http(s) link's host is
+    plain ASCII, with no user, escape or backslash, and never the site's own
+    (`READER_SITE_HOSTS`); a comment, a self-closing HTML element, a `target="_blank"` without
+    `noopener`, an id or class the page's chrome or a passage anchor uses (the stylesheets put
+    `.atlr-peek` and `.atlr-fab` fixed over the page), a `name` (`<img name="getElementById">`
+    shadows the page's `document` properties), `autoplay`, `download`, a `referrerpolicy` other
+    than `no-referrer` and a control character;
+  - CSS read as a browser tokenizes it (`reader_css_text`: comments out, each string a
+    placeholder holding its decoded value), so no escape hides a keyword: an escape outside a
+    string is refused (`u\72l(` is `url(`, `@\69mport` is `@import`). A style attribute holds no
+    `url()`, `image-set()`, `expression()`, block or fixed or sticky position; a TemplateStyles
+    block no `@import` (its last statement needs no `;`), `image-set()`, `image()`, `src()`,
+    `attr()` or `element()`, no `url()` whose quoted or plain value is off those hosts (its
+    padding read as CSS reads it, ASCII whitespace alone, so a U+00A0 stays in the URL checked), no
+    at-rule but `@media` and `@supports`, no nested rule, no `<`, and no selector whose
+    `.mw-parser-output` is not one of its own compounds (inside `:not()`, `:has()`, `:is()`,
+    `:where()` or an attribute value it matches outside the article:
+    `html:has(.mw-parser-output) .banner` is the banner) or is followed by a sibling combinator;
+  - markup a browser's tree builder would read differently from `html.parser`
+    (`ReaderScan._tree`): inside MathML a `<style>`'s content is markup, not CSS, so a style
+    element or any HTML element inside a formula is refused; every element must be closed by
+    its own end tag, innermost first, and none left open at the end (an unclosed
+    `<table><tr><td>` takes in the panel, an unclosed `<a href>` the rest of the page); no link
+    in a link, block in a paragraph, heading in a heading, list item in a list item of the same
+    list, table part outside its place or text directly in a table, and no end tag of a void
+    element. The canonical bodies do none of this, so they build byte for byte as before;
+  - its text, read as web-html/3 reads a body (the decoded text in document order, nothing
+    from style, one LF dropped after `pre`, each White_Space run one space, the ends
+    stripped), must hash to the records' `layer_sha256`: every character served is the
+    pinned revision's;
+  - each passage's marks, in document order, must cover exactly its span on that layer (the
+    slice whose sha256 is its record's `span_sha256`, and the record's `span` when it has one)
+    with at most a space between two of them; each mark carries its passage's status, none
+    nests in another or crosses an element boundary, and only a passage's first mark carries
+    its id; a passage with no status (an unresolved one) has no mark at all: it gets no
+    highlight until it is read (the maintainer's decision, 2026-11-02), so `unplaced` lists it;
+  - `unplaced` lists, as `{item, reason}`, exactly the passages the html leaves unmarked, and
+    `marks` and `passages`, when given, are the html's;
+  - no file that is not free (`reader_images`): every file the html fetches (an image's `src` and
+    `srcset`, a video's `poster`, a `source`, a TemplateStyles `url()`) must be a Wikimedia upload
+    URL (the original, a thumbnail or a transcode) of a Wikimedia Commons file or of an English
+    Wikipedia upload, and `images` must name it, under its project, as `{project, licence,
+    licence_id, licence_url, author, restrictions}`: the licence's printable name and its id as
+    the MediaWiki API gives them (the id may be null for a Commons file), the licence's own page
+    (the API's `LicenseUrl`, https on the licences' own hosts, `READER_LICENCE_HOSTS`, or null),
+    the author as the file page credits them (the API's `Artist`, its markup stripped, plain
+    text, or null), and the restrictions its file page sets beside the licence (the API's
+    `Restrictions`, split at `|`: `trademarked`, `personality` and the like, `[]` for none); an
+    English Wikipedia upload adds `categories`, its categories as the API lists them. An English
+    Wikipedia upload may be non-free or free in the United States only, so one is shown only
+    with a free licence id (public domain, CC0, CC BY and BY-SA of any version, the GFDL, the GPL
+    and the like; `READER_FREE_LICENCE`) and with categories that make it free everywhere:
+    `Category:All free media` and none of `Category:All free in US media`, `Category:Wikipedia
+    files not suitable for Commons`, `Category:Wikipedia images using freedom of panorama` and
+    `Category:All non-free media` (`READER_NOT_FREE_CATEGORIES`). A free licence id alone is not
+    enough: a photo free in the United States only under freedom of panorama keeps its CC BY-SA
+    id. A Commons file must name its licence, and a free one: by its id, or by its name when the
+    API gives no id (the GPL, the LGPL, the GFDL, the "Attribution" licence, copyrighted free
+    use, the public domain; `READER_FREE_LICENCE_NAMES`). Commons hosting a file is not a
+    licence: a file page whose licence template is broken gives the API none, and the file is
+    refused. A file under a licence that asks for its author's name with every copy (CC BY and
+    BY-SA of every version, the GFDL, the GPL and LGPL, the Free Art Licence, "Attribution";
+    `READER_ATTRIBUTION_LICENCE`) must name its author, and one whose licence has a text of its
+    own (Creative Commons, the GFDL, the GPL and LGPL) must link it.
+    The Wikimedia projects' marks and the Foundation's (logos, wordmarks and icons, the Wikipedia
+    W) are refused wherever they are hosted and however they are listed, since the Foundation's
+    trademark policy covers them whatever their copyright licence. A file is one by its name
+    (`READER_WIKIMEDIA_MARK`) when the name starts with a project's or the Foundation's name as a
+    word (Wikipedia-W-bold-in-square, Wikipedia_wordmark, Wiktionary_small, MediaWiki-2020-icon,
+    Wiki_letter_w; "Wiki" alone counts, a longer word such as "Wikipedian" does not), or when it
+    names a project or the Foundation beside a logo, wordmark or icon, in either order
+    (Commons-logo, Notification-icon-Wikipedia-logo, WMF_logo); and whatever its name, a file
+    whose page marks it `trademarked` is refused as a mark (`READER_BARRED_RESTRICTIONS`). The
+    other restrictions limit a use, not the copy, and leave a file free. `images` names no file
+    the html does not show. The maker gets each licence and restriction from the API and leaves
+    out a file that is not free, and the marks (with the link or wrapper that holds nothing
+    else); a TemplateStyles `url()` of such a file becomes `none`. It also leaves out a file
+    the builder would refuse for its licence or its credit.
+
+  A checked article gains `reader` (section 4) and the store `reader/<pageid>.html`, the
+  html byte for byte; `reader.images` lists each file the html shows, `{file, project, licence,
+  licence_url, author}` in file order, for the page's attribution (section 8). An entry for no article of the build is
+  ignored, and a file that matches none is refused.
+- **`--audit-summary`** (`wikilean.atlas.audit-summary/1`): what an audit of the build's links
+  measured, so the pages can give a figure that changes with a store build, never a release.
+  Exactly `{schema, record_sets, audit, items, figures}`: `record_sets` the seal sha256 of each
+  record set of the build, each once (an audit describes the sets it read, so a summary of
+  another build is refused); `audit` the run that judged the sample, `{run_id, operator,
+  window_utc: {start, end}, models: [{model, model_name}], blind, independent}` (a run id, a
+  login, ISO 8601 UTC times, start first and no earlier than the latest seal's `created`, since
+  an audit judges the sets as exported, one to four models, each a model id and its printable
+  name, the provenance rule's grammar, and two booleans: whether its judges were blind to the
+  runs and to each other, and whether they were independent of the runs they judged); `items`
+  the number of items it judged; `figures` one to twelve estimates `{id, label, share, ci95,
+  weights, n_eff, drawn, population}`: the share of the population judged right, from 0 to 1,
+  and its 95% interval `[low, high]` around it, from `drawn` of the sample's items (at most
+  `items`) standing for `population` (at least `drawn`), weighed by `weights` (what the draw
+  was weighted by, plain text, or null for none) to a Kish effective sample size `n_eff`
+  (above 0, at most `drawn`, and `drawn` itself without weights). A label is plain text
+  (letters, digits, spaces and `,.()·/+:;'&%_-`, at most 160 characters) and an id a token,
+  each id once. Any other key is refused. Every article and `current.json` gain `audit:
+  {run_id, operator, started, ended, models, blind, independent, items, figures}`, which the
+  "About this data" folds cite (section 8); without it they say the build carries no accuracy
+  figure. The audit's maker writes the summary from the audit's own records.
+
+Every article of a build with any of them carries `supplements` (each side file's schema and
+sha256; the signatures' corpus too), and `current.json`'s `supplements` adds the counts
+(passages with text, and `shown`, how many of them have a status, the ones the pages show;
+locations and declarations with a signature; articles, passages and marks of the reader). All of these fields are
+optional within v1: a reader that does not know them reads the store as before.
 
 The fixture lives in `scripts/atlas/fixtures/`. `make_fixture.py` writes `recordset/` (two
 synthetic articles that cover every outcome, in exactly the agreed format: a lead
@@ -841,8 +1126,9 @@ many times over.
 **Publishing** is an operator action, never the nightly and never the fleet host:
 
 1. Build and `--check` the store from the sealed set on the operator machine.
-2. Upload every object except `current.json` (`universes/`, `records/`, `articles/`,
-   `index/`, `manifest.json`), keyed by its path, overwriting what is there. That
+2. Upload every object except `current.json` (`universes/`, `records/`, `reader/` when the
+   build has `--reader-html`, `articles/`, `index/`, `manifest.json`), keyed by its path,
+   overwriting what is there. That
    includes an existing `universes/<sha>.json`: the key is the producer's
    `universe_sha256`, which covers the libraries' ids, commits and index shas but not the
    metadata beside them (`display_name`, roots, toolchain, licence, exclusions), so the object is
@@ -851,36 +1137,98 @@ many times over.
    set.
 3. Upload `current.json` last, then delete objects the new manifest no longer lists.
 
-While an upload is running, readers can see a newer article next to an older index. Each
-article stays internally consistent, so the worst case is a short-lived 404 from the index
-for a newly added page. No upload script exists yet, deliberately: it is a remote write,
-and who runs it is an open decision (section 14).
+**`current.json` is the publish switch.** Until it is in the bucket, every atlas route but the
+feedback export answers 503 "atlas store has no published build" and no article page shows a
+box, whatever else the bucket holds, so a first upload goes live only when `current.json` lands.
+Deleting `current.json` alone takes the atlas down the same way, with no release: that is the
+data rollback (or re-upload the previous build, which is why each build is kept). Each isolate
+keeps what it read of `current.json`, its absence included, for a minute (section 7), so either
+shows within a minute.
+
+While a later upload is running, the previous `current.json` still in place, readers can see a
+newer article next to an older index. Each article stays internally consistent, so the worst
+cases are short-lived: a 404 from the index for a newly added page; an article whose new reader
+page has landed before its new view, which names the old page's sha256, shows its card list
+(`loadReaderHtml` logs `atlas-reader-mismatch`) until its view lands; and records that have
+landed before their view answer 503 from `/api/atlas/records` until it does. No upload script
+exists yet, deliberately: it is a remote write, which the maintainer runs from the operator Mac
+(section 14, item 3).
 
 ## 7. Worker routes
 
 | Route | Answer | Cache-Control |
 |---|---|---|
 | `GET /atlas[?q=]` | dashboard: totals by status, by library (complete and incomplete locations), by WikiProject importance; article list with the libraries holding each article, searched server-side through the index shards (200 rows shown). A `q` search takes the anonymous read budget of `/api/brain/*` and `/mcp` (per IP, an IPv6 client by its /64 (`limiterIp`), `MCP_LIMITER` else `BRAIN_API_LIMITER`, 120/min, key `atlas-q:<ip>`) and answers 429 over it | none (HTML, like other pages) |
-| `GET /atlas/:pageid[/:slug]` | one article's coverage page; the slug is cosmetic | none |
+| `GET /atlas/:pageid[/:slug]` | one article: the reader (section 8) when the store has its marked revision (`--reader-html`) and its bytes are the ones its view names, else the card list; the slug is cosmetic. Takes the article read budget (below) | none |
+| `GET /atlas/:pageid[/:slug]?view=cards` | the card list, with the view switch when the article has a reader | none |
 | `GET /atlas/universe/:sha` | the universe's libraries, commits and exclusions | none |
-| `GET /api/atlas/current` | `current.json` | `public, max-age=60` |
-| `GET /api/atlas/article/:pageid` | the view model | `public, max-age=300` |
-| `GET /api/atlas/records/:pageid` | the raw records, `application/x-ndjson` | `public, max-age=300` |
-| `GET /api/atlas/universe/:sha` | the universe | `public, max-age=300` (not immutable: see section 6) |
-| `GET /api/atlas/index/:shard` | one index shard (used by the dashboard's live filter) | `public, max-age=300` |
+| `GET /api/atlas/current` | `current.json`; takes the meta budget (below) | `public, max-age=60` |
+| `GET /api/atlas/article/:pageid` | the view model; takes the article read budget | `public, max-age=300` |
+| `GET /api/atlas/records/:pageid` | the raw records, `application/x-ndjson`; takes the article read budget | `public, max-age=300` |
+| `GET /api/atlas/universe/:sha` | the universe `current.json` names (a store holds one); takes the meta budget | `public, max-age=300` (not immutable: see section 6) |
+| `GET /api/atlas/index/:shard` | one of the index shards `current.json` lists (used by the dashboard's live filter); takes the meta budget | `public, max-age=300` |
 | `POST /api/atlas/feedback` | section 10 | none |
 | `GET /api/atlas/feedback/export` | section 10 | `no-store` |
 
-With `ATLAS` unbound, every route above except the export answers **503 "atlas store not
-configured"** (an HTML page or JSON, with `no-store`). A bound but empty store answers 503
-"atlas store has no published build". An unknown or malformed page id, sha or shard
-answers 404. `atlas` was already in `RESERVED`, so no article can take the name. The
-security middleware (`src/security.ts`) adds its headers to every one of these responses.
+**The article read budget.** An article page reads its view model, its universe and its
+marked revision from the store, hashes the revision and renders it; its two JSON views serve the
+view model and the records. The three share one anonymous budget per client, kept like a `q`
+search's but under its own key, `atlas-read:<ip>` (per IP, an IPv6 client by its /64;
+`MCP_LIMITER` else `BRAIN_API_LIMITER`, 120 a minute). It is taken before any store or D1
+read. Over it, a page answers 429 with the atlas's "Too many requests" page and a JSON view
+`{ok: false, error}`, both with `Retry-After: 60` and `Cache-Control: no-store`, and neither
+says how the budget is kept. The three small JSON objects (`current.json`, the universe, an
+index shard) share a budget of their own, `atlas-meta:<ip>`, kept the same way, so the
+dashboard's live filter, which fetches every shard, never spends an article's. The dashboard
+without a search and the universe page take none: they read only those small objects, through
+the store-object cache (below).
 
-Parsed index shards are cached per isolate for 60 seconds (`INDEX_CACHE_MS` in
-`src/atlas.ts`), so the dashboard and the article box do not re-read and re-parse them on
-every view. A newly published store reaches them within a minute, the staleness
-`/api/atlas/current` already allows.
+With `ATLAS` unbound, every route above except the export answers **503 "atlas store not
+configured"** (an HTML page or JSON, with `no-store`). Bound but without `current.json`, the
+publish switch (section 6), every one of them answers 503 "atlas store has no published build",
+however much else the bucket holds, and article pages show no box. A store object that does not
+parse, or lacks the shape the pages read (a truncated upload, a damaged object, a string no URL
+can carry such as a lone surrogate), answers the atlas's own 503 page or JSON, "an atlas store
+object could not be read", with the notice and the policy and `no-store`, never the site's
+generic 500; the error goes to the log (`atlas-store-error`) alone. The two JSON views check what
+they serve as the pages do: the view model must parse as one, and the records must hash to the
+`records_sha256` their view names (so missing or cut-short records, or records uploaded ahead of
+their view, answer that 503, not a 200 that browsers and caches keep for five minutes). An
+unknown or malformed page id, sha or shard answers 404, and a sha or shard that `current.json`
+does not name is a 404 that reads nothing. `atlas` was already in `RESERVED`, so no article can take the name. The
+security middleware (`src/security.ts`) adds its headers to every one of these responses, and
+every atlas page also enforces `atlasCsp` (section 8).
+
+**Indexing.** Every answer under `/atlas` and `/api/atlas` carries `X-Robots-Tag: noindex`,
+whatever its status (the site's 404 for a path no atlas route takes among them), and every atlas
+page also has `<meta name="robots" content="noindex">`: a reader page copies a whole pinned
+Wikipedia revision, a card list its passages, and the JSON views the same text. Links on the
+pages are still followed, and `robots.txt` still lets crawlers fetch the paths, which is how they
+see the header. WikiLean's own article pages, with the summary box (section 9), stay indexable.
+
+The store's small objects, `current.json`, the universe and the index shards, are cached per
+isolate for 60 seconds (`INDEX_CACHE_MS` in `src/atlas.ts`), each with its text and its parsed
+value (a missing object too), so no route re-reads or re-parses them on every view: the
+dashboard, the universe page, the article box and the three JSON routes, which serve the cached
+text, cost at most one read of each a minute per isolate. A newly published store, a withdrawn
+one or a repaired object reaches them within a minute, the staleness `/api/atlas/current` already
+allows. An object that was read but does not parse is kept as that failure for the same minute,
+so the dashboard and the universe page, which take no read budget, read a damaged object at most
+once a minute too; a failed read (R2 answering with an error) is never kept. An article page links its WikiLean article when one has its
+Wikipedia title. Each isolate keeps those answers, "none" included, for the same 60 seconds
+(`SLUG_CACHE_MS`), at most 1,024 titles (`MAX_SLUG_CACHE`, the one read longest ago dropped
+first), so a page read again within a minute costs no D1 read; a new WikiLean article gets its
+link within a minute. That bounds repeat views of one page, not a crawl across titles, so
+migration 0016 (`wiki/migrations/0016_articles_wikipedia_title.sql`) indexes
+`articles.wikipedia_title` and the lookup reads the matching rows alone instead of the whole
+table. Nothing requires it: the query and its answers are the same without it (only the rows D1
+reads change, a scan of the table instead of a search of the index), the index is not unique, so
+no write to `articles` depends on it, and no test, release check or promoter step looks for it
+(the promoter's D1 schema check, `D1_REQUIRED_COLUMNS`, covers 0014's columns alone). So the
+operator may apply it at any time, before, with or after the release that ships the atlas, after
+a D1 backup like the others (`wrangler d1 execute wikilean --remote
+--file=migrations/0016_articles_wikipedia_title.sql`, `CLAUDE.md`, "Site / D1"); it is idempotent,
+so a second run is a no-op.
 
 ## 8. UI
 
@@ -891,7 +1239,7 @@ and the live list filter.
 
 - **Coverage strip.** Under a "Coverage" heading: passages checked and Lean locations, a
   coverage bar whose segments are filled with patterns (solid, hatched, dotted,
-  cross-hatched, grey vertical hatch for undecided), and filter chips by status and by
+  cross-hatched), and filter chips by status and by
   library. Each status chip carries a swatch of its fill, so the chips are the bar's
   legend. Status and library are two facets combined with AND ("Showing 0 of 4 passages:
   Statement only, in Mathlib."); pressing a pressed chip clears its own facet. A chip with
@@ -924,43 +1272,165 @@ and the live list filter.
   the class `is-subject` (an accent frame) and `data-prominence="subject"`. A located passage
   then says in visible text which location gives it its status, for example
   "Formalized: Mathlib states this exactly (proved).", naming the store's `basis`, not
-  simply the rank-1 location. A survived coverage claim (decision D1) adds a line with
+  simply the rank-1 location. A partial status whose basis is an exact, close or more
+  general match says why, since the card beside it reads as a strong match: a definition,
+  construction or notation passage is formalized only by a Lean definition ("Partial: Mathlib
+  states this exactly, but as a proved theorem, not a definition; a definition passage is
+  formalized only by a Lean definition."), and under status rules 1 and 2 a more general
+  definition leaves a theorem partial. A survived coverage claim (decision D1) adds a line with
   its parts listed in the claim's order (library, declaration, proof status): "Formalized
   by 2 parts together:" when every part is finished, or "Stated by 2 parts together, not
   all of them finished:" (check 6). The builder gives every survived claim one of the two;
   for a store built before parity round three, whose claim may carry no status, the line
-  reads "Covered by 2 parts together, not all of which count toward the status:". A part the
-  claim confirmed says "a challenger checked it" on its card. When the claim is the basis that line is the status sentence;
+  reads "Covered by 2 parts together, not all of which count toward the status:". A `/2`
+  bundle adds its relation when it is not exact ("Formalized by 3 parts together (more
+  general):") and lists under each part the conjuncts it states. A part the claim confirmed
+  reads as re-checked ("it survived") in its card's Details. When the claim is the basis that line is the status sentence;
   otherwise it follows the sentence. A claim that did not survive shows no line, and its
   parts are ordinary "states part" cards. Then the quote with its context, and a link to the passage
-  in the pinned Wikipedia revision (a text fragment). The quote is verbatim. An ellipsis after
+  in the pinned Wikipedia revision (a text fragment). The quote is verbatim, with one exception
+  in how it is drawn: the producer's text layer is the article HTML's `textContent`, so it
+  holds each formula twice, as MathML token text ("w : G ~ → G") and then as its TeX
+  annotation ("{\displaystyle w:{\tilde {G}}\to G}"). The page (`wiki/src/atlas-math.ts`)
+  draws each formula once, from its TeX (Unicode letters and symbols, `<sup>`/`<sub>`,
+  stacked fractions; the TeX is its title), taking as its tokens the words in front of the
+  annotation whose letters and digits match the TeX's. A formula the export's cut truncated
+  shows its whole tokens when they hold more than the TeX's head, and a run of tokens at the
+  cut whose annotation was left out is drawn from the tokens. The JSON and JSONL keep the
+  quote as the record has it. The text fragment is built from the quote's prose only: the
+  whole quote when it holds no formula (as before), else its first specific run of words
+  (three, or two of 15 characters) as the start and its last run as the end; a quote with no
+  such run links to the revision without a fragment. An ellipsis after
   it means that the passage continues, and nothing else: when the quote is the capped head of
   a longer passage (`quote_capped`), an ellipsis follows it outside the highlight, after any
   suffix, with "(the passage continues)" for a screen reader, unless the rest of the passage
   lies within that suffix (`passage_ends_in_suffix`), which the card shows. A suffix is context
   and has no ellipsis of its own, even when it stops mid-sentence (a prefix keeps its leading
   one). The blockquote is `data-quote="head"` for a capped head (else `"whole"`), and a note
-  under the Passages heading reads "Quotes show at most the first 12 words of a passage. A …
-  after the highlighted quote means the passage continues; “Read it in context on Wikipedia”
-  shows the rest." A store built before `quote_capped` gets the word count: a 12-word quote
+  under the Passages heading reads "Quotes show at most the first 12 words of a passage (the
+  record format's quotation cap; a formula's MathML text counts toward it). A … after the
+  highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the
+  rest. Hover a formula for its TeX." A legend under it shows each relation badge beside what
+  it means (exact match: states the passage exactly; close match; more general; special case;
+  states part; related: never counted), with the record's term (`exactMatch` …) as each
+  badge's title. A store built before `quote_capped` gets the word count: a 12-word quote
   reads as a head. The producer's item
   id (`In-text #<hex>`) is a `data-item` attribute, not reader-facing text. Passage
   permalinks (`#p-<hex>`) clear the sticky header (`scroll-margin-top`).
-- **Location card.** One card per location: library chip, `@<sha7>`, the relation in
-  words (exact match, close match, more general, special case, states part, related), and
-  a proof-status badge. `statement only`, `wanted` and `axiom-dependent` are drawn as
-  amber dashed alerts (the statement-only colour, not the not-formalized red) and are
-  never hidden. Then the declaration (namespace faint, leaf bold,
-  wrapping at `.` and `_`), its module and lines ("lines 612–640", or "line 88" when the
-  record has no `end_line`), a convention note for close matches, the provenance line
-  (rank, confidence, challenge), and "Source @<sha7>" linking
+- **Location card.** One card per location, and it leads with the Lean code: the
+  declaration (namespace faint, leaf bold, wrapping at `.` and `_`), then its module and
+  lines ("lines 612–640", or "line 88" when the record has no `end_line`). Beside the
+  declaration, the relation is a badge in words (exact match, close match, more general,
+  special case, states part, related), its stroke solid for exact and close, dashed for more
+  general, special case and part, and dotted grey for related. Under the declaration, when the
+  store has its signature (`--signatures`), the Lean header is a monospace code block that
+  the page flows at the card's width, breaking only between the keyword and name, the binder
+  groups and the hypotheses (each with its arrow), with a four-column continuation indent (two
+  on a phone), so
+  no binder or hypothesis is split unless it alone is wider than the card; a header shortened
+  to fit keeps the whole type, as Lean prints it, under a "Full type" fold, and a deprecated
+  name says what replaced it. A note under Passages says once what the code is: the type as
+  Lean prints it, laid out as a header (the corpus keeps no hypothesis names, so hypotheses
+  show as arrows), in Mathlib's notation, and not the source text. A store without signatures
+  shows the name alone (the export names the declaration only). Then the
+  library chip, `@<sha7>`, a proof-status badge and "Source @<sha7>" linking
   `<repo>/blob/<commit>/<path>#L<line>-L<end_line>`, or `#L<line>` without an `end_line`.
+  `statement only`, `wanted` and `axiom-dependent` are drawn as amber dashed alerts (the
+  statement-only colour, not the not-formalized red) and are never hidden. Then the
+  record's note, labelled by what it explains for that relation ("Note" for an exact match,
+  "Why close, not exact", "Why more general", "Why a special case", "Why only part", "How it
+  differs"), and the provenance under a closed **Details** fold.
+- **The notice (the maintainer's decision, 2026-11-02).** Every atlas page (the dashboard, a
+  reader, a card list, the universe page and the 404, 429 and 503 pages) has one line under its
+  header, exactly "Preliminary: these links have not yet had an independent audit."
+  (`ATLAS_NOTICE`); the reader puts it at the top of its article column, beside the sticky
+  panel rather than above it, so the panel still fills the window below the header. It
+  states the dataset's audit status, so it is never a badge on a card, and it is the atlas pages'
+  own line: the article box (section 9) does not carry it. The notice changes only with a
+  release.
+- **Accuracy.** What an audit measured is in the "About this data" fold (the dashboard's "About
+  this build"), first, and changes with a store build. With an audit summary in the store
+  (`--audit-summary`, section 5) the fold says how the audit stood to the runs it judged ("blind,
+  not independent"), gives each figure as the estimate it is, with its interval and what it rests
+  on ("…: 80% (95% interval 62–91%), from 16 drawn of 400, weighted by relation and library, an
+  effective sample of 12.5"), and cites the run that measured them (its id, operator, window and
+  models, as the provenance rule cites a run). Without one it says "This build carries no
+  accuracy figure from an audit of its links." (`UNMEASURED`), a statement about the build, which
+  says nothing of whether an audit of its links exists.
+- **Licence (the maintainer's decision, 2026-11-02).** The reader's footer says that the page is
+  an adaptation of the pinned revision, shared under its licence (the article's `licence.text`,
+  CC BY-SA 4.0 for Wikipedia's text, the one link marked `rel="license"`): it names the article
+  and links the revision, its history (the contributors) and the licence, then lists what the
+  atlas changed (the passages highlighted, a panel of Lean cards added with their links, the
+  revision's links pointed to Wikipedia or to the atlas, the Wikimedia logos and any image that
+  is not free removed, its navigation boxes (rows of links to other articles) and any section
+  edit links hidden) and says that images and media keep their own licences. The card list's
+  footer credits the same revision for the passages it shows, and every other page's names the
+  licence of its quotes. Every footer ends with the mapping's licence: WikiLean's CC0, distinct
+  from the article text, and says that the Lean code on the cards is quoted from its libraries
+  under each one's own licence, which the universe page lists, not under CC0.
+- **Image credits.** Each image and media file keeps its own licence, and the reader credits
+  each as that licence asks: a fold in its footer lists each file the revision shows
+  (`reader.images`), named and linked to its file page on Wikimedia Commons or English
+  Wikipedia, with its author as that page credits them (the builder requires one wherever the
+  licence asks for the author's name: CC BY and BY-SA of every version, the GFDL, the GPL and
+  LGPL, the Free Art Licence, the "Attribution" licence), its project and its licence, linked to
+  the licence's own page wherever the licence has a text of its own (https only).
+- **Provenance (the maintainer's display rule, 2026-10-19).** Specific, stored, and hidden
+  until a reader opens it: never a generic label such as "AI pipeline". A card's Details
+  name the locate run that found it (from the campaign token `run:<locate>+<challenge>`)
+  with its rank and confidence there, the challenge run that re-checked it and its verdict
+  ("Re-checked in challenge run chal-…: it survived"), the record set and its export date and
+  producer commit (a `/2` store's `seal`), and its location and pair keys. The page's "About
+  this data" fold (the dashboard's "About this build") holds the runs, the record set, its
+  status rule and its seal sha, and the dashboard's dates the build: "built <day>" when the
+  builder was given `--built-at`, else, since `built_at` is then the latest seal's `created`,
+  "from record sets exported <day>". The seal records no model and no operator; a store built with
+  `--provenance` names them, so a card's Details read "Found by Model X (model-x) on 31 Oct–1 Nov
+  2026 (UTC), locate run loc-… by jack: candidate 1 …" and "Re-checked by … on 1 Nov 2026 (UTC),
+  challenge run chal-… by jack: it survived" (or "Not re-checked: sampled out of challenge run
+  chal-… by jack, in which … re-checked a sample on …"); an absence's Details say who searched
+  and who upheld it, and the "About" folds give
+  each run once, to the minute, with its worker's and reviewer's models (first the inventory run
+  that listed the passages, with each one's kind and prominence, when the store names it), and
+  what the side files merged; the challenge run's line says what it re-checked (every location and absence
+  on a central or subject passage, a seeded sample of the supporting ones at its rates, and the
+  totals: on an article page counted from the page, on the dashboard from `rechecked`). A model
+  id never breaks across lines at its hyphens. Without it the folds say that the record set does
+  not record the model or the operator rather than naming any. No voting data is shown:
+  Confirm/Report shows only the reader's own verdict.
+- **Passage text.** A store built with `--passage-text` shows each passage with a checked entry
+  in full, centrally, in place of its quote (`data-quote="full"`): prose and citation markers as
+  the revision states them, every formula drawn once from its TeX (a display formula on a line
+  of its own). A passage that is only part of a sentence, with `before`/`after` in the store, is
+  highlighted and the rest of its sentence is shown in grey around it (a list item's lead-in on
+  a line of its own). A note under the Passages heading says how many are shown in full, how
+  they were checked and what the grey text is; the 12-word note stays only when a passage still
+  shows a capped quote, and the footer's licence line names the JSON download's `text` fields
+  beside its quotes. The "About" folds count the text shown of the passages shown: a passage
+  with no status is in neither number (on the dashboard, `supplements.passage_text.shown` of the
+  passages with a status).
+- **Formulas.** Drawn once from their TeX (`atlas-math.ts`): matrices, cases and the align
+  family as rows and columns between delimiters that stretch over the rows (a row's spacing
+  such as `\\[4pt]` and alignedat's column count are never shown), a base's sub- and
+  superscript stacked, an accent drawn over its letter at a size that reads at 1x, and a
+  display formula broken only after a top-level relation. A formula wider than its passage (a
+  phone) scrolls sideways inside its own box, which takes keyboard focus; the page never does.
 - **Absence:** "Searched N libraries in universe <id> (<frozen>) — not found", linking the
-  universe page, with the receipt's counts. **Unresolved:** "Undecided", never counted as
-  not formalized; a passage unresolved because only related declarations were found shows
-  them under "Related, but states something else". A Prop-valued definition (the
-  `statement` flag) is badged "Prop definition" and described as stating the claim
-  without proving it.
+  universe page; the receipt's counts and the challenge verdict are under its Details. A
+  Prop-valued definition (the `statement` flag) is badged "Prop definition" and described as
+  stating the claim without proving it.
+- **A passage with no status** (an unresolved one: the locate run settled none, or found only
+  related declarations) **is set aside until someone reads it** (the maintainer's decision,
+  2026-11-02, after PD5: a passage the inventory may have cut wrongly gets no highlight and no
+  status until it is read). Neither the card list nor the reader lists, highlights or labels it,
+  it has no status chip or legend entry, and the counts and the bar leave it out, its related
+  declarations with it; the Coverage line says how many were left out ("1 more passage has no
+  status yet; it is left out until someone reads it."). The dashboard and the article box do the
+  same: no "undecided" status, chip, column or bar segment, their passage counts (the totals, the
+  importance table and the article list, here and in `atlas.js`'s live rows) leave it out, and
+  they say how many more passages there are, so a box and its article's page give one count. The
+  JSON downloads keep it (`unresolved` in the counts and the index).
 - **Dashboard.** The by-library table splits locations into complete (proved or a
   definition) and incomplete (statement only, wanted, axiom-dependent), so a library that
   only states results never reads like one that proves them. Its rows are the libraries
@@ -1019,30 +1489,126 @@ and the live list filter.
   segments get no link. The pages have no inline event handlers, and `atlas.js` writes
   only through `textContent` and `createElement`. The pages keep two inline scripts
   byte-identical to the other shells (the theme bootstrap and the header search), and the
-  coverage bar uses `style="width:…"`. Both are allowed by today's Report-Only CSP
-  (`'unsafe-inline'`, with no nonce or hash that would void it), and a strict CSP would
-  need hashes for the scripts and `style-src-attr` for the bar. Everything the pages, the
-  article box and `atlas.js` load or fetch is same-origin, so enforcing the Report-Only
-  policy as it stands breaks nothing (`wiki/e2e/atlas.spec.ts` runs the flows with it
-  enforced). `atlas.css` and `atlas.js` are static assets, so they get the security headers
-  from the generated `_headers` file, like every other asset.
+  coverage bar uses `style="width:…"`.
+- **Content-Security-Policy.** Every atlas page (`atlasHtml` in `src/atlas.ts`: the dashboard,
+  the reader, the card list, the universe page and the 404, 429 and 503 pages) enforces a
+  policy of its own, `atlasCsp` (`src/security.ts`), for the origin it was served from, which
+  the security middleware lists beside the framing ban (`<policy>, frame-ancestors 'none'`: a
+  browser enforces both). `default-src 'none'`; scripts only the atlas's two files by URL
+  (`ATLAS_SCRIPT_PATHS`, `/assets/atlas.js` and `/assets/atlas-reader.js` on the page's origin,
+  whatever their `?v=`; not `'self'`, which would admit every other script of the site, the
+  editor's, the review page's and the Brain's), the Cloudflare Web Analytics beacon
+  (`static.cloudflareinsights.com`) and the shell's two inline scripts by sha256, so no other
+  script file, inline script or inline handler runs; images and media from the site and Wikimedia's
+  upload hosts only (the hosts the builder lets a revision fetch from, `READER_FETCH`); styles
+  from the site and inline (the revision's TemplateStyles and style attributes, which the
+  builder checks, and the bar's widths); fetches to the site and `cloudflareinsights.com`;
+  forms only to the dashboard's search (`ATLAS_FORM_PATH`, `/atlas`, the one form an atlas page
+  has); no base, object or frame. Violations go to `/api/csp-report`. A reader
+  page serves the stored revision as the builder checked it, not re-sanitised, so the policy is
+  the second barrier: were the stored bytes ever hostile, no script but the atlas's own would
+  run and nothing would load from another host. `test/atlas.test.ts` recomputes the two hashes
+  from every atlas page, so changing either script fails until its hash in `security.ts` is
+  updated. Anything else Cloudflare injects into a page as inline script would be refused and
+  reported, so after a deploy the Workers Logs' `csp-report` events for `/atlas` pages are the
+  check. The article page's summary box is not an atlas page and keeps the site's Report-Only
+  policy. `atlas.css` and `atlas.js` are static assets, so they get the security headers from
+  the generated `_headers` file, like every other asset.
+
+### The article reader
+
+With the store's marked revision (`--reader-html`), `/atlas/:pageid/:slug` is the article
+itself, as WikiLean's article pages and the PDF overlay viewer show a source with its
+formalization on it (`atlasReaderPage`; its look and behaviour are `site/assets/atlas-reader.css`
+and `atlas-reader.js`, both copied by `build-public.ts`). Before it serves the revision the page
+checks its bytes against the view's `reader.sha256`; a missing or different file serves the card
+list, which `?view=cards` always gives.
+
+- **Layout.** WikiLean's header with a second row: an "Article | Card list" switch (which
+  carries the selected `#p-<hex>` across), the card list's status and library chips, "Central
+  only" and "Dim other text". Below it, the revision in WikiLean's `.wl-article-body` (its
+  headings, figures, tables and MathML formulas as the parse output gives them, links to
+  Wikipedia or, for an atlas article, to its reader), and a sticky panel beside it,
+  `clamp(380px, 34vw, 520px)` wide. Below 1000px the article is the page and the panel a bottom
+  sheet (46% of the screen, 52% below 600px) that a tap opens; a "N passages" button opens it on
+  the index, from its top. With the sheet open the header drops its second row (the switch and
+  chips come back when it closes), the sheet's handle, nav and ✕ share one strip, and it leaves
+  out the passage's text, which the article shows just above it; below 600px the header leaves
+  out the search box and the "Formalization atlas" link (the breadcrumb names it). Every
+  in-page jump, Wikipedia's own `[1]`, `↑` and section links among them, stops below the sticky
+  header (`scroll-padding-top`, set to its measured height), and the note a link jumped to is
+  marked. Without the script the panel follows the article and `#p-<hex>` still scrolls to
+  the passage's first mark.
+- **Formulas.** Each formula is its MathML, in STIX Two Math (or another font with an OpenType
+  MATH table; Chromium's `math` family is Times on macOS, which stretches no bracket and
+  enlarges no operator). `atlas-reader.js` (`fixMath`) then draws in the page what MathML Core
+  leaves out of Wikipedia's MathML: `mathvariant` (`\mathbb{R}` becomes U+211D ℝ, and the
+  script, fraktur, bold, sans-serif and monospace letters their Mathematical Alphanumeric
+  Symbols), the named spaces (`\,` is `thinmathspace`), the table attributes (`columnalign`,
+  `columnspacing`, `rowspacing`, `rowlines`, `columnlines`: aligned rows line up on `=`), TeX's
+  thin space around an operator name (`\sin x`, never before a bracket), TeX's ordinary `/`,
+  `|` and signs, and a prime on the line rather than raised twice; `atlas-reader.css` draws
+  bold operators and `menclose`. It changes only the page's DOM, after the builder has proved
+  the served bytes: the TeX annotation, the marks and the layer are untouched.
+- **Highlights.** Each mark carries WikiLean's status wash and the atlas's stroke under every
+  line: formalized solid green, statement only dashed amber, partial dotted amber, not
+  formalized a double red line, so status is never colour alone; a passage with no status has
+  no mark (a mark from an older store reads as plain text). A passage over several elements is all its marks; hover darkens all of them and
+  a desktop pointer gets a one-line peek ("✓ Formalized · Asymptotics.IsEquivalent +1 · more
+  general"). Selecting a passage (click, tap, Enter or Space on its first highlight that is not
+  link text, a row of the index, the stepper, ← and →, a `#p-<hex>` link) strengthens its wash,
+  draws the viewer's 4px bar in the margin from its first line to its last, writes `#p-<hex>`
+  with `replaceState` and fills the panel. A filtered-out passage reads as plain text.
+- **Panel.** With nothing selected: the passages in the article's reading order under its
+  section headings (status, first words, lead declaration and "+N", or "not found"), the
+  coverage bar and central-statements line, the legend of the four highlights and of the
+  relations, "About this data" and the data links. With a passage selected: "← All passages",
+  a stepper "‹ 2 of 58 ›" over the passages the filters show, and the passage's section, which
+  the server renders hidden for every passage: the card list's own block (heading, status pill
+  and sentence, the passage's text clamped to three lines with "Show all", then exactly the
+  card list's cards, Lean code first, the relation badge, the note, Details closed, Confirm or
+  Report), the absence box, related declarations folded, and "Open in card list",
+  "Copy link" and "Read on Wikipedia". `atlas.js` binds Confirm and Report there as on the card
+  list, and its "Sign in to confirm or report" comes back to the passage (`returnTo` carries its
+  `#p-<hex>`). Esc closes the peek, then leaves the passage (focus returns to its highlight). A filter
+  is kept per article for the tab's session (`atlr-filter:<pageid>`), so another article opens
+  unfiltered. A smooth jump to a passage is placed again where it ends when the page moved under
+  it (an image that does not load gives way to its description, in the image's own box).
+- **Security.** The revision is the builder-checked html (section 5); everything around it is
+  escaped as on the card list. `atlas-reader.js` fetches nothing and writes only through
+  `textContent`, `setAttribute`, `style`, `classList` and the MathML elements it creates
+  itself, reading what it needs from data attributes.
+  The page loads only same-origin scripts and stylesheets; the revision's images load from
+  Wikimedia's upload hosts when the viewer is online, and give way to their description when
+  they do not load. The article is paint-contained (`contain: paint` on `.atlr-article`):
+  nothing of the revision paints outside the article's box, it is a stacking context of its own
+  and the containing block of anything positioned in it, so an absolutely positioned element of
+  the revision, whatever its z-index, never covers the header, the panel, the page head or the
+  footer (the builder already refuses fixed and sticky positions and the page's own classes). A
+  table wider than the article is cut at its edge on a wide screen, where it ran under the panel
+  before; on a phone it scrolls in its own box, as it did.
 
 ## 9. Article pages
 
 When `ATLAS` is bound and the article's Wikipedia title has an index entry, the article
-page shows a compact box above the body: passages checked, counts by status, and "See
-where →" linking `/atlas/<pageid>/<slug>`. The page's header badges count WikiLean's own
+page shows a compact box above the body: passages checked, counts by status and "See
+where →" linking `/atlas/<pageid>/<slug>`, whose page carries the atlas's notice under its
+header (section 8). The page's header badges count WikiLean's own
 annotations, so the box says its counts are separate from them ("Separately from this
 page's annotations, the atlas checked N passages of Wikipedia revision R…"), and when the
 atlas checked another revision than the page shows it adds "This page shows revision
-R′.". `serveArticle` adds it **per request**, like
+R′.". Its counts are the passages that have a status, as the article's own atlas page counts
+them: a passage with none yet is in no count and has no status, and the box adds how many more
+there are ("1 more passage has no status yet."), or, when no passage has one, that the atlas
+found N passages, none with a status yet. `serveArticle` adds it **per request**, like
 the staleness banner (`pages.ts injectAtlasSummary`), and never bakes it into
-`render:v19`. The atlas changes independently of `articles.version`, so a cached box
+the render cache (`render:v<N>`, `index.ts`). The atlas changes independently of `articles.version`, so a cached box
 would be stale for up to 30 days. The cached base bytes do not change, so **no render-cache
 key bump is needed**, and the legacy annotation rendering is untouched.
 
-The box costs at most one R2 read (one index shard, cached for a minute per isolate) per
-article view when bound, and nothing when unbound. A store failure is logged and drops the box; it never breaks the page. The match
+The box costs at most two R2 reads per article view when bound, `current.json` (the publish
+switch: no box without it) and one index shard, each cached for a minute per isolate, and
+nothing when unbound. A store failure is logged and drops the box; it never breaks the page. The match
 is by title, because D1 stores no page id, so a page renamed after the atlas build loses
 its box until the next build.
 
@@ -1053,8 +1619,9 @@ revision, campaign, record_set, relation, verdict ('confirm'|'report'|'withdraw'
 most 500 characters), provenance ('human'), user_id, created_at`. It is append-only: one row
 per verdict, never updated. A person's current verdict on one judgment is the newest row for
 `(location_key, campaign, user_id)`, which the view `atlas_feedback_latest` gives, and there
-a `withdraw` means no verdict. `pair_key` is the producer's revision- and commit-free key,
-NULL until the store carries it (the builder does not yet).
+a `withdraw` means no verdict. `pair_key` is the producer's revision- and commit-free key: a
+store built from a `/2` set carries it on every location and the route copies it into the row;
+a `/1` store's rows hold NULL.
 
 A verdict belongs to the campaign the person saw. The page shows a signed-in reader their
 current verdicts for the store's campaign only, so a report from one campaign is not shown as
@@ -1113,14 +1680,15 @@ the improvement loop.
 | Path | Class | Ships |
 |---|---|---|
 | `docs/ATLAS.md`, `scripts/atlas/**` (builder, fixtures, test), `wiki/test/**`, `wiki/e2e/**` | release-neutral | on merge |
-| `wiki/src/atlas.ts`, `atlas-render.ts`, `libraries.ts`, `env.ts`, `index.ts`, `pages.ts` | release-affecting | only in a new release (fresh P1B, Jack's approval) |
-| `site/assets/atlas.{css,js}`, `wiki/scripts/build-public.ts` | release-affecting | with that release's public baseline |
+| `wiki/src/atlas.ts`, `atlas-render.ts`, `atlas-math.ts`, `libraries.ts`, `security.ts` (`atlasCsp`), `env.ts`, `index.ts`, `pages.ts`, `wiki/wrangler.jsonc` | release-affecting | only in a new release (fresh P1B, Jack's approval) |
+| `site/assets/atlas.{css,js}`, `site/assets/atlas-reader.{css,js}`, `wiki/scripts/build-public.ts`, `wiki/public-asset-source-attestation.json` | release-affecting | with that release's public baseline |
 | `wiki/migrations/0015_atlas_feedback.sql` | operator action | applied to D1 after a backup; fail-soft until then; stops on the superseded table (section 10) |
+| `wiki/migrations/0016_articles_wikipedia_title.sql` | release-affecting file, optional operator action | ships with the release like any file under `wiki/migrations`; nothing requires it on D1, so the operator may apply it at any time after a backup, before, with or after that release (section 7) |
 
-- `atlas.css` and `atlas.js` are copied by build-public but are not in the required
-  baseline lists, so baselines frozen before the atlas stay valid. The next baseline
-  freeze includes them, and the source attestation is regenerated at release time as
-  usual.
+- `atlas.css`, `atlas.js`, `atlas-reader.css` and `atlas-reader.js` are copied by
+  build-public but are not in the required baseline lists, so baselines frozen before the
+  atlas stay valid. The next baseline freeze includes them, against the source attestation,
+  which names each with its sha256 and bytes and is regenerated in the change that ships it.
 - build-public still deletes a stale `wiki/public/atlas.html`, and baselines still forbid
   one. That matters now: assets are served before the Worker, and a leftover old
   `atlas.html` would shadow the new `/atlas`.
@@ -1153,46 +1721,72 @@ A token names one repository, and a repository may carry several (lean-core spli
 `Init` and `Std`, contract note 13). Non-Mathlib libraries stay mentions-only by current
 policy.
 
-## 14. Prerequisites and open decisions for Jack
+## 14. Prerequisites and decisions
 
-Each decision below comes with a recommendation.
+Jack decided most of these on 2026-11-02; each says so.
+Two wait on his ratification before batch 1's store is uploaded, and one is still open, with a
+recommendation.
 
-1. **Ratify the End-goal amendment** (`docs/ROADMAP.md`, "Proposed amendment"). Everything
-   here assumes it.
-2. **Store backend.** *Recommendation: R2.* Data updates without a Worker release, there is
-   no per-version asset-count limit, and the free tier is ample. Its cost: R2 must be
-   enabled on the account (wikipedia.ts records that it was not). The alternatives:
-   - KV needs no account change, but on the free plan its 1,000 writes a day cannot take a
-     ~40k-object upload (check the plan).
-   - Static assets couple every data update to the ~5.5 h release chain and run into the
-     asset-count limit (about 20,000 files on the free plan) at full scale.
-3. **Who uploads, and from where.** *Recommendation:* the operator Mac, with a scoped R2
-   token (Object Read & Write on the one bucket), never the fleet host and never the
-   nightly. The upload script is not built; it would follow section 6.
-4. **Public licence statement.** The page footer states the mapping as CC0, like WikiLean's
-   annotations, and the quote fields as CC BY-SA 4.0. Proposal §10 requires that wording
-   for a CC0 consumer. Confirm it before launch.
+1. **The End-goal amendment** (`docs/ROADMAP.md`, "Proposed amendment"). *Awaiting Jack's
+   ratification*, before the upload. Everything here assumes it.
+2. **Store backend.** *Decided (Jack, 2026-11-02): R2, one private bucket* (no public URL, no
+   custom domain), bound as `ATLAS` in the release that binds the store. Data updates without
+   a Worker release, there is no per-version asset-count limit, and the free tier is ample. The
+   alternatives were KV (on the free plan its 1,000 writes a day cannot take a ~40k-object
+   upload) and static assets (every data update coupled to the ~5.5 h release chain, and the
+   asset-count limit of about 20,000 files on the free plan at full scale).
+3. **Who uploads, and from where.** *Decided (Jack, 2026-11-02):* the maintainer, from the
+   operator Mac, with a token scoped to the one bucket (Object Read & Write, with an expiry,
+   in `docs/SECRETS.md`'s register); never the fleet host, the nightly or GitHub Actions. The
+   upload follows section 6.
+4. **Public licence statement.** *Decided (Jack, 2026-11-02):* the reader says the page is an
+   adaptation of the pinned revision, shared under CC BY-SA 4.0, with the article's title, a
+   link to the revision, its history for the contributors, the licence link and the list of
+   changes (the highlights, the cards and links added, the images removed, the navigation boxes
+   hidden); images and media keep their own licences; the mapping (which passage is formalized
+   where) is CC0, distinct from the page; each article's JSON names both (`licence`, section 4).
+   The Lean code on the cards is quoted from its libraries and keeps each library's own
+   licence, which the universe page lists; the CC0 release does not cover it. The Wikimedia
+   and Foundation marks and any image that is not free are left out, and the builder refuses
+   them (section 5); nothing under `/atlas` is indexed (section 7). To meet the images' own
+   licences, the reader lists each image and media file with its file page, its author wherever
+   its licence asks for the author's name, and its licence, linked to the licence's text where
+   it has one (section 8, "Image credits"), as CC BY and BY-SA before 4.0 and the GNU licences
+   ask on every copy.
 5. **Feedback export carries notes.** It is the one free-text field, unlike the research
    export, and its pseudonyms are domain-separated from that export's (section 10) so the
-   two cannot be joined. *Recommendation:* keep the notes, because reasons make reports
+   two cannot be joined. *Open; recommendation:* keep the notes, because reasons make reports
    usable, and the form says maintainers read notes.
-6. **Absence feedback is not built.** Readers cannot yet say "this is formalized, here"
-   against a "not found". That is the safety metric's most valuable label
-   (false-not-formalized, §8.2). It needs a passage-level key, for example
-   `(record id, universe sha)`. *Recommendation:* build it next, as a second verdict
-   target.
-7. **The producer contract notes** (section 3) other than the agreed format (note 10) need
-   formal-companion's agreement before the first real set.
+6. **Absence feedback.** Readers cannot yet say "this is formalized, here" against a "not
+   found". That is the safety metric's most valuable label (false-not-formalized, §8.2). It
+   needs a passage-level key, for example `(record id, universe sha)`. *Decided (Jack,
+   2026-11-02): launch without it.* *Recommendation:* build it next, as a second verdict target.
+7. **The producer contract notes** (section 3). *Awaiting Jack's agreement as
+   formal-companion's maintainer*, before the upload. Notes 1, 2, 8, 9, 12 and 13 describe what
+   the producer's export at master writes; the others are WikiLean's readings where the
+   agreed format (note 10) left a choice.
 8. **Navigation.** `/atlas` is linked from atlas pages and from the article box, but not yet
-   from the other shells' navigation. Adding it there changes cached bytes
-   (`page:home`, `page:articles` and the render cache keys). *Recommendation:* add it in the
-   release that binds the store.
+   from the other shells' navigation. *Decided (Jack, 2026-11-02): add it in the release that
+   binds the store.* It changes cached bytes, so that release bumps `page:home`,
+   `page:articles` and the render cache keys.
+9. **The notice.** *Decided (Jack, 2026-11-02):* one line under every atlas page's header,
+   "Preliminary: these links have not yet had an independent audit.", never a badge on a card.
+   The figures an audit measured go in the "About this data" fold, from the store (section 8,
+   "Accuracy").
+10. **Audit before upload.** *Decided (Jack, 2026-11-02):* a blind audit of a sample of batch
+    1's links runs before its store is uploaded. Its figures reach the pages through the store's
+    audit summary (`--audit-summary`, section 5), so they can change without a release.
+11. **Passages with no status.** *Decided (Jack, 2026-11-02):* no highlight and no status until
+    they are read (section 8).
+12. **Reader reports.** *Decided (Jack, 2026-11-02):* the maintainer reviews them weekly, from
+    the feedback export on the operator Mac (section 10), before any becomes a benchmark seed.
 
 ## 15. Tests
 
 - `scripts/atlas/test_build_store.py` (in `scripts/ci-python.sh`) checks fixture
   reproducibility, schema validity, the golden store, determinism, the manifest, the view
-  model (including each passage's basis and the per-library proof split), `quote_capped`
+  model (including each passage's basis, the per-library proof split and the article's
+  `licence`, its records' one subject licence, two of them refused), `quote_capped`
   and `passage_ends_in_suffix` (a 12-word head and a 12-word whole passage in the fixture, a
   quote under the cap, a span that ends in whitespace, a passage that ends inside its quote's
   suffix or goes on past it, hostile `span_sha256` values given to `quote_extent`, F5's
@@ -1237,21 +1831,98 @@ Each decision below comes with a recommendation.
   disagree, each refused), the other refusal cases (oldid, title
   keys, templates, dot-segment repos, display names, renderer, unknown statuses,
   non-string affixes), hostile values in some 90 fields of the records, sources, universe
-  and seal (refused, never a crash), and the CLI (exit codes 2 and 3, and `--replace`
-  refusing foreign content).
-- `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, the APIs and
+  and seal (refused, never a crash), the CLI (exit codes 2 and 3, `--replace` refusing
+  foreign content, and any interpreter but CPython 3.12.13 or a later 3.12 refused, exit 3,
+  before anything is read), and the four optional side files (`SupplementTests`: a build
+  without them byte for byte the golden store; each merged where it checks out, with the
+  rest of the tree unchanged; a passage text whose layer, id, span sha or segments are off, a
+  signature that is another declaration's or of another universe, and provenance that does not
+  describe the set, its runs or its record lines, or whose runs' windows do not follow the seal
+  and one another (a harvest after the export, a challenge that starts before the run it
+  re-checked was harvested, an inventory harvested after its locate run started, times compared
+  as times), each refused by name; the inventory run a locate run names cited and checked as the
+  other runs are; an audit summary cited by every article and by `current.json` with the rest of
+  the tree the plain build's, and refused when it names another build's record sets, an unknown
+  key, a malformed run, window (or one that starts before the latest seal's export), model or
+  figure (a share outside its interval or outside 0 to 1, a draw outside the sample, a population
+  smaller than its draw, an effective sample above its draw or, without weights, other than it);
+  hostile values in some 70 of their fields refused, never a crash; `--check` with and without
+  them), and the reader
+  side file (`ReaderHtmlTests`, over a synthetic body of the Widget lemma: stored byte for byte
+  where it checks out, the rest of the tree the plain build's; an unmarked passage unplaced and
+  required to be listed; a mark on a passage with no status refused, whatever status it claims; a changed character, a mark one character late or early, an unmarked
+  piece between two marks, a wrong status, an unknown key, nesting, a mark across an element
+  boundary, a missing or extra anchor id, some twenty things a page must not serve and an entry
+  for another revision, each refused by name; the image rules (a Commons file, an English Wikipedia
+  upload with a free licence, a video and its poster and a TemplateStyles `url()` stored and
+  listed with their licences; an upload with no licence named, a non-free one, a file listed
+  under the wrong project or not shown, a URL that names no file, the Wikimedia and Foundation
+  marks however listed and whether or not "logo" is in the name, a file without its restrictions
+  or with malformed ones, a trademarked file whatever its name, a Commons file with no licence or
+  with an id-less one not free by its name, a file under a licence that asks for its author's
+  name without one, and one whose licence has a text of its own without an https link to it on
+  the licences' hosts, each refused, while a name that only resembles a project's, a restriction
+  other than `trademarked` and a public-domain or CC0 file without an author build); attributes
+  outside `READER_ATTRS`
+  (`attributionsrc`, `browsingtopics`, `lowsrc`, an entity-named one and the like), atlas links
+  outside the slug grammar or with a dot segment (`..`, `%2e%2e`, entity-spelled), links to the
+  site's own host however spelled, the page's own classes, and further hostile cases by name
+  (meta, base, svg, link, button, obfuscated `javascript:`, `data:` URLs, a MathML `href` and the
+  MathML style variants); a URL attribute (`href`, `cite`, `src`, `srcset`, `poster`) holding a
+  space character a browser keeps in the URL (U+00A0, U+3000, U+2009, U+0085) and a TemplateStyles
+  `url()` padded with one, each refused, while ASCII whitespace still splits a srcset and pads a
+  `url()`; an English Wikipedia upload without its categories, with malformed ones, outside
+  `Category:All free media` or in one that makes it not free everywhere (a made-up photo with the
+  API record's shape for one free in the United States only, under freedom of panorama, among
+  them), each refused; a
+  passage's context that is not the proven layer's text beside its span, one word off or from
+  elsewhere in the article, refused with the reader html and built without it; `--check` with
+  and without it).
+- `wiki/test/atlas.test.ts` (in `npm run test:ci`) checks 503 when unbound, `current.json` as
+  the publish switch (without it every route but the export a 503 and no article box, the bucket
+  read once; its absence and its return each shown within `INDEX_CACHE_MS`), the APIs and
   pages on the fixture store, 404s, escaping and integer-only numbers, the headings, the
-  visible status sentence and its basis, the shard cache and the search limiter with its
-  IPv6 /64 key, feedback
+  visible status sentence and its basis, the store-object cache (each small object read once a
+  minute whatever the route; a sha or shard `current.json` does not name a 404 that reads
+  nothing; a small object that does not parse kept as that failure for the minute, so the
+  dashboard and the universe page read it once), damaged store objects (a truncated article,
+  in its pages and its two JSON views, records cut short or missing, a title no URL can carry
+  in an article or an index shard, one without its universe, a truncated or foreign
+  `current.json`, a universe of another shape: the atlas's 503 page or JSON, logged, never a
+  500; an article whose lists are not lists rendered without them), the search limiter
+  with its IPv6 /64 key, the meta budget (its key, 429 over it, the dashboard and the universe
+  page taking none) and the article read budget (its routes, its key apart from search's, a 429 with
+  `Retry-After` before any store or D1 read, saying nothing of how it is kept), migration 0016's
+  query plan (the slug lookup a search of the index, a re-run a no-op), the slug lookup's
+  per-isolate memo (one D1 read for repeated views, with or without a WikiLean article, read
+  again after a minute, at most `MAX_SLUG_CACHE` titles, per binding, no failure kept),
+  `X-Robots-Tag: noindex` on every answer under `/atlas` and `/api/atlas` (pages, JSON, 404, 429,
+  503 and the site's 404 there) and on none outside, and each atlas page's robots meta, the
+  footers' licence statements (the reader an adaptation of its revision under the licence the
+  article's JSON gives its text, with what changed, `rel="license"` once, and its images and media
+  listed with their file pages, authors and licences, each licence linked over https only, a
+  malformed entry left out and a name escaped; the
+  card list crediting its revision; the mapping's CC0 on every page), the notice
+  (once under the header of every atlas page, 404, 429 and 503 ones included, at the top of the
+  reader's article column, and never in the article box or on a card) and the "About" folds'
+  accuracy lines (the figures as estimates and the audit run from an audit summary, a malformed
+  one read as none and escaped, else that the build carries no accuracy figure), the "About"
+  folds' runs (the inventory run first when the store names one), the dashboard's date (its
+  build's, or the record sets' export when the build took that as its time) and its passage-text
+  count (of the passages it shows), feedback
   auth, origin, validation, size cap (the shared `readJsonCapped` cap, exact to the byte),
   rate limit and missing table, append-only rows and withdrawal, what a row copies from the
   store, a verdict not pressed in the next campaign and not overwritten by its verdict,
   migration 0015 on an empty database, on a re-run and on the superseded table, the export
   and its domain-separated pseudonyms and their
   `RESEARCH_EXPORT_SALT` salt, the security headers on every atlas response and the pages'
-  CSP fit (same-origin loads only, no inline handlers), the article box with its cache
-  isolation and revision note, the readers, non-array universe lists, related-only and
-  Prop-valued-definition passages, the subject passage's marking and its Subject row, a
+  CSP fit (same-origin loads only, no inline handlers; `atlasCsp` on every atlas page, its two
+  inline-script hashes recomputed from each page, its media hosts the builder's `READER_FETCH`,
+  and every HTML answer through `atlasHtml`), the article box with its cache
+  isolation and revision note, the readers, non-array universe lists, passages with no status set
+  aside in both views (no block, row, section, mark or status label; the counts, the bar, the
+  chips and a library's related-only chip without them; the Coverage line's count of those left
+  out), Prop-valued-definition passages, the subject passage's marking and its Subject row, a
   `challenge_pending` location ("not challenged yet"), the coverage claim's line ("Formalized
   by 2 parts together" with the parts listed, only for a survived claim; its wording for a
   statement-only claim and for one an older store gives no status; a malformed claim never
@@ -1272,7 +1943,21 @@ Each decision below comes with a recommendation.
   GitHub-only repository links, and libraries that would read alike named apart by their
   roots or ids), and libraries split from one repository shown per id (Lean core · Init and
   Lean core · Std on the universe page, the coverage page's chips, cards and status
-  sentence, and the dashboard's table, library names and article list).
+  sentence, and the dashboard's table, library names and article list), and the article
+  reader ("the article reader", over the golden store plus the Widget lemma's synthetic marked
+  revision, `test/helpers/atlas.ts atlasReaderFiles`): the revision served verbatim, a hidden
+  panel section per passage holding exactly the card list's cards with Details closed, the
+  reading order and section groups, an unplaced passage, `?view=cards` with the switch and
+  "Show in article", the card list reading no revision (offering the reader from the view's
+  sha256 alone, the reader then the card list when the file is gone), a store without the file
+  or with other bytes serving the card list, the same-origin loads and an `atlas-reader.js` that
+  fetches and parses nothing, the article's paint containment, and the security headers; the
+  policy's script files by URL and never `'self'` (every script an atlas page loads among them),
+  its one form (`/atlas`) and the origin it names, and the site stylesheet at the article pages'
+  `?v=`. `wiki/test/security-headers.test.ts` covers the two
+  reader assets' headers, and a route's own enforced policy kept with the framing ban beside it:
+  `atlasCsp` on the reader and every other atlas page (the 429 and 503 ones too), its
+  directives, and the shared set alone on the atlas's JSON and every other page.
 - `wiki/test/retired-routes.test.ts` now excludes `/atlas` from the deleted paths, but still
   checks that `atlas` is reserved.
 - `wiki/e2e/atlas.spec.ts` (the required browser job since PR #72) runs axe in both colour
@@ -1282,8 +1967,22 @@ Each decision below comes with a recommendation.
   order with the empty libraries' list opened at 375px (axe, no sideways scroll), the
   combined filters, feedback, live search,
   a passage permalink, the Subject row's link and the article box, and runs those flows
-  again with the Worker's
-  Report-Only CSP enforced, asserting no violation.
+  again under the atlas's enforced policy as served (the header search among them) and the
+  article box under the Worker's Report-Only CSP enforced, asserting no violation. Its "the atlas
+  article reader" tests run on
+  the harness's third listener (port + 2, the store with the Widget lemma's marked revision):
+  axe in both colour schemes with and without a passage selected, a click opening the passage's
+  cards, the stepper in reading order and "← All passages", the keyboard (one stop per passage,
+  Enter, ← →, Esc returning focus), a `#p-` link and an unknown one, the hover peek, a status
+  filter, a link to a passage with no status finding none, the notice atop the article column
+  with the panel still filling the window under the header, the bottom sheet at 375px with no
+  sideways scroll, the reader under its enforced
+  policy (the theme bootstrap, the header search and `atlas-reader.js` with no violation; an
+  inline script, an inline handler and another same-origin script file it did not ship refused
+  and reported), an overlay of the
+  highest z-index inside the revision covering neither the header, the panel, the page head nor
+  the footer (and on a phone neither the header nor the panel's button), the switch to the card
+  list and back, and Confirm from the panel.
 - `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
   body caps and scans `wiki/src` so that no route reads a JSON body except through
   `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry.

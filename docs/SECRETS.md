@@ -189,6 +189,13 @@ and `cd wiki && npx wrangler secret list` (names only).
   script and `connect-src` for `en.wikipedia.org` summaries and `www.wikidata.org` search),
   so the landing page's `/brain?embed=1` frame no longer reports on every view. A test checks
   that list against `site/build_brain_page.py`'s external scripts and fetches.
+- **Atlas pages enforce a policy.** Every `/atlas` page enforces `atlasCsp`
+  (`wiki/src/security.ts`) beside the framing ban: scripts only the atlas's two files
+  (`/assets/atlas.js` and `/assets/atlas-reader.js` on the page's own origin, not every
+  same-origin script), the Web Analytics beacon and the shell's two inline scripts by sha256;
+  forms only to the dashboard's search (`/atlas`); images and media only from the site and
+  Wikimedia's upload hosts. A reader page serves a stored Wikipedia revision, so the policy
+  backs up the builder's sanitiser (`docs/ATLAS.md`, section 8).
 - **Request caps.** `/api/queue` 2 MiB and 1000 items; `/mcp` 64 KiB; a POST to `/api/auth/*`
   (anonymous, forwarded to better-auth in oauth mode) 16 KiB (`wiki/src/auth.ts`
   `MAX_AUTH_BODY_BYTES`); every other JSON body
