@@ -223,6 +223,7 @@ ${SEARCHBOX_CSS}</style>
     <span class="wl-nav">
       ${SEARCHBOX_HTML}
       <a class="wl-navlink" href="/articles">Articles</a>
+      <a class="wl-navlink" href="/atlas">Atlas</a>
       <a class="wl-navlink" href="/brain">Brain</a>
       <a class="wl-navlink" href="/recent-changes">Recent changes</a>
       <a class="wl-navlink" href="/stats">Stats</a>

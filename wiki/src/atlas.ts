@@ -2,7 +2,8 @@
 // WikiProject Mathematics passages are formalized in Lean, in which library, at
 // which commit (design: docs/ATLAS.md). The store is a static tree that
 // scripts/atlas/build_store.py builds from sealed locate record sets; the
-// Worker reads it through the optional R2 binding ATLAS and never writes it.
+// Worker reads it through the optional R2 binding ATLAS (wrangler.jsonc binds
+// it to the private bucket wikilean-atlas) and never writes it.
 //
 // What this plane deliberately does not do: no D1 annotation writes, no item
 // identity matching, no 256 KB annotation cap, no EDIT_LIMITER on reads, and no
@@ -380,10 +381,9 @@ export function r2Reader(bucket: Pick<R2Bucket, "get">): AtlasReader {
   };
 }
 
-// Ready alternatives for the open backend decision (docs/ATLAS.md, "Store"):
-// src/wikipedia.ts records that R2 was not enabled on the Cloudflare account.
-// Neither is wired to a binding; adopting one is a one-line change in
-// atlasReader plus its binding.
+// Alternatives to R2, which backs the store (the ATLAS binding in
+// wrangler.jsonc; docs/ATLAS.md section 14, item 2). Neither is wired to a
+// binding; adopting one is a one-line change in atlasReader plus its binding.
 // KV: one value per store path, the same keys as the R2 objects.
 export function kvReader(namespace: Pick<KVNamespace, "get">): AtlasReader {
   return { text: (key: string) => namespace.get(ATLAS_PREFIX + key) };

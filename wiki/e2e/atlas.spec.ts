@@ -281,6 +281,27 @@ test("an article the atlas covers shows the summary box", async ({ page }) => {
   await expect(page).toHaveURL(new RegExp(`${WIDGET}$`));
 });
 
+// The site's navigation links the atlas from every page's header (docs/ATLAS.md section 14,
+// item 8). From an article page the header's link opens the dashboard, which alone marks it
+// as the current page; at phone width the header wraps its links instead of widening the page.
+test("the site header's Atlas link opens the atlas from an article page", async ({ page }) => {
+  const errors = collectPageErrors(page);
+  await page.goto("/Test_Article");
+  const link = page.getByRole("banner").getByRole("link", { name: "Atlas", exact: true });
+  await expect(link).toHaveAttribute("href", "/atlas");
+  await expect(link).not.toHaveAttribute("aria-current", "page");
+  await link.click();
+  await expect(page).toHaveURL(/\/atlas$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Formalization atlas");
+  await expect(page.getByRole("banner").getByRole("link", { name: "Atlas", exact: true })).toHaveAttribute("aria-current", "page");
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/Test_Article");
+  await expect(page.getByRole("banner").getByRole("link", { name: "Atlas", exact: true })).toBeVisible();
+  const overflow = await page.locator("html").evaluate((root) => root.scrollWidth - root.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(0);
+  expect(errors).toEqual([]);
+});
+
 // Every CSP violation a page reports, as "<disposition> <directive> <blocked URI>".
 async function watchViolations(page: Page): Promise<() => Promise<string[]>> {
   await page.addInitScript(() => {

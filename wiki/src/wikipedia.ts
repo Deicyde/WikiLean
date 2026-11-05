@@ -1,7 +1,7 @@
 // Fetches MediaWiki-parsed article HTML, pinned to a revision id, cached in KV.
 // Mirrors render.py.fetch_article_html: prop=text|revid in one call. (KV rather
-// than R2 because R2 isn't enabled on the account; values are well under KV's
-// 25 MB limit and immutable per revid.)
+// than R2: R2 was not enabled on the account when this cache was built, and
+// values are well under KV's 25 MB limit and immutable per revid.)
 
 const API = "https://en.wikipedia.org/w/api.php";
 // Shared with drift.ts (the drift cron hits the same MediaWiki API).
