@@ -286,10 +286,23 @@ function list<T>(value: T[] | null | undefined): T[] {
 }
 
 // A community row shown as a location card. The fields the store would carry but
-// a community tag does not know (module, path, line, proof status, rank,
-// confidence, challenge, signature) are left empty or neutral: the card then
-// shows the declaration's name, its library and its relation, and nothing it
-// cannot stand behind.
+// a community tag does not know (module, path, line, rank, confidence,
+// challenge, signature) are left empty or neutral: the card shows the
+// declaration's name, its library and its relation, and nothing it cannot stand
+// behind.
+//
+// `proof_status` is the one that needs a decision, because the derived status
+// reads it. §2.2's write surface asks the editor for a declaration and a
+// relation, not for whether Lean's proof is finished, and the server cannot
+// know. Claiming `proved` would make a community exactMatch *formalized* — the
+// strongest thing this site says, on the word of one editor and no evidence.
+// So a community location is `statement_only`, the conservative reading: the
+// passage's status still MOVES (an exactMatch on an absence becomes "statement
+// only", not "not formalized"), which is what makes editing worth doing, but it
+// never mints a formalization claim. Release R2's history and R3's patrol queue
+// are where a reviewer confirms more than that.
+const COMMUNITY_PROOF_STATUS = "statement_only";
+
 function communityLocation(tag: ArticleTag, repoCommit: string): ArticlesLocation {
   return {
     library: tag.library,
@@ -300,7 +313,7 @@ function communityLocation(tag: ArticleTag, repoCommit: string): ArticlesLocatio
     path: "",
     line: 0,
     relation: tag.relation,
-    proof_status: "unrecorded",
+    proof_status: COMMUNITY_PROOF_STATUS,
     rank: 0,
     confidence: "community",
     challenge: "none",
@@ -449,9 +462,13 @@ export interface TagAllowance {
 }
 
 // One D1 round trip: the account's age, its overlay edits ever, and its writes
-// in the last 24 hours. A write is a row this account most recently authored
+// in the last 24 hours. A write is a row the account most recently authored
 // (added_by / updated_at) or removed (removed_by / removed_at) in the window, so
 // changing a row created yesterday counts today.
+//
+// "The account" is the person AND every agent they minted (PR #126's
+// agent_tokens.owner_id): an agent inherits its owner's tier and cap and never
+// exceeds it, so minting agents buys no more daily volume than one person has.
 export async function tagAllowance(
   env: Pick<Env, "DB">,
   accountId: string,
@@ -460,11 +477,15 @@ export async function tagAllowance(
   const since = now - DAY_MS;
   // Plain ordered placeholders, as every other query in wiki/src uses.
   const { results } = await env.DB.prepare(
-    `SELECT (SELECT created_at FROM users WHERE id = ?) AS created_at,
-            (SELECT COUNT(*) FROM article_tags WHERE added_by = ?) AS edits,
+    `WITH mine(id) AS (
+       SELECT ? UNION SELECT agent_id FROM agent_tokens WHERE owner_id = ?
+     )
+     SELECT (SELECT created_at FROM users WHERE id = ?) AS created_at,
+            (SELECT COUNT(*) FROM article_tags WHERE added_by IN (SELECT id FROM mine)) AS edits,
             (SELECT COUNT(*) FROM article_tags
-              WHERE (added_by = ? AND updated_at >= ?) OR (removed_by = ? AND removed_at >= ?)) AS today`,
-  ).bind(accountId, accountId, accountId, since, accountId, since)
+              WHERE (added_by IN (SELECT id FROM mine) AND updated_at >= ?)
+                 OR (removed_by IN (SELECT id FROM mine) AND removed_at >= ?)) AS today`,
+  ).bind(accountId, accountId, accountId, since, since)
     .all<{ created_at: number | null; edits: number; today: number }>();
   const row = results[0] ?? { created_at: null, edits: 0, today: 0 };
   // better-auth stores users.created_at in seconds (timestamp mode).

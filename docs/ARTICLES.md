@@ -1856,7 +1856,11 @@ overlay, always; and the default view is both, merged, labelled.**
 
 - The passage's **derived status is recomputed over the merged set**, by the same rules the
   store uses, so a community `exactMatch` on a passage the pipeline left `not_formalized`
-  moves the article's headline. **"As published"** (`?overlay=off`) shows the sealed statuses
+  moves the article's headline. A community location is read as `statement_only` for that
+  purpose and never as `proved`: the write surface asks an editor for a declaration and a
+  relation, not for whether Lean's proof is finished, so a community tag **never mints a
+  formalization claim** on one person's word. The status still moves, which is what makes
+  editing worth doing; the passage says both, "With community edits: … As published it is …". **"As published"** (`?overlay=off`) shows the sealed statuses
   and the sealed cards; the merged view is the default, because otherwise an edit has no
   visible effect and nobody makes a second one.
 - A community removal of one part of a survived coverage claim withdraws the claim.

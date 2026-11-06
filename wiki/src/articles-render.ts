@@ -682,12 +682,17 @@ function centralFromSummary(raw: Record<string, ProminenceCounts> | null | undef
 }
 
 // The same, from an article's passages; null when no passage carries a
-// prominence (a store built before every record had one).
-function centralFromPassages(passages: ArticlesPassage[]): CentralCounts | null {
+// prominence (a store built before every record had one). `statusOf` is the
+// status the page is showing, so the line moves with the strip when community
+// edits are folded in (plan section 2.8).
+function centralFromPassages(
+  passages: ArticlesPassage[],
+  statusOf: (passage: ArticlesPassage) => SummaryStatus = passageStatus,
+): CentralCounts | null {
   if (!passages.some((p) => typeof p.prominence === "string")) return null;
   const byStatus = emptyStatusCounts();
   for (const passage of passages) {
-    if (CENTRAL_PROMINENCES.includes(passage.prominence as string)) byStatus[passageStatus(passage)] += 1;
+    if (CENTRAL_PROMINENCES.includes(passage.prominence as string)) byStatus[statusOf(passage)] += 1;
   }
   return { byStatus, supporting: passages.filter((p) => p.prominence === "supporting").length };
 }
@@ -1544,6 +1549,12 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
     section ? `<span class="articles-section">${text(section)}</span>` : "",
   ].filter(Boolean).join(HEADING_SEPARATOR);
   parts.push(`<div class="articles-p-head"><h3 class="articles-p-h"${panel ? ` id="atlr-pp-h-${hex}" tabindex="-1"` : ""}>${heading}</h3>${pill(status)}</div>`);
+  // The merged status is labelled as merged, and the published one is said
+  // beside it, so a reader always knows which they are looking at (§2.8).
+  if (status !== sealedStatus) {
+    parts.push(`<p class="articles-overlay-line">With community edits: ${text(STATUS[status].label)}.` +
+      ` As published it is ${text(STATUS[sealedStatus].label)}.</p>`);
+  }
   // A located passage says, in words, which location gives it its status. An
   // absence says so in its own box below (a passage with no status is set aside,
   // articleParts, and never reaches here). When a
@@ -1762,7 +1773,7 @@ function articleParts(input: ArticlePageInput) {
   const subjectRow = subjects.length
     ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-subject">Subject</span><ul class="articles-subject-list" aria-labelledby="articles-h-subject">${subjects.join("")}</ul></div>\n`
     : "";
-  const central = centralFromPassages(passages);
+  const central = centralFromPassages(passages, (passage) => shownStatus(passage, ctx));
   const centralHtml = central ? centralLine(central, n, { object: "the article's subject or a named result or definition", articles: null }) : "";
   const centralRow = centralHtml ? `${centralHtml}\n` : "";
   const nText = [...texts.values()].filter((view) => view !== null).length;

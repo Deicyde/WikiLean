@@ -1565,10 +1565,10 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
       ? arrayOf(article.passages).find((p) => p && p.passage_key === existing!.passage_key) ?? base?.passage
       : base?.passage;
     if (!passage) return c.json({ ok: false, error: "unknown pair_key" }, 404);
-    const agreement = await requireAgreement(c, writer, body, Date.now());
+    const now = Date.now();
+    const agreement = await requireAgreement(c, writer, body, now);
     if (agreement instanceof Response) return agreement;
 
-    const now = Date.now();
     const removed = state === "removed";
     const writes: D1PreparedStatement[] = [];
     if (existing) {

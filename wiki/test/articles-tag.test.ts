@@ -632,7 +632,9 @@ describe("the reader shows the merge", () => {
       passage_key: ABSENT.passage_key, declaration: "Widget.balanced_iff", relation: "exactMatch",
     }), { user: "u-human" });
     expect(res.status).toBe(200);
-    expect((await jsonOf(res)).status).toBe("formalized");
+    // Conservative by design: an editor names a declaration, not whether Lean's
+    // proof is finished, so a community location never mints "formalized".
+    expect((await jsonOf(res)).status).toBe("statement_only");
 
     const merged = await (await get(h.env, WIDGET_PATH)).text();
     const sealed = await (await get(h.env, `${WIDGET_PATH}?overlay=off`)).text();
@@ -641,7 +643,7 @@ describe("the reader shows the merge", () => {
       const at = html.indexOf(`id="p-${hex}"`);
       return /data-status="([a-z_]+)"/.exec(html.slice(at, at + 200))![1];
     };
-    expect(statusOf(merged)).toBe("formalized");
+    expect(statusOf(merged)).toBe("statement_only");
     expect(statusOf(sealed)).toBe("not_formalized");
     // The sealed statement stays on the page whichever view is shown.
     expect(merged).toContain("not found");
