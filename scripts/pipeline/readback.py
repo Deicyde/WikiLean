@@ -266,6 +266,40 @@ def _passage_row(source_id: str, group: list[dict], status_rule: int
     return row, cut
 
 
+def _check_source(source: dict, group: list[dict]) -> None:
+    """Refuse records whose subject end is not the source ``sources.jsonl`` describes.
+
+    A re-export writes the subject end from the **source row**, so a record that
+    disagreed with it would come back with other bytes and no reason given. The permalink
+    is derived from the family, so a set whose records use another spelling of it is
+    named here rather than found as a byte difference later.
+    """
+    where = str(group[0].get("id"))
+    end = group[0]["subject"][0]
+    ext = _ext(end, f"{where} (its subject end)")
+    expected = {"uri": source["uri"], "version": str(source["revision"])}
+    for key, value in expected.items():
+        if end.get(key) != value:
+            raise SetProblem(f"{where}: the subject end's {key} is {end.get(key)!r}, and the "
+                             f"source gives {value!r}")
+    for key in ("pageid", "html_sha256", "renderer", "layer_sha256"):
+        # layer_sha256 rides beside the span and is optional; a set that carries neither
+        # is named by _passage_row, which says what cannot be done without the span.
+        if key == "layer_sha256" and "layer_sha256" not in ext:
+            continue
+        if ext.get(key) != source.get(key):
+            raise SetProblem(f"{where}: the subject end's {key} is {ext.get(key)!r}, and "
+                             f"sources.jsonl gives {source.get(key)!r}")
+    citation = end.get("citation") or {}
+    if citation.get("container-title") not in (None, source["container_title"]):
+        raise SetProblem(f"{where}: the citation's container-title is "
+                         f"{citation.get('container-title')!r}, and the family gives "
+                         f"{source['container_title']!r}")
+    if ext.get("licence") != source["licence"]:
+        raise SetProblem(f"{where}: the subject end's licence is {ext.get('licence')!r}, and "
+                         f"the family gives {source['licence']!r}")
+
+
 def _receipts(set_dir: Path, files: dict[str, bytes], rows: list[dict]) -> None:
     """Replace each absence's receipt reference with the sidecar's own queries and candidates."""
     for row in rows:
@@ -325,6 +359,7 @@ def read_set(set_dir: Path) -> SealedSet:
         for record in _lines(files[rel].decode("utf-8"), rel):
             groups.setdefault(str(record.get("id")), []).append(record)
         for group in groups.values():
+            _check_source(by_id[source_id], group)
             row, cut = _passage_row(source_id, group, status_rule)
             rows.append(row)
             cuts[(source_id, row["item"])] = cut

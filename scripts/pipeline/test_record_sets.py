@@ -280,6 +280,43 @@ class ReadbackTests(unittest.TestCase):
                     with self.assertRaises(readback.SetProblem):
                         readback.read_set(out)
 
+    def test_a_record_that_disagrees_with_its_source_is_refused(self):
+        # A re-export writes the subject end from the source row, so a record that
+        # disagreed with sources.jsonl would come back with other bytes and no reason.
+        for key, value in (("renderer", "web-html/9"), ("html_sha256", "0" * 64),
+                           ("pageid", 999)):
+            with self.subTest(key=key), tempfile.TemporaryDirectory() as scratch:
+                out = self.copy(scratch)
+                rel = "records/enwiki-1001-2002.jsonl"
+                lines = []
+                for line in (out / rel).read_text(encoding="utf-8").splitlines():
+                    record = json.loads(line)
+                    record["subject"][0]["extensions"][vocab.LOCATE][key] = value
+                    lines.append(keys.canonical(record))
+                (out / rel).write_text("\n".join(lines) + "\n", encoding="utf-8")
+                self.reseal(out)
+                with self.assertRaises(readback.SetProblem) as caught:
+                    readback.read_set(out)
+                self.assertIn(f"the subject end's {key}", str(caught.exception))
+
+    def test_a_subject_end_with_another_permalink_is_refused(self):
+        # The permalink is derived from the family; a set spelling it another way is
+        # named here rather than found as a byte difference after a re-export.
+        with tempfile.TemporaryDirectory() as scratch:
+            out = self.copy(scratch)
+            rel = "records/enwiki-1001-2002.jsonl"
+            lines = []
+            for line in (out / rel).read_text(encoding="utf-8").splitlines():
+                record = json.loads(line)
+                record["subject"][0]["uri"] = (
+                    "https://en.wikipedia.org/w/index.php?title=Widget_lemma&oldid=2002")
+                lines.append(keys.canonical(record))
+            (out / rel).write_text("\n".join(lines) + "\n", encoding="utf-8")
+            self.reseal(out)
+            with self.assertRaises(readback.SetProblem) as caught:
+                readback.read_set(out)
+            self.assertIn("the subject end's uri", str(caught.exception))
+
     def test_records_of_one_passage_that_disagree_are_refused(self):
         with tempfile.TemporaryDirectory() as scratch:
             out = self.copy(scratch)
