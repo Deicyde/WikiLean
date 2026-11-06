@@ -1,9 +1,11 @@
 # WikiLean's own locate pipeline
 
-**Status (2026-11-06): the plan.** Section 4's table is the order the stages are built in and
-says, per stage, whether it is built yet; it is updated as each one lands, and section 10
-lists what is not done. Nothing here changes a published result: section 7 is the argument,
-and section 8 is how each stage is proved against batch 1.
+**Status (2026-11-06): ten of the eleven stages are built.** Section 4's table is the order
+the stages are built in and says, per stage, whether it is built yet; section 10 lists what
+is not. Only **stage 9**, the four stages that call a model, is outstanding, with the
+declaration index's home (section 11, question 3). Nothing here changes a published result:
+section 7 is the argument, and section 8 is how each stage is proved against batch 1 —
+including the loop from batch 1's own harvested documents to its two seals, byte for byte.
 
 ## 0. Why this document exists
 
@@ -84,14 +86,21 @@ scripts/pipeline/status.py          stage 3: the derived status, rules 1, 2 and 
 scripts/pipeline/readback.py        stage 4: a sealed set read back into outcome rows
 scripts/pipeline/records.py         stage 5: the Literature Links records of one passage
 scripts/pipeline/export_records.py  stage 6: the sealed set, written and verified
-scripts/pipeline/gate/              stage 7: the out-of-tree gate (TODO)
-scripts/pipeline/tally.py           stage 8: outcomes and the challenge (TODO)
+scripts/pipeline/gate/              stage 7: the out-of-tree gate
+  gate/verify_locate.py               rules 1 to 10, with the 0/1/3 exit vocabulary
+  gate/locate_text.py                 the head rule, the quote, the span end, the blocks
+  gate/stage.py                       the gate directory, written outside this checkout
+scripts/pipeline/tally.py           stage 8: outcomes, the challenge and the counts
+scripts/pipeline/carry.py           stage 8: the carry-over map between two cuts
+scripts/pipeline/corpus.py          which files of a run's corpus are documents
+scripts/pipeline/index.py           the declaration index the proof statuses join from
+scripts/pipeline/items.py           the passage item grammar: clean() and join_key()
 scripts/pipeline/sources.py         stage 9a: sourcesets and the text layer (TODO)
 scripts/pipeline/cut.py             stage 9b: the statement-level cut (TODO)
 scripts/pipeline/locate.py          stage 9c: the locate run (TODO)
 scripts/pipeline/challenge.py       stage 9d: the challenge run (TODO)
-scripts/pipeline/run/               stage 10: run, harvest, watchdog (TODO)
-scripts/pipeline/contribute/        stage 11: the work-repo transport
+scripts/pipeline/run/               stage 10: plan, agent, harvest, cost, watchdog
+scripts/pipeline/contribute/        stage 11: the work-repo transport, and its middle
 scripts/pipeline/test_*.py          the tests, each named by scripts/ci-python.sh
 scripts/pipeline/fixtures/          synthetic fixtures only
 ```
@@ -280,33 +289,44 @@ and the field keeps its name because renaming it is a format change on both side
 
 **Cost.** None; deterministic, offline.
 
-### Stage 7 — the gate (`scripts/pipeline/gate/`) — TODO
+### Stage 7 — the gate (`scripts/pipeline/gate/`)
 
 **What it is.** The out-of-tree check of a worker's documents: rules 1–10 over one task's own
 documents, run by absolute path from a directory the worker cannot edit, with the exit
-vocabulary 0 / 1 (documents rejected) / 3 (the gate could not run).
+vocabulary 0 / 1 (documents rejected) / 3 (the gate could not run). `verify_locate.py` is the
+rules, `locate_text.py` the text layer they read, and `stage.py` writes the gate directory —
+refusing to write it inside this checkout, because a gate a worker can edit is no gate.
 
-**Source in formal-companion.** `scripts/gate/verify_locate.py`, `verify_findings.py`,
-`locate_text.py`, `scripts/locate/passage_ids.py`.
+**Source in formal-companion.** `scripts/gate/verify_locate.py`, `locate_text.py`,
+`scripts/locate/passage_ids.py`.
 
-**What changes.** The rules are the gate's own and move whole; what changes is where they read
-their pins from (a WikiLean `gate.json` written by stage 9c, not `cf plan-locate`'s) and that
-`locate_text.py`'s text layer is **WikiLean's own already**: formal-companion's
-`render_html.py` says it is a port of `site/anchor_resolve.text_layer`, pinned by a parity
-test. So the move returns the layer rule to where it came from, and
-`scripts/pipeline/gate/locate_text.py` is a stdlib-only restatement of
-`site/anchor_resolve.text_layer` with the head rule and the quote finder beside it, pinned to
-`site/test_anchor_resolve.py`'s own answers.
+**What changes.** The pins are a WikiLean `gate.json` (`wikilean-gate-locate/1`), written by
+the planner of stage 10; the proof-status join is stage 8's declaration index rather than a
+workspace's database; and the text layer is **WikiLean's own**. `locate_text.normalize_text`
+is NFKC followed by `site/anchor_resolve.collapse` — the Literature Links whitespace rule this
+repository already implements for the editor's anchors — so there is one definition of the
+layer's whitespace here and the gate is a use of it. formal-companion's renderer says it is a
+port of `site/anchor_resolve.text_layer`, so the move returns the rule to where it came from;
+the vendored legacy annotation package its passage id hashed through does not move, and does
+not need to, because that hash is the first eight hex of the sha256 of the normalised head.
+A relative path in `gate.json` is taken from the gate directory, so a planned root moves to
+another machine unchanged — which is what lets a contribute package carry one.
 
-**Why it is TODO.** The rules are checked against worker documents, and no batch-1 worker
-document is on this host — only the sealed exports are. The gate can be built and proved on
-synthetic documents, and that is worth doing, but it cannot be proved against batch 1, so it
-sits after the stages that can. Its deterministic record-shaped half is already in the tree
-twice (`build_store.py`'s checks and stage 5's `*_problem` functions).
+**What is proved.** From batch 1's layers alone, the head rule reproduces all 5,791 passage
+ids of the inventory corpus and the span-end rule all 5,791 span ends; and all 997 harvested
+documents of the four corpora re-gate PASS, as their receipts say. Each rule has a synthetic
+breaking case, and the suite asserts all ten are covered.
+
+**What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
+prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
+naturals-for-integers tripwire, both of which need the declaration index to carry
+signatures; rule 9's free-text check against the reading copy's spellings as well as the
+layer; and rule 10's sentence, display and connective counts for the harvest receipt (which
+refuse nothing).
 
 **Cost.** None at run time; the gate is model-free by rule.
 
-### Stage 8 — the tally and carry-over (`scripts/pipeline/tally.py`, `carry.py`) — TODO
+### Stage 8 — the tally and carry-over (`scripts/pipeline/tally.py`, `carry.py`)
 
 **What it is.** Harvested documents → finding rows → the challenge's verdicts applied → the
 derived status, as outcome rows. And the carry-over map: what a re-cut of a page does to each
@@ -314,19 +334,32 @@ passage of the old cut, so a verdict, a gold label or a known answer carries whe
 passage's text is unchanged.
 
 **Source in formal-companion.** `scripts/locate/outcomes.py` (1630 lines), `carry.py` (484),
-`scripts/harvest/tally.py`, `scripts/harvest/harvest.py`.
+and the `--locate` branch of its tally command.
 
-**What changes.** The status half is stage 3, done. What remains is the row machinery: the
-document reader, the challenge semantics (confirm/uphold/downgrade/refute/overturn, the
-reopen-wins ordering of review four, `confirm_parts`), the proof-status join from the
-declaration index, and the counts. Carry-over is computed from spans and span text only —
-never from an item, a statement or a model — so it is deterministic and portable as it
-stands; it uses stage 2's `passage_key`, which WikiLean already owns.
+**What changes.** The status half is stage 3, which was already here. There is no workspace
+object: a run is a corpus directory and a run directory named on the command line, and the
+universe is the `universe.json` shape stage 6 already writes. The **declaration index** is a
+stated input with two readers (`index.py`: a JSONL snapshot and a `decls` table) rather than
+a database the producer happens to hold — where WikiLean's own copy lives is section 11's
+question 3, still open. The bundle's conjuncts are computed here, in the one place that holds
+both the inventory's conjuncts and the parts' clauses. Carry-over is computed from spans and
+span text only — never from an item, a statement or a model — and uses stage 2's
+`passage_key`.
 
-**Why it is TODO.** Both read a workspace shape (harvested documents, `corpus.sqlite`,
-`planned.json`, `challenge-plan.json`) that does not exist on this host for batch 1, and both
-are large. Stage 4 (`readback.py`) gives the half the export needs today; the rest waits on
-stage 9c's run shape, because the row is whatever the documents of a WikiLean locate run say.
+**What is proved.** From batch 1's four corpora,
+`reports/locate-outcomes.loc-tierA-b1a.jsonl` (549 rows) and `.loc-tierA-b1b.jsonl` (5,242
+rows) are reproduced **byte for byte**, and
+`locate-tally.{loc-tierA-b1a,loc-tierA-b1b,inv-tierA-b1r}.json` match on counts, problems,
+finding rows, gates, sourceset and universe. Feeding those rows through stage 6 re-exports
+both sealed sets byte for byte, SEAL sha256s included. That closes the loop from a harvested
+document to the seal.
+
+**The honest boundary.** This host holds no `corpus.sqlite`, so the facts the index states
+about each declaration — the proof status, the Prop-valued-definition flag, the module and
+the source position — are *carried* from batch 1's own rows into the snapshot the run reads,
+exactly as the cut was carried in the stage 5 and 6 proof. Everything the tally **derives**
+around them is recomputed: which locations survive, their ranks, every challenge value, every
+status, the coverage bundles, the problems and the counts.
 
 **Cost.** None; deterministic, offline. The documents it reads cost model time (stage 9c).
 
@@ -381,23 +414,52 @@ map of Lean libraries, which is what the Brain is. **Question for Jack (Q3):** w
 WikiLean's copy should be a new `scripts/pipeline/universe.py` + SQLite, or should be served
 out of the Brain's own declaration data.
 
-### Stage 10 — the run, the harvest and the watchdog — TODO
+### Stage 10 — the run, the harvest and the watchdog (`scripts/pipeline/run/`)
 
-**What it is.** Driving the agents on a host, bringing the results home with a receipt that
-proves the corpus is whole, and the model-free spend watchdog that drains a shard before it
-overspends.
+**What it is.** Planning a batch and the root the agents run on (`plan.py`), the one agent
+call and the envelope it leaves (`agent.py`), bringing the documents home with a receipt that
+proves the corpus is whole (`harvest.py`), what a run cost (`cost.py`), and the model-free
+spend watchdog that drains a shard before it overspends (`watchdog.py`).
 
-**Source in formal-companion.** `scripts/run/` (the bridges, `agent_call.py`,
-`attempt_cap.py`, `watchdog.py`, `campaign.py`), `scripts/harvest/`, `templates/tend/`,
-`templates/campaign/`.
+**Source in formal-companion.** `scripts/run/` (`agent_call.py`, `watchdog.py`),
+`scripts/harvest/`, `scripts/cost/fleet.py`, `scripts/locate/{plan,tend_root}.py`.
 
 **What changes, and what does not.** The *substrate* — tend, agentbox, the run host — is not
-formal-companion's either; it is a separate tool a run host has. WikiLean's pipeline drives
-it rather than vendoring it, exactly as the contribute transport (stage 11) does. What moves
-is the harvest's reconciliation rule (list the source, transfer, list the destination, diff,
-write `RECEIPT.json`, refuse on any mismatch) and the watchdog's caps, both model-free. What
-does not move is agentbox, which is a Linux host's sandbox and the thing contribute mode
-exists to do without.
+formal-companion's either; it is a separate tool a run host has, and WikiLean's pipeline
+drives it rather than vendoring it, exactly as the contribute transport (stage 11) does. What
+moves is the **harvest's reconciliation rule** — list the source, transfer, list the
+destination, diff, write `RECEIPT.json`, and refuse to mark it complete on any mismatch —
+and the **watchdog's caps**, both model-free. Every agent call goes through
+`site/agent_sandbox.py`, which replaces agentbox: a locate worker reads untrusted article
+text, which is the prompt-injection surface that invariant exists for. Nothing runs a model
+without `--execute`; `--worker-command` runs a local command in its place, which is what a
+contributor's stub worker and the tests use.
+
+**The per-task rule's two lessons**, which the watchdog is built around:
+
+1. **It must not false-trip before enough tasks merge.** Cost per merged task over two tasks
+   is noise, and a rule that fires on noise is a rule an operator turns off. The rule is held
+   back below `--min-tasks`, and it does not fire at all when the merged count could not be
+   read — an unreadable merge target is no evidence. The gate-failure rule has the same floor.
+2. **It must not exit leaving a cap unenforced after a drain.** A drain starts nothing new,
+   but the calls in flight keep spending, and the original exited the moment the drain
+   returned. After draining this one **settles**: it keeps checking until the spend stops
+   moving or `--settle-timeout` passes, and its last record carries `spend_after_drain_usd`
+   and `over_cap_after_drain`. It exits 3 when the cap was still over, which stops the
+   campaign rather than being a line in a log nobody read. `--no-settle` keeps the older
+   behaviour and the record says which was chosen.
+
+**What is proved.** Against batch 1: the harvest reconciles all four corpora to their
+recorded receipts — expected names, actual count, the full sha256 manifest, `by_source` and
+`complete` all identical — and the cost block reproduces each run's dollars to the cent. The
+watchdog replays over the same envelopes and gate logs: it keeps going at twice the spend and
+drains at half it, and it finds what a priced floor counts as zero — `loc-tierA-b1b` left
+1,052 calls with no priced envelope, of which 1,046 returned empty at once and cost nothing
+and **six timed out after 32,867 seconds between them**, 9.1 hours of agent time the floor
+prices at $0 and the estimate at $411.68, taking the run from $2,241.95 to $2,653.64.
+`chal-tierA-b1`'s 1,590 unpriced calls all returned empty, so its estimate is $0.00 and its
+figure does not move: a call's own ``elapsed_s`` is the authority, at zero as much as at
+5,400. No run was launched and no model was called.
 
 **Cost.** None of its own; it is what spends stage 9's budget, and the watchdog is the cap.
 
@@ -484,11 +546,11 @@ batch 1 today, and the run cannot be proved at all without paying for one.
 | 4 | the record set, read back | `readback.py` | yes | both sets read, seals checked (R4) |
 | 5 | the records | `records.py` | yes | all 7,583 records rebuilt byte for byte (R5) |
 | 6 | the sealed set | `export_records.py` | yes | both sets re-exported byte for byte, both SEAL shas (R6) |
-| 7 | the gate | `gate/` | TODO | not provable here (no worker documents) |
-| 8 | the tally, carry-over | `tally.py`, `carry.py` | TODO | not provable here (no harvest) |
+| 7 | the gate | `gate/` | yes | all 5,791 ids and span ends; all 997 documents PASS (R8) |
+| 8 | the tally, carry-over | `tally.py`, `carry.py` | yes | both outcome files byte for byte; the loop to the seal (R9) |
 | 9 | sources, cut, locate, challenge | `sources.py`, … | TODO | fixtures only; a run costs money |
-| 10 | the run, harvest, watchdog | `run/` | TODO | not provable here |
-| 11 | contribute mode | `contribute/` | yes | synthetic end-to-end (R7); a Mac is section 9 |
+| 10 | the run, harvest, watchdog | `run/` | yes | four receipts reconciled; the watchdog replayed (R10) |
+| 11 | contribute mode | `contribute/` | yes | synthetic end-to-end (R7, R11); a Mac is section 9 |
 
 The **Built** column is `—` until the stage lands and `yes` after; `TODO` marks a stage this
 round does not reach at all.
@@ -590,11 +652,10 @@ Why the move changes no published result:
 
 ## 8. The reproduction tests
 
-All run offline, from the sealed sets alone, under the Python 3.12 of `scripts/ci-python.sh`.
-Batch 1's exports are **not** committed (public repository, article text): each test that
-needs them is skipped unless `WIKILEAN_LOCATE_SETS` names a directory holding them, and the
-committed tests run on synthetic fixtures. The batch-1 run is a command an operator runs, and
-its results are recorded in the report.
+All run offline, under the Python 3.12 of `scripts/ci-python.sh`. Batch 1's exports, its
+corpora and its runs are **not** committed (public repository, article text): the committed
+tests run on synthetic fixtures, and the batch-1 runs are commands an operator runs with the
+data under its own path, their results recorded in the report.
 
 | id | stage | what it proves |
 |---|---|---|
@@ -606,6 +667,10 @@ its results are recorded in the report.
 | R5 | 5 | every one of the 7,583 records rebuilt from its read-back row is byte-identical to the sealed line, under `keys.canonical` |
 | R6 | 6 | a re-export of both sets into a scratch directory is byte-identical to the sealed set, file for file, including `SEAL.json` and its sha256 (`f1e67e43…`, `23710337…`) |
 | R7 | 11 | a synthetic end-to-end contribute run: publish → claim → a second machine refused → run → results → collect → `verify_submission` accepts |
+| R8 | 7 | the head rule gives all 5,791 inventory passage ids and the span-end rule all 5,791 span ends, from the layers alone; all 997 harvested documents of the four corpora re-gate PASS; each of the ten rules fires on a synthetic breaking case |
+| R9 | 8 | both `locate-outcomes.*.jsonl` reproduced byte for byte (549 and 5,242 rows) and all three `locate-tally.*.json` on counts, problems, rows, gates, sourceset and universe; those rows through stage 6 re-export both sealed sets byte for byte, SEAL sha256s included |
+| R10 | 10 | the harvest reconciles all four corpora to their recorded receipts (names, count, sha manifest, `by_source`, `complete`) and prices each run to the cent; the watchdog replayed over the same envelopes keeps going at twice the spend and drains at half it, and prices the calls that left no priced envelope |
+| R11 | 10, 11 | plan → a stub worker → the gate → harvest → the tally, and claim → run → results → collect, both end to end on a synthetic task with no model called |
 
 **What R5 and R6 do and do not prove.** The record and the set are rebuilt from the rows that
 `readback.py` extracts from the sealed records. Three kinds of value are in play:
@@ -675,19 +740,27 @@ answer:
 
 Marked TODO in the tree, each with the section that specifies it:
 
-- stage 7, the gate (`scripts/pipeline/gate/`);
-- stage 8, the tally and carry-over;
-- stage 9, sources, the cut, locate and challenge — the four model stages, and the
-  declaration index they retrieve over;
-- stage 10, the run, the harvest and the watchdog;
-- the contributor's own seal: stage 11 wires `verify_submission.py` in, but a contributor can
-  only seal a set once stage 8 produces rows on their machine. Until then a result is the
-  gated documents, as formal-companion's is, and the coordinator seals.
+- **stage 9**, the four model stages: the sourceset and the renderer (9a, part-built — what
+  the export needs is in `sources.py`, the manifest, the `web-html/3` renderer as a use of
+  `site/anchor_resolve.text_layer` and the Wikipedia client are not), the statement-level cut
+  (9b), locate (9c) and challenge (9d). The three that call a model cannot be proved without
+  paying for a run, and none has been made from this host;
+- **the declaration index** stage 9c retrieves over and stage 8 joins from. Its *shape* is
+  built (`index.py`, with a JSONL and a SQLite reader) and its *source* is open — section 11's
+  question 3;
+- **four checks of the gate** the port does not make: `verify_locate.TODO_CHECKS` names them,
+  and `--self-check` prints them, so a run host sees what this gate does not refuse;
+- **the contributor's own seal**: stage 11 wires `verify_submission.py` in and stage 8 now
+  produces rows on the contributor's machine, so sealing there is reachable; what is missing
+  is the sourceset the export's source rows come from (9a). Until then a result is the gated
+  documents and the coordinator seals.
 
-Until stages 7–10 land, **a batch is still produced by formal-companion and consumed here.**
-That is a true statement about today and it is why nothing published moves. The pipeline is
-independent in the direction that matters first: WikiLean can read, check, re-derive, re-key
-and re-seal a set without formal-companion on the machine.
+Until stage 9 lands, **a batch's model work is still formal-companion's and is consumed
+here.** That is a true statement about today and it is why nothing published moves. From a
+harvested document onward the pipeline is WikiLean's own and is proved to be: the gate, the
+tally, the carry-over, the harvest, the watchdog, the export and the store all run with
+formal-companion nowhere on the machine, and together they reproduce batch 1 from its
+documents to its seals.
 
 ## 11. Questions for Jack
 
@@ -707,9 +780,17 @@ and re-seal a set without formal-companion on the machine.
 4. **Does formal-companion keep its locate pipeline?** The ruling does not say. Two producers
    of one format is a safety margin (section 5) and costs nothing here, but it is two things to
    keep in step. *Recommendation:* keep both; the shared parity tables are the join.
-5. **Which stage is next.** Stages 7–10 are each a real piece of work. The order that buys the
-   most is 8 (the tally) → 7 (the gate) → 9 → 10, because the tally is what makes the export
-   reachable from real documents. Or 11-first, if contributors are the trigger.
+5. **What stage 9 is proved on, and for how much.** It is the only stage left and the only
+   one that cannot be proved without paying. Batch 1's own costs give the unit prices: the
+   inventory ran at **$17.81 an article**, locate at **$52.31** and the challenge at
+   **$35.37**, so one article through all four model stages is about **$106** and a
+   three-article proof about **$320** (see the report of 2026-11-06 for the working).
+   *Recommendation:* three articles of batch 1's own sourceset, re-cut and re-located by
+   WikiLean's own code, and the result compared with batch 1's rows for the same articles —
+   that is the only check that says the model stages agree, and the carry-over map (stage 8)
+   is what makes the comparison meaningful across a re-cut.
 6. **Contribute mode's trigger.** ROADMAP's P3 gates the contributions queue on "first real
-   compute donor asks". The transport is built; is a contributor expected, and on which Mac,
-   so section 9's seven checks can be run?
+   compute donor asks". The transport and its middle are built; is a contributor expected,
+   and on which Mac, so section 9's seven checks can be run?
+7. **Consolidating `derive_status` (question 1) is now unblocked.** Stage 8 has landed, which
+   was the condition in that recommendation.
