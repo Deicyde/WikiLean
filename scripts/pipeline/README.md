@@ -28,8 +28,9 @@ so the pipeline changes without a release.
 | `records.py` | 5 | the records of one passage, and the cut the layer gives it |
 | `sources.py` | 9a | the web-source families (the rest of the stage is TODO) |
 | `export_records.py` | 6 | the sealed set, written |
+| `contribute/` | 11 | the work-repo transport, the claim and the sandbox |
 
-Stages 7 to 11 are listed in docs/PIPELINE.md section 4 with what is built.
+Stages 7 to 10 are listed in docs/PIPELINE.md section 4 with what is built.
 
 ## Running
 

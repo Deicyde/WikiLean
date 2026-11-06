@@ -419,10 +419,11 @@ and the thing that comes back is a WikiLean record set.
 
 | formal-companion | WikiLean |
 |---|---|
-| `cf contribute publish\|run\|collect` | `python3 scripts/pipeline/contribute/publish.py`, `run.py`, `collect.py` |
+| `cf contribute publish\|run\|collect` | `python3 scripts/pipeline/contribute/publish_package.py`, `run_package.py`, `collect_results.py` |
 | `scripts/contribute/workrepo.py` | `scripts/pipeline/contribute/workrepo.py` — the git transport, unchanged in substance |
 | `scripts/contribute/sandbox.py` | `scripts/pipeline/contribute/sandbox.py` — the per-call Claude Code settings, with the macOS real-path fix |
 | `scripts/run/bridge-claude-p.sh` | `scripts/pipeline/contribute/bridge.sh` — the per-call settings write, `pwd -P`, exit 78 |
+| the whole of `cf contribute run` | **the transport's two ends only**: claim, and results. What lies between them is pipeline stages 9 and 10, which are TODO |
 | a result is the gated documents and the run's records | **and**, new: the contributor may seal and verify its own set |
 | the results leg's "designed replacement" is WikiLean's endpoint | the verifier is already here: `scripts/articles/verify_submission.py` is wired in as the contributor's last step and the coordinator's first |
 
@@ -431,12 +432,15 @@ copy. INTAKE.md section 7 step 4 already says a contributor should run the verif
 checkout before posting; in formal-companion's version that is prose, because the producer
 cannot run WikiLean's code. Here it is a step of the command:
 
-- `run.py --stage results` refuses to push a result whose documents the pipeline's own checks
-  reject, and, when the contributor sealed a set, runs `verify_submission.verify()` over it
-  and puts the verdict in `RESULT.json`;
-- `collect.py` runs `verify_submission.verify()` again on the coordinator's side, because a
-  result is untrusted input — the refusal codes and HTTP statuses are INTAKE.md section 3's,
-  so the work-repo leg and the future endpoint refuse the same sets for the same reasons.
+- `run_package.py --stage results`, when the contributor has sealed a set, runs
+  `verify_submission.verify()` over it **before anything is pushed** and puts the verdict in
+  `RESULT.json`; a refusal stops the push and names the code, the HTTP status and the retry
+  rule;
+- `collect_results.py` runs `verify_submission.verify()` again on the coordinator's side,
+  because a result is untrusted input whoever pushed it. The refusal codes and statuses are
+  INTAKE.md section 3's, so the work-repo leg and the endpoint that will replace it refuse
+  the same sets for the same reasons — and a refusal on the coordinator's side is a
+  surprise, because the contributor ran the same function, so it says so.
 
 **Three invariants that must not be lost in the move**, each with its reason:
 
@@ -484,7 +488,7 @@ batch 1 today, and the run cannot be proved at all without paying for one.
 | 8 | the tally, carry-over | `tally.py`, `carry.py` | TODO | not provable here (no harvest) |
 | 9 | sources, cut, locate, challenge | `sources.py`, … | TODO | fixtures only; a run costs money |
 | 10 | the run, harvest, watchdog | `run/` | TODO | not provable here |
-| 11 | contribute mode | `contribute/` | — | synthetic end-to-end (R7); a Mac is section 9 |
+| 11 | contribute mode | `contribute/` | yes | synthetic end-to-end (R7); a Mac is section 9 |
 
 The **Built** column is `—` until the stage lands and `yes` after; `TODO` marks a stage this
 round does not reach at all.
