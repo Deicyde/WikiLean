@@ -32,6 +32,8 @@ so the pipeline changes without a release.
 | `carry.py` | 8 | the carry-over map between two cuts of one page |
 | `corpus.py` | 8, 10 | which files of a run's corpus are documents, and its receipt |
 | `index.py` | 8 | the declaration index the proof statuses join from |
+| `index_from_corpus.py` | 8 | that index, converted from a universe's own corpus, plus the search corpus |
+| `package_index.py` | 8 | the index and search corpus as one versioned bundle: sha256 manifest, per-library SPDX, names-only subset. Uploads nothing |
 | `items.py` | — | the passage item grammar: `clean()` hashes, `join_key()` joins |
 | `sources.py` | 9a | the web-source families: the permalink, the container, the licence |
 | `sourceset.py` | 9a | the append-only, versioned manifest, and its pin |

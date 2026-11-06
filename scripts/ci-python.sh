@@ -94,6 +94,7 @@ run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/p
 run_check "Pipeline Wikipedia client, behind --execute, no network" "$PYTHON_BIN" scripts/pipeline/test_wikinet.py
 run_check "Pipeline stage-9 prompts render and read the gate" "$PYTHON_BIN" scripts/pipeline/test_prompts.py
 run_check "Pipeline declaration index converted from a universe corpus" "$PYTHON_BIN" scripts/pipeline/test_index_from_corpus.py
+run_check "Pipeline index bundle: manifest, licences, names-only subset" "$PYTHON_BIN" scripts/pipeline/test_package_index.py
 run_check "Pipeline cut, retrieval, locate and challenge plans" "$PYTHON_BIN" scripts/pipeline/test_model_stages.py
 run_check "Pipeline locate gate, rules 1 to 10 out of tree" "$PYTHON_BIN" scripts/pipeline/gate/test_gate.py
 run_check "Pipeline run, harvest reconciliation and spend watchdog" "$PYTHON_BIN" scripts/pipeline/run/test_run.py
