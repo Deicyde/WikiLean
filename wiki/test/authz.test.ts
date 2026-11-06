@@ -14,9 +14,18 @@
 //   wrongBearer bearer that does NOT match PIPELINE_TOKEN → falls through to anonymous
 //   botNoToken  bearer sent but env.PIPELINE_TOKEN unset → bearer path disabled → anonymous
 //   agent       Authorization: Bearer <agent token> (agents.ts) → its own users row (role 'agent')
+//
+// The harness runs at PRODUCTION's defaults: migration 0019 leaves
+// site_settings.slug_editing 'off' (decision 5(b) of the signed public-editing
+// plan), so a save at /:slug is 403 for every actor but the pipeline bearer,
+// and site_write_mode 'open', so the overlay's tag routes are live. The save
+// engine's own contract is pinned by test/api.test.ts, which turns the plane's
+// editing back on; the refusal is pinned by test/slug-editing-off.test.ts.
 
 import { createHash } from "node:crypto";
 import { describe, it, expect } from "vitest";
+import { bindArticles, articlesPairedFiles, FIXTURE_CAMPAIGN, pairedPassage, WIDGET_PAGEID } from "./helpers/articles.js";
+import { CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
 import {
   setup,
   post,
@@ -79,6 +88,33 @@ const ACTORS: Record<ActorName, { opts: ReqOpts; prep?: (h: Harness) => void }> 
 
 const NEW_SLUG = "Authz_New_Article";
 
+// The overlay rows need a /2 store bound and the actors' CC0 agreements on
+// record, so each cell exercises its AUTHORIZATION gate and not the
+// first-edit gate (which test/articles-tag.test.ts pins on its own).
+const OVERLAY_PASSAGE = pairedPassage(WIDGET_PAGEID, 0);
+const PIPELINE_PAIR_KEY = OVERLAY_PASSAGE.locations[0].pair_key as string;
+const PIPELINE_LOCATION_KEY = OVERLAY_PASSAGE.locations[0].location_key as string;
+
+function tagBody(): Record<string, unknown> {
+  return {
+    pageid: WIDGET_PAGEID,
+    campaign: FIXTURE_CAMPAIGN,
+    passage_key: OVERLAY_PASSAGE.passage_key,
+    library: "mathlib",
+    declaration: "Authz.tag",
+    relation: "exactMatch",
+    base_version: 0,
+  };
+}
+
+function overlayPrep(h: Harness): void {
+  bindArticles(h.env, articlesPairedFiles());
+  const agree = h.db.prepare(
+    "INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)",
+  );
+  for (const id of ["u-human", "u-patroller", "u-admin"]) agree.run(id, CC0_AGREEMENT_VERSION, Date.now());
+}
+
 // Seed one open flag (id 1) for the resolve cells.
 function seedFlag(h: Harness): void {
   h.db
@@ -110,10 +146,12 @@ interface EndpointRow {
 //   agent    logged in for saves, flags and reads; every role-gated route refuses it
 const ENDPOINTS: EndpointRow[] = [
   {
+    // Editing is off on this plane (decision 5(b)): the bearer saves, nobody
+    // else does, and the refusal names the article's /articles page.
     name: "POST /api/article/:slug (save)",
     request: (h, opts) =>
       post(h.env, `/api/article/${SLUG}`, { annotations: echo(SEED_ANNOTATIONS), base_version: 1 }, opts),
-    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 200, wrongBearer: 401, botNoToken: 401, agent: 200 },
+    expected: { anon: 401, user: 403, patroller: 403, admin: 403, blocked: 401, bot: 200, wrongBearer: 401, botNoToken: 401, agent: 403 },
   },
   {
     name: "PUT /api/article/:slug (create)",
@@ -126,7 +164,7 @@ const ENDPOINTS: EndpointRow[] = [
     name: "POST /api/article/:slug (action:endorse)",
     request: (h, opts) =>
       post(h.env, `/api/article/${SLUG}`, { action: "endorse", annotation_id: "aaaaaaaaaaaa", base_version: 1 }, opts),
-    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 403 },
+    expected: { anon: 401, user: 403, patroller: 403, admin: 403, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 403 },
   },
   {
     name: "POST /api/article/:slug/revert/:revid",
@@ -190,6 +228,37 @@ const ENDPOINTS: EndpointRow[] = [
     expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
+    // The overlay's write surface (release R1). Agents reach these two routes
+    // and nothing else of this plane; the pipeline bearer reaches neither.
+    name: "POST /api/articles/tag",
+    prep: overlayPrep,
+    request: (h, opts) => post(h.env, "/api/articles/tag", tagBody(), opts),
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 200 },
+  },
+  {
+    name: "POST /api/articles/tag/:pair_key/state",
+    prep: overlayPrep,
+    request: (h, opts) => post(h.env, `/api/articles/tag/${PIPELINE_PAIR_KEY}/state`, {
+      pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, state: "removed", reason: "wrong lemma", base_version: 0,
+    }, opts),
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 200 },
+  },
+  {
+    // Confirm/report stays a human reader's verdict: PR #126's refusal holds.
+    name: "POST /api/articles/feedback",
+    prep: overlayPrep,
+    request: (h, opts) => post(h.env, "/api/articles/feedback", {
+      location_key: PIPELINE_LOCATION_KEY, pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, verdict: "confirm",
+    }, opts),
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 403 },
+  },
+  {
+    name: "GET /api/articles/overlay/:pageid (public)",
+    prep: overlayPrep,
+    request: (h, opts) => get(h.env, `/api/articles/overlay/${WIDGET_PAGEID}`, opts),
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
+  },
+  {
     name: "GET /api/article/:slug.json (public)",
     request: (h, opts) => get(h.env, `/api/article/${SLUG}.json`, opts),
     expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
@@ -226,7 +295,7 @@ describe("authorization matrix", () => {
     describe(ep.name, () => {
       for (const actor of ACTOR_NAMES) {
         it(`${actor} → ${ep.expected[actor]}`, async () => {
-          const h = setup();
+          const h = setup({ slugEditing: false });
           ACTORS[actor].prep?.(h);
           ep.prep?.(h);
           const res = await ep.request(h, ACTORS[actor].opts);
@@ -239,7 +308,7 @@ describe("authorization matrix", () => {
 
 describe("denied writes leave no trace", () => {
   it("blocked-session save: version and revision count untouched", async () => {
-    const h = setup();
+    const h = setup({ slugEditing: false });
     const res = await post(
       h.env,
       `/api/article/${SLUG}`,
@@ -251,7 +320,7 @@ describe("denied writes leave no trace", () => {
   });
 
   it("admin create (403): the article is never materialized", async () => {
-    const h = setup();
+    const h = setup({ slugEditing: false });
     const res = await put(
       h.env,
       `/api/article/${NEW_SLUG}`,
@@ -263,14 +332,14 @@ describe("denied writes leave no trace", () => {
   });
 
   it("plain-user revert (403): article state untouched", async () => {
-    const h = setup();
+    const h = setup({ slugEditing: false });
     const res = await post(h.env, `/api/article/${SLUG}/revert/1`, {}, ACTORS.user.opts);
     expect(res.status).toBe(403);
     expect(articleRow(h.db)!.version).toBe(1);
   });
 
   it("bot resolve (403): the flag stays open", async () => {
-    const h = setup();
+    const h = setup({ slugEditing: false });
     seedFlag(h);
     const res = await post(h.env, "/api/flag/1/resolve", { resolution: "fixed" }, ACTORS.bot.opts);
     expect(res.status).toBe(403);
@@ -280,7 +349,7 @@ describe("denied writes leave no trace", () => {
 
 describe("history page revert affordance (UI#3)", () => {
   it("revert buttons render only for patroller/admin — the roles the endpoint accepts", async () => {
-    const h = setup();
+    const h = setup({ slugEditing: false });
     // Public page, no buttons for anonymous…
     const anon = await get(h.env, `/${SLUG}/history`);
     expect(anon.status).toBe(200);

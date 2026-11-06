@@ -67,6 +67,22 @@ CREATE TABLE IF NOT EXISTS site_settings (
 INSERT OR IGNORE INTO site_settings (key, value, updated_at)
   VALUES ('site_write_mode', 'open', CAST(strftime('%s', 'now') AS INTEGER) * 1000);
 
+-- Decision 5, option (b): editing comes off the annotated article pages at
+-- /:slug the moment this file is applied. The routes and the pages stay, and
+-- stay readable; human saves, proposal decisions and agent annotation saves
+-- answer 403 and point at the article's /articles page. The pipeline bearer is
+-- unaffected, and so are revert, patrol, flags, watchlists and every read.
+--
+-- It is a setting rather than a constant for the same reason the brake is: with
+-- no Worker-only hotfix path, a decision that turns out to be wrong must be
+-- reversible in a second rather than in a release. Setting it back to 'on'
+-- restores the annotation plane's editing exactly as it was:
+--   UPDATE site_settings SET value = 'on', updated_at = <now in ms> WHERE key = 'slug_editing';
+-- The Release 2 cutover, which deletes the routes and the assets, is a separate
+-- act and waits for release R2.
+INSERT OR IGNORE INTO site_settings (key, value, updated_at)
+  VALUES ('slug_editing', 'off', CAST(strftime('%s', 'now') AS INTEGER) * 1000);
+
 CREATE TABLE IF NOT EXISTS user_agreements (
   user_id      TEXT PRIMARY KEY REFERENCES users(id),
   cc0_version  TEXT NOT NULL,

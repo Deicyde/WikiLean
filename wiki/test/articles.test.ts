@@ -321,8 +321,8 @@ describe("articles pages with the fixture store", () => {
       expect(html).toContain(`<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
-    expect(html).toContain('<script src="/assets/articles.js?v=5"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=10">');
+    expect(html).toContain('<script src="/assets/articles.js?v=6"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=11">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
@@ -2238,7 +2238,7 @@ describe("articles security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/articles.js?v=5"></script>');
+      expect(html, path).toContain('<script src="/assets/articles.js?v=6"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/articles.css');
@@ -2246,7 +2246,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=10"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=11"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -3213,7 +3213,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=10", "/assets/articles.css?v=10", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=10", "/assets/articles.css?v=11", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");

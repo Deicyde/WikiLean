@@ -20,6 +20,12 @@ import type { Env } from "./env.js";
 export const SITE_WRITE_MODE_KEY = "site_write_mode";
 export const WRITE_MODE_OPEN = "open";
 
+// Decision 5, option (b) of the signed public-editing plan: editing is off on
+// the annotated article plane (/:slug). Migration 0019 seeds 'off'; an admin
+// restores the plane's editing exactly as it was with one D1 write and no
+// release. See index.ts SLUG_EDITING_OFF.
+export const SLUG_EDITING_KEY = "slug_editing";
+
 export const BRAKE_MESSAGE =
   "editing is paused site-wide; a maintainer closed it and it will reopen without a deploy";
 
@@ -52,6 +58,23 @@ export async function siteWriteMode(env: Pick<Env, "DB">): Promise<string> {
   } catch (error) {
     if (!settingsMissing(error)) throw error;
     return WRITE_MODE_OPEN;
+  }
+}
+
+// Whether the annotated article plane still takes edits. Without the row (an
+// unapplied migration 0019, which the promoter will not let into production
+// alongside this code) the plane behaves exactly as it did before R1: the
+// setting turns editing OFF, it never turns it on.
+export async function slugEditingAllowed(env: Pick<Env, "DB">): Promise<boolean> {
+  try {
+    const { results } = await env.DB.prepare(
+      "SELECT value FROM site_settings WHERE key = ?",
+    ).bind(SLUG_EDITING_KEY).all<{ value: string }>();
+    const value = results[0]?.value;
+    return value === undefined || value === "on";
+  } catch (error) {
+    if (!settingsMissing(error)) throw error;
+    return true;
   }
 }
 

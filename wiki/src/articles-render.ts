@@ -1021,6 +1021,9 @@ export interface OverlayView {
   // Their first overlay edit: the form carries the CC0 checkbox (decision 11)
   // and, when a site key is configured, the Turnstile widget.
   needsAgreement: boolean;
+  // The article's record set carries the /2 keys an overlay needs. A /1 set
+  // cannot take a tag, so the page offers none and asks for no agreement.
+  taggable: boolean;
   cc0Text: string;
   cc0Version: string;
   turnstileSiteKey: string | null;
@@ -1317,7 +1320,7 @@ function tagForm(passage: ArticlesPassage, ctx: CardContext): string {
 // wording in a way that needs re-acceptance is a version bump.
 function agreementBlock(ctx: CardContext): string {
   const overlay = ctx.overlay;
-  if (!overlay?.canEdit || !overlay.needsAgreement) return "";
+  if (!overlay?.canEdit || !overlay.needsAgreement || !overlay.taggable || !overlay.show) return "";
   const widget = overlay.turnstileSiteKey
     ? `<div class="cf-turnstile" data-sitekey="${attr(overlay.turnstileSiteKey)}"></div>`
     : "";
@@ -1349,7 +1352,8 @@ export const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/
 // Does this page render the Turnstile widget? (The agreement block, which only
 // a signed-in person making their first edit sees, and only with a site key.)
 export function pageNeedsTurnstile(overlay: OverlayView | null | undefined): boolean {
-  return !!overlay && overlay.canEdit && overlay.needsAgreement && !!overlay.turnstileSiteKey;
+  return !!overlay && overlay.canEdit && overlay.needsAgreement && overlay.taggable && overlay.show
+    && !!overlay.turnstileSiteKey;
 }
 
 // A location card leads with the Lean code: the declaration, its signature when

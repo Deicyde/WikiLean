@@ -96,9 +96,15 @@ afterAll(() => {
   globalThis.fetch = realFetch;
 });
 
+// This suite pins the pre-Wave-D save contract — the engine, which is still
+// live for the pipeline bearer. Migration 0019 takes editing off the plane for
+// people (decision 5(b) of the signed public-editing plan); the engine's own
+// contract is unchanged, so the harness turns the plane's editing switch back
+// on. test/authz.test.ts and test/slug-editing-off.test.ts pin the refusal.
 function setup(opts: { limiterAllows?: boolean } = {}) {
   const db = new DatabaseSync(":memory:");
   for (const f of MIGRATIONS) db.exec(readFileSync(resolve(MIGRATIONS_DIR, f), "utf8"));
+  db.prepare("UPDATE site_settings SET value = 'on' WHERE key = 'slug_editing'").run();
 
   const now = Date.now();
   db.prepare(

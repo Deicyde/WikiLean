@@ -106,11 +106,30 @@ export interface Harness {
   wpHtml: KVShim;
 }
 
+// `slugEditing` is the annotation plane's editing switch
+// (site_settings.slug_editing; src/site-settings.ts). Migration 0019 seeds it
+// OFF — decision 5(b) of the signed public-editing plan takes editing off
+// /:slug — but this harness turns it back ON by default, because the suites
+// built on it pin the SAVE ENGINE (merge, findLostHuman, CAS, counts,
+// provenance, caps), which is still live for the pipeline bearer and is the
+// only coverage that engine has. The suites that pin the POLICY rather than
+// the engine — test/authz.test.ts and test/slug-editing-off.test.ts — pass
+// `slugEditing: false` and so run against production's default.
 export function setup(
-  opts: { limiterAllows?: boolean; flagLimiterAllows?: boolean; brainApiLimiterAllows?: boolean } = {},
+  opts: {
+    limiterAllows?: boolean; flagLimiterAllows?: boolean; brainApiLimiterAllows?: boolean;
+    tagLimiterAllows?: boolean; tagNewLimiterAllows?: boolean;
+    slugEditing?: boolean; siteWriteMode?: string; turnstileSecret?: string; turnstileSiteKey?: string;
+  } = {},
 ): Harness {
   const db = new DatabaseSync(":memory:");
   for (const file of MIGRATIONS) db.exec(readFileSync(resolve(MIGRATIONS_DIR, file), "utf8"));
+  if (opts.slugEditing ?? true) {
+    db.prepare("UPDATE site_settings SET value = 'on' WHERE key = 'slug_editing'").run();
+  }
+  if (opts.siteWriteMode) {
+    db.prepare("UPDATE site_settings SET value = ? WHERE key = 'site_write_mode'").run(opts.siteWriteMode);
+  }
 
   const now = Date.now();
   db.prepare(
@@ -141,8 +160,12 @@ export function setup(
     EDIT_LIMITER: { limit: async () => ({ success: opts.limiterAllows ?? true }) },
     FLAG_LIMITER: { limit: async () => ({ success: opts.flagLimiterAllows ?? true }) },
     BRAIN_API_LIMITER: { limit: async () => ({ success: opts.brainApiLimiterAllows ?? true }) },
+    TAG_LIMITER: { limit: async () => ({ success: opts.tagLimiterAllows ?? true }) },
+    TAG_NEW_LIMITER: { limit: async () => ({ success: opts.tagNewLimiterAllows ?? opts.tagLimiterAllows ?? true }) },
     AUTH_MODE: "dev",
     PIPELINE_TOKEN,
+    ...(opts.turnstileSecret ? { TURNSTILE_SECRET: opts.turnstileSecret } : {}),
+    ...(opts.turnstileSiteKey ? { TURNSTILE_SITE_KEY: opts.turnstileSiteKey } : {}),
   } as unknown as Env;
   return { db, env, renderCache, wpHtml };
 }

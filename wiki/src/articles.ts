@@ -1179,6 +1179,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
       show,
       canEdit: user !== null,
       needsAgreement: user !== null && !agreed,
+      taggable: hasPassageKeys(article),
       cc0Text: CC0_AGREEMENT_TEXT,
       cc0Version: CC0_AGREEMENT_VERSION,
       turnstileSiteKey: c.env.TURNSTILE_SITE_KEY || null,

@@ -56,6 +56,7 @@ import {
   publicItems, editorItems, restorePrivateMetadata, articleLocalOccurrences, repinArticleSources, type SourceContext,
 } from "./native-companion.js";
 import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders, researchExportSalt } from "./security.js";
+import { slugEditingAllowed } from "./site-settings.js";
 import { registerVersionRoutes } from "./version.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
@@ -1584,7 +1585,11 @@ app.post("/api/article/:slug", async (c) => {
   if (originErr) return originErr;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
-  if (user.role !== "bot") return editingOffHere(c, c.req.param("slug"));
+  // Decision 5(b): off unless an admin turned the plane's editing back on
+  // (site_settings.slug_editing), which needs no release.
+  if (user.role !== "bot" && !(await slugEditingAllowed(c.env))) {
+    return editingOffHere(c, c.req.param("slug"));
+  }
   const isBot = user.role === "bot";
   // An agent token (agents.ts) writes under the pipeline's rules (base_version
   // required, human annotations protected, proposals for the rest) but holds
@@ -3258,6 +3263,10 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   // title has no entry; a store failure never breaks the article page.
   const entry = await articlesSummaryFor(c.env, row.wikipediaTitle);
   const articlesPage = entry ? articlesHref(entry.pageid, entry.title) : null;
+  // With editing off (decision 5(b)) the page keeps its reader and its
+  // formalization box and loses the editor; the injection is per request, so
+  // flipping the setting changes the page with no render-cache key bump.
+  const slugEditing = await slugEditingAllowed(c.env);
   const formalizationBox = entry ? articlesSummaryBox(entry, articlesPage as string, row.revid) : null;
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
@@ -3272,9 +3281,7 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
     revid: row.revid,
     isWatching,
     proposals,
-    // Editing is off on this plane: no editor, and the sign-in-to-edit button
-    // becomes a pointer at the article's formalization page.
-    editingOff: { articlesHref: articlesPage },
+    ...(slugEditing ? {} : { editingOff: { articlesHref: articlesPage } }),
   }), formalizationBox);
   return c.html(page);
 }
