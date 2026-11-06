@@ -434,6 +434,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--universe", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path,
                         help="the sourceset manifest the run pins")
+    parser.add_argument("--sourceset", type=Path,
+                        help="the sourceset directory, when --manifest names a delta "
+                             "version: a delta holds only what changed, so the chain "
+                             "is resolved here rather than planned against a handful "
+                             "of entries")
+    parser.add_argument("--sourceset-id")
     parser.add_argument("--sources", required=True, type=Path,
                         help="the sourceset's rendered sources")
     parser.add_argument("--candidates", type=Path)
@@ -442,6 +448,10 @@ def main(argv: list[str] | None = None) -> int:
                         help="the worker's read-only declaration search corpus "
                              "(index_from_corpus.py --search), staged into each task")
     parser.add_argument("--prompts", type=Path, help="extra prompt files to stage")
+    parser.add_argument("--task-documents", type=Path,
+                        help="a directory of task manifests this batch's mode module "
+                             "already cut (stage 9d's challenge.py writes them into "
+                             "<out>/tasks); with it the locate cut below is not used")
     parser.add_argument("--render-prompts", action="store_true",
                         help="render this pipeline's own prompts into the root")
     parser.add_argument("--sources-as", help="what gate.json names the sources directory, "
@@ -454,8 +464,26 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-cost", type=float, default=0.0)
     parser.add_argument("--source", action="append", default=[], dest="source_ids")
     args = parser.parse_args(argv)
+    entries = None
+    if args.sourceset is not None:
+        sys.path.insert(0, str(PIPELINE))
+        import sourceset as sourceset_mod  # noqa: PLC0415
+
+        ss = sourceset_mod.Sourceset.open(args.sourceset, args.sourceset_id)
+        entries = ss.latest().entries
+    documents = None
+    if args.task_documents is not None:
+        documents = []
+        for path in sorted(Path(args.task_documents).glob("*.json")):
+            value = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(value, dict):
+                documents.append(value)
+        if not documents:
+            print(f"no task manifest in {args.task_documents}", file=sys.stderr)
+            return 2
     try:
         planned = plan(run_id=args.run_id, mode=args.mode, out=args.out,
+                       task_documents=documents, entries=entries,
                        inventory=args.inventory, universe=args.universe,
                        manifest=args.manifest, sources=args.sources,
                        candidates=args.candidates, index=args.index,
@@ -469,9 +497,12 @@ def main(argv: list[str] | None = None) -> int:
     except (PlanProblem, corpus_mod.CorpusProblem, stage_mod.StageProblem) as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    passages = sum(len(d["passages"]) for t in planned["tasks"] for d in t["documents"])
+    # a challenge task's documents hold records, not passages
+    items = sum(len(d.get("passages") or d.get("records") or [])
+                for t in planned["tasks"] for d in t["documents"])
+    what = "record" if args.mode == vocab.MODE_CHALLENGE else "passage"
     print(f"{args.run_id} [{args.mode}]: {len(planned['tasks'])} task(s), "
-          f"{passages} passage(s) -> {args.out}")
+          f"{items} {what}(s) -> {args.out}")
     return 0
 
 
