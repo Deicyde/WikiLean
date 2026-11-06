@@ -219,7 +219,7 @@ class GateConfig:
         self.inventory_run = str((data.get("inventory") or {}).get("run_id") or "")
         self.challenged_runs = [str(r) for r in data.get("challenged_runs") or []]
         pin = data.get("index")
-        self.index_path = pathlib.Path(str(pin["path"])) if isinstance(pin, dict) \
+        self.index_path = self.resolve(str(pin["path"])) if isinstance(pin, dict) \
             and pin.get("path") else None
         self.index_sha256 = str((pin or {}).get("sha256") or "") if isinstance(pin, dict) else ""
 
@@ -231,7 +231,17 @@ class GateConfig:
             return None
         if not isinstance(value, str) or not value:
             raise GateBroken(f"{self.path}: {key} is a directory path, not {value!r}")
-        return pathlib.Path(value)
+        return self.resolve(value)
+
+    def resolve(self, value: str) -> pathlib.Path:
+        """A path of ``gate.json``, relative ones taken from its own directory.
+
+        A planned root names everything inside it relatively, so the whole root — gate,
+        tasks, sources, index and log — moves to another machine unchanged, which is what
+        lets a package carry it with no path of the coordinator's in it.
+        """
+        path = pathlib.Path(value)
+        return path if path.is_absolute() else (self.path.parent / path)
 
     def _count(self, key: str, default: int) -> int:
         value = self.data.get(key, default)
@@ -1430,9 +1440,21 @@ def main(argv: list[str] | None = None, env: dict | None = None) -> int:
     caller = ("findings_check" if args.findings else
               "pre_merge" if args.pre_merge else
               "validation" if args.changed_files else "directory")
+    by_rule: dict[str, int] = {}
+    for rule, _where, _message in problems.rows:
+        by_rule[str(rule)] = by_rule.get(str(rule), 0) + 1
+    # the keys the spend watchdog reads — ``changed_files`` tells tend's validation call
+    # from an agent's own --findings check, and ``pre_merge`` from the batched re-check,
+    # so a worker that re-runs the gate neither drains the root nor dilutes its rate
     _log(cfg, {"run_id": cfg.run_id, "caller": caller, "task_id": task_id,
+               "mode": cfg.mode, "changed_files": bool(args.changed_files),
+               "pre_merge": bool(args.pre_merge), "ok": not problems,
+               "exit": EXIT_REJECTED if problems else EXIT_OK,
                "documents": len(documents), "problems": len(problems),
-               "rules": problems.rules(), "seconds": round(time.time() - started, 3)})
+               "by_rule": by_rule, "rules": problems.rules(),
+               "reasons": problems.lines()[:20],
+               "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+               "seconds": round(time.time() - started, 3)})
     if problems:
         print(f"VALIDATION FAILED: {len(problems)} problem(s) in {len(documents)} document(s), "
               f"rule(s) {', '.join(map(str, problems.rules()))}", file=sys.stderr)
