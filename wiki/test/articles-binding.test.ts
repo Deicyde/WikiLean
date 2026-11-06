@@ -125,6 +125,7 @@ const SAMPLE_PATHS: Record<string, string> = {
   "/api/article/:slug/companion.jsonl": `/api/article/${SLUG}/companion.jsonl`,
   "/api/article/:slug/companion-records.json": `/api/article/${SLUG}/companion-records.json`,
   "/api/articles/article/:pageid": `/api/articles/article/${WIDGET_PAGEID}`,
+  "/api/articles/overlay/:pageid": `/api/articles/overlay/${WIDGET_PAGEID}`,
   "/api/articles/records/:pageid": `/api/articles/records/${WIDGET_PAGEID}`,
   "/api/articles/universe/:sha": `/api/articles/universe/${FIXTURE_UNIVERSE_SHA}`,
   "/api/articles/index/:shard": "/api/articles/index/1",
@@ -139,12 +140,14 @@ const SAMPLE_PATHS: Record<string, string> = {
   "/u/:id": "/u/u-human",
 };
 
-// The plane's own routes read the store; the feedback export reads only D1, and
+// The plane's own routes read the store; the feedback export and the community overlay
+// (/api/articles/overlay/:pageid, migration 0019) read only D1, and
 // /api/articles (the header search box's index of WikiLean's own articles, index.ts)
 // is not the plane's at all.
 const readsStore = (path: string) =>
   (path === "/articles" || path.startsWith("/articles/") || path.startsWith("/api/articles/")) &&
-  path !== "/api/articles/feedback/export";
+  path !== "/api/articles/feedback/export" &&
+  !path.startsWith("/api/articles/overlay/");
 
 function getPaths(): string[] {
   const patterns = [...new Set(app.routes.filter((route) => route.method === "GET").map((route) => route.path))];

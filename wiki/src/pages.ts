@@ -58,13 +58,32 @@ export function injectAuthAndEditor(
     // Propose-then-approve: pending AI proposals to update this article's human
     // annotations (PendingProposal[]). Rendered as an inline banner by editor.js.
     proposals?: unknown[];
+    // Editing is off on this plane (decision 5, option (b) of the signed
+    // public-editing plan): the editor is not injected and the sign-in-to-edit
+    // button is replaced by a line pointing at the article's formalization
+    // page, where tagging happens now. `articlesHref` is null when no record
+    // set covers the article. Injected per request like everything else here,
+    // so no render-cache key is bumped.
+    editingOff?: { articlesHref: string | null };
   },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
   let sourceUri: string | null = null;
   try { sourceUri = wikipediaSourceUri({ wikipediaTitle: opts.wikipediaTitle ?? opts.slug, revid: opts.revid ?? null }); } catch { /* Unknown pin: new native locations stay unavailable. */ }
   let inject: string;
-  if (opts.user) {
+  if (opts.editingOff) {
+    const href = opts.editingOff.articlesHref;
+    inject =
+      `<div id="wl-editing-off" ` +
+      `style="position:fixed;right:14px;bottom:14px;z-index:5000;max-width:min(92vw,420px);background:#fffdf9;` +
+      `border:1px solid #d8d0bd;border-radius:8px;padding:10px 14px;color:#1f1d1a;` +
+      `font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18)">` +
+      `This page is now read-only. ` +
+      (href
+        ? `Its passages are on the <a href="${htmlEscape(href, true)}" style="color:#1a4b8c">formalization page</a>, where anyone signed in can tag them.`
+        : `Editing has moved to the formalization reader at <a href="/articles" style="color:#1a4b8c">/articles</a>; no record set covers this article yet.`) +
+      `</div>\n`;
+  } else if (opts.user) {
     inject =
       `<script>window.__WL_SLUG__=${safeJson(opts.slug)};` +
       // P3: ship the user id so the editor bar can link "editing as <name>" → /u/<id>.
@@ -351,22 +370,22 @@ export interface RecentRow {
   userId: string | null;
   comment: string | null;
   createdAt: number;
-  kind: string; // edit | revert | seed | pipeline | contribution
+  kind: string; // edit | agent | revert | seed | pipeline | contribution
   patrolledBy: string | null;
   patrolledAt: number | null;
   patrollerName: string | null;
 }
 
 // The revisions.kind vocabulary (0004), as filter values for ?kind=.
-export const RECENT_KINDS = ["edit", "revert", "seed", "pipeline", "contribution", "proposal-approved", "proposal-decided-ai"] as const;
+export const RECENT_KINDS = ["edit", "agent", "revert", "seed", "pipeline", "contribution", "proposal-approved", "proposal-decided-ai"] as const;
 
-// One patrol cell. Only human edits (kind='edit') participate: unpatrolled
-// rows get a subtle amber marker (everyone) + a mark-patrolled button
+// One patrol cell. Only human and agent edits (kind 'edit' and 'agent')
+// participate: unpatrolled rows get a subtle amber marker (everyone) + a mark-patrolled button
 // (patroller/admin only — same UI#3 rule as revert buttons: never render an
 // affordance that always 403s); patrolled rows show who/when in the title
 // attribute (hover).
 function patrolCell(r: RecentRow, canPatrol: boolean): string {
-  if (r.kind !== "edit") return "";
+  if (r.kind !== "edit" && r.kind !== "agent") return "";
   if (r.patrolledBy === null) {
     return (
       `<span class="wl-unpatrolled" title="awaiting patrol">●</span>` +
@@ -875,6 +894,7 @@ export function userProfilePage(
   recent: UserProfileRow[],
   watching: string[], // slugs watched by THIS user (only populated when viewing own profile)
   isSelf: boolean,
+  operator: { id: string; name: string | null } | null = null, // the person who minted an agent
 ): string {
   const name = htmlEscape(profile.name ?? profile.id.slice(0, 8), false);
   const avatar = profile.image
@@ -917,7 +937,11 @@ export function userProfilePage(
   const body =
     `<div class="wl-profile-hdr">${avatar}` +
     `<div><h1 class="wl-profile-name">${name}${role}</h1>` +
-    `<p class="muted" style="font-size:.9rem">${htmlEscape(profile.id, false)}${joined}</p></div></div>` +
+    `<p class="muted" style="font-size:.9rem">${htmlEscape(profile.id, false)}${joined}</p>` +
+    (operator
+      ? `<p class="muted" style="font-size:.9rem">AI agent operated by <a href="/u/${encodeURIComponent(operator.id)}">${htmlEscape(operator.name ?? operator.id, false)}</a></p>`
+      : "") +
+    `</div></div>` +
     `<div class="wl-profile-stats">` +
     `<span><b>${stats.totalEdits}</b> revisions</span>` +
     `<span><b>${stats.articlesTouched}</b> articles touched</span>` +
@@ -960,6 +984,8 @@ export interface ProposalQueueRow {
   provenance: string | null; // target's provenance — 'human' targets are Jack's own
   reason: string; // HOSTILE — escape
   model: string | null;
+  proposedBy: string | null; // the agent that filed it; null for the pipeline
+  proposerName: string | null; // HOSTILE — escape
   createdAt: number;
 }
 
@@ -1140,6 +1166,9 @@ export function proposalsQueuePage(
       delta +
       reason +
       (r.model ? `<div class="muted" style="font-size:.78rem">${htmlEscape(r.model, false)}</div>` : "") +
+      (r.proposedBy
+        ? `<div class="muted" style="font-size:.78rem">proposed by <a href="/u/${encodeURIComponent(r.proposedBy)}">${htmlEscape(r.proposerName ?? r.proposedBy, false)}</a></div>`
+        : "") +
       `<div class="wl-prop-actions">` +
       `<button class="revert wl-prop-approve" data-pid="${htmlEscape(r.proposalId, false)}">✓ approve</button>` +
       `<select class="wl-prop-why" aria-label="Reject reason">` +

@@ -581,6 +581,10 @@ snapshots comes later.
 
 - `GET /api/brain/edges?id=` — the LIVE community-edit overlay (D1-backed,
   `Cache-Control: no-store`) including inferred xref-shared partners.
+- Community-edit writes (`POST /api/brain/edge`, `/node`, `/quickstatements`,
+  and the deletes) take a session or a bearer. The pipeline bearer declares
+  `actor_type`; an agent token from `/agents` always writes `ai` and deletes
+  only AI-made rows (docs/AGENT-CONTRIBUTIONS.md).
 - `GET /decl/<name>` — durable decl resolver; 302 → mathlib4_docs, or JSON
   (module, docs_url, reverse citations) with `Accept: application/json`.
 

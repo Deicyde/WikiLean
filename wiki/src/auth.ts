@@ -20,6 +20,7 @@ export interface AuthUser {
   id: string;
   name: string;
   role: string;
+  ownerId?: string; // role 'agent' only: the person who minted it (agents.ts)
 }
 
 const DEV_COOKIE = "wl_dev_user";
@@ -131,6 +132,46 @@ export async function bearerMatches(presented: string, expected: string): Promis
   return diff === 0;
 }
 
+// Agent tokens (agents.ts): "wla_" + 32 random bytes in base64url. Only the
+// SHA-256 hex of the whole token is stored, and the lookup is an equality on
+// that digest, so its timing says nothing about the token's bytes.
+const AGENT_TOKEN_RE = /^wla_[A-Za-z0-9_-]{43}$/;
+const LAST_USED_REFRESH_MS = 60 * 60 * 1000;
+
+export function mintAgentToken(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  let bin = "";
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return "wla_" + btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+export async function agentTokenHash(token: string): Promise<string> {
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", encoder.encode(token)));
+  return Array.from(digest, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// The agent a live token belongs to. The token must not be revoked, the
+// agent's own users row must still have role 'agent' (set it to 'blocked' to
+// stop one agent) and its owner must not be blocked (which stops all of theirs).
+async function agentUser(c: Ctx, token: string): Promise<AuthUser | null> {
+  const res = await c.env.DB.prepare(
+    "SELECT t.agent_id AS id, t.owner_id AS owner_id, t.last_used_at AS last_used_at, a.name AS name, a.role AS role, o.role AS owner_role " +
+      "FROM agent_tokens t JOIN users a ON a.id = t.agent_id JOIN users o ON o.id = t.owner_id " +
+      "WHERE t.token_hash = ? AND t.revoked_at IS NULL",
+  )
+    .bind(await agentTokenHash(token))
+    .all();
+  const row = res.results?.[0] as
+    | { id: string; owner_id: string; last_used_at: number | null; name: string | null; role: string; owner_role: string }
+    | undefined;
+  if (!row || row.role !== "agent" || row.owner_role === "blocked") return null;
+  const now = Date.now();
+  if (row.last_used_at === null || now - row.last_used_at > LAST_USED_REFRESH_MS) {
+    await c.env.DB.prepare("UPDATE agent_tokens SET last_used_at = ? WHERE agent_id = ?").bind(now, row.id).run();
+  }
+  return { id: row.id, name: row.name ?? row.id, role: "agent", ownerId: row.owner_id };
+}
+
 function availableProviders(env: Env): string[] {
   const p: string[] = [];
   if (env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET) p.push("github");
@@ -153,6 +194,11 @@ export async function getUser(c: Ctx): Promise<AuthUser | null> {
     // Blocked users are treated as anonymous everywhere — bearer included.
     if (row.role === "blocked") return null;
     return { id: row.id, name: row.name ?? row.id, role: row.role };
+  }
+  // Agent bearer branch: a token of the agent shape resolves to its agent or to
+  // nobody, never to a session.
+  if (authz?.startsWith("Bearer ") && AGENT_TOKEN_RE.test(authz.slice(7))) {
+    return agentUser(c, authz.slice(7));
   }
   if (c.env.AUTH_MODE === "oauth") {
     try {

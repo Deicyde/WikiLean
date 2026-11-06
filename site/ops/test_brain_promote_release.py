@@ -1129,6 +1129,15 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
             self.assertEqual(evidence[key]["bytes"], len(raw[key]))
 
+    def test_every_required_migration_creates_its_listed_columns(self):
+        root = Path(__file__).resolve().parents[2]
+        for migration, (table, columns) in promote.D1_REQUIRED_COLUMNS.items():
+            with self.subTest(migration=migration):
+                text = (root / migration).read_text(encoding="utf-8")
+                self.assertIn(table, text)
+                for column in columns:
+                    self.assertRegex(text, rf"\b{column}\b")
+
     def test_commit_with_0014_requires_its_columns_on_remote_d1(self):
         migration = "wiki/migrations/0014_native_companions.sql"
         tools = node_executables_identity(self.base)
@@ -1144,8 +1153,10 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 command = tuple(str(value) for value in args)
                 inner.calls.append((command, cwd, dict(env or {})))
                 if command[:4] == ("git", "-C", str(self.repo), "ls-tree"):
-                    self.assertEqual(command[4:], ("--name-only", COMMIT, "--", migration))
-                    output = (migration + "\n").encode() if inner.listed else b""
+                    self.assertEqual(command[4:7], ("--name-only", COMMIT, "--"))
+                    self.assertIn(command[7], promote.D1_REQUIRED_COLUMNS)
+                    listed = inner.listed and command[7] == migration
+                    output = (migration + "\n").encode() if listed else b""
                     return promote.RunResult(command, 0, output, b"")
                 if inner.d1 is None:
                     raise AssertionError(command)
@@ -1162,7 +1173,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
         without = D1Runner(listed=False)
         check(without)
-        self.assertEqual(len(without.calls), 1)
+        self.assertEqual(len(without.calls), len(promote.D1_REQUIRED_COLUMNS))
 
         applied = D1Runner(listed=True, d1=rows("schema_version", "source_revid"))
         with mock.patch.dict(os.environ, {"CLOUDFLARE_API_TOKEN": "token"}):
@@ -2879,6 +2890,41 @@ class BrainPromotionDryRunTest(unittest.TestCase):
                     mode="dry-run",
                     retain_dry_run_store=Path("relative-store"),
                 )._validate_options()
+
+
+class D1RequiredColumnsTests(unittest.TestCase):
+    """Every migration the promoter gates on names a real table and real columns.
+
+    ``D1_REQUIRED_COLUMNS`` is what makes the promoter refuse a Worker built from a
+    commit whose migration is not on D1 yet. A typo there is a gate that never
+    fires, so each entry is checked against the migration file it names.
+    """
+
+    REPO = HERE.parent.parent
+
+    def test_each_entry_names_an_existing_migration(self) -> None:
+        self.assertTrue(promote.D1_REQUIRED_COLUMNS, "the gate list is empty")
+        for migration in promote.D1_REQUIRED_COLUMNS:
+            with self.subTest(migration=migration):
+                self.assertTrue((self.REPO / migration).is_file(), f"{migration} is not in the tree")
+
+    def test_each_entry_names_columns_the_migration_creates(self) -> None:
+        for migration, (table, columns) in promote.D1_REQUIRED_COLUMNS.items():
+            with self.subTest(migration=migration):
+                sql = (self.REPO / migration).read_text(encoding="utf-8")
+                self.assertIn(table, sql, f"{migration} never mentions {table}")
+                for column in columns:
+                    self.assertIn(column, sql, f"{migration} never mentions {table}.{column}")
+
+    def test_the_overlay_migration_creates_its_gate_table_last(self) -> None:
+        """0019 creates three tables; the gate checks the last, so its presence
+        means the whole file ran."""
+        sql = (self.REPO / "wiki/migrations/0019_article_tags.sql").read_text(encoding="utf-8")
+        order = [sql.index(f"CREATE TABLE IF NOT EXISTS {name}")
+                 for name in ("site_settings", "user_agreements", "article_tags")]
+        self.assertEqual(order, sorted(order))
+        gate_table, _ = promote.D1_REQUIRED_COLUMNS["wiki/migrations/0019_article_tags.sql"]
+        self.assertEqual(gate_table, "article_tags")
 
 
 if __name__ == "__main__":

@@ -19,6 +19,7 @@ import {
   ARTICLES_INLINE_SCRIPT_HASHES,
   ARTICLES_MEDIA_HOSTS,
   ARTICLES_SCRIPT_PATHS,
+  TURNSTILE_ORIGIN,
   articlesCsp,
   BRAIN_CSP_EXTRA_SOURCES,
   BRAIN_CSP_REPORT_ONLY,
@@ -236,6 +237,24 @@ describe("the articles pages' enforced policy", () => {
     expect(ARTICLES_CSP).not.toMatch(/'unsafe-eval'|'unsafe-hashes'|'wasm-unsafe-eval'|'strict-dynamic'|\*|data:|blob:/);
     expect([...p.keys()].filter((name) => /^(?:frame-src|child-src|worker-src|frame-ancestors|sandbox)$/.test(name))).toEqual([]);
     expect(ARTICLES_CSP).not.toContain(",");
+  });
+
+  // A page that renders the Turnstile widget — a new account's first community
+  // tag, and only with a site key configured — widens the policy by exactly one
+  // origin, in exactly three directives. Every other page keeps the policy
+  // above, which frames nothing at all.
+  it("the Turnstile variant adds one origin and nothing else", () => {
+    const base = policy(ARTICLES_CSP);
+    const widened = policy(articlesCsp(ORIGIN, true));
+    expect([...widened.keys()].sort()).toEqual([...base.keys(), "frame-src"].sort());
+    expect(widened.get("frame-src")).toEqual([TURNSTILE_ORIGIN]);
+    expect(widened.get("script-src")).toEqual([...base.get("script-src")!, TURNSTILE_ORIGIN]);
+    expect(widened.get("connect-src")).toEqual([...base.get("connect-src")!, TURNSTILE_ORIGIN]);
+    for (const name of ["default-src", "style-src", "img-src", "media-src", "font-src", "form-action", "base-uri", "object-src"]) {
+      expect(widened.get(name), name).toEqual(base.get(name));
+    }
+    expect(TURNSTILE_ORIGIN).toBe("https://challenges.cloudflare.com");
+    expect(articlesCsp(ORIGIN, true)).not.toContain(",");
   });
 });
 
