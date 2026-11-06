@@ -432,8 +432,13 @@ export function mergeOverlay(
       });
     }
     const liveLocations = merged.filter((m) => m.state === "live").map((m) => m.loc);
-    const status = mergedStatus(passage, liveLocations, statusRule);
     const edited = merged.some((m) => m.tag !== null);
+    // A passage nobody has touched keeps the status the store published,
+    // byte for byte: the merge recomputes only where there is something to
+    // merge. (The recomputation is a port of the builder's rule and a parity
+    // test pins it, but "the sealed set is shown as the sealed set" is the
+    // stronger promise, and it is cheaper to keep than to re-derive.)
+    const status = edited ? mergedStatus(passage, liveLocations, statusRule) : sealedStatus;
     byPassage.set(passage.id, { locations: merged, status, sealedStatus, edited });
     if (status !== "unresolved") byStatus[status] += 1;
   }

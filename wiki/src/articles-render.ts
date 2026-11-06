@@ -1646,7 +1646,8 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
       `Removed by an editor (${int(gravestones.length)})</summary>` +
       `<div class="articles-cards is-removed">${gravestones.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div></details>`);
   }
-  parts.push(tagForm(passage, ctx));
+  const form = tagForm(passage, ctx);
+  if (form) parts.push(form);
   if (panel) {
     parts.push(`<p class="atlr-links"><a href="${attr(ctx.cardsHref ?? "")}#p-${hex}">Open in card list</a>` +
       ` · <button type="button" class="atlr-copy" data-p="${hex}">Copy link</button>` +
@@ -1729,7 +1730,7 @@ function articleParts(input: ArticlePageInput) {
   // bar and the chips move with the page's cards (decision 4). The merge counts
   // only the passages a view shows; the summary's are the store's own.
   const byStatus: Record<SummaryStatus, number> = { ...emptyStatusCounts(), unresolved: 0 };
-  if (ctx.overlay?.show) {
+  if (ctx.overlay?.show && ctx.overlay.merged.edits > 0) {
     for (const passage of passages) {
       const s = shownStatus(passage, ctx);
       if (s !== "unresolved") byStatus[s] += 1;
@@ -1841,8 +1842,7 @@ ${subjectRow}<div class="articles-strip-row"><span class="articles-strip-h" id="
 ${centralRow}${libraryChips ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-where">Where</span><div class="articles-chips" role="group" aria-labelledby="articles-h-where">${libraryChips}</div></div>` : ""}
 <p class="articles-filter-note" role="status"><span class="articles-filter-text"></span> <button type="button" class="articles-clear" hidden>Show all passages</button></p>
 ${overlayRow}</section>
-${agreement}
-<h2 class="articles-h2" id="articles-h-passages">Passages</h2>
+${agreement ? `${agreement}\n` : ""}<h2 class="articles-h2" id="articles-h-passages">Passages</h2>
 ${textNote}${sigNote}${anyCapped ? `<p class="articles-muted" id="articles-quote-note">Quotes show at most the first ${QUOTE_MAX_WORDS} words of a passage (the record format's quotation cap; a formula's MathML text counts toward it). A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. Hover a formula for its TeX.</p>\n` : ""}${passages.length ? `${relationLegend()}\n` : ""}${passages.length ? `<ol class="articles-passages" aria-labelledby="articles-h-passages">\n${passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : nUnread ? `<p>No passage of this revision has a status yet.</p>` : `<p>No formal passages were found in this revision.</p>`}
 <p class="articles-data">Data: <a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a></p>
 ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they audit the locate and challenge runs.</p>` : ""}
@@ -1949,8 +1949,7 @@ ${html}
 <p class="articles-strip-lead">${lead}</p>
 ${statusBar(byStatus, "passage", "passages")}
 ${subjectRow}${centralRow}<p class="atlr-filter-note" role="status"><span id="atlr-filter-text"></span> <button type="button" class="articles-clear" id="atlr-clear" hidden>Show all passages</button></p>
-${overlayRow}${agreement}
-<nav class="atlr-toc" aria-labelledby="atlr-h-index">${readerIndex(passages, placed, ctx)}</nav>
+${overlayRow}${agreement ? `${agreement}\n` : ""}<nav class="atlr-toc" aria-labelledby="atlr-h-index">${readerIndex(passages, placed, ctx)}</nav>
 <h3 class="atlr-h3" id="atlr-legend">Legend</h3>
 ${legend}
 ${relationLegend()}
