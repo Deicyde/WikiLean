@@ -31,7 +31,7 @@ from collections import defaultdict
 
 import numpy as np
 
-CHUNK = 256               # repulsion rows per pass — caps peak memory at ~40MB
+PAIR_BUDGET = 1 << 19     # candidate pairs per repulsion pass — caps peak memory near 70MB
 EPS = 1e-9
 GOLDEN_ANGLE = math.pi * (3.0 - math.sqrt(5.0))
 
@@ -78,26 +78,68 @@ def _resolve_collisions(pos_by_id: dict[str, tuple[float, float]]) -> int:
     return nudged
 
 
+def _repulsion(pos: np.ndarray, k: float, *, budget: int = PAIR_BUDGET) -> np.ndarray:
+    """Repulsion f = k^2/d within REPULSION_RANGE, zero beyond (see module docstring).
+
+    Linear in n at bounded density. Nodes are bucketed on a grid one cutoff wide, so
+    every nonzero term lies in a node's own bucket or one of its 8 neighbours. Nodes
+    are sorted by bucket key (stable, so ties keep index order), which makes the three
+    buckets of each neighbouring column one contiguous run of the sorted order. Each
+    candidate pair gets the all-pairs arithmetic (delta, d2, EPS floor, strict cutoff),
+    so only the summation order differs from comparing every pair. A node's pairs never
+    straddle two passes, so the result does not depend on `budget`.
+    """
+    n = len(pos)
+    disp = np.zeros((n, 2), dtype=np.float64)
+    if n == 0:
+        return disp
+    cutoff2 = (REPULSION_RANGE * k) ** 2
+    # 0.1% wider than the cutoff, so rounding cannot put an in-range pair two buckets apart
+    size = REPULSION_RANGE * k * 1.001
+    cell = np.floor((pos - pos.min(axis=0)) / size).astype(np.int64)
+    stride = int(cell[:, 1].max()) + 3          # y +-1 never wraps into the next column
+    key = (cell[:, 0] + 1) * stride + (cell[:, 1] + 1)
+    order = np.argsort(key, kind="stable")
+    skey = key[order]
+    spos = pos[order]
+
+    # per node, where the x-1, x and x+1 columns (3 buckets each) start in sorted order
+    # and how many nodes each holds
+    column = skey[:, None] + np.array([-stride, 0, stride], dtype=np.int64)
+    lo = np.searchsorted(skey, column - 1, side="left")
+    run = np.searchsorted(skey, column + 1, side="right") - lo
+    per_node = run.sum(axis=1)
+    reach = np.cumsum(per_node)
+
+    sdisp = np.empty((n, 2), dtype=np.float64)
+    start = 0
+    while start < n:
+        done = int(reach[start - 1]) if start else 0
+        end = max(int(np.searchsorted(reach, done + budget, side="right")), start + 1)
+        runs = run[start:end].ravel()
+        counts = per_node[start:end]
+        # j lists each node's three runs back to back: run r is lo_r .. lo_r + runs_r - 1
+        shift = lo[start:end].ravel() - (np.cumsum(runs) - runs)
+        j = np.arange(int(counts.sum())) + np.repeat(shift, runs)
+        delta = np.repeat(spos[start:end], counts, axis=0) - spos[j]
+        d2 = np.einsum("ij,ij->i", delta, delta)
+        np.maximum(d2, EPS, out=d2)
+        coef = np.where(d2 < cutoff2, (k * k) / d2, 0.0)   # self-pairs have delta = 0
+        owner = np.repeat(np.arange(end - start), counts)
+        sdisp[start:end, 0] = np.bincount(owner, weights=delta[:, 0] * coef, minlength=end - start)
+        sdisp[start:end, 1] = np.bincount(owner, weights=delta[:, 1] * coef, minlength=end - start)
+        start = end
+    disp[order] = sdisp
+    return disp
+
+
 def _simulate(pos: np.ndarray, src: np.ndarray, dst: np.ndarray, weight: np.ndarray,
               *, iterations: int, k: float) -> np.ndarray:
-    n = len(pos)
-    cutoff2 = (REPULSION_RANGE * k) ** 2
     temp = k * 3.0
     cooling = temp / (iterations + 1)
 
     for _ in range(iterations):
-        disp = np.zeros((n, 2), dtype=np.float64)
-
-        # repulsion f = k^2/d within REPULSION_RANGE, zero beyond (see module docstring)
-        for start in range(0, n, CHUNK):
-            end = min(start + CHUNK, n)
-            delta = pos[start:end, None, :] - pos[None, :, :]      # (c, n, 2)
-            d2 = np.einsum("ijk,ijk->ij", delta, delta)            # (c, n)
-            np.maximum(d2, EPS, out=d2)
-            coef = np.where(d2 < cutoff2, (k * k) / d2, 0.0)
-            rows = np.arange(end - start)
-            coef[rows, rows + start] = 0.0                         # no self-repulsion
-            disp[start:end] = np.einsum("ijk,ij->ik", delta, coef)
+        disp = _repulsion(pos, k)
 
         # attraction along synapses: f = d^2/k, scaled by log weight
         if src.size:

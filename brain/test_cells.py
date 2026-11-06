@@ -209,6 +209,88 @@ def check_layout() -> None:
           "same inputs produced a different map")
 
 
+def all_pairs_repulsion(pos, k: float):
+    """The repulsion pass layout.py used before the grid, verbatim: every pair, 256 rows
+    at a time. Also returns each node's sum of |term|, the scale that reordering a
+    floating-point sum perturbs."""
+    import numpy as np
+
+    from layout import EPS, REPULSION_RANGE
+
+    n = len(pos)
+    cutoff2 = (REPULSION_RANGE * k) ** 2
+    disp = np.zeros((n, 2), dtype=np.float64)
+    scale = np.zeros(n, dtype=np.float64)
+    for start in range(0, n, 256):
+        end = min(start + 256, n)
+        delta = pos[start:end, None, :] - pos[None, :, :]      # (c, n, 2)
+        d2 = np.einsum("ijk,ijk->ij", delta, delta)            # (c, n)
+        dist = np.sqrt(d2)
+        np.maximum(d2, EPS, out=d2)
+        coef = np.where(d2 < cutoff2, (k * k) / d2, 0.0)
+        rows = np.arange(end - start)
+        coef[rows, rows + start] = 0.0                         # no self-repulsion
+        disp[start:end] = np.einsum("ijk,ij->ik", delta, coef)
+        scale[start:end] = (coef * dist).sum(axis=1)
+    return disp, scale
+
+
+def check_grid_repulsion() -> None:
+    """L4-L5: the grid repulsion computes the all-pairs force terms.
+
+    Only nonzero terms are compared against, so only their summation order may differ:
+    each node's error is measured against its sum of |term|, which is the quantity a
+    reordered sum perturbs (a node whose forces cancel has a near-zero total, so the
+    error relative to the total would measure rounding noise, not the algorithm).
+    """
+    import math
+
+    import numpy as np
+
+    import layout
+    from layout import REPULSION_RANGE, SPAN
+
+    r = REPULSION_RANGE * SPAN                    # the cutoff distance
+    rng = np.random.default_rng(20261105)
+    lattice = np.array([(i * r, j * r) for i in range(15) for j in range(15)])
+    # a 3-4-5 shift adds diagonal pairs exactly r apart too (exact while 5 divides r = 400)
+    exact = np.concatenate([lattice, lattice + (3.0 * r / 5.0, 4.0 * r / 5.0)])
+    near = []                                     # pairs one ulp either side of r
+    for i, x in enumerate(np.linspace(0.0, 6.0 * r, 40) + 0.123):
+        y = 3.0 * r * (i % 4)
+        partner = np.nextafter(x + r, math.inf if i % 2 else -math.inf)
+        near += [(x, y), (partner, y), (y, x), (y, partner)]
+    centres = rng.uniform(-3000.0, 3000.0, size=(12, 2))
+    fixtures = {
+        "the sim's seed disc (n=1500)": layout._phyllotaxis(1500, SPAN * math.sqrt(1500) / 2.0),
+        "12 dense clusters (n=1200)": np.repeat(centres, 100, axis=0)
+        + rng.normal(0.0, 150.0, size=(1200, 2)),
+        "pairs exactly at the cutoff": exact,
+        "the same, far from the origin": exact + (123456.75, -98765.5),
+        "pairs one ulp inside and outside the cutoff": np.array(near),
+        "coincident points": np.array([(0.0, 0.0)] * 40 + [(10.0, 0.0)] * 25 + [(r, 0.0)] * 15
+                                      + [(0.0, r)] * 10 + [(r, r)] * 5 + [(2.5 * r, 0.0)] * 3),
+        "one bucket (n=400 in a 280x280 box)": rng.uniform(0.0, 0.7 * r, size=(400, 2)),
+        "two nodes": np.array([[0.0, 0.0], [50.0, 0.0]]),
+    }
+    for name, pos in fixtures.items():
+        expected, scale = all_pairs_repulsion(pos, SPAN)
+        got = layout._repulsion(pos.copy(), SPAN)
+        gap = np.hypot(*(got - expected).T)
+        live = scale > 0.0
+        worst = float((gap[live] / scale[live]).max()) if live.any() else 0.0
+        check(f"L4 grid repulsion matches all pairs: {name}",
+              worst <= 1e-9 and not gap[~live].any(),
+              f"worst error {worst:.3g} of a node's |term| sum; "
+              f"{int(np.count_nonzero(gap[~live]))} force-free nodes moved")
+
+    pos = fixtures["12 dense clusters (n=1200)"]
+    runs = [layout._repulsion(pos, SPAN), layout._repulsion(pos, SPAN),
+            layout._repulsion(pos, SPAN, budget=7)]   # one node's own pairs exceed 7
+    check("L5 grid repulsion is byte-identical across runs and pass sizes",
+          len({out.tobytes() for out in runs}) == 1, "the output depends on the run or budget")
+
+
 def main() -> int:
     print("building cell layer (no layout)…")
     cells_list, synapses, meta, review = build(do_layout=False)
@@ -398,6 +480,7 @@ def main() -> int:
           f"got {function_links!r}")
 
     check_layout()
+    check_grid_repulsion()
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:
