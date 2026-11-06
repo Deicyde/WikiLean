@@ -3,11 +3,19 @@
 
 docs/PIPELINE.md section 3 (stage 10). Every model call of this pipeline goes through
 ``site/agent_sandbox.sandboxed_options`` — WikiLean's hard invariant, enforced by
-``site/test_agent_sandbox.py``: Read, Grep and Glob at most and never Bash, never
+``site/test_agent_sandbox.py``: the read tools and never Bash, never
 ``bypassPermissions``, a working directory outside every checkout, and no user or
 project settings. A locate worker reads untrusted article text, which is the
 prompt-injection surface that invariant exists for, so the pipeline's agents are the
 last place to make an exception.
+
+The one thing a worker may do besides read is **write its own document**, into
+``work/<task-id>/findings/<task-id>/`` and nowhere else: a stage whose whole output is
+one file needs a tool that can write one. That is ``sandboxed_options(write_dir=…)``,
+decided per call by an in-process PreToolUse hook, and nothing else moved — no shell,
+no settings, no read outside the working directory. Everything else the old prompts
+told a worker to *run* — the passage ids, the gate — the **runner** runs, between the
+worker and the reviewer (:mod:`task`).
 
 Every call leaves an **envelope** under ``<root>/usage/``, named
 ``<task-id>.<role>.<UTC stamp>.<pid>.json``. A call that returned a priced result writes
@@ -51,9 +59,20 @@ for _candidate in (HERE, HERE.parent, ROOT / "site"):
 
 #: The roles a call may have; the envelope's name carries one.
 ROLES = ("worker", "reviewer")
-#: What a worker may see at all. A locate worker reads its task manifest and the
-#: article's rendered views out of its own working directory, and nothing else.
-WORKER_TOOLS = ("Read", "Grep", "Glob")
+#: What a worker may see at all. A locate worker reads its task manifest, the
+#: article's rendered views and the declaration search out of its own working
+#: directory, and writes the one document its task exists for into the one directory
+#: under it the sandbox opens (``write_dir``). Nothing else, and never a shell.
+WORKER_TOOLS = ("Read", "Grep", "Glob", "Write")
+#: A reviewer reads and writes nothing: its verdict is its own text.
+REVIEWER_TOOLS = ("Read", "Grep", "Glob")
+#: Where a worker writes, under its working directory. ``run/workdir.py`` makes it.
+FINDINGS = "findings"
+
+
+def tools_for(role: str) -> tuple[str, ...]:
+    """The tools of a role: a worker writes its document, a reviewer writes nothing."""
+    return WORKER_TOOLS if role == "worker" else REVIEWER_TOOLS
 #: The default turn cap of one call.
 MAX_TURNS = 60
 
@@ -87,8 +106,14 @@ def unpriced(elapsed: float, why: str) -> dict:
 
 
 def options(*, model: str | None, system_prompt: str, cwd: Path,
-            tools=WORKER_TOOLS, max_turns: int = MAX_TURNS):
+            tools=WORKER_TOOLS, max_turns: int = MAX_TURNS,
+            write_dir: Path | None = None):
     """The one place this pipeline builds agent options: ``site/agent_sandbox``'s.
+
+    ``write_dir`` is the only directory ``Write`` reaches, and it is under ``cwd``:
+    a worker's whole output is one document, and an agent that cannot write one
+    produces nothing. Everything else stays exactly as strict — no Bash, no settings,
+    reads scoped to ``cwd``.
 
     Imported here and not at module scope, so a host with no SDK can still plan, gate
     and harvest a run.
@@ -97,7 +122,7 @@ def options(*, model: str | None, system_prompt: str, cwd: Path,
 
     return agent_sandbox.sandboxed_options(model=model, system_prompt=system_prompt,
                                            tools=list(tools), max_turns=max_turns,
-                                           cwd=cwd)
+                                           cwd=cwd, write_dir=write_dir)
 
 
 def run_command(command: str, *, cwd: Path, timeout: float) -> tuple[int, str, float]:
@@ -131,6 +156,11 @@ def call(*, root: Path, task_id: str, role: str, prompt: str, system: str = "",
     root = Path(root)
     workdir = root / "work" / task_id
     workdir.mkdir(parents=True, exist_ok=True)
+    # a worker writes into findings/<task-id>/ and nowhere else; a reviewer writes
+    # nothing at all, and its verdict is the text of its own answer
+    write_dir = (workdir / FINDINGS / task_id) if role == "worker" else None
+    if write_dir is not None:
+        write_dir.mkdir(parents=True, exist_ok=True)
     path = envelope_path(root, task_id, role, step=step)
     if worker_command:
         code, output, elapsed = run_command(worker_command, cwd=workdir, timeout=timeout)
@@ -152,7 +182,8 @@ def call(*, root: Path, task_id: str, role: str, prompt: str, system: str = "",
         return envelope
     started = time.monotonic()
     try:
-        envelope = _execute(prompt=prompt, system=system, model=model, workdir=workdir)
+        envelope = _execute(prompt=prompt, system=system, model=model, workdir=workdir,
+                            tools=tools_for(role), write_dir=write_dir)
     except Exception as exc:  # noqa: BLE001 — any failure is still a call that spent time
         envelope = unpriced(time.monotonic() - started,
                             f"{exc.__class__.__name__}: {exc}")
@@ -162,13 +193,15 @@ def call(*, root: Path, task_id: str, role: str, prompt: str, system: str = "",
     return envelope
 
 
-def _execute(*, prompt: str, system: str, model: str | None, workdir: Path) -> dict:
+def _execute(*, prompt: str, system: str, model: str | None, workdir: Path,
+             tools=WORKER_TOOLS, write_dir: Path | None = None) -> dict:
     """The real call. Imported lazily; the result object is the envelope."""
     import asyncio  # noqa: PLC0415
 
     from claude_agent_sdk import query  # noqa: PLC0415
 
-    opts = options(model=model, system_prompt=system, cwd=workdir)
+    opts = options(model=model, system_prompt=system, cwd=workdir, tools=tools,
+                   write_dir=write_dir)
 
     async def _go() -> dict:
         result: dict = {}

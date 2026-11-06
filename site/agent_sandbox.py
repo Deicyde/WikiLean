@@ -35,6 +35,18 @@ restricts each agent positively:
   refused (each can hold ``wiki/.dev.vars``), and so are the home directory and
   its ancestors. The checkouts are this repository, every git worktree that
   shares its object store, and the paths in ``WIKILEAN_PROTECTED_ROOTS``.
+* ``write_dir`` is the **one** way an agent writes a file, and it is off unless
+  a caller asks for it by name. A pipeline worker's whole output is one document
+  (``scripts/pipeline/run/``), and an agent that cannot write produces nothing;
+  so ``write_dir`` names a directory at or under ``cwd`` and nothing else is
+  loosened. Bash and every other dangerous tool stay denied, the permission
+  mode stays ``dontAsk``, and the write itself is gated twice over: ``Write``
+  leaves ``disallowed_tools`` only for that call, and a **PreToolUse hook**
+  (:func:`write_guard`) decides every tool call in process, allowing ``Write``
+  only when its ``file_path`` resolves inside ``write_dir`` and denying every
+  tool the call did not ask for. The hook is the boundary; the tool lists are
+  the belt. :func:`tool_decision` is that rule as a plain function, so it is
+  tested without a model and without the SDK.
 """
 from __future__ import annotations
 
@@ -75,6 +87,11 @@ TOOL_SEARCH = "ToolSearch"
 # The read tools: pre-approved only inside cwd under dontAsk. The CLI checks
 # all three against Read(...) permission rules (deny rules included).
 READ_TOOLS = ("Read", "Grep", "Glob")
+
+# The one write tool, and only under ``write_dir``. It is not in
+# PERMITTED_TOOLS: a caller that has not named a write directory may not list
+# it, so no agent gets it by copying another's tool list.
+WRITE_TOOL = "Write"
 
 # The only built-in tools an agent's ``tools`` may list.
 PERMITTED_TOOLS = frozenset(READ_TOOLS) | {TOOL_SEARCH}
@@ -250,18 +267,111 @@ def _check_allowed(allowed: Iterable[str]) -> list[str]:
     return out
 
 
+def check_write_dir(write_dir: Path, workdir: Path) -> Path:
+    """Where an agent may write: a real directory at or under its ``cwd``.
+
+    A write directory outside the working directory would let an agent that
+    reads untrusted article text put bytes somewhere nobody is watching, so it
+    is refused here and not argued about at the hook.
+    """
+    resolved = Path(write_dir).resolve()
+    if not _inside(resolved, workdir):
+        raise ValueError(f"the agent's write directory {resolved} is not inside its "
+                         f"working directory {workdir}: an agent writes where it works")
+    if resolved.exists() and not resolved.is_dir():
+        raise ValueError(f"the agent's write directory {resolved} is not a directory")
+    return resolved
+
+
+#: What :func:`tool_decision` answers. ``DEFER`` is the important one: it leaves
+#: the call to the CLI's own rules, which under ``dontAsk`` pre-approve the read
+#: tools inside ``cwd`` and nothing else. A hook that answered ``allow`` to
+#: everything would *widen* every existing agent, which is the opposite of the job.
+ALLOW, DENY, DEFER = "allow", "deny", ""
+
+
+def tool_decision(tool_name: str, tool_input: Any, *, write_dir: Path | None,
+                  tools: Iterable[str], allowed_tools: Iterable[str] = ()
+                  ) -> tuple[str, str]:
+    """``(decision, reason)`` for one tool call, as the PreToolUse hook decides it.
+
+    A plain function of its arguments, so the boundary is tested without a
+    model and without the SDK:
+
+    * ``Write`` is **allowed** only with a ``file_path`` that resolves inside
+      ``write_dir`` — a relative path is taken from there, ``..`` is resolved
+      before the check, and a symlink at the target is refused, so a link
+      planted in the staged material cannot carry a write outside. Any other
+      ``Write`` is denied;
+    * a dangerous tool, and a tool this call did not ask for, is **denied**
+      whatever the CLI's own rules would have said;
+    * everything else is **deferred**: the CLI decides it, which under
+      ``dontAsk`` means the read tools inside ``cwd`` and nothing else.
+    """
+    listed = {str(name) for name in tools}
+    rules = {str(rule) for rule in allowed_tools}
+    if tool_name == WRITE_TOOL and WRITE_TOOL in listed and write_dir is not None:
+        raw = tool_input.get("file_path") if isinstance(tool_input, dict) else None
+        if not isinstance(raw, str) or not raw.strip():
+            return DENY, "a write names the file it writes"
+        target = Path(raw)
+        if not target.is_absolute():
+            target = write_dir / target
+        try:
+            if target.is_symlink():
+                return DENY, f"{raw} is a symlink; a document is written to a real path"
+            resolved = target.resolve()
+        except OSError as exc:                                # pragma: no cover — rare
+            return DENY, f"{raw} cannot be resolved ({exc})"
+        if not _inside(resolved, write_dir.resolve()):
+            return DENY, (f"{resolved} is outside {write_dir}, the only directory this "
+                          "agent may write in")
+        return ALLOW, f"{resolved} is inside this agent's write directory"
+    if tool_name in DANGEROUS_TOOLS:
+        return DENY, f"{tool_name} is denied to every pipeline agent"
+    if tool_name in listed or tool_name in rules:
+        return DEFER, ""
+    if tool_name.startswith("mcp__") and any(rule.startswith("mcp__") for rule in rules):
+        return DEFER, ""
+    return DENY, (f"{tool_name} is not one of this agent's tools "
+                  f"({', '.join(sorted(listed)) or 'none'})")
+
+
+def _pre_tool_use_hook(write_dir: Path | None, tools: Iterable[str],
+                       allowed_tools: Iterable[str]):
+    """The PreToolUse callback that applies :func:`tool_decision` to every call."""
+    listed, rules = tuple(tools), tuple(allowed_tools)
+
+    async def hook(input_data: Any, _tool_use_id: Any, _context: Any) -> dict:
+        data = input_data if isinstance(input_data, dict) else {}
+        decision, reason = tool_decision(str(data.get("tool_name") or ""),
+                                         data.get("tool_input"), write_dir=write_dir,
+                                         tools=listed, allowed_tools=rules)
+        if decision == DEFER:
+            return {}
+        return {"hookSpecificOutput": {
+            "hookEventName": "PreToolUse",
+            "permissionDecision": decision,
+            "permissionDecisionReason": reason}}
+
+    return hook
+
+
 def sandboxed_options(*, model: str | None, system_prompt: str, tools: Iterable[str],
                       max_turns: int, cwd: str | Path | None = None,
                       allowed_tools: Iterable[str] = (),
-                      mcp_servers: dict | None = None) -> Any:
+                      mcp_servers: dict | None = None,
+                      write_dir: str | Path | None = None) -> Any:
     """Build the ClaudeAgentOptions for one sandboxed agent call.
 
     ``tools`` lists built-in tool names from Read, Grep, Glob and ToolSearch
     (``[]`` for a judgment-only agent). ``allowed_tools`` lists the MCP tool
     names that run without a prompt. ``cwd`` is the only directory the read
-    tools may see; ``None`` selects :func:`sandbox_dir`.
+    tools may see; ``None`` selects :func:`sandbox_dir`. ``write_dir``, at or
+    under ``cwd``, is the only directory ``Write`` may reach, and listing
+    ``Write`` in ``tools`` without one is refused.
     """
-    from claude_agent_sdk import ClaudeAgentOptions
+    from claude_agent_sdk import ClaudeAgentOptions, HookMatcher
 
     have = {f.name for f in dataclasses.fields(ClaudeAgentOptions)}
     missing = [name for name in _REQUIRED_FIELDS if name not in have]
@@ -269,23 +379,33 @@ def sandboxed_options(*, model: str | None, system_prompt: str, tools: Iterable[
         raise RuntimeError(
             "claude-agent-sdk is too old to sandbox agents (ClaudeAgentOptions lacks "
             f"{', '.join(missing)}); refusing to run an unrestricted agent")
+    if "hooks" not in have:
+        raise RuntimeError(
+            "claude-agent-sdk is too old to sandbox agents (ClaudeAgentOptions lacks "
+            "hooks, which is where every tool call is decided); refusing to run an "
+            "unrestricted agent")
+
+    workdir = sandbox_dir() if cwd is None else check_workdir(Path(cwd))
+    writable = None if write_dir is None else check_write_dir(Path(write_dir), workdir)
 
     base = [str(t) for t in tools]
+    permitted = PERMITTED_TOOLS | ({WRITE_TOOL} if writable is not None else frozenset())
     for name in base:
-        if name not in PERMITTED_TOOLS:
+        if name not in permitted:
             raise ValueError(
-                f"tools may list only {', '.join(sorted(PERMITTED_TOOLS))}, not {name!r}; "
+                f"tools may list only {', '.join(sorted(permitted))}, not {name!r}; "
                 "expose anything else as an in-process MCP tool with validated arguments")
     allowed = _check_allowed(allowed_tools)
     if any(rule.startswith("mcp__") for rule in allowed) and TOOL_SEARCH not in base:
         base.append(TOOL_SEARCH)
     if TOOL_SEARCH in base and TOOL_SEARCH not in allowed:
         allowed.append(TOOL_SEARCH)
-    denied = list(DANGEROUS_TOOLS)
+    # Write leaves the deny list only for a call that asked for a write directory,
+    # and only because the hook below decides each of its calls by path.
+    denied = [name for name in DANGEROUS_TOOLS
+              if not (name == WRITE_TOOL and WRITE_TOOL in base)]
     if any(name in READ_TOOLS for name in base):
         denied += claude_read_deny_rules()
-
-    workdir = sandbox_dir() if cwd is None else check_workdir(Path(cwd))
 
     kwargs: dict[str, Any] = dict(
         model=model,
@@ -297,6 +417,8 @@ def sandboxed_options(*, model: str | None, system_prompt: str, tools: Iterable[
         setting_sources=[],
         cwd=str(workdir),
         max_turns=max_turns,
+        hooks={"PreToolUse": [HookMatcher(
+            matcher=None, hooks=[_pre_tool_use_hook(writable, base, allowed)])]},
     )
     if mcp_servers:
         kwargs["mcp_servers"] = mcp_servers

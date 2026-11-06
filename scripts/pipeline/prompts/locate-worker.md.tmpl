@@ -1,6 +1,6 @@
 Your task is to **locate** the passages of a frozen inventory in universe `{{universe}}`: for each one, which declarations of the universe's libraries state it, and how closely.
 
-Read `{{tasks_dir}}/<your task id>.json`. For each source it lists the passages that are yours — `item`, `span`, `head_words`, `prominence`, `passage_kind`, the inventory's `statement` (its restatement of the passage with its hypotheses and objects, so it reads on its own) and, for a compound statement, its `conjuncts` and `shape`; and where to read each: `text_span`, `section`, `quote`. Read each passage in `{{sources_dir}}/<source-id>/text.txt` — at its `text_span` (offsets into `text.txt`), or under its `section` heading where `quote.exact` begins; `span` is an offset into `layer.txt`, not `text.txt` — with enough of its section around it to know what it says. Then search the universe.
+Read `task.json`. For each source it lists the passages that are yours — `item`, `span`, `head_words`, `prominence`, `passage_kind`, the inventory's `statement` (its restatement of the passage with its hypotheses and objects, so it reads on its own) and, for a compound statement, its `conjuncts` and `shape`; and where to read each: `text_span`, `section`, `quote`. Read each passage in `{{sources_dir}}/<source-id>/text.txt` — at its `text_span` (offsets into `text.txt`), or under its `section` heading where `quote.exact` begins; `span` is an offset into `layer.txt`, not `text.txt` — with enough of its section around it to know what it says. Then search the universe.
 
 **Every passage of the manifest ends `located`, `absent` or `unresolved`. None is skipped.**
 
@@ -10,7 +10,7 @@ Read `{{tasks_dir}}/<your task id>.json`. For each source it lists the passages 
 
 2. **Read the candidates.** `{{candidates_dir}}/<source-id>.json`, and your manifest's `curated` list for the source. **Every curated candidate your manifest lists must be answered in the receipt of the passage it concerns**: either it is one of that passage's locations with a relation that counts (anything but `relatedMatch`) and its verdict is `accepted`, or its verdict is `rejected` with a reason. A `relatedMatch` answers nothing, and an `accepted` candidate that is not one of the passage's counting locations is refused. The file's `lexical` hits are hints and owe nothing.
 
-3. **Search with several distinct queries**: the name a library would give the result, its key words, the objects it is about, and the declaration stated for *those very objects* before any general theorem that holds of them. Give **a query of its own to every clause**, tagged with the clause ids it targets in the receipt's `query_clauses`; an absence whose queries all chase one clause — the method, the complexity, the theorem's name — and skip the formal one is a false absence. For a worked example, also search for the **general theorem it instantiates**, with a query of its own tagged `general`. Search each clause's special case too: for every clause, one query for its conclusion under a stronger hypothesis. Read each plausible hit in full: a name is not a statement.
+3. **Search the corpus under `{{index_dir}}/` with several distinct queries**, each one a Grep: the name a library would give the result, its key words, the objects it is about, and the declaration stated for *those very objects* before any general theorem that holds of them. Give **a query of its own to every clause**, tagged with the clause ids it targets in the receipt's `query_clauses`; an absence whose queries all chase one clause — the method, the complexity, the theorem's name — and skip the formal one is a false absence. For a worked example, also search for the **general theorem it instantiates**, with a query of its own tagged `general`. Search each clause's special case too: for every clause, one query for its conclusion under a stronger hypothesis. Read each plausible hit in full: a name is not a statement.
 
 4. **Check every candidate against each clause before you reject it.** A declaration that states one conjunct alone is a `hasPart`, one that is the passage at special objects a `narrowMatch`, one the passage follows from a `broadMatch`. "Not the whole passage" is no reason to reject a candidate, and an absence that rejects one for that reason is refused.
 
@@ -46,7 +46,7 @@ Read `{{tasks_dir}}/<your task id>.json`. For each source it lists the passages 
 
 ## The document
 
-Write `<source-id>.json` for each source of the manifest:
+Write `<source-id>.json` for each source of the manifest, into `{{findings_dir}}/<your task id>/`:
 
 ```json
 {"schema": "{{schema}}", "mode": "{{mode}}",
@@ -95,10 +95,6 @@ Write `<source-id>.json` for each source of the manifest:
 - Copy `item`, the source's shas and `renderer` from the manifest exactly; write no commit and no `proof_status`.
 - Write each `note`, query, `reason`, test and line **in your own words**: one that copies more than {{quote_max_words}} consecutive words of the article is refused, since the published records quote no more than that.
 
-## Before you finish, run the gate
+## When you finish
 
-```
-{{gate_command}} --findings <source-id>.json
-```
-
-{{worker_exits}}
+You do not run the gate: there is no shell, and the runner runs it over your document out of tree. {{worker_exits}}

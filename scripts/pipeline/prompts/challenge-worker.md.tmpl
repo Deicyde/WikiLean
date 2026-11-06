@@ -1,6 +1,6 @@
 Your task is a **challenge** of about twenty records another worker produced in universe `{{universe}}`. **Your job is to refute them, not to confirm them.**
 
-Read `{{tasks_dir}}/<your task id>.json`: for each source it lists the records that are yours, each with its `target` (one of {{challenge_targets}}), its passage `item`, the passage's `statement` and, for a compound statement, its `conjuncts` and `shape`; where to read it (`text_span` in `text.txt`, `section`, `quote`; `span` is a `layer.txt` offset); for a location its `location_key`, `library`, `declaration` and `relation`, with what the worker wrote of it (`clauses`, `conjunct_relation`, `instantiation`, `tests`, `step`, `convention`, `note`) and the passage's other locations (`passage_locations`, read-only context, not records of yours); and for a coverage claim its `parts` and the worker's `note`.
+Read `task.json`: for each source it lists the records that are yours, each with its `target` (one of {{challenge_targets}}), its passage `item`, the passage's `statement` and, for a compound statement, its `conjuncts` and `shape`; where to read it (`text_span` in `text.txt`, `section`, `quote`; `span` is a `layer.txt` offset); for a location its `location_key`, `library`, `declaration` and `relation`, with what the worker wrote of it (`clauses`, `conjunct_relation`, `instantiation`, `tests`, `step`, `convention`, `note`) and the passage's other locations (`passage_locations`, read-only context, not records of yours); and for a coverage claim its `parts` and the worker's `note`.
 
 A record marked `conditional: "prominence"` is judged **only** beside an overturn of its passage's prominence (below). Your task holds every required record of a passage. **Read the passage yourself** in `{{sources_dir}}/<source-id>/text.txt` before you judge anything.
 
@@ -29,7 +29,7 @@ Check it against the passage's clauses, read the declaration itself, and either 
 
 ### An absence or an unresolved outcome — hunted
 
-Search first, **harder and differently** than the worker did: other names, the objects the statement is about, the declaration stated for *those* objects, the generalisation a library would state — with a query of its own for every clause (the worker's `query_clauses` shows which clauses it searched, and a false absence is usually a clause nobody searched), each clause's special case, and, for a worked example, one for the general theorem it instantiates. Check each candidate against each clause: one that states a conjunct alone is a `hasPart` location.
+Search the corpus under `{{index_dir}}/` first, **harder and differently** than the worker did: other names, the objects the statement is about, the declaration stated for *those* objects, the generalisation a library would state — with a query of its own for every clause (the worker's `query_clauses` shows which clauses it searched, and a false absence is usually a clause nobody searched), each clause's special case, and, for a worked example, one for the general theorem it instantiates. Check each candidate against each clause: one that states a conjunct alone is a `hasPart` location.
 
 **Overturn** it with the locations you found, or **uphold** it, listing the queries you ran (`queries`, at least {{min_absence_queries}} distinct) tagged with the clauses (`query_clauses`, every query tagged, each clause with a query of its own), and naming in `special_case` the nearest special case you found and why it is not one, or why none exists.
 
@@ -56,7 +56,7 @@ When your verdicts would leave a `located` passage with no location that counts 
 
 ## The document
 
-Write `<source-id>.json` for each source of the manifest:
+Write `<source-id>.json` for each source of the manifest, into `{{findings_dir}}/<your task id>/`:
 
 ```json
 {"schema": "{{schema}}", "mode": "{{mode}}",
@@ -111,10 +111,6 @@ Write `<source-id>.json` for each source of the manifest:
 - Copy `item`, `location_key`, the source's shas and `renderer` from the manifest exactly; write no commit and no `proof_status`.
 - Write every note, test, reason and query **in your own words**: one that copies more than {{quote_max_words}} consecutive words of the article is refused.
 
-## Before you finish, run the gate
+## When you finish
 
-```
-{{gate_command}} --findings <source-id>.json
-```
-
-{{worker_exits}}
+You do not run the gate: there is no shell, and the runner runs it over your document out of tree. {{worker_exits}}

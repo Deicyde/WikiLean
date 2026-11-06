@@ -114,9 +114,18 @@ def refused_names(paths: list[Path]) -> list[str]:
     return sorted({p.name for p in paths if p.name in REFUSED_NAMES})
 
 
+#: The planned root's staged working directories. They hold the coordinator's own
+#: copy of the article text (``run/workdir.py``), so they never travel: a package
+#: carries the plan, and the contributor stages its own after refetching the pinned
+#: revisions. Everything else of the root does travel.
+NOT_PACKAGED = ("work",)
+
+
 def _files(root: Path) -> list[Path]:
-    return sorted(p for p in Path(root).rglob("*")
-                  if p.is_file() and "__pycache__" not in p.parts)
+    root = Path(root)
+    return sorted(p for p in root.rglob("*")
+                  if p.is_file() and "__pycache__" not in p.parts
+                  and p.relative_to(root).parts[0] not in NOT_PACKAGED)
 
 
 def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
@@ -127,7 +136,10 @@ def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
           extra_roots: list[str] | None = None) -> dict:
     """Copy a planned run into ``packages/<run-id>/`` and write its manifest.
 
-    ``plan_dir`` is the planner's output directory, rooted at :data:`ROOT_PLACEHOLDER`.
+    ``plan_dir`` is the planner's output directory, rooted at :data:`ROOT_PLACEHOLDER`,
+    less its staged working directories (:data:`NOT_PACKAGED`): those hold the
+    coordinator's copy of the article text, and the contributor stages its own from
+    the revisions it refetches.
     ``sources`` are the sourceset entries, pins only; ``universe`` is the universe
     document. ``inputs`` are files a recorded command names, which travel under
     ``inputs/`` so the recorded argument can name them there.

@@ -1,27 +1,25 @@
 #!/usr/bin/env python3
 """The contract between a planned root, its prompts, and the agent that runs them.
 
-Stage 9 writes the prompts; stage 10 makes the call. Nothing holds the two together,
-and they do not currently meet: a run planned by :mod:`plan` and called by :mod:`agent`
-hands a worker a prompt naming files it cannot reach and tools it does not have. Every
-check below is on a real planned root and the real
-``site/agent_sandbox.sandboxed_options``, and **no model is called**: the options object
-is built and read, which is free.
+Stage 9 writes the prompts; stage 10 makes the call. On 2026-11-06 a paid run was
+stopped here, before its first model call, because the two did not meet: the prompts
+named files the worker could not reach, commands it could not run, and a document it
+had no tool to write. Each of those was an ``expectedFailure`` in this file. They are
+now checks, and they pass — a paid run may start again.
 
-The four properties a paid run needs, one test each:
+Every check below is on a **real planned root** and the real
+``site/agent_sandbox.sandboxed_options``, and **no model is called**: the options
+object is built and read, which is free, and the one end-to-end run uses a stub worker
+that has only the tools a sandboxed worker has.
 
-1. ``cost.py`` answers on a command line — the spend between shards is read from it.
-2. the worker can **write** its document, which is the whole output of the stage;
-3. the worker can **read** the files its prompts name — its task manifest and the
-   source's views;
-4. the worker can **run** the gate and the index tool its prompts tell it to run.
+The five properties a paid run needs:
 
-Only (1) holds. (2), (3) and (4) are marked ``expectedFailure``: the defect is real and
-this file is where it is recorded, so that whoever repairs it gets an *unexpected
-success* here rather than silence. **Do not spend on a run of stage 9 until they pass.**
-Repairing (2) means giving a worker a write tool inside its own working directory,
-which moves ``site/agent_sandbox``'s boundary and is not a change to make quietly:
-that boundary is why the worker reads untrusted article text safely at all.
+1. ``cost.py`` answers on a command line — the spend between shards is read from it;
+2. the worker can **write** its document, into one directory and nowhere else;
+3. the worker can **read** every file its prompts name, out of its own directory;
+4. **nothing** the prompts name has to be *run*: the runner runs the gate and the
+   passage ids, and no prompt tells an agent to run anything;
+5. the free pre-flight check says so before the first paid call.
 
 Run: python3 scripts/pipeline/run/test_worker_contract.py
 """
@@ -44,7 +42,9 @@ for _candidate in (HERE, PIPELINE, PIPELINE / "gate", REPO / "site"):
 import agent  # noqa: E402
 import cost  # noqa: E402
 import prompts as prompts_mod  # noqa: E402
+import test_run as run_fixture  # noqa: E402 — scripts/pipeline/run/test_run.py
 import vocab  # noqa: E402
+import workdir as workdir_mod  # noqa: E402
 
 try:  # the options are the SDK's dataclass; a host without it checks the prompts only
     import claude_agent_sdk  # noqa: F401
@@ -52,23 +52,14 @@ try:  # the options are the SDK's dataclass; a host without it checks the prompt
 except ImportError:  # pragma: no cover — depends on the host
     HAVE_SDK = False
 
-#: what the planner renders the worker's task directory as (plan.py)
-TASKS_DIR = "tasks"
 
-
-def _slots() -> dict:
+def _slots(mode: str = vocab.MODE_INVENTORY) -> dict:
     """The prompt slots a planned root gets, as ``plan.plan`` fills them."""
     return prompts_mod.slots(
-        run_id="r1", mode=vocab.MODE_INVENTORY, sources_dir="/elsewhere/sources",
-        tasks_dir=TASKS_DIR, candidates_dir="",
-        gate_command="python3 gate/verify_locate.py --gate-config gate/gate.json",
-        ids_command="python3 gate/passage_ids.py",
-        index_command="python3 gate/index_search.py",
+        run_id="r1", mode=mode, sources_dir=workdir_mod.SOURCES_DIR,
+        findings_dir=workdir_mod.FINDINGS, candidates_dir=workdir_mod.CANDIDATES_DIR,
+        index_dir=workdir_mod.INDEX_DIR, gate_verdict_file=workdir_mod.GATE_VERDICT,
         universe="u1", universe_sha256="0" * 64)
-
-
-def _rendered() -> dict[str, str]:
-    return prompts_mod.render_all(vocab.MODE_INVENTORY, _slots())
 
 
 class CostHasACommandLine(unittest.TestCase):
@@ -116,78 +107,115 @@ class CostHasACommandLine(unittest.TestCase):
 
 
 class WorkerCanDoWhatItsPromptAsks(unittest.TestCase):
-    """The prompts a planned root stages against the options agent.py builds."""
+    """The prompts a planned root stages, against the options and the staged directory.
+
+    The root is a real one: ``test_run.Workspace`` plans it with the gate suite's
+    synthetic source, so the files the prompts name are the files a real run stages.
+    """
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        self.root = Path(self.tmp.name) / "run"
-        self.task = "inv-source-1"
-        # exactly what plan.plan leaves behind: the manifest at the root, work/ empty
-        (self.root / "work" / self.task).mkdir(parents=True)
-        (self.root / TASKS_DIR).mkdir(parents=True)
-        (self.root / TASKS_DIR / f"{self.task}.json").write_text("{}", encoding="utf-8")
-        self.prompts = _rendered()
+        self.dir = Path(self.tmp.name)
+        self.ws = run_fixture.Workspace(self.dir / "ws")
+        self.search = self.dir / "search"
+        self.search.mkdir()
+        for name in workdir_mod.SEARCH_FILES:
+            (self.search / name).write_text("testlib\tTestlib.decl\tx\n", encoding="utf-8")
+        self.root = self.dir / "run"
+        planned = self.ws.plan(self.root, per_task=8, render_prompts=True,
+                               search=self.search)
+        self.task = planned["tasks"][0]["task_id"]
+        self.work = self.root / "work" / self.task
+        self.prompts = {path.name: path.read_text(encoding="utf-8")
+                        for path in (self.root / "prompts").glob("*.md")}
 
     def worker_options(self):
         """The options agent.py builds for this task; skipped where there is no SDK."""
         if not HAVE_SDK:
             self.skipTest("claude-agent-sdk is not installed on this host")
-        return agent.options(model="m", system_prompt="s",
-                             cwd=self.root / "work" / self.task)
+        return agent.options(model="m", system_prompt="s", cwd=self.work,
+                             tools=agent.WORKER_TOOLS,
+                             write_dir=workdir_mod.findings_dir(self.root, self.task))
 
     def test_the_prompts_tell_the_worker_to_write_a_document(self):
-        """The premise of the three below: the stage's output is a file the worker writes."""
+        """The premise of the rest: the stage's output is a file the worker writes."""
         text = self.prompts["worker-system.md"] + self.prompts["worker.md"]
         self.assertIn("<source-id>.json", text)
 
-    @unittest.expectedFailure
     def test_the_worker_has_a_tool_that_can_write_its_document(self):
-        """DEFECT. The worker is told to write ``<source-id>.json`` and is given
-        Read, Grep and Glob, with Write and Edit denied: it has no way to produce the
-        one artefact the stage exists for. A paid call buys nothing."""
+        """Repaired. The worker is told to write ``<source-id>.json`` and has Write,
+        scoped by the sandbox to the one directory it may write in."""
         options = self.worker_options()
-        writers = {"Write", "Edit", "MultiEdit"}
-        self.assertTrue(writers & set(options.tools),
-                        f"worker tools are {options.tools} and cannot write a file")
-        self.assertFalse(writers & set(options.disallowed_tools))
+        self.assertIn("Write", options.tools)
+        self.assertNotIn("Write", options.disallowed_tools)
+        for name in ("Bash", "Edit", "MultiEdit", "WebFetch", "Task"):
+            self.assertIn(name, options.disallowed_tools, name)
 
-    @unittest.expectedFailure
     def test_the_worker_can_read_the_task_manifest_its_prompt_names(self):
-        """DEFECT. The prompts name the manifest at ``tasks/<task id>.json``, relative
-        to the worker's working directory; ``plan`` writes it at the run root and
-        creates ``work/<task id>/`` empty, and the sandbox scopes reads to cwd. The
-        worker cannot open the file that says what its task is."""
+        """Repaired. The prompts name ``task.json``, and the runner stages it in the
+        working directory before the call."""
         cwd = Path(self.worker_options().cwd)
-        self.assertIn(f"{TASKS_DIR}/", self.prompts["worker-system.md"])
-        self.assertTrue((cwd / TASKS_DIR / f"{self.task}.json").is_file(),
+        self.assertIn("`task.json`", self.prompts["worker-system.md"])
+        self.assertTrue((cwd / "task.json").is_file(),
                         f"{cwd} holds {sorted(p.name for p in cwd.iterdir())}")
+        manifest = json.loads((cwd / "task.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["task_id"], self.task)
 
-    @unittest.expectedFailure
-    def test_the_worker_can_read_the_source_views_its_prompt_names(self):
-        """DEFECT. ``sources_dir`` is rendered as an absolute path outside the worker's
-        working directory, and the sandbox pre-approves Read, Grep and Glob only inside
-        it. Every view the prompt sends the worker to — ``text.txt``, ``layer.txt``,
-        ``sections.json`` — is unreachable."""
+    def test_the_worker_can_read_every_source_view_its_prompt_names(self):
+        """Repaired. ``sources_dir`` is relative and staged: ``text.txt``,
+        ``layer.txt`` and the rest are inside the working directory."""
         cwd = Path(self.worker_options().cwd).resolve()
-        sources = Path(_slots()["sources_dir"])
-        self.assertTrue(sources.is_absolute())
-        self.assertTrue(cwd == sources or cwd in sources.parents,
-                        f"the prompt sends the worker to {sources}, outside its cwd {cwd}")
+        sources = cwd / workdir_mod.SOURCES_DIR / run_fixture.fixture.SOURCE
+        self.assertTrue(sources.is_dir())
+        for name in workdir_mod.WORKER_VIEWS:
+            self.assertTrue((sources / name).is_file(), name)
+            self.assertEqual(cwd, (sources / name).resolve().parents[2])
 
-    @unittest.expectedFailure
-    def test_the_worker_can_run_the_commands_its_prompt_names(self):
-        """DEFECT. The same system prompt says 'There is no shell: you cannot run a
-        command' and then tells the worker to run ``python3 gate/verify_locate.py`` and
-        ``python3 gate/index_search.py``. Both are true of the options — there is no
-        Bash — so the gate is never run before a document is finished, and the index is
-        never searched."""
-        options = self.worker_options()
-        text = self.prompts["worker-system.md"]
-        named = [line for line in text.splitlines() if "python3 gate/" in line]
-        self.assertTrue(named, "no prompt names a command; nothing to check")
-        self.assertIn("Bash", options.tools,
-                      f"the prompt names {len(named)} command(s) the worker cannot run")
+    def test_the_worker_can_search_the_declarations_its_prompt_names(self):
+        cwd = Path(self.worker_options().cwd)
+        for name in workdir_mod.SEARCH_FILES:
+            self.assertTrue((cwd / workdir_mod.INDEX_DIR / name).is_file(), name)
+
+    def test_no_prompt_names_a_command_the_worker_cannot_run(self):
+        """Repaired, the other way round. The prompts name no command at all: the
+        gate and the passage ids are the runner's steps, and the system prompt says
+        so where it used to say 'Run it before you finish'."""
+        for name, text in self.prompts.items():
+            self.assertNotIn("python3 ", text, name)
+            self.assertNotIn("Run it before you finish", text, name)
+        self.assertIn("You do not run the gate", self.prompts["worker-system.md"])
+        self.assertIn("There is no shell", self.prompts["worker-system.md"])
+
+    def test_every_path_the_prompts_name_is_in_the_staged_directory(self):
+        """The free pre-flight check of the signed plan: before the first paid call,
+        is everything the prompt names actually there?"""
+        got = workdir_mod.check_prompt_names(
+            root=self.root, task_id=self.task,
+            prompts=sorted((self.root / "prompts").glob("*.md")))
+        self.assertEqual(got["missing"], [])
+        self.assertTrue(got["writable_dir_exists"])
+        self.assertTrue(got["ok"])
+        self.assertIn(f"{workdir_mod.SOURCES_DIR}/{run_fixture.fixture.SOURCE}/text.txt",
+                      got["present"])
+
+    def test_the_check_names_a_file_staging_forgot(self):
+        """And it fails when it should: the check is not a formality."""
+        (self.work / workdir_mod.SOURCES_DIR / run_fixture.fixture.SOURCE
+         / "layer.txt").unlink()
+        got = workdir_mod.check_prompt_names(
+            root=self.root, task_id=self.task,
+            prompts=sorted((self.root / "prompts").glob("*.md")))
+        self.assertFalse(got["ok"])
+        self.assertIn(f"{workdir_mod.SOURCES_DIR}/{run_fixture.fixture.SOURCE}/layer.txt",
+                      got["missing"])
+
+    def test_the_run_config_records_what_each_task_was_staged_with(self):
+        config = json.loads((self.root / "run.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(config["work"]["staged"]), {self.task})
+        self.assertGreater(config["work"]["staged"][self.task], 1)
+        self.assertTrue(config["work"]["search"])
+        self.assertIn("the runner", config["gate"]["run_by"])
 
 
 if __name__ == "__main__":

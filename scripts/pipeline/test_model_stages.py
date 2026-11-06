@@ -91,6 +91,7 @@ class Workspace:
         directory.mkdir(parents=True, exist_ok=True)
         (directory / "layer.txt").write_text(fixture.LAYER, encoding="utf-8")
         (directory / "text.txt").write_text(fixture.LAYER, encoding="utf-8")
+        _write(directory / "sections.json", [])
         _write(directory / "paragraphs.json", fixture.PARAGRAPHS)
         _write(directory / "formulas.json", fixture.FORMULAS)
         _write(directory / "finders.json", fixture.FINDERS)

@@ -381,6 +381,136 @@ def _capture_query(captured: list):
     return fake_query
 
 
+class TheWriteBoundary(unittest.TestCase):
+    """``write_dir``: the one way an agent writes, and it reaches nowhere else.
+
+    A pipeline worker's whole output is one document, so it needs Write; every
+    check here is that nothing else moved with it. No model is called: the
+    decision is :func:`agent_sandbox.tool_decision`, and the hook is awaited
+    directly.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.work = Path(self._tmp.name) / "work" / "task-1"
+        self.findings = self.work / "findings"
+        self.findings.mkdir(parents=True)
+        self.outside = Path(self._tmp.name) / "elsewhere"
+        self.outside.mkdir()
+
+    def options(self, **kw):
+        return agent_sandbox.sandboxed_options(
+            model="m", system_prompt="s", tools=["Read", "Grep", "Glob", "Write"],
+            max_turns=60, cwd=self.work, write_dir=self.findings, **kw)
+
+    def decide(self, tool: str, payload: dict | None = None, *, tools=None):
+        return agent_sandbox.tool_decision(
+            tool, payload or {}, write_dir=self.findings,
+            tools=tools if tools is not None else ["Read", "Grep", "Glob", "Write"])
+
+    # -- what the options say ----------------------------------------------------
+
+    def test_write_is_listed_and_un_denied_only_when_a_write_directory_is_named(self):
+        options = self.options()
+        self.assertIn("Write", options.tools)
+        self.assertNotIn("Write", options.disallowed_tools)
+        for name in ("Bash", "Edit", "MultiEdit", "NotebookEdit", "WebFetch", "Task"):
+            self.assertIn(name, options.disallowed_tools, name)
+        self.assertEqual(options.permission_mode, "dontAsk")
+        self.assertEqual(options.setting_sources, [])
+        self.assertEqual(options.allowed_tools, [])
+
+    def test_without_a_write_directory_nothing_changes(self):
+        options = agent_sandbox.sandboxed_options(
+            model="m", system_prompt="s", tools=["Read", "Grep", "Glob"], max_turns=60,
+            cwd=self.work)
+        self.assertIn("Write", options.disallowed_tools)
+        with self.assertRaisesRegex(ValueError, "tools may list only"):
+            agent_sandbox.sandboxed_options(model="m", system_prompt="s",
+                                            tools=["Read", "Write"], max_turns=1,
+                                            cwd=self.work)
+
+    def test_a_write_directory_outside_the_working_directory_is_refused(self):
+        for where in (self.outside, self.work.parent, Path("/tmp")):
+            with self.assertRaisesRegex(ValueError, "not inside its working directory"):
+                agent_sandbox.sandboxed_options(
+                    model="m", system_prompt="s", tools=["Read", "Write"], max_turns=1,
+                    cwd=self.work, write_dir=where)
+
+    # -- what the hook decides ----------------------------------------------------
+
+    def test_a_write_inside_the_write_directory_is_allowed(self):
+        for path in (str(self.findings / "doc.json"), "doc.json", "./sub/doc.json"):
+            decision, _why = self.decide("Write", {"file_path": path, "content": "{}"})
+            self.assertEqual(decision, agent_sandbox.ALLOW, path)
+
+    def test_a_write_outside_the_write_directory_is_refused(self):
+        for path in (str(self.outside / "doc.json"),
+                     str(self.work / "task.json"),            # its own cwd, but read-only
+                     str(Path.home() / ".claude" / "x.json"),
+                     "../escaped.json", "../../escaped.json",
+                     str(self.findings / ".." / ".." / "escaped.json")):
+            decision, why = self.decide("Write", {"file_path": path, "content": "{}"})
+            self.assertEqual(decision, agent_sandbox.DENY, path)
+            self.assertTrue(why)
+
+    def test_a_write_through_a_symlink_out_of_the_directory_is_refused(self):
+        link = self.findings / "out.json"
+        link.symlink_to(self.outside / "planted.json")
+        decision, why = self.decide("Write", {"file_path": str(link), "content": "{}"})
+        self.assertEqual(decision, agent_sandbox.DENY)
+        self.assertIn("symlink", why)
+        self.assertFalse((self.outside / "planted.json").exists())
+
+    def test_a_write_with_no_path_is_refused(self):
+        for payload in ({}, {"file_path": ""}, {"file_path": 7}, {"content": "{}"}):
+            self.assertEqual(self.decide("Write", payload)[0], agent_sandbox.DENY)
+
+    def test_a_dangerous_tool_is_denied_even_if_the_cli_would_have_run_it(self):
+        for tool in ("Bash", "Edit", "WebFetch", "Task", "KillShell"):
+            decision, why = self.decide(tool, {"command": "cat /etc/passwd"})
+            self.assertEqual(decision, agent_sandbox.DENY, tool)
+            self.assertIn(tool, why)
+
+    def test_a_read_is_left_to_the_clis_own_cwd_scoping(self):
+        # the hook must not answer "allow" to a read: that would widen every
+        # agent, since dontAsk pre-approves reads inside cwd and nothing else
+        for tool in ("Read", "Grep", "Glob"):
+            self.assertEqual(self.decide(tool, {"file_path": "/etc/passwd"}),
+                             (agent_sandbox.DEFER, ""))
+
+    def test_a_tool_the_call_never_asked_for_is_denied(self):
+        decision, why = self.decide("Write", {"file_path": "doc.json"},
+                                    tools=["Read", "Grep", "Glob"])
+        self.assertEqual(decision, agent_sandbox.DENY)
+        self.assertIn("Write", why)
+
+    def test_an_mcp_tool_an_agent_was_given_is_still_left_to_the_cli(self):
+        self.assertEqual(agent_sandbox.tool_decision(
+            "mcp__wikilean__decl_exists", {}, write_dir=None, tools=["Read"],
+            allowed_tools=["mcp__wikilean__decl_exists"])[0], agent_sandbox.DEFER)
+        self.assertEqual(agent_sandbox.tool_decision(
+            "mcp__other__thing", {}, write_dir=None, tools=["Read"],
+            allowed_tools=[])[0], agent_sandbox.DENY)
+
+    def test_the_hook_the_options_carry_is_the_same_rule(self):
+        options = self.options()
+        (matcher,) = options.hooks["PreToolUse"]
+        (hook,) = matcher.hooks
+        allowed = asyncio.run(hook({"tool_name": "Write", "tool_input": {
+            "file_path": str(self.findings / "a.json")}}, None, {}))
+        self.assertEqual(allowed["hookSpecificOutput"]["permissionDecision"], "allow")
+        denied = asyncio.run(hook({"tool_name": "Write", "tool_input": {
+            "file_path": str(self.outside / "a.json")}}, None, {}))
+        self.assertEqual(denied["hookSpecificOutput"]["permissionDecision"], "deny")
+        shell = asyncio.run(hook({"tool_name": "Bash", "tool_input": {"command": "ls"}},
+                                 None, {}))
+        self.assertEqual(shell["hookSpecificOutput"]["permissionDecision"], "deny")
+        self.assertEqual(asyncio.run(hook({"tool_name": "Read", "tool_input": {}},
+                                          None, {})), {})
+
+
 class PipelineAgents(unittest.TestCase):
     def test_batch_annotate_agents_run_sandboxed(self):
         import batch_annotate as ba
