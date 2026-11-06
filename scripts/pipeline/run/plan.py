@@ -149,8 +149,17 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
          inventory_run: str = "", status_rule: int = vocab.STATUS_RULE_BROAD,
          span_end_rule: int = 3, statement_cut_rule: int = 3, judgment_rules: int = 4,
          model: str = "", max_cost: float = 0.0, source_ids: Iterable[str] = (),
-         prompts: Path | None = None) -> dict:
-    """Write the root and return its ``planned.json``."""
+         prompts: Path | None = None, sources_as: str | None = None,
+         candidates_as: str | None = None, index_as: str | None = None) -> dict:
+    """Write the root and return its ``planned.json``.
+
+    ``sources_as``, ``candidates_as`` and ``index_as`` are what ``gate.json`` **names**,
+    where that is not where this machine holds them: a package carries the plan and no
+    article text, so a coordinator plans against its own rendered sources and the plan
+    names ``../sources``, which the contributor fills by refetching the pinned
+    revisions. The view shas are still read from the real directory, so the plan pins
+    the bytes the coordinator saw and the contributor's gate refuses anything else.
+    """
     if mode not in (vocab.MODE_LOCATE, vocab.MODE_CHALLENGE):
         raise PlanProblem(f"a batch is planned in {vocab.MODE_LOCATE} or "
                           f"{vocab.MODE_CHALLENGE} mode, not {mode!r}")
@@ -227,9 +236,10 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
                                                         "commit": lib.get("commit")}
                                    for lib in universe_doc.get("libraries") or []}},
         "sources": gate_sources,
-        "sources_dir": where(Path(sources)),
+        "sources_dir": sources_as or where(Path(sources)),
         "tasks_dir": "tasks",
-        "candidates_dir": where(Path(candidates)) if candidates else None,
+        "candidates_dir": (candidates_as
+                           or (where(Path(candidates)) if candidates else None)),
         "candidates_sha256": {},
         "findings_dir": "findings",
         "log_dir": where(out / "gate-log"),
@@ -243,7 +253,8 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
         "challenged_runs": [],
     }
     if index is not None:
-        gate_config["index"] = {"path": where(Path(index)), "sha256": sha256_file(index)}
+        gate_config["index"] = {"path": index_as or where(Path(index)),
+                                "sha256": sha256_file(index)}
     # gate.json lives in the gate directory and nowhere else: one pinned configuration,
     # in the one directory a worker cannot edit
     scratch = out / "gate.json"
@@ -266,10 +277,11 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
                   "passages": planned_passages, "max_per_task": per_task},
         "budget": {"max_cost_usd": max_cost},
         "prompts": prompt_shas,
+        # relative to the root, so the root names no directory of the machine that
+        # planned it and a package can carry it unchanged
         "gate": {"config_sha256": gate_config_sha, "files": staged,
                  "out_of_tree": True,
-                 "command": f"python3 {(out / 'gate' / 'verify_locate.py').resolve()} "
-                            f"--gate-config {(out / 'gate' / 'gate.json').resolve()}"},
+                 "command": "python3 gate/verify_locate.py --gate-config gate/gate.json"},
         "locate": {
             "mode": mode, "status_rule": status_rule,
             "sourceset": {"id": None, "manifest_sha256": sha256_file(manifest)},
@@ -302,6 +314,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--candidates", type=Path)
     parser.add_argument("--index", type=Path, help="the declaration index")
     parser.add_argument("--prompts", type=Path, help="the prompts to stage")
+    parser.add_argument("--sources-as", help="what gate.json names the sources directory, "
+                                             "where that is not where this machine holds it "
+                                             "(a package's plan names ../sources)")
+    parser.add_argument("--candidates-as")
+    parser.add_argument("--index-as")
     parser.add_argument("--per-task", type=int, default=PER_TASK)
     parser.add_argument("--model", default="")
     parser.add_argument("--max-cost", type=float, default=0.0)
@@ -314,7 +331,9 @@ def main(argv: list[str] | None = None) -> int:
                        candidates=args.candidates, index=args.index,
                        per_task=args.per_task, inventory_run=args.inventory_run,
                        model=args.model, max_cost=args.max_cost,
-                       source_ids=args.source_ids, prompts=args.prompts)
+                       source_ids=args.source_ids, prompts=args.prompts,
+                       sources_as=args.sources_as, candidates_as=args.candidates_as,
+                       index_as=args.index_as)
     except (PlanProblem, corpus_mod.CorpusProblem, stage_mod.StageProblem) as exc:
         print(str(exc), file=sys.stderr)
         return 2

@@ -47,6 +47,7 @@ import publish_package  # noqa: E402
 import results as results_mod  # noqa: E402
 import run_package  # noqa: E402
 import sandbox  # noqa: E402
+import work as work_mod  # noqa: E402
 import workrepo  # noqa: E402
 
 FIXTURE_SET = PIPELINE / "fixtures" / "recordset"
@@ -449,6 +450,140 @@ class CollectTests(WorkRepoCase):
         for name in ("../escape.json", "a/../../escape.json"):
             with self.subTest(name=name), self.assertRaises(workrepo.WorkRepoProblem):
                 workrepo.safe_member(dest, name)
+
+
+class MiddleTests(WorkRepoCase):
+    """Contribute mode's middle: a real planned root, a stub worker, the gate, the harvest.
+
+    The synthetic source and documents are the gate suite's
+    (``scripts/pipeline/gate/test_gate.py``) and the planner is stage 10's, so this is
+    the real plan → work → gate → harvest path with a local command where the model
+    would be. No model is called.
+    """
+
+    def real_plan(self, run_id: str = "loc-7") -> tuple[Path, Path]:
+        """``(plan root, the workspace it was planned from)``, with no article text in it."""
+        for path in (str(PIPELINE / "run"), str(PIPELINE / "gate"),
+                     str(ROOT / "site")):
+            if path not in sys.path:
+                sys.path.insert(0, path)
+        import test_run as run_tests  # noqa: PLC0415 — the stage-10 suite's workspace
+
+        workspace = run_tests.Workspace(self.tmp / "ws")
+        plan_root = self.tmp / "plan" / run_id
+        import plan as plan_mod  # noqa: PLC0415
+
+        plan_mod.plan(run_id=run_id, mode="locate", out=plan_root,
+                      inventory=workspace.corpus / run_tests.fixture.INV_RUN,
+                      inventory_run=run_tests.fixture.INV_RUN,
+                      universe=workspace.universe, manifest=workspace.manifest,
+                      sources=workspace.sources, candidates=workspace.candidates,
+                      index=workspace.index, per_task=8,
+                      # what the package NAMES; the contributor fills these three
+                      sources_as="../sources", candidates_as="../candidates",
+                      index_as="../index/decls.jsonl")
+        return plan_root, workspace
+
+    def test_a_real_plan_carries_no_path_of_the_coordinators(self):
+        plan_root, _workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        directory = package_mod.package_dir(self.coordinator, "loc-7")
+        manifest = package_mod.read(directory)
+        self.assertIn("gate/verify_locate.py", manifest["files"])
+        self.assertNotIn("sources/", "".join(manifest["files"]))
+
+    def test_claim_then_a_stub_worker_then_gate_harvest_and_results(self):
+        import test_gate as fixture  # noqa: PLC0415
+
+        plan_root, workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        package = quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+                        package="loc-7", execute=True)
+        self.assertEqual(package, "loc-7")
+
+        # before the inputs are in place, the middle says which are missing and harvests
+        # nothing: a contributor learns that from one line, not from a task of model time
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertTrue(done["missing_inputs"])
+        self.assertEqual(done["receipt"]["actual"]["count"], 0)
+
+        # the contributor fills the three directories the plan names
+        root = done["root"]
+        shutil.copytree(workspace.sources, root / "sources", dirs_exist_ok=True)
+        shutil.copytree(workspace.candidates, root / "candidates", dirs_exist_ok=True)
+        (root / "index").mkdir(exist_ok=True)
+        shutil.copyfile(workspace.index, root / "index" / "decls.jsonl")
+        self.assertEqual(work_mod.missing_inputs(root), [])
+
+        # a stub worker writes the task's document, through the same agent entry a model
+        # call takes
+        task = work_mod.tasks_of(root)[0]
+        document = fixture.good_locate_document()
+        document["run_id"] = "loc-7"
+        document["task_id"] = task
+        handed = {p["item"] for p in json.loads(
+            (root / "tasks" / f"{task}.json").read_text())["documents"][0]["passages"]}
+        document["passages"] = [p for p in document["passages"] if p["item"] in handed]
+        out = root / "work" / task / "findings" / task / f"{fixture.SOURCE}.json"
+        script = self.tmp / "stub-worker.py"
+        script.write_text(
+            "import json, pathlib\n"
+            f"path = pathlib.Path({str(out)!r})\n"
+            "path.parent.mkdir(parents=True, exist_ok=True)\n"
+            f"path.write_text({json.dumps(document, sort_keys=True)!r}, encoding='utf-8')\n",
+            encoding="utf-8")
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7",
+                     worker_command=f"{sys.executable} {script}")
+        self.assertEqual(done["rejected"], [], done)
+        self.assertEqual(done["passed"], [task])
+        self.assertTrue(done["receipt"]["complete"], done["receipt"])
+        self.assertEqual(done["receipt"]["actual"]["count"], 1)
+        # the worker left an envelope, unpriced because no model was called
+        self.assertEqual(done["receipt"]["cost"]["unpriced_calls"], 1)
+        self.assertEqual(done["receipt"]["cost"]["usd"], 0.0)
+
+        # and the result travels back with that corpus
+        corpus = workdir / work_mod.CORPUS_DIR / "loc-7"
+        result = quiet(run_package.send_results, repo=clone, workdir=workdir,
+                       machine="mac-one", package="loc-7", documents=corpus,
+                       execute=True, received_at=RECEIVED_AT)
+        self.assertTrue(result["documents"])
+        collected = quiet(collect_results.collect, repo=self.coordinator, run_id="loc-7",
+                          out=self.tmp / "collected", fetch=True, received_at=RECEIVED_AT)
+        self.assertEqual(sorted(collected["machines"]), ["mac-one"])
+
+    def test_a_task_the_gate_rejects_is_not_harvested(self):
+        import test_gate as fixture  # noqa: PLC0415
+
+        plan_root, workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package="loc-7", execute=True)
+        root = work_mod.materialise(package_mod.package_dir(clone, "loc-7"), workdir)
+        shutil.copytree(workspace.sources, root / "sources", dirs_exist_ok=True)
+        shutil.copytree(workspace.candidates, root / "candidates", dirs_exist_ok=True)
+        (root / "index").mkdir(exist_ok=True)
+        shutil.copyfile(workspace.index, root / "index" / "decls.jsonl")
+        task = work_mod.tasks_of(root)[0]
+        document = fixture.good_locate_document()
+        document["run_id"] = "loc-7"
+        document["task_id"] = task
+        handed = {p["item"] for p in json.loads(
+            (root / "tasks" / f"{task}.json").read_text())["documents"][0]["passages"]}
+        document["passages"] = [p for p in document["passages"] if p["item"] in handed]
+        # break rule 6: two locations with one rank
+        document["passages"][1]["locations"][1]["rank"] = 1
+        out = root / "work" / task / "findings" / task / f"{fixture.SOURCE}.json"
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(document, sort_keys=True), encoding="utf-8")
+        passed, rejected = quiet(work_mod.gate_all, root)
+        self.assertEqual((passed, rejected), ([], [task]))
+        receipt = quiet(work_mod.harvest, root, workdir, "loc-7", passed)
+        self.assertEqual(receipt["actual"]["count"], 0)
 
 
 class SandboxTests(unittest.TestCase):
