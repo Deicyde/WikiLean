@@ -1,0 +1,104 @@
+Your task is to **locate** the passages of a frozen inventory in universe `{{universe}}`: for each one, which declarations of the universe's libraries state it, and how closely.
+
+Read `{{tasks_dir}}/<your task id>.json`. For each source it lists the passages that are yours — `item`, `span`, `head_words`, `prominence`, `passage_kind`, the inventory's `statement` (its restatement of the passage with its hypotheses and objects, so it reads on its own) and, for a compound statement, its `conjuncts` and `shape`; and where to read each: `text_span`, `section`, `quote`. Read each passage in `{{sources_dir}}/<source-id>/text.txt` — at its `text_span` (offsets into `text.txt`), or under its `section` heading where `quote.exact` begins; `span` is an offset into `layer.txt`, not `text.txt` — with enough of its section around it to know what it says. Then search the universe.
+
+**Every passage of the manifest ends `located`, `absent` or `unresolved`. None is skipped.**
+
+## How to search
+
+1. **Restate the passage to yourself** from its `statement` and its text: its objects, its hypotheses, its conclusion. **Its clauses are the inventory's, and you write no claim list** (a `claims` field is refused): a compound statement carries its `conjuncts` and its clause ids are theirs — `c1`, `c2`, … — and a simple statement carries none, its one clause being `{{simple_clause}}`. Every `clauses` and every `query_clauses` tag you write names those ids and no others. A statement or conjunct that is an equation chain a = b = c asserts a = c; its middle term is a step, not a clause.
+
+2. **Read the candidates.** `{{candidates_dir}}/<source-id>.json`, and your manifest's `curated` list for the source. **Every curated candidate your manifest lists must be answered in the receipt of the passage it concerns**: either it is one of that passage's locations with a relation that counts (anything but `relatedMatch`) and its verdict is `accepted`, or its verdict is `rejected` with a reason. A `relatedMatch` answers nothing, and an `accepted` candidate that is not one of the passage's counting locations is refused. The file's `lexical` hits are hints and owe nothing.
+
+3. **Search with several distinct queries**: the name a library would give the result, its key words, the objects it is about, and the declaration stated for *those very objects* before any general theorem that holds of them. Give **a query of its own to every clause**, tagged with the clause ids it targets in the receipt's `query_clauses`; an absence whose queries all chase one clause — the method, the complexity, the theorem's name — and skip the formal one is a false absence. For a worked example, also search for the **general theorem it instantiates**, with a query of its own tagged `general`. Search each clause's special case too: for every clause, one query for its conclusion under a stronger hypothesis. Read each plausible hit in full: a name is not a statement.
+
+4. **Check every candidate against each clause before you reject it.** A declaration that states one conjunct alone is a `hasPart`, one that is the passage at special objects a `narrowMatch`, one the passage follows from a `broadMatch`. "Not the whole passage" is no reason to reject a candidate, and an absence that rejects one for that reason is refused.
+
+5. **Instantiate** each declaration you would cite at the passage's own objects before you judge it: say which of the passage's objects each type argument is, and which instance or hypothesis makes each instance argument hold for them — and check that such an instance exists at the pin. That is the location's `instantiation`, one line in your own words: **required on every {{strong_relations}}, and on every `hasPart` whose `conjunct_relation` is one of them**, and on any other relation whenever the signature takes an instance argument.
+   - If the declaration's setting **neither contains nor is contained in** the passage's, it does not apply to the passage's objects: `relatedMatch`, however close it reads.
+   - If its setting is a **special case** of the passage's (ℕ where the passage has ℤ, a field where it has a commutative ring, the n = 1 case), it is a `narrowMatch`. When the `statement` or a conjunct says "integer", "integers" or "ℤ" and every numeric binder of the declaration is ℕ, a strong relation stands only when its `note` names "ℕ" or "natural" and says why the passage is still stated.
+   - The passage **follows from** the declaration by instantiation only when, once instantiated, what is left closes by decidable arithmetic. A bridge that needs a named lemma makes it `relatedMatch`, not `broadMatch`. A lemma that only links two definitions of one notion is no such bridge: the two differ by an `encoding`. A link that is itself what the passage asserts is the exception — the declaration presupposes the passage, and it is `relatedMatch`.
+
+6. **Judge each declaration by its relation** to the passage (subject = passage, object = declaration): one of {{relations}}.
+
+   - `exactMatch` — the declaration states the passage. One also defined where the passage is not still states it when it agrees with the passage on the passage's domain and every case outside it is trivial (a junk or default value the passage's mathematics does not depend on, or an extra case that reduces to a tautology) and its `note` says why each such case is trivial. When some case outside the domain has real mathematical content it is a `broadMatch`.
+   - `closeMatch` — the same up to a convention: name it in `convention`, one of {{conventions}}, and say in `note` what the declaration does by it. Describe the declaration, not what the passage leaves out. A junk value is no convention: a case outside the passage's domain never makes a `closeMatch`; a difference at a point where both are defined can.
+   - `broadMatch` — the passage follows from the declaration by instantiation or weakening, with no hypothesis stronger than the passage's.
+   - `narrowMatch` — the declaration is the passage at special objects: the passage, instantiated at the declaration's objects, says what the declaration says. Also when the declaration proves the passage's conclusion, or a stronger one, under stronger hypotheses that some of the passage's own cases meet.
+   - `hasPart` — it states one clause of a passage that says several things.
+   - `relatedMatch` — relevant, but it states something else: the connection needs another theorem, or the two statements are incomparable.
+
+   Relations are **pairwise**: what else the universe holds never changes a record's relation. A definition passage is judged on the data it defines; bundled proof fields are packaging.
+
+   **Every {{strong_relations}} writes its two-way test as `tests`**: `{"r2": "<how the passage follows from the declaration>", "r3": "<why the declaration needs nothing more at the passage's objects>"}`, one line each in your own words. A `hasPart` whose `conjunct_relation` is one of the three writes them too, of the conjuncts it states.
+
+   An `exactMatch` or `closeMatch` note — and the note of a `hasPart` whose `conjunct_relation` is either — never says the declaration is stronger, more general, a generalisation, a special case or a weakening: each of those names another relation, and the gate refuses it.
+
+   Every location whose relation is not `relatedMatch` names the clause ids it states, in `clauses`. **A strong relation says the declaration states the whole passage: use one only when its `clauses` name every clause.** A declaration that states some of the conjuncts — existence without uniqueness, one direction of an iff, one case of several — is `hasPart`, however exactly it states that conjunct. A note that says the declaration "does not state" a clause, or "only proves" one, is a `hasPart` note.
+
+   **A `hasPart` of a compound statement names the conjuncts it states and its `conjunct_relation`** to them, judged against the conjunction of those conjuncts and not the passage, with a `convention` when it is `closeMatch`. A `hasPart` of a simple statement names `["{{simple_clause}}"]` and carries no `conjunct_relation`; nothing but a `hasPart` carries one. A part is **held by its `conjunct_relation`**: one that is strong writes its `instantiation` and `tests` and is held to the ℕ-for-ℤ tripwire.
+
+   **`hasPart` and `narrowMatch` need the declaration alone to entail what they credit it with.** Anything less is `relatedMatch`: a lemma the proof uses along the way, one that reaches the conjunct only with another declaration, a fact a neighbouring passage states. Every `hasPart` and `narrowMatch` says in `step`, one line in your own words, what the declaration alone entails of this passage.
+
+7. **A bundle.** A compound statement may have no one declaration that states it, only several that each state some conjuncts. When your `hasPart` locations **together** state **every** conjunct — their `clauses` pairwise disjoint and together naming every conjunct, none naming them all — each part's `conjunct_relation` is strong, and no part assumes more than the passage does, say so with a `coverage` claim: it is shown and voted on as one card, and its relation is its weakest part's, which the tally computes (you write none). **Write it whenever your parts so partition the conjuncts**: leaving it out under-claims the passage, and the gate refuses the omission. A part that states only a special case of its conjuncts, or only some of what they say, leaves them unstated: no bundle stands on it. **A part that alone states every conjunct is no part**: it is one location with its own relation. On an `existence_uniqueness` or `iff` statement, a part whose declaration concludes with an iff, an equivalence, a unique existence or a bijection writes `pd6`, one line saying which conjunct it does not state on its own and why. A simple statement carries no coverage claim.
+
+{{judgment_rules}}
+
+## The document
+
+Write `<source-id>.json` for each source of the manifest:
+
+```json
+{"schema": "{{schema}}", "mode": "{{mode}}",
+ "run_id": "{{run_id}}", "task_id": "<your task id>",
+ "source_id": "<from the manifest>", "source_sha": "<from the manifest>",
+ "layer_sha256": "<from the manifest>", "renderer": "<from the manifest>",
+ "universe": "{{universe}}", "universe_sha256": "{{universe_sha256}}",
+ "passages": [
+   {"item": "<a simple statement, from the manifest>", "outcome": "located",
+    "locations": [
+      {"library": "<id>", "declaration": "<full Lean name>", "relation": "exactMatch",
+       "rank": 1, "confidence": "high", "clauses": ["{{simple_clause}}"],
+       "instantiation": "<the passage's objects it is applied at, and the instance that makes it apply>",
+       "tests": {"r2": "<how the passage follows from it>", "r3": "<why it needs nothing more at the passage's objects>"},
+       "note": "", "witness": "<why this declaration states the passage>"}],
+    "receipt": {"queries": ["<query 1>", "<query 2>", "<query 3>"],
+                "candidates": [{"library": "<id>", "declaration": "<name>", "verdict": "accepted", "reason": ""},
+                               {"library": "<id>", "declaration": "<name>", "verdict": "rejected", "reason": "<why>"}]}},
+   {"item": "<a compound statement with conjuncts c1 and c2>", "outcome": "located",
+    "locations": [
+      {"library": "<id>", "declaration": "<full Lean name>", "relation": "hasPart",
+       "rank": 1, "confidence": "high", "clauses": ["c1"], "conjunct_relation": "broadMatch",
+       "step": "<what this declaration alone entails of the passage>",
+       "instantiation": "<the passage's objects it is applied at>",
+       "tests": {"r2": "<how c1 follows from it>", "r3": "<why it needs nothing more>"},
+       "note": "", "witness": "<why it states c1>"},
+      {"library": "<id>", "declaration": "<full Lean name>", "relation": "hasPart",
+       "rank": 2, "confidence": "high", "clauses": ["c2"], "conjunct_relation": "exactMatch",
+       "step": "<…>", "instantiation": "<…>",
+       "tests": {"r2": "<…>", "r3": "<…>"}, "note": "", "witness": "<why it states c2>"}],
+    "coverage": {"complete": true, "parts": [1, 2], "note": "<one sentence: how the parts state every conjunct>"},
+    "receipt": {"queries": ["<…>"], "candidates": [], "query_clauses": {"<…>": ["c1"]}}},
+   {"item": "<…>", "outcome": "absent", "locations": [],
+    "receipt": {"queries": ["<query a>", "<query b>", "<query c>"], "candidates": [],
+                "query_clauses": {"<query a>": ["c1"], "<query b>": ["c1"], "<query c>": ["c1"]},
+                "special_case": {"library": "<id>", "declaration": "<the nearest special case>", "reason": "<why it is not one>"}}},
+   {"item": "<…>", "outcome": "unresolved", "locations": [], "reason": "<what you could not decide>",
+    "cut_flag": "several_statements", "receipt": {"queries": [], "candidates": []}}]}
+```
+
+- Write no `claims`. Every location whose relation counts carries `clauses`; a strong relation names them all and carries `instantiation` and `tests`, as does a `hasPart` whose `conjunct_relation` is strong; a `relatedMatch` names none. A `hasPart` or `narrowMatch` carries `step`, and only those two do; a `hasPart` of a compound statement carries `conjunct_relation`, and only it does; a `closeMatch` carries `convention`, and only a `closeMatch` does. `instantiation`, `step` and each test are one line each, of at least three words of your own: "n/a" is no answer.
+- `located`: at least one location whose relation is not `relatedMatch`; at most {{max_locations}}, ranked 1.. without repeats, best first. `confidence` is one of `high`, `medium`, `low`.
+- `absent`: you searched and nothing in the universe states it, or any clause of it. The receipt lists **at least {{min_absence_queries}} distinct queries** (and at least one per clause) and the candidates you examined, and its `query_clauses` tags every query with the clauses it targets. It names in `special_case` the nearest special-case candidate you found and why it is not one, or says why none exists. An absence may sit beside `relatedMatch` locations only, never while a curated candidate is left unexamined, and never with a candidate rejected for stating part of the passage.
+- `unresolved`: you could not decide, or the cut is wrong — the passage states nothing a library could state, or it holds several statements the inventory did not cut. That is the inventory's defect, which you cannot re-cut: say so with a `cut_flag`, one of {{cut_flags}}, and name the statements in `reason`. It is counted as unresolved, never as not formalized — prefer it to a guess.
+- `coverage` (a `located` compound statement only): `parts` are the `rank`s of at least {{min_coverage_parts}} of this passage's `hasPart` locations, whose `clauses` partition the conjuncts and whose `conjunct_relation`s are strong, and `note` says in one sentence of your own how they together state every conjunct. Never on a simple statement, or on an `absent` or `unresolved` passage.
+- Copy `item`, the source's shas and `renderer` from the manifest exactly; write no commit and no `proof_status`.
+- Write each `note`, query, `reason`, test and line **in your own words**: one that copies more than {{quote_max_words}} consecutive words of the article is refused, since the published records quote no more than that.
+
+## Before you finish, run the gate
+
+```
+{{gate_command}} --findings <source-id>.json
+```
+
+{{worker_exits}}

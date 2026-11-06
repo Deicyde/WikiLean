@@ -33,12 +33,30 @@ so the pipeline changes without a release.
 | `corpus.py` | 8, 10 | which files of a run's corpus are documents, and its receipt |
 | `index.py` | 8 | the declaration index the proof statuses join from |
 | `items.py` | — | the passage item grammar: `clean()` hashes, `join_key()` joins |
-| `sources.py` | 9a | the web-source families (the rest of the stage is TODO) |
+| `sources.py` | 9a | the web-source families: the permalink, the container, the licence |
+| `sourceset.py` | 9a | the append-only, versioned manifest, and its pin |
+| `render_web.py` | 9a | the frozen `web-html/3` renderer, a **use** of `site/anchor_resolve.text_layer` |
+| `wikinet.py` | 9a | the one module of this pipeline that may fetch |
+| `fetch_sources.py` | 9a | fetch and render; a dry run unless `--execute` |
+| `cut.py` | 9b | the statement-level cut: the plan, and the frozen inventory read back |
+| `candidates.py` | 9c | candidate retrieval over the declaration index |
+| `locate.py` | 9c | the locate run: retrieval, the tasks, the prompts |
+| `challenge.py` | 9d | which records a challenge judges, and the plan it writes |
+| `prompts.py`, `prompts/` | 9 | the prompts, rendered from the run's own paths |
 | `run/` | 10 | plan, the sandboxed agent call, harvest, cost, the spend watchdog |
 | `contribute/` | 11 | the work-repo transport, the claim, the sandbox and the middle |
 
-Stage 9 — the sourceset and renderer, the statement cut, locate and challenge — is the
-one that is not built; docs/PIPELINE.md section 4 has the table and section 10 the list.
+All eleven stages are built. What is left is a **measurement**, not a stage: whether
+stage 9's prompts produce the judgements batch 1's did needs a paid run, and **no model
+call of any kind has been made from here**. docs/PIPELINE.md section 4 has the table,
+section 10 the list and section 12 the proof that is owed.
+
+**Two rules of stage 9 that are easy to break by accident.** The text layer is
+`site/anchor_resolve.text_layer`'s and nothing else computes one: `render_web` aligns the
+tree's text onto it and refuses a body the two readers disagree about, so a second copy of
+the collapse rule cannot creep in. And `wikinet` is the only module that may reach the
+network: `test_wikinet.py` greps every other module here and fails on one that names a
+fetch.
 
 ## Running
 

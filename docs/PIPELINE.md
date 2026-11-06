@@ -1,11 +1,14 @@
 # WikiLean's own locate pipeline
 
-**Status (2026-11-06): ten of the eleven stages are built.** Section 4's table is the order
-the stages are built in and says, per stage, whether it is built yet; section 10 lists what
-is not. Only **stage 9**, the four stages that call a model, is outstanding, with the
-declaration index's home (section 11, question 3). Nothing here changes a published result:
-section 7 is the argument, and section 8 is how each stage is proved against batch 1 —
-including the loop from batch 1's own harvested documents to its two seals, byte for byte.
+**Status (2026-11-06): all eleven stages are built.** Section 4's table is the order the
+stages are built in and says, per stage, whether it is built yet; section 10 lists what is
+not. What is left is not a stage but a **measurement**: stage 9's three model stages are
+built and their plans are proved against batch 1, and whether their *prompts* produce the
+same judgements needs a paid run, which has not been made (section 12). The declaration
+index's home (section 11, question 3) is now a blocker for that run and not only a design
+question. Nothing here changes a published result: section 7 is the argument, and section 8
+is how each stage is proved against batch 1 — including the loop from batch 1's own
+harvested documents to its two seals, byte for byte.
 
 ## 0. Why this document exists
 
@@ -95,10 +98,17 @@ scripts/pipeline/carry.py           stage 8: the carry-over map between two cuts
 scripts/pipeline/corpus.py          which files of a run's corpus are documents
 scripts/pipeline/index.py           the declaration index the proof statuses join from
 scripts/pipeline/items.py           the passage item grammar: clean() and join_key()
-scripts/pipeline/sources.py         stage 9a: sourcesets and the text layer (TODO)
-scripts/pipeline/cut.py             stage 9b: the statement-level cut (TODO)
-scripts/pipeline/locate.py          stage 9c: the locate run (TODO)
-scripts/pipeline/challenge.py       stage 9d: the challenge run (TODO)
+scripts/pipeline/sources.py         stage 9a: the web-source families
+scripts/pipeline/sourceset.py       stage 9a: the append-only, versioned manifest
+scripts/pipeline/render_web.py      stage 9a: the web-html/3 renderer
+scripts/pipeline/wikinet.py         stage 9a: the one module that may fetch
+scripts/pipeline/fetch_sources.py   stage 9a: fetch and render, behind --execute
+scripts/pipeline/cut.py             stage 9b: the statement-level cut
+scripts/pipeline/candidates.py      stage 9c: candidate retrieval over the index
+scripts/pipeline/locate.py          stage 9c: the locate run
+scripts/pipeline/challenge.py       stage 9d: which records a challenge judges
+scripts/pipeline/prompts.py         stage 9: the prompt renderer
+scripts/pipeline/prompts/*.tmpl     stage 9: the prompts themselves
 scripts/pipeline/run/               stage 10: plan, agent, harvest, cost, watchdog
 scripts/pipeline/contribute/        stage 11: the work-repo transport, and its middle
 scripts/pipeline/test_*.py          the tests, each named by scripts/ci-python.sh
@@ -363,56 +373,113 @@ status, the coverage bundles, the problems and the counts.
 
 **Cost.** None; deterministic, offline. The documents it reads cost model time (stage 9c).
 
-### Stage 9 — the model stages — TODO
+### Stage 9 — the model stages
 
-These are the four that spend money. Each is specified here and built later; none may be run
-from this host (no paid model runs).
+These are the four that spend money. All four are built; **none has been run from this
+host, and no model call of any kind has been made** (section 12 is the plan for the one
+that should be).
 
-**9a — sources (`scripts/pipeline/sources.py`).** A sourceset: `manifest-<n>.jsonl`,
-append-only and versioned, one directory per source, pinned by `(sourceset id, manifest
-sha)`; the `web-html/3` renderer that computes the Literature Links text layer, the reading
-copy, the offset map and the sections; the one Wikipedia client, behind an explicit
-`--execute`, with a fixed parameter set and each revision fetched once.
-*Source:* `scripts/sources/{sourceset,render_html,websource,wikinet}.py`.
-*What changes:* the layer is already WikiLean's (`site/anchor_resolve.text_layer`) and the
-renderer must be written as a use of it, not a second copy; the client is the one place in
-this pipeline that touches the network and takes the same `--execute` shape
-`brain/acquire-*.sh` takes. Batch 1's sourceset is `wpm3`, manifest sha `04abae03…`.
+**9a — sources.** `sources.py` is the web-source families (which site a source belongs to,
+its permalink template, its licence class). `sourceset.py` is the sourceset: a directory of
+`manifest-<n>.jsonl` versions, append-only — version *n+1* holds every source of version *n*
+with every non-null field unchanged, names version *n*'s sha as `previous_sha256`, and is a
+snapshot or a delta, read by replaying the chain back to the nearest snapshot. A run and a
+seal pin `(id, version, manifest_sha256)`. `render_web.py` is the frozen `web-html/3`
+renderer. `wikinet.py` is the one module of this pipeline that may fetch, and
+`fetch_sources.py` its only caller: a dry run by default, recorded responses under
+`--fixtures`, the network only under `--execute`, and each revision fetched once.
+*Source in formal-companion:* `scripts/sources/{sourceset,render_html,websource,wikinet}.py`.
+
+**What changes, and it is the whole point of the port: the layer is not computed here.** It
+is `site/anchor_resolve.text_layer`'s — the Literature Links layer this repository already
+implements for the editor's anchors — and `render_web` is a *use* of it. `_Layer` takes the
+tree's text and that function's layer and aligns them: a layer character that is not `" "`
+is a non-`White_Space` text character, in document order, and every `" "` stands for a
+collapsed run. So the offset map every view is cut by is derived from the layer rather than
+from a second copy of the collapse rule, and a body the two readers disagree about is
+**refused** rather than rendered to a quietly different layer. The tree's raw-text set is
+pinned to what `anchor_resolve` skips, which also makes the renderer independent of the
+interpreter — CPython changed its own `html.parser` tuples within 3.14, and under
+formal-companion's rule a 3.12 could not render at all.
+
+The two sourceset schema strings stay the agreed ones (`cf-sourceset/1`,
+`cf-sourceset-delta/1`), as the record set's do and for the same reason: the format is the
+contract, not the producer's name, and batch 1's seals name a sha of a file in that format.
 *Cost:* network only, no model.
 
 **9b — the cut (`scripts/pipeline/cut.py`).** The statement-level inventory: which spans of a
 revision state something, each one's kind, prominence and scope, keyed by the frozen
-`In-text #<hex>` head rule. One model call per article.
-*Source:* `docs/proposals/statement-cut.md`, `scripts/locate/plan.py` (the
-`locate-inventory` preset), `passage_ids.py`, `templates/prompts/locate-inventory*`.
-*What changes:* the prompts become WikiLean's own under `scripts/pipeline/prompts/`, and the
-agent call goes through `site/agent_sandbox.py` — WikiLean's hard invariant for every SDK
-agent (Read/Grep/Glob at most, never Bash, never `bypassPermissions`, cwd outside every
-checkout), enforced by `site/test_agent_sandbox.py`. formal-companion's agentbox is a run
-host's tool and does not move.
-*Cost:* one worker call and one reviewer call per article. Batch 1's 48 articles were cut by
-an inventory run; **a re-run would be a paid run and is not part of this work.** Tested on
-synthetic fixtures only.
+`In-text #<hex>` head rule. One task per source, one model call per task plus a reviewer; the
+task's document carries the source's pins and the **deterministic finders'** passages,
+pre-filled from the renderer's `finders.json`, which gate rule 8 makes a floor rather than a
+suggestion. `cut.py` also reads a harvested inventory back as the later stages read it —
+including each passage's **reading-copy span**, mapped from its layer span through the
+renderer's own layer map, which is the only thing that relates the text a quote is cut from
+to the text a worker reads.
+*Source:* `scripts/locate/plan.py`'s `locate-inventory` preset and
+`templates/prompts/locate-inventory*`.
 
-**9c — locate (`scripts/pipeline/locate.py`).** The run: candidate retrieval over the
-declaration index, tasks of at most N passages of a frozen inventory, the task manifests, the
-prompts, `gate.json`, the deterministic plan.
-*Source:* `scripts/locate/{plan,candidates,prompts,presets,inputs,tend_root}.py`.
-*Cost:* the batch itself. Batch 1's two locate runs are `loc-tierA-b1a` and `loc-tierA-b1b`.
-Not re-run.
+**9c — locate (`scripts/pipeline/locate.py`, `candidates.py`).** The retrieval runs over
+**WikiLean's declaration index** and not over a companion workspace's database. A **curated**
+hit is the `@[wikidata]` tag a library carries on the article's own Wikidata item — which is
+WikiLean's own, since `bot/` proposes those tags and a human reviews them, so the join is a
+lookup and nothing else — and it binds gate rule 4: a worker must accept or reject each one
+with a reason. A **lexical** hit is a hint: a deterministic token-overlap search over the
+index's declaration names and modules, scored by Sørensen–Dice, because this pipeline has no
+full-text engine to rank by and a plan must be reproducible. The task cut, the manifests,
+`gate.json` and the root stay stage 10's.
+*Source:* `scripts/locate/{plan,candidates,prompts,presets}.py`.
 
-**9d — challenge (`scripts/pipeline/challenge.py`).** Which records a challenge judges —
-every location and absence on a subject or central passage, every coverage claim whatever
-the prominence, every subject prominence, and a seeded sample of the supporting passages —
-and the verdict vocabulary.
+**This is narrower than formal-companion's retrieval, deliberately and at a cost.** Batch 1's
+curated hits also came from two curated lists and from Wikipedia URLs in docstrings; those
+are a companion registry's facts, not WikiLean's, and they do not move. So WikiLean's curated
+list is *shorter*, and a passage batch 1 located from a curated hit may come back absent.
+Section 12 says how to read that.
+
+**9d — challenge (`scripts/pipeline/challenge.py`).** Which records a challenge judges, over
+the outcome rows of harvested locate runs: every location on a subject or central passage and
+every coverage claim and subject prominence are **refuted by default**; every absence and
+unresolved outcome on such a passage is **hunted**; every strong location whose own note
+admits a clause it does not state is refuted too, whatever the prominence; a supporting
+passage's **bases** — the locations that set its derived status on their own — are required;
+and the rest is a **seeded, stratified sample** drawn with exact arithmetic, so 0.07 of 100
+records is 7 and never the 8 a float product rounds to. A passage is one unit and is never
+split over two tasks, and a required prominence sample carries its passage's unrequired
+records into the same task marked `conditional: "prominence"`, so an overturn does not reopen
+records no task held. The verdict vocabulary is `vocab.py`'s and the verdict semantics are
+`tally.py`'s, both already proved on batch 1's real verdicts.
 *Source:* `scripts/locate/challenge_plan.py`.
-*Cost:* the challenge run. Batch 1's is `chal-tierA-b1`. Not re-run.
 
-**The declaration index** that 9c retrieves over (formal-companion's `scripts/corpus/`, the
-Lean probe and `corpus.sqlite`) is the one piece whose home is genuinely arguable: it is a
-map of Lean libraries, which is what the Brain is. **Question for Jack (Q3):** whether
-WikiLean's copy should be a new `scripts/pipeline/universe.py` + SQLite, or should be served
-out of the Brain's own declaration data.
+**The prompts (`scripts/pipeline/prompts/`).** WikiLean's own, rendered from the run's own
+paths by `prompts.py`, which refuses a template with an unfilled slot. Four files per root:
+a shared `worker-system.md`, the mode's `worker.md`, and the two reviewer prompts. Three
+differences from formal-companion's worth stating:
+
+- **No conditional arms.** formal-companion's templates carry `{{#if}}` blocks for the rule
+  versions a plan may run under; WikiLean's are written for the one set its gate enforces —
+  span-end rule 3, statement-cut rule 3, judgment rules 4 — and a change of rule is a change
+  of prompt in the same commit as the gate.
+- **The judgment rules are one text.** R1 to R7, the policy defaults and the readings live in
+  `prompts/judgment-rules.md.part`, which both the locate and the challenge prompt render.
+  formal-companion keeps two copies, and they have drifted.
+- **The reviewer judges form, and the prompt says why.** Judgment is 9d's, which is a run of
+  its own with its own records and its own gate; a reviewer that argued about the mathematics
+  would be a second, unrecorded judge whose verdict no tally reads.
+
+Every agent call goes through `site/agent_sandbox.py` — WikiLean's hard invariant for every
+SDK agent (Read/Grep/Glob at most, never Bash, never `bypassPermissions`, cwd outside every
+checkout), enforced by `site/test_agent_sandbox.py`. A locate worker reads untrusted article
+text, which is the prompt-injection surface that invariant exists for, and the system prompt
+tells the worker so: the material is data, and there is no shell for it to address.
+formal-companion's agentbox is a run host's tool and does not move.
+
+**The declaration index** that 9c retrieves over is now a **blocker**, not only a design
+question. Its shape is built (`index.py`, two readers) and `candidates.py` adds a second view
+of the same rows for the retrieval, but this host holds no index with the `@[wikidata]` tags
+the curated join needs. **Question for Jack (Q3)** is therefore precondition P1 of the paid
+proof: a new SQLite under `scripts/pipeline/`, or the Brain's own declaration data plus the
+tagging bot's `catalog/data/*.jsonl`. *Recommendation:* the Brain plus the catalog — the tags
+are already WikiLean's and already reviewed.
 
 ### Stage 10 — the run, the harvest and the watchdog (`scripts/pipeline/run/`)
 
@@ -548,12 +615,14 @@ batch 1 today, and the run cannot be proved at all without paying for one.
 | 6 | the sealed set | `export_records.py` | yes | both sets re-exported byte for byte, both SEAL shas (R6) |
 | 7 | the gate | `gate/` | yes | all 5,791 ids and span ends; all 997 documents PASS (R8) |
 | 8 | the tally, carry-over | `tally.py`, `carry.py` | yes | both outcome files byte for byte; the loop to the seal (R9) |
-| 9 | sources, cut, locate, challenge | `sources.py`, … | TODO | fixtures only; a run costs money |
+| 9a | sources, the sourceset, the renderer | `sources.py`, `sourceset.py`, `render_web.py`, `wikinet.py` | yes | all 128 rendered sources re-rendered byte for byte; the seven-version chain read and its pin reproduced (R12, R13) |
+| 9b–d | the cut, locate, challenge | `cut.py`, `locate.py`, `candidates.py`, `challenge.py` | yes | the plans reproduce batch 1's; the prompts are **not** proved without a paid run (R14, R15, section 12) |
 | 10 | the run, harvest, watchdog | `run/` | yes | four receipts reconciled; the watchdog replayed (R10) |
 | 11 | contribute mode | `contribute/` | yes | synthetic end-to-end (R7, R11); a Mac is section 9 |
 
-The **Built** column is `—` until the stage lands and `yes` after; `TODO` marks a stage this
-round does not reach at all.
+The **Built** column is `—` until the stage lands and `yes` after. Stage 9 is built and its
+*plans* are proved; what a plan cannot prove is what a model does with the prompt it stages,
+which is section 12.
 
 ## 5. What stays in formal-companion
 
@@ -671,6 +740,11 @@ data under its own path, their results recorded in the report.
 | R9 | 8 | both `locate-outcomes.*.jsonl` reproduced byte for byte (549 and 5,242 rows) and all three `locate-tally.*.json` on counts, problems, rows, gates, sourceset and universe; those rows through stage 6 re-export both sealed sets byte for byte, SEAL sha256s included |
 | R10 | 10 | the harvest reconciles all four corpora to their recorded receipts (names, count, sha manifest, `by_source`, `complete`) and prices each run to the cent; the watchdog replayed over the same envelopes keeps going at twice the spend and drains at half it, and prices the calls that left no priced envelope |
 | R11 | 10, 11 | plan → a stub worker → the gate → harvest → the tally, and claim → run → results → collect, both end to end on a synthetic task with no model called |
+| R12 | 9a | every one of batch 1's 128 rendered `wpm3` sources re-rendered from its stored `body.html`: `layer.txt`, `text.txt`, `head.txt`, `formulas.json`, `layer_map.json`, `sections.json`, `paragraphs.json`, `finders.json` and `render.json` byte for byte, and each manifest entry's `html_sha256`, `layer_sha256` and `renderer` reproduced |
+| R13 | 9a | every one of the 7,583 sealed records' `span_sha256` and capped quote verified against the **re-rendered** layer, and the sourceset's seven-version chain read back — every entry validated, the append-only rule checked at each delta step — reproducing the pin `04abae03…` both seals name |
+| R14 | 9b, 9c | WikiLean's own planners re-plan batch 1: all 50 inventory task manifests identical as canonical JSON, and all 556 locate task manifests identical in every document, passage and curated hit (the task **id** differs, by design: WikiLean's carries the run id) |
+| R15 | 9d | the whole of `chal-tierA-b1`'s `challenge-plan.json` reproduced from batch 1's own pre-challenge outcome rows: all 13,079 records, every rule, stratum, planned value, conditional mark and task id, and all 351 task manifests |
+| R16 | 9b–d | a sourceset → the cut → the retrieval → locate → the gate → harvest → the tally → a challenge plan, end to end on one synthetic article with a stub worker and no model called |
 
 **What R5 and R6 do and do not prove.** The record and the set are rebuilt from the rows that
 `readback.py` extracts from the sealed records. Three kinds of value are in play:
@@ -740,27 +814,58 @@ answer:
 
 Marked TODO in the tree, each with the section that specifies it:
 
-- **stage 9**, the four model stages: the sourceset and the renderer (9a, part-built — what
-  the export needs is in `sources.py`, the manifest, the `web-html/3` renderer as a use of
-  `site/anchor_resolve.text_layer` and the Wikipedia client are not), the statement-level cut
-  (9b), locate (9c) and challenge (9d). The three that call a model cannot be proved without
-  paying for a run, and none has been made from this host;
+- **the paid proof of stage 9** (section 12). Every stage is built and every plan is proved;
+  what no offline check can tell us is whether WikiLean's own prompts, given WikiLean's own
+  retrieval, produce the same judgements. **No model call of any kind has been made from
+  this host.**
 - **the declaration index** stage 9c retrieves over and stage 8 joins from. Its *shape* is
-  built (`index.py`, with a JSONL and a SQLite reader) and its *source* is open — section 11's
-  question 3;
+  built (`index.py`, with a JSONL and a SQLite reader, and `candidates.Retrieval` as a second
+  view of the same rows) and its *source* is open — section 11's question 3, which is now
+  precondition P1 of the paid proof;
+- **the biography flag** (`wikinet`): the Wikidata Query Service is a second endpoint for one
+  optional page flag, and it is not ported. `flags.biography` stays null on an entry this
+  pipeline writes, and a page with an undetermined flag is planned, not skipped;
 - **four checks of the gate** the port does not make: `verify_locate.TODO_CHECKS` names them,
   and `--self-check` prints them, so a run host sees what this gate does not refuse;
-- **the contributor's own seal**: stage 11 wires `verify_submission.py` in and stage 8 now
-  produces rows on the contributor's machine, so sealing there is reachable; what is missing
-  is the sourceset the export's source rows come from (9a). Until then a result is the gated
-  documents and the coordinator seals.
+- **the contributor's own seal**: stage 11 wires `verify_submission.py` in, stage 8 produces
+  rows on the contributor's machine and stage 9a now gives it the sourceset the export's
+  source rows come from, so sealing there is reachable; what is missing is the command that
+  does it on the contributor's side.
 
-Until stage 9 lands, **a batch's model work is still formal-companion's and is consumed
-here.** That is a true statement about today and it is why nothing published moves. From a
-harvested document onward the pipeline is WikiLean's own and is proved to be: the gate, the
-tally, the carry-over, the harvest, the watchdog, the export and the store all run with
-formal-companion nowhere on the machine, and together they reproduce batch 1 from its
-documents to its seals.
+Until that proof is made and read, **a batch's model judgements are still
+formal-companion's and are consumed here.** That is a true statement about today and it is
+why nothing published moves. Everything around them is WikiLean's own and is proved to be:
+the sources, the renderer, the plans, the gate, the tally, the carry-over, the harvest, the
+watchdog, the export and the store all run with formal-companion nowhere on the machine, and
+together they reproduce batch 1 from its bytes to its seals.
+
+## 12. The paid proof of stage 9 — what is left, and what it costs
+
+The three model stages are built and their **plans** are proved against batch 1 (R14, R15):
+WikiLean's own planners reproduce batch 1's inventory task manifests and the whole of its
+challenge plan. A plan cannot prove what a model does with the prompt it stages, and two
+things in stage 9 are deliberately *not* formal-companion's — WikiLean's prompts, and
+WikiLean's narrower retrieval (stage 9a's `@[wikidata]` join only) — so the question is real
+and not rhetorical.
+
+**The run that answers it**, in full in the operator's proof plan of 2026-11-06 and
+summarised here:
+
+- **three articles of batch 1's own `wpm3` sourceset**, re-cut, re-located and re-challenged
+  by WikiLean's own code, their rows compared against batch 1's **through the carry-over map
+  of stage 8**: only a passage whose fate is `unchanged` has the same text in both runs, and
+  only those judgements may be put beside each other;
+- **about $238** at batch 1's own unit prices ($0.1538 a passage cut, $0.4336 a passage
+  located, $0.2699 a required record), under a **$400 cap** and three per-shard watchdog caps;
+- the headline measure is the **derived status**, which is the only value a reader ever
+  sees; the two hard bars are that every harvested document passes the gate and that the
+  tally produces no new kind of problem — a failure there is a defect of the port, not a
+  disagreement with batch 1;
+- **precondition P1**: a declaration index for the universe carrying the `@[wikidata]` tags.
+  Without it the retrieval hands out no curated hits, gate rule 4 is vacuous, and only the
+  cut (9b, about $33) is worth running.
+
+Nothing of it runs until Jack signs the plan.
 
 ## 11. Questions for Jack
 
@@ -773,24 +878,32 @@ documents to its seals.
    Rename it `producer_commit` in a future `/3`, or leave it — it is a 40-hex commit of
    whatever produced the set, and renaming is a change on both sides at once. *Recommendation:*
    leave it; note it for `/3`.
-3. **Where the declaration index lives** (section 3, stage 9). A new SQLite under
-   `scripts/pipeline/`, or served out of the Brain, which is already a map of Lean libraries?
-   This is the one piece whose home is genuinely arguable, and it decides whether the Brain's
-   nightly and the locate run share an input.
+3. **Where the declaration index lives** (section 3, stage 9) — **now a blocker, not only a
+   design question.** A new SQLite under `scripts/pipeline/`, or served out of the Brain,
+   which is already a map of Lean libraries? It decides whether the Brain's nightly and the
+   locate run share an input, and it is precondition P1 of the paid proof (section 12): the
+   retrieval joins the `@[wikidata]` tag, and no index on any host here carries one.
+   *Recommendation:* the Brain's declaration data plus the tagging bot's
+   `catalog/data/*.jsonl` — those tags are already WikiLean's and already human-reviewed, so
+   the curated join is WikiLean's own all the way down.
 4. **Does formal-companion keep its locate pipeline?** The ruling does not say. Two producers
    of one format is a safety margin (section 5) and costs nothing here, but it is two things to
    keep in step. *Recommendation:* keep both; the shared parity tables are the join.
-5. **What stage 9 is proved on, and for how much.** It is the only stage left and the only
-   one that cannot be proved without paying. Batch 1's own costs give the unit prices: the
-   inventory ran at **$17.81 an article**, locate at **$52.31** and the challenge at
-   **$35.37**, so one article through all four model stages is about **$106** and a
-   three-article proof about **$320** (see the report of 2026-11-06 for the working).
-   *Recommendation:* three articles of batch 1's own sourceset, re-cut and re-located by
-   WikiLean's own code, and the result compared with batch 1's rows for the same articles —
-   that is the only check that says the model stages agree, and the carry-over map (stage 8)
-   is what makes the comparison meaningful across a re-cut.
+5. **The paid proof: sign it, or change it** (section 12). Three articles, **$238**
+   estimated under a **$400** cap, the comparison through the carry-over map, and the
+   derived status as the headline measure. The operator's proof plan of 2026-11-06 names
+   the three articles, every command, the watchdog settings, eight stop rules and what
+   counts as agreeing, so the result cannot be argued into a pass afterwards. Nothing of it
+   runs until it is signed.
 6. **Contribute mode's trigger.** ROADMAP's P3 gates the contributions queue on "first real
    compute donor asks". The transport and its middle are built; is a contributor expected,
    and on which Mac, so section 9's seven checks can be run?
 7. **Consolidating `derive_status` (question 1) is now unblocked.** Stage 8 has landed, which
    was the condition in that recommendation.
+8. **The task id.** WikiLean names a locate task `<run>-<source>-<n>` where
+   formal-companion names it `loc-<source>-<n>`; it is the one difference left between the
+   two sides' task manifests (R14). WikiLean's is the safer name — two runs over one source
+   in one root collide under the other, which batch 1's `loc-tierA-b1a` and `loc-tierA-b1b`
+   came close to — but it means a document of one producer cannot be dropped into the
+   other's root unrenamed. *Recommendation:* keep WikiLean's; nothing published reads a task
+   id.

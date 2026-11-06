@@ -88,6 +88,11 @@ run_check "Pipeline derived-status parity (rules 1, 2 and 3)" "$PYTHON_BIN" scri
 run_check "Pipeline record builder tests" "$PYTHON_BIN" scripts/pipeline/test_records.py
 run_check "Pipeline sealed record set read back and re-exported" "$PYTHON_BIN" scripts/pipeline/test_record_sets.py
 run_check "Pipeline tally, challenge semantics and carry-over" "$PYTHON_BIN" scripts/pipeline/test_tally.py
+run_check "Pipeline web-html/3 renderer, a use of the site text layer" "$PYTHON_BIN" scripts/pipeline/test_render_web.py
+run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/pipeline/test_sourceset.py
+run_check "Pipeline Wikipedia client, behind --execute, no network" "$PYTHON_BIN" scripts/pipeline/test_wikinet.py
+run_check "Pipeline stage-9 prompts render and read the gate" "$PYTHON_BIN" scripts/pipeline/test_prompts.py
+run_check "Pipeline cut, retrieval, locate and challenge plans" "$PYTHON_BIN" scripts/pipeline/test_model_stages.py
 run_check "Pipeline locate gate, rules 1 to 10 out of tree" "$PYTHON_BIN" scripts/pipeline/gate/test_gate.py
 run_check "Pipeline run, harvest reconciliation and spend watchdog" "$PYTHON_BIN" scripts/pipeline/run/test_run.py
 run_check "Pipeline contribute transport, claim and sandbox" "$PYTHON_BIN" scripts/pipeline/contribute/test_contribute.py

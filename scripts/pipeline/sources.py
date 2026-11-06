@@ -1,17 +1,15 @@
 #!/usr/bin/env python3
-"""Stage 9a (part): the web-source families a record set may quote.
+"""Stage 9a: the web-source families a record set may quote.
 
-docs/PIPELINE.md section 3 (stage 9a). The rest of this stage — the sourceset, its
-append-only manifest, the ``web-html/3`` renderer and the Wikipedia client — is **TODO**;
-what is here is the part the export needs: which site a source belongs to, what its
-revisions are permalinked as, and whether its licence lets a record quote it.
+docs/PIPELINE.md section 3 (stage 9a). This is the families: which site a source belongs
+to, what its revisions are permalinked as, and whether its licence lets a record quote
+it. The rest of the stage is beside it — :mod:`sourceset` (the append-only manifest),
+:mod:`render_web` (the ``web-html/3`` renderer, written as a use of
+``site/anchor_resolve.text_layer``), :mod:`wikinet` and :mod:`fetch_sources` (the one
+client, behind an explicit ``--execute``).
 
 Metadata about a public site only: a title, a container title, an SPDX licence id and a
 permalink template. No page, no revision, no text (AGENTS.md: WikiLean is public).
-
-TODO (stage 9a): ``Sourceset`` with ``manifest-<n>.jsonl`` and its pins, the renderer as
-a use of ``site/anchor_resolve.text_layer``, and the fetcher behind an explicit
-``--execute``.
 """
 from __future__ import annotations
 
