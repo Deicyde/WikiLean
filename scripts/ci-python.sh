@@ -80,6 +80,7 @@ run_check "Local D1 backup fail-closed tests" "$PYTHON_BIN" wiki/scripts/test_ba
 run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
+run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
