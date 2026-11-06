@@ -2297,7 +2297,7 @@ describe("articles security headers and CSP", () => {
   it("every HTML answer of the plane goes through articlesHtml, so none leaves without the policy", () => {
     const src = readFileSync(new URL("../src/articles.ts", import.meta.url), "utf8");
     expect(src.match(/\bc\.html\(/g)).toHaveLength(1);
-    expect(src).toContain(`return c.html(html, status, { ...headers, "Content-Security-Policy": articlesCsp(new URL(c.req.url).origin) });`);
+    expect(src).toContain(`return c.html(html, status, { ...headers, "Content-Security-Policy": articlesCsp(new URL(c.req.url).origin, turnstile) });`);
     expect(src).not.toMatch(/new Response\([^)]*text\/html/);
   });
 
@@ -2356,7 +2356,14 @@ describe("articles security headers and CSP", () => {
     const css = readFileSync(new URL("../../site/assets/articles.css", import.meta.url), "utf8");
     const targets = [...js.matchAll(/\bfetch\(\s*(["'`])([^"'`]*)/g)].map((m) => m[2]);
     expect(targets).toEqual(["/api/articles/feedback", "/api/articles/index/"]);
-    expect(js.match(/\bfetch\(/g)).toHaveLength(targets.length);
+    // The one fetch of a variable is postTag's, and every URL it is handed is a tag route's.
+    expect(js.match(/\bfetch\(/g)).toHaveLength(targets.length + 1);
+    expect([...js.matchAll(/\bfetch\(\s*([A-Za-z_$][\w$]*)\s*,/g)].map((m) => m[1])).toEqual(["url"]);
+    expect(js).toMatch(/var postTag = function \(url, /);
+    const tagUrls = [...js.matchAll(/\bpostTag\(\s*([^,]+),/g)].map((m) => m[1].trim());
+    expect(tagUrls.length).toBeGreaterThan(0);
+    for (const arg of tagUrls) expect(["\"/api/articles/tag\"", "stateUrl"], arg).toContain(arg);
+    expect(js).toContain('var stateUrl = "/api/articles/tag/" + encodeURIComponent(key) + "/state";');
     expect(js).not.toMatch(/https?:\/\/|["'`]\/\//);
     expect(js).not.toMatch(/\beval\s*\(|\bnew\s+Function\b|\bset(Timeout|Interval)\(\s*["'`]/);
     expect(css).not.toMatch(/url\(|@import/);
@@ -2714,7 +2721,7 @@ describe("the WikiLean slug lookup (migration 0016 indexes articles.wikipedia_ti
     return { all, slugs: () => all.filter((query) => query.includes("wikipedia_title")).length };
   }
 
-  it("an article page read again within a minute costs no D1 read, with or without a WikiLean article", async () => {
+  it("an article page read again within a minute repeats no slug lookup, and reads D1 only for its overlay", async () => {
     const h = bound();
     h.db.prepare("UPDATE articles SET wikipedia_title = 'Widget lemma' WHERE slug = ?").run(SLUG);
     const sql = watchSql(h);
@@ -2723,15 +2730,20 @@ describe("the WikiLean slug lookup (migration 0016 indexes articles.wikipedia_ti
       expect(html).toContain(`<a href="/${SLUG}">Annotated article on WikiLean</a>`);
     }
     expect(sql.slugs()).toBe(1);
-    // An anonymous view reads nothing else from D1: the page read again costs none.
-    expect(sql.all).toHaveLength(1);
+    // Besides that one remembered lookup, an anonymous view reads D1 once: the article's community
+    // overlay (migration 0019), read on every view so a tag is live on save (the public-editing
+    // plan's one indexed overlay read per article view). Nothing else.
+    const overlayReads = (all: string[]) => all.filter((query) => query.includes("FROM article_tags WHERE pageid = ?")).length;
+    expect(overlayReads(sql.all)).toBe(3);
+    expect(sql.all).toHaveLength(1 + 3);
     // The Gadget has no WikiLean article: that answer is kept too.
     for (let i = 0; i < 3; i += 1) {
       const html = await (await get(h.env, `/articles/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
       expect(html).not.toContain("Annotated article on WikiLean");
     }
     expect(sql.slugs()).toBe(2);
-    expect(sql.all).toHaveLength(2);
+    expect(overlayReads(sql.all)).toBe(6);
+    expect(sql.all).toHaveLength(2 + 6);
     // The reader and the card list of one article share it.
     const reader = setup();
     bindArticles(reader.env, articlesReaderFiles());

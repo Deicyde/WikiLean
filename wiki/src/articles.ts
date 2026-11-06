@@ -1183,7 +1183,11 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
       cc0Text: CC0_AGREEMENT_TEXT,
       cc0Version: CC0_AGREEMENT_VERSION,
       turnstileSiteKey: c.env.TURNSTILE_SITE_KEY || null,
-      libraries: arrayOf(universe?.libraries).map((lib) => ({ id: lib.id, label: lib.display_name || lib.id })),
+      // A malformed universe (a null or non-object entry, an id that is not a string) offers no
+      // library rather than breaking the page.
+      libraries: arrayOf(universe?.libraries)
+        .filter((lib) => lib !== null && typeof lib === "object" && typeof lib.id === "string")
+        .map((lib) => ({ id: lib.id, label: typeof lib.display_name === "string" && lib.display_name ? lib.display_name : lib.id })),
     };
     // With the store's marked revision (--reader-html) the page is the article itself, its
     // passages highlighted, and ?view=cards the card list; without it, the card list alone. The

@@ -182,6 +182,7 @@ describe("POST /api/articles/tag (add)", () => {
   it("changing a pipeline location records what it overrides and bumps the version", async () => {
     const h = bound();
     agreed(h);
+    agreed(h, "u-patroller");
     const pipeline = P0.locations[0]; // exactMatch
     const first = await post(h.env, TAG, tagBody({
       library: pipeline.library, declaration: pipeline.declaration, relation: "broadMatch", note: "more general",
@@ -334,6 +335,7 @@ describe("POST /api/articles/tag/:pair_key/state", () => {
   it("restoring puts the link back and clears the gravestone", async () => {
     const h = bound();
     agreed(h);
+    agreed(h, "u-admin");
     const key = P0.locations[0].pair_key;
     await post(h.env, stateUrl(key), {
       pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, state: "removed", reason: "wrong",
