@@ -58,6 +58,11 @@ recommendation. Remove an item once its decision is recorded below.
    bump or the `/about` copy, which still promises human approval of AI proposals on human
    annotations) rides a new release, a fresh P1B, and a promotion. No hotfix path is
    documented. Options: define one, or accept that every Worker change rides a release.
+   **Sharper since 2026-11-06:** release R1 opens public editing, so an abuse bug is a
+   5.5-hour exposure. R1 ships the `site_settings` write brake as the substitute — one D1
+   statement closes every community write surface and every agent write — and the signed
+   plan's decision 3 accepts it as that substitute *for those surfaces*. It is not a hotfix
+   path for anything else, so this item stays open.
 9. **`annotation_events.actor_type` literal.** AI decisions record `'pipeline'`, not `'ai'`
     (flagged 2026-08-07; binding decisions above). Options: keep `'pipeline'`, or rebuild the
     table to allow `'ai'`.
@@ -144,6 +149,69 @@ Anyone can donate compute ("token donations": run the script locally on their ow
 Claude account/API key). Humans can quickly correct errors on the site. The project is
 an **experiment in human+AI database moderation** — collecting data about that
 interaction is a first-class goal. Clean UI is key.
+
+## Public editing and outside contribution (plan signed 2026-11-06)
+
+Jack signed a plan on 2026-11-06 for opening WikiLean to outside editing: *"just like
+wikipedia where anybody can edit and add/change stuff. There can be moderation of course,
+but mostly it will be free to edit."* The plan is a working document held outside this
+repository; what it **decided**, and what it schedules, is recorded here, because the next
+person to pick this up will read these documents and not that one.
+
+**The shape of it.** Community tagging happens on the **formalization reader's overlay**, not
+on the old annotation plane: the reader is where batch 1's data is, the producer's
+`pair_key` makes a community tag and a pipeline location the same row, and a D1 overlay over
+the sealed store needs no change to any existing invariant. The sealed record set is never
+written.
+
+### The releases
+
+| | What | Migrations | State |
+|---|---|---|---|
+| **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` (operator action) | in progress |
+| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` | **built; waiting on a release** |
+| **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | `0020`, `0021` | not authorised |
+| **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | `0022`, `0023` | not authorised |
+| **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | `0024` | not authorised |
+| **R5** | Intake and claims: submitted record sets verified on the server, the claims API, promotion into overlay rows | `0025`, `0026` | not authorised |
+| **R6** | The long tail, not scheduled: an anonymous suggestion queue, challenge packaging, the overlay research export, folding mature rows back into a published store | — | not scheduled |
+
+Signing authorised **R0, R1 and the decisions below**. R2–R6 are **not** authorised and
+should be re-scoped once R1 has run for a month and there is real data about who turns up
+and what they do — except for one ordering, which is signed: the Release 2 cutover of the
+old article system waits for R2.
+
+**The migration numbering rule, now that one collision has happened:** *a migration number is
+claimed by merge order, not by authorship order. A branch that finds its number taken on
+`main` renumbers itself before merging; `main` never renumbers.*
+
+### The decisions
+
+| # | Decision | Answer |
+|---|---|---|
+| 1 | Which plane carries community tagging | the formalization reader's overlay |
+| 2 | Anonymous editing | an account is required (two clicks of an OAuth button); an anonymous suggestion queue is an R6 option. IP-attributed editing is refused: migration 0013 scrubbed the last IP hashes and keeping them again would reverse that |
+| 3 | The Worker-only hotfix path (Waiting on Jack item 8) | **still open.** Signed off for now is the `site_settings` write brake as its substitute: one D1 statement closes every community write surface and every agent write in a second, where a release takes about 5.5 hours |
+| 4 | Does an edit move the published status? | yes — merged by default, with "As published" one click away. Otherwise editing has no visible effect and nobody does it twice |
+| 5 | The retirement conflict: the plan copies the old plane's furniture, and that plane is being deleted | **take editing off `/:slug` now** (it has had 23 human revisions ever, from one account), keep the routes read-only, and **cut over only once R2 has given the overlay history, diffs and revert**. Nothing is reversed, only sequenced. R1 does the first half |
+| 6 | Revert open to established editors | yes, in R2; patroller-only is a queue with no patrollers |
+| 7 | One actor vocabulary across the four the codebase uses | unify on `human`/`agent`, by R4. The overlay's own tables already do; nothing else was renamed in R1 |
+| 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
+| 9 | Contribute mode's trigger | name the Mac; the seven pipeline checks are the last unmeasured gate on the self-run path |
+| 10 | Where the declaration index and search corpus are published | a bucket behind a short-lived signed URL, issued per contributor, with a per-library licence manifest beside it. Not git, under any option |
+| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. R1 implements it; **the wording is Jack's to review** |
+| 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
+| 13 | The agent-token work (PR #126) | merge it, then extend it. R1 opens its `agent` role to the two tag routes and keeps every other refusal, the reader's confirm/report included |
+
+### What R1 left for later, deliberately
+
+No history, diff, revert, watchlist or patrol queue on the overlay (R2); no trust-tier table,
+page protection, per-article flood cap, open-dispute cap or user-scoped mass revert (R3); no
+anonymous suggestion queue (R6). R1's correction model is the Brain overlay's: live on
+create, soft delete with a gravestone, and an admin reverts by writing the row back.
+
+Two items of **Waiting on Jack** are now load-bearing on this: item 8 (the hotfix path,
+decision 3) and item 5 (announcement, decision 12).
 
 ## The central finding
 
@@ -1326,6 +1394,17 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-06: **Jack signed the public-editing plan, and release R1 is built.** The plan's
+  releases and its thirteen decisions are recorded above, in "Public editing and outside
+  contribution". R1 adds the formalization reader's second write — community tags on a D1
+  overlay over the sealed store, keyed by the producer's own `pair_key` — with migration
+  0019, the merged reader, the newcomer caps, Turnstile on a new account's first edit, the
+  CC0 checkbox and the site-wide write brake. The same release takes editing off the old
+  `/:slug` pages (decision 5, option (b)), which carries Jack's 2026-11-05 retirement
+  decision; the routes and pages stay readable, the pipeline bearer still writes, and the
+  Release 2 cutover waits for R2. Design: docs/ARTICLES.md section 10a. It is built, not
+  shipped: `wiki/src` is release-affecting, so it needs a fresh P1B bundle and Jack's
+  approval, and migrations 0017, 0018 and then 0019 must be on D1 first.
 - 2026-11-05: **Jack ratified the End-goal amendment and agreed the producer contract notes.**
   The amendment above is now the End goal, with the reader at `/articles` its first
   deliverable; docs/ARTICLES.md section 14, items 1 and 7, record both. The same evening the

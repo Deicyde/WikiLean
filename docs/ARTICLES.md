@@ -1,8 +1,16 @@
 # The formalization reader: WikiLean's articles plane
 
-**Status (2026-11-05): not deployed.** The Worker code, assets and migration 0015 are
-release-affecting and ship only in a release (section 11). Nothing is uploaded anywhere. The
-decisions Jack has made, and the two that wait on his ratification, are in section 14.
+**Status (2026-11-06): live, and from release R1 it takes community edits.** The articles
+release was promoted on 2026-11-05 and batch 1's store went up the same evening, into the
+private bucket `wikilean-articles`, under campaign `tierA-b1`; migration 0015
+(`atlas_feedback`) was applied on 2026-11-02. The pre-upload audit ran on 2026-11-02/03 and
+Jack approved the upload on its result (section 14, item 10).
+
+Release **R1 of the public-editing plan** adds the plane's second write: **community tags**
+(section 10a), with migration 0019. The Worker code, assets and migrations are
+release-affecting and ship only in a release (section 11). The decisions Jack has made are in
+section 14; the plan's own decisions 1–5, 11 and 13 are signed and are what section 10a
+implements.
 
 The articles plane answers one question per passage of a WikiProject Mathematics article:
 **is this formalized in Lean, in which library, at which commit, and how closely?** The
@@ -18,8 +26,19 @@ This plane was built as "the formalization atlas" and served `/atlas`. Jack deci
 that the "atlas" name is dropped: facebookresearch's Lean library `atlas-lean` appears in
 the plane's own library universe as "Atlas", so a page could show both names at once.
 Release 1, this one, is the rename and the move. Deleting the old article system is a later
-release: its pages at `/:slug` work unchanged, and `home.ts homePage()`, the directory that
-served `/articles` until now, is kept in the tree but no longer routed.
+release: its pages at `/:slug` are still served and still readable, and `home.ts homePage()`,
+the directory that served `/articles` until now, is kept in the tree but no longer routed.
+
+**Changed by release R1 (2026-11-06).** Those pages no longer take edits. Decision 5, option
+(b) of the signed public-editing plan carries Jack's 2026-11-05 retirement decision —
+"Editing goes; Confirm and Report replace it" — so a human save, a proposal decision and an
+agent annotation save at `/:slug` answer 403 and point at the article's `/articles` page
+where a record set covers it. The pipeline bearer still writes, and revert, patrol, flags,
+watchlists and every read are untouched. It is one row,
+`site_settings.slug_editing` (migration 0019), so an admin can put it back without a
+release. **The Release 2 cutover — deleting the routes and the assets, keeping and backing
+up the D1 tables, and redirecting the roughly 730 uncovered URLs to Wikipedia — is a
+separate act and waits for release R2**, which gives the overlay history, diffs and revert.
 
 What the rename moved, and what it did not:
 
@@ -1219,6 +1238,9 @@ is a remote write, and only the maintainer runs it, from the operator Mac (secti
 | `GET /api/articles/index/:shard` | one of the index shards `current.json` lists (used by the dashboard's live filter); takes the meta budget | `public, max-age=300` |
 | `POST /api/articles/feedback` | section 10 | none |
 | `GET /api/articles/feedback/export` | section 10 | `no-store` |
+| `POST /api/articles/tag` | section 10a: add a Lean declaration to a passage, or change the relation or note of a location | `no-store` |
+| `POST /api/articles/tag/:pair_key/state` | section 10a: a soft delete that leaves a gravestone, and its undo | `no-store` |
+| `GET /api/articles/overlay/:pageid` | section 10a: one article's community rows; takes the meta budget | `no-store` |
 | `ALL /atlas`, `/atlas/*`, `/api/atlas/*` | **301** to the same path under `/articles` or `/api/articles/`, query string kept (`index.ts atlasRedirect`; section 0). Reads nothing, so it answers whether or not `ARTICLES` is bound | none |
 
 Two paths under these prefixes are **not** this plane's and are untouched: the exact
@@ -1737,15 +1759,216 @@ over to a re-judged relation. Per §8.4, the export stays
 on the operator machine and never goes to the fleet host, and val/test seeds never feed
 the improvement loop.
 
+## 10a. Community tags: the overlay (release R1)
+
+> **New in release R1** of the signed public-editing plan (2026-11-06; decisions 1–5, 11 and
+> 13 at their recommendations). Migration **0019**. The plan's own sections are cited below as
+> §2.2, §2.5 and so on.
+
+The plane's second write. A reader who is signed in can **tag a passage** with a Lean
+declaration, **change** the relation or note of a location already there — the pipeline's or
+another editor's — and say a link is **wrong**, which removes it. Everything is live on save:
+no queue, no approval, the same promise `brain_edges` already makes for the Brain.
+
+### Why it is an overlay and not a store write
+
+A set's seal is a statement about bytes, the store is content-addressed, and
+`/api/articles/records/:pageid` is checked against `records_sha256` before it is served. So a
+community edit **cannot** be written into the store. It is a D1 overlay over an immutable
+base, the pattern this codebase already runs for the Brain: live on create, attributed,
+human/agent labelled, soft delete leaving a gravestone. The sealed bytes and the cacheable
+view model are untouched by every route below.
+
+### The key that makes it work
+
+A `/2` store carries `passage_key` on every passage and `pair_key` on every location:
+
+```
+passage_key = sha256("<pageid>\n<span_sha256>")
+pair_key    = sha256("<passage_key>\n<repository>\n<declaration>")
+```
+
+Both are revision-free and commit-free, so a tag survives a store rebuild, a new universe and
+a re-cut — and a community tag of the declaration the pipeline already located on that
+passage **is the same row** as the pipeline's location. Agreement, correction and removal all
+share one key; there is no matching problem and no fuzzy re-pairing. Note the key names the
+*repository*, not the library id (two libraries of one repository share a repository), so the
+row carries its library id as a column beside the key. A `/1` store carries neither key and
+cannot take an overlay: the tag routes answer **422** on one, and the page offers no form.
+
+### `article_tags` (migration 0019)
+
+One row per `pair_key`, last edit wins, under optimistic concurrency on the row's own
+`version` (1 on create, +1 per edit; a write whose `base_version` does not match answers 409
+`{error: "stale", version, tag}`). `state` is `live` or `removed`; `origin` is `community`;
+`base_relation` holds the pipeline relation a change overrides. `pageid`, `revision`,
+`campaign`, `record_set` and `universe_sha256` are copied from the store at write time, never
+from the client, and the **repository is derived from the article's own universe**, so a tag
+always names what its editor saw. Removing leaves the row with `removed_by`, `removed_at` and
+a required `removed_reason`.
+
+The same migration creates `site_settings` (the brake and the annotation plane's editing
+switch) and `user_agreements` (the CC0 agreement, below). `users` is not altered by any of
+it.
+
+### The routes (§2.2)
+
+```
+POST /api/articles/tag                    {pageid, campaign, passage_key, library,
+                                           declaration, relation, note?, base_version?,
+                                           cc0?, turnstile_token?, model?, run_id?}
+POST /api/articles/tag/:pair_key/state    {pageid, campaign, state, reason?, base_version?}
+GET  /api/articles/overlay/:pageid        the article's community rows            (no-store)
+```
+
+- **Account required** (decision 2). Anonymous readers keep the voice they have: confirm,
+  report and the anonymous flag route. The pipeline bearer is refused — it writes the sealed
+  store, not the overlay; agents are allowed on these two routes and nowhere else on the
+  plane (below).
+- `checkOrigin` on every write, and `added_by` comes from `getUser`, never from the body.
+- **Validation, all of it local:** `library` must be one of the article's own universe;
+  `declaration` at most 240 characters against Lean's name grammar, with **no existence
+  check** — the site's autocomplete index is Mathlib-only and a contributor may be tagging
+  TauCeti or Lean core, so a declaration absent from it is marked "not found in the index",
+  never refused; `relation` is the locate vocabulary verbatim (`exactMatch`, `closeMatch`,
+  `broadMatch`, `narrowMatch`, `hasPart`, `relatedMatch`); `note` at most 500 characters;
+  `campaign` must equal the store's, else **409 stale**; `passage_key` must be on the current
+  store article, else 404. Body cap `MAX_JSON_BODY_BYTES.articlesTag`, 4 KiB, through
+  `readJsonCapped`.
+- **No Lean source text is ever stored.** A tag holds the declaration's *name* and its
+  location, never a pasted signature: the reader renders a signature only from the universe's
+  own library data, under that library's licence. The note's 500-character cap and the form's
+  own line say so.
+
+### How the reader shows it (§2.8, decision 4)
+
+The rule: **the sealed set is shown as the sealed set, always; the overlay is shown as the
+overlay, always; and the default view is both, merged, labelled.**
+
+| Case | What the reader shows |
+|---|---|
+| Pipeline location, untouched | as before, with its Confirm/Report |
+| Pipeline location an editor agreed with | the pipeline card, with a line naming who confirmed it — not a second card |
+| Pipeline location changed | the community value, with the pipeline's beneath it: "The pipeline said *more general*; changed by @alice on 7 Nov" |
+| Pipeline location removed | folded under "Removed by an editor", struck, with the reason and the remover; one click restores it |
+| A community tag at a new pair | a card with a **Community** badge and "Added by" |
+| An agent's tag | the same card with the agent's name and "owned by" the person who minted it, both linked |
+
+- The passage's **derived status is recomputed over the merged set**, by the same rules the
+  store uses, so a community `exactMatch` on a passage the pipeline left `not_formalized`
+  moves the article's headline. **"As published"** (`?overlay=off`) shows the sealed statuses
+  and the sealed cards; the merged view is the default, because otherwise an edit has no
+  visible effect and nobody makes a second one.
+- A community removal of one part of a survived coverage claim withdraws the claim.
+- **Caching, and the trap it avoids.** `/api/articles/article/:pageid` stays the sealed view
+  model verbatim, `public, max-age=300`, cacheable and hash-checkable: the overlay is **not**
+  merged into it. The merge happens server-side, per request, on pages that send no
+  `Cache-Control`, so **no `render:vN` bump is needed for any of this**.
+- Jack's display rule holds on a community card exactly as on a pipeline one: the Lean code
+  leads, provenance sits behind a closed Details fold, and no voting data is shown. A
+  community card carries no Confirm/Report: those are a verdict on a *sealed* location, and
+  their `provenance` CHECK keeps that column honest.
+
+### Abuse controls (§2.5, §2.6, decision 3)
+
+| Control | Where |
+|---|---|
+| Account required | every write route |
+| Burst, established editor | `TAG_LIMITER`, 60/min, key `tag:<user.id>` |
+| Burst, newcomer | `TAG_NEW_LIMITER`, 6/min, key `tagnew:<user.id>` |
+| Burst, an agent | PR #126's one 30/min key per **owner** (`EDIT_LIMITER`, `agents-of:<owner>`), shared with its saves and Brain writes |
+| Daily volume | computed at write time: `new` 50/day, `autoconfirmed` 500/day |
+| Bot-shaped signup | Turnstile on a new account's **first** edit only, never after |
+| Site-wide write brake | `site_settings.site_write_mode`, read per write |
+
+A **newcomer** in R1 is an account under four days old **or** with fewer than ten overlay
+edits — §2.6's rule minus its revert-ratio term, which needs reverts, which arrive in R2.
+There is no `user_trust` table yet (migration 0022, release R3); the tier is derived from the
+account and its rows in one query. An agent takes its **owner's** tier and cap and never
+exceeds it.
+
+**The brake is not optional.** `wiki/src` ships only in a new release — a fresh P1B bundle
+and Jack's approval, about 5.5 hours — and there is no Worker-only hotfix path (the ROADMAP's
+"Waiting on Jack" item 8). Opening public editing without a lever would make an abuse bug a
+5.5-hour exposure. The brake is the lever, and it is one statement:
+
+```sql
+UPDATE site_settings SET value = 'locked', updated_at = <now in ms> WHERE key = 'site_write_mode';
+-- and 'open' to reopen
+```
+
+It covers both tag routes, the feedback route and **every agent write on the site**, Brain
+writes included. It is read per write, `open` allows, anything else refuses with 503 — fail
+closed, because an unknown value must not be a hole. **This brake is the documented
+substitute for a Worker-only hotfix path** until Jack defines one (decision 3); it does not
+replace one for a bug outside these surfaces.
+
+Deliberately **not** in R1 (they are R2 and R3): history pages, diffs, revert, watchlists,
+page protection, trust tiers, the patrol queue, the per-article flood cap and the
+open-dispute cap, and the user-scoped mass revert. R1's correction model is the Brain
+overlay's: live on create, soft delete with a gravestone, and an admin reverts by writing the
+row back.
+
+### The CC0 agreement at a first edit (decision 11)
+
+The mapping is CC0 and a waiver needs consent, so the first time a person writes to the
+overlay they are shown a checkbox and the write is refused (403 `{cc0_required: true,
+cc0_version, cc0_text}`) until they tick it. The acceptance is one row in `user_agreements`
+with its **timestamp** and the wording's version id, and it is never asked for again. The
+wording is in `wiki/src/articles-overlay.ts` (`CC0_AGREEMENT_TEXT`); changing it in a way
+that needs re-acceptance is a version bump.
+
+**An agent cannot agree to a licence; its owner can, and must have.** An agent's write is
+refused until the person who minted it has accepted, which is the second reason every agent
+names a human.
+
+Turnstile rides with that same first edit. The **site key** is public configuration
+(`wrangler.jsonc` vars, `TURNSTILE_SITE_KEY`); the **secret** is a Worker secret,
+`TURNSTILE_SECRET`, listed by name in `docs/SECRETS.md` and never written down anywhere. With
+no site key no widget is rendered; with no secret the check is skipped and logged, so a
+deployment the maintainer has not yet given keys still takes edits under the other controls.
+A page that renders the widget — and only such a page — widens `articlesCsp` by
+`https://challenges.cloudflare.com` in `script-src`, `frame-src` and `connect-src`.
+
+### Agents on the overlay (decision 13, §2.7)
+
+PR #126's identity model is taken as given: an agent is its own `users` row, `role='agent'`,
+named "<name> (agent)", with an `owner_id`; only the token's SHA-256 is stored; a person has
+at most 5 live agents and 25 minted ever. R1 extends it to **the two tag routes and nothing
+else of this plane**:
+
+- `POST /api/articles/feedback` stays refused. Confirm and report are a human reader's
+  verdict and a `provenance` CHECK keeps the column honest; an agent that wants to say the
+  same thing writes an overlay row, where it is labelled and revertable.
+- An agent's rows are `actor_type = 'agent'`, `via = 'api'`, and may carry its declared
+  `model` and `run_id` for the research export. `base_version` is **required** for a bearer
+  write.
+- **An agent may not change or remove a tag a person wrote** (403). §2.7's design for that
+  case — relabel it and keep the person's version in history — needs history, which is R2's.
+  Until then the conservative answer is a refusal. A person may correct an agent's tag
+  freely.
+- The authorization matrix (`wiki/test/authz.test.ts`) carries the `agent` column for all
+  three routes; it is the artefact that makes this safe to change.
+
+### What is not here
+
+No history, diff, revert, watchlist, patrol queue or research export for the overlay — all
+R2 and R6. No anonymous suggestion queue (R6). No page protection or trust-tier table (R3).
+The actor vocabulary is **not** unified across the four spellings the codebase uses
+(`human`/`ai`, `human`/`pipeline`, `kind='agent'`, and the overlay's `human`/`agent`): that is
+decision 7, needed by R4, and it is not in R1's signed scope. The overlay's own tables use
+`human`/`agent`, which is where decision 7 recommends the rest should land.
+
 ## 11. Release coupling
 
 | Path | Class | Ships |
 |---|---|---|
 | `docs/ARTICLES.md`, `scripts/articles/**` (builder, fixtures, test), `wiki/test/**`, `wiki/e2e/**` | release-neutral | on merge |
-| `wiki/src/articles.ts`, `articles-render.ts`, `articles-math.ts`, `libraries.ts`, `security.ts` (`articlesCsp`), `env.ts`, `index.ts`, `pages.ts`, `wiki/wrangler.jsonc` | release-affecting | only in a new release (fresh P1B, Jack's approval) |
+| `wiki/src/articles.ts`, `articles-render.ts`, `articles-math.ts`, `articles-overlay.ts`, `site-settings.ts`, `libraries.ts`, `security.ts` (`articlesCsp`), `env.ts`, `index.ts`, `pages.ts`, `wiki/wrangler.jsonc` | release-affecting | only in a new release (fresh P1B, Jack's approval) |
 | `site/assets/articles.{css,js}`, `site/assets/articles-reader.{css,js}`, `wiki/scripts/build-public.ts`, `wiki/public-asset-source-attestation.json` | release-affecting | with that release's public baseline |
 | `wiki/migrations/0015_atlas_feedback.sql` | operator action | applied to D1 after a backup; fail-soft until then; stops on the superseded table (section 10) |
 | `wiki/migrations/0016_articles_wikipedia_title.sql` | release-affecting file, optional operator action | ships with the release like any file under `wiki/migrations`; nothing requires it on D1, so the operator may apply it at any time after a backup, before, with or after that release (section 7) |
+| `wiki/migrations/0019_article_tags.sql` | operator action, **before** the release | the promoter refuses any Worker built from a commit containing it until `article_tags` is on D1 (`D1_REQUIRED_COLUMNS`). PR #126's `0017` and `0018` come first, for the same reason |
 
 - `articles.css`, `articles.js`, `articles-reader.css` and `articles-reader.js` are copied by
   build-public but are not in the required baseline lists, so baselines frozen before the
