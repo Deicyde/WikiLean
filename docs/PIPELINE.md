@@ -474,12 +474,12 @@ batch 1 today, and the run cannot be proved at all without paying for one.
 
 | # | Stage | Module | Built | Proof on batch 1 |
 |---|---|---|---|---|
-| 1 | Literature Links, pinned | `links.py` | — | all 7,583 records validate (R1) |
-| 2 | the keys | `keys.py` | — | all keys recomputed (R2) |
-| 3 | the status rules | `status.py` | — | all 4,285 passages + 3 producer tables + 3 shared tables (R3) |
-| 4 | the record set, read back | `readback.py` | — | both sets read, seals checked (R4) |
-| 5 | the records | `records.py` | — | all 7,583 records rebuilt byte for byte (R5) |
-| 6 | the sealed set | `export_records.py` | — | both sets re-exported byte for byte, both SEAL shas (R6) |
+| 1 | Literature Links, pinned | `links.py` | yes | all 7,583 records validate (R1) |
+| 2 | the keys | `keys.py` | yes | all keys recomputed (R2) |
+| 3 | the status rules | `status.py` | yes | all 4,285 passages + 3 producer tables + 3 shared tables (R3) |
+| 4 | the record set, read back | `readback.py` | yes | both sets read, seals checked (R4) |
+| 5 | the records | `records.py` | yes | all 7,583 records rebuilt byte for byte (R5) |
+| 6 | the sealed set | `export_records.py` | yes | both sets re-exported byte for byte, both SEAL shas (R6) |
 | 7 | the gate | `gate/` | TODO | not provable here (no worker documents) |
 | 8 | the tally, carry-over | `tally.py`, `carry.py` | TODO | not provable here (no harvest) |
 | 9 | sources, cut, locate, challenge | `sources.py`, … | TODO | fixtures only; a run costs money |

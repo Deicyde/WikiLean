@@ -24,8 +24,12 @@ so the pipeline changes without a release.
 | `keys.py` | 2 | `passage_key`, `pair_key`, `bundle_key`, canonical JSON |
 | `vocab.py` | — | the locate vocabulary, pinned to the store builder's |
 | `status.py` | 3 | the derived status, under status rules 1, 2 and 3 |
+| `readback.py` | 4 | a sealed set read back into outcome rows; the seal check |
+| `records.py` | 5 | the records of one passage, and the cut the layer gives it |
+| `sources.py` | 9a | the web-source families (the rest of the stage is TODO) |
+| `export_records.py` | 6 | the sealed set, written |
 
-Stages 4 to 11 are listed in docs/PIPELINE.md section 4 with what is built.
+Stages 7 to 11 are listed in docs/PIPELINE.md section 4 with what is built.
 
 ## Running
 
@@ -40,6 +44,12 @@ Every `test_*.py` here is named by a `run_check` line in `scripts/ci-python.sh`
 (`scripts/check_ci_python_tests.py` fails when one is not).
 
 ## Fixtures
+
+`fixtures/recordset/` is the pipeline's own synthetic sealed set, written by
+`fixtures/make_fixture.py` and rebuilt by the tests, which refuse a difference. Two
+invented articles carry every outcome and shape the format has.
+`scripts/articles/build_store.py` builds it, so what this producer writes is what
+WikiLean's consumer accepts.
 
 Synthetic only. WikiLean is public: no article text, no host names, no operator paths,
 no tokens. The status rules are pinned against the producer's own truth tables and the
