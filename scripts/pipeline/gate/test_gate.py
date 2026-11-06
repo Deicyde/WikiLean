@@ -600,6 +600,26 @@ class EachRuleFiresTests(unittest.TestCase):
             self.assertEqual(code, gate.EXIT_REJECTED, text)
             self.assertIn("rule 10:", text)
 
+    def test_rule10_fires_on_a_span_that_ends_inside_a_formula(self):
+        with tempfile.TemporaryDirectory() as other:
+            fixture = Fixture(Path(other), mode=vocab.MODE_INVENTORY)
+            doc = good_inventory_document()
+            middle = (FORMULAS[0]["span"][0] + FORMULAS[0]["span"][1]) // 2
+            doc["passages"][1]["span"] = [doc["passages"][1]["span"][0], middle]
+            doc["passages"][1]["until"] = LAYER[middle - 2:middle]
+            fixture.write(doc)
+            code, text = fixture.run()
+            self.assertEqual(code, gate.EXIT_REJECTED, text)
+            self.assertIn("the span ends inside a formula", text)
+            # and a span that ends WHERE a formula ends is not inside it
+            doc["passages"][1]["span"] = [doc["passages"][1]["span"][0],
+                                          FORMULAS[0]["span"][1]]
+            doc["passages"][1]["until"] = LAYER[FORMULAS[0]["span"][1] - 2:
+                                                FORMULAS[0]["span"][1]]
+            fixture.write(doc)
+            _code, text = fixture.run()
+            self.assertNotIn("ends inside a formula", text)
+
     def test_rule10_fires_on_a_compound_statement_with_no_shape(self):
         with tempfile.TemporaryDirectory() as other:
             fixture = Fixture(Path(other), mode=vocab.MODE_INVENTORY)

@@ -1192,7 +1192,10 @@ def rule10_cut(doc: dict, where: str, cfg: GateConfig, view: SourceView, placed:
                 problems.add(10, where, f"{item} [{a}, {b}] and {other} [{c}, {d}] share text; "
                                         "the spans of one cut are disjoint, one text one "
                                         "passage")
-        if view.blocks.formula_at(b - 1) is not None and view.blocks.formula_at(b) is not None:
+        # strictly inside one formula, not merely between two adjacent ones: a span that
+        # ends where a formula ends is a span that ends after it
+        inside = view.blocks.formula_at(b - 1)
+        if inside is not None and inside == view.blocks.formula_at(b):
             problems.add(10, where, f"{item}: the span ends inside a formula")
         bound = view.blocks.extent(a, compound=True, continued=True, loose=True,
                                    wide=cfg.statement_cut_rule >= 3)
