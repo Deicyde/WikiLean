@@ -1233,7 +1233,7 @@ const COMMUNITY_BADGE =
   `<span class="articles-community" title="Added by a WikiLean editor, not by the locate pipeline. ` +
   `It is live, attributed and one edit away from being corrected.">Community</span>`;
 const AGENT_BADGE =
-  `<span class="articles-community is-agent" title="Written by an AI agent under its owner's account.">Agent</span>`;
+  `<span class="articles-community is-agent" title="Written by an AI agent under its owner&#x27;s account.">Agent</span>`;
 
 // The line above a card the community touched: the badge, who, and — for a
 // change — what the pipeline said before it.
@@ -1304,13 +1304,13 @@ function tagForm(passage: ArticlesPassage, ctx: CardContext): string {
 <label for="taglib-${attr(hex)}">Library</label>
 <select id="taglib-${attr(hex)}" name="library">${libs}</select>
 <label for="tagdecl-${attr(hex)}">Declaration</label>
-<input id="tagdecl-${attr(hex)}" name="declaration" type="text" maxlength="${MAX_DECL_CHARS}" autocomplete="off" spellcheck="false" placeholder="Mathlib.Algebra.Group.Defs → AddCommGroup">
-<p class="articles-muted articles-tag-decl-note">The declaration's full Lean name. WikiLean does not check that it exists before saving: the index it could check against covers Mathlib only, and you may be tagging another library.</p>
+<input id="tagdecl-${attr(hex)}" name="declaration" type="text" maxlength="${MAX_DECL_CHARS}" autocomplete="off" spellcheck="false" placeholder="e.g. AddCommGroup">
+<p class="articles-muted articles-tag-decl-note">The declaration&#x27;s full Lean name. WikiLean does not check that it exists before saving: the index it could check against covers Mathlib only, and you may be tagging another library.</p>
 <label for="tagrel-${attr(hex)}">How it matches</label>
 <select id="tagrel-${attr(hex)}" name="relation">${rels}</select>
 <label for="tagnote-${attr(hex)}">Note (optional)</label>
 <textarea id="tagnote-${attr(hex)}" name="note" maxlength="${MAX_TAG_NOTE}" rows="2"></textarea>
-<p class="articles-muted">Please do not paste Lean source into the note: it keeps its library's licence, and this field does not. At most ${MAX_TAG_NOTE} characters.</p>
+<p class="articles-muted">Please do not paste Lean source into the note: it keeps its library&#x27;s licence, and this field does not. At most ${MAX_TAG_NOTE} characters.</p>
 <div class="articles-tag-buttons"><button type="submit" class="articles-tag-btn is-primary">Save tag</button><button type="button" class="articles-tag-btn articles-tag-cancel">Cancel</button></div>
 <p class="articles-tag-msg" role="status"></p>
 </fieldset>

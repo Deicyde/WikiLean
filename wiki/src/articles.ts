@@ -1389,9 +1389,12 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     if (typeof campaign !== "string" || !CAMPAIGN_RE.test(campaign)) return c.json({ ok: false, error: "bad campaign" }, 400);
     const note = optionalText(c, body.note, MAX_TAG_NOTE_CHARS, "note");
     if (note instanceof Response) return note;
-    const baseVersion = body.base_version;
-    if (baseVersion !== undefined && (typeof baseVersion !== "number" || !Number.isSafeInteger(baseVersion) || baseVersion < 0)) {
-      return c.json({ ok: false, error: "bad base_version" }, 400);
+    let baseVersion: number | undefined;
+    if (body.base_version !== undefined && body.base_version !== null) {
+      if (typeof body.base_version !== "number" || !Number.isSafeInteger(body.base_version) || body.base_version < 0) {
+        return c.json({ ok: false, error: "bad base_version" }, 400);
+      }
+      baseVersion = body.base_version;
     }
     // A bearer client must say what it read, as every bearer write here does.
     if (writer.actorType === "agent" && baseVersion === undefined) {
@@ -1526,9 +1529,12 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     const reason = optionalText(c, body.reason, MAX_REMOVE_REASON_CHARS, "reason");
     if (reason instanceof Response) return reason;
     if (state === "removed" && !reason) return c.json({ ok: false, error: "a reason is required to remove a link" }, 400);
-    const baseVersion = body.base_version;
-    if (baseVersion !== undefined && (typeof baseVersion !== "number" || !Number.isSafeInteger(baseVersion) || baseVersion < 0)) {
-      return c.json({ ok: false, error: "bad base_version" }, 400);
+    let baseVersion: number | undefined;
+    if (body.base_version !== undefined && body.base_version !== null) {
+      if (typeof body.base_version !== "number" || !Number.isSafeInteger(body.base_version) || body.base_version < 0) {
+        return c.json({ ok: false, error: "bad base_version" }, 400);
+      }
+      baseVersion = body.base_version;
     }
     if (writer.actorType === "agent" && baseVersion === undefined) {
       return c.json({ ok: false, error: "base_version required" }, 400);
