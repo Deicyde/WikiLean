@@ -241,9 +241,10 @@ def place_isolated(cells: dict[str, dict], isolated: list[str],
 
 
 def _bubble_library(cid: str) -> str | None:
-    """The library of a lone decl cell that goes into a module bubble, else None.
+    """The library of a decl cell whose library goes into module bubbles, else None.
 
-    A lone decl's cell id is `cell:` + its decl id `decl:<Lib>:<name>`.
+    A decl cell's id is `cell:` + its decl id `decl:<Lib>:<name>`. layout_cells also
+    requires the cell to be lone (no organ besides its decl).
     """
     parts = cid.split(":", 3)
     if len(parts) == 4 and parts[:2] == ["cell", "decl"] and parts[2] not in SIMULATED_DECL_LIBS:
@@ -396,7 +397,9 @@ def layout_cells(cells: dict[str, dict], synapses: list[dict], *,
                  iterations: int = 200) -> None:
     """Compute `xy` for every cell (mutates `cells`)."""
     ids = sorted(cells)
-    bubbled = [c for c in ids if _bubble_library(c) is not None]
+    # only a lone decl: a decl cell that also holds a statement or concept stays simulated
+    bubbled = [c for c in ids
+               if _bubble_library(c) is not None and len(cells[c].get("organs") or ()) <= 1]
     if not bubbled:
         rounded = _layout_core(cells, ids, synapses, iterations)
     else:

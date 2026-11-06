@@ -347,6 +347,11 @@ def check_bubbles() -> None:
         for i in range(3):
             add("Fake", f"loose{i}", "path:Fake", None, [])
         add("Toric", "Toric.one", "path:Toric", ["path:Toric"], [45])
+        # a Fake decl cell that also holds a statement is not lone: it stays simulated
+        cells["cell:decl:Fake:Merged"] = {
+            "id": "cell:decl:Fake:Merged", "supercells": ["path:Fake/Alg"],
+            "organs": [{"id": "decl:Fake:Merged", "kind": "decl"}, {"id": "lit:merged", "kind": "statement"}]}
+        synapses.append({"src": "cell:decl:Fake:Merged", "dst": "cell:Q7", "weight": 2})
         # a bond between two members anchors nothing
         synapses.append({"src": "cell:decl:Fake:Alg.Deep.d0", "dst": "cell:decl:Fake:Top.d0",
                          "weight": 5})
@@ -366,6 +371,11 @@ def check_bubbles() -> None:
     moved = [c for c in core if json.dumps(full[c]) != json.dumps(alone_cells[c]["xy"])]
     check("B1 the core's positions are byte-identical to laying out the core alone",
           not moved, f"{len(moved)} core cells differ, e.g. {moved[:3]}")
+
+    check("B2 a decl cell holding more than its decl stays in the simulation",
+          "cell:decl:Fake:Merged" in alone_cells
+          and json.dumps(full["cell:decl:Fake:Merged"]) == json.dumps(alone_cells["cell:decl:Fake:Merged"]["xy"]),
+          "the merged Fake decl was placed in a bubble")
 
     sim = [f"cell:decl:{lib}:Core.decl" for lib in sorted(layout.SIMULATED_DECL_LIBS)]
     sim_bubbled = [c for c in sim + ["cell:decl:Mathlib:Lonely", "cell:Q1"]
