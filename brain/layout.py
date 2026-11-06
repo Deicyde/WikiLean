@@ -37,7 +37,8 @@ Each module (a member's deepest supercell, or `path:<Lib>` if it has none) becom
 a disc of radius SPAN/2 * sqrt(members), anchored at the synapse-weighted mean of
 the core cells its members bond with; a module with no such bond borrows its nearest
 anchored ancestor's anchor, else the mean anchor. Discs start just outside the core
-(the 98th percentile of core radii) in their anchor's direction, relax for
+(its farthest cell, so the band place_isolated() puts outside it is covered too) in
+their anchor's direction, relax for
 BUBBLE_ROUNDS rounds (overlap push, pull toward the anchor, pushed back out of the
 core), and then an exact pass moves each disc, largest first, outward along its ray
 from the origin until it clears every disc placed before it. So no two discs
@@ -369,7 +370,7 @@ def place_bubbles(cells: dict[str, dict], bubbled: list[str], synapses: list[dic
     radius = SPAN / 2.0 * np.sqrt(np.array([len(groups[m]) for m in modules], dtype=np.float64))
     pad = radius * BUBBLE_GAP
     core = np.array([pos_by_id[c] for c in sorted(pos_by_id)], dtype=np.float64).reshape(-1, 2)
-    core_radius = float(np.percentile(np.hypot(core[:, 0], core[:, 1]), 98)) if len(core) else 0.0
+    core_radius = float(np.hypot(core[:, 0], core[:, 1]).max()) if len(core) else 0.0
     floor = core_radius + pad
 
     # Start just outside the core in the anchor's direction, offset by the disc's own

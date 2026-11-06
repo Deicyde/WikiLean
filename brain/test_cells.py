@@ -378,7 +378,7 @@ def check_bubbles() -> None:
           "a Fake or Toric decl, or a name with a colon, stayed in the core")
 
     # B3: the discs layout_cells drew (place_bubbles is deterministic in the core it gets)
-    core_r = float(np.percentile([math.hypot(*full[c]) for c in core], 98))
+    core_r = max(math.hypot(*full[c]) for c in core)
     discs = layout.place_bubbles(fixture()[0], members, synapses,
                                  {c: tuple(full[c]) for c in core})
     check("B3 one bubble per module: the deepest supercell, else the library root",
@@ -394,6 +394,9 @@ def check_bubbles() -> None:
     entered = [m for m in names if math.hypot(*discs[m][:2]) <= core_r + discs[m][2]]
     check("B3 no bubble enters the core radius", not entered,
           f"core radius {core_r:.0f}; inside: {entered}")
+    covered = [(c, m) for c in core for m in names if math.dist(full[c], discs[m][:2]) <= discs[m][2]]
+    check("B3 no bubble covers a core cell, including the isolated band", not covered,
+          f"{len(covered)} covered, e.g. {covered[:3]}")
 
     stray = [c for c in members
              if math.dist(full[c], discs[module[c]][:2]) > discs[module[c]][2] + 0.1]
