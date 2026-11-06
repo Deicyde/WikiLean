@@ -194,25 +194,37 @@ export interface ArticleOverlay {
 
 export const EMPTY_OVERLAY: ArticleOverlay = { tags: [], authors: new Map() };
 
+// The store's status rule (a /2 seal names 2 or 3; a /1 store names none and
+// reads as 1), the number location_status and the merge are computed under.
+// Mirrors articles-render.ts articleParts.
+export function statusRuleOf(article: Pick<ArticlesArticle, "seal">): number {
+  const seal = article.seal && typeof article.seal === "object" ? article.seal : null;
+  return seal && Number.isSafeInteger(seal.status_rule) ? (seal.status_rule as number) : 1;
+}
+
 // At most this many overlay rows are read for one article. Batch 1's largest
 // article has about 90 passages; a cap keeps one article's page bounded whatever
 // the overlay grows to, and the page says when it is reached.
 export const MAX_OVERLAY_ROWS = 500;
 
-// Every community row on one article, newest first, with its authors. Empty
-// (never an error) when migration 0019 is not applied, so an unapplied migration
-// shows the sealed article rather than a 500.
-export async function loadOverlay(env: Pick<Env, "DB">, pageid: number): Promise<ArticleOverlay> {
-  let tags: ArticleTag[];
+// Every community row on one article, newest first. Empty (never an error) when
+// migration 0019 is not applied, so an unapplied migration shows the sealed
+// article rather than a 500.
+export async function loadOverlayTags(env: Pick<Env, "DB">, pageid: number): Promise<ArticleTag[]> {
   try {
     const { results } = await env.DB.prepare(
       `SELECT ${TAG_COLUMNS} FROM article_tags WHERE pageid = ? ORDER BY created_at DESC, pair_key LIMIT ?`,
     ).bind(pageid, MAX_OVERLAY_ROWS).all<ArticleTag>();
-    tags = results;
+    return results;
   } catch (error) {
     if (!overlayTableMissing(error)) throw error;
-    return EMPTY_OVERLAY;
+    return [];
   }
+}
+
+// The same rows with the people and agents that wrote them, for the cards.
+export async function loadOverlay(env: Pick<Env, "DB">, pageid: number): Promise<ArticleOverlay> {
+  const tags = await loadOverlayTags(env, pageid);
   if (tags.length === 0) return EMPTY_OVERLAY;
   return { tags, authors: await loadAuthors(env, tags.map((t) => t.added_by)) };
 }
@@ -481,12 +493,14 @@ export async function tagAllowance(
   now: number,
 ): Promise<TagAllowance> {
   const since = now - DAY_MS;
+  // Plain ordered placeholders, as every other query in wiki/src uses.
   const { results } = await env.DB.prepare(
-    `SELECT (SELECT created_at FROM users WHERE id = ?1) AS created_at,
-            (SELECT COUNT(*) FROM article_tags WHERE added_by = ?1) AS edits,
+    `SELECT (SELECT created_at FROM users WHERE id = ?) AS created_at,
+            (SELECT COUNT(*) FROM article_tags WHERE added_by = ?) AS edits,
             (SELECT COUNT(*) FROM article_tags
-              WHERE (added_by = ?1 AND updated_at >= ?2) OR (removed_by = ?1 AND removed_at >= ?2)) AS today`,
-  ).bind(accountId, since).all<{ created_at: number | null; edits: number; today: number }>();
+              WHERE (added_by = ? AND updated_at >= ?) OR (removed_by = ? AND removed_at >= ?)) AS today`,
+  ).bind(accountId, accountId, accountId, since, accountId, since)
+    .all<{ created_at: number | null; edits: number; today: number }>();
   const row = results[0] ?? { created_at: null, edits: 0, today: 0 };
   // better-auth stores users.created_at in seconds (timestamp mode).
   const createdMs = typeof row.created_at === "number" ? row.created_at * 1000 : now;
@@ -568,10 +582,13 @@ export type TurnstileResult = "ok" | "skipped" | "failed";
 // Without the secret the check is SKIPPED and logged, so a deployment that has
 // not been given the keys still takes edits rather than refusing everyone — the
 // other controls (account required, the burst and daily caps, the brake) stand.
+//
+// The optional `remoteip` field is deliberately NOT sent: WikiLean does not keep
+// IP addresses (migration 0013 scrubbed the last of them) and this check works
+// without one.
 export async function verifyTurnstile(
   env: Pick<Env, "TURNSTILE_SECRET">,
   token: string | null,
-  remoteIp: string | undefined,
 ): Promise<TurnstileResult> {
   const secret = env.TURNSTILE_SECRET;
   if (!secret) {
@@ -580,7 +597,6 @@ export async function verifyTurnstile(
   }
   if (!token) return "failed";
   const form = new URLSearchParams({ secret, response: token });
-  if (remoteIp) form.set("remoteip", remoteIp);
   try {
     const res = await fetch(TURNSTILE_VERIFY_URL, {
       method: "POST",

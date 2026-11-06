@@ -43,10 +43,11 @@ import type {
 import {
   libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl, type LibraryEntry, type LibraryInfo, type UniverseLibrary,
 } from "./libraries.js";
+import type { MergedArticle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=10";
-export const ARTICLES_JS = "/assets/articles.js?v=5";
+export const ARTICLES_CSS = "/assets/articles.css?v=11";
+export const ARTICLES_JS = "/assets/articles.js?v=6";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
 export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=5";
@@ -805,6 +806,11 @@ function shell(opts: {
   // header still, but beside the sticky panel rather than above it, so the panel keeps the
   // viewport's height).
   noticeInMain?: boolean;
+  // The page renders the Turnstile widget for a new account's first edit, so it
+  // loads Cloudflare's script — the ONLY cross-origin script any page of this
+  // plane loads, and only on this one page state. articlesCsp(origin, true)
+  // widens script-src, frame-src and connect-src by exactly that origin.
+  turnstile?: boolean;
 }): string {
   // aria-current="page" only on /articles itself: an article or universe page is
   // inside the plane but is not the page the nav link opens.
@@ -845,7 +851,7 @@ ${opts.footer ?? `<footer class="articles-foot">
   ${MAPPING_LICENCE}
 </footer>`}
 ${SEARCHBOX_SCRIPT}
-${opts.script === false ? "" : `<script src="${ARTICLES_JS}"></script>\n`}${opts.readerJs ? `<script src="${ARTICLES_READER_JS}"></script>\n` : ""}</body>
+${opts.turnstile ? `<script src="${TURNSTILE_SCRIPT}" async defer></script>\n` : ""}${opts.script === false ? "" : `<script src="${ARTICLES_JS}"></script>\n`}${opts.readerJs ? `<script src="${ARTICLES_READER_JS}"></script>\n` : ""}</body>
 </html>
 `;
 }
@@ -974,12 +980,22 @@ function coverageBlock(passage: ArticlesPassage, parts: ArticlesLocation[], libs
 // it (a characterisation) leaves it partial; and under status rules 1 and 2 a more
 // general definition leaves a theorem partial (the section 2.6 table,
 // build_store.location_status).
-function statusSentence(passage: ArticlesPassage, status: SummaryStatus, libs: Map<string, LibraryView>, statusRule = 1): string {
+function statusSentence(
+  passage: ArticlesPassage,
+  status: SummaryStatus,
+  libs: Map<string, LibraryView>,
+  statusRule = 1,
+  // The location that gives the status, when the caller already knows it (the
+  // merged view picks it from the shown cards, which may be a community one).
+  chosen?: ArticlesLocation | null,
+  community = false,
+): string {
   const meta = STATUS[status];
-  const best = basisLocation(passage, status, statusRule);
+  const best = chosen !== undefined ? chosen : basisLocation(passage, status, statusRule);
   if (!best) return `${meta.label}.`;
   const name = libs.get(best.library)?.info.name ?? best.library;
-  const states = `${meta.label}: ${name} ${RELATION_PHRASE[best.relation] ?? best.relation}`;
+  const by = community ? `${meta.label}, by a community edit: ${name}` : `${meta.label}: ${name}`;
+  const states = `${by} ${RELATION_PHRASE[best.relation] ?? best.relation}`;
   if (status === "partial" && !PART_RELATIONS.has(best.relation)) {
     const kind = String(passage.kind ?? "");
     if (DEFINITION_KINDS.has(kind) && best.proof_status !== "definition") {
@@ -992,11 +1008,33 @@ function statusSentence(passage: ArticlesPassage, status: SummaryStatus, libs: M
   return `${states} (${proofOf(best).phrase}).`;
 }
 
+// What the page needs in order to show, and take, community edits (the signed
+// public-editing plan, sections 2.2 and 2.8; release R1). `merged` is the sealed
+// article joined with its overlay; `show` is the view the reader chose, which
+// defaults to "With community edits" (decision 4: otherwise an edit has no
+// visible effect and nobody makes a second one).
+export interface OverlayView {
+  merged: MergedArticle;
+  show: boolean;
+  // The viewer may write: a signed-in person, or nobody.
+  canEdit: boolean;
+  // Their first overlay edit: the form carries the CC0 checkbox (decision 11)
+  // and, when a site key is configured, the Turnstile widget.
+  needsAgreement: boolean;
+  cc0Text: string;
+  cc0Version: string;
+  turnstileSiteKey: string | null;
+  // The universe's libraries, for the picker: a tag may name only one of them.
+  libraries: Array<{ id: string; label: string }>;
+}
+
 interface CardContext {
   libs: Map<string, LibraryView>;
   user: AuthUser | null;
   verdicts: Map<string, string>;
   loginHref: string;
+  // The community overlay, or null on a deployment that has none to show.
+  overlay: OverlayView | null;
   // The article's campaign token and seal summary, which the Details folds cite.
   campaign: string;
   seal: SealSummary | null;
@@ -1153,13 +1191,175 @@ function signatureBlock(loc: ArticlesLocation): string {
     (sig.deprecatedTo ? `<p class="articles-deprecated">Deprecated at this commit, in favour of ${declName(sig.deprecatedTo)}.</p>\n` : "");
 }
 
+// ---- the community overlay on a card ---------------------------------------
+//
+// Jack's display rule holds for a community card exactly as it does for a
+// pipeline one: the Lean code leads, provenance sits behind a closed Details
+// fold, and NO voting data is shown — a card never says how many people agreed
+// with it. What a community card adds is a badge saying where it came from and
+// who is accountable for it, which is attribution, not a score.
+
+// "1 Nov 2026" from a millisecond timestamp; "" when it is not one.
+function dayOfMs(ms: unknown): string {
+  return typeof ms === "number" && Number.isFinite(ms) && ms > 0 ? dayOf(new Date(ms).toISOString()) : "";
+}
+
+// Who wrote a row, linked. An agent is shown with its owner beside it — every
+// agent names a human (PR #126's agent_tokens.owner_id), and that is who agreed
+// to the licence and who answers for the edit.
+function byLine(m: MergedLocation, verb: string): string {
+  const tag = m.tag;
+  if (!tag) return "";
+  const author = m.author;
+  const who = author
+    ? `<a href="/u/${attr(encodeURIComponent(author.id))}">${text(author.name)}</a>`
+    : `<span>${text(tag.added_by)}</span>`;
+  const owner = author && author.actor === "agent" && author.ownerId
+    ? ` — owned by <a href="/u/${attr(encodeURIComponent(author.ownerId))}">${text(author.ownerName ?? author.ownerId)}</a>`
+    : "";
+  const day = dayOfMs(verb === "Removed by" ? tag.removed_at : tag.updated_at);
+  return `${text(verb)} ${who}${owner}${day ? ` on ${text(day)}` : ""}`;
+}
+
+const COMMUNITY_BADGE =
+  `<span class="articles-community" title="Added by a WikiLean editor, not by the locate pipeline. ` +
+  `It is live, attributed and one edit away from being corrected.">Community</span>`;
+const AGENT_BADGE =
+  `<span class="articles-community is-agent" title="Written by an AI agent under its owner's account.">Agent</span>`;
+
+// The line above a card the community touched: the badge, who, and — for a
+// change — what the pipeline said before it.
+function overlayLine(m: MergedLocation): string {
+  if (!m.tag) return "";
+  const badge = m.tag.actor_type === "agent" ? `${COMMUNITY_BADGE} ${AGENT_BADGE}` : COMMUNITY_BADGE;
+  if (m.state === "removed") {
+    return `<p class="articles-overlay-line is-removed">${badge} ${byLine(m, "Removed by")}` +
+      `${m.tag.removed_reason ? `: ${text(m.tag.removed_reason)}` : ""}</p>`;
+  }
+  if (m.origin === "community") {
+    return `<p class="articles-overlay-line">${badge} ${byLine(m, "Added by")}</p>`;
+  }
+  if (m.baseRelation) {
+    return `<p class="articles-overlay-line">${badge} The pipeline said ${relationBadge(m.baseRelation)}; ` +
+      `${byLine(m, "changed by")}.</p>`;
+  }
+  if (m.confirms) {
+    return `<p class="articles-overlay-line is-confirmed">${badge} ${byLine(m, "Confirmed by")}.</p>`;
+  }
+  return `<p class="articles-overlay-line">${badge} ${byLine(m, "Edited by")}.</p>`;
+}
+
+// The per-card editing affordances: change this link, or say it is wrong. The
+// buttons carry the row's current version, which the script sends back as
+// base_version, so a card loaded before somebody else's edit cannot clobber it.
+function cardActions(m: MergedLocation, ctx: CardContext, passageKey: string): string {
+  const overlay = ctx.overlay;
+  if (!overlay?.canEdit || !overlay.show) return "";
+  const key = m.loc.pair_key;
+  if (typeof key !== "string" || key === "") return "";
+  const version = m.tag ? m.tag.version : 0;
+  const common = `data-pair-key="${attr(key)}" data-passage-key="${attr(passageKey)}"` +
+    ` data-version="${int(version)}" data-relation="${attr(m.loc.relation)}"` +
+    ` data-declaration="${attr(String(m.loc.declaration ?? ""))}" data-library="${attr(m.loc.library)}"` +
+    ` data-note="${attr(String(m.loc.note ?? ""))}"`;
+  if (m.state === "removed") {
+    return `<div class="articles-tag-actions" ${common}>` +
+      `<button type="button" class="articles-tag-btn" data-action="restore">Restore this link</button>` +
+      `<span class="articles-tag-msg" role="status"></span></div>`;
+  }
+  return `<div class="articles-tag-actions" ${common}>` +
+    `<button type="button" class="articles-tag-btn" data-action="change" aria-expanded="false">Change</button>` +
+    `<button type="button" class="articles-tag-btn" data-action="remove" aria-expanded="false">This link is wrong</button>` +
+    `<span class="articles-tag-msg" role="status"></span></div>`;
+}
+
+// "Tag this passage": the one new write of release R1. The form is server
+// rendered and inert until the page's script wires it, and it carries no inline
+// handler and no inline script (articlesCsp lists neither).
+function tagForm(passage: ArticlesPassage, ctx: CardContext): string {
+  const overlay = ctx.overlay;
+  const key = typeof passage.passage_key === "string" ? passage.passage_key : "";
+  if (!overlay?.show || key === "") return "";
+  const hex = passageHex(passage) || key.slice(0, 8);
+  if (!overlay.canEdit) {
+    return `<p class="articles-tag-signin"><a href="${attr(ctx.loginHref)}">Sign in to tag this passage</a></p>`;
+  }
+  const libs = overlay.libraries.map((lib) =>
+    `<option value="${attr(lib.id)}">${text(lib.label)}</option>`).join("");
+  const rels = RELATION_ORDER.map((rel) =>
+    `<option value="${attr(rel)}"${rel === "exactMatch" ? " selected" : ""}>${text(RELATION_WORD[rel] ?? rel)} — ${text(RELATION_LEGEND[rel])}</option>`).join("");
+  return `<div class="articles-tag" data-passage-key="${attr(key)}">
+<button type="button" class="articles-tag-open" aria-expanded="false" aria-controls="tagform-${attr(hex)}">Tag this passage</button>
+<form class="articles-tag-form" id="tagform-${attr(hex)}" hidden>
+<fieldset><legend>Add a Lean declaration for this passage</legend>
+<p class="articles-muted">Name the declaration that states this passage, and say how closely it matches. Your edit goes live at once, attributed to you, and anyone can correct it.</p>
+<label for="taglib-${attr(hex)}">Library</label>
+<select id="taglib-${attr(hex)}" name="library">${libs}</select>
+<label for="tagdecl-${attr(hex)}">Declaration</label>
+<input id="tagdecl-${attr(hex)}" name="declaration" type="text" maxlength="${MAX_DECL_CHARS}" autocomplete="off" spellcheck="false" placeholder="Mathlib.Algebra.Group.Defs → AddCommGroup">
+<p class="articles-muted articles-tag-decl-note">The declaration's full Lean name. WikiLean does not check that it exists before saving: the index it could check against covers Mathlib only, and you may be tagging another library.</p>
+<label for="tagrel-${attr(hex)}">How it matches</label>
+<select id="tagrel-${attr(hex)}" name="relation">${rels}</select>
+<label for="tagnote-${attr(hex)}">Note (optional)</label>
+<textarea id="tagnote-${attr(hex)}" name="note" maxlength="${MAX_TAG_NOTE}" rows="2"></textarea>
+<p class="articles-muted">Please do not paste Lean source into the note: it keeps its library's licence, and this field does not. At most ${MAX_TAG_NOTE} characters.</p>
+<div class="articles-tag-buttons"><button type="submit" class="articles-tag-btn is-primary">Save tag</button><button type="button" class="articles-tag-btn articles-tag-cancel">Cancel</button></div>
+<p class="articles-tag-msg" role="status"></p>
+</fieldset>
+</form>
+</div>`;
+}
+
+// The CC0 agreement at the point of a person's first edit (decision 11), with
+// the Turnstile widget beside it when a site key is configured. Rendered once
+// per page, hidden until the script needs it. **The wording is for Jack to
+// review**; the version string is recorded with the timestamp, so changing the
+// wording in a way that needs re-acceptance is a version bump.
+function agreementBlock(ctx: CardContext): string {
+  const overlay = ctx.overlay;
+  if (!overlay?.canEdit || !overlay.needsAgreement) return "";
+  const widget = overlay.turnstileSiteKey
+    ? `<div class="cf-turnstile" data-sitekey="${attr(overlay.turnstileSiteKey)}"></div>`
+    : "";
+  return `<section class="articles-cc0" id="articles-cc0" data-version="${attr(overlay.cc0Version)}" hidden aria-labelledby="articles-cc0-h">
+<h2 class="articles-h2" id="articles-cc0-h">Before your first edit</h2>
+<p><label><input type="checkbox" id="articles-cc0-box"> ${text(overlay.cc0Text)}</label></p>
+${widget}<p class="articles-tag-msg" role="status" id="articles-cc0-msg"></p>
+</section>`;
+}
+
+// The two views of an article's locations, as a segmented control: the sealed
+// record set as published, and the same set with the community's edits folded
+// in (the default — decision 4). Shown only once an article has an edit.
+function overlaySwitch(selfHref: string, show: boolean, live: number, removed: number): string {
+  const q = selfHref.includes("?") ? "&" : "?";
+  return `<nav class="articles-overlay-switch" aria-label="Which edits to show">` +
+    `<a href="${attr(selfHref)}${q}overlay=off"${show ? "" : ` aria-current="page"`}>As published</a>` +
+    `<a href="${attr(selfHref)}"${show ? ` aria-current="page"` : ""}>With community edits</a>` +
+    `<span class="articles-muted articles-overlay-count">${int(live)} community ${live === 1 ? "edit" : "edits"}` +
+    `${removed ? `, ${int(removed)} removed` : ""} on this page</span></nav>`;
+}
+
+const MAX_DECL_CHARS = 240;
+const MAX_TAG_NOTE = 500;
+// Cloudflare's widget loader. Its origin is also in security.ts TURNSTILE_ORIGIN,
+// which articlesCsp lists only for a page that renders the widget.
+export const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+
+// Does this page render the Turnstile widget? (The agreement block, which only
+// a signed-in person making their first edit sees, and only with a site key.)
+export function pageNeedsTurnstile(overlay: OverlayView | null | undefined): boolean {
+  return !!overlay && overlay.canEdit && overlay.needsAgreement && !!overlay.turnstileSiteKey;
+}
+
 // A location card leads with the Lean code: the declaration, its signature when
 // the store has one (the export names the declaration only; build_store
 // --signatures adds the header), then its module and lines. Then the library,
 // commit, relation, proof status and the pinned source link; the convention
 // note; provenance under a closed Details fold; and the reader's own
 // Confirm/Report (never anyone else's).
-function locationCard(loc: ArticlesLocation, ctx: CardContext): string {
+function locationCard(m: MergedLocation, ctx: CardContext, passageKey = ""): string {
+  const loc = m.loc;
   const view = ctx.libs.get(loc.library);
   const info = view?.info ?? libraryInfo(loc.repo, null);
   const src = sourceUrl(info, loc);
@@ -1168,8 +1368,14 @@ function locationCard(loc: ArticlesLocation, ctx: CardContext): string {
   // end_line is optional (an index may record only the first line): "line N".
   const line = count(loc.line), end = count(loc.end_line);
   const lines = end && end !== line ? `lines ${line}–${end}` : `line ${line}`;
+  const community = m.origin === "community";
   const verdict = ctx.verdicts.get(loc.location_key);
-  const feedback = ctx.user
+  // Confirm and Report are a verdict on a SEALED location: they seed the
+  // benchmark and their provenance CHECK keeps them human labels. A community
+  // card has no sealed record behind it, so it carries no verdict buttons —
+  // disagreeing with one is an overlay edit, which is labelled and revertable.
+  const feedback = community ? ""
+    : ctx.user
     ? `<div class="articles-fb" data-location-key="${attr(loc.location_key)}">` +
       `<button type="button" class="articles-fb-btn" data-verdict="confirm" aria-pressed="${verdict === "confirm"}">` +
       `<span aria-hidden="true">✓ </span>Confirm</button>` +
@@ -1177,24 +1383,56 @@ function locationCard(loc: ArticlesLocation, ctx: CardContext): string {
       `<span aria-hidden="true">⚑ </span>Report</button>` +
       `<span class="articles-fb-msg" role="status">${verdict ? `You ${verdict === "confirm" ? "confirmed" : "reported"} this link.` : ""}</span></div>`
     : `<a class="articles-fb-signin" href="${attr(ctx.loginHref)}">Sign in to confirm or report</a>`;
-  return `<article class="articles-card" data-library="${attr(loc.library)}" data-relation="${attr(loc.relation)}" data-proof="${attr(loc.proof_status)}">
-<p class="articles-decl-line">${declName(String(loc.declaration ?? ""))} ${relationBadge(loc.relation)}</p>
-${signatureBlock(loc)}<p class="articles-module">${text(loc.module)} · ${text(lines)}</p>
-<div class="articles-card-top">
+  const where = community
+    ? `<p class="articles-module articles-muted">No module or line: an editor named the declaration, not a place in the source.</p>`
+    : `<p class="articles-module">${text(loc.module)} · ${text(lines)}</p>`;
+  const top = community
+    ? `<div class="articles-card-top">
+<span class="articles-lib" title="${attr(`${info.name} · ${info.repo}`)}">${text(info.short)}</span>
+</div>`
+    : `<div class="articles-card-top">
 <span class="articles-lib" title="${attr(`${info.name} · ${info.repo}`)}">${text(info.short)}</span>
 <code class="articles-commit" title="${attr(`commit ${loc.commit}`)}">@${text(short)}</code>
 <span class="articles-ps${proof.alert ? " is-alert" : ""}" data-proof="${attr(loc.proof_status)}" title="${attr(capital(proof.phrase))}">${proof.alert ? `<span aria-hidden="true">! </span>` : ""}${text(proof.label)}</span>
 ${src ? `<a class="articles-src" href="${attr(src)}" rel="noopener" target="_blank">Source @${text(short)}<span aria-hidden="true"> ↗</span><span class="articles-sr"> (opens ${text(info.name)} at commit ${text(short)}, ${text(lines)})</span></a>` : `<span class="articles-src is-none">No source link</span>`}
-</div>
-${loc.note ? `<p class="articles-note"><span class="articles-k">${text(NOTE_LABEL[loc.relation] ?? "Note")}:</span> ${text(loc.note)}</p>\n` : ""}${locationDetails(loc, ctx)}
+</div>`;
+  const classes = `articles-card${community ? " is-community" : ""}${m.state === "removed" ? " is-removed" : ""}`;
+  const foot = `${feedback}${cardActions(m, ctx, passageKey)}`;
+  return `<article class="${classes}" data-library="${attr(loc.library)}" data-relation="${attr(loc.relation)}" data-proof="${attr(loc.proof_status)}"${m.tag ? ` data-origin="${attr(m.origin)}" data-state="${attr(m.state)}"` : ""}>
+<p class="articles-decl-line">${declName(String(loc.declaration ?? ""))} ${relationBadge(loc.relation)}</p>
+${signatureBlock(loc)}${where}
+${top}
+${overlayLine(m)}${loc.note ? `<p class="articles-note"><span class="articles-k">${text(NOTE_LABEL[loc.relation] ?? "Note")}:</span> ${text(loc.note)}</p>\n` : ""}${community ? "" : locationDetails(loc, ctx)}
 <div class="articles-card-foot">
-${feedback}
+${foot}
 </div>
 </article>`;
 }
 
+// The sealed status the store published.
 function passageStatus(passage: ArticlesPassage): SummaryStatus {
   return passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
+}
+
+// The status the page shows: the merged one by default (decision 4 — otherwise
+// an edit has no visible effect), the sealed one under "As published".
+function shownStatus(passage: ArticlesPassage, ctx: CardContext): SummaryStatus {
+  const overlay = ctx.overlay;
+  if (!overlay?.show) return passageStatus(passage);
+  return overlay.merged.byPassage.get(passage.id)?.status ?? passageStatus(passage);
+}
+
+// The locations the page shows for a passage, in card order: the pipeline's in
+// rank order (each with the community's change applied, if there was one), then
+// the community's own. Under "As published" it is the sealed list, untouched.
+function shownLocations(passage: ArticlesPassage, ctx: CardContext): MergedLocation[] {
+  const overlay = ctx.overlay;
+  const merged = overlay?.show ? overlay.merged.byPassage.get(passage.id) : null;
+  if (merged) return merged.locations;
+  return list(passage.locations).map((loc) => ({
+    loc, origin: "pipeline" as const, state: "live" as const, tag: null, author: null,
+    baseRelation: null, baseNote: null, confirms: false,
+  }));
 }
 
 // A passage the article views set aside: one with no status (articleParts).
@@ -1216,11 +1454,28 @@ function isSubject(passage: ArticlesPassage): boolean {
 // separates them on screen).
 const HEADING_SEPARATOR = `<span class="articles-sr"> · </span>`;
 
+// The shown location that gives a passage its shown status, or null: the
+// store's own basis when it is still live, else the best-ranked shown card
+// whose own status is the passage's.
+function shownBasis(passage: ArticlesPassage, status: SummaryStatus, ctx: CardContext): MergedLocation | null {
+  const live = shownLocations(passage, ctx).filter((m) => m.state === "live");
+  const basis = basisLocation(passage, status, ctx.statusRule);
+  return (basis ? live.find((m) => m.loc.location_key === basis.location_key) : undefined)
+    ?? live.find((m) => locationStatus(String(passage.kind ?? ""), m.loc, ctx.statusRule) === status)
+    ?? null;
+}
+
 // The location a passage's peek and index row lead with: the one that gives it its status, else
 // its first; `more` counts its other locations (relatedMatch aside).
 function leadOf(passage: ArticlesPassage, status: SummaryStatus, ctx: CardContext): { loc: ArticlesLocation; more: number } | null {
-  const strong = list(passage.locations).filter((loc) => loc.relation !== "relatedMatch");
-  const loc = basisLocation(passage, status, ctx.statusRule) ?? strong[0] ?? null;
+  const shown = shownLocations(passage, ctx).filter((m) => m.state === "live");
+  const strong = shown.filter((m) => m.loc.relation !== "relatedMatch");
+  const basis = basisLocation(passage, status, ctx.statusRule);
+  // The basis is a sealed location; take the shown copy of it, which may carry
+  // a community change, and fall back to the first strong card.
+  const loc = (basis ? strong.find((m) => m.loc.location_key === basis.location_key)?.loc : undefined)
+    ?? strong.find((m) => locationStatus(String(passage.kind ?? ""), m.loc, ctx.statusRule) === status)?.loc
+    ?? strong[0]?.loc ?? null;
   return loc ? { loc, more: strong.length - 1 } : null;
 }
 
@@ -1251,12 +1506,16 @@ function readerData(passage: ArticlesPassage, status: SummaryStatus, ctx: CardCo
 // hidden section the reader's script shows when the passage is selected (`panel` true).
 // Both hold the same heading, status sentence, text, cards and Details.
 function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: CardContext, panel = false): string {
-  const status = passageStatus(passage);
-  const located = passage.outcome !== "unresolved" && passage.outcome !== "absent"
-    && (status === "formalized" || status === "statement_only" || status === "partial");
-  const strong = passage.locations.filter((loc) => loc.relation !== "relatedMatch");
-  const related = passage.locations.filter((loc) => loc.relation === "relatedMatch");
-  const libraries = [...new Set(strong.map((loc) => loc.library))];
+  const status = shownStatus(passage, ctx);
+  const sealedStatus = passageStatus(passage);
+  const shown = shownLocations(passage, ctx);
+  const liveShown = shown.filter((m) => m.state === "live");
+  const gravestones = shown.filter((m) => m.state === "removed");
+  const located = status === "formalized" || status === "statement_only" || status === "partial";
+  const strong = liveShown.filter((m) => m.loc.relation !== "relatedMatch");
+  const related = liveShown.filter((m) => m.loc.relation === "relatedMatch");
+  const libraries = [...new Set(strong.map((m) => m.loc.library))];
+  const ownKey = typeof passage.passage_key === "string" ? passage.passage_key : "";
   const hex = passageHex(passage);
   const subject = isSubject(passage);
   // A subject passage says so in its own tag, so its eyebrow is the kind alone.
@@ -1286,10 +1545,18 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
   // articleParts, and never reaches here). When a
   // survived coverage claim gives it its status (D1), the claim's line, with
   // the parts listed, is that sentence; otherwise the line follows it.
-  const covering = located ? coverageParts(passage) : [];
-  const byClaim = covering.length > 0 && passage.coverage?.basis === true && passage.coverage.status === status;
-  if (located && !byClaim) parts.push(`<p class="articles-why">${text(statusSentence(passage, status, ctx.libs, ctx.statusRule))}</p>`);
-  if (covering.length) parts.push(coverageBlock(passage, covering, ctx.libs));
+  // A community removal of one part withdraws the claim: it no longer states
+  // every clause, so the page stops showing it as one.
+  const goneKeys = new Set(gravestones.map((m) => m.loc.location_key));
+  const covering = located ? coverageParts(passage).filter((loc) => !goneKeys.has(loc.location_key)) : [];
+  const claimWhole = covering.length === coverageParts(passage).length;
+  const byClaim = claimWhole && covering.length > 0 && passage.coverage?.basis === true && passage.coverage.status === status;
+  if (located && !byClaim) {
+    const basis = shownBasis(passage, status, ctx);
+    parts.push(`<p class="articles-why">${text(statusSentence(passage, status, ctx.libs, ctx.statusRule,
+      basis ? basis.loc : null, basis !== null && basis.tag !== null))}</p>`);
+  }
+  if (covering.length && claimWhole) parts.push(coverageBlock(passage, covering, ctx.libs));
   // The quote verbatim, with its prefix and suffix as context. An ellipsis
   // after it means that the passage continues, and nothing else: it follows a
   // capped head (the passage goes on past the export's 12-word cap), outside
@@ -1328,8 +1595,11 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
     parts.push(`<p class="articles-context">${wikipedia}</p>`);
   }
   if (strong.length) {
-    parts.push(`<div class="articles-cards">${strong.map((loc) => locationCard(loc, ctx)).join("\n")}</div>`);
+    parts.push(`<div class="articles-cards">${strong.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div>`);
   }
+  // The absence box stays whatever the overlay says: the sealed set is always
+  // shown as the sealed set (plan section 2.8). What moves is the status above
+  // it, and the community card beside it says who disagreed.
   if (passage.absence) {
     const a = passage.absence;
     parts.push(`<p class="articles-absence"><span class="articles-ico" aria-hidden="true">✕</span>` +
@@ -1349,11 +1619,19 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
   }
   if (related.length && panel) {
     parts.push(`<details class="atlr-related"><summary class="articles-related-h">Related, but states something else (${int(related.length)})</summary>` +
-      `<div class="articles-cards is-related">${related.map((loc) => locationCard(loc, ctx)).join("\n")}</div></details>`);
+      `<div class="articles-cards is-related">${related.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div></details>`);
   } else if (related.length) {
     parts.push(`<h4 class="articles-related-h">Related, but states something else</h4>`);
-    parts.push(`<div class="articles-cards is-related">${related.map((loc) => locationCard(loc, ctx)).join("\n")}</div>`);
+    parts.push(`<div class="articles-cards is-related">${related.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div>`);
   }
+  // Removed links are folded away, never deleted: the reason, the remover and
+  // one click to put the link back (plan section 2.8).
+  if (gravestones.length) {
+    parts.push(`<details class="articles-removed"><summary class="articles-related-h">` +
+      `Removed by an editor (${int(gravestones.length)})</summary>` +
+      `<div class="articles-cards is-removed">${gravestones.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div></details>`);
+  }
+  parts.push(tagForm(passage, ctx));
   if (panel) {
     parts.push(`<p class="atlr-links"><a href="${attr(ctx.cardsHref ?? "")}#p-${hex}">Open in card list</a>` +
       ` · <button type="button" class="atlr-copy" data-p="${hex}">Copy link</button>` +
@@ -1389,6 +1667,10 @@ export interface ArticlePageInput {
   // The article reader's URL when the store has the article's marked revision (--reader-html):
   // the card list then carries the view switch and a "Show in article" link per passage.
   readerHref?: string | null;
+  // The community overlay (release R1): the merged cards, the community badge,
+  // the view switch and the merged derived status. Absent on a deployment with
+  // no overlay to show.
+  overlay?: OverlayView | null;
 }
 
 // What the card list and the reader share: the card context and the pieces of the page head
@@ -1411,6 +1693,7 @@ function articleParts(input: ArticlePageInput) {
   const texts = new Map(passages.map((passage) => [passage, passageView(passage)] as const));
   const ctx: CardContext = {
     libs, user, verdicts, loginHref: `/login?returnTo=${encodeURIComponent(selfHref)}`,
+    overlay: input.overlay ?? null,
     campaign: String(article.campaign ?? ""), seal, statusRule, runs,
     signatures: supplements?.signatures && typeof supplements.signatures === "object" ? supplements.signatures : null,
     texts,
@@ -1427,8 +1710,18 @@ function articleParts(input: ArticlePageInput) {
   }
   const nLocations = count(summary.locations);
   const nRelated = Math.max(0, count(summary.related) - [...unreadRelated.values()].reduce((a, b) => a + b, 0));
+  // Under "With community edits" the strip counts the merged statuses, so the
+  // bar and the chips move with the page's cards (decision 4). The merge counts
+  // only the passages a view shows; the summary's are the store's own.
   const byStatus: Record<SummaryStatus, number> = { ...emptyStatusCounts(), unresolved: 0 };
-  for (const s of ARTICLE_STATUSES) byStatus[s] = count(summary.by_status?.[s]);
+  if (ctx.overlay?.show) {
+    for (const passage of passages) {
+      const s = shownStatus(passage, ctx);
+      if (s !== "unresolved") byStatus[s] += 1;
+    }
+  } else {
+    for (const s of ARTICLE_STATUSES) byStatus[s] = count(summary.by_status?.[s]);
+  }
   const assessment = article.assessment;
   const assessed = assessment && (assessment.class || assessment.importance)
     ? `WikiProject Mathematics: ${[assessment.class ? `${assessment.class}-class` : "", assessment.importance ? `${importanceLabel(assessment.importance)} importance` : ""].filter(Boolean).join(", ")}`
@@ -1460,7 +1753,7 @@ function articleParts(input: ArticlePageInput) {
     const hex = passageHex(passage);
     const exact = renderQuote({ exact: String(passage.quote?.exact ?? "") }, quoteCapped(passage)).exact;
     const label = `${text(capital(String(passage.kind ?? "")))}: “${exact}”` + (quoteCapped(passage) ? QUOTE_CONTINUES : "");
-    return `<li>${hex ? `<a href="#p-${hex}">${label}</a>` : label} ${pill(passageStatus(passage))}</li>`;
+    return `<li>${hex ? `<a href="#p-${hex}">${label}</a>` : label} ${pill(shownStatus(passage, ctx))}</li>`;
   });
   const subjectRow = subjects.length
     ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-subject">Subject</span><ul class="articles-subject-list" aria-labelledby="articles-h-subject">${subjects.join("")}</ul></div>\n`
@@ -1478,9 +1771,17 @@ function articleParts(input: ArticlePageInput) {
     (nUnread ? ` <span class="articles-muted" id="articles-unread">${unreadSentence(nUnread)}</span>` : "");
   const revisionLink = `<a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${int(article.revision)}</a>`;
   const description = `Where ${article.title} is formalized in Lean: ${int(summary.by_status?.formalized)} of ${plural(n, "passage", "passages")} formalized.`;
+  // The "As published" / "With community edits" control, offered only once the
+  // article has an edit; the agreement block, rendered once per page.
+  const overlay = ctx.overlay;
+  const overlayRow = overlay && overlay.merged.edits > 0
+    ? `${overlaySwitch(selfHref, overlay.show, overlay.merged.live, overlay.merged.removed)}\n`
+    : "";
+  const agreement = agreementBlock(ctx);
   return {
     libs, seal, statusRule, supplements, runs, texts, ctx, summary, n, assessed, statusChips, libraryChips, searched,
     subjectRow, centralRow, nText, about, lead, revisionLink, description, readerHref, passages, nUnread, byStatus,
+    overlayRow, agreement,
   };
 }
 
@@ -1497,6 +1798,7 @@ export function articlesArticlePage(input: ArticlePageInput): string {
   const {
     ctx, n, assessed, statusChips, libraryChips, searched, subjectRow, centralRow,
     nText, texts, about, lead, revisionLink, description, readerHref, passages, nUnread, byStatus,
+    overlayRow, agreement,
   } = articleParts(input);
   // The quote note is for the passages that show a quote; the text note for those shown in full.
   const anyCapped = passages.some((passage) => texts.get(passage) === null && quoteCapped(passage));
@@ -1523,7 +1825,8 @@ ${statusBar(byStatus, "passage", "passages")}
 ${subjectRow}<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-status">Status</span><div class="articles-chips" role="group" aria-labelledby="articles-h-status">${statusChips}</div></div>
 ${centralRow}${libraryChips ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-where">Where</span><div class="articles-chips" role="group" aria-labelledby="articles-h-where">${libraryChips}</div></div>` : ""}
 <p class="articles-filter-note" role="status"><span class="articles-filter-text"></span> <button type="button" class="articles-clear" hidden>Show all passages</button></p>
-</section>
+${overlayRow}</section>
+${agreement}
 <h2 class="articles-h2" id="articles-h-passages">Passages</h2>
 ${textNote}${sigNote}${anyCapped ? `<p class="articles-muted" id="articles-quote-note">Quotes show at most the first ${QUOTE_MAX_WORDS} words of a passage (the record format's quotation cap; a formula's MathML text counts toward it). A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. Hover a formula for its TeX.</p>\n` : ""}${passages.length ? `${relationLegend()}\n` : ""}${passages.length ? `<ol class="articles-passages" aria-labelledby="articles-h-passages">\n${passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : nUnread ? `<p>No passage of this revision has a status yet.</p>` : `<p>No formal passages were found in this revision.</p>`}
 <p class="articles-data">Data: <a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a></p>
@@ -1535,6 +1838,7 @@ ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is ri
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main, fullText: nText > 0, footer,
+    turnstile: pageNeedsTurnstile(ctx.overlay),
     ...(readerHref ? { readerCss: true, readerJs: true, headerRow: `<div class="atlr-bar">${viewSwitch(readerHref, "cards")}</div>` } : {}),
   });
 }
@@ -1569,7 +1873,7 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
   for (const passage of passages) {
     const label = Array.isArray(passage.section) && passage.section.length ? passage.section.join(" › ") : "Lead";
     if (!groups.length || groups[groups.length - 1].label !== label) groups.push({ label, rows: [] });
-    const status = passageStatus(passage);
+    const status = shownStatus(passage, ctx);
     const hex = passageHex(passage);
     const head = leadOf(passage, status, ctx);
     const exact = renderQuote({ exact: String(passage.quote?.exact ?? "") }, quoteCapped(passage)).exact;
@@ -1594,7 +1898,7 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
 export function articlesReaderPage(input: ArticlePageInput & { html: string }): string {
   const { article, user, wikileanSlug, selfHref, html } = input;
   const parts = articleParts({ ...input, readerHref: selfHref });
-  const { ctx, n, assessed, statusChips, libraryChips, searched, subjectRow, centralRow, about, lead, revisionLink, description, byStatus } = parts;
+  const { ctx, n, assessed, statusChips, libraryChips, searched, subjectRow, centralRow, about, lead, revisionLink, description, byStatus, overlayRow, agreement } = parts;
   const passages = readingOrder(parts.passages, html);
   const placed = new Set<string>();
   for (const m of html.matchAll(/<mark class="atl" data-p="([0-9a-f]{8,16})"/g)) placed.add(m[1]);
@@ -1630,6 +1934,7 @@ ${html}
 <p class="articles-strip-lead">${lead}</p>
 ${statusBar(byStatus, "passage", "passages")}
 ${subjectRow}${centralRow}<p class="atlr-filter-note" role="status"><span id="atlr-filter-text"></span> <button type="button" class="articles-clear" id="atlr-clear" hidden>Show all passages</button></p>
+${overlayRow}${agreement}
 <nav class="atlr-toc" aria-labelledby="atlr-h-index">${readerIndex(passages, placed, ctx)}</nav>
 <h3 class="atlr-h3" id="atlr-legend">Legend</h3>
 ${legend}
@@ -1655,6 +1960,7 @@ ${passages.map((p) => passageBlock(p, article, ctx, true)).join("\n")}
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main,
     readerCss: true, readerJs: true, bodyClass: "atlr-body", headerRow, footer, noticeInMain: true,
+    turnstile: pageNeedsTurnstile(ctx.overlay),
     skip: `<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`,
   });
 }

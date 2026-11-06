@@ -20,18 +20,26 @@
 
 import type { Context, Hono } from "hono";
 import type { ContentfulStatusCode } from "hono/utils/http-status";
-import { getUser, requireRole } from "./auth.js";
+import { getUser, requireRole, type AuthUser } from "./auth.js";
+import { editLimitKey } from "./agents.js";
 import type { Env } from "./env.js";
 import type { UniverseLibrary } from "./libraries.js";
 import type { PassageSegment } from "./articles-math.js";
 import { articlesCsp, checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
+  accountFor, CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, loadOverlay, loadOverlayTags, loadTag,
+  MAX_DECLARATION_CHARS, MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay, overlayTableMissing, pairKey,
+  statusRuleOf, tagAllowance, tagLimitKey, TAG_RELATIONS, validDeclaration, validRelation, verifyTurnstile,
+  writeBrake, type ArticleTag, type TagActor, type TagAllowance,
+} from "./articles-overlay.js";
+import {
   articlesArticlePage,
   articlesDashboardPage,
   articlesMessagePage,
   articlesReaderPage,
   articlesUniversePage,
+  pageNeedsTurnstile,
   type DashboardRow,
 } from "./articles-render.js";
 
@@ -635,8 +643,14 @@ const JSON_HEADERS = { "Content-Type": "application/json; charset=utf-8", "Cache
 // Every articles page is the articles shell (articles-render.ts), and every one enforces the
 // plane's own policy, security.ts articlesCsp, for the page's own origin; the security
 // middleware lists the framing ban beside it. Every HTML answer below goes through here.
-function articlesHtml(c: Ctx, html: string, status: ContentfulStatusCode = 200, headers: Record<string, string> = {}): Response {
-  return c.html(html, status, { ...headers, "Content-Security-Policy": articlesCsp(new URL(c.req.url).origin) });
+function articlesHtml(
+  c: Ctx,
+  html: string,
+  status: ContentfulStatusCode = 200,
+  headers: Record<string, string> = {},
+  turnstile = false,
+): Response {
+  return c.html(html, status, { ...headers, "Content-Security-Policy": articlesCsp(new URL(c.req.url).origin, turnstile) });
 }
 
 function notConfiguredJson(c: Ctx, error = NOT_CONFIGURED): Response {
@@ -826,6 +840,153 @@ function publishedShards(current: ArticlesCurrent): string[] {
     .filter((s) => typeof s === "string" && SHARD_RE.test(s)).slice(0, MAX_INDEX_SHARDS);
 }
 
+// ---- community tags: the overlay write surface -----------------------------
+//
+// Three routes (the signed public-editing plan, section 2.2): add or change a
+// tag, change its state (the soft delete and its undo), and read one article's
+// overlay. Live on save, account required, same-origin, byte-capped, rate
+// limited, optimistically concurrent, and never a write into the sealed store.
+//
+// The order of every check is the house one: same-origin, identity, the
+// site-wide brake, the budget, the body, then the store. A refused write costs
+// at most one D1 read and no R2 read.
+
+export const TAG_PATH = "/api/articles/tag";
+export const CC0_REQUIRED = "the CC0 agreement is required before your first edit";
+export const TURNSTILE_REQUIRED = "a Turnstile check is required for a new account's first edit";
+export const PIPELINE_REFUSED = "the pipeline bearer does not write the community overlay";
+export const AGENT_HUMAN_ROW_REFUSED =
+  "agents may not change or remove an editor's tag: release R1 keeps no history to hold the editor's version";
+export const NO_PASSAGE_KEYS =
+  "this article's record set carries no passage keys (a /1 set); community tags need a /2 set";
+
+// What an overlay write has established about its caller before it reads a body.
+interface TagWriter {
+  user: AuthUser;
+  // Whose tier, daily cap and CC0 agreement govern the write: an agent's owner
+  // (PR #126's agent_tokens.owner_id), else the person themself. An agent
+  // inherits its owner's standing and never exceeds it.
+  account: string;
+  actorType: TagActor;
+  via: "web" | "api";
+  allowance: TagAllowance;
+}
+
+const RETRY_AFTER_DAY = { "Retry-After": "3600", "Cache-Control": "no-store" };
+
+async function beginTagWrite(c: Ctx): Promise<TagWriter | Response> {
+  const originErr = checkOrigin(c);
+  if (originErr) return originErr;
+  const user = await getUser(c);
+  if (!user) return c.json({ ok: false, error: "login required" }, 401);
+  // The pipeline bearer writes the sealed store, not the overlay: a community
+  // row under its name would be a pipeline location wearing a community badge.
+  // Agents may write here (decision 13); their atlas_feedback refusal stands.
+  if (user.role === "bot") return c.json({ ok: false, error: PIPELINE_REFUSED }, 403);
+  const braked = await writeBrake(c);
+  if (braked) return braked;
+
+  const isAgent = user.role === "agent";
+  const account = accountFor(user);
+  const allowance = await tagAllowance(c.env, account, Date.now());
+  // Burst. All of one person's agents share PR #126's single 30/min key across
+  // saves, Brain writes and now overlay writes, so five agents are not five
+  // budgets. A person gets TAG_LIMITER, under a newcomer or an established key.
+  const limiter = isAgent
+    ? c.env.EDIT_LIMITER
+    : (allowance.tier === "new" ? c.env.TAG_NEW_LIMITER : null) ?? c.env.TAG_LIMITER ?? c.env.EDIT_LIMITER;
+  const key = isAgent ? editLimitKey(user) : tagLimitKey(user, allowance.tier);
+  const { success } = await limiter.limit({ key });
+  if (!success) {
+    return c.json({ ok: false, error: "rate limited — slow down", tier: allowance.tier }, 429,
+      { "Retry-After": String(RETRY_AFTER_SECONDS), "Cache-Control": "no-store" });
+  }
+  // Daily volume (plan section 2.6). A spree from a fresh account is bounded at
+  // 50 rows before anyone has to be awake.
+  if (allowance.today >= allowance.cap) {
+    return c.json({
+      ok: false,
+      error: `daily limit reached: a ${allowance.tier} account may make ${allowance.cap} overlay edits a day`,
+      tier: allowance.tier, cap: allowance.cap,
+    }, 429, RETRY_AFTER_DAY);
+  }
+  return { user, account, actorType: isAgent ? "agent" : "human", via: isAgent ? "api" : "web", allowance };
+}
+
+// The CC0 agreement at the point of a person's FIRST overlay edit (decision 11),
+// and the Turnstile check that rides with it (plan section 2.6: a new account's
+// first edit only, never after). Returns the timestamp to record, or a Response.
+//
+// An agent cannot agree to a licence; its OWNER can, and must have, before any
+// of that person's agents may write (plan section 5.3, "Licence").
+type AgreementStep = { needsRecord: false } | { needsRecord: true; verifiedAt: number | null };
+
+async function requireAgreement(
+  c: Ctx,
+  writer: TagWriter,
+  body: Record<string, unknown>,
+  now: number,
+): Promise<AgreementStep | Response> {
+  const agreed = await loadAgreement(c.env, writer.account);
+  if (agreed) return { needsRecord: false };
+  if (writer.actorType === "agent") {
+    return c.json({
+      ok: false,
+      error: "the person who minted this agent has not accepted the CC0 terms; they must make one edit themself first",
+    }, 403);
+  }
+  if (body.cc0 !== true) {
+    return c.json({
+      ok: false, error: CC0_REQUIRED, cc0_required: true,
+      cc0_version: CC0_AGREEMENT_VERSION, cc0_text: CC0_AGREEMENT_TEXT,
+    }, 403);
+  }
+  const token = typeof body.turnstile_token === "string" && body.turnstile_token !== "" ? body.turnstile_token : null;
+  const verdict = await verifyTurnstile(c.env, token);
+  if (verdict === "failed") {
+    return c.json({ ok: false, error: TURNSTILE_REQUIRED, turnstile_required: true }, 403);
+  }
+  return { needsRecord: true, verifiedAt: verdict === "ok" ? now : null };
+}
+
+// An optional free-text field: null, or a Response when it is too long or not a
+// string. Trimmed, and an empty string reads as absent.
+function optionalText(c: Ctx, value: unknown, max: number, field: string): string | null | Response {
+  if (value === undefined || value === null) return null;
+  if (typeof value !== "string" || value.length > max) {
+    return c.json({ ok: false, error: `${field} must be a string of at most ${max} characters` }, 400);
+  }
+  return value.trim() || null;
+}
+
+// The pipeline location at a pair key, anywhere in the article, or null.
+function locationAt(article: ArticlesArticle, key: string): { passage: ArticlesPassage; loc: ArticlesLocation } | null {
+  for (const passage of arrayOf(article.passages)) {
+    for (const loc of arrayOf(passage?.locations)) {
+      if (loc && typeof loc === "object" && loc.pair_key === key) return { passage, loc };
+    }
+  }
+  return null;
+}
+
+// Whether the article's view model carries the /2 keys an overlay needs.
+function hasPassageKeys(article: ArticlesArticle): boolean {
+  return arrayOf(article.passages).some((p) => typeof p?.passage_key === "string");
+}
+
+// The passage's status after the write, recomputed over the merged set, so the
+// page can move the headline without a reload.
+async function statusAfter(env: Env, article: ArticlesArticle, passage: ArticlesPassage): Promise<SummaryStatus> {
+  const tags = await loadOverlayTags(env, article.pageid);
+  const merged = mergeOverlay(article, { tags, authors: new Map() }, statusRuleOf(article));
+  return merged.byPassage.get(passage.id)?.status ?? "unresolved";
+}
+
+function tagMissingTable(c: Ctx, error: unknown): Response | null {
+  if (!overlayTableMissing(error)) return null;
+  return notConfiguredJson(c, "community tags are not configured (migration 0019)");
+}
+
 // ---- routes ----------------------------------------------------------------
 
 // Search engines are asked to index nothing of the articles plane: a reader page copies a
@@ -1005,6 +1166,24 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     const verdicts = user ? await viewerVerdicts(c.env, user.id, article.pageid, article.campaign) : new Map<string, string>();
     const wikileanSlug = await wikileanSlugFor(c.env, article.title);
     const selfHref = articlesHref(article.pageid, article.title);
+    // The community overlay (plan section 2.8). ?overlay=off is the "As
+    // published" view; the merged one is the default (decision 4). The sealed
+    // view model served by /api/articles/article/:pageid is NOT merged — it
+    // stays cacheable and hash-checkable; the merge happens here, per request,
+    // and these pages send no Cache-Control, so no render key is bumped.
+    const show = c.req.query("overlay") !== "off";
+    const rows = await loadOverlay(c.env, article.pageid);
+    const agreed = user ? (await loadAgreement(c.env, accountFor(user))) !== null : true;
+    const overlay = {
+      merged: mergeOverlay(article, rows, statusRuleOf(article)),
+      show,
+      canEdit: user !== null,
+      needsAgreement: user !== null && !agreed,
+      cc0Text: CC0_AGREEMENT_TEXT,
+      cc0Version: CC0_AGREEMENT_VERSION,
+      turnstileSiteKey: c.env.TURNSTILE_SITE_KEY || null,
+      libraries: arrayOf(universe?.libraries).map((lib) => ({ id: lib.id, label: lib.display_name || lib.id })),
+    };
     // With the store's marked revision (--reader-html) the page is the article itself, its
     // passages highlighted, and ?view=cards the card list; without it, the card list alone. The
     // card list reads no revision: it offers the switch when the view names one, and the reader
@@ -1012,9 +1191,10 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     const cards = c.req.query("view") === "cards";
     const html = cards ? null : await loadReaderHtml(reader, article);
     const readerHref = (cards ? readerNamed(article) : html !== null) ? selfHref : null;
-    const input = { article, universe, user, verdicts, wikileanSlug, selfHref, readerHref };
-    if (html !== null) return articlesHtml(c, articlesReaderPage({ ...input, html }));
-    return articlesHtml(c, articlesArticlePage(input));
+    const input = { article, universe, user, verdicts, wikileanSlug, selfHref, readerHref, overlay };
+    const widget = pageNeedsTurnstile(overlay);
+    if (html !== null) return articlesHtml(c, articlesReaderPage({ ...input, html }), 200, {}, widget);
+    return articlesHtml(c, articlesArticlePage(input), 200, {}, widget);
   });
   app.get("/articles/:pageid{[0-9]+}", articlePage);
   app.get("/articles/:pageid{[0-9]+}/:slug", articlePage);
@@ -1165,5 +1345,307 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     return new Response(body, {
       headers: { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store" },
     });
+  });
+
+  // ---- community tags ----
+
+  // POST /api/articles/tag — add a Lean declaration to a passage, or change the
+  // relation or note of a location already there (the pipeline's or an
+  // editor's). One row per pair_key, last edit wins, under a CAS on the row's
+  // own version. The server copies pageid, revision, campaign, record set and
+  // universe from the store, and derives the repository from the article's own
+  // universe: the client names only what it chose.
+  app.post(TAG_PATH, async (c) => {
+    const reader = articlesReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    const published = await storeRead(c, () => loadCurrent(reader));
+    if (published instanceof Response) return published;
+    if (!published) return notConfiguredJson(c, NOT_PUBLISHED);
+    const writer = await beginTagWrite(c);
+    if (writer instanceof Response) return writer;
+
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.articlesTag);
+    if (!read.ok) return read.response;
+    const parsed = read.value;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return c.json({ ok: false, error: "bad json" }, 400);
+    const body = parsed as Record<string, unknown>;
+    const { pageid, passage_key: passageKey, library, declaration, relation, campaign } = body;
+    if (typeof pageid !== "number" || !Number.isSafeInteger(pageid) || pageid < 1) {
+      return c.json({ ok: false, error: "bad pageid" }, 400);
+    }
+    if (typeof passageKey !== "string" || !SHA_RE.test(passageKey)) return c.json({ ok: false, error: "bad passage_key" }, 400);
+    if (typeof library !== "string" || !LIBRARY_ID_RE.test(library)) return c.json({ ok: false, error: "bad library" }, 400);
+    if (typeof declaration !== "string" || !validDeclaration(declaration.trim())) {
+      return c.json({ ok: false, error: `declaration must be a Lean name of at most ${MAX_DECLARATION_CHARS} characters` }, 400);
+    }
+    if (typeof relation !== "string" || !validRelation(relation)) {
+      return c.json({ ok: false, error: `relation must be one of: ${TAG_RELATIONS.join(", ")}` }, 400);
+    }
+    if (typeof campaign !== "string" || !CAMPAIGN_RE.test(campaign)) return c.json({ ok: false, error: "bad campaign" }, 400);
+    const note = optionalText(c, body.note, MAX_TAG_NOTE_CHARS, "note");
+    if (note instanceof Response) return note;
+    const baseVersion = body.base_version;
+    if (baseVersion !== undefined && (typeof baseVersion !== "number" || !Number.isSafeInteger(baseVersion) || baseVersion < 0)) {
+      return c.json({ ok: false, error: "bad base_version" }, 400);
+    }
+    // A bearer client must say what it read, as every bearer write here does.
+    if (writer.actorType === "agent" && baseVersion === undefined) {
+      return c.json({ ok: false, error: "base_version required" }, 400);
+    }
+    // model and run_id are the research export's, declared by an agent only.
+    const model = writer.actorType === "agent" ? optionalText(c, body.model, 100, "model") : null;
+    if (model instanceof Response) return model;
+    const runId = writer.actorType === "agent" ? optionalText(c, body.run_id, 100, "run_id") : null;
+    if (runId instanceof Response) return runId;
+
+    const article = await storeRead(c, () => loadArticle(reader, pageid));
+    if (article instanceof Response) return article;
+    if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    if (article.campaign !== campaign) {
+      return c.json({ ok: false, error: "stale: these links changed since this page loaded", campaign: article.campaign }, 409);
+    }
+    if (!hasPassageKeys(article)) return c.json({ ok: false, error: NO_PASSAGE_KEYS }, 422);
+    const passage = arrayOf(article.passages).find((p) => p && p.passage_key === passageKey);
+    if (!passage) return c.json({ ok: false, error: "unknown passage_key" }, 404);
+    const universe = await storeRead(c, () => loadUniverse(reader, article.universe.sha256));
+    if (universe instanceof Response) return universe;
+    const entry = arrayOf(universe?.libraries).find((lib) => lib && lib.id === library);
+    if (!entry || typeof entry.repo !== "string" || entry.repo === "") {
+      return c.json({ ok: false, error: "unknown library for this article's universe" }, 400);
+    }
+
+    const decl = declaration.trim();
+    // The producer's own key, so a tag of a declaration the pipeline already
+    // located on this passage IS that location's row.
+    const key = await pairKey(passageKey, entry.repo, decl);
+    const now = Date.now();
+    let existing: ArticleTag | null;
+    try {
+      existing = await loadTag(c.env, key);
+    } catch (error) {
+      const missing = tagMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (existing && writer.actorType === "agent" && existing.actor_type === "human" && existing.state === "live") {
+      return c.json({ ok: false, error: AGENT_HUMAN_ROW_REFUSED }, 403);
+    }
+    const current = existing?.version ?? 0;
+    if (baseVersion !== undefined && baseVersion !== current) {
+      return c.json({ ok: false, error: "stale", version: current, tag: existing }, 409);
+    }
+    const agreement = await requireAgreement(c, writer, body, now);
+    if (agreement instanceof Response) return agreement;
+
+    const base = locationAt(article, key);
+    const baseRelation = base ? base.loc.relation : null;
+    const writes: D1PreparedStatement[] = [
+      c.env.DB.prepare(
+        `INSERT INTO article_tags (pair_key, pageid, passage_key, library, repository, declaration, relation, note,
+            state, origin, base_relation, added_by, actor_type, via, token_id, model, run_id, campaign, revision,
+            record_set, universe_sha256, version, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'live', 'community', ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+         ON CONFLICT(pair_key) DO UPDATE SET
+            relation = excluded.relation, note = excluded.note, state = 'live',
+            base_relation = excluded.base_relation, added_by = excluded.added_by,
+            actor_type = excluded.actor_type, via = excluded.via, model = excluded.model, run_id = excluded.run_id,
+            campaign = excluded.campaign, revision = excluded.revision, record_set = excluded.record_set,
+            universe_sha256 = excluded.universe_sha256, version = article_tags.version + 1,
+            updated_at = excluded.updated_at, removed_by = NULL, removed_at = NULL, removed_reason = NULL
+         WHERE article_tags.version = ?`,
+      ).bind(
+        key, pageid, passageKey, library, entry.repo, decl, relation, note,
+        baseRelation, writer.user.id, writer.actorType, writer.via, model, runId, article.campaign,
+        article.revision, article.record_set, article.universe.sha256, now, now, current,
+      ),
+    ];
+    if (agreement.needsRecord) {
+      writes.push(c.env.DB.prepare(
+        "INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?, ?, ?, ?) " +
+          "ON CONFLICT(user_id) DO NOTHING",
+      ).bind(writer.account, CC0_AGREEMENT_VERSION, now, agreement.verifiedAt));
+    }
+    let changes = 0;
+    try {
+      const results = await c.env.DB.batch(writes);
+      changes = results[0]?.meta?.changes ?? 0;
+    } catch (error) {
+      const missing = tagMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (changes === 0) {
+      // The CAS lost: somebody else saved between the read and the write.
+      const fresh = await loadTag(c.env, key);
+      return c.json({ ok: false, error: "stale", version: fresh?.version ?? 0, tag: fresh }, 409);
+    }
+    const version = current + 1;
+    console.log(JSON.stringify({
+      event: "articles-tag", pageid, pair_key: key, relation, actor_type: writer.actorType,
+      user_id: writer.user.id, version, t: now,
+    }));
+    return c.json({
+      ok: true, pair_key: key, version, state: "live", relation,
+      confirms: baseRelation === relation && (base?.loc.note ?? null) === note,
+      status: await statusAfter(c.env, article, passage),
+    }, 200, { "Cache-Control": "no-store" });
+  });
+
+  // POST /api/articles/tag/:pair_key/state — "this link is wrong" (a SOFT
+  // delete that leaves a gravestone: state, remover, time and a required
+  // reason), and its undo. Removing a location the pipeline made writes the
+  // gravestone row for it; the sealed record is untouched, so restoring it is
+  // always safe. An admin reverts an edit by writing the row back.
+  app.post(`${TAG_PATH}/:pair_key/state`, async (c) => {
+    const reader = articlesReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    const published = await storeRead(c, () => loadCurrent(reader));
+    if (published instanceof Response) return published;
+    if (!published) return notConfiguredJson(c, NOT_PUBLISHED);
+    const key = c.req.param("pair_key");
+    if (!SHA_RE.test(key)) return c.json({ ok: false, error: "bad pair_key" }, 400);
+    const writer = await beginTagWrite(c);
+    if (writer instanceof Response) return writer;
+
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.articlesTag);
+    if (!read.ok) return read.response;
+    const parsed = read.value;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return c.json({ ok: false, error: "bad json" }, 400);
+    const body = parsed as Record<string, unknown>;
+    const { pageid, state, campaign } = body;
+    if (typeof pageid !== "number" || !Number.isSafeInteger(pageid) || pageid < 1) {
+      return c.json({ ok: false, error: "bad pageid" }, 400);
+    }
+    if (state !== "live" && state !== "removed") return c.json({ ok: false, error: "state must be 'live' or 'removed'" }, 400);
+    if (typeof campaign !== "string" || !CAMPAIGN_RE.test(campaign)) return c.json({ ok: false, error: "bad campaign" }, 400);
+    const reason = optionalText(c, body.reason, MAX_REMOVE_REASON_CHARS, "reason");
+    if (reason instanceof Response) return reason;
+    if (state === "removed" && !reason) return c.json({ ok: false, error: "a reason is required to remove a link" }, 400);
+    const baseVersion = body.base_version;
+    if (baseVersion !== undefined && (typeof baseVersion !== "number" || !Number.isSafeInteger(baseVersion) || baseVersion < 0)) {
+      return c.json({ ok: false, error: "bad base_version" }, 400);
+    }
+    if (writer.actorType === "agent" && baseVersion === undefined) {
+      return c.json({ ok: false, error: "base_version required" }, 400);
+    }
+
+    const article = await storeRead(c, () => loadArticle(reader, pageid));
+    if (article instanceof Response) return article;
+    if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    if (article.campaign !== campaign) {
+      return c.json({ ok: false, error: "stale: these links changed since this page loaded", campaign: article.campaign }, 409);
+    }
+    let existing: ArticleTag | null;
+    try {
+      existing = await loadTag(c.env, key);
+    } catch (error) {
+      const missing = tagMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (existing && existing.pageid !== pageid) return c.json({ ok: false, error: "unknown pair_key" }, 404);
+    const base = locationAt(article, key);
+    if (!existing && !base) {
+      if (!hasPassageKeys(article)) return c.json({ ok: false, error: NO_PASSAGE_KEYS }, 422);
+      return c.json({ ok: false, error: "unknown pair_key" }, 404);
+    }
+    if (existing && writer.actorType === "agent" && existing.actor_type === "human" && existing.state === "live") {
+      return c.json({ ok: false, error: AGENT_HUMAN_ROW_REFUSED }, 403);
+    }
+    const current = existing?.version ?? 0;
+    if (baseVersion !== undefined && baseVersion !== current) {
+      return c.json({ ok: false, error: "stale", version: current, tag: existing }, 409);
+    }
+    const passage = existing
+      ? arrayOf(article.passages).find((p) => p && p.passage_key === existing!.passage_key) ?? base?.passage
+      : base?.passage;
+    if (!passage) return c.json({ ok: false, error: "unknown pair_key" }, 404);
+    const agreement = await requireAgreement(c, writer, body, Date.now());
+    if (agreement instanceof Response) return agreement;
+
+    const now = Date.now();
+    const removed = state === "removed";
+    const writes: D1PreparedStatement[] = [];
+    if (existing) {
+      writes.push(c.env.DB.prepare(
+        `UPDATE article_tags
+            SET state = ?, version = version + 1, updated_at = ?,
+                removed_by = ?, removed_at = ?, removed_reason = ?
+          WHERE pair_key = ? AND version = ?`,
+      ).bind(state, now, removed ? writer.user.id : null, removed ? now : null, removed ? reason : null, key, current));
+    } else {
+      // No community row yet: the gravestone (or the restore, a no-op that
+      // records agreement with the pipeline) is written from the store's own
+      // location, copied here exactly as the add route copies it.
+      const loc = base!.loc;
+      writes.push(c.env.DB.prepare(
+        `INSERT INTO article_tags (pair_key, pageid, passage_key, library, repository, declaration, relation, note,
+            state, origin, base_relation, added_by, actor_type, via, token_id, model, run_id, campaign, revision,
+            record_set, universe_sha256, version, created_at, updated_at, removed_by, removed_at, removed_reason)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'community', ?, ?, ?, ?, NULL, NULL, NULL, ?, ?, ?, ?, 1, ?, ?, ?, ?, ?)
+         ON CONFLICT(pair_key) DO NOTHING`,
+      ).bind(
+        key, pageid, String(passage.passage_key ?? ""), loc.library, loc.repo, loc.declaration, loc.relation, loc.note,
+        state, loc.relation, writer.user.id, writer.actorType, writer.via, article.campaign, article.revision,
+        article.record_set, article.universe.sha256, now, now,
+        removed ? writer.user.id : null, removed ? now : null, removed ? reason : null,
+      ));
+    }
+    if (agreement.needsRecord) {
+      writes.push(c.env.DB.prepare(
+        "INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?, ?, ?, ?) " +
+          "ON CONFLICT(user_id) DO NOTHING",
+      ).bind(writer.account, CC0_AGREEMENT_VERSION, now, agreement.verifiedAt));
+    }
+    let changes = 0;
+    try {
+      const results = await c.env.DB.batch(writes);
+      changes = results[0]?.meta?.changes ?? 0;
+    } catch (error) {
+      const missing = tagMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (changes === 0) {
+      const fresh = await loadTag(c.env, key);
+      return c.json({ ok: false, error: "stale", version: fresh?.version ?? 0, tag: fresh }, 409);
+    }
+    console.log(JSON.stringify({
+      event: "articles-tag-state", pageid, pair_key: key, state, actor_type: writer.actorType,
+      user_id: writer.user.id, t: now,
+    }));
+    return c.json({
+      ok: true, pair_key: key, version: current + 1, state,
+      status: await statusAfter(c.env, article, passage),
+    }, 200, { "Cache-Control": "no-store" });
+  });
+
+  // GET /api/articles/overlay/:pageid — one article's community overlay, never
+  // cached. Deliberately NOT merged into /api/articles/article/:pageid, which
+  // stays the sealed view model verbatim, cacheable and hash-checkable
+  // (public, max-age=300). Reads only D1, so it answers whether or not the
+  // store is bound; anonymous reads take the plane's small-object budget.
+  app.get("/api/articles/overlay/:pageid", async (c) => {
+    if (!(await readAllowed(c, "articles-meta"))) return limitedJson(c);
+    const pageid = parsePageid(c.req.param("pageid"));
+    if (pageid === null) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    const overlay = await loadOverlay(c.env, pageid);
+    return c.json({
+      ok: true,
+      pageid,
+      tags: overlay.tags.map((tag) => {
+        const author = overlay.authors.get(tag.added_by) ?? null;
+        return {
+          pair_key: tag.pair_key, passage_key: tag.passage_key, library: tag.library, repository: tag.repository,
+          declaration: tag.declaration, relation: tag.relation, note: tag.note, state: tag.state,
+          base_relation: tag.base_relation, actor_type: tag.actor_type, via: tag.via,
+          model: tag.model, run_id: tag.run_id, campaign: tag.campaign, revision: tag.revision,
+          version: tag.version, created_at: tag.created_at, updated_at: tag.updated_at,
+          removed_at: tag.removed_at, removed_reason: tag.removed_reason,
+          added_by: { id: tag.added_by, name: author?.name ?? tag.added_by, owner_id: author?.ownerId ?? null, owner_name: author?.ownerName ?? null },
+          removed_by: tag.removed_by,
+        };
+      }),
+    }, 200, { "Cache-Control": "no-store" });
   });
 }
