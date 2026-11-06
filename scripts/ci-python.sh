@@ -134,5 +134,6 @@ run_check "Bot settle trim tests" "$PYTHON_BIN" bot/test_split.py
 run_check "Bot tag refresh refuses a truncated list" "$PYTHON_BIN" bot/test_refresh_tagged.py
 run_check "Queue publisher keeps the bearer off argv" "$PYTHON_BIN" bot/test_publish_queue.py
 run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" scripts/test_workflow_credentials.py
+run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scripts/test_revoke_github_tokens.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"
