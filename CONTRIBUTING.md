@@ -4,6 +4,17 @@ Thanks for considering a contribution. WikiLean is a small, focused project: an 
 
 ---
 
+## Start here: the formalization reader
+
+**[docs/START-CONTRIBUTING.md](docs/START-CONTRIBUTING.md)** is the one-page guide to helping with the thing this project is actually for — answering, passage by passage, whether a statement is formalized in Lean and where. It covers four paths, in order of effort, and says plainly which are open:
+
+- **Confirm or report a link** at [/articles](https://wikilean.jackmccarthy.org/articles) — one click, **live today**, and worth most on claimed absences and downgraded links, which are the two places the pre-launch audit measured the data as weakest;
+- **tag a passage yourself** — coming in the next release;
+- **run your own agent** against the API — after that one;
+- **run the whole locate pipeline** on your own machine — built, not yet open, please ask first.
+
+The rest of this file is the older, separate path: annotating the `/:slug` pages, and contributing code.
+
 ## 1. Annotating on the live site
 
 This is the easiest and highest-impact contribution path. **No setup needed beyond a browser and a GitHub account.**
