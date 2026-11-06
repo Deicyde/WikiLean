@@ -405,17 +405,17 @@ describe("the site-wide write brake", () => {
 
   it("refuses every write surface of R1 while it is on", async () => {
     const h = braked();
-    const writes: Array<[string, Promise<Response>]> = [
-      ["tag", post(h.env, TAG, tagBody(), { user: "u-human" })],
-      ["tag state", post(h.env, `${TAG}/${P0.locations[0].pair_key}/state`,
+    const writes: Array<[string, () => Promise<Response>]> = [
+      ["tag", () => post(h.env, TAG, tagBody(), { user: "u-human" })],
+      ["tag state", () => post(h.env, `${TAG}/${P0.locations[0].pair_key}/state`,
         { pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, state: "removed", reason: "x" }, { user: "u-human" })],
-      ["feedback", post(h.env, "/api/articles/feedback",
+      ["feedback", () => post(h.env, "/api/articles/feedback",
         { location_key: P0.locations[0].location_key, pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, verdict: "confirm" },
         { user: "u-human" })],
-      ["an agent's tag", post(h.env, TAG, tagBody({ base_version: 0 }), AGENT)],
+      ["an agent's tag", () => post(h.env, TAG, tagBody({ base_version: 0 }), AGENT)],
     ];
-    for (const [label, pending] of writes) {
-      const res = await pending;
+    for (const [label, send] of writes) {
+      const res = await send();
       expect(res.status, label).toBe(503);
       expect((await jsonOf(res)).error, label).toBe(BRAKE_MESSAGE);
     }
