@@ -1222,6 +1222,10 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     if (user.role === "bot" || user.role === "agent") {
       return c.json({ ok: false, error: "session required (no bots)" }, 403);
     }
+    // The site-wide write brake covers every public write surface of this
+    // plane, feedback included (site-settings.ts).
+    const braked = await writeBrake(c);
+    if (braked) return braked;
     const { success } = await c.env.EDIT_LIMITER.limit({ key: `articles:${user.id}` });
     if (!success) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
 

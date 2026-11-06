@@ -23,11 +23,13 @@
 // (which only type-imports articles.ts) and types from articles.ts, so there is
 // no import cycle with either.
 
-import type { Context } from "hono";
 import type { Env } from "./env.js";
 import type { AuthUser } from "./auth.js";
 import type { ArticlesArticle, ArticlesLocation, ArticlesPassage, SummaryStatus } from "./articles.js";
 import { locationStatus } from "./articles-render.js";
+// The brake lives in a module of its own so the Brain's write paths can read
+// it without pulling in the articles plane; re-exported here for the routes.
+export { BRAKE_MESSAGE, SITE_WRITE_MODE_KEY, siteWriteMode, WRITE_MODE_OPEN, writeBrake } from "./site-settings.js";
 
 // ---- vocabulary ------------------------------------------------------------
 
@@ -423,43 +425,6 @@ export function mergeOverlay(
     if (status !== "unresolved") byStatus[status] += 1;
   }
   return { byPassage, live, removed, edits: overlay.tags.length, byStatus, truncated: overlay.tags.length >= MAX_OVERLAY_ROWS };
-}
-
-// ---- the site-wide write brake (plan section 2.5) ---------------------------
-
-export const SITE_WRITE_MODE_KEY = "site_write_mode";
-export const WRITE_MODE_OPEN = "open";
-
-// The brake is read per write. 'open' allows the write; ANY other value refuses
-// it — fail closed, because the brake exists to stop an abuse spree in a second
-// when there is no Worker-only hotfix path. R1 knows only 'open' and 'locked';
-// 'autoconfirmed' (plan section 2.5, the trust tiers of release R3) therefore
-// refuses everything in R1, which is the safe direction for an unknown value.
-//
-// A missing table or row reads as 'open': migration 0019 creates both, and every
-// overlay write needs article_tags from the same file, so a half-applied
-// migration must not brick writes that cannot happen anyway.
-export async function siteWriteMode(env: Pick<Env, "DB">): Promise<string> {
-  try {
-    const { results } = await env.DB.prepare(
-      "SELECT value FROM site_settings WHERE key = ?",
-    ).bind(SITE_WRITE_MODE_KEY).all<{ value: string }>();
-    return results[0]?.value ?? WRITE_MODE_OPEN;
-  } catch (error) {
-    if (!overlayTableMissing(error)) throw error;
-    return WRITE_MODE_OPEN;
-  }
-}
-
-export const BRAKE_MESSAGE =
-  "editing is paused site-wide; a maintainer closed it and it will reopen without a deploy";
-
-// null = the write may proceed; a Response = the brake is on (503, no-store).
-export async function writeBrake(c: Context<{ Bindings: Env }>): Promise<Response | null> {
-  const mode = await siteWriteMode(c.env);
-  if (mode === WRITE_MODE_OPEN) return null;
-  console.log(JSON.stringify({ event: "write-brake", path: c.req.path, mode }));
-  return c.json({ ok: false, error: BRAKE_MESSAGE, write_mode: mode }, 503, { "Cache-Control": "no-store" });
 }
 
 // ---- trust tier and the daily caps (plan section 2.6) -----------------------

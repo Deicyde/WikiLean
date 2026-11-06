@@ -1548,12 +1548,43 @@ app.put("/api/article/:slug", async (c) => {
   return c.json({ ok: true, slug, version: 1 }, 201);
 });
 
-// ---- save an edit (session login, or pipeline bearer with role 'bot') ----
+// Editing is off on the annotated article pages (decision 5, option (b) of the
+// signed public-editing plan, 2026-11-06, carrying Jack's 2026-11-05
+// retirement decision: "Editing goes; Confirm and Report replace it"). The
+// pages and their routes stay, and stay readable; what stops is the writing.
+// A later Release 2 cutover deletes the routes and assets — it is NOT run here
+// and waits for R2, which gives the overlay history, diffs and revert.
+//
+// Refused: human saves, proposal decisions and PR #126's agent annotation
+// saves. NOT refused: the pipeline bearer (the nightly still writes
+// annotations), revert, patrol, flags, watchlists and every read. Brain writes
+// are untouched.
+export const SLUG_EDITING_OFF =
+  "editing has moved off the annotated article pages; tag the passage on its /articles page instead";
+
+async function editingOffHere(c: Context<{ Bindings: Env }>, slug: string): Promise<Response> {
+  const db = drizzle(c.env.DB);
+  const row = (await db.select({ title: articles.wikipediaTitle }).from(articles).where(eq(articles.slug, slug)).limit(1))[0];
+  const entry = row ? await articlesSummaryFor(c.env, row.title) : null;
+  const href = entry ? articlesHref(entry.pageid, entry.title) : null;
+  return c.json({
+    ok: false,
+    error: SLUG_EDITING_OFF,
+    articles_href: href,
+    detail: href
+      ? "This article's passages are on its formalization page, where anyone signed in can tag them, change a tag or say a link is wrong."
+      : "No record set covers this article yet, so it has no formalization page; nothing here takes edits.",
+  }, 403);
+}
+
+// ---- save an edit (pipeline bearer with role 'bot'; sessions and agents are
+// refused — editing has moved to the formalization reader's overlay) ----
 app.post("/api/article/:slug", async (c) => {
   const originErr = checkOrigin(c);
   if (originErr) return originErr;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
+  if (user.role !== "bot") return editingOffHere(c, c.req.param("slug"));
   const isBot = user.role === "bot";
   // An agent token (agents.ts) writes under the pipeline's rules (base_version
   // required, human annotations protected, proposals for the rest) but holds
@@ -3226,7 +3257,8 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
   // (pages.ts injectArticlesSummary). Null when ARTICLES is unbound or the
   // title has no entry; a store failure never breaks the article page.
   const entry = await articlesSummaryFor(c.env, row.wikipediaTitle);
-  const formalizationBox = entry ? articlesSummaryBox(entry, articlesHref(entry.pageid, entry.title), row.revid) : null;
+  const articlesPage = entry ? articlesHref(entry.pageid, entry.title) : null;
+  const formalizationBox = entry ? articlesSummaryBox(entry, articlesPage as string, row.revid) : null;
   // latestRevid/revid feed the per-request staleness banner (rendered by
   // injectAuthAndEditor — never baked into the cached base page).
   const page = injectArticlesSummary(injectAuthAndEditor(base, {
@@ -3240,6 +3272,9 @@ async function serveArticle(c: Context<{ Bindings: Env }>, slug: string) {
     revid: row.revid,
     isWatching,
     proposals,
+    // Editing is off on this plane: no editor, and the sign-in-to-edit button
+    // becomes a pointer at the article's formalization page.
+    editingOff: { articlesHref: articlesPage },
   }), formalizationBox);
   return c.html(page);
 }
