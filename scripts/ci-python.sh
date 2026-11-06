@@ -81,6 +81,13 @@ run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
 run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
+run_check "Pipeline Literature Links pin" "$PYTHON_BIN" scripts/pipeline/test_links.py
+run_check "Pipeline revision-free key tests" "$PYTHON_BIN" scripts/pipeline/test_keys.py
+run_check "Pipeline locate vocabulary parity" "$PYTHON_BIN" scripts/pipeline/test_vocab.py
+run_check "Pipeline derived-status parity (rules 1, 2 and 3)" "$PYTHON_BIN" scripts/pipeline/test_status.py
+run_check "Pipeline record builder tests" "$PYTHON_BIN" scripts/pipeline/test_records.py
+run_check "Pipeline sealed record set read back and re-exported" "$PYTHON_BIN" scripts/pipeline/test_record_sets.py
+run_check "Pipeline contribute transport, claim and sandbox" "$PYTHON_BIN" scripts/pipeline/contribute/test_contribute.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
