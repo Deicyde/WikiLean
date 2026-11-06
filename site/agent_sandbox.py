@@ -98,6 +98,13 @@ PERMITTED_TOOLS = frozenset(READ_TOOLS) | {TOOL_SEARCH}
 
 PROTECTED_ROOTS_ENV = "WIKILEAN_PROTECTED_ROOTS"
 
+# How large one control-protocol message may be. The SDK's default is 1 MiB, and a
+# Grep over a staged corpus of half a million declarations overruns it: the transport
+# then dies mid-call with a decode error, which is an unpriced call that bought
+# nothing. This is a transport limit and no part of the boundary — nothing about what
+# an agent may reach depends on it.
+MAX_BUFFER_BYTES = 64 * 1024 * 1024
+
 _REQUIRED_FIELDS = ("tools", "allowed_tools", "disallowed_tools",
                     "permission_mode", "setting_sources", "cwd")
 
@@ -420,6 +427,8 @@ def sandboxed_options(*, model: str | None, system_prompt: str, tools: Iterable[
         hooks={"PreToolUse": [HookMatcher(
             matcher=None, hooks=[_pre_tool_use_hook(writable, base, allowed)])]},
     )
+    if "max_buffer_size" in have:
+        kwargs["max_buffer_size"] = MAX_BUFFER_BYTES
     if mcp_servers:
         kwargs["mcp_servers"] = mcp_servers
     if "strict_mcp_config" in have:

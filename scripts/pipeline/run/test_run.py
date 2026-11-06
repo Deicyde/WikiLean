@@ -247,6 +247,39 @@ class HarvestTests(unittest.TestCase):
         self.assertFalse(receipt["complete"])
         self.assertEqual(receipt["gate"]["rejected"], ["task-0"])
 
+    def test_a_task_the_gate_passed_on_a_retry_is_gated_and_the_retry_is_counted(self):
+        """The runner retries a refused document with the gate's own refusals, so one
+        shard's log holds an attempt's refusal beside the pass that replaced it. Only
+        the document whose last call passed is in the corpus, so the verdict is the
+        last call — and the retry is still reported."""
+        log = self.root / "gate.jsonl"
+        log.write_text("".join(json.dumps(row) + "\n" for row in (
+            {"changed_files": True, "pre_merge": False, "ok": False, "task_id": "task-0"},
+            {"changed_files": True, "pre_merge": False, "ok": True, "task_id": "task-0"},
+            {"changed_files": True, "pre_merge": False, "ok": True, "task_id": "task-1"},
+            {"changed_files": True, "pre_merge": False, "ok": False, "task_id": "task-2"},
+        )), encoding="utf-8")
+        receipt = harvest_mod.harvest(run_id="r1", source=self.source, dest=self.dest,
+                                      gate_log=log)
+        gate = receipt["gate"]
+        self.assertEqual(gate["calls"], 4)
+        self.assertEqual(gate["tasks"], 3)
+        self.assertEqual(gate["retried"], 1)
+        self.assertEqual(gate["rejected"], ["task-2"])
+        self.assertFalse(receipt["complete"])          # task-2 is still refused
+
+    def test_every_task_passing_on_a_retry_is_a_complete_harvest(self):
+        log = self.root / "gate.jsonl"
+        log.write_text("".join(json.dumps(row) + "\n" for row in (
+            {"changed_files": True, "pre_merge": False, "ok": False, "task_id": "task-0"},
+            {"changed_files": True, "pre_merge": False, "ok": True, "task_id": "task-0"},
+        )), encoding="utf-8")
+        receipt = harvest_mod.harvest(run_id="r1", source=self.source, dest=self.dest,
+                                      gate_log=log)
+        self.assertEqual(receipt["gate"]["failed"], 0)
+        self.assertEqual(receipt["gate"]["retried"], 1)
+        self.assertTrue(receipt["complete"], harvest_mod.describe(receipt))
+
 
 class CostTests(unittest.TestCase):
     def setUp(self):

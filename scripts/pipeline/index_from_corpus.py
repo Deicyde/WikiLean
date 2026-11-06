@@ -432,17 +432,32 @@ in the others by the pair it starts with.
 | `docstrings.tsv` | `library` · `declaration` · the docstring, on one line |
 | `wikidata.tsv` | `library` · `declaration` · a `@[wikidata]` QID it carries |
 
+**These tables are large — hundreds of thousands of lines, and `signatures.tsv` is
+over a hundred megabytes.** Every Grep over them must be narrow or it returns more
+than anyone can read:
+
+* **always pass a head limit** (`head_limit: 50` is usually plenty, never more than
+  200) and `output_mode: "content"`. A Grep with no limit on a table this size is a
+  wasted call;
+* **start from the narrowest pattern you can write**, anchored on a real identifier or
+  a real symbol. A pattern like `Hom`, `map`, `.*group.*` or a bare word matches tens
+  of thousands of lines; `MonoidHom`, `\tderiv\t`, `gradient_const` match what you
+  meant. Anchor on the tab (`\t`) to match a whole column;
+* **search `declarations.tsv` first**: it is the smallest, and a name you find there is
+  then looked up in the other three by the `library`+`declaration` pair it starts with.
+
 How to search:
 
 * by name — `Grep` `declarations.tsv` for the identifier, or part of it. Lean names are
   dot-separated and camel-cased, so a pattern like `Monoid.*Hom` finds more than
-  `MonoidHom` does.
+  `MonoidHom` does; keep the `.*` short, and keep the head limit on.
 * by what it says — `Grep` `signatures.tsv` for the operator, the type or the binder
   (`IsOpen`, `deriv`, `∀ .*Group`), and `docstrings.tsv` for the words a library would
-  use to describe it.
+  use to describe it. Both are big: limit every one of these.
 * by module — the last column of `declarations.tsv`; a field's declarations live
   together, so one good hit's module names the place to look for its neighbours.
-* `Read` any of them with an offset when a Grep hit needs its surroundings.
+* `Read` any of them with an `offset` and a `limit` when a Grep hit needs its
+  surroundings. Never `Read` a whole table.
 
 The tables are the universe and nothing else: a declaration that is not in them is not
 in the universe, and naming one in a document is refused by the gate.
