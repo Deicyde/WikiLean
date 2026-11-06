@@ -264,6 +264,16 @@ class CostTests(unittest.TestCase):
         self.assertEqual(block["unpriced_calls"], 1)
         self.assertEqual(block["unpriced_seconds"], 2700.0)
 
+    def test_a_call_that_returned_empty_at_once_is_counted_at_its_own_zero(self):
+        # the record's elapsed_s is the authority even at 0.0: reading the harness's
+        # duration_ms as the agent's time prices an empty return as if it had run
+        self.envelope("t.worker.20260101T000000Z.1.json",
+                      {"total_cost_usd": None, "duration_ms": 8,
+                       "cf_agent_call": {"elapsed_s": 0.0, "outcome": "empty"}})
+        block = cost_mod.cost_block(self.usage)
+        self.assertEqual(block["unpriced_calls"], 1)
+        self.assertEqual(block["unpriced_seconds"], 0.0)
+
 
 class Args:
     def __init__(self, **kw):
@@ -302,6 +312,17 @@ class WatchdogTests(unittest.TestCase):
         self.assertEqual(got["unpriced_calls"], 1)
         self.assertEqual(got["estimated_unpriced_usd"], 10.0)
         self.assertEqual(got["usd_per_hour"], 3600.0)
+
+    def test_an_empty_return_is_not_priced_as_if_it_had_run(self):
+        self.priced(1, 1.0, millis=1000)          # $1 a second
+        for number in range(2, 5):
+            self.envelope(f"t{number}.worker.2026010{number}T000000Z.{number}.json",
+                          {"total_cost_usd": None, "duration_ms": 8,
+                           "cf_agent_call": {"elapsed_s": 0.0, "outcome": "empty"}})
+        got = watchdog_mod.ledger(self.root / "usage")
+        self.assertEqual(got["unpriced_calls"], 3)
+        self.assertEqual(got["unpriced_seconds"], 0.0)
+        self.assertEqual(got["estimated_unpriced_usd"], 0.0)
 
     def test_an_unpriced_call_with_no_rate_at_all_is_not_guessed_at(self):
         self.envelope("t2.worker.20260102T000000Z.2.json",

@@ -39,6 +39,27 @@ def _number(value: Any) -> float | None:
     return None
 
 
+#: Where a runner records what a call that left no priced envelope did; see
+#: :func:`watchdog.call_seconds`, which reads the same two keys.
+CALL_KEYS = ("agent_call", "cf_agent_call")
+
+
+def call_seconds(envelope: dict) -> float | None:
+    """How long an unpriced call ran, from its own record; None when it kept none.
+
+    ``elapsed_s`` is the authority even at ``0.0``: a call that returned empty in eight
+    milliseconds cost nothing, and reading the harness's ``duration_ms`` as the agent's
+    time would price thousands of them as if they had run.
+    """
+    for key in CALL_KEYS:
+        record = envelope.get(key)
+        if isinstance(record, dict):
+            value = _number(record.get("elapsed_s"))
+            if value is not None:
+                return value
+    return None
+
+
 def envelope_files(usage_dir: Path) -> list[Path]:
     """Every kept envelope under ``usage/``, sorted; an unreadable one is left out."""
     directory = Path(usage_dir)
@@ -87,8 +108,7 @@ def cost_block(usage_dir: Path, *, price_table_sha256: str = "") -> dict:
             continue
         # a call that left no priced envelope: its seconds are recorded, never dropped
         unpriced_calls += 1
-        seconds = _number((data.get("agent_call") or {}).get("elapsed_s")) \
-            if isinstance(data.get("agent_call"), dict) else None
+        seconds = call_seconds(data)
         if seconds is None:
             millis = _number(data.get("duration_ms"))
             seconds = millis / 1000.0 if millis is not None else None

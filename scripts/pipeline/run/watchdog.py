@@ -85,6 +85,28 @@ def _number(value) -> float | None:
     return None
 
 
+#: Where a runner records what a call that left no priced envelope did. This pipeline
+#: writes ``agent_call``; a run host that wrote ``cf_agent_call`` is read too, so a
+#: recorded run can be replayed against this watchdog without rewriting its envelopes.
+CALL_KEYS = ("agent_call", "cf_agent_call")
+
+
+def call_seconds(envelope: dict) -> float | None:
+    """How long an unpriced call ran, from its own record; None when it kept none.
+
+    The record's ``elapsed_s`` is the authority even when it is ``0.0`` — a call that
+    returned empty in eight milliseconds cost nothing, and reading the harness's
+    ``duration_ms`` as the agent's time would price thousands of them as if they had run.
+    """
+    for key in CALL_KEYS:
+        record = envelope.get(key)
+        if isinstance(record, dict):
+            value = _number(record.get("elapsed_s"))
+            if value is not None:
+                return value
+    return None
+
+
 def envelope_name(name: str) -> dict | None:
     """``{task_id, role, step, stamp, pid}`` of an envelope's file name, or None.
 
@@ -147,8 +169,7 @@ def ledger(usage_dir: Path, *, fallback_usd_per_hour: float | None = None) -> di
                     here = cost / (millis / 1000.0)
                     rate = here if rate is None else max(rate, here)
             continue
-        call = data.get("agent_call") if isinstance(data.get("agent_call"), dict) else {}
-        seconds = _number(call.get("elapsed_s"))
+        seconds = call_seconds(data)
         if seconds is None and millis is not None:
             seconds = millis / 1000.0
         if seconds is not None:
