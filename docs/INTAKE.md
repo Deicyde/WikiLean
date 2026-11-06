@@ -2,12 +2,12 @@
 
 **Status: design only, with its checks built.** No endpoint exists, no table exists, no key
 has been issued, and nothing here is deployed. What *is* built is
-`scripts/atlas/verify_submission.py`, the offline statement of section 3's checks, so the
+`scripts/articles/verify_submission.py`, the offline statement of section 3's checks, so the
 contract can be tested from this side before anything is written on either.
 
-The formalization atlas ([ATLAS.md](ATLAS.md)) takes sealed locate record sets from the
+The formalization reader ([ARTICLES.md](ARTICLES.md)) takes sealed locate record sets from the
 formal-companion skill's locate pipeline. Today an **operator copies** one from the machine
-that produced it and runs `scripts/atlas/build_store.py` by hand (ATLAS.md section 2). That
+that produced it and runs `scripts/articles/build_store.py` by hand (ARTICLES.md section 2). That
 is right while one person runs every locate run. It is a bottleneck as soon as several
 machines produce sets a reviewer would accept as they stand — which is what formal-companion's
 *contribute mode* makes possible: locate work on a machine no ssh reaches, run by somebody
@@ -26,8 +26,8 @@ documented there; a contributor installs that skill, and WikiLean vendors no par
 ## 1. What a machine posts
 
 **One sealed record set, whole, in one request** — exactly what the producer's
-`cf export literature-links` writes, and exactly what `scripts/atlas/build_store.py` already
-reads (ATLAS.md section 3):
+`cf export literature-links` writes, and exactly what `scripts/articles/build_store.py` already
+reads (ARTICLES.md section 3):
 
 ```
 SEAL.json                     cf-locate-recordset/2: the pins and every file's sha256
@@ -68,26 +68,26 @@ timing.
 
 ## 2. The verifier
 
-`scripts/atlas/verify_submission.py` is this document's section 3 as code, offline, with no
+`scripts/articles/verify_submission.py` is this document's section 3 as code, offline, with no
 network, no D1 and no Worker binding. It is the normative statement of the checks: an endpoint
 written in TypeScript re-implements them and is tested against this module's answers.
 
 Every check that is about the **record set** rather than about the **submission** is delegated
-to `scripts/atlas/build_store.py`, so the two cannot drift — a set the store builder refuses
+to `scripts/articles/build_store.py`, so the two cannot drift — a set the store builder refuses
 is a set intake refuses, by construction. What the verifier adds is the envelope, the `/1`
 refusal and the key's scope.
 
 It is also the command an operator or a contributor runs by hand until an endpoint exists:
 
 ```sh
-python3 scripts/atlas/verify_submission.py --record-set <dir> --machine-id <id>
+python3 scripts/articles/verify_submission.py --record-set <dir> --machine-id <id>
 ```
 
 Exit 0 and the staging rows on stdout, or exit 2 and the refusal's code, HTTP status and
 reason on stderr. `--out <file>` writes the rows; `--campaign`, `--universe`,
 `--max-submissions-per-day`, `--max-bytes-per-day` and `--max-body-bytes` give it a key's
 scope; `--body`, `--content-digest` and `--idempotency-key` give it the envelope. Tests:
-`scripts/atlas/test_verify_submission.py`, in `scripts/ci-python.sh`.
+`scripts/articles/test_verify_submission.py`, in `scripts/ci-python.sh`.
 
 ## 3. What intake verifies before it accepts
 
@@ -157,7 +157,7 @@ submission_file(submission_id, path, sha256, bytes)
   to be the bytes the seal signed.
 - **The live tables are untouched.** No annotation write, no item identity matching, no
   interaction with the nightly moderation pipeline — the same boundary the atlas plane already
-  draws (ATLAS.md section 1), and for the same reason: `articles.revid` advances only
+  draws (ARTICLES.md section 1), and for the same reason: `articles.revid` advances only
   atomically with a re-anchored annotations payload, and `findLostHuman` 422 is the floor
   (CLAUDE.md, "Hard invariants"). An intake that wrote into the annotation schema would be a
   migration nobody asked for.
@@ -200,7 +200,7 @@ A set in staging is not in the Brain. **Promotion** would move accepted sets int
 
 1. A promotion run selects accepted submissions by (universe, campaign, status rule),
    deduplicates them by `pair_key` and `passage_key`, and writes `brain/proposals/*.jsonl` —
-   the one path ATLAS.md section 13 already admits without a gate-mode decision.
+   the one path ARTICLES.md section 13 already admits without a gate-mode decision.
 2. The nightly build folds those proposals offline (`brain/fold_proposals.py`, offline-only).
 3. The reproducibility gate re-derives the fold's output and refuses a build that does not
    reproduce.
@@ -208,7 +208,7 @@ A set in staging is not in the Brain. **Promotion** would move accepted sets int
 **Step 1 is where this stops, because the rest is Jack's open "Brain v4 release path"
 decision** (ROADMAP.md, "Waiting on Jack"). What it needs from him, specifically:
 
-- **Which gate mode admits a content change.** ATLAS.md section 13 records that the release
+- **Which gate mode admits a content change.** ARTICLES.md section 13 records that the release
   gate accepts only *provenance* changes today. A locate location is a content edge, not a
   provenance one.
 - **Whether a contributed set may be a first-class input at all**, or only ever a proposal a
@@ -219,7 +219,7 @@ decision** (ROADMAP.md, "Waiting on Jack"). What it needs from him, specifically
   if it re-derives from the record sets as files, the sets must be archived immutably. One of
   the two, named.
 - **What supersedes what.** Two universes, two revisions of one page, and a re-cut of one
-  passage all produce sets about the same mathematics. ATLAS.md section 12's import rule
+  passage all produce sets about the same mathematics. ARTICLES.md section 12's import rule
   ("supersede older-universe locate links on AI items only; never set legacy items
   `rejected`") is written for the D1 importer; promotion needs the same rule stated for the
   Brain, or a statement that it is the same.
@@ -245,12 +245,12 @@ A contributor runs formal-companion; WikiLean's side of their work is one posted
 2. Take a planned package from the coordinator and run it. The package is a plan; the
    coordinator still decides what is planned.
 3. Export the result as a sealed `/2` record set.
-4. Check it before posting it: `python3 scripts/atlas/verify_submission.py --record-set <dir>
+4. Check it before posting it: `python3 scripts/articles/verify_submission.py --record-set <dir>
    --machine-id <id>` against a WikiLean checkout. This is the point of shipping the verifier
    rather than only the prose — a contributor sees a refusal before the endpoint is the first
    place a defect is found.
 5. Post it, once the endpoint exists. Until then the set reaches WikiLean the way every set
-   does today: the operator copies it and builds the store (ATLAS.md section 6).
+   does today: the operator copies it and builds the store (ARTICLES.md section 6).
 
 The producer side needs two things it does not have, and they are formal-companion's to build,
 not WikiLean's: a `submit` command that posts a set and records the answer, and a local
@@ -278,7 +278,7 @@ repository, not here.
 3. **Where staging lives.** D1, R2 with an index in D1, or somewhere else. A sealed set is
    mostly immutable bytes, which is R2's shape, and the indexed columns are a query, which is
    D1's. The row budget matters: at full scale a batch is tens of thousands of records.
-4. **The atlas plane and the staging table.** The store (ATLAS.md section 4) is keyed by page
+4. **The atlas plane and the staging table.** The store (ARTICLES.md section 4) is keyed by page
    id and revision and built from the same bytes. Is the staging table the store's source, or
    a second copy? One of the two — two copies that can disagree is the defect this whole
    design is shaped to avoid.

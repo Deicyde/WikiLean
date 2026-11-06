@@ -164,6 +164,22 @@ A few commitments on this, stated now so the policy is clear:
 - The planned "donate a key" path is a **GitHub Actions template you fork**: the key lives only in *your* fork's repository secrets, and the pipeline runs in *your* Actions, against *your* account.
 - **You cap your own spend** in your own Anthropic console. We can't bill you and can't see your usage.
 
+## Contributing located record sets
+
+> **Planned / not yet live.** There is no submission endpoint and no contributor key. What exists today is the offline checker described below, and the operator path: the maintainer copies a set from the machine that produced it and builds the store by hand.
+
+The formalization reader ([docs/ARTICLES.md](docs/ARTICLES.md)) answers, per passage of a WikiProject Mathematics article, whether it is formalized in Lean and where. Its input is a **sealed record set** produced by the [formal-companion](https://github.com/mathlib-initiative/formal-companion) skill's locate pipeline — a separate project, which you install and run on your own machine. WikiLean vendors no part of it and never will: it is a dependency, and the two sides meet only at the record-set format.
+
+[docs/INTAKE.md](docs/INTAKE.md) is the contract for contributing one: what a machine posts, what WikiLean checks before it accepts it, the scoped per-machine key, and what promotion into the Brain would still need decided. Section 7 is the contributor's own sequence.
+
+One part of it you can run today. Before a set goes anywhere, check it against WikiLean's side of the contract:
+
+```sh
+python3 scripts/articles/verify_submission.py --record-set <set-dir> --machine-id <your-machine>
+```
+
+It exits 0 with the staging rows it would write, or 2 with the refusal's code, HTTP status and the rule it breaks. It runs offline, judges no location, and is the same code the endpoint would run.
+
 ## Code of conduct
 
 Be kind, be precise about math, prefer evidence over assertion. Substantive disagreements are good; condescending ones are not.
