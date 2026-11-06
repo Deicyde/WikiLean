@@ -243,92 +243,54 @@ set can become ordinary community edits without touching the Brain's release pat
 without pre-empting any of Jack's six answers.
 
 `scripts/articles/promote_submission.py` is that step, and it is **offline and
-release-neutral**. It verifies a set through section 3's contract again, turns its
-located pairs into overlay rows, and writes them to a `.sql` file, a `.json` file, or
-both — **for review**. It writes nothing to D1, holds no binding and touches no network;
-applying the file is a separate, deliberate operator action after a backup.
+release-neutral**. It verifies the set again and writes a review artifact. Nothing
+is applied to D1; application stays a separate operator action after a backup.
+
+R1's migration has no pending-row table. By default the artifact is **pending JSON**.
+It cannot be turned into import SQL until the operator explicitly approves it:
 
 ```sh
 python3 scripts/articles/verify_submission.py --record-set <dir> --machine-id <id>
+# Review only; this is the default.
 python3 scripts/articles/promote_submission.py --record-set <dir> \
-        --added-by <user-id> --created-at <ISO-Z> [--trusted] \
+        --added-by <account-id> --created-at <ISO-Z> --json pending.json
+# After review and explicit approval, generate the file the operator may apply.
+python3 scripts/articles/promote_submission.py --record-set <dir> \
+        --added-by <account-id> --created-at <ISO-Z> --trusted \
         --sql rows.sql --json rows.json
 ```
 
-Three rules it enforces rather than documents:
+The emitted rows match the shipped `wiki/migrations/0019_article_tags.sql`:
+`origin='community'`, `via='intake'`, the accepted article's `revision`, and integer
+epoch-millisecond timestamps. Attribution names the actual account that wrote the
+mapping, with `actor_type` describing that account.
 
-- **one row per `pair_key`.** The key is revision- and commit-free, so a contributed
-  location collides by construction with the pipeline's own on the same (passage,
-  repository, declaration). Two sets about one passage produce one row and a second
-  attribution, never two rows that can disagree — which is what question 4 above is
-  shaped to avoid. A single set that states two different judgements for one pair is
-  refused, and both are named.
-- **a human's edit is never overwritten.** The generated statement is an
-  `ON CONFLICT(pair_key) DO UPDATE … WHERE origin IN ('contributed','pipeline')`, so a
-  contributed set may supersede a contributed or a pipeline row and nothing else. That
-  is `findLostHuman`'s principle restated for this plane, and it is in the artefact
-  rather than in a convention.
-- **what it cannot know, it leaves NULL.** What a community row overrides (`base_relation`)
-  is read from the live store at write time and needs D1; the removal columns are for a
-  removal, which this is not.
+The SQL may replace only a **live agent row from an earlier intake**, and increments
+its version. It preserves human rows (including human rows imported earlier), web/API
+edits and every tombstone. Pipeline locations stay in the sealed store; there is no
+`origin='pipeline'` row in this table. Tests execute the generated SQL against the
+actual migration, including its constraints and foreign keys.
 
-A checked absence is not an overlay row — there is no declaration to key one on — so it
-is counted and named in the report rather than dropped silently. The overlay's table and
-column names are the public-editing plan's section 2.9 (migration 0019, release R1),
-which is **not written yet**: the promoter's `COLUMNS` list is the assumption, and
-`scripts/articles/test_promote_submission.py` makes it executable by running the
-generated SQL against a table built from that same list.
+Each pair appears once. Conflicting judgements within one set are refused; later sets
+in one invocation supersede earlier sets at the same pair. Checked absences have no
+declaration and therefore no pair key, so the report names them instead of making
+overlay rows. `base_relation` stays NULL because this offline command does not read
+the published store; removal columns stay NULL because an import removes nothing.
 
 ## 7. The contributor's side
 
-A contributor runs formal-companion; WikiLean's side of their work is one posted set.
-**formal-companion is a dependency they install, never code this repository vendors.**
+A contributor runs WikiLean's own pipeline; see `docs/START-CONTRIBUTING.md` and
+`docs/PIPELINE.md` section 10. WikiLean and formal-companion share Literature Links,
+but formal-companion is not a dependency of WikiLean's contribution runner.
 
-1. Install the skill and its substrate on their own machine, per its own README and its
-   `docs/contribute.md` (contribute mode: a Mac or any box `cf run` cannot reach, logged in
-   to Claude Code, with its sandbox enabled).
-2. Take a planned package from the coordinator and run it. The package is a plan; the
-   coordinator still decides what is planned.
-3. Export the result as a sealed `/2` record set.
-4. Check it before posting it: `python3 scripts/articles/verify_submission.py --record-set <dir>
-   --machine-id <id>` against a WikiLean checkout. This is the point of shipping the verifier
-   rather than only the prose — a contributor sees a refusal before the endpoint is the first
-   place a defect is found.
-5. Post it, once the endpoint exists. Until then the set reaches WikiLean the way every set
-   does today: the operator copies it and builds the store (ARTICLES.md section 6).
+The coordinator supplies a planned package. The contributor claims it, refetches and
+checks its pinned sources, previews the staged tasks with the default dry run, and
+executes only after explicitly opting in. The runner stages the inputs, keeps the
+worker inside its assigned folder, runs the gate outside that folder, and harvests
+only accepted documents. The `seal` stage creates the contribution's checked record
+set; the `results` stage verifies it before it comes back to the coordinator.
 
-The producer side needs two things it does not have, and they are formal-companion's to build,
-not WikiLean's: a `submit` command that posts a set and records the answer, and a local
-`--verify` on its export so a defect is caught before the upload. Both are listed for that
-repository, not here.
-
-## 8. What this does not do
-
-- It does not write to any live table, ever (section 4).
-- It does not judge a location (section 3).
-- It does not accept a record at a time, a `/1` set, or a set whose seal it cannot verify
-  (sections 1 and 3).
-- It does not refetch a page (section 3, check 7).
-- It does not decide the Brain's release path (section 6).
-- It does not give a contributor machine any read of WikiLean (section 5).
-- It does not vendor, fork or pin any part of formal-companion (section 7).
-
-## 9. Open questions
-
-1. **Transport shape.** One zip, or a multipart body with the files named? The seal already
-   fixes the names, so either works; WikiLean's own stack decides. The verifier takes an
-   unpacked directory and is indifferent.
-2. **Size.** The endpoint needs a maximum body size, and a statement of what a producer should
-   shard at. The verifier takes it as `--max-body-bytes`; nothing picks the number.
-3. **Where staging lives.** D1, R2 with an index in D1, or somewhere else. A sealed set is
-   mostly immutable bytes, which is R2's shape, and the indexed columns are a query, which is
-   D1's. The row budget matters: at full scale a batch is tens of thousands of records.
-4. **The atlas plane and the staging table.** The store (ARTICLES.md section 4) is keyed by page
-   id and revision and built from the same bytes. Is the staging table the store's source, or
-   a second copy? One of the two — two copies that can disagree is the defect this whole
-   design is shaped to avoid.
-5. **Whether to build it at all yet.** ROADMAP.md's P3 gates the
-   "jobs/contributions/api_tokens queue + validation gauntlet + trust ladder" on a written
-   trigger: *first real compute donor asks*. This endpoint is the record-set-shaped version of
-   that item and should probably wait on the same trigger. The verifier is useful either way:
-   it is the operator's own check on a set before it is built into the store.
+The submission endpoint and its D1 staging queue are future work. Until then, the
+operator copies a sealed set, runs the intake checker and reviews the import artifact
+as section 6 describes. Pending JSON is not a row published on the site. The seven
+Mac checks remain a prerequisite before promising the subscription-backed Mac path.

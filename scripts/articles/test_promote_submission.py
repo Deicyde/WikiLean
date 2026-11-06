@@ -13,8 +13,8 @@ What is checked:
 * what is **not** a row: a checked absence, an unresolved passage, and a ``/1`` set —
   each named in the report rather than dropped;
 * **state** is ``pending`` and goes to ``live`` only for a trusted submitter;
-* the generated SQL **parses and runs** against a table with the plan's columns, and
-  its ``ON CONFLICT`` clause **supersedes a pipeline row and leaves a human's alone** —
+* the generated SQL **parses and runs** against a table created by the shipped migration, and
+  its ``ON CONFLICT`` clause **supersedes prior intake and leaves human edits alone** —
   which is the single rule section 3.3 calls the most important in it;
 * a set the intake contract refuses is **not promoted at all**;
 * nothing is written to D1: the command's whole output is files.
@@ -52,22 +52,19 @@ def quiet(call, *args, **kwargs):
 
 
 def create_table(conn: sqlite3.Connection) -> None:
-    """A stand-in for migration 0019, built from the promoter's own column list.
-
-    This is **not** R1's migration — it does not exist yet. It is the promoter's
-    assumption about it, made executable: if R1 names a column differently the
-    promoter's SQL fails there, and this test is what keeps the two lists in one place.
-    """
-    columns = ", ".join(
-        f"{name} INTEGER" if name in ("pageid", "version") else f"{name} TEXT"
-        for name in promoter.COLUMNS)
-    conn.execute(f"CREATE TABLE {promoter.TABLE} ({columns}, PRIMARY KEY (pair_key))")
-    conn.execute(f"CREATE INDEX ix_tags_page ON {promoter.TABLE} (pageid, state)")
-    conn.execute(f"CREATE INDEX ix_tags_actor ON {promoter.TABLE} (added_by, created_at)")
-    conn.execute(f"CREATE INDEX ix_tags_state ON {promoter.TABLE} (state, created_at)")
+    """Use the shipped D1 migration, including constraints and foreign keys."""
+    conn.execute("PRAGMA foreign_keys=ON")
+    conn.execute("CREATE TABLE users (id TEXT PRIMARY KEY)")
+    conn.executemany("INSERT INTO users VALUES (?)",
+                     [(name,) for name in ("u-123", "a-human", "a-moderator")])
+    conn.executescript((ROOT / "wiki/migrations/0019_article_tags.sql").read_text())
 
 
 class PromoteCase(unittest.TestCase):
+    def argv(self, *extra):
+        return ["--record-set", str(FIXTURE), "--added-by", "u-123",
+                "--created-at", AT, "--machine-id", "test-mac", *extra]
+
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="wl-promote-"))
         self.addCleanup(lambda: shutil.rmtree(self.tmp, ignore_errors=True))
@@ -92,8 +89,8 @@ class TestRows(PromoteCase):
             self.assertTrue(row["declaration"])
             self.assertEqual(row["origin"], promoter.ORIGIN)
             self.assertEqual(row["version"], promoter.FIRST_VERSION)
-            self.assertEqual(row["created_at"], AT)
-            self.assertEqual(row["updated_at"], AT)
+            self.assertEqual(row["created_at"], promoter.timestamp_ms(AT))
+            self.assertEqual(row["updated_at"], promoter.timestamp_ms(AT))
             self.assertIsNone(row["removed_by"])
             self.assertIsNone(row["removed_at"])
             self.assertIsNone(row["removed_reason"])
@@ -108,11 +105,11 @@ class TestRows(PromoteCase):
 
     def test_attribution_rides_on_every_row(self):
         doc = self.promote(token_id="mt-7", model="a-model", run_id="loc-7",
-                           actor_type="agent", via="submission")
+                           actor_type="agent", via="intake")
         for row in doc["rows"]:
             self.assertEqual(row["added_by"], "u-123")
             self.assertEqual(row["actor_type"], "agent")
-            self.assertEqual(row["via"], "submission")
+            self.assertEqual(row["via"], "intake")
             self.assertEqual(row["token_id"], "mt-7")
             self.assertEqual(row["model"], "a-model")
             self.assertEqual(row["run_id"], "loc-7")
@@ -228,6 +225,14 @@ class TestTheSql(PromoteCase):
         self.addCleanup(self.conn.close)
         create_table(self.conn)
 
+    def seed_row(self, **changes):
+        row = {**self.doc["rows"][0], **changes}
+        columns = ", ".join(promoter.COLUMNS)
+        marks = ", ".join("?" for _ in promoter.COLUMNS)
+        self.conn.execute(f"INSERT INTO {promoter.TABLE} ({columns}) VALUES ({marks})",
+                          [row[name] for name in promoter.COLUMNS])
+        return row["pair_key"]
+
     def test_it_runs_against_the_plan_s_table_and_inserts_every_row(self):
         self.conn.executescript(self.sql)
         count, = self.conn.execute(
@@ -244,61 +249,53 @@ class TestTheSql(PromoteCase):
             f"SELECT version FROM {promoter.TABLE}")}
         self.assertEqual(versions, {promoter.FIRST_VERSION + 1})
 
-    def test_it_supersedes_a_pipeline_row(self):
-        pair = self.doc["rows"][0]["pair_key"]
-        self.conn.execute(
-            f"INSERT INTO {promoter.TABLE} (pair_key, origin, relation, version) "
-            "VALUES (?, 'pipeline', 'broadMatch', 4)", (pair,))
+    def test_it_supersedes_an_earlier_intake_agent_row(self):
+        pair = self.seed_row(relation="broadMatch", version=4)
         self.conn.executescript(self.sql)
         origin, relation, version = self.conn.execute(
             f"SELECT origin, relation, version FROM {promoter.TABLE} WHERE pair_key = ?",
             (pair,)).fetchone()
-        self.assertEqual(origin, promoter.ORIGIN)
-        self.assertEqual(relation, self.doc["rows"][0]["relation"])
-        self.assertEqual(version, 5)
+        self.assertEqual((origin, relation, version),
+                         ("community", self.doc["rows"][0]["relation"], 5))
 
     def test_it_never_overwrites_a_human_s_edit(self):
-        """Section 3.3's most important line, enforced by the generated statement."""
-        pair = self.doc["rows"][0]["pair_key"]
-        self.conn.execute(
-            f"INSERT INTO {promoter.TABLE} (pair_key, origin, relation, added_by, "
-            "version) VALUES (?, 'community', 'narrowMatch', 'a-human', 9)", (pair,))
-        self.conn.executescript(self.sql)
-        origin, relation, added_by, version = self.conn.execute(
-            f"SELECT origin, relation, added_by, version FROM {promoter.TABLE} "
-            "WHERE pair_key = ?", (pair,)).fetchone()
-        self.assertEqual((origin, relation, added_by, version),
-                         ("community", "narrowMatch", "a-human", 9))
+        for via in ("web", "intake"):
+            with self.subTest(via=via):
+                self.conn.execute(f"DELETE FROM {promoter.TABLE}")
+                pair = self.seed_row(actor_type="human", via=via, added_by="a-human",
+                                     relation="narrowMatch", version=9)
+                before = self.conn.execute(
+                    f"SELECT * FROM {promoter.TABLE} WHERE pair_key = ?", (pair,)).fetchone()
+                self.conn.executescript(self.sql)
+                after = self.conn.execute(
+                    f"SELECT * FROM {promoter.TABLE} WHERE pair_key = ?", (pair,)).fetchone()
+                self.assertEqual(after, before)
 
     def test_it_never_resurrects_a_row_a_moderator_removed(self):
-        """A tombstone is not a row to update: the three removed_* columns are not in
-        the update at all, and the update does not run against a removed row."""
-        pair = self.doc["rows"][0]["pair_key"]
-        self.conn.execute(
-            f"INSERT INTO {promoter.TABLE} (pair_key, origin, state, relation, "
-            "removed_by, removed_at, removed_reason, version) VALUES "
-            "(?, 'contributed', 'removed', 'broadMatch', 'a-moderator', "
-            "'2026-11-01T00:00:00Z', 'spam', 3)", (pair,))
-        self.conn.executescript(self.sql)
-        state, removed_by, reason, version = self.conn.execute(
-            f"SELECT state, removed_by, removed_reason, version FROM {promoter.TABLE} "
-            "WHERE pair_key = ?", (pair,)).fetchone()
-        self.assertEqual((state, removed_by, reason, version),
-                         ("removed", "a-moderator", "spam", 3))
+        for removed_at in (None, promoter.timestamp_ms(AT)):
+            with self.subTest(removed_at=removed_at):
+                self.conn.execute(f"DELETE FROM {promoter.TABLE}")
+                pair = self.seed_row(
+                    state="removed", relation="broadMatch", removed_by="a-moderator",
+                    removed_at=removed_at, removed_reason="spam", version=3)
+                before = self.conn.execute(
+                    f"SELECT * FROM {promoter.TABLE} WHERE pair_key = ?", (pair,)).fetchone()
+                self.conn.executescript(self.sql)
+                after = self.conn.execute(
+                    f"SELECT * FROM {promoter.TABLE} WHERE pair_key = ?", (pair,)).fetchone()
+                self.assertEqual(after, before)
         self.assertNotIn("removed_by = excluded", self.sql)
         self.assertNotIn("removed_at = excluded", self.sql)
         self.assertNotIn("removed_reason = excluded", self.sql)
 
-    def test_a_row_with_no_origin_is_not_superseded_either(self):
-        pair = self.doc["rows"][0]["pair_key"]
-        self.conn.execute(
-            f"INSERT INTO {promoter.TABLE} (pair_key, relation, version) "
-            "VALUES (?, 'narrowMatch', 2)", (pair,))
+    def test_a_non_intake_agent_edit_is_not_superseded(self):
+        pair = self.seed_row(via="api", relation="narrowMatch", version=2)
+        before = self.conn.execute(
+            f"SELECT * FROM {promoter.TABLE} WHERE pair_key = ?", (pair,)).fetchone()
         self.conn.executescript(self.sql)
-        relation, version = self.conn.execute(
-            f"SELECT relation, version FROM {promoter.TABLE} WHERE pair_key = ?",
-            (pair,)).fetchone()
-        self.assertEqual((relation, version), ("narrowMatch", 2))
+        after = self.conn.execute(
+            f"SELECT * FROM {promoter.TABLE} WHERE pair_key = ?", (pair,)).fetchone()
+        self.assertEqual(after, before)
 
     def test_the_header_says_nothing_has_been_applied(self):
         self.assertIn("NOTHING HERE HAS BEEN APPLIED", self.sql)
@@ -332,7 +329,7 @@ class TestTheSql(PromoteCase):
         rows = [dict(self.doc["rows"][0])]
         rows[0]["declaration"] = "Foo.bar\nDROP TABLE article_tags; --"
         with self.assertRaises(promoter.PromotionProblem) as caught:
-            promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+            promoter.sql_for(rows, added_by="u", state="live", sets=1)
         self.assertIn("line break", str(caught.exception))
         self.assertIn("declaration", str(caught.exception))
 
@@ -342,13 +339,13 @@ class TestTheSql(PromoteCase):
             rows[0][name] = "a\nb"
             with self.subTest(column=name), \
                     self.assertRaises(promoter.PromotionProblem):
-                promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+                promoter.sql_for(rows, added_by="u", state="live", sets=1)
 
     def test_a_note_may_hold_a_line_break_and_is_never_put_in_a_comment(self):
         """`note` is the one free-text column; it is quoted, never interpolated."""
         rows = [dict(self.doc["rows"][0])]
         rows[0]["note"] = "two lines\nof convention difference"
-        sql = promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+        sql = promoter.sql_for(rows, added_by="u", state="live", sets=1)
         self.assertIn("'two lines\nof convention difference'", sql)
         conn = sqlite3.connect(":memory:")
         self.addCleanup(conn.close)
@@ -362,18 +359,14 @@ class TestTheSql(PromoteCase):
         rows = [dict(self.doc["rows"][0])]
         rows[0]["note"] = "a\x01b"
         with self.assertRaises(promoter.PromotionProblem) as caught:
-            promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+            promoter.sql_for(rows, added_by="u", state="live", sets=1)
         self.assertIn("control character", str(caught.exception))
 
 
 class TestCommandLine(PromoteCase):
-    def argv(self, *extra):
-        return ["--record-set", str(FIXTURE), "--added-by", "u-123",
-                "--created-at", AT, "--machine-id", "test-mac", *extra]
-
     def test_it_writes_both_files_and_exits_one_when_something_was_not_promoted(self):
         sql, out = self.tmp / "rows.sql", self.tmp / "rows.json"
-        code = quiet(promoter.main, self.argv("--sql", str(sql), "--json", str(out)))
+        code = quiet(promoter.main, self.argv("--sql", str(sql), "--json", str(out), "--trusted"))
         self.assertEqual(code, 1)  # the fixture has an absence and two unresolved
         self.assertTrue(sql.is_file())
         doc = json.loads(out.read_text(encoding="utf-8"))
@@ -410,6 +403,57 @@ class TestCommandLine(PromoteCase):
         with io.StringIO() as sink, redirect_stdout(sink):
             promoter.main(self.argv("--json", str(self.tmp / "a.json")))
             self.assertIn("nothing was written to D1", sink.getvalue())
+
+
+class TestR1Schema(PromoteCase):
+    def test_an_empty_import_cannot_inject_sql_through_the_header(self):
+        sql = promoter.sql_for([], added_by="x\nDROP TABLE keep_me; --",
+                               state="live", sets=1)
+        with sqlite3.connect(":memory:") as conn:
+            conn.execute("CREATE TABLE keep_me (id INTEGER)")
+            conn.executescript(sql)
+            self.assertEqual(conn.execute("SELECT count(*) FROM keep_me").fetchone(), (0,))
+
+    def test_pending_rows_are_review_json_only(self):
+        sql, out = self.tmp / "pending.sql", self.tmp / "pending.json"
+        code = quiet(promoter.main, self.argv("--json", str(out)))
+        self.assertEqual(code, 1)
+        self.assertEqual(json.loads(out.read_text())["state"], "pending")
+        out.unlink()
+        code = quiet(promoter.main, self.argv("--json", str(out), "--sql", str(sql)))
+        self.assertEqual(code, 2)
+        self.assertFalse(sql.exists())
+        self.assertFalse(out.exists())
+
+    def test_pending_rows_cannot_be_disguised_as_live_sql(self):
+        doc = self.promote()
+        with self.assertRaises(promoter.PromotionProblem):
+            promoter.sql_for(doc["rows"], added_by="u-123", state="live", sets=1)
+
+    def test_imports_cannot_claim_to_be_web_or_api_edits(self):
+        for via in ("web", "api", "submission"):
+            with self.subTest(via=via), self.assertRaises(promoter.PromotionProblem):
+                self.promote(via=via)
+
+    def test_invalid_calendar_date_is_refused(self):
+        with self.assertRaises(promoter.PromotionProblem):
+            self.promote(created_at="2026-99-06T00:00:00Z")
+
+
+    def test_generated_sql_applies_to_the_shipped_migration(self):
+        doc = self.promote(trusted=True)
+        with sqlite3.connect(":memory:") as conn:
+            conn.execute("PRAGMA foreign_keys=ON")
+            conn.execute("CREATE TABLE users (id TEXT PRIMARY KEY)")
+            conn.execute("INSERT INTO users VALUES ('u-123')")
+            conn.executescript((ROOT / "wiki/migrations/0019_article_tags.sql").read_text())
+            conn.executescript(promoter.sql_for(
+                doc["rows"], added_by=doc["added_by"], state=doc["state"], sets=1))
+            rows = conn.execute(
+                "SELECT revision, typeof(created_at), typeof(updated_at) FROM article_tags").fetchall()
+            self.assertTrue(rows)
+            self.assertTrue(all(revision > 0 and created == updated == "integer"
+                                for revision, created, updated in rows))
 
 
 if __name__ == "__main__":

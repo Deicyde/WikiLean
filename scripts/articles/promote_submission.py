@@ -23,11 +23,11 @@ two sets name one pair the later one on the command line wins and the report say
 where one set names a pair twice with two different judgements the pair is **refused**,
 because a reviewable file should hold no row nobody can defend.
 
-**Supersession is in the SQL, not in a convention.** The emitted statement is an
-``INSERT … ON CONFLICT(pair_key) DO UPDATE … WHERE article_tags.origin IN
-('contributed','pipeline')``: a contributed set may supersede a contributed or a
-pipeline row and **may never overwrite a human's edit**. That is ``findLostHuman``'s
-principle restated for this plane, and putting it in the generated statement means it
+**Supersession is in the SQL, not in a convention.** R1 stores all mutable rows as
+``origin='community'``. An import uses ``via='intake'`` and may supersede only a live
+agent row from a previous intake. Human rows, web/API edits and tombstones are
+**never overwritten**. Pipeline locations live in the sealed store, not this table.
+That is ``findLostHuman``'s principle restated for this plane, and putting it in the generated statement means it
 holds even if the person applying the file has not read section 3.3.
 
 **What is not promoted, and why.** A checked absence (``noMatch``) carries no pair —
@@ -36,10 +36,9 @@ key is ``pair_key``. Absences are counted in the report and named, never dropped
 silently. A coverage claim is likewise not a row: its *parts* are, and they are already
 locations.
 
-**Three columns this command cannot fill, and does not invent**: ``base_relation`` (what
-a community row overrides is read from the live store at write time, which is R1's job
-and needs D1), ``removed_*`` (nothing here removes anything) and the article's own
-version counter. They are NULL, and the report says so.
+**What this command cannot infer stays NULL**: ``base_relation`` needs the published
+store, and ``removed_*`` belongs to a removal, which this command never makes.
+The accepted set supplies the article revision; new rows start their own version at 1.
 
 Usage (CPython 3.12, as build_store needs):
 
@@ -59,6 +58,7 @@ import argparse
 import json
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -72,25 +72,26 @@ PROMOTION_SCHEMA = "wikilean.articles.promotion/1"
 PROMOTER = "scripts/articles/promote_submission.py/1"
 
 #: R1's overlay table (the plan's section 2.9, migration 0019). The column order here is
-#: the order the generated INSERT writes, and it is the list R1's migration is checked
-#: against: every name below is an assumption about a file that is not written yet.
+#: the order the generated INSERT writes. Tests apply its SQL to the actual shipped
+#: migration, rather than deriving a permissive fake table from this list.
 TABLE = "article_tags"
 COLUMNS = ("pair_key", "pageid", "passage_key", "library", "repository", "declaration",
            "relation", "note", "state", "origin", "base_relation", "added_by",
-           "actor_type", "via", "token_id", "model", "run_id", "campaign", "record_set",
+           "actor_type", "via", "token_id", "model", "run_id", "campaign", "revision", "record_set",
            "universe_sha256", "version", "created_at", "updated_at", "removed_by",
            "removed_at", "removed_reason")
-#: What a promoted row says about where it came from (section 3.3).
-ORIGIN = "contributed"
+#: R1's origin vocabulary; via='intake' distinguishes an imported submission.
+ORIGIN = "community"
 #: ``state`` is ``live`` for a trusted submitter and ``pending`` for everybody else; the
-#: promoter is told which, it does not decide it — the trust tier is D1's (migration
-#: 0022, R3) and this command does not read D1.
+#: promoter is told which, it does not decide it. R1 has no pending table: pending
+#: rows are review JSON only, and SQL requires explicit --trusted approval.
 STATE_LIVE, STATE_PENDING = "live", "pending"
 #: The actor vocabulary decision 7 recommends unifying on.
 ACTOR_TYPES = ("agent", "human")
-#: What ``origin`` a row must already have for a contributed set to supersede it. A
-#: human's edit is never overwritten here (section 3.3).
-SUPERSEDABLE = ("contributed", "pipeline")
+#: Origin alone does not grant supersession: R1 uses community for every row.
+#: The generated WHERE also requires intake, agent, live, and no tombstone.
+SUPERSEDABLE = ("community",)
+INTAKE_VIA = "intake"
 #: The columns a supersession writes. Three are left out on purpose:
 #:
 #: * ``pair_key`` is the conflict target and ``created_at`` says when the row first
@@ -131,6 +132,18 @@ class PromotionProblem(ValueError):
 # ---- the rows ---------------------------------------------------------------------------
 
 
+def timestamp_ms(value: str) -> int:
+    """The Worker's timestamp unit, derived from the supplied clock without a float."""
+    try:
+        if not build_store.CREATED_RE.match(value):
+            raise ValueError("expected an ISO UTC timestamp ending in Z")
+        at = datetime.fromisoformat(value.removesuffix("Z") + "+00:00")
+    except (TypeError, ValueError) as exc:
+        raise PromotionProblem("--created-at is a valid ISO 8601 UTC time ending in Z") from exc
+    delta = at - datetime(1970, 1, 1, tzinfo=timezone.utc)
+    return delta.days * 86_400_000 + delta.seconds * 1000 + delta.microseconds // 1000
+
+
 def run_of(campaign: str) -> str | None:
     """The locate run a campaign token names, or None when it names none."""
     found = _CAMPAIGN_RUN.match(str(campaign or ""))
@@ -144,6 +157,7 @@ def rows_of_article(view: dict, *, state: str, added_by: str, actor_type: str, v
     rows: list[dict] = []
     notes: list[str] = []
     pageid = view["pageid"]
+    at_ms = timestamp_ms(created_at)
     campaign = view["campaign"]
     record_set = view["record_set"]
     universe_sha = view["universe"]["sha256"]
@@ -179,8 +193,8 @@ def rows_of_article(view: dict, *, state: str, added_by: str, actor_type: str, v
                 "note": note or None,
                 "state": state,
                 "origin": ORIGIN,
-                # what a community row overrides is read from the live store at write
-                # time, which needs D1; this command has none and writes none
+                # This offline command does not read the published store, so it
+                # cannot infer what relation a community row overrides.
                 "base_relation": None,
                 "added_by": added_by,
                 "actor_type": actor_type,
@@ -189,11 +203,12 @@ def rows_of_article(view: dict, *, state: str, added_by: str, actor_type: str, v
                 "model": model,
                 "run_id": run,
                 "campaign": campaign,
+                "revision": view["revision"],
                 "record_set": record_set,
                 "universe_sha256": universe_sha,
                 "version": FIRST_VERSION,
-                "created_at": created_at,
-                "updated_at": created_at,
+                "created_at": at_ms,
+                "updated_at": at_ms,
                 "removed_by": None,
                 "removed_at": None,
                 "removed_reason": None,
@@ -327,7 +342,7 @@ def sql_literal(value) -> str:
 
 SQL_HEAD = """\
 -- {promoter}
--- Overlay rows from {sets} contributed record set(s), for review before they are applied.
+-- Overlay rows from {sets} explicitly approved record set(s), for review before application.
 --
 -- NOTHING HERE HAS BEEN APPLIED. This file was written offline by the coordinator; it
 -- touches no D1, no binding and no network. Apply it, after reading it and after a
@@ -337,13 +352,13 @@ SQL_HEAD = """\
 --   cd wiki && npx wrangler d1 execute wikilean --remote --file=<this file>
 --
 -- The table is {table} (the public-editing plan's section 2.9, migration 0019,
--- which ships in R1). If R1's migration names a column differently, THIS FILE IS WRONG
--- and the promoter is what to fix, not the migration.
+-- which ships in R1). Tests execute these statements against that migration.
+-- Timestamps are integer epoch milliseconds; revision comes from the accepted set.
 --
 -- Supersession: the ON CONFLICT clause updates a row only where its own origin is one
--- of {superseded} AND it has not been removed. So a contributed set never overwrites a
--- human's edit, and never brings back a row a moderator took down -- the three
--- removed_* columns are not in the update at all.
+-- of {superseded}, via is intake, actor_type is agent, state is live, and it has not
+-- been removed. Human edits and web/API edits are preserved, including human rows
+-- imported earlier. The removed_* columns are never updated.
 --
 -- Rows: {rows}. Submitter: {added_by}. State: {state}.
 BEGIN TRANSACTION;
@@ -360,13 +375,17 @@ def sql_for(rows: list[dict], *, added_by: str, state: str, sets: int,
     and is written as the comment above each statement: a reviewer reads "which passage
     of which article, and the locate run's own rank" without opening the set.
     """
+    if state != STATE_LIVE or any(row.get("state") != STATE_LIVE for row in rows):
+        raise PromotionProblem(
+            "R1 has no pending-row table: keep this submission as review JSON; "
+            "generate SQL only after explicit approval with --trusted")
     provenance = provenance or {}
     check_values(rows)
     columns = ", ".join(COLUMNS)
     assignments = ",\n    ".join(f"{name} = excluded.{name}" for name in UPDATED)
     supersedable = ", ".join(sql_literal(name) for name in SUPERSEDABLE)
     out = [SQL_HEAD.format(promoter=PROMOTER, sets=sets, table=TABLE, rows=len(rows),
-                           added_by=added_by, state=state,
+                           added_by=comment_safe(added_by), state=state,
                            superseded=", ".join(repr(name) for name in SUPERSEDABLE))]
     for row in rows:
         values = ", ".join(sql_literal(row[name]) for name in COLUMNS)
@@ -382,7 +401,8 @@ def sql_for(rows: list[dict], *, added_by: str, state: str, sets: int,
             f"ON CONFLICT(pair_key) DO UPDATE SET\n    {assignments},\n"
             f"    version = {TABLE}.version + 1\n"
             f"  WHERE {TABLE}.origin IN ({supersedable})\n"
-            f"    AND {TABLE}.removed_at IS NULL;\n")
+            f"    AND {TABLE}.via = 'intake' AND {TABLE}.actor_type = 'agent'\n"
+            f"    AND {TABLE}.state = 'live' AND {TABLE}.removed_at IS NULL;\n")
     out.append(SQL_TAIL)
     return "\n".join(out)
 
@@ -403,6 +423,8 @@ def promotion(rows: list[dict], *, sets: list[dict], superseded: list[dict],
         "added_by": added_by,
         "state": state,
         "supersedes_origins": list(SUPERSEDABLE),
+        "supersession_requires": {"via": INTAKE_VIA, "actor_type": "agent",
+                                  "state": STATE_LIVE, "removed_at": None},
         "counts": {"rows": len(rows), "superseded_within_this_run": len(superseded),
                    "refused_pairs": len(refusals), "not_promoted": len(notes)},
         "refused": refusals,
@@ -420,18 +442,19 @@ def promotion(rows: list[dict], *, sets: list[dict], superseded: list[dict],
 
 def promote(set_dirs: list[Path], *, added_by: str, created_at: str,
             machine_id: str = "", trusted: bool = False, actor_type: str = "agent",
-            via: str = "submission", token_id: str | None = None,
+            via: str = INTAKE_VIA, token_id: str | None = None,
             model: str | None = None, run_id: str | None = None) -> dict:
     """Verify every set through the intake contract, then build the promotion."""
     if actor_type not in ACTOR_TYPES:
         raise PromotionProblem(f"--actor-type is one of {', '.join(ACTOR_TYPES)}, "
                                f"not {actor_type!r}")
-    if not build_store.CREATED_RE.match(created_at):
-        raise PromotionProblem("--created-at is an ISO 8601 UTC time ending in Z")
+    timestamp_ms(created_at)
+    if via != INTAKE_VIA:
+        raise PromotionProblem("--via must be intake; imported sets cannot impersonate web or API edits")
     if not added_by:
         raise PromotionProblem("--added-by names the account the rows are attributed to; "
-                               "every overlay row names a person, and an agent's names "
-                               "its owner (the plan's section 2.7)")
+                               "use the actual author's account, including the agent id "
+                               "for an agent's mapping")
     state = STATE_LIVE if trusted else STATE_PENDING
     validate, schema_error, _ = build_store.schema_validator()
     rows: list[dict] = []
@@ -463,6 +486,7 @@ def promote(set_dirs: list[Path], *, added_by: str, created_at: str,
             rows.extend(made)
             notes.extend(said)
     kept, superseded, refusals = deduplicate(rows)
+    check_values(kept)
     return promotion(kept, sets=sets, superseded=superseded, refusals=refusals,
                      notes=notes, state=state, added_by=added_by)
 
@@ -491,8 +515,8 @@ def main(argv: list[str] | None = None) -> int:
                         help="an accepted submission (repeatable; a later one supersedes "
                              "an earlier one at a shared pair_key)")
     parser.add_argument("--added-by", required=True,
-                        help="the account the rows are attributed to: the submitter, or "
-                             "an agent's owner")
+                        help="the mapping author's account id; use the agent id "
+                             "for an agent's output, not its human owner")
     parser.add_argument("--created-at", required=True,
                         help="the time the rows carry, as ISO 8601 UTC ending in Z; "
                              "passed in so the output is a function of its inputs")
@@ -500,11 +524,11 @@ def main(argv: list[str] | None = None) -> int:
                         help="the machine the submission's key is bound to, recorded on "
                              "the staging row the verifier builds")
     parser.add_argument("--trusted", action="store_true",
-                        help="the submitter is a trusted contributor, so the rows go in "
-                             f"{STATE_LIVE!r} rather than {STATE_PENDING!r}")
+                        help="explicitly approve these rows for live SQL; without it "
+                             "only pending review JSON may be generated")
     parser.add_argument("--actor-type", default="agent", choices=ACTOR_TYPES)
-    parser.add_argument("--via", default="submission",
-                        help="how the edit arrived, recorded per row")
+    parser.add_argument("--via", default=INTAKE_VIA, choices=[INTAKE_VIA],
+                        help="imports are attributed as intake, never web or API edits")
     parser.add_argument("--token-id", default=None,
                         help="the machine key the set was submitted with")
     parser.add_argument("--model", default=None, help="the model that produced the set")
@@ -532,8 +556,9 @@ def main(argv: list[str] | None = None) -> int:
                       created_at=args.created_at, machine_id=args.machine_id,
                       trusted=args.trusted, actor_type=args.actor_type, via=args.via,
                       token_id=args.token_id, model=args.model, run_id=args.run_id)
-        sql = sql_for(doc["rows"], added_by=doc["added_by"], state=doc["state"],
-                      sets=len(doc["sets"]), provenance=doc["provenance"])
+        sql = (sql_for(doc["rows"], added_by=doc["added_by"], state=doc["state"],
+                       sets=len(doc["sets"]), provenance=doc["provenance"])
+               if args.sql else None)
     except PromotionProblem as exc:
         print(str(exc), file=sys.stderr)
         return 2
