@@ -20,6 +20,7 @@
 // And the invariant under all of it: the sealed store is never written.
 
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 import { describe, it, expect } from "vitest";
 import {
   setup, get, post, blockNetwork, PIPELINE_TOKEN, type Harness, type ReqOpts,
@@ -28,7 +29,10 @@ import {
   articlesFixtureFiles, articlesPairedFiles, bindArticles, FIXTURE_CAMPAIGN, GADGET_PAGEID,
   MATHLIB_REPO, pairedPassage, WIDGET_PAGEID,
 } from "./helpers/articles.js";
-import { CC0_AGREEMENT_VERSION, DAILY_CAP, pairKey } from "../src/articles-overlay.js";
+import {
+  CC0_AGREEMENT_VERSION, DAILY_CAP, OVERLAY_STATUSES, TAG_RELATIONS, pairKey, validDeclaration,
+} from "../src/articles-overlay.js";
+import { SUMMARY_STATUSES } from "../src/articles.js";
 import { BRAKE_MESSAGE } from "../src/site-settings.js";
 
 blockNetwork();
@@ -89,6 +93,35 @@ function tagRows(h: Harness): Array<Record<string, unknown>> {
 function tagRow(h: Harness, key: string): Record<string, unknown> | undefined {
   return h.db.prepare("SELECT * FROM article_tags WHERE pair_key = ?").get(key) as Record<string, unknown> | undefined;
 }
+
+// ---- the vocabularies this module keeps a copy of -----------------------------
+
+describe("the overlay's vocabularies match the ones they mirror", () => {
+  it("the status list is articles.ts's, in the same order", () => {
+    // articles-overlay.ts keeps its own copy so it needs no runtime import from
+    // articles.ts, which would make a cycle. This is the pin on that copy.
+    expect([...OVERLAY_STATUSES]).toEqual([...SUMMARY_STATUSES]);
+  });
+
+  it("the relation list is the locate pipeline's, in the same order", () => {
+    const vocab = readFileSync(new URL("../../scripts/pipeline/vocab.py", import.meta.url), "utf8");
+    const line = /^LOCATION_RELATIONS = \(([^)]*)\)/m.exec(vocab);
+    expect(line, "scripts/pipeline/vocab.py LOCATION_RELATIONS").not.toBeNull();
+    const names = [...line![1].matchAll(/"([A-Za-z]+)"/g)].map((m) => m[1]);
+    expect([...TAG_RELATIONS]).toEqual(names);
+  });
+
+  it("a declaration name is checked for shape, never for existence", () => {
+    for (const ok of ["AddCommGroup", "Mathlib.Algebra.Group.Defs", "Nat.add_comm'", "a₁", "_private.Foo.bar"]) {
+      expect(validDeclaration(ok), ok).toBe(true);
+    }
+    // Whitespace is out, which also rules out Lean's «guillemet» names: in a
+    // formalization link a space is a typo far more often than it is a name.
+    for (const bad of ["", "Foo bar", ".Foo", "Foo.", "Foo..bar", "«odd name»", "A".repeat(241), "Foo\u0000bar", "Foo\u200bbar"]) {
+      expect(validDeclaration(bad), JSON.stringify(bad)).toBe(false);
+    }
+  });
+});
 
 // ---- adding a tag -----------------------------------------------------------
 

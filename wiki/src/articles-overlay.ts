@@ -41,8 +41,8 @@ export const TAG_RELATIONS: readonly string[] = [
 const RELATION_SET = new Set(TAG_RELATIONS);
 
 // Mirrors articles.ts SUMMARY_STATUSES, best first. Kept local so this module
-// needs no runtime import from articles.ts (test/articles-overlay.test.ts pins
-// the two lists against each other).
+// needs no runtime import from articles.ts, which would make an import cycle
+// (test/articles-tag.test.ts pins the two lists against each other).
 const STATUS_RANK: Record<string, number> = {
   formalized: 0, statement_only: 1, partial: 2, not_formalized: 3, unresolved: 4,
 };
@@ -52,11 +52,16 @@ export const MAX_DECLARATION_CHARS = 240;
 export const MAX_TAG_NOTE_CHARS = 500;
 export const MAX_REMOVE_REASON_CHARS = 500;
 
-// Lean's name grammar, as much of it as a tag needs: dot-separated components of
-// letters, digits, _, ', !, ? and ₀-₉/subscripts, plus «guillemet» components and
-// the French-quote escape Lean allows. Deliberately permissive — existence is a
-// SOFT check (the declaration index is Mathlib-only today), never a refusal.
-const DECLARATION_RE = /^[^\s.](?:[^\s]*[^\s.])?(?:\.[^\s.](?:[^\s]*[^\s.])?)*$/u;
+// Lean's name grammar, as much of it as a tag needs: one or more components
+// separated by single dots, with no whitespace anywhere and no empty component
+// (so no leading, trailing or doubled dot). Deliberately permissive about what
+// a component may CONTAIN — Lean allows digits, primes and subscripts and
+// WikiLean has no business ruling them out — and deliberately strict about
+// whitespace, which rules out Lean's «guillemet» names: in a formalization link
+// a space is a typo or an injection attempt far more often than it is
+// «a name like this». Existence is a SOFT check (the declaration index is
+// Mathlib-only today) and never a refusal; shape is the only hard rule.
+const DECLARATION_RE = /^[^\s.]+(?:\.[^\s.]+)*$/u;
 const CONTROL_RE = /[\p{C}\p{Zl}\p{Zp}]/u;
 
 export function validDeclaration(name: string): boolean {
@@ -69,12 +74,6 @@ export function validRelation(relation: string): boolean {
 }
 
 // ---- keys ------------------------------------------------------------------
-
-const HEX64 = /^[0-9a-f]{64}$/;
-
-export function isSha256(value: unknown): value is string {
-  return typeof value === "string" && HEX64.test(value);
-}
 
 async function sha256Hex(s: string): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
@@ -154,12 +153,20 @@ export interface TagAuthor {
   ownerName: string | null;
 }
 
+interface AuthorRow {
+  id: string;
+  name: string | null;
+  role: string;
+  owner_id: string | null;
+  owner_name: string | null;
+}
+
 async function loadAuthors(env: Pick<Env, "DB">, ids: string[]): Promise<Map<string, TagAuthor>> {
   const out = new Map<string, TagAuthor>();
   if (ids.length === 0) return out;
   const unique = [...new Set(ids)].slice(0, 200);
   const marks = unique.map(() => "?").join(",");
-  let results: Array<{ id: string; name: string | null; role: string; owner_id: string | null; owner_name: string | null }> = [];
+  let results: AuthorRow[] = [];
   try {
     ({ results } = await env.DB.prepare(
       `SELECT u.id AS id, u.name AS name, u.role AS role, t.owner_id AS owner_id, o.name AS owner_name
@@ -167,13 +174,13 @@ async function loadAuthors(env: Pick<Env, "DB">, ids: string[]): Promise<Map<str
          LEFT JOIN agent_tokens t ON t.agent_id = u.id
          LEFT JOIN users o ON o.id = t.owner_id
         WHERE u.id IN (${marks})`,
-    ).bind(...unique).all());
+    ).bind(...unique).all<AuthorRow>());
   } catch (error) {
     // agent_tokens is migration 0017's; without it the owner is simply unknown.
     if (!/no such table: agent_tokens/.test(String(error))) throw error;
     ({ results } = await env.DB.prepare(
       `SELECT id, name, role, NULL AS owner_id, NULL AS owner_name FROM users WHERE id IN (${marks})`,
-    ).bind(...unique).all());
+    ).bind(...unique).all<AuthorRow>());
   }
   for (const row of results) {
     out.set(row.id, {
