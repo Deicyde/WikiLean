@@ -103,9 +103,18 @@ RESTRICTED_SPDX = {
 #: that reason is about any *other* copy of the same repository too.
 _RESTRICTION_WORDS = re.compile(
     r"non-?commercial|\bnc\b|no-?ml|machine learning|\bml\b|evaluation|"
-    r"no-?deriv|research[- ]only|not for use", re.IGNORECASE)
+    r"no-?deriv|research[- ]only|not for use|proprietary|all rights reserved|"
+    r"licen[cs]e|copyright|\bterms\b", re.IGNORECASE)
 #: An ``owner/repo`` pair as a reason or a repo URL spells it.
 _REPO_PAIR = re.compile(r"([A-Za-z0-9][\w.-]*)/([A-Za-z0-9][\w.-]*)")
+#: A URL inside an exclusion's prose reason, so its ``owner/repo`` is read the same way
+#: a library's own ``repo`` field is rather than as two words that happen to be
+#: adjacent.
+_URL = re.compile(r"\b(?:https?://|git@)\S+")
+#: Host names that are not an ``owner`` — the first pair a URL yields is
+#: ``<host>/<owner>``, which would join two libraries of one owner into one repository.
+_NOT_AN_OWNER = ("github.com", "gitlab.com", "bitbucket.org", "codeberg.org",
+                 "sr.ht", "git.sr.ht", "www.github.com")
 
 
 class PackageProblem(ValueError):
@@ -151,33 +160,64 @@ def read_universe(path: Path) -> dict:
     return value
 
 
-def _repo_pairs(text: str) -> set[str]:
-    """Every ``owner/repo`` a free-text string names, lower-cased.
-
-    Used on an exclusion's *reason*, which is prose and may name a repository any way
-    its author chose. A repository *URL* goes through :func:`_repo_of_url` instead,
-    which takes only the last two path components: scanning a URL with this would
-    also yield ``github.com/<owner>`` and join two libraries that share an owner but
-    not a repository.
-    """
-    return {f"{m.group(1).lower()}/{m.group(2).lower()}" for m in _REPO_PAIR.finditer(text)}
-
-
 def _repo_of_url(url: str) -> str:
-    """``owner/repo`` of a repository URL, lower-cased; empty when it is not one."""
-    parts = [part for part in str(url or "").rstrip("/").split("/") if part]
-    return "/".join(parts[-2:]).lower() if len(parts) >= 2 else ""
+    """``owner/repo`` of a repository URL, lower-cased; empty when it is not one.
+
+    The last two path components, less a trailing ``.git`` — so
+    ``https://github.com/o/r``, ``https://github.com/o/r.git`` and
+    ``git@github.com:o/r.git`` are one repository, and a bare host is none. Only the
+    last two: the whole URL run through :data:`_REPO_PAIR` would also yield
+    ``github.com/<owner>``, which joins two libraries that share an owner and not a
+    repository.
+    """
+    text = re.sub(r"^[A-Za-z][A-Za-z0-9+.-]*://", "", str(url or "").strip())
+    parts = [part for part in text.rstrip("/").replace(":", "/").split("/") if part]
+    if len(parts) < 2:
+        return ""
+    owner, repo = parts[-2].lower(), parts[-1].lower()
+    if repo.endswith(".git"):
+        repo = repo[:-len(".git")]
+    return "" if owner in _NOT_AN_OWNER or not repo else f"{owner}/{repo}"
+
+
+def _repo_pairs(text: str) -> set[str]:
+    """Every ``owner/repo`` a free-text reason names, lower-cased.
+
+    An exclusion's reason is prose and may name a repository as a bare ``owner/repo``
+    or as a URL. Both are read: every URL goes through :func:`_repo_of_url`, and the
+    rest of the text through :data:`_REPO_PAIR` with the URLs taken out first, so a
+    URL contributes its repository and not also its ``<host>/<owner>``.
+    """
+    text = str(text or "")
+    out = {pair for pair in (_repo_of_url(url) for url in _URL.findall(text)) if pair}
+    rest = _URL.sub(" ", text)
+    out |= {f"{m.group(1).lower()}/{m.group(2).lower()}"
+            for m in _REPO_PAIR.finditer(rest)}
+    return out
+
+
+#: A library id's version suffix, as a universe spells one: ``atlas-v1``, ``atlas-v12``.
+_VERSION_SUFFIX = re.compile(r"^(?P<stem>.+?)-v[0-9]+$")
+
+
+def _stem(library_id: str) -> str:
+    """A library id with its ``-v<N>`` suffix taken off, if it has one."""
+    found = _VERSION_SUFFIX.match(str(library_id or ""))
+    return found.group("stem") if found else str(library_id or "")
 
 
 def _versioned_sibling(one: str, other: str) -> bool:
-    """Is one of these ids the other plus a ``-v<N>`` suffix? ``atlas`` and ``atlas-v1``.
+    """Are these two ids versions of one library? ``atlas``/``atlas-v1``, ``-v1``/``-v2``.
 
-    Deliberately narrow. The obvious looser rule — "share the leading token" — would
-    make one licence-excluded ``ff-*`` library flag all forty-four of them, which is a
-    review queue nobody reads.
+    Deliberately narrow: two ids are siblings when they are equal **after** their
+    ``-v<N>`` suffixes come off, and at least one of them had one. The obvious looser
+    rule — "share the leading token" — would make one licence-excluded ``ff-*``
+    library flag all forty-four of them, which is a review queue nobody reads.
     """
-    short, long = sorted((str(one or ""), str(other or "")), key=len)
-    return bool(short) and bool(re.fullmatch(re.escape(short) + r"-v[0-9]+", long))
+    one, other = str(one or ""), str(other or "")
+    if not one or not other or one == other:
+        return False
+    return _stem(one) == _stem(other)
 
 
 def spdx_restriction(spdx: str) -> str | None:
@@ -234,8 +274,15 @@ def library_licences(universe: dict, *, stated: dict[str, str] | None = None) ->
             continue
         lib_id = str(lib.get("id") or "")
         licence = lib.get("licence")
-        spdx = (str(licence.get("spdx")) if isinstance(licence, dict)
-                and licence.get("spdx") else NOASSERTION)
+        if isinstance(licence, dict):
+            spdx = str(licence.get("spdx") or "") or NOASSERTION
+        elif isinstance(licence, str) and licence.strip():
+            # ARTICLES.md section 3 fixes `licence` as `{"spdx": <id>}`, but a universe
+            # written by hand may spell it as the bare id. Read it rather than calling
+            # a licence that is plainly there NOASSERTION, which would hide a term.
+            spdx = licence.strip()
+        else:
+            spdx = NOASSERTION
         repo = str(lib.get("repo") or "")
         restrictions: list[dict] = []
         why = spdx_restriction(spdx)
@@ -246,8 +293,8 @@ def library_licences(universe: dict, *, stated: dict[str, str] | None = None) ->
             same_repo = bool(mine) and mine in set(excluded["repos"])
             if not (same_repo or _versioned_sibling(lib_id, excluded["id"])):
                 continue
-            how = ("from the same repository" if same_repo
-                   else f"which is a version of {lib_id}")
+            how = ("from the same repository as this one" if same_repo
+                   else "which is another version of the same library")
             restrictions.append({
                 "source": "universe.excluded",
                 "reason": f"the universe excludes {excluded['id']} {how} for a licence "
@@ -425,6 +472,32 @@ def _place(source: Path, target: Path, *, link: bool) -> None:
     shutil.copyfile(source, target)
 
 
+#: The directories a bundle is made of. Everything else in the target directory is
+#: somebody else's, which is why a target holding anything else is refused.
+PARTS = (INDEX_DIR, SEARCH_DIR, NAMES_DIR)
+#: And the files beside them.
+PART_FILES = (MANIFEST_NAME, LICENCES_JSON, LICENCES_MD, README_NAME)
+
+
+def _within(path: Path, directory: Path) -> bool:
+    """Is ``path`` ``directory`` itself, or under it?"""
+    return path == directory or directory in path.parents
+
+
+def _is_a_bundle(out: Path) -> bool:
+    """A directory this packager may write again: an earlier bundle, or its wreckage.
+
+    A finished bundle has a ``MANIFEST.json``. One whose write failed part way has
+    only some of the parts and no manifest, and refusing *that* would mean a copy
+    interrupted by a full disk could never be retried without a manual ``rm -rf``.
+    Anything else in the directory belongs to somebody else and is left alone.
+    """
+    if (out / MANIFEST_NAME).is_file():
+        return True
+    return all(entry.name in PARTS or entry.name in PART_FILES
+               for entry in out.iterdir())
+
+
 def default_version(universe: dict, index_sha: str) -> str:
     """A version nobody has to remember: the universe and the index's own sha256.
 
@@ -456,13 +529,27 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
     if created is not None and not vocab.CREATED_RE.match(created):
         raise PackageProblem(f"--created {created!r} is not an ISO 8601 UTC time ending in Z")
 
+    # A bundle written over its own input eats it: _place unlinks the target before it
+    # copies, and for `--index <bundle>/index/decl-index.jsonl --out <bundle>` the
+    # target *is* the source. Refuse rather than discover it afterwards.
+    inside = [str(path) for path in (index, search)
+              if _within(Path(path).resolve(), out.resolve())]
+    if inside:
+        raise PackageProblem(
+            f"{inside[0]} is inside {out}, and this writes its inputs into that "
+            "directory: packaging a bundle over itself would delete the index it is "
+            "copying. Name an --out beside the inputs, not above them")
+
     index_sha = sha256_file(index)
     version = version or default_version(universe_doc, index_sha)
     if not vocab.TOKEN_RE.match(version):
         raise PackageProblem(f"--version {version!r} is not {vocab.TOKEN_RULE}")
-    if out.exists() and any(out.iterdir()) and not (out / MANIFEST_NAME).is_file():
-        raise PackageProblem(f"{out} is not empty and holds no {MANIFEST_NAME}; name an "
-                             "empty directory, or an earlier bundle to write again")
+    if out.exists() and any(out.iterdir()) and not _is_a_bundle(out):
+        raise PackageProblem(
+            f"{out} is not empty and is not a bundle this wrote; name an empty "
+            "directory, or an earlier bundle to write again. (A bundle is a directory "
+            f"holding {MANIFEST_NAME}, or holding nothing but this packager's own "
+            f"parts: {', '.join(sorted(PARTS))}.)")
 
     # Everything that can be refused is refused before half a gigabyte is copied: the
     # licence rows, the operator's own restrictions and the provenance's index sha.
@@ -470,12 +557,24 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
     converted = None
     if provenance is not None:
         converted = json.loads(Path(provenance).read_text(encoding="utf-8"))
-        if converted.get("index", {}).get("sha256") not in (None, index_sha):
+        if not isinstance(converted, dict):
+            raise PackageProblem(f"{provenance} is not an index provenance document")
+        block = converted.get("index")
+        if block is not None and not isinstance(block, dict):
             raise PackageProblem(
-                f"{provenance} records index sha256 "
-                f"{converted['index']['sha256'][:12]} and {index} hashes to "
-                f"{index_sha[:12]}: the provenance is of another index")
+                f"{provenance} records index as {block!r}; index_from_corpus.py writes "
+                "an object with its path, sha256 and row count, and a provenance this "
+                "cannot read is one that checks nothing")
+        recorded = block.get("sha256") if isinstance(block, dict) else None
+        if recorded is not None and str(recorded) != index_sha:
+            raise PackageProblem(
+                f"{provenance} records index sha256 {str(recorded)[:12]} and {index} "
+                f"hashes to {index_sha[:12]}: the provenance is of another index")
     out.mkdir(parents=True, exist_ok=True)
+    # An earlier bundle's parts go, so a renamed index or a shrunken search corpus
+    # cannot leave a stale file behind for the new MANIFEST.json to vouch for.
+    for name in PARTS:
+        shutil.rmtree(out / name, ignore_errors=True)
 
     _place(index, out / INDEX_DIR / index.name, link=link)
     for name in SEARCH_FILES:

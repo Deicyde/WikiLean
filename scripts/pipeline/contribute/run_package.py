@@ -100,6 +100,20 @@ class RunProblem(ValueError):
     """Something a contributor must fix before this machine runs or sends anything."""
 
 
+#: What exit 2 means: something a contributor can read and fix. Every one of these is
+#: a stage of the pipeline saying no by name, and ``--stage seal`` reaches four that
+#: nothing else here does — the tally, the corpus's own gate check, the export and the
+#: index reader. They are all ``ValueError`` subclasses, so leaving them out would land
+#: them in the ``except (OSError, ValueError, KeyError)`` catch-all and report them as
+#: "the run failed" with exit 3, which is for a command that broke and not for a
+#: contributor who has something to go and fix.
+REFUSALS = (RunProblem, package_mod.PackageProblem, results_mod.ResultProblem,
+            seal_mod.SealProblem, work_mod.WorkProblem, workrepo.WorkRepoProblem,
+            workdir_mod.WorkdirProblem, task_mod.TaskProblem,
+            seal_mod.tally_mod.TallyProblem, seal_mod.corpus_mod.CorpusProblem,
+            seal_mod.export_records.ExportProblem, seal_mod.index_mod.IndexProblem)
+
+
 def now() -> str:
     return _dt.datetime.now(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -433,18 +447,24 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-cost", type=float, default=None,
                         help="recorded and printed, not enforced: no watchdog runs here")
     parser.add_argument("--execute", action="store_true",
-                        help="really push; without it every step that would prints what it "
-                             "would do")
+                        help="really claim, really call a model, really push; without it "
+                             "every step that would prints what it would do")
     args = parser.parse_args(argv)
     stages = (args.stage,) if args.stage else DEFAULT_STAGES
     try:
         repo = workrepo.check_clone(args.repo)
         machine = workrepo.machine_id(args.machine_id)
         package = args.package
-        if not args.execute:
+        # `seal` is not one of the stages --execute governs: it writes a set and pushes
+        # nothing either way, so saying "no document is written" in front of it would be
+        # untrue. Say that instead.
+        if not args.execute and set(stages) - {"seal"}:
             print("# DRY RUN: nothing is pushed, no model is called and no document is "
                   "written.\n# This is the default. Read what follows, then add "
                   "--execute if you agree with it.")
+        if "seal" in stages:
+            print("# --stage seal writes a record set and pushes nothing, with or "
+                  "without --execute.\n# `--stage results` is what sends it.")
         if "claim" in stages:
             package = claim(repo=repo, workdir=args.workdir, machine=machine,
                             package=args.package, take_over=args.take_over,
@@ -497,9 +517,7 @@ def main(argv: list[str] | None = None) -> int:
                          documents=documents, host=args.host,
                          record_set=record_set, max_cost=args.max_cost,
                          execute=args.execute)
-    except (RunProblem, package_mod.PackageProblem, results_mod.ResultProblem,
-            seal_mod.SealProblem, work_mod.WorkProblem, workrepo.WorkRepoProblem,
-            workdir_mod.WorkdirProblem, task_mod.TaskProblem) as exc:
+    except REFUSALS as exc:
         print(str(exc), file=sys.stderr)
         return 2
     except (OSError, ValueError, KeyError) as exc:

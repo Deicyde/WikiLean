@@ -91,6 +91,18 @@ ACTOR_TYPES = ("agent", "human")
 #: What ``origin`` a row must already have for a contributed set to supersede it. A
 #: human's edit is never overwritten here (section 3.3).
 SUPERSEDABLE = ("contributed", "pipeline")
+#: The columns a supersession writes. Three are left out on purpose:
+#:
+#: * ``pair_key`` is the conflict target and ``created_at`` says when the row first
+#:   existed, which a supersession does not change;
+#: * ``version`` is incremented rather than overwritten;
+#: * the three ``removed_*`` columns are **not here**, and nor is the update allowed to
+#:   run against a removed row at all (``AND removed_at IS NULL``). Writing them would
+#:   set a moderator's tombstone back to NULL and bring a removed row live again, which
+#:   is the same defect as overwriting a human's edit wearing a different hat.
+UPDATED = tuple(name for name in COLUMNS
+                if name not in ("pair_key", "created_at", "version",
+                                "removed_by", "removed_at", "removed_reason"))
 #: The version a newly inserted row starts at. An existing row's is incremented by the
 #: generated statement.
 FIRST_VERSION = 1
@@ -101,6 +113,15 @@ _CAMPAIGN_RUN = re.compile(r"^run:([A-Za-z0-9][A-Za-z0-9._-]*)")
 #: Anything a SQL literal may not carry. A NUL or a control character in a value is a
 #: defect of the set, not something to escape around.
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+#: The columns whose value is a **structural** name — a library, a repository, a Lean
+#: declaration, a relation, a key. None of them may carry a line break, and a set that
+#: puts one there is refused rather than escaped around: the line break is the thing
+#: that turns a comment into a statement (:func:`sql_for`).
+LINE_SAFE = ("pair_key", "passage_key", "library", "repository", "declaration",
+             "relation", "state", "origin", "base_relation", "added_by", "actor_type",
+             "via", "token_id", "model", "run_id", "campaign", "record_set",
+             "universe_sha256", "created_at", "updated_at", "removed_by", "removed_at")
+_LINE_BREAK = re.compile("[\r\n\u2028\u2029\u0085]")
 
 
 class PromotionProblem(ValueError):
@@ -192,6 +213,16 @@ def deduplicate(rows: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
     invocation was given. Two rows of **one** set at one pair that disagree about the
     judgement are not a supersession and are refused: nobody can review a file that
     states two relations for one key.
+
+    ``library`` is one of the fields compared, not only the three the key is made of.
+    A ``pair_key`` names a *repository*, and a universe may split one repository into
+    several libraries (lean-core's ``Init`` and ``Std``), so two locations of one
+    passage can share a pair and disagree about which library it is. That is a real
+    disagreement and the reviewer should see it rather than have one silently win.
+
+    Only a collision **between** sets is counted as a supersession; an identical row
+    repeated inside one set is a duplicate, and calling it a supersession would make
+    the report say a set superseded itself.
     """
     by_pair: dict[str, dict] = {}
     refused_pairs: set[str] = set()
@@ -205,9 +236,11 @@ def deduplicate(rows: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
         if held is None:
             by_pair[pair] = row
             continue
-        differs = [key for key in ("relation", "declaration", "repository", "note")
+        differs = [key for key in
+                   ("relation", "declaration", "repository", "library", "note")
                    if held[key] != row[key]]
-        if held["record_set"] == row["record_set"] and differs:
+        same_set = held["record_set"] == row["record_set"]
+        if same_set and differs:
             refusals.append(
                 f"{pair[:12]}: one set states two judgements for one pair "
                 f"({'; '.join(f'{k}: {held[k]!r} and {row[k]!r}' for k in differs)}); "
@@ -215,7 +248,8 @@ def deduplicate(rows: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
             refused_pairs.add(pair)
             by_pair.pop(pair)
             continue
-        superseded.append(held)
+        if not same_set:
+            superseded.append(held)
         by_pair[pair] = row
     kept = sorted(by_pair.values(),
                   key=lambda row: (row["pageid"], row["passage_key"], row["pair_key"]))
@@ -225,8 +259,57 @@ def deduplicate(rows: list[dict]) -> tuple[list[dict], list[dict], list[str]]:
 # ---- the reviewable files ----------------------------------------------------------------
 
 
+def check_values(rows: list[dict]) -> None:
+    """Refuse a row no SQL writer should be asked to write, **before** anything is written.
+
+    Two classes, both of which a contributor controls and neither of which a record
+    set that is what it claims to be would carry:
+
+    * a **control character** anywhere. The intake contract does not refuse one — the
+      vendored checker's ``text`` is any non-empty string — so this is where it stops;
+    * a **line break** in a structural name (:data:`LINE_SAFE`): a library, a
+      repository, a declaration, a relation, a key, a timestamp. A line break in one
+      of those ends the comment line :func:`sql_for` writes above each statement and
+      makes whatever follows it a top-level SQL statement in a file the coordinator is
+      told to run against the live database. ``note`` is the one field that may hold
+      one, and it is never interpolated into a comment.
+
+    Raising here rather than in the writer means the refusal reaches the command's own
+    error path and exits 2, and that neither output file is written.
+    """
+    for row in rows:
+        for name, value in sorted(row.items()):
+            if name.startswith("_") or value is None or isinstance(value, (bool, int)):
+                continue
+            if not isinstance(value, str):
+                raise PromotionProblem(
+                    f"{row['pair_key'][:12]}: {name} is {value!r}, which is not a value "
+                    "a row may carry")
+            if _CONTROL.search(value):
+                raise PromotionProblem(
+                    f"{row['pair_key'][:12]}: {name} carries a control character "
+                    f"({value[:60]!r}); this writer will not escape around one")
+            if name in LINE_SAFE and _LINE_BREAK.search(value):
+                raise PromotionProblem(
+                    f"{row['pair_key'][:12]}: {name} carries a line break "
+                    f"({value[:60]!r}). A {name} does not contain one, and a line break "
+                    "here would end the comment above the statement and make what "
+                    "follows it SQL of its own")
+
+
+def comment_safe(value, *, limit: int = 120) -> str:
+    """One value, safe to put after ``-- `` on one line: no break, bounded length."""
+    text = _LINE_BREAK.sub(" ", _CONTROL.sub(" ", str(value)))
+    return text if len(text) <= limit else text[:limit - 1] + "…"
+
+
 def sql_literal(value) -> str:
-    """One SQL literal, or raise. Nothing here is a format string over user bytes."""
+    """One SQL literal, or raise. Nothing here is a format string over user bytes.
+
+    :func:`check_values` has already refused anything this would refuse; the checks
+    stay because this function is also reachable on its own and a writer that trusts
+    its caller is a writer that stops being safe when somebody adds a caller.
+    """
     if value is None:
         return "NULL"
     if isinstance(value, bool):
@@ -237,9 +320,8 @@ def sql_literal(value) -> str:
         raise PromotionProblem(f"{value!r} is not a value a row may carry")
     if _CONTROL.search(value):
         raise PromotionProblem(
-            f"a value carries a control character ({value[:40]!r}); a record set that "
-            "passed the intake contract should not, and this writer will not escape "
-            "around one")
+            f"a value carries a control character ({value[:40]!r}); this writer will "
+            "not escape around one")
     return "'" + value.replace("'", "''") + "'"
 
 
@@ -258,8 +340,10 @@ SQL_HEAD = """\
 -- which ships in R1). If R1's migration names a column differently, THIS FILE IS WRONG
 -- and the promoter is what to fix, not the migration.
 --
--- Supersession: the ON CONFLICT clause updates a row only where its own origin is one of
--- {superseded}. A human's edit is never overwritten by a contributed set.
+-- Supersession: the ON CONFLICT clause updates a row only where its own origin is one
+-- of {superseded} AND it has not been removed. So a contributed set never overwrites a
+-- human's edit, and never brings back a row a moderator took down -- the three
+-- removed_* columns are not in the update at all.
 --
 -- Rows: {rows}. Submitter: {added_by}. State: {state}.
 BEGIN TRANSACTION;
@@ -277,11 +361,10 @@ def sql_for(rows: list[dict], *, added_by: str, state: str, sets: int,
     of which article, and the locate run's own rank" without opening the set.
     """
     provenance = provenance or {}
+    check_values(rows)
     columns = ", ".join(COLUMNS)
-    # every column but the key and the three that say when a row was first created
-    updated = [name for name in COLUMNS
-               if name not in ("pair_key", "created_at", "version")]
-    assignments = ",\n    ".join(f"{name} = excluded.{name}" for name in updated)
+    assignments = ",\n    ".join(f"{name} = excluded.{name}" for name in UPDATED)
+    supersedable = ", ".join(sql_literal(name) for name in SUPERSEDABLE)
     out = [SQL_HEAD.format(promoter=PROMOTER, sets=sets, table=TABLE, rows=len(rows),
                            added_by=added_by, state=state,
                            superseded=", ".join(repr(name) for name in SUPERSEDABLE))]
@@ -289,15 +372,17 @@ def sql_for(rows: list[dict], *, added_by: str, state: str, sets: int,
         values = ", ".join(sql_literal(row[name]) for name in COLUMNS)
         where = provenance.get(row["pair_key"]) or {}
         out.append(
-            f"-- {where.get('source_id', '?')} {where.get('item', '?')} "
-            f"rank {where.get('rank')}: "
-            f"{row['library']} {row['declaration']} ({row['relation']})\n"
+            f"-- {comment_safe(where.get('source_id', '?'))} "
+            f"{comment_safe(where.get('item', '?'))} "
+            f"rank {comment_safe(where.get('rank'))}: "
+            f"{comment_safe(row['library'])} {comment_safe(row['declaration'])} "
+            f"({comment_safe(row['relation'])})\n"
             f"INSERT INTO {TABLE} ({columns})\n"
             f"VALUES ({values})\n"
             f"ON CONFLICT(pair_key) DO UPDATE SET\n    {assignments},\n"
             f"    version = {TABLE}.version + 1\n"
-            f"  WHERE {TABLE}.origin IN "
-            f"({', '.join(sql_literal(name) for name in SUPERSEDABLE)});\n")
+            f"  WHERE {TABLE}.origin IN ({supersedable})\n"
+            f"    AND {TABLE}.removed_at IS NULL;\n")
     out.append(SQL_TAIL)
     return "\n".join(out)
 
@@ -440,11 +525,15 @@ def main(argv: list[str] | None = None) -> int:
     if problem is not None:
         print(f"promote: {problem}; nothing was promoted", file=sys.stderr)
         return 3
+    # Both files are rendered inside the try and written after it, so a row the SQL
+    # writer refuses leaves neither file behind rather than a .json without its .sql.
     try:
         doc = promote(args.record_sets, added_by=args.added_by,
                       created_at=args.created_at, machine_id=args.machine_id,
                       trusted=args.trusted, actor_type=args.actor_type, via=args.via,
                       token_id=args.token_id, model=args.model, run_id=args.run_id)
+        sql = sql_for(doc["rows"], added_by=doc["added_by"], state=doc["state"],
+                      sets=len(doc["sets"]), provenance=doc["provenance"])
     except PromotionProblem as exc:
         print(str(exc), file=sys.stderr)
         return 2
@@ -453,10 +542,7 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     if args.sql:
         args.sql.parent.mkdir(parents=True, exist_ok=True)
-        args.sql.write_text(sql_for(doc["rows"], added_by=doc["added_by"],
-                                    state=doc["state"], sets=len(doc["sets"]),
-                                    provenance=doc["provenance"]),
-                            encoding="utf-8")
+        args.sql.write_text(sql, encoding="utf-8")
     if args.json_out:
         args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n",

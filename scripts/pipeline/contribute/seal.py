@@ -49,6 +49,7 @@ for _path in (str(HERE), str(PIPELINE), str(PIPELINE / "run"),
     if _path not in sys.path:
         sys.path.insert(0, _path)
 
+import corpus as corpus_mod  # noqa: E402
 import export_records  # noqa: E402
 import index as index_mod  # noqa: E402
 import package as package_mod  # noqa: E402

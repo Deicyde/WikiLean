@@ -270,6 +270,36 @@ class TestTheSql(PromoteCase):
         self.assertEqual((origin, relation, added_by, version),
                          ("community", "narrowMatch", "a-human", 9))
 
+    def test_it_never_resurrects_a_row_a_moderator_removed(self):
+        """A tombstone is not a row to update: the three removed_* columns are not in
+        the update at all, and the update does not run against a removed row."""
+        pair = self.doc["rows"][0]["pair_key"]
+        self.conn.execute(
+            f"INSERT INTO {promoter.TABLE} (pair_key, origin, state, relation, "
+            "removed_by, removed_at, removed_reason, version) VALUES "
+            "(?, 'contributed', 'removed', 'broadMatch', 'a-moderator', "
+            "'2026-11-01T00:00:00Z', 'spam', 3)", (pair,))
+        self.conn.executescript(self.sql)
+        state, removed_by, reason, version = self.conn.execute(
+            f"SELECT state, removed_by, removed_reason, version FROM {promoter.TABLE} "
+            "WHERE pair_key = ?", (pair,)).fetchone()
+        self.assertEqual((state, removed_by, reason, version),
+                         ("removed", "a-moderator", "spam", 3))
+        self.assertNotIn("removed_by = excluded", self.sql)
+        self.assertNotIn("removed_at = excluded", self.sql)
+        self.assertNotIn("removed_reason = excluded", self.sql)
+
+    def test_a_row_with_no_origin_is_not_superseded_either(self):
+        pair = self.doc["rows"][0]["pair_key"]
+        self.conn.execute(
+            f"INSERT INTO {promoter.TABLE} (pair_key, relation, version) "
+            "VALUES (?, 'narrowMatch', 2)", (pair,))
+        self.conn.executescript(self.sql)
+        relation, version = self.conn.execute(
+            f"SELECT relation, version FROM {promoter.TABLE} WHERE pair_key = ?",
+            (pair,)).fetchone()
+        self.assertEqual((relation, version), ("narrowMatch", 2))
+
     def test_the_header_says_nothing_has_been_applied(self):
         self.assertIn("NOTHING HERE HAS BEEN APPLIED", self.sql)
         self.assertIn("BEGIN TRANSACTION;", self.sql)
@@ -288,6 +318,52 @@ class TestTheSql(PromoteCase):
         for pair, where in self.doc["provenance"].items():
             self.assertIn(f"-- {where['source_id']} {where['item']} ", self.sql)
             self.assertIn(pair, self.sql)
+
+    def test_every_comment_line_in_the_file_is_a_comment_line(self):
+        """No value can end the comment it is written into and start a statement."""
+        for line in self.sql.splitlines():
+            if line.startswith("--"):
+                continue
+            self.assertFalse(line.lstrip().startswith("DROP"), line)
+
+    def test_a_line_break_in_a_declaration_is_refused_before_anything_is_written(self):
+        """The injection this guard exists for: a newline ends the `-- ` comment, and
+        whatever follows it is a top-level statement in a file somebody runs on D1."""
+        rows = [dict(self.doc["rows"][0])]
+        rows[0]["declaration"] = "Foo.bar\nDROP TABLE article_tags; --"
+        with self.assertRaises(promoter.PromotionProblem) as caught:
+            promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+        self.assertIn("line break", str(caught.exception))
+        self.assertIn("declaration", str(caught.exception))
+
+    def test_a_line_break_is_refused_in_every_structural_column(self):
+        for name in ("library", "repository", "relation", "added_by", "campaign"):
+            rows = [dict(self.doc["rows"][0])]
+            rows[0][name] = "a\nb"
+            with self.subTest(column=name), \
+                    self.assertRaises(promoter.PromotionProblem):
+                promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+
+    def test_a_note_may_hold_a_line_break_and_is_never_put_in_a_comment(self):
+        """`note` is the one free-text column; it is quoted, never interpolated."""
+        rows = [dict(self.doc["rows"][0])]
+        rows[0]["note"] = "two lines\nof convention difference"
+        sql = promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+        self.assertIn("'two lines\nof convention difference'", sql)
+        conn = sqlite3.connect(":memory:")
+        self.addCleanup(conn.close)
+        create_table(conn)
+        conn.executescript(sql)
+        note, = conn.execute(
+            f"SELECT note FROM {promoter.TABLE}").fetchone()
+        self.assertEqual(note, "two lines\nof convention difference")
+
+    def test_a_control_character_anywhere_is_refused(self):
+        rows = [dict(self.doc["rows"][0])]
+        rows[0]["note"] = "a\x01b"
+        with self.assertRaises(promoter.PromotionProblem) as caught:
+            promoter.sql_for(rows, added_by="u", state="pending", sets=1)
+        self.assertIn("control character", str(caught.exception))
 
 
 class TestCommandLine(PromoteCase):

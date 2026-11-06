@@ -244,9 +244,81 @@ class TestLicences(BundleCase):
     def test_a_versioned_sibling_is_a_version(self):
         self.assertTrue(package_index._versioned_sibling("atlas", "atlas-v1"))
         self.assertTrue(package_index._versioned_sibling("atlas-v12", "atlas"))
+        self.assertTrue(package_index._versioned_sibling("atlas-v1", "atlas-v2"))
         self.assertFalse(package_index._versioned_sibling("ff-one", "ff-two"))
         self.assertFalse(package_index._versioned_sibling("atlas", "atlas-lean"))
         self.assertFalse(package_index._versioned_sibling("", "atlas-v1"))
+        self.assertFalse(package_index._versioned_sibling("atlas", "atlas"))
+
+    def test_a_repository_is_the_same_repository_however_its_url_is_spelled(self):
+        for url in ("https://github.com/example/alpha",
+                    "https://github.com/example/alpha/",
+                    "https://github.com/example/alpha.git",
+                    "git@github.com:example/alpha.git"):
+            with self.subTest(url=url):
+                self.assertEqual(package_index._repo_of_url(url), "example/alpha")
+        # a bare host is not a repository, and neither is <host>/<owner>
+        self.assertEqual(package_index._repo_of_url("https://github.com/example"), "")
+        self.assertEqual(package_index._repo_of_url("https://github.com"), "")
+        self.assertEqual(package_index._repo_of_url(None), "")
+
+    def test_a_dot_git_suffix_does_not_hide_a_restriction(self):
+        suffixed = dict(UNIVERSE)
+        suffixed["libraries"] = [
+            {"id": "alpha", "repo": "https://github.com/example/alpha.git",
+             "commit": "1" * 40, "licence": {"spdx": "Apache-2.0"}}]
+        suffixed["excluded"] = [
+            {"id": "alpha-old", "repo": "https://github.com/example/alpha",
+             "reason": "CC BY-NC with a no-ML-evaluation rider"}]
+        row, = package_index.library_licences(suffixed)
+        self.assertTrue(row["restricted"])
+
+    def test_a_reason_that_names_the_repository_only_as_a_url_still_joins(self):
+        by_url = dict(UNIVERSE)
+        by_url["libraries"] = [
+            {"id": "alpha", "repo": "https://github.com/example/alpha",
+             "commit": "1" * 40, "licence": {"spdx": "Apache-2.0"}},
+            {"id": "beta", "repo": "https://github.com/example/beta",
+             "commit": "2" * 40, "licence": {"spdx": "Apache-2.0"}}]
+        by_url["excluded"] = [
+            {"id": "alpha-old",
+             "reason": "non-commercial licence, see https://github.com/example/alpha"}]
+        rows = {row["id"]: row for row in package_index.library_licences(by_url)}
+        self.assertTrue(rows["alpha"]["restricted"])
+        # and the URL's own <host>/<owner> does not drag beta in with it
+        self.assertFalse(rows["beta"]["restricted"])
+
+    def test_a_reason_that_only_says_proprietary_is_still_a_restriction(self):
+        for reason in ("proprietary licence, all rights reserved",
+                       "the licence forbids redistribution",
+                       "copyright holder has not agreed"):
+            with self.subTest(reason=reason):
+                wide = dict(UNIVERSE)
+                wide["libraries"] = [
+                    {"id": "alpha", "repo": "https://github.com/example/alpha",
+                     "commit": "1" * 40, "licence": {"spdx": "Apache-2.0"}}]
+                wide["excluded"] = [{"id": "alpha-v1",
+                                     "repo": "https://github.com/example/alpha",
+                                     "reason": reason}]
+                row, = package_index.library_licences(wide)
+                self.assertTrue(row["restricted"], reason)
+
+    def test_a_bare_string_licence_is_read_rather_than_called_noassertion(self):
+        bare = dict(UNIVERSE)
+        bare["libraries"] = [{"id": "alpha", "repo": "https://example.invalid/a",
+                              "commit": "1" * 40, "licence": "CC-BY-NC-4.0"}]
+        bare["excluded"] = []
+        row, = package_index.library_licences(bare)
+        self.assertEqual(row["spdx"], "CC-BY-NC-4.0")
+        self.assertTrue(row["restricted"])
+
+    def test_an_odd_universe_shape_does_not_crash(self):
+        odd = {"id": "u", "universe_sha256": "a" * 64, "excluded": None,
+               "libraries": [{"id": "a"}, {"id": "b", "licence": None, "repo": None},
+                             {"id": 7, "licence": {"spdx": None}}, "not a library"]}
+        rows = package_index.library_licences(odd)
+        self.assertEqual([row["id"] for row in rows], ["7", "a", "b"])
+        self.assertTrue(all(row["spdx"] == package_index.NOASSERTION for row in rows))
 
     def test_a_versioned_sibling_is_flagged_without_a_repository_to_join_on(self):
         """u1's shape: the exclusion records an id and a reason, and no repo field."""
@@ -258,7 +330,9 @@ class TestLicences(BundleCase):
         }
         row, = package_index.library_licences(quiet_universe)
         self.assertTrue(row["restricted"])
-        self.assertIn("a version of atlas", row["restrictions"][0]["reason"])
+        self.assertIn("another version of the same library",
+                      row["restrictions"][0]["reason"])
+        self.assertIn("atlas-v1", row["restrictions"][0]["reason"])
 
     def test_the_operator_may_state_a_restriction(self):
         self.package(out="stated", restricted={"beta": "the vendor said no evaluation"})
@@ -316,6 +390,48 @@ class TestRefusals(BundleCase):
         with self.assertRaises(package_index.PackageProblem) as caught:
             self.package(out="occupied")
         self.assertIn("not empty", str(caught.exception))
+        self.assertTrue((target / "something.txt").is_file())
+
+    def test_a_half_written_bundle_can_be_written_again(self):
+        """A copy a full disk interrupted must not need a manual rm -rf to retry."""
+        target = self.tmp / "partial"
+        (target / package_index.INDEX_DIR).mkdir(parents=True)
+        (target / package_index.INDEX_DIR / "decl-index.jsonl").write_text(
+            "half of it", encoding="utf-8")
+        manifest = self.package(out="partial")
+        self.assertTrue(manifest["files"])
+        self.assertEqual(
+            (target / "index" / "decl-index.jsonl").read_text(encoding="utf-8"),
+            INDEX_LINES)
+
+    def test_a_second_run_does_not_leave_the_first_run_s_files_behind(self):
+        """A renamed index must not ship twice, with the stale one sha256-vouched."""
+        self.package(out="twice")
+        renamed = self.tmp / "decl-index-v2.jsonl"
+        renamed.write_text(INDEX_LINES, encoding="utf-8")
+        manifest = self.package(out="twice", index=renamed)
+        self.assertIn("index/decl-index-v2.jsonl", manifest["files"])
+        self.assertNotIn("index/decl-index.jsonl", manifest["files"])
+        self.assertFalse((self.tmp / "twice" / "index" / "decl-index.jsonl").exists())
+
+    def test_packaging_a_bundle_over_its_own_input_is_refused(self):
+        self.package(out="bundle")
+        inner = self.tmp / "bundle" / "index" / "decl-index.jsonl"
+        with self.assertRaises(package_index.PackageProblem) as caught:
+            self.package(out="bundle", index=inner,
+                         search=self.tmp / "bundle" / "search")
+        self.assertIn("inside", str(caught.exception))
+        # and the input it would have eaten is still there
+        self.assertEqual(inner.read_text(encoding="utf-8"), INDEX_LINES)
+
+    def test_a_provenance_that_is_not_one_is_refused_rather_than_crashing(self):
+        for value in ({"index": "decl-index.jsonl"}, ["not", "a", "document"],
+                      {"index": {"sha256": 7}}):
+            provenance = self.tmp / "odd.json"
+            provenance.write_text(json.dumps(value), encoding="utf-8")
+            with self.subTest(value=value), \
+                    self.assertRaises(package_index.PackageProblem):
+                self.package(out="odd", provenance=provenance)
 
     def test_a_bad_created_time_is_refused(self):
         with self.assertRaises(package_index.PackageProblem):

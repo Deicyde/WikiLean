@@ -344,6 +344,26 @@ def harvest(root: Path, workdir: Path, run_id: str, tasks: Iterable[str]) -> dic
                                run_config=config)
 
 
+#: What :func:`run_middle` reports when it harvested nothing and there is no earlier
+#: harvest to report instead. Enough for a caller that reads ``actual.count``; it is
+#: not a receipt and nothing writes it to disk.
+EMPTY_RECEIPT = {"run_id": None, "complete": False, "actual": {"count": 0, "names": []},
+                 "harvested": False,
+                 "why": "this invocation ran nothing, so it harvested nothing"}
+
+
+def held_receipt(workdir: Path, run_id: str) -> dict | None:
+    """The harvest receipt this corpus already holds, or None."""
+    path = Path(workdir) / CORPUS_DIR / run_id / "RECEIPT.json"
+    if not path.is_file():
+        return None
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    return value if isinstance(value, dict) else None
+
+
 def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command: str = "",
                execute: bool = False, model: str | None = None,
                max_cost: float | None = None, reviewer: bool = True,
@@ -351,8 +371,18 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
     """materialise, stage, check, run, harvest — and say what came of each.
 
     Returns ``{"root", "tasks", "staged", "prompts", "records", "passed", "rejected",
-    "receipt", "missing_inputs"}``. A root with a missing input stages nothing and runs
-    nothing: the receipt is empty and the missing list is the answer.
+    "receipt", "missing_inputs", "harvested"}``. A root with a missing input stages
+    nothing, runs nothing and **harvests nothing**: the missing list is the answer.
+
+    **Not harvesting is the important half of that.** The harvest rewrites
+    ``RECEIPT.json`` over whatever is there, and a harvest of no documents over a
+    corpus that already holds some writes a receipt that says ``complete: false`` and
+    lists every document already there as unexpected. A contributor who finished a paid
+    run, then lost an input — moved the workdir, cleared the refetched sources — and
+    ran this again would destroy the receipt that vouches for work already paid for,
+    and ``--stage seal`` refuses a corpus whose receipt is not a complete gated harvest.
+    The documents would still be there and the money would still be spent, and the only
+    way back would be to run the tasks again.
     """
     root = materialise(package_dir, workdir)
     log(f"  root     : {root}")
@@ -372,9 +402,11 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
     records: list[dict] = []
     passed: list[str] = []
     rejected: list[str] = []
+    ran = False
     if missing:
         log("  stopped  : an input the plan names is not on this machine, so nothing "
-            "was staged and nothing was run. Fill the names above and run this again.")
+            "was staged, nothing was run and nothing was harvested. Fill the names "
+            "above and run this again.")
     else:
         staged = stage_tasks(root, tasks=tasks, log=log)
         prompts = check_prompts(root, tasks=tasks, log=log)
@@ -384,6 +416,7 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
                 "not put there, and a paid call would read a file that is not there. "
                 "This check is free; the call is not.")
         else:
+            ran = True
             records = run_tasks(root, tasks=tasks, worker_command=worker_command,
                                 execute=execute, model=model, reviewer=reviewer,
                                 max_attempts=max_attempts, log=log)
@@ -395,10 +428,19 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
                 log(f"  WROTE OUTSIDE: {', '.join(outside)} — a worker left a file "
                     "outside its findings directory; read attempts/<task>.json before "
                     "sending anything")
-    receipt = harvest(root, workdir, run_id, passed)
-    log(harvest_mod.describe(receipt))
+    if ran:
+        receipt = harvest(root, workdir, run_id, passed)
+        log(harvest_mod.describe(receipt))
+    else:
+        receipt = held_receipt(workdir, run_id)
+        if receipt is None:
+            receipt = EMPTY_RECEIPT
+        else:
+            log(f"  kept     : {workdir}/{CORPUS_DIR}/{run_id}/RECEIPT.json is left as "
+                "it was — this invocation harvested nothing and will not write over a "
+                "harvest it did not make")
     if rejected:
         log(f"  rejected : {', '.join(rejected)} — their documents are not harvested")
     return {"root": root, "tasks": tasks, "staged": staged, "prompts": prompts,
             "records": records, "passed": passed, "rejected": rejected,
-            "receipt": receipt, "missing_inputs": missing}
+            "receipt": receipt, "missing_inputs": missing, "harvested": ran}

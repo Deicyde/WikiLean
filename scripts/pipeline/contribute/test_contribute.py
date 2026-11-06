@@ -693,6 +693,51 @@ class StagingTests(MiddleTests):
         # and it says what to go and get, by name
         self.assertTrue(any("rendered source" in line for line in done["missing_inputs"]))
 
+    def test_a_stopped_rerun_leaves_an_earlier_harvest_s_receipt_alone(self):
+        """A run that harvests nothing must not write over a harvest it did not make.
+
+        The failure this guards: a contributor finishes a paid run, then loses an
+        input -- moves the workdir, clears the refetched sources -- and runs the
+        command again. A harvest of no documents over a corpus that holds some writes
+        a receipt saying `complete: false` and lists every document already there as
+        unexpected, and `--stage seal` then refuses the corpus. The documents survive;
+        the receipt that vouches for them does not, and the only way back is to pay
+        for the tasks again.
+        """
+        clone, workdir, root = self.ready()
+        task = work_mod.tasks_of(root)[0]
+        command = self.stub_worker(root, task, self.task_document(root, task))
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir,
+                     package="loc-7", worker_command=command, reviewer=False)
+        self.assertTrue(done["harvested"])
+        self.assertTrue(done["receipt"]["complete"])
+        receipt = workdir / work_mod.CORPUS_DIR / "loc-7" / "RECEIPT.json"
+        before = receipt.read_bytes()
+
+        # the contributor loses a refetched source and runs it again
+        shutil.rmtree(root / "sources")
+        again = quiet(run_package.run_stage, repo=clone, workdir=workdir,
+                      package="loc-7", worker_command=command, reviewer=False)
+        self.assertTrue(again["missing_inputs"])
+        self.assertFalse(again["harvested"])
+        self.assertEqual(receipt.read_bytes(), before)
+        # and what it reports is the harvest that is really there, not an empty one
+        self.assertTrue(again["receipt"]["complete"])
+        self.assertEqual(again["receipt"]["actual"]["count"], 1)
+
+    def test_a_stopped_first_run_reports_an_empty_receipt_and_writes_none(self):
+        plan_root, _workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package="loc-7", execute=True)
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertFalse(done["harvested"])
+        self.assertEqual(done["receipt"]["actual"]["count"], 0)
+        self.assertFalse((workdir / work_mod.CORPUS_DIR / "loc-7" / "RECEIPT.json")
+                         .exists())
+
     def test_a_dry_run_stages_and_checks_and_calls_no_model(self):
         clone, workdir, root = self.ready()
         with io.StringIO() as sink, redirect_stdout(sink):
@@ -918,6 +963,27 @@ class SealTests(MiddleTests):
         with self.assertRaises(run_package.RunProblem) as caught:
             self.seal(clone, self.tmp / "nothing")
         self.assertIn("--stage run", str(caught.exception))
+
+    def test_a_stage_8_refusal_exits_two_and_not_three(self):
+        """Exit 3 is "the command broke"; a corpus the tally will not read is exit 2.
+
+        The tally, the corpus gate check, the export and the index reader all raise
+        ValueError subclasses, so a catch-all would report every one of them as a
+        crash and send a contributor looking for a bug in the tool.
+        """
+        clone, workdir = self.finished_run()
+        run = self.write_challenge(workdir, self.root)
+        # the inventory the plan was cut from goes missing
+        import test_run as run_tests  # noqa: PLC0415
+
+        shutil.rmtree(workdir / work_mod.CORPUS_DIR / run_tests.fixture.INV_RUN)
+        code = quiet(run_package.main,
+                     ["--repo", str(clone), "--workdir", str(workdir),
+                      "--package", "loc-7", "--stage", "seal",
+                      "--set-id", "contrib-3", "--campaign", "run:loc-7",
+                      "--producer-commit", "c" * 40, "--challenge-run", run,
+                      "--created", "2026-11-06T00:00:00Z"])
+        self.assertEqual(code, 2)
 
     def test_the_command_line_refuses_a_seal_with_no_pins(self):
         clone, workdir = self.finished_run()
