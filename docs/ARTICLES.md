@@ -1788,8 +1788,8 @@ Jack decided most of these on 2026-11-02; each says so.
 Two wait on his ratification before batch 1's store is uploaded, and one is still open, with a
 recommendation.
 
-1. **The End-goal amendment** (`docs/ROADMAP.md`, "Proposed amendment"). *Awaiting Jack's
-   ratification*, before the upload. Everything here assumes it.
+1. **The End-goal amendment** (`docs/ROADMAP.md`, "End goal"). *Ratified (Jack,
+   2026-11-05).* Everything here assumes it.
 2. **Store backend.** *Decided (Jack, 2026-11-02): R2, one private bucket* (no public URL, no
    custom domain), bound as `ARTICLES` in `wiki/wrangler.jsonc` (section 6). *Proposed, for Jack to
    confirm:* the bucket's name, `wikilean-articles`, which the binding gives. The maintainer creates
@@ -1827,8 +1827,8 @@ recommendation.
    found". That is the safety metric's most valuable label (false-not-formalized, §8.2). It
    needs a passage-level key, for example `(record id, universe sha)`. *Decided (Jack,
    2026-11-02): launch without it.* *Recommendation:* build it next, as a second verdict target.
-7. **The producer contract notes** (section 3). *Awaiting Jack's agreement as
-   formal-companion's maintainer*, before the upload. Notes 1, 2, 8, 9, 12 and 13 describe what
+7. **The producer contract notes** (section 3). *Agreed (Jack, as formal-companion's
+   maintainer, 2026-11-05).* Notes 1, 2, 8, 9, 12 and 13 describe what
    the producer's export at master writes; the others are WikiLean's readings where the
    agreed format (note 10) left a choice.
 8. **Navigation.** *Decided (Jack, 2026-11-02): link the plane from the site's navigation in
