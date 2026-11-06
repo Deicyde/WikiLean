@@ -291,6 +291,142 @@ def check_grid_repulsion() -> None:
           len({out.tobytes() for out in runs}) == 1, "the output depends on the run or budget")
 
 
+def check_bubbles() -> None:
+    """B1-B6: lone decls of libraries outside SIMULATED_DECL_LIBS sit in module bubbles.
+
+    Synthetic: a core (a ring with a hub, a decl of every simulated library, an isolated
+    Mathlib decl) and two outside libraries. Fake has modules of 90, 40, 15, 7, 4 and 3
+    members: one nested with no core partner (it borrows its parent's anchor), one with
+    no anchored ancestor (the mean anchor), and members without a supercell (the
+    library's root module).
+    """
+    import json
+    import math
+
+    import numpy as np
+
+    import layout
+    from layout import SPAN
+
+    def fixture() -> tuple[dict, list[dict], dict[str, str]]:
+        cells: dict[str, dict] = {}
+        synapses: list[dict] = []
+        module: dict[str, str] = {}      # bubble member -> the module it belongs to
+        for i in range(1, 61):
+            cells[f"cell:Q{i}"] = {"id": f"cell:Q{i}", "organs": [],
+                                   "supercells": ["path:Mathlib/A" if i % 2 else "path:Mathlib/B"]}
+            synapses.append({"src": f"cell:Q{i}", "dst": f"cell:Q{i % 60 + 1}", "weight": 3})
+        synapses += [{"src": "cell:Q1", "dst": f"cell:Q{i}", "weight": 1} for i in range(3, 20)]
+        for n, lib in enumerate(sorted(layout.SIMULATED_DECL_LIBS)):
+            cid = f"cell:decl:{lib}:Core.decl"
+            cells[cid] = {"id": cid, "organs": [], "supercells": [f"path:{lib}/Core"]}
+            synapses.append({"src": cid, "dst": f"cell:Q{10 * n + 5}", "weight": 2})
+        cells["cell:decl:Mathlib:Lonely"] = {"id": "cell:decl:Mathlib:Lonely", "organs": [],
+                                             "supercells": ["path:Mathlib/A"]}  # isolated
+
+        def add(lib: str, name: str, mod: str, sups: list[str] | None,
+                partners: list[int], weight: int = 1) -> None:
+            cid = f"cell:decl:{lib}:{name}"
+            cells[cid] = {"id": cid, "organs": []}
+            if sups:
+                cells[cid]["supercells"] = sups
+            synapses.extend({"src": cid, "dst": f"cell:Q{q}", "weight": weight} for q in partners)
+            module[cid] = mod
+
+        for i in range(90):
+            add("Fake", f"Big.d{i}", "path:Fake/Big", ["path:Fake/Big"], [15 + i % 10], 1 + i % 4)
+        for i in range(40):
+            add("Fake", f"Alg.d{i}", "path:Fake/Alg", ["path:Fake/Alg"], [1 + i % 8])
+        for i in range(6):
+            add("Fake", f"Alg.Deep.d{i}", "path:Fake/Alg/Deep", ["path:Fake/Alg/Deep"], [])
+        add("Fake", "Alg.Deep.two", "path:Fake/Alg/Deep", ["path:Fake", "path:Fake/Alg/Deep"], [])
+        for i in range(15):
+            add("Fake", f"Top.d{i}", "path:Fake/Top", ["path:Fake/Top"], [33 + i % 6])
+        for i in range(4):
+            add("Fake", f"Lonely.Sub.d{i}", "path:Fake/Lonely/Sub", ["path:Fake/Lonely/Sub"], [])
+        for i in range(3):
+            add("Fake", f"loose{i}", "path:Fake", None, [])
+        add("Toric", "Toric.one", "path:Toric", ["path:Toric"], [45])
+        # a bond between two members anchors nothing
+        synapses.append({"src": "cell:decl:Fake:Alg.Deep.d0", "dst": "cell:decl:Fake:Top.d0",
+                         "weight": 5})
+        return cells, synapses, module
+
+    cells, synapses, module = fixture()
+    layout.layout_cells(cells, synapses, iterations=60)
+    full = {cid: c["xy"] for cid, c in cells.items()}
+    members = sorted(module)
+
+    # B1: the core alone = the same cells minus the members, and every synapse not
+    # touching a member (same dict order: place_isolated's centroids follow it)
+    alone_cells = {cid: c for cid, c in fixture()[0].items() if cid not in module}
+    alone_syn = [s for s in synapses if s["src"] not in module and s["dst"] not in module]
+    layout.layout_cells(alone_cells, alone_syn, iterations=60)
+    core = sorted(alone_cells)
+    moved = [c for c in core if json.dumps(full[c]) != json.dumps(alone_cells[c]["xy"])]
+    check("B1 the core's positions are byte-identical to laying out the core alone",
+          not moved, f"{len(moved)} core cells differ, e.g. {moved[:3]}")
+
+    sim = [f"cell:decl:{lib}:Core.decl" for lib in sorted(layout.SIMULATED_DECL_LIBS)]
+    sim_bubbled = [c for c in sim + ["cell:decl:Mathlib:Lonely", "cell:Q1"]
+                   if layout._bubble_library(c) is not None]
+    check("B2 decl cells of SIMULATED_DECL_LIBS stay in the simulation", not sim_bubbled,
+          f"bubbled: {sim_bubbled}")
+    check("B2 lone decl cells of every other library go into bubbles",
+          all(layout._bubble_library(c) for c in members)
+          and layout._bubble_library("cell:decl:Fake:odd:name") == "Fake",
+          "a Fake or Toric decl, or a name with a colon, stayed in the core")
+
+    # B3: the discs layout_cells drew (place_bubbles is deterministic in the core it gets)
+    core_r = float(np.percentile([math.hypot(*full[c]) for c in core], 98))
+    discs = layout.place_bubbles(fixture()[0], members, synapses,
+                                 {c: tuple(full[c]) for c in core})
+    check("B3 one bubble per module: the deepest supercell, else the library root",
+          sorted(discs) == sorted(set(module.values())), f"got {sorted(discs)}")
+    sizes = {m: sum(v == m for v in module.values()) for m in discs}
+    check("B3 a bubble's radius is SPAN/2 * sqrt(members)",
+          all(discs[m][2] == SPAN / 2.0 * math.sqrt(sizes[m]) for m in discs),
+          f"radii {[(m, discs[m][2]) for m in sorted(discs)]}")
+    names = sorted(discs)
+    clash = [(a, b) for i, a in enumerate(names) for b in names[i + 1:]
+             if math.dist(discs[a][:2], discs[b][:2]) <= discs[a][2] + discs[b][2]]
+    check("B3 no two bubbles overlap", not clash, f"{len(clash)} pairs, e.g. {clash[:3]}")
+    entered = [m for m in names if math.hypot(*discs[m][:2]) <= core_r + discs[m][2]]
+    check("B3 no bubble enters the core radius", not entered,
+          f"core radius {core_r:.0f}; inside: {entered}")
+
+    stray = [c for c in members
+             if math.dist(full[c], discs[module[c]][:2]) > discs[module[c]][2] + 0.1]
+    check("B4 every member lies inside its module's bubble", not stray,
+          f"{len(stray)} outside, e.g. {stray[:3]}")
+
+    again, again_syn, _ = fixture()
+    layout.layout_cells(again, again_syn, iterations=60)
+    second = {cid: c["xy"] for cid, c in again.items()}
+    check("B5 the layout with bubbles is byte-identical across runs",
+          json.dumps(sorted(full.items())) == json.dumps(sorted(second.items())),
+          "same inputs produced a different map")
+
+    # B6: the exact pass alone, from starts the relaxation would never separate: discs
+    # stacked on one point, on the origin (no direction), and a crowded spiral.
+    pad = np.array([300.0, 300.0, 120.0, 50.0, 50.0, 50.0, 800.0, 10.0] * 4)
+    stacks = np.array([[400.0, 300.0]] * 16 + [[0.0, 0.0]] * 16)
+    spiral = layout._phyllotaxis(200, 3000.0)
+    spiral_pad = 20.0 + (np.arange(200) * 37 % 380)
+    for name, pos, p in (("stacked and at the origin", stacks, pad),
+                         ("a crowded spiral", spiral, spiral_pad)):
+        floor = 1000.0 + p
+        order = sorted(range(len(p)), key=lambda i: (-p[i], i))
+        out = layout._clear_discs(pos, p, floor, order)
+        dist = np.hypot(*(out[:, None, :] - out[None, :, :]).transpose(2, 0, 1))
+        short = dist - p[:, None] - p[None, :]
+        np.fill_diagonal(short, np.inf)
+        reach = np.hypot(out[:, 0], out[:, 1]) - floor
+        check(f"B6 the exact pass leaves no overlap and nothing inside the core: {name}",
+              short.min() >= -1e-6 and reach.min() >= -1e-6,
+              f"worst pair overlap {-short.min():.3g}, deepest into the core {-reach.min():.3g}")
+
+
 def main() -> int:
     print("building cell layer (no layout)…")
     cells_list, synapses, meta, review = build(do_layout=False)
@@ -481,6 +617,7 @@ def main() -> int:
 
     check_layout()
     check_grid_repulsion()
+    check_bubbles()
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:
