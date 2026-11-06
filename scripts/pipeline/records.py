@@ -208,6 +208,80 @@ def check_free_text(item: str, what: str, text: Any, layer: str) -> None:
                             f"verbatim ({run[:40]!r}...), past the {vocab.QUOTE_MAX_WORDS}-word quote cap")
 
 
+# ---- the note a downgrade leaves --------------------------------------------------------
+
+#: How much of a witness one sentence of a downgrade note may carry.
+NOTE_FROM_WITNESS_CHARS = 300
+_SENTENCE_END = re.compile(r"(?<=[.!?])\s")
+#: Abbreviations whose full stop ends no sentence of a witness ("i.e. F(x) = …").
+_ABBREVIATIONS = frozenset({"i.e.", "e.g.", "cf.", "resp.", "etc.", "viz.", "vs.", "w.r.t."})
+#: The mark of a challenger's recall miss: the last sentence of its witness on a general
+#: card names a declaration the passage lacks, which is never the convention a record
+#: differs by, so it is never taken as a note.
+SPECIFIC_MISS_MARK = "R-SPECIFIC miss:"
+
+
+def is_specific_miss(sentence: str) -> bool:
+    """Does a witness sentence carry the recall-miss mark, in any case?"""
+    return SPECIFIC_MISS_MARK.casefold() in str(sentence).casefold()
+
+
+def witness_sentences(witness: str) -> list[str]:
+    """A witness's sentences, whitespace collapsed, each cut at a word at the cap.
+
+    A sentence ends at ``.``, ``!`` or ``?`` before whitespace, except after an
+    abbreviation: "— i.e. F(x) = …" is one sentence, not two.
+    """
+    text = " ".join(str(witness or "").split())
+    sentences: list[str] = []
+    start = 0
+    for brk in _SENTENCE_END.finditer(text):
+        last = text[start:brk.start()].rsplit(" ", 1)[-1].lstrip("([{'\"")
+        if last.lower() in _ABBREVIATIONS:
+            continue
+        sentences.append(text[start:brk.start()])
+        start = brk.end()
+    if text[start:]:
+        sentences.append(text[start:])
+    out = []
+    for sentence in sentences:
+        if len(sentence) > NOTE_FROM_WITNESS_CHARS:
+            cut = sentence.rfind(" ", 0, NOTE_FROM_WITNESS_CHARS)
+            sentence = (sentence[:cut if cut > 0 else NOTE_FROM_WITNESS_CHARS].rstrip(" ,;:")
+                        + "…")
+        out.append(sentence)
+    return out
+
+
+def downgrade_note(verdict: Mapping[str, Any], layer: str | None = None) -> str:
+    """The note of a location a challenge downgraded to ``closeMatch``.
+
+    A ``closeMatch`` names its convention difference in ``note``, and a downgrade from
+    a stronger relation is exactly the challenger saying there is one: the verdict's
+    own ``note`` when it gives one, else a sentence of its ``witness`` — the first that
+    carries no more of the source verbatim than the quote cap allows
+    (:func:`verbatim_run` against the passage's layer). A witness opens by quoting the
+    passage as often as not, and a note is exported, so such a sentence is passed over.
+    Without a layer, or when every sentence left quotes past the cap, the first of them,
+    which :func:`check_free_text` then refuses by name.
+
+    It lives here, beside the free-text check, so the gate computes the very note the
+    export would write and refuses the same one.
+    """
+    note = " ".join(str(verdict.get("note") or "").split())
+    if note:
+        return note
+    sentences = [s for s in witness_sentences(str(verdict.get("witness") or ""))
+                 if not is_specific_miss(s)]
+    if not sentences:
+        return ""
+    if layer:
+        for sentence in sentences:
+            if verbatim_run(sentence, layer) is None:
+                return sentence
+    return sentences[0]
+
+
 # ---- the ends ---------------------------------------------------------------------------
 
 

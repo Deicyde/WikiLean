@@ -44,6 +44,19 @@ EITHER_KINDS = frozenset({"example", "other"})
 #: How prominent the passage is in its article (proposal section 2.2).
 PROMINENCES = frozenset({"subject", "central", "supporting"})
 PROMINENCE_SUBJECT = "subject"
+PROMINENCE_CENTRAL = "central"
+PROMINENCE_SUPPORTING = "supporting"
+#: The prominences under which a challenge refutes every location by default and hunts
+#: the absence, so a prominence overturned into one of them reopens the passage's records.
+REFUTE_BY_DEFAULT_PROMINENCE = frozenset({PROMINENCE_SUBJECT, PROMINENCE_CENTRAL})
+
+#: What the inventory said the passage is: mathematics to locate, prose about it, or
+#: neither. Only ``formal_math`` is located; the rest are scoped out of the run.
+SCOPE_FORMAL_MATH = "formal_math"
+SCOPE_EXPOSITORY = "expository"
+SCOPE_NON_MATH = "non_math"
+SCOPES = frozenset({SCOPE_FORMAL_MATH, SCOPE_EXPOSITORY, SCOPE_NON_MATH})
+LOCATED_SCOPES = frozenset({SCOPE_FORMAL_MATH})
 
 #: A location's relation, subject = passage, object = declaration.
 LOCATION_RELATIONS = ("exactMatch", "closeMatch", "broadMatch", "narrowMatch", "hasPart", "relatedMatch")
@@ -53,8 +66,32 @@ PART_RELATIONS = frozenset({"hasPart", "narrowMatch"})
 DATA_MATCH_RELATIONS = frozenset({"exactMatch", "closeMatch"})
 RELATED_MATCH = "relatedMatch"
 NO_MATCH = "noMatch"
+EXACT_MATCH = "exactMatch"
 CLOSE_MATCH = "closeMatch"
+BROAD_MATCH = "broadMatch"
+NARROW_MATCH = "narrowMatch"
 HAS_PART = "hasPart"
+#: A relation's strength, strongest first: a challenge ``downgrade`` names a WEAKER one,
+#: and under status rule 3 the surviving cards are ranked by it. One order for the whole
+#: pipeline — the gate's, the tally's and the bundle's weakest-part rule.
+RELATION_STRENGTH = {EXACT_MATCH: 0, CLOSE_MATCH: 1, BROAD_MATCH: 2, NARROW_MATCH: 3,
+                     HAS_PART: 3, RELATED_MATCH: 4}
+#: The three relations that state the whole passage: a location held to one of them
+#: carries the two-way ``tests``, and a bundle's relation is one of them.
+STRONG_RELATIONS = frozenset({EXACT_MATCH, CLOSE_MATCH, BROAD_MATCH})
+#: A relation whose record names the step it states.
+STEP_RELATIONS = frozenset({HAS_PART, NARROW_MATCH})
+#: The relation a part may bear to the conjuncts it states (judgment rules 3), and the
+#: same with ``hasPart``, which rules 4 admit on a part that states only some of them.
+CONJUNCT_RELATIONS = frozenset({EXACT_MATCH, CLOSE_MATCH, BROAD_MATCH, NARROW_MATCH})
+CONJUNCT_RELATIONS_PART = CONJUNCT_RELATIONS | {HAS_PART}
+#: What a locate document may say of a location beyond the format's own keys (the
+#: judgment rules); the last three are judgment rules 3's and 4's, read only on a run
+#: whose status rule reads bundles.
+JUDGMENT_LOCATION_FIELDS = ("clauses", "instantiation", "step", "convention",
+                            "conjunct_relation", "tests", "pd6")
+#: What a downgrade to ``relatedMatch`` says of the record it leaves (judgment rules 4).
+BRIDGE_FIELDS = ("bridge", "incomparable")
 
 #: A declaration's proof status, decided mechanically at index time, never by a model.
 PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "wanted", "definition"})
@@ -62,6 +99,50 @@ PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "want
 UNPROVED = frozenset({"statement_only", "wanted", "axiom_dependent"})
 #: A location counts as complete when its declaration is proved or is a definition.
 COMPLETE = frozenset({"proved", "definition"})
+
+#: A harvested document's ``mode``: which of the three model stages wrote it.
+MODE_INVENTORY = "locate-inventory"
+MODE_LOCATE = "locate"
+MODE_CHALLENGE = "locate-challenge"
+MODES = frozenset({MODE_INVENTORY, MODE_LOCATE, MODE_CHALLENGE})
+#: The schema a harvested document of any of the three modes carries.
+DOCUMENT_SCHEMA = "cf-locate/1"
+#: A challenge plan's schema.
+CHALLENGE_PLAN_SCHEMA = "cf-locate-challenge-plan/1"
+
+#: What a locate document says became of a passage.
+OUTCOME_LOCATED = "located"
+OUTCOME_ABSENT = "absent"
+OUTCOME_UNRESOLVED = "unresolved"
+LOCATE_OUTCOMES = frozenset({OUTCOME_LOCATED, OUTCOME_ABSENT, OUTCOME_UNRESOLVED})
+#: Who left a passage unresolved.
+UNRESOLVED_BY_WORKER = "worker"
+UNRESOLVED_ATTEMPT_CAP = "attempt_cap"
+#: What a worker who cannot re-cut an unresolved passage says of its cut (rules 3).
+CUT_FLAG_NOT_A_STATEMENT = "not_a_statement"
+CUT_FLAG_SEVERAL_STATEMENTS = "several_statements"
+CUT_FLAGS = frozenset({CUT_FLAG_NOT_A_STATEMENT, CUT_FLAG_SEVERAL_STATEMENTS})
+
+#: What a re-cut did to one passage of the old cut (the carry-over map, stage 8).
+#: ``unchanged`` is the only fate a verdict, a gold label or a known answer carries over.
+CARRY_UNCHANGED = "unchanged"
+CARRY_END_MOVED = "end_moved"
+CARRY_SPLIT = "split"
+CARRY_MERGED = "merged"
+CARRY_RESHAPED = "reshaped"
+CARRY_REMOVED = "removed"
+CARRY_CHANGED = "changed"
+CARRY_FATES = frozenset({CARRY_UNCHANGED, CARRY_END_MOVED, CARRY_SPLIT, CARRY_MERGED,
+                         CARRY_RESHAPED, CARRY_REMOVED, CARRY_CHANGED})
+#: A passage of the new cut that no old passage went into.
+CARRY_NEW = "new"
+
+#: The finding-row kinds the tally keys on. Spelled in capitals because they are the
+#: table's own names, and distinct from :data:`UNRESOLVED`, which is a passage's state.
+ROW_PASSAGE = "PASSAGE"
+ROW_LOCATION = "LOCATION"
+ROW_ABSENCE = "ABSENCE"
+ROW_UNRESOLVED = "UNRESOLVED"
 
 #: A passage's derived status, best first.
 STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
@@ -75,7 +156,24 @@ UNRESOLVED = "unresolved"
 #: challenge ran, so a verdict is owed and none has judged it.
 CHALLENGES = frozenset({"survived", "downgraded", "not_required", "sampled_out", "challenge_pending"})
 CHALLENGE_SURVIVED = "survived"
+CHALLENGE_DOWNGRADED = "downgraded"
+CHALLENGE_NOT_REQUIRED = "not_required"
+CHALLENGE_SAMPLED_OUT = "sampled_out"
 CHALLENGE_PENDING = "challenge_pending"
+#: A record no verdict judged. A prominence overturn reopens exactly these.
+CHALLENGE_UNJUDGED = frozenset({CHALLENGE_NOT_REQUIRED, CHALLENGE_SAMPLED_OUT,
+                                CHALLENGE_PENDING})
+#: What a challenge plan says of a record it requires a verdict on; the other two values
+#: a plan writes are ``not_required`` and ``sampled_out``, which are challenge values too.
+CHALLENGE_REQUIRED = "required"
+#: The verdict actions that keep the record they judge; the rest change or remove it.
+CHALLENGE_KEEP = frozenset({"confirm", "uphold"})
+#: The two actions a verdict on a coverage claim may take.
+COVERAGE_ACTIONS = frozenset({"confirm", "refute"})
+#: The challenge target of a coverage claim, as a plan and its verdicts name it.
+COVERAGE_TARGET = "coverage"
+#: What a located passage the challenge left with nothing that counts still owes.
+CHALLENGE_RULE_HUNT = "hunt"
 #: A part of a survived claim whose own challenge is one of these reads survived: the
 #: claim confirmed it. A part another verdict judged keeps it, and a pending part stays
 #: pending — the reopen wins over the claim.
@@ -92,6 +190,35 @@ MAX_CONJUNCTS = 5
 MAX_CONJUNCT_CHARS = 1000
 COVERAGE_RELATION = "hasPart"
 MIN_COVERAGE_PARTS = 2
+#: The shape of a compound statement, in the order a prompt lists them: the conditions of
+#: one equivalence; the cases of one law or definition; several conclusions about one
+#: subject under one hypothesis; one display holding several equations. An equation chain
+#: is no compound — it is one statement, its end-to-end equation.
+SHAPE_EXISTENCE_UNIQUENESS = "existence_uniqueness"
+SHAPE_IFF = "iff"
+SHAPE_CASES = "cases"
+SHAPE_CONCLUSIONS = "conclusions"
+SHAPE_EQUATIONS = "equations"
+COMPOUND_SHAPE_ORDER = (SHAPE_EXISTENCE_UNIQUENESS, SHAPE_IFF, SHAPE_CASES,
+                        SHAPE_CONCLUSIONS, SHAPE_EQUATIONS)
+COMPOUND_SHAPES = frozenset(COMPOUND_SHAPE_ORDER)
+#: A shape named here has exactly that many conjuncts.
+SHAPE_CONJUNCT_COUNTS = {SHAPE_EXISTENCE_UNIQUENESS: 2}
+#: The one clause id of a simple statement: the statement itself.
+SIMPLE_STATEMENT_CLAUSE = "c1"
+#: The closed list a ``closeMatch`` names its convention difference from. A
+#: strengthening, a generalisation or a weakening is none of them, and since the
+#: maintainer's PD7 (judgment rules 2) neither is a junk value: a declaration that agrees
+#: with the passage on the passage's own domain is an ``exactMatch`` when every case
+#: outside it is trivial, and a ``closeMatch`` differs where both sides are defined.
+CONVENTION_JUNK_VALUE = "junk_value"
+CONVENTIONS = ("notation", "encoding", "normalisation", "renaming", "unfolding", "bundling")
+#: The conventions a run of judgment rules 1 was gated by, ``junk_value`` among them.
+LEGACY_CONVENTIONS = (*CONVENTIONS, CONVENTION_JUNK_VALUE)
+#: What a worked example's absence tags the query for the general theorem it instantiates.
+GENERAL_QUERY_TAG = "general"
+#: The passage kind whose absence also searched for that general theorem.
+PASSAGE_EXAMPLE = "example"
 #: The relation a survived claim stands in as under status rule 1; under 2 and 3 it is
 #: the bundle's own relation, its weakest part's.
 COVERAGE_ACTS_AS = "exactMatch"
@@ -181,6 +308,26 @@ def is_repo_url(uri) -> bool:
 def member(value, allowed) -> bool:
     """Whether ``value`` is one of ``allowed`` — a str, never a bool or a number that compares equal."""
     return isinstance(value, str) and value in allowed
+
+
+def reads_bundles(status_rule: int) -> bool:
+    """Whether a run of ``status_rule`` reads its coverage claim as a bundle (2 and on).
+
+    Status rule 3 writes status rule 2's shapes — the bundle, the outcome row, the
+    challenge record and the ``/2`` set — and differs only in the statuses it derives
+    and in :func:`ranks_by_strength`.
+    """
+    return status_rule >= STATUS_RULE_BUNDLE
+
+
+def ranks_by_strength(status_rule: int) -> bool:
+    """Whether a run of ``status_rule`` re-ranks a challenge's surviving cards by strength.
+
+    R-SPECIFIC binds a run derived under status rule 3 and no older one: a run judged
+    before it ranked "best first" by its worker's own judgement, and a re-tally judges
+    an older run by the rule it ran under.
+    """
+    return status_rule >= STATUS_RULE_BROAD
 
 
 def status_rule_problem(status_rule) -> str | None:

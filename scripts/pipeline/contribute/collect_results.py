@@ -160,8 +160,8 @@ def main(argv: list[str] | None = None) -> int:
     total = sum(row["documents"] for row in receipt["machines"].values())
     print(f"collected {total} document(s) for {args.run_id} from "
           f"{len(receipt['machines'])} machine(s) -> {args.out}")
-    print("  re-gating the documents and the tally are pipeline stages 7 and 8, which are "
-          "TODO (docs/PIPELINE.md section 10)")
+    print("  next: re-gate them out of tree (scripts/pipeline/gate/verify_locate.py "
+          "--findings-dir) and tally the run (scripts/pipeline/tally.py)")
     return 0
 
 

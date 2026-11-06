@@ -19,12 +19,13 @@ the remote has no such ref", which overwrites nothing — and this command then 
 the ref back and starts only if it is its own commit. The lease is not the mechanism;
 the unique commit plus the read-back is.
 
-**What is between the two stages.** Fetching the package's sources at their pinned
-revisions, placing the declaration index, regenerating the candidates, staging the run
-and driving the agents are pipeline stages 9 and 10, which are **TODO**
-(docs/PIPELINE.md sections 3 and 10). Until they land a contributor does that part by
-hand between ``--stage claim`` and ``--stage results``; the transport at both ends, the
-claim, the sandbox and the result's checks are built and tested.
+**What is between the two stages.** ``--stage run`` (:mod:`work`): the package laid out as
+a run root, one agent call per task, the staged gate over each task's own documents and the
+harvest's reconciliation into a corpus with a receipt. What a contributor still supplies by
+hand is the three directories the plan names and the package cannot carry — the sources
+refetched at their pinned revisions, the candidates and the declaration index — because
+fetching and rendering them is stage 9a, which is **TODO** (docs/PIPELINE.md section 10);
+``--stage run`` names any that are missing before it runs anything.
 
 **What travels back**: the gated documents, the run's own records, and — when the
 contributor has sealed one — a record set, which is checked here by
@@ -52,9 +53,10 @@ sys.path.insert(0, str(HERE))
 import package as package_mod  # noqa: E402
 import results as results_mod  # noqa: E402
 import sandbox  # noqa: E402
+import work as work_mod  # noqa: E402
 import workrepo  # noqa: E402
 
-STAGES = ("claim", "results")
+STAGES = ("claim", "run", "results")
 #: What a contributor's workdir records about the package it holds, so a second
 #: invocation takes the same one instead of reading its own claim branch as a rival's.
 CLAIM_JSON = "claim.json"
@@ -256,11 +258,30 @@ def send_results(*, repo: Path, workdir: Path, machine: str, package: str,
 
 
 def staged_notice(log=print) -> None:
-    log("# between `claim` and `results`: fetch the package's sources at their pinned")
-    log("# revisions, place the declaration index, regenerate the candidates, stage the")
-    log("# run and drive the agents. Those are pipeline stages 9 and 10, which are TODO")
-    log("# (docs/PIPELINE.md sections 3 and 10); do that part by hand for now.")
+    log("# next: `--stage run` materialises the package, calls a worker per task, gates")
+    log("# each task's documents out of tree and harvests them with a receipt.")
+    log("# Before it, fill the three directories the plan names and the package cannot")
+    log("# carry: the sources refetched at their pinned revisions, the candidates and")
+    log("# the declaration index. `--stage run` names any that are missing.")
     log(f"# The agents run under {sandbox.SETTINGS_NAME}, written per call by bridge.sh.")
+
+
+def run_stage(*, repo: Path, workdir: Path, package: str, worker_command: str = "",
+              execute: bool = False, model: str | None = None,
+              max_cost: float | None = None, log=print) -> dict:
+    """``--stage run``: the middle, as far as it goes without a model (:mod:`work`).
+
+    A dry run calls no model and writes no document; it still materialises the package,
+    says which inputs are missing and runs the gate over whatever is there, so a
+    contributor sees the shape of the run before paying for one.
+    """
+    manifest = package_mod.read(package_mod.package_dir(repo, package))
+    log(f"package {package}: {manifest['mode']}, {len(manifest['tasks'])} task(s)")
+    return work_mod.run_middle(
+        package_dir=package_mod.package_dir(repo, package), workdir=Path(workdir),
+        run_id=str(manifest.get("run_id") or package), worker_command=worker_command,
+        execute=execute, model=model,
+        max_cost=manifest.get("max_cost") if max_cost is None else max_cost, log=log)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -278,7 +299,11 @@ def main(argv: list[str] | None = None) -> int:
                         help="this machine's id in results/<package>/<machine-id>/ "
                              "(default: $WIKILEAN_MACHINE_ID, else the host name)")
     parser.add_argument("--stage", choices=STAGES, default=None,
-                        help="run this stage only (default: claim, then results)")
+                        help="run this stage only (default: claim, run, then results)")
+    parser.add_argument("--worker-command",
+                        help="with --stage run: a local command that stands in for the "
+                             "model, run once per task in its own worktree")
+    parser.add_argument("--model", default=None, help="with --stage run and --execute")
     parser.add_argument("--documents", type=Path, help="the gated documents to send back")
     parser.add_argument("--host", type=Path, help="the run's own records to send back")
     parser.add_argument("--record-set", type=Path,
@@ -300,6 +325,17 @@ def main(argv: list[str] | None = None) -> int:
                             package=args.package, take_over=args.take_over,
                             execute=args.execute)
             staged_notice()
+        documents = args.documents
+        if "run" in stages:
+            package = package or held(args.workdir).get("package")
+            if not package:
+                raise RunProblem("no package: claim one first, or pass --package")
+            done = run_stage(repo=repo, workdir=args.workdir, package=package,
+                             worker_command=args.worker_command or "",
+                             execute=args.execute, model=args.model,
+                             max_cost=args.max_cost)
+            if documents is None and done["receipt"]["actual"]["count"]:
+                documents = Path(args.workdir) / work_mod.CORPUS_DIR / done["receipt"]["run_id"]
         if "results" in stages:
             package = package or held(args.workdir).get("package")
             if not package:
@@ -307,11 +343,11 @@ def main(argv: list[str] | None = None) -> int:
             if args.max_cost is not None:
                 print(f"  spend cap: USD {args.max_cost} — recorded, not enforced here")
             send_results(repo=repo, workdir=args.workdir, machine=machine, package=package,
-                         documents=args.documents, host=args.host,
+                         documents=documents, host=args.host,
                          record_set=args.record_set, max_cost=args.max_cost,
                          execute=args.execute)
     except (RunProblem, package_mod.PackageProblem, results_mod.ResultProblem,
-            workrepo.WorkRepoProblem) as exc:
+            work_mod.WorkProblem, workrepo.WorkRepoProblem) as exc:
         print(str(exc), file=sys.stderr)
         return 2
     except (OSError, ValueError, KeyError) as exc:
