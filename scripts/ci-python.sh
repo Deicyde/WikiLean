@@ -81,6 +81,7 @@ run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
 run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
+run_check "Contributed set promoted to reviewable overlay rows" "$PYTHON_BIN" scripts/articles/test_promote_submission.py
 run_check "Pipeline Literature Links pin" "$PYTHON_BIN" scripts/pipeline/test_links.py
 run_check "Pipeline revision-free key tests" "$PYTHON_BIN" scripts/pipeline/test_keys.py
 run_check "Pipeline locate vocabulary parity" "$PYTHON_BIN" scripts/pipeline/test_vocab.py

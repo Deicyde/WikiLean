@@ -234,6 +234,51 @@ decision** (ROADMAP.md, "Waiting on Jack"). What it needs from him, specifically
 Until those are answered, promotion stops at `brain/proposals/` and the offline fold, which
 needs no decision, and that is the shape this document assumes.
 
+### 6.1 Promotion into the articles overlay, which needs none of the above
+
+**None of those six questions is a question for the articles overlay**, and that is the
+one useful thing to say here. The overlay is not the Brain: it is mutable D1 under a
+reader, it has history and revert, and it never enters a frozen release. So an accepted
+set can become ordinary community edits without touching the Brain's release path, and
+without pre-empting any of Jack's six answers.
+
+`scripts/articles/promote_submission.py` is that step, and it is **offline and
+release-neutral**. It verifies a set through section 3's contract again, turns its
+located pairs into overlay rows, and writes them to a `.sql` file, a `.json` file, or
+both — **for review**. It writes nothing to D1, holds no binding and touches no network;
+applying the file is a separate, deliberate operator action after a backup.
+
+```sh
+python3 scripts/articles/verify_submission.py --record-set <dir> --machine-id <id>
+python3 scripts/articles/promote_submission.py --record-set <dir> \
+        --added-by <user-id> --created-at <ISO-Z> [--trusted] \
+        --sql rows.sql --json rows.json
+```
+
+Three rules it enforces rather than documents:
+
+- **one row per `pair_key`.** The key is revision- and commit-free, so a contributed
+  location collides by construction with the pipeline's own on the same (passage,
+  repository, declaration). Two sets about one passage produce one row and a second
+  attribution, never two rows that can disagree — which is what question 4 above is
+  shaped to avoid. A single set that states two different judgements for one pair is
+  refused, and both are named.
+- **a human's edit is never overwritten.** The generated statement is an
+  `ON CONFLICT(pair_key) DO UPDATE … WHERE origin IN ('contributed','pipeline')`, so a
+  contributed set may supersede a contributed or a pipeline row and nothing else. That
+  is `findLostHuman`'s principle restated for this plane, and it is in the artefact
+  rather than in a convention.
+- **what it cannot know, it leaves NULL.** What a community row overrides (`base_relation`)
+  is read from the live store at write time and needs D1; the removal columns are for a
+  removal, which this is not.
+
+A checked absence is not an overlay row — there is no declaration to key one on — so it
+is counted and named in the report rather than dropped silently. The overlay's table and
+column names are the public-editing plan's section 2.9 (migration 0019, release R1),
+which is **not written yet**: the promoter's `COLUMNS` list is the assumption, and
+`scripts/articles/test_promote_submission.py` makes it executable by running the
+generated SQL against a table built from that same list.
+
 ## 7. The contributor's side
 
 A contributor runs formal-companion; WikiLean's side of their work is one posted set.
