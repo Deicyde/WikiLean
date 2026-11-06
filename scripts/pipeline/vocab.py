@@ -190,6 +190,35 @@ MAX_CONJUNCTS = 5
 MAX_CONJUNCT_CHARS = 1000
 COVERAGE_RELATION = "hasPart"
 MIN_COVERAGE_PARTS = 2
+#: The shape of a compound statement, in the order a prompt lists them: the conditions of
+#: one equivalence; the cases of one law or definition; several conclusions about one
+#: subject under one hypothesis; one display holding several equations. An equation chain
+#: is no compound — it is one statement, its end-to-end equation.
+SHAPE_EXISTENCE_UNIQUENESS = "existence_uniqueness"
+SHAPE_IFF = "iff"
+SHAPE_CASES = "cases"
+SHAPE_CONCLUSIONS = "conclusions"
+SHAPE_EQUATIONS = "equations"
+COMPOUND_SHAPE_ORDER = (SHAPE_EXISTENCE_UNIQUENESS, SHAPE_IFF, SHAPE_CASES,
+                        SHAPE_CONCLUSIONS, SHAPE_EQUATIONS)
+COMPOUND_SHAPES = frozenset(COMPOUND_SHAPE_ORDER)
+#: A shape named here has exactly that many conjuncts.
+SHAPE_CONJUNCT_COUNTS = {SHAPE_EXISTENCE_UNIQUENESS: 2}
+#: The one clause id of a simple statement: the statement itself.
+SIMPLE_STATEMENT_CLAUSE = "c1"
+#: The closed list a ``closeMatch`` names its convention difference from. A
+#: strengthening, a generalisation or a weakening is none of them, and since the
+#: maintainer's PD7 (judgment rules 2) neither is a junk value: a declaration that agrees
+#: with the passage on the passage's own domain is an ``exactMatch`` when every case
+#: outside it is trivial, and a ``closeMatch`` differs where both sides are defined.
+CONVENTION_JUNK_VALUE = "junk_value"
+CONVENTIONS = ("notation", "encoding", "normalisation", "renaming", "unfolding", "bundling")
+#: The conventions a run of judgment rules 1 was gated by, ``junk_value`` among them.
+LEGACY_CONVENTIONS = (*CONVENTIONS, CONVENTION_JUNK_VALUE)
+#: What a worked example's absence tags the query for the general theorem it instantiates.
+GENERAL_QUERY_TAG = "general"
+#: The passage kind whose absence also searched for that general theorem.
+PASSAGE_EXAMPLE = "example"
 #: The relation a survived claim stands in as under status rule 1; under 2 and 3 it is
 #: the bundle's own relation, its weakest part's.
 COVERAGE_ACTS_AS = "exactMatch"

@@ -88,6 +88,7 @@ run_check "Pipeline derived-status parity (rules 1, 2 and 3)" "$PYTHON_BIN" scri
 run_check "Pipeline record builder tests" "$PYTHON_BIN" scripts/pipeline/test_records.py
 run_check "Pipeline sealed record set read back and re-exported" "$PYTHON_BIN" scripts/pipeline/test_record_sets.py
 run_check "Pipeline tally, challenge semantics and carry-over" "$PYTHON_BIN" scripts/pipeline/test_tally.py
+run_check "Pipeline locate gate, rules 1 to 10 out of tree" "$PYTHON_BIN" scripts/pipeline/gate/test_gate.py
 run_check "Pipeline contribute transport, claim and sandbox" "$PYTHON_BIN" scripts/pipeline/contribute/test_contribute.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
