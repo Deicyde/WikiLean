@@ -934,6 +934,27 @@ def layer_to_text(segments: list[list[int]], offset: int) -> int | None:
     return _lookup(segments, bisect_right([s[2] for s in segments], offset) - 1, offset, 2)
 
 
+def text_span(segments: list[list[int]], span) -> list[int] | None:
+    """A layer span's reading-copy span (``text.txt`` offsets), through the layer map.
+
+    The first segment ending after the start and the last starting before the end bound
+    it; a formula maps as a whole, since the copy writes it as ``$TeX$`` and its two
+    lengths have nothing to do with each other. None when the span maps to nothing —
+    a span wholly inside a dropped region, which the copy does not hold.
+    """
+    if not span:
+        return None
+    a, b = int(span[0]), int(span[1])
+    start = end = None
+    for t0, t1, l0, l1, kind in segments:
+        if l1 <= a or l0 >= b:
+            continue
+        if start is None:
+            start = t0 + max(0, a - l0) if kind == SEGMENT_TEXT else t0
+        end = t0 + (min(b, l1) - l0) if kind == SEGMENT_TEXT else t1
+    return [start, end] if start is not None and end is not None else None
+
+
 class _Walker:
     """One pass over the tree: formulas, sections, blocks, finders, the reading copy."""
 

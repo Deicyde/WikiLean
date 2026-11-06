@@ -119,9 +119,16 @@ class PlanTests(unittest.TestCase):
         passages = [p for task in planned["tasks"] for doc in task["documents"]
                     for p in doc["passages"]]
         self.assertEqual(len(planned["tasks"]), 1)
-        # three passages, of which the prose one is scoped expository
-        self.assertEqual({p["scope"] for p in passages}, {"formal_math"})
+        # three passages, of which the prose one is scoped expository and not planned;
+        # a manifest passage carries the cut, not the inventory's own bookkeeping
         self.assertEqual(len(passages), 2)
+        self.assertEqual({key for p in passages for key in p} - set(
+            plan_mod.LOCATE_PASSAGE_KEYS), set())
+        inventory = plan_mod.frozen_inventory(self.ws.corpus / fixture.INV_RUN)
+        self.assertEqual(len(inventory[fixture.SOURCE]), 3)
+        self.assertEqual({p["item"] for p in passages},
+                         {p["item"] for p in inventory[fixture.SOURCE]
+                          if p["scope"] == vocab.SCOPE_FORMAL_MATH})
 
     def test_the_per_task_cap_is_the_cut(self):
         planned = self.ws.plan(self.root / "run", per_task=1)

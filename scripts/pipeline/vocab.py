@@ -81,6 +81,9 @@ RELATION_STRENGTH = {EXACT_MATCH: 0, CLOSE_MATCH: 1, BROAD_MATCH: 2, NARROW_MATC
 STRONG_RELATIONS = frozenset({EXACT_MATCH, CLOSE_MATCH, BROAD_MATCH})
 #: A relation whose record names the step it states.
 STEP_RELATIONS = frozenset({HAS_PART, NARROW_MATCH})
+#: The three that state less than the whole passage: what a challenge samples rather
+#: than refutes by default.
+WEAK_RELATIONS = frozenset({RELATED_MATCH, NARROW_MATCH, HAS_PART})
 #: The relation a part may bear to the conjuncts it states (judgment rules 3), and the
 #: same with ``hasPart``, which rules 4 admit on a part that states only some of them.
 CONJUNCT_RELATIONS = frozenset({EXACT_MATCH, CLOSE_MATCH, BROAD_MATCH, NARROW_MATCH})
@@ -172,8 +175,35 @@ CHALLENGE_KEEP = frozenset({"confirm", "uphold"})
 COVERAGE_ACTIONS = frozenset({"confirm", "refute"})
 #: The challenge target of a coverage claim, as a plan and its verdicts name it.
 COVERAGE_TARGET = "coverage"
+#: Under which rule a challenge plan put a record (stage 9d). ``refute_by_default`` —
+#: a location, a coverage claim or a subject prominence the plan always requires;
+#: ``hunt`` — an absence or an unresolved outcome on a subject or central passage, which
+#: a challenger searches for rather than argues about; ``basis`` — a strong location
+#: that sets a supporting passage's derived status on its own; ``sample`` — a record in a
+#: stratified, seeded draw; ``none`` — a record no rule requires.
+CHALLENGE_RULE_REFUTE = "refute_by_default"
 #: What a located passage the challenge left with nothing that counts still owes.
 CHALLENGE_RULE_HUNT = "hunt"
+CHALLENGE_RULE_BASIS = "basis"
+CHALLENGE_RULE_SAMPLE = "sample"
+CHALLENGE_RULE_NONE = "none"
+CHALLENGE_RULES = frozenset({CHALLENGE_RULE_REFUTE, CHALLENGE_RULE_HUNT,
+                             CHALLENGE_RULE_BASIS, CHALLENGE_RULE_SAMPLE,
+                             CHALLENGE_RULE_NONE})
+#: What a challenge verdict may judge, and what it may do about it. ``confirm`` and
+#: ``refute`` are a coverage claim's two; the other three judge a record.
+CHALLENGE_TARGETS = frozenset({"location", "absence", "unresolved", "scope", "prominence",
+                               "coverage"})
+VERDICT_ACTIONS = frozenset({"confirm", "uphold", "downgrade", "refute", "overturn"})
+#: The three rates a plan draws its strata at, by the names ``challenge-plan.json`` uses.
+CHALLENGE_SAMPLE_RATE = 0.2
+CHALLENGE_STRONG_SAMPLE_RATE = 0.5
+CHALLENGE_ABSENCE_SAMPLE_RATE = 0.5
+RATE_KEYS = ("sample_rate", "strong_sample_rate", "absence_sample_rate")
+#: About this many records to a challenge task, a passage never split over two.
+CHALLENGE_BATCH_RECORDS = 20
+#: At most this many passages of a frozen inventory to one locate task.
+MAX_PASSAGES_PER_LOCATE_TASK = 8
 #: A part of a survived claim whose own challenge is one of these reads survived: the
 #: claim confirmed it. A part another verdict judged keeps it, and a pending part stays
 #: pending — the reopen wins over the claim.

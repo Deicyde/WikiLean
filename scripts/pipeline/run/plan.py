@@ -60,6 +60,17 @@ GATE_SCHEMA = "wikilean-gate-locate/1"
 PER_TASK = 8
 #: The directories a root always has, so a runner never creates one by accident.
 ROOT_DIRS = ("tasks", "work", "usage", "gate-log", "prompts")
+#: What a locate task's manifest says of a passage: the frozen inventory's answer, and
+#: nothing it decided for itself. A worker is handed the cut, not the inventory
+#: document — ``scope`` (every planned passage is ``formal_math``), ``finder``,
+#: ``concept`` and the rest are the cut's own bookkeeping and would only invite a
+#: worker to re-open it.
+LOCATE_PASSAGE_KEYS = ("item", "head_words", "span", "text_span", "quote", "section",
+                       "passage_kind", "prominence", "statement", "conjuncts", "shape")
+#: What a task manifest says of a curated candidate: the declaration and nothing else.
+#: Why the retrieval curated it is in the candidates file the worker also reads; in the
+#: manifest it is the list the gate holds the worker to answering.
+CURATED_KEYS = ("library", "declaration")
 
 
 class PlanProblem(ValueError):
@@ -94,19 +105,33 @@ def frozen_inventory(corpus_dir: Path) -> dict[str, list[dict]]:
 
 
 def read_manifest(path: Path) -> dict[str, dict]:
-    """``{source_id: entry}`` of a sourceset manifest, the last entry of each id winning."""
+    """``{source_id: entry}`` of a sourceset manifest **snapshot**.
+
+    A sourceset version may be a *delta*, which holds only what changed since the
+    version before it (:mod:`sourceset`); reading one here would silently plan against
+    a handful of entries, so a delta is refused and the caller hands in the resolved
+    entries instead (``entries=`` of :func:`plan`, which :mod:`cut` and :mod:`locate`
+    pass from ``Sourceset.latest()``).
+    """
     out: dict[str, dict] = {}
-    for line in Path(path).read_text(encoding="utf-8").split("\n"):
+    for number, line in enumerate(Path(path).read_text(encoding="utf-8").split("\n")):
         if not line.strip():
             continue
         entry = json.loads(line)
-        if isinstance(entry, dict) and entry.get("source_id"):
+        if not isinstance(entry, dict):
+            continue
+        if number == 0 and str(entry.get("schema") or "").endswith("-delta/1"):
+            raise PlanProblem(
+                f"{path} is a delta version of a sourceset, which holds only the "
+                f"entries that changed; plan through scripts/pipeline/cut.py or "
+                f"locate.py, which resolve the chain first")
+        if entry.get("source_id"):
             out[str(entry["source_id"])] = entry
     return out
 
 
 def candidates_of(directory: Path | None, source_id: str) -> list[dict]:
-    """The curated hits the retrieval left for a source, or ``[]``."""
+    """The curated hits the retrieval left for a source, as a manifest names them."""
     if directory is None:
         return []
     path = Path(directory) / f"{source_id}.json"
@@ -117,7 +142,21 @@ def candidates_of(directory: Path | None, source_id: str) -> list[dict]:
     except (OSError, ValueError):
         return []
     rows = value.get("curated") if isinstance(value, dict) else None
-    return [row for row in rows or [] if isinstance(row, dict)]
+    seen, out = set(), []
+    for row in rows or []:
+        if not isinstance(row, dict):
+            continue
+        hit = {key: row.get(key) for key in CURATED_KEYS}
+        key = tuple(hit.values())
+        if key not in seen:
+            seen.add(key)
+            out.append(hit)
+    return out
+
+
+def task_passage(passage: dict) -> dict:
+    """One passage as a locate task's manifest states it (:data:`LOCATE_PASSAGE_KEYS`)."""
+    return {key: passage[key] for key in LOCATE_PASSAGE_KEYS if key in passage}
 
 
 def cut_tasks(source_id: str, passages: Iterable[dict], *, per_task: int,
@@ -138,20 +177,35 @@ def cut_tasks(source_id: str, passages: Iterable[dict], *, per_task: int,
     return [wanted[at:at + per_task] for at in range(0, len(wanted), per_task)]
 
 
+def _sources_of(manifest_doc: dict) -> list[str]:
+    """Every source id a task manifest's documents name."""
+    return [str(doc.get("source_id")) for doc in manifest_doc.get("documents") or []
+            if doc.get("source_id")]
+
+
 def task_id(run_id: str, source_id: str, number: int) -> str:
     """``<run>-<source>-<n>``: one task, named so a document's path says which it is."""
     return f"{run_id}-{source_id}-{number}"
 
 
-def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
-         manifest: Path, sources: Path, candidates: Path | None = None,
+def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
+         sources: Path, inventory: Path | None = None,
+         task_documents: list[dict] | None = None, entries: dict | None = None,
+         inventory_passages: dict | None = None,
+         candidates: Path | None = None,
          index: Path | None = None, per_task: int = PER_TASK,
          inventory_run: str = "", status_rule: int = vocab.STATUS_RULE_BROAD,
          span_end_rule: int = 3, statement_cut_rule: int = 3, judgment_rules: int = 4,
          model: str = "", max_cost: float = 0.0, source_ids: Iterable[str] = (),
-         prompts: Path | None = None, sources_as: str | None = None,
-         candidates_as: str | None = None, index_as: str | None = None) -> dict:
+         prompts: Path | None = None, render_prompts: bool = False,
+         sources_as: str | None = None, candidates_as: str | None = None,
+         index_as: str | None = None) -> dict:
     """Write the root and return its ``planned.json``.
+
+    ``task_documents`` is what a mode module (stage 9b's :mod:`cut`, 9c's :mod:`locate`,
+    9d's :mod:`challenge`) hands in when the task cut is its own; with none, the locate
+    cut below is used. Either way this function owns the root: the manifests, the staged
+    gate, the prompts and ``run.json``.
 
     ``sources_as``, ``candidates_as`` and ``index_as`` are what ``gate.json`` **names**,
     where that is not where this machine holds them: a package carries the plan and no
@@ -160,20 +214,29 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
     revisions. The view shas are still read from the real directory, so the plan pins
     the bytes the coordinator saw and the contributor's gate refuses anything else.
     """
-    if mode not in (vocab.MODE_LOCATE, vocab.MODE_CHALLENGE):
-        raise PlanProblem(f"a batch is planned in {vocab.MODE_LOCATE} or "
-                          f"{vocab.MODE_CHALLENGE} mode, not {mode!r}")
+    if mode not in vocab.MODES:
+        raise PlanProblem(f"a batch is planned in one of {sorted(vocab.MODES)}, "
+                          f"not {mode!r}")
     out = Path(out)
     if out.exists() and not out.is_dir():
         raise PlanProblem(f"{out} is not a directory")
     universe_doc = json.loads(Path(universe).read_text(encoding="utf-8"))
-    entries = read_manifest(manifest)
-    frozen = frozen_inventory(inventory)
-    wanted = sorted(set(source_ids) or set(frozen))
-    missing = [sid for sid in wanted if sid not in frozen]
-    if missing:
-        raise PlanProblem(f"the inventory holds no document for "
-                          f"{', '.join(missing[:5])}")
+    entries = dict(entries) if entries is not None else read_manifest(manifest)
+    if task_documents is None:
+        if inventory is None and inventory_passages is None:
+            raise PlanProblem(f"a {mode} batch is cut from a frozen inventory: name it "
+                              f"with --inventory, or hand in the task documents")
+        frozen = (inventory_passages if inventory_passages is not None
+                  else frozen_inventory(inventory))
+        wanted = sorted(set(source_ids) or set(frozen))
+        missing = [sid for sid in wanted if sid not in frozen]
+        if missing:
+            raise PlanProblem(f"the inventory holds no document for "
+                              f"{', '.join(missing[:5])}")
+    else:
+        frozen = {}
+        wanted = sorted(set(source_ids) or {sid for doc in task_documents
+                                            for sid in _sources_of(doc)})
     unpinned = [sid for sid in wanted if sid not in entries]
     if unpinned:
         raise PlanProblem(f"the sourceset manifest holds no entry for "
@@ -183,26 +246,44 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
         (out / name).mkdir(parents=True, exist_ok=True)
     tasks: list[dict] = []
     planned_passages = 0
-    for sid in wanted:
-        for number, group in enumerate(cut_tasks(sid, frozen[sid], per_task=per_task,
-                                                 mode=mode), 1):
-            if not group:
-                continue
-            tid = task_id(run_id, sid, number)
-            entry = entries[sid]
-            manifest_doc = {
-                "task_id": tid, "run_id": run_id, "mode": mode,
-                "documents": [{"source_id": sid,
-                               "source_sha": entry.get("html_sha256"),
-                               "layer_sha256": entry.get("layer_sha256"),
-                               "renderer": entry.get("renderer"),
-                               "curated": candidates_of(candidates, sid),
-                               "passages": group}],
-            }
+    if task_documents is not None:
+        for manifest_doc in task_documents:
+            tid = str(manifest_doc.get("task_id") or "")
+            if not tid:
+                raise PlanProblem("a task document names its task_id")
+            if manifest_doc.get("mode") != mode:
+                raise PlanProblem(f"{tid} is a {manifest_doc.get('mode')!r} task in a "
+                                  f"{mode} batch")
             tasks.append(manifest_doc)
-            planned_passages += len(group)
+            planned_passages += sum(len(doc.get("passages") or doc.get("records") or [])
+                                    for doc in manifest_doc.get("documents") or [])
             _write_json(out / "tasks" / f"{tid}.json", manifest_doc)
             (out / "work" / tid).mkdir(parents=True, exist_ok=True)
+    else:
+        for sid in wanted:
+            curated = candidates_of(candidates, sid)
+            for number, group in enumerate(cut_tasks(sid, frozen[sid], per_task=per_task,
+                                                     mode=mode), 1):
+                if not group:
+                    continue
+                tid = task_id(run_id, sid, number)
+                entry = entries[sid]
+                manifest_doc = {
+                    "task_id": tid, "run_id": run_id, "mode": mode,
+                    # a source split over several tasks hands its curated hits to the
+                    # first of them: gate rule 4 makes a task answer for every one it
+                    # is given, and two tasks owed the same answer owe it twice
+                    "documents": [{"source_id": sid,
+                                   "source_sha": entry.get("html_sha256"),
+                                   "layer_sha256": entry.get("layer_sha256"),
+                                   "renderer": entry.get("renderer"),
+                                   "curated": curated if number == 1 else [],
+                                   "passages": [task_passage(p) for p in group]}],
+                }
+                tasks.append(manifest_doc)
+                planned_passages += len(group)
+                _write_json(out / "tasks" / f"{tid}.json", manifest_doc)
+                (out / "work" / tid).mkdir(parents=True, exist_ok=True)
 
     def where(path: Path | None) -> str | None:
         """A path as ``gate.json`` names it: relative to the gate directory when it is
@@ -263,11 +344,24 @@ def plan(*, run_id: str, mode: str, out: Path, inventory: Path, universe: Path,
     scratch.unlink()
 
     prompt_shas: dict[str, str] = {}
+    if render_prompts:
+        import prompts as prompts_mod  # noqa: PLC0415 — only a rendering run needs it
+        prompts_mod.write(out / "prompts", mode, prompts_mod.slots(
+            run_id=run_id, mode=mode,
+            sources_dir=gate_config["sources_dir"] or "sources",
+            tasks_dir=gate_config["tasks_dir"],
+            candidates_dir=gate_config["candidates_dir"] or "",
+            gate_command="python3 gate/verify_locate.py --gate-config gate/gate.json",
+            ids_command="python3 gate/passage_ids.py",
+            index_command=("python3 gate/index_search.py" if index is not None else ""),
+            universe=str(universe_doc.get("id") or ""),
+            universe_sha256=str(universe_doc.get("universe_sha256") or "")))
     if prompts is not None:
         for path in sorted(Path(prompts).glob("*.md")):
             target = out / "prompts" / path.name
             target.write_bytes(path.read_bytes())
-            prompt_shas[path.name] = sha256_file(target)
+    for path in sorted((out / "prompts").glob("*.md")):
+        prompt_shas[path.name] = sha256_file(path)
 
     planned = {"schema": PLAN_SCHEMA, "run_id": run_id, "mode": mode, "tasks": tasks}
     _write_json(out / "planned.json", planned)
@@ -303,7 +397,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--mode", default=vocab.MODE_LOCATE)
     parser.add_argument("--out", required=True, type=Path, help="the root to write")
-    parser.add_argument("--inventory", required=True, type=Path,
+    parser.add_argument("--inventory", type=Path,
                         help="the harvested inventory run's corpus directory")
     parser.add_argument("--inventory-run", default="", help="its run id")
     parser.add_argument("--universe", required=True, type=Path)
@@ -313,7 +407,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="the sourceset's rendered sources")
     parser.add_argument("--candidates", type=Path)
     parser.add_argument("--index", type=Path, help="the declaration index")
-    parser.add_argument("--prompts", type=Path, help="the prompts to stage")
+    parser.add_argument("--prompts", type=Path, help="extra prompt files to stage")
+    parser.add_argument("--render-prompts", action="store_true",
+                        help="render this pipeline's own prompts into the root")
     parser.add_argument("--sources-as", help="what gate.json names the sources directory, "
                                              "where that is not where this machine holds it "
                                              "(a package's plan names ../sources)")
@@ -330,6 +426,7 @@ def main(argv: list[str] | None = None) -> int:
                        manifest=args.manifest, sources=args.sources,
                        candidates=args.candidates, index=args.index,
                        per_task=args.per_task, inventory_run=args.inventory_run,
+                       render_prompts=args.render_prompts,
                        model=args.model, max_cost=args.max_cost,
                        source_ids=args.source_ids, prompts=args.prompts,
                        sources_as=args.sources_as, candidates_as=args.candidates_as,
