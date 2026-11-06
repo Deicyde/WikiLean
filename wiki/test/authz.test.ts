@@ -13,7 +13,9 @@
 //   bot         Authorization: Bearer <PIPELINE_TOKEN> → users row 'pipeline' (role 'bot')
 //   wrongBearer bearer that does NOT match PIPELINE_TOKEN → falls through to anonymous
 //   botNoToken  bearer sent but env.PIPELINE_TOKEN unset → bearer path disabled → anonymous
+//   agent       Authorization: Bearer <agent token> (agents.ts) → its own users row (role 'agent')
 
+import { createHash } from "node:crypto";
 import { describe, it, expect } from "vitest";
 import {
   setup,
@@ -42,8 +44,11 @@ const ACTOR_NAMES = [
   "bot",
   "wrongBearer",
   "botNoToken",
+  "agent",
 ] as const;
 type ActorName = (typeof ACTOR_NAMES)[number];
+
+const AGENT_TOKEN = "wla_" + "a".repeat(43);
 
 const ACTORS: Record<ActorName, { opts: ReqOpts; prep?: (h: Harness) => void }> = {
   anon: { opts: {} },
@@ -58,6 +63,16 @@ const ACTORS: Record<ActorName, { opts: ReqOpts; prep?: (h: Harness) => void }> 
     opts: { bearer: PIPELINE_TOKEN, origin: null },
     prep: (h) => {
       (h.env as { PIPELINE_TOKEN?: string }).PIPELINE_TOKEN = undefined;
+    },
+  },
+  agent: {
+    opts: { bearer: AGENT_TOKEN, origin: null },
+    prep: (h) => {
+      const now = Date.now();
+      h.db.prepare("INSERT INTO users (id, name, role, created_at, updated_at) VALUES ('agent-000000000001', 'Test (agent)', 'agent', ?, ?)")
+        .run(Math.floor(now / 1000), Math.floor(now / 1000));
+      h.db.prepare("INSERT INTO agent_tokens (agent_id, owner_id, token_hash, created_at) VALUES ('agent-000000000001', 'u-human', ?, ?)")
+        .run(createHash("sha256").update(AGENT_TOKEN).digest("hex"), now);
     },
   },
 };
@@ -92,51 +107,52 @@ interface EndpointRow {
 //   export     requireRole(['bot','admin'])  (P2a research export)
 //   reads    public (article JSON, home, sitemap, diff, /stats)
 //   /flags page: logged-in only — 302 → /login otherwise (bot counts as logged in)
+//   agent    logged in for saves, flags and reads; every role-gated route refuses it
 const ENDPOINTS: EndpointRow[] = [
   {
     name: "POST /api/article/:slug (save)",
     request: (h, opts) =>
       post(h.env, `/api/article/${SLUG}`, { annotations: echo(SEED_ANNOTATIONS), base_version: 1 }, opts),
-    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 200, wrongBearer: 401, botNoToken: 401 },
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 200, wrongBearer: 401, botNoToken: 401, agent: 200 },
   },
   {
     name: "PUT /api/article/:slug (create)",
     request: (h, opts) =>
       // revid required since F16 (null-revid creates are rejected 400).
       put(h.env, `/api/article/${NEW_SLUG}`, { wikipedia_title: "Authz New Article", revid: 4242, annotations: [] }, opts),
-    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 201, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 201, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "POST /api/article/:slug (action:endorse)",
     request: (h, opts) =>
       post(h.env, `/api/article/${SLUG}`, { action: "endorse", annotation_id: "aaaaaaaaaaaa", base_version: 1 }, opts),
-    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401 },
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 403 },
   },
   {
     name: "POST /api/article/:slug/revert/:revid",
     request: (h, opts) => post(h.env, `/api/article/${SLUG}/revert/1`, {}, opts), // rev 1 = the seed revision
-    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "POST /api/flag/:slug",
     request: (h, opts) => post(h.env, `/api/flag/${SLUG}`, { reason: "other" }, opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
   {
     name: "POST /api/flag/:id/resolve",
     prep: seedFlag,
     request: (h, opts) => post(h.env, "/api/flag/1/resolve", { resolution: "fixed" }, opts),
-    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "GET /api/flags",
     request: (h, opts) => get(h.env, "/api/flags", opts),
-    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "GET /api/work",
     request: (h, opts) => get(h.env, "/api/work", opts),
-    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "POST /api/runs",
@@ -147,12 +163,12 @@ const ENDPOINTS: EndpointRow[] = [
         { run_id: "deadbeef", kind: "review", started_at: 1, finished_at: 2, articles_processed: 0, errors: 0, tokens: 0 },
         opts,
       ),
-    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 403, admin: 403, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "GET /api/runs (public counts)",
     request: (h, opts) => get(h.env, "/api/runs", opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
   {
     name: "POST /api/admin/revert-run/:runId",
@@ -160,48 +176,48 @@ const ENDPOINTS: EndpointRow[] = [
     // Unknown run → 200 idempotent no-op for the authorized actors, so the
     // cell exercises the auth gate cleanly without seeding a run.
     request: (h, opts) => post(h.env, "/api/admin/revert-run/authzrun", {}, opts),
-    expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "POST /api/revision/:id/patrol",
     // Revision 1 = the harness seed revision (kind 'edit', unpatrolled).
     request: (h, opts) => post(h.env, "/api/revision/1/patrol", {}, opts),
-    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 200, admin: 200, blocked: 403, bot: 403, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "GET /api/research/export.jsonl",
     request: (h, opts) => get(h.env, "/api/research/export.jsonl", opts),
-    expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403 },
+    expected: { anon: 403, user: 403, patroller: 403, admin: 200, blocked: 403, bot: 200, wrongBearer: 403, botNoToken: 403, agent: 403 },
   },
   {
     name: "GET /api/article/:slug.json (public)",
     request: (h, opts) => get(h.env, `/api/article/${SLUG}.json`, opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
   {
     name: "GET /flags (patrol page; 302 = login redirect)",
     request: (h, opts) => get(h.env, "/flags", opts),
-    expected: { anon: 302, user: 200, patroller: 200, admin: 200, blocked: 302, bot: 200, wrongBearer: 302, botNoToken: 302 },
+    expected: { anon: 302, user: 200, patroller: 200, admin: 200, blocked: 302, bot: 200, wrongBearer: 302, botNoToken: 302, agent: 200 },
   },
   {
     name: "GET / (home; public)",
     request: (h, opts) => get(h.env, "/", opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
   {
     name: "GET /sitemap.xml (public)",
     request: (h, opts) => get(h.env, "/sitemap.xml", opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
   {
     name: "GET /stats (public)",
     request: (h, opts) => get(h.env, "/stats", opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
   {
     name: "GET /:slug/diff/:fromId/:toId (public)",
     request: (h, opts) => get(h.env, `/${SLUG}/diff/1/1`, opts),
-    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200 },
+    expected: { anon: 200, user: 200, patroller: 200, admin: 200, blocked: 200, bot: 200, wrongBearer: 200, botNoToken: 200, agent: 200 },
   },
 ];
 

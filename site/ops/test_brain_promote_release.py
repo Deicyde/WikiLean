@@ -1129,6 +1129,15 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(evidence[key]["sha256"], hashlib.sha256(raw[key]).hexdigest())
             self.assertEqual(evidence[key]["bytes"], len(raw[key]))
 
+    def test_every_required_migration_creates_its_listed_columns(self):
+        root = Path(__file__).resolve().parents[2]
+        for migration, (table, columns) in promote.D1_REQUIRED_COLUMNS.items():
+            with self.subTest(migration=migration):
+                text = (root / migration).read_text(encoding="utf-8")
+                self.assertIn(table, text)
+                for column in columns:
+                    self.assertRegex(text, rf"\b{column}\b")
+
     def test_commit_with_0014_requires_its_columns_on_remote_d1(self):
         migration = "wiki/migrations/0014_native_companions.sql"
         tools = node_executables_identity(self.base)
@@ -1144,8 +1153,10 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 command = tuple(str(value) for value in args)
                 inner.calls.append((command, cwd, dict(env or {})))
                 if command[:4] == ("git", "-C", str(self.repo), "ls-tree"):
-                    self.assertEqual(command[4:], ("--name-only", COMMIT, "--", migration))
-                    output = (migration + "\n").encode() if inner.listed else b""
+                    self.assertEqual(command[4:7], ("--name-only", COMMIT, "--"))
+                    self.assertIn(command[7], promote.D1_REQUIRED_COLUMNS)
+                    listed = inner.listed and command[7] == migration
+                    output = (migration + "\n").encode() if listed else b""
                     return promote.RunResult(command, 0, output, b"")
                 if inner.d1 is None:
                     raise AssertionError(command)
@@ -1162,7 +1173,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
 
         without = D1Runner(listed=False)
         check(without)
-        self.assertEqual(len(without.calls), 1)
+        self.assertEqual(len(without.calls), len(promote.D1_REQUIRED_COLUMNS))
 
         applied = D1Runner(listed=True, d1=rows("schema_version", "source_revid"))
         with mock.patch.dict(os.environ, {"CLOUDFLARE_API_TOKEN": "token"}):

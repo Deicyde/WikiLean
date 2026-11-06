@@ -1001,7 +1001,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     const universe = await loadUniverse(reader, article.universe.sha256);
     const viewer = await getUser(c);
-    const user = viewer && viewer.role !== "bot" ? viewer : null;
+    const user = viewer && viewer.role !== "bot" && viewer.role !== "agent" ? viewer : null;
     const verdicts = user ? await viewerVerdicts(c.env, user.id, article.pageid, article.campaign) : new Map<string, string>();
     const wikileanSlug = await wikileanSlugFor(c.env, article.title);
     const selfHref = articlesHref(article.pageid, article.title);
@@ -1022,7 +1022,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
   // ---- feedback ----
 
   // Confirm, report or withdraw on one location. Session users only (the
-  // pipeline bearer is refused: these rows are human labels), same-origin
+  // pipeline bearer and agents are refused: these rows are human labels), same-origin
   // (checkOrigin), rate limited per user, byte-capped after those checks
   // (readJsonCapped, MAX_JSON_BODY_BYTES.articlesFeedback: 413 past it), and checked
   // against the current store so a key that is not on the page cannot be stored
@@ -1039,7 +1039,9 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     if (originErr) return originErr;
     const user = await getUser(c);
     if (!user) return c.json({ ok: false, error: "login required" }, 401);
-    if (user.role === "bot") return c.json({ ok: false, error: "session required (no bots)" }, 403);
+    if (user.role === "bot" || user.role === "agent") {
+      return c.json({ ok: false, error: "session required (no bots)" }, 403);
+    }
     const { success } = await c.env.EDIT_LIMITER.limit({ key: `articles:${user.id}` });
     if (!success) return c.json({ ok: false, error: "rate limited — slow down" }, 429);
 

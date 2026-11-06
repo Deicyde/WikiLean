@@ -289,6 +289,7 @@ describe("JSON body caps on the remaining write routes", () => {
     },
     { name: "repo registration", method: "POST", path: "/api/repos", headers: { Cookie: "wl_dev_user=u-human" }, max: MAX_JSON_BODY_BYTES.repos },
     { name: "repo removal", method: "DELETE", path: "/api/repos", headers: { Cookie: "wl_dev_user=u-human" }, max: MAX_JSON_BODY_BYTES.repos },
+    { name: "agent mint", method: "POST", path: "/api/agents", headers: { Cookie: "wl_dev_user=u-human" }, max: MAX_JSON_BODY_BYTES.agents },
     { name: "review post", method: "POST", path: "/api/review/octo/repo/1", headers: review, max: MAX_JSON_BODY_BYTES.reviewPost },
     {
       name: "articles feedback",

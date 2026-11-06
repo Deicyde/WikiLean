@@ -14,6 +14,7 @@ import { and, eq, or, inArray } from "drizzle-orm";
 import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
+import { editLimitKey } from "./agents.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import {
   BrainReleaseUnavailableError,
@@ -182,9 +183,10 @@ function unavailableReleaseResponse(
   );
 }
 
-// user.role 'bot' is the shared PIPELINE_TOKEN bearer (site/moderate.py + scripts).
+// user.role 'bot' is the shared PIPELINE_TOKEN bearer (site/moderate.py + scripts);
+// 'agent' is a per-agent token minted at /agents (agents.ts).
 function isBearer(role: string): boolean {
-  return role === "bot";
+  return role === "bot" || role === "agent";
 }
 
 // Validate a Wikidata QID exists, returning its label/description, cached in KV.
@@ -272,9 +274,22 @@ async function resolveNodeEndpoint(
   return { error: droppedEndpointError(id) ?? "endpoint is not a known brain node" };
 }
 
-function actorTypeFor(bearer: boolean, body: Record<string, unknown>): ActorType | string {
+// The looser API limiter is the pipeline bearer's; sessions and agents take the
+// EDIT_LIMITER (all of one person's agents share one key, agents.ts).
+function brainWriteLimit(c: Context<{ Bindings: Env }>, user: AuthUser): Promise<{ success: boolean }> {
+  return user.role === "bot"
+    ? c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
+    : c.env.EDIT_LIMITER.limit({ key: editLimitKey(user) });
+}
+
+// actor_type: the human-vs-AI switch. A browser/OAuth submission is a person,
+// so it defaults to 'human'. The pipeline bearer MUST declare: the server can't
+// tell a human-run script from an agent, so the token-holder asserts it. An
+// agent token is an AI by construction: 'ai', and declaring 'human' is refused.
+function actorTypeFor(role: string, body: Record<string, unknown>): ActorType | string {
   const declared = str(body.actor_type);
-  if (!bearer && !declared) return "human";
+  if (role === "agent") return declared === "" || declared === "ai" ? "ai" : "agent tokens write as actor_type 'ai'";
+  if (!isBearer(role) && !declared) return "human";
   if (declared !== "human" && declared !== "ai") return "API calls must set actor_type to 'human' or 'ai'";
   return declared;
 }
@@ -1120,10 +1135,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (bad) return bad;
     const user = await getUser(c);
     if (!user) return c.json({ ok: false, error: "login required" }, 401);
-    const bearer = isBearer(user.role);
-    const rl = bearer
-      ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
-      : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+    const rl = await brainWriteLimit(c, user);
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
     const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.quickstatements, "bad JSON body");
@@ -1131,7 +1143,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const body = read.value as Record<string, unknown>;
     const release = await resolveBrainRelease(c);
     if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
-    const actor = actorTypeFor(bearer, body);
+    const actor = actorTypeFor(user.role, body);
     if (actor !== "human" && actor !== "ai") return c.json({ ok: false, error: actor }, 400);
     const specs = selectedQuickDbs(body);
     if (specs.length < 2) return c.json({ ok: false, error: "select at least two databases" }, 400);
@@ -1181,10 +1193,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!user) return c.json({ ok: false, error: "login required" }, 401);
     const bearer = isBearer(user.role);
 
-    // Looser limiter for API/bearer scripts; per-user browser limiter otherwise.
-    const rl = bearer
-      ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
-      : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+    const rl = await brainWriteLimit(c, user);
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
     const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.brainEdge, "bad JSON body");
@@ -1199,22 +1208,10 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const ev = (body.evidence ?? {}) as Record<string, unknown>;
     const note = str(ev.note) || str(body.note);
 
-    // actor_type: the human-vs-AI switch. A browser/OAuth submission is a person,
-    // so force 'human'. An API/bearer caller MUST declare — the server can't tell
-    // a human-run script from an agent, so the token-holder asserts it.
-    let actorType: "human" | "ai";
-    if (bearer) {
-      const declared = str(body.actor_type);
-      if (declared !== "human" && declared !== "ai") {
-        return c.json(
-          { ok: false, error: "API calls must set actor_type to 'human' or 'ai'" },
-          400,
-        );
-      }
-      actorType = declared;
-    } else {
-      actorType = "human";
-    }
+    // actor_type: a browser/OAuth submission is forced to 'human'; bearers go
+    // through actorTypeFor (the pipeline declares, an agent is 'ai').
+    const actorType = bearer ? actorTypeFor(user.role, body) : "human";
+    if (actorType !== "human" && actorType !== "ai") return c.json({ ok: false, error: actorType }, 400);
 
     const release = await resolveBrainRelease(c);
     if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
@@ -1344,23 +1341,14 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const user = await getUser(c);
     if (!user) return c.json({ ok: false, error: "login required" }, 401);
     const bearer = isBearer(user.role);
-    const rl = bearer
-      ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
-      : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+    const rl = await brainWriteLimit(c, user);
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
     const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.brainNode, "bad JSON body");
     if (!read.ok) return read.response;
     const body = read.value as Record<string, unknown>;
     const qid = str(body.qid) || str(body.id);
-    let actorType: "human" | "ai";
-    if (bearer) {
-      const declared = str(body.actor_type);
-      if (declared !== "human" && declared !== "ai")
-        return c.json({ ok: false, error: "API calls must set actor_type to 'human' or 'ai'" }, 400);
-      actorType = declared;
-    } else {
-      actorType = "human";
-    }
+    const actorType = bearer ? actorTypeFor(user.role, body) : "human";
+    if (actorType !== "human" && actorType !== "ai") return c.json({ ok: false, error: actorType }, 400);
     if (!QID_RE.test(qid)) return c.json({ ok: false, error: "node must be a Wikidata Q-id" }, 400);
     const release = await resolveBrainRelease(c);
     if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
@@ -1506,7 +1494,8 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
   });
 
   // DELETE /api/brain/edge/:id — soft-delete (gravestone). Any logged-in user
-  // may delete any edge; the gravestone records who (Jack's decision (a)).
+  // may delete any edge; the gravestone records who (Jack's decision (a)). An
+  // agent may delete only AI-made edges and nodes (403 otherwise).
   app.delete("/api/brain/edge/:id", (c) => deleteEdge(c));
   // form/no-verb-friendly alias for the same action
   app.post("/api/brain/edge/:id/delete", (c) => deleteEdge(c));
@@ -1517,9 +1506,7 @@ async function deleteEdge(c: Context<{ Bindings: Env }>): Promise<Response> {
   if (bad) return bad;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
-  const rl = isBearer(user.role)
-    ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
-    : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+  const rl = await brainWriteLimit(c, user);
   if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
   const id = c.req.param("id") ?? "";
@@ -1527,6 +1514,9 @@ async function deleteEdge(c: Context<{ Bindings: Env }>): Promise<Response> {
   const db = drizzle(c.env.DB);
   const row = (await db.select().from(brainEdges).where(eq(brainEdges.id, id)).limit(1))[0];
   if (!row) return c.json({ ok: false, error: "unknown edge id" }, 404);
+  if (user.role === "agent" && row.actorType !== "ai") {
+    return c.json({ ok: false, error: "agents may delete only AI-made edges" }, 403);
+  }
   if (row.status === "deleted") return c.json({ ok: true, id, already_deleted: true }, 200);
   await db
     .update(brainEdges)
@@ -1540,9 +1530,7 @@ async function deleteNode(c: Context<{ Bindings: Env }>): Promise<Response> {
   if (bad) return bad;
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
-  const rl = isBearer(user.role)
-    ? await c.env.BRAIN_API_LIMITER.limit({ key: `brainapi:${user.id}` })
-    : await c.env.EDIT_LIMITER.limit({ key: `edit:${user.id}` });
+  const rl = await brainWriteLimit(c, user);
   if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
 
   const id = c.req.param("id") ?? "";
@@ -1550,6 +1538,9 @@ async function deleteNode(c: Context<{ Bindings: Env }>): Promise<Response> {
   const db = drizzle(c.env.DB);
   const row = (await db.select().from(brainNodes).where(eq(brainNodes.id, id)).limit(1))[0];
   if (!row) return c.json({ ok: false, error: "unknown community node" }, 404);
+  if (user.role === "agent" && row.actorType !== "ai") {
+    return c.json({ ok: false, error: "agents may delete only AI-made nodes" }, 403);
+  }
   if (row.status === "deleted") return c.json({ ok: true, id, already_deleted: true }, 200);
   await db
     .update(brainNodes)

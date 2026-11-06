@@ -81,6 +81,14 @@ D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
         "revisions",
         ("source_revid", "schema_version"),
     ),
+    "wiki/migrations/0017_agent_tokens.sql": (
+        "agent_tokens",
+        ("agent_id", "owner_id", "token_hash", "created_at", "last_used_at", "revoked_at"),
+    ),
+    "wiki/migrations/0018_proposals_proposed_by.sql": (
+        "proposals",
+        ("proposed_by",),
+    ),
 }
 
 
@@ -2076,7 +2084,7 @@ class BrainPromoter:
             if missing:
                 raise PromotionError(
                     f"{migration} is not applied to remote D1 {D1_DATABASE}: {table} lacks "
-                    f"{', '.join(missing)}; apply it first (docs/COMPANION-NATIVE.md)"
+                    f"{', '.join(missing)}; apply it first (its header gives the command)"
                 )
 
     def _wrangler_version_annotations(
