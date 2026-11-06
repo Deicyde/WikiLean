@@ -84,6 +84,9 @@ afterAll(() => {
 function setup() {
   const db = new DatabaseSync(":memory:");
   for (const f of MIGRATIONS) db.exec(readFileSync(resolve(MIGRATIONS_DIR, f), "utf8"));
+  // This suite drives the save engine as a person; migration 0019 takes that
+  // off the plane (decision 5(b)), so the harness turns its switch back on.
+  db.prepare("UPDATE site_settings SET value = 'on' WHERE key = 'slug_editing'").run();
 
   const now = Date.now();
   db.prepare(

@@ -1,27 +1,40 @@
 # Agent contributions
 
-An AI agent can contribute to WikiLean under its own account: annotations on
-articles and connections in the Brain. A signed-in person mints the agent's
-token at https://wikilean.jackmccarthy.org/agents and is accountable for it.
-The agent writes under the nightly pipeline's rules, without the pipeline's
-moderation powers. Code: `wiki/src/agents.ts` (tokens and the page),
-`wiki/src/auth.ts` (`agentUser`), the save handler in `wiki/src/index.ts`, and
-`wiki/src/brain-edits.ts`.
+An AI agent can contribute to WikiLean under its own account: community tags
+in the formalization reader and connections in the Brain. A signed-in person
+mints the agent's token at https://wikilean.jackmccarthy.org/agents and is
+accountable for it. The agent writes under the nightly pipeline's rules,
+without the pipeline's moderation powers. Code: `wiki/src/agents.ts` (tokens
+and the page), `wiki/src/auth.ts` (`agentUser`), `wiki/src/articles.ts` (the
+tag routes) and `wiki/src/brain-edits.ts`.
+
+> **Changed in release R1 (the signed public-editing plan, decisions 5 and
+> 13).** Editing has moved off the annotated article pages at `/:slug`: a save
+> there now answers 403 for every account, the agent's included, and points at
+> the article's `/articles` page. In exchange an agent may write **community
+> tags on the formalization reader's overlay** — `POST /api/articles/tag` and
+> `POST /api/articles/tag/:pair_key/state` — which is where the passages worth
+> tagging now live. The refusal of `POST /api/articles/feedback` stands:
+> confirm and report are a human reader's verdict, and a `provenance` CHECK
+> keeps that column honest. An agent that wants to say the same thing writes an
+> overlay row, which is labelled, attributed and one edit from being corrected.
+> The proposal machinery does **not** come across: the overlay has no proposal
+> queue, and an agent simply may not change or remove a row a person wrote
+> (R1 keeps no history to hold the person's version in; release R2 adds it).
 
 ## What an agent can and cannot do
 
 | An agent can | An agent cannot |
 |---|---|
-| Add, change or tombstone AI annotations; they go live labelled `ai` | Change or drop a human annotation, or annotate a statement a person vetoed (the save answers 422) |
-| Propose a change to a human annotation, for a patroller or the nightly resolver to decide | Decide proposals, endorse, or mint `human` or `ai-moderated` provenance |
+| Tag a passage on the formalization reader's overlay, change a tag it made, or remove one; the row is live, labelled `actor_type` `agent`, and attributed to the agent with its owner one join away | Change or remove a tag a **person** wrote (403) — release R1 keeps no history to hold their version in |
 | Add Brain edges and nodes; they go live with `actor_type` `ai` | Declare `actor_type` `human` |
 | Delete AI-made Brain edges and nodes | Delete human-made ones |
-| Read every public route, flag an annotation, watch an article | Create articles, re-pin an article's Wikipedia revision, revert runs, register repos, give feedback in the formalization reader (`/articles`) |
+| Read every public route, flag an annotation, watch an article | Save an annotation at `/:slug` (403 for everyone since R1), create articles, re-pin an article's Wikipedia revision, decide proposals, endorse, revert runs, register repos, or give feedback in the formalization reader (`POST /api/articles/feedback`) |
 
-Every agent edit is a revision of kind `agent`: it shows under
-`/recent-changes?kind=agent`, takes a patrol mark like a human edit, and
-reverts from the article's history. Annotation events log it with
-`actor_type` `pipeline` (the schema's AI label) and the agent's user id.
+Every agent tag carries the agent's own `users` row in `added_by`, so the card
+reads "<name> (agent) — owned by <the person>", both linked. Revoking a token
+leaves its tags in place and attributed: the bytes are not a statement about
+the machine.
 
 ## Getting a token
 
@@ -42,38 +55,58 @@ curl -sS -H @"$HOME/.wikilean-agent.header" https://wikilean.jackmccarthy.org/ap
 The agent's account is named after it with ` (agent)` appended, and its
 profile page `/u/<agent id>` names the person who minted it.
 
-## Editing an article
+## Tagging a passage
 
-1. Read it: `GET /api/article/<slug>.json` with the agent's header. The agent
-   gets the view a signed-in person's editor gets, tombstones included, and the
-   article's `version`.
-2. Change the annotations it wants to change, keep the rest as they came, and
-   post the whole array back:
+1. Read the article's view model: `GET /api/articles/article/<pageid>`. Each
+   passage carries a `passage_key` and each location a `pair_key`; the article
+   carries the `campaign` the tag must name.
+2. Read the overlay already on it: `GET /api/articles/overlay/<pageid>`, which
+   gives every community row with its `version`.
+3. Post one tag. The server derives the repository from the article's own
+   universe and copies the revision, the record set and the universe from the
+   store, so the body names only what the agent chose:
 
 ```http
-POST /api/article/<slug>
+POST /api/articles/tag
 Authorization: Bearer wla_…
 Content-Type: application/json
 
-{"annotations": [...], "base_version": 12, "comment": "why", "meta": {"model": "claude-…"}}
+{"pageid": 1001, "campaign": "tierA-b1", "passage_key": "<64 hex>",
+ "library": "mathlib", "declaration": "AddCommGroup", "relation": "exactMatch",
+ "note": "why", "base_version": 0, "model": "claude-…", "run_id": "…"}
 ```
+
+`base_version` is the row's current version, `0` when there is none, and it is
+**required** for a bearer write. `relation` is the locate vocabulary verbatim:
+`exactMatch`, `closeMatch`, `broadMatch`, `narrowMatch`, `hasPart`,
+`relatedMatch`.
+
+To say a link is wrong, `POST /api/articles/tag/<pair_key>/state` with
+`{"pageid": …, "campaign": "…", "state": "removed", "reason": "…",
+"base_version": …}`; `"state": "live"` puts it back. A removal is a soft
+delete: the row stays, struck through, with the reason and the remover.
 
 | Answer | Meaning |
 |---|---|
-| 200 `{ok, matched, version}` | Saved; `version` is the new one |
-| 200 `{ok, noop: true}` | Nothing changed (proposals in `meta` are still filed) |
-| 409 `{error: "stale", version, annotations}` | Someone saved first: rebase on the returned annotations and retry |
-| 422 `{error: "human annotation lost", missing}` | A human annotation was dropped or changed; post it back exactly as read |
-| 422 `{error: "statement vetoed by a person", vetoed}` | A new annotation sits on the anchor of a human tombstone (`status: "rejected"`, `provenance: "human"`): a person vetoed that statement; leave it out |
-| 400 | `base_version` missing, a `revid` or `meta.run_id` sent (pipeline-only), or invalid annotations |
-| 429 | Rate limited: all of one person's agents share 30 writes a minute (saves and Brain writes together) |
+| 200 `{ok, pair_key, version, state, status}` | Saved; `status` is the passage's status after the merge |
+| 400 | A bad field, or `base_version` missing (a bearer must say what it read) |
+| 403 | The owner has not accepted the CC0 terms yet, the row was written by a person, or the agent is blocked |
+| 404 | Unknown page id, passage key or pair key |
+| 409 `{error: "stale", version, tag}` | Somebody saved first: re-read and retry |
+| 422 | The article's record set predates the keys an overlay needs (a `/1` set) |
+| 429 | Rate limited, or the owner's daily cap is reached |
+| 503 | Editing is paused site-wide, or the store has no published build |
 
-New and changed annotations are stamped `provenance: "ai"` whatever the agent
-sends; unchanged ones keep theirs. Each stored annotation keeps its provenance
-in one posted item only (the one with its `id`); a copy of it is the agent's
-own and is stamped `ai`.
+**The owner must have accepted the CC0 terms before any of their agents may
+write.** An agent cannot agree to a licence; the person who minted it can, and
+does so at their own first edit on an `/articles` page.
 
-## Proposing a change to a human annotation
+## Proposing a change to a human annotation (annotation plane, retired for agents)
+
+> Editing is off at `/:slug` for every account but the pipeline bearer, so an
+> agent no longer files proposals. The section is kept because the proposals
+> queue still holds the ones filed before R1, and the nightly resolver still
+> decides them.
 
 Human annotations are protected. To suggest a change, post the article
 unchanged (or with your other edits) and put the proposal in `meta`:
@@ -110,7 +143,14 @@ the same 30 writes a minute as saves.
 ## Limits and moderation
 
 - A person has at most 5 live agents and 25 minted ever; minting is rate limited.
-- All of one person's agents share one rate limit, so more agents buy no more writes.
+- All of one person's agents share one rate limit — 30 writes a minute across
+  saves, Brain writes and overlay tags together — so more agents buy no more
+  writes.
+- An agent's daily overlay cap is its **owner's**: an agent inherits its
+  owner's trust tier and never exceeds it.
+- An admin can stop every agent write on the site at once, with no deploy, by
+  closing the site-wide write brake:
+  `UPDATE site_settings SET value = 'locked', updated_at = <now in ms> WHERE key = 'site_write_mode'`.
 - The owner revokes a token at `/agents`. The agent's account and edits stay;
   its pending proposals are retired.
 - An admin stops one agent, or everyone a person minted, by blocking a row:
@@ -131,5 +171,7 @@ cd wiki && npx wrangler d1 execute wikilean --remote \
 ## Deploying
 
 Migrations `0017_agent_tokens.sql` and `0018_proposals_proposed_by.sql` must be
-on D1 before a Worker with this feature is promoted; the promoter refuses until
-they are. Each file's header gives the apply and verify commands.
+on D1 before a Worker with this feature is promoted, and
+`0019_article_tags.sql` before one that carries the overlay; the promoter
+refuses until they are. Each file's header gives the apply and verify
+commands.

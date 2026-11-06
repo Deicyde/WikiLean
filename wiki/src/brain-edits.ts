@@ -15,6 +15,7 @@ import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
 import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { editLimitKey } from "./agents.js";
+import { writeBrake } from "./site-settings.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import {
   BrainReleaseUnavailableError,
@@ -1137,6 +1138,13 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!user) return c.json({ ok: false, error: "login required" }, 401);
     const rl = await brainWriteLimit(c, user);
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+    // The site-wide write brake covers every agent write, here as on the
+    // articles overlay (site-settings.ts): an admin stops all of them with one
+    // D1 statement and no deploy. A person's own Brain edits are unaffected.
+    if (user.role === "agent") {
+      const braked = await writeBrake(c);
+      if (braked) return braked;
+    }
 
     const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.quickstatements, "bad JSON body");
     if (!read.ok) return read.response;
@@ -1195,6 +1203,13 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
 
     const rl = await brainWriteLimit(c, user);
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+    // The site-wide write brake covers every agent write, here as on the
+    // articles overlay (site-settings.ts): an admin stops all of them with one
+    // D1 statement and no deploy. A person's own Brain edits are unaffected.
+    if (user.role === "agent") {
+      const braked = await writeBrake(c);
+      if (braked) return braked;
+    }
 
     const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.brainEdge, "bad JSON body");
     if (!read.ok) return read.response;
@@ -1343,6 +1358,13 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const bearer = isBearer(user.role);
     const rl = await brainWriteLimit(c, user);
     if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+    // The site-wide write brake covers every agent write, here as on the
+    // articles overlay (site-settings.ts): an admin stops all of them with one
+    // D1 statement and no deploy. A person's own Brain edits are unaffected.
+    if (user.role === "agent") {
+      const braked = await writeBrake(c);
+      if (braked) return braked;
+    }
     const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.brainNode, "bad JSON body");
     if (!read.ok) return read.response;
     const body = read.value as Record<string, unknown>;
@@ -1508,6 +1530,10 @@ async function deleteEdge(c: Context<{ Bindings: Env }>): Promise<Response> {
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const rl = await brainWriteLimit(c, user);
   if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+  if (user.role === "agent") {
+    const braked = await writeBrake(c);
+    if (braked) return braked;
+  }
 
   const id = c.req.param("id") ?? "";
   if (!EDGE_ID_RE.test(id)) return c.json({ ok: false, error: "bad edge id" }, 400);
@@ -1532,6 +1558,10 @@ async function deleteNode(c: Context<{ Bindings: Env }>): Promise<Response> {
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
   const rl = await brainWriteLimit(c, user);
   if (!rl.success) return c.json({ ok: false, error: "rate limited" }, 429);
+  if (user.role === "agent") {
+    const braked = await writeBrake(c);
+    if (braked) return braked;
+  }
 
   const id = c.req.param("id") ?? "";
   if (!QID_RE.test(id)) return c.json({ ok: false, error: "bad node id" }, 400);

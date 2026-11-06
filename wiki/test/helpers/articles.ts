@@ -62,6 +62,65 @@ export function fixtureArticle(pageid = WIDGET_PAGEID): Record<string, any> {
   return JSON.parse(articlesFixtureFiles().get(`articles/v1/articles/${pageid}.json`)!);
 }
 
+// ---- the /2 store the community overlay needs ----------------------------------------------
+//
+// The committed fixture is a cf-locate-recordset/1 store: it carries neither
+// passage_key nor pair_key, and the tag routes refuse it by design (a /1 set
+// cannot take an overlay — docs/ARTICLES.md, "Community tags"). These helpers
+// derive a /2 shape from it in the test process alone, so the Python builder's
+// golden fixture is untouched: every passage gets a passage_key and every
+// location the pair_key the server recomputes from it, by the producer's own
+// formulas (scripts/articles/build_store.py passage_key / pair_key).
+
+const sha256 = (s: string) => createHash("sha256").update(s, "utf8").digest("hex");
+
+// passage_key = sha256("<pageid>\n<span_sha256>"). The fixture records no span
+// hash in its view model, so the test stands one in, deterministically.
+export function passageKeyFor(pageid: number, passageId: string): string {
+  return sha256(`${pageid}\n${sha256(passageId)}`);
+}
+
+// pair_key = sha256("<passage_key>\n<repository>\n<declaration>"), the
+// repository being the Lean end's URI — NOT the library id.
+export function pairKeyFor(passageKey: string, repository: string, declaration: string): string {
+  return sha256(`${passageKey}\n${repository}\n${declaration}`);
+}
+
+export const MATHLIB_REPO = "https://github.com/leanprover-community/mathlib4";
+
+// The golden store with the /2 keys and a /2 seal. `status_rule` 2 leaves every
+// location's own status unchanged (only rule 3, R-BROAD, changes one), so the
+// published statuses still hold.
+export function articlesPairedFiles(files: Map<string, string> = articlesFixtureFiles()): Map<string, string> {
+  const out = new Map(files);
+  for (const pageid of [WIDGET_PAGEID, GADGET_PAGEID]) {
+    const key = `articles/v1/articles/${pageid}.json`;
+    const article = JSON.parse(out.get(key)!);
+    article.seal = {
+      set_id: "fixture-set",
+      schema: "cf-locate-recordset/2",
+      status_rule: 2,
+      created: "2026-10-17T12:00:00Z",
+      skill_commit: "3bceabcee0724ffdf50ce65dde3ab10048c72cba",
+    };
+    for (const passage of article.passages) {
+      passage.passage_key = passageKeyFor(pageid, passage.id);
+      for (const loc of passage.locations) {
+        loc.pair_key = pairKeyFor(passage.passage_key, loc.repo, loc.declaration);
+      }
+    }
+    out.set(key, JSON.stringify(article));
+  }
+  return out;
+}
+
+// One passage of the /2 fixture, by page id and index in the view model.
+export function pairedPassage(pageid: number, index: number): Record<string, any> {
+  const files = articlesPairedFiles();
+  const article = JSON.parse(files.get(`articles/v1/articles/${pageid}.json`)!);
+  return article.passages[index];
+}
+
 // ---- the article reader (build_store --reader-html) ----------------------------------------
 //
 // A synthetic marked revision of the Widget lemma fixture (page 1001), in the shape the builder

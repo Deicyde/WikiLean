@@ -104,18 +104,28 @@ export const ARTICLES_MEDIA_HOSTS: readonly string[] = ["https://upload.wikimedi
 // articles-render.ts ARTICLES_JS and ARTICLES_READER_JS without their queries (test/articles.test.ts pins it).
 export const ARTICLES_SCRIPT_PATHS: readonly string[] = ["/assets/articles.js", "/assets/articles-reader.js"];
 export const ARTICLES_FORM_PATH = "/articles";
+// Cloudflare Turnstile, which gates a new account's first community tag
+// (articles-overlay.ts). Its widget is a script and a cross-origin iframe, so a
+// page that renders it — and ONLY such a page — widens script-src, frame-src and
+// connect-src by this one origin. default-src is 'none', so without the widget
+// the pages still frame nothing at all.
+export const TURNSTILE_ORIGIN = "https://challenges.cloudflare.com";
 
-// The policy for an articles page served from `origin` (the request URL's, "https://host[:port]").
-export function articlesCsp(origin: string): string {
+// The policy for an articles page served from `origin` (the request URL's,
+// "https://host[:port]"). `turnstile` adds the challenge widget's origin, and is
+// set only on a page that actually renders the widget.
+export function articlesCsp(origin: string, turnstile = false): string {
+  const extra = turnstile ? ` ${TURNSTILE_ORIGIN}` : "";
   const directives: ReadonlyArray<readonly [string, string]> = [
     ["default-src", "'none'"],
     ["script-src", [...ARTICLES_SCRIPT_PATHS.map((path) => origin + path), ARTICLES_INLINE_SCRIPT_HASHES.theme,
-      ARTICLES_INLINE_SCRIPT_HASHES.search, "https://static.cloudflareinsights.com"].join(" ")],
+      ARTICLES_INLINE_SCRIPT_HASHES.search, "https://static.cloudflareinsights.com"].join(" ") + extra],
     ["style-src", "'self' 'unsafe-inline'"],
     ["img-src", `'self' ${ARTICLES_MEDIA_HOSTS.join(" ")}`],
     ["media-src", `'self' ${ARTICLES_MEDIA_HOSTS.join(" ")}`],
     ["font-src", "'self'"],
-    ["connect-src", "'self' https://cloudflareinsights.com"],
+    ["connect-src", `'self' https://cloudflareinsights.com${extra}`],
+    ...(turnstile ? ([["frame-src", TURNSTILE_ORIGIN]] as ReadonlyArray<readonly [string, string]>) : []),
     ["form-action", origin + ARTICLES_FORM_PATH],
     ["base-uri", "'none'"],
     ["object-src", "'none'"],
@@ -338,7 +348,11 @@ export async function readBodyCapped(req: Request, max: number): Promise<string 
 //     page id, a campaign of at most 128 characters and a note of at most
 //     MAX_FLAG_COMMENT_LEN characters (about 3.3 KB even if every note
 //     character is \u-escaped);
-//   agents: one agent name of at most AGENT_NAME_MAX characters (agents.ts).
+//   agents: one agent name of at most AGENT_NAME_MAX characters (agents.ts);
+//   articlesTag: one community tag (articles.ts): a 64-hex passage key, a page
+//     id, a library id, a declaration of at most 240 characters, a relation, a
+//     note of at most MAX_TAG_NOTE_CHARS, a campaign and a Turnstile token
+//     (about 2 KB), all of which fits in 4 KiB even fully \u-escaped.
 export const MAX_JSON_BODY_BYTES = {
   flag: 16 * 1024,
   flagResolve: 16 * 1024,
@@ -350,6 +364,7 @@ export const MAX_JSON_BODY_BYTES = {
   repos: 256 * 1024,
   reviewPost: 1024 * 1024,
   articlesFeedback: 4 * 1024,
+  articlesTag: 4 * 1024,
   agents: 4 * 1024,
 } as const;
 

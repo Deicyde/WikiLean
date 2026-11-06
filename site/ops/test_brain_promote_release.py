@@ -2892,5 +2892,40 @@ class BrainPromotionDryRunTest(unittest.TestCase):
                 )._validate_options()
 
 
+class D1RequiredColumnsTests(unittest.TestCase):
+    """Every migration the promoter gates on names a real table and real columns.
+
+    ``D1_REQUIRED_COLUMNS`` is what makes the promoter refuse a Worker built from a
+    commit whose migration is not on D1 yet. A typo there is a gate that never
+    fires, so each entry is checked against the migration file it names.
+    """
+
+    REPO = HERE.parent.parent
+
+    def test_each_entry_names_an_existing_migration(self) -> None:
+        self.assertTrue(promote.D1_REQUIRED_COLUMNS, "the gate list is empty")
+        for migration in promote.D1_REQUIRED_COLUMNS:
+            with self.subTest(migration=migration):
+                self.assertTrue((self.REPO / migration).is_file(), f"{migration} is not in the tree")
+
+    def test_each_entry_names_columns_the_migration_creates(self) -> None:
+        for migration, (table, columns) in promote.D1_REQUIRED_COLUMNS.items():
+            with self.subTest(migration=migration):
+                sql = (self.REPO / migration).read_text(encoding="utf-8")
+                self.assertIn(table, sql, f"{migration} never mentions {table}")
+                for column in columns:
+                    self.assertIn(column, sql, f"{migration} never mentions {table}.{column}")
+
+    def test_the_overlay_migration_creates_its_gate_table_last(self) -> None:
+        """0019 creates three tables; the gate checks the last, so its presence
+        means the whole file ran."""
+        sql = (self.REPO / "wiki/migrations/0019_article_tags.sql").read_text(encoding="utf-8")
+        order = [sql.index(f"CREATE TABLE IF NOT EXISTS {name}")
+                 for name in ("site_settings", "user_agreements", "article_tags")]
+        self.assertEqual(order, sorted(order))
+        gate_table, _ = promote.D1_REQUIRED_COLUMNS["wiki/migrations/0019_article_tags.sql"]
+        self.assertEqual(gate_table, "article_tags")
+
+
 if __name__ == "__main__":
     unittest.main()

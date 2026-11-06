@@ -58,13 +58,32 @@ export function injectAuthAndEditor(
     // Propose-then-approve: pending AI proposals to update this article's human
     // annotations (PendingProposal[]). Rendered as an inline banner by editor.js.
     proposals?: unknown[];
+    // Editing is off on this plane (decision 5, option (b) of the signed
+    // public-editing plan): the editor is not injected and the sign-in-to-edit
+    // button is replaced by a line pointing at the article's formalization
+    // page, where tagging happens now. `articlesHref` is null when no record
+    // set covers the article. Injected per request like everything else here,
+    // so no render-cache key is bumped.
+    editingOff?: { articlesHref: string | null };
   },
 ): string {
   const ret = encodeURIComponent("/" + opts.slug);
   let sourceUri: string | null = null;
   try { sourceUri = wikipediaSourceUri({ wikipediaTitle: opts.wikipediaTitle ?? opts.slug, revid: opts.revid ?? null }); } catch { /* Unknown pin: new native locations stay unavailable. */ }
   let inject: string;
-  if (opts.user) {
+  if (opts.editingOff) {
+    const href = opts.editingOff.articlesHref;
+    inject =
+      `<div id="wl-editing-off" ` +
+      `style="position:fixed;right:14px;bottom:14px;z-index:5000;max-width:min(92vw,420px);background:#fffdf9;` +
+      `border:1px solid #d8d0bd;border-radius:8px;padding:10px 14px;color:#1f1d1a;` +
+      `font:13px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;box-shadow:0 2px 10px rgba(0,0,0,.18)">` +
+      `This page is now read-only. ` +
+      (href
+        ? `Its passages are on the <a href="${htmlEscape(href, true)}" style="color:#1a4b8c">formalization page</a>, where anyone signed in can tag them.`
+        : `Editing has moved to the formalization reader at <a href="/articles" style="color:#1a4b8c">/articles</a>; no record set covers this article yet.`) +
+      `</div>\n`;
+  } else if (opts.user) {
     inject =
       `<script>window.__WL_SLUG__=${safeJson(opts.slug)};` +
       // P3: ship the user id so the editor bar can link "editing as <name>" → /u/<id>.

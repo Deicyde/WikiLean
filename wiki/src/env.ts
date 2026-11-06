@@ -40,6 +40,22 @@ export interface Env {
   REPO_LIMITER?: {
     limit: (opts: { key: string }) => Promise<{ success: boolean }>;
   };
+  // Community-tag writes on the articles overlay (articles.ts, the three tag
+  // routes), 60/min, keyed tag:<user.id> for an established editor and
+  // tagnew:<user.id> for a newcomer, who therefore gets a tenth of the budget
+  // (articles-overlay.ts tagLimitKey). Agents are NOT keyed here: all of one
+  // person's agents share PR #126's single 30/min EDIT_LIMITER key, so minting
+  // agents buys no more writes. Optional so a deploy predating the binding
+  // falls back to EDIT_LIMITER.
+  TAG_LIMITER?: {
+    limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+  };
+  // The newcomer half of the same control, 6/min keyed tagnew:<user.id>. A
+  // Cloudflare rate-limit binding carries one limit, so the plan's two burst
+  // budgets are two bindings. Optional, falling back to TAG_LIMITER.
+  TAG_NEW_LIMITER?: {
+    limit: (opts: { key: string }) => Promise<{ success: boolean }>;
+  };
 
   // The formalization reader's store (docs/ARTICLES.md): an R2 bucket holding the static
   // tree scripts/articles/build_store.py writes (keys articles/v1/...), which
@@ -51,6 +67,17 @@ export interface Env {
   ARTICLES?: R2Bucket;
 
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
+
+  // Cloudflare Turnstile, which gates a NEW account's FIRST overlay edit and
+  // nothing after it (articles-overlay.ts verifyTurnstile). The site key is
+  // public configuration — a plain var in wrangler.jsonc, rendered into the
+  // widget; the secret is a Worker secret, listed by name in docs/SECRETS.md
+  // and never a value anywhere. Both optional: without the site key no widget
+  // is rendered, and without the secret the check is skipped and logged, so a
+  // deployment the maintainer has not yet given keys still takes edits under
+  // the other controls (account required, the burst and daily caps, the brake).
+  TURNSTILE_SITE_KEY?: string;
+  TURNSTILE_SECRET?: string;
 
   // Worker Version identity for GET /api/version (src/version.ts), from the
   // wrangler.jsonc version_metadata binding. Optional: without it (e.g. the

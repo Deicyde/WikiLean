@@ -89,6 +89,36 @@ D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
         "proposals",
         ("proposed_by",),
     ),
+    # 0019 creates site_settings, user_agreements and article_tags, in that
+    # order, so article_tags existing means the whole file ran.
+    "wiki/migrations/0019_article_tags.sql": (
+        "article_tags",
+        (
+            "pair_key",
+            "pageid",
+            "passage_key",
+            "library",
+            "repository",
+            "declaration",
+            "relation",
+            "state",
+            "origin",
+            "base_relation",
+            "added_by",
+            "actor_type",
+            "via",
+            "campaign",
+            "revision",
+            "record_set",
+            "universe_sha256",
+            "version",
+            "created_at",
+            "updated_at",
+            "removed_by",
+            "removed_at",
+            "removed_reason",
+        ),
+    ),
 }
 
 
