@@ -80,6 +80,22 @@ run_check "Local D1 backup fail-closed tests" "$PYTHON_BIN" wiki/scripts/test_ba
 run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
+run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
+run_check "Pipeline Literature Links pin" "$PYTHON_BIN" scripts/pipeline/test_links.py
+run_check "Pipeline revision-free key tests" "$PYTHON_BIN" scripts/pipeline/test_keys.py
+run_check "Pipeline locate vocabulary parity" "$PYTHON_BIN" scripts/pipeline/test_vocab.py
+run_check "Pipeline derived-status parity (rules 1, 2 and 3)" "$PYTHON_BIN" scripts/pipeline/test_status.py
+run_check "Pipeline record builder tests" "$PYTHON_BIN" scripts/pipeline/test_records.py
+run_check "Pipeline sealed record set read back and re-exported" "$PYTHON_BIN" scripts/pipeline/test_record_sets.py
+run_check "Pipeline tally, challenge semantics and carry-over" "$PYTHON_BIN" scripts/pipeline/test_tally.py
+run_check "Pipeline web-html/3 renderer, a use of the site text layer" "$PYTHON_BIN" scripts/pipeline/test_render_web.py
+run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/pipeline/test_sourceset.py
+run_check "Pipeline Wikipedia client, behind --execute, no network" "$PYTHON_BIN" scripts/pipeline/test_wikinet.py
+run_check "Pipeline stage-9 prompts render and read the gate" "$PYTHON_BIN" scripts/pipeline/test_prompts.py
+run_check "Pipeline cut, retrieval, locate and challenge plans" "$PYTHON_BIN" scripts/pipeline/test_model_stages.py
+run_check "Pipeline locate gate, rules 1 to 10 out of tree" "$PYTHON_BIN" scripts/pipeline/gate/test_gate.py
+run_check "Pipeline run, harvest reconciliation and spend watchdog" "$PYTHON_BIN" scripts/pipeline/run/test_run.py
+run_check "Pipeline contribute transport, claim and sandbox" "$PYTHON_BIN" scripts/pipeline/contribute/test_contribute.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
@@ -134,5 +150,6 @@ run_check "Bot settle trim tests" "$PYTHON_BIN" bot/test_split.py
 run_check "Bot tag refresh refuses a truncated list" "$PYTHON_BIN" bot/test_refresh_tagged.py
 run_check "Queue publisher keeps the bearer off argv" "$PYTHON_BIN" bot/test_publish_queue.py
 run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" scripts/test_workflow_credentials.py
+run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scripts/test_revoke_github_tokens.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"

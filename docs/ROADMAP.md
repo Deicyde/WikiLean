@@ -107,11 +107,10 @@ recommendation. Remove an item once its decision is recorded below.
     2026-11-05: the reader replaces the old article system and takes `/articles`, and the
     "atlas" name is dropped (it collided with facebookresearch's atlas-lean, which the
     reader's own library universe lists as "Atlas"); release 1 is the rename and the move,
-    deleting the old system is later. Still open there:
-    - The End-goal amendment above. Options: ratify, revise, or reject.
+    deleting the old system is later. Decided on 2026-11-05 too: the End-goal amendment is
+    ratified and the producer contract notes (§14, item 7) are agreed. Still open there:
     - The bucket's name (§14, item 2): `wikilean-articles` is proposed. Options: confirm it,
       or name another (the binding and its test change with it).
-    - The producer contract notes (§14, item 7). Options: agree them, or change them.
     - Whether the bearer-only feedback export may carry readers' free-text notes. Options:
       keep them, or drop them as the research export does.
     - When to build absence feedback ("this is formalized, here" against a "not found").
@@ -121,20 +120,20 @@ recommendation. Remove an item once its decision is recorded below.
 
 ## End goal (verbatim from Jack)
 
-### Proposed amendment — PROPOSED 2026-10-17, pending Jack's ratification
+### End-goal amendment — proposed 2026-10-17, ratified by Jack 2026-11-05
 
 > Determine what parts of WikiProject Mathematics have been formalized in Lean and where,
 > then build a knowledge graph from it.
 
-These are Jack's words, recorded 2026-10-17; they are not yet ratified. If ratified, they
-become the End goal: "where" means the library (Mathlib, Lean core and Batteries, TauCeti,
+These are Jack's words, recorded 2026-10-17 and ratified 2026-11-05. They are the End goal:
+"where" means the library (Mathlib, Lean core and Batteries, TauCeti,
 the FormalFrontier libraries and others), the declaration and the commit, and the knowledge
 graph is built from those located passages. The first deliverable is the read-only
 formalization reader at `/articles` (docs/ARTICLES.md), fed by the formal-companion
 skill's locate pipeline.
-The three routine operations and the human+AI moderation experiment below would serve that
-goal rather than define it. Ratification (or rejection) is recorded in the status log and
-closes Waiting on Jack item 16. Nothing below is deleted; the End goal as stated on
+The three routine operations and the human+AI moderation experiment below serve that goal
+rather than define it. The ratification is recorded in the status log (2026-11-05) and closes
+Waiting on Jack item 16. Nothing below is deleted; the End goal as stated on
 2026-06-10 follows unchanged.
 
 A complete interface mapping Wikipedia statements to their formal implementation in
@@ -1327,6 +1326,11 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-05: **Jack ratified the End-goal amendment and agreed the producer contract notes.**
+  The amendment above is now the End goal, with the reader at `/articles` its first
+  deliverable; docs/ARTICLES.md section 14, items 1 and 7, record both. The same evening the
+  articles release went live (Worker version `fa58d14d`) and batch 1's store was published to
+  the `wikilean-articles` bucket.
 - 2026-11-05: **The formalization reader is renamed to "articles" and serves `/articles`**
   (branch `articles/rename`, not deployed). Jack's decision: the reader replaces WikiLean's
   old article system and takes over `/articles`, and "atlas" is dropped because
