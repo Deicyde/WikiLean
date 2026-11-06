@@ -93,6 +93,12 @@ formal-companion locate pipeline (fleet host)          WikiLean
                        pipeline bearer: GET /api/articles/feedback/export  -->  benchmark seeds
 ```
 
+The operator copy is the only way a set reaches WikiLean today, and it assumes one person
+runs every locate run. [INTAKE.md](INTAKE.md) designs the submission endpoint that would take
+a sealed `/2` set from an authenticated contributor machine instead, and
+`scripts/atlas/verify_submission.py` is its checks, built: the store builder's refusals are
+intake's, so the two contracts cannot drift. Nothing of the endpoint exists.
+
 ## 3. Input contract: the sealed record set
 
 The record-set format is the one formal-companion and WikiLean agreed: the proposal's §2.3
