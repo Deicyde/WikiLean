@@ -19,12 +19,13 @@ the remote has no such ref", which overwrites nothing — and this command then 
 the ref back and starts only if it is its own commit. The lease is not the mechanism;
 the unique commit plus the read-back is.
 
-**What is between the two stages.** Fetching the package's sources at their pinned
-revisions, placing the declaration index, regenerating the candidates, staging the run
-and driving the agents are pipeline stages 9 and 10, which are **TODO**
-(docs/PIPELINE.md sections 3 and 10). Until they land a contributor does that part by
-hand between ``--stage claim`` and ``--stage results``; the transport at both ends, the
-claim, the sandbox and the result's checks are built and tested.
+**What is between the two stages.** ``--stage run`` (:mod:`work`): the package laid out as
+a run root, one agent call per task, the staged gate over each task's own documents and the
+harvest's reconciliation into a corpus with a receipt. What a contributor still supplies by
+hand is the three directories the plan names and the package cannot carry — the sources
+refetched at their pinned revisions, the candidates and the declaration index — because
+fetching and rendering them is stage 9a, which is **TODO** (docs/PIPELINE.md section 10);
+``--stage run`` names any that are missing before it runs anything.
 
 **What travels back**: the gated documents, the run's own records, and — when the
 contributor has sealed one — a record set, which is checked here by
