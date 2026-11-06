@@ -268,6 +268,91 @@ SOURCE_KEYS = ("source_id", "pageid", "revision", "title", "wikidata", "html_sha
 #: Licence classes an exported record may quote from, and the ones that need the
 #: licence named (formal-companion POLICY.md section 4.1, the agreed classes).
 OPEN_LICENCE_CLASSES = frozenset({"public_domain", "open_permissive", "open_share_alike"})
+
+# --- stage 9a: the sourceset and the renderer -----------------------------
+#: The renderer every web source of the first corpus is rendered by, and a pin of
+#: every source entry, plan, gate configuration and record. The id is frozen: a
+#: change to any rule that can move one character of any view — the label rule of
+#: :func:`is_bold_label` included — is a new id, never an edit of this one.
+RENDERER_WEB_HTML = "web-html/3"
+
+#: Where a sourceset entry came from: ``enumerated`` — a listing of the site, at
+#: the page's latest revision; ``adopted`` — a revision and bytes a consumer pinned,
+#: recorded in the entry's ``adopted_from``, planned instead of an enumerated
+#: revision of the same page.
+SOURCE_ORIGIN_ENUMERATED = "enumerated"
+SOURCE_ORIGIN_ADOPTED = "adopted"
+SOURCE_ORIGINS = frozenset({SOURCE_ORIGIN_ENUMERATED, SOURCE_ORIGIN_ADOPTED})
+
+#: What a sourceset entry's ``flags`` say of its page, each true, false, or null for
+#: not determined. A page with any of them true is no concept article.
+PAGE_FLAG_REDIRECT = "redirect"
+PAGE_FLAG_DISAMBIGUATION = "disambiguation"
+PAGE_FLAG_LIST = "list"
+PAGE_FLAG_BIOGRAPHY = "biography"
+PAGE_FLAGS = frozenset({PAGE_FLAG_REDIRECT, PAGE_FLAG_DISAMBIGUATION, PAGE_FLAG_LIST,
+                        PAGE_FLAG_BIOGRAPHY})
+
+#: Why a plan left a source out: no layer yet (a render settles it), or the page is
+#: no concept article (one of :data:`PAGE_FLAGS` is true).
+SKIP_NOT_RENDERED = "not rendered"
+SKIP_NO_CONCEPT = "no concept article"
+SKIP_REASONS = frozenset({SKIP_NOT_RENDERED, SKIP_NO_CONCEPT})
+
+#: Which finder proposed an inventory passage. The three deterministic finders'
+#: passages are pre-filled in an inventory task and dropping one needs a skip naming
+#: its span (gate rule 8); ``model`` is the enumerator's own.
+FINDER_THEOREM_BOX = "theorem_box"
+FINDER_BOLD_DEFINITION = "bold_definition"
+FINDER_LEAD = "lead"
+FINDER_MODEL = "model"
+DETERMINISTIC_FINDERS = frozenset({FINDER_THEOREM_BOX, FINDER_BOLD_DEFINITION, FINDER_LEAD})
+FINDERS = DETERMINISTIC_FINDERS | {FINDER_MODEL}
+
+#: The words a bold run that only LABELS a paragraph is made of ("Proof.",
+#: "Example 2:", "Definition:"): such a bold names no term, so it makes no
+#: ``bold_definition`` passage. These are labels however they are written …
+BOLD_LABELS = frozenset({
+    "proof", "proofs", "proof sketch", "sketch of proof", "proof idea", "example", "examples",
+    "counterexample", "counterexamples", "non-example", "definition", "definitions",
+    "theorem", "theorems", "lemma", "lemmas", "corollary", "corollaries", "proposition",
+    "propositions", "remark", "remarks", "notation", "exercise", "exercises", "claim",
+    "conjecture", "case", "cases", "step", "base case", "inductive step", "induction step",
+    "hint", "note", "notes", "warning", "caution"})
+#: … and these only with a label's punctuation ("Solution:", "Problem 3."), since
+#: without it they may be the term a sentence defines — an enumerator alone is no
+#: such mark: "Axiom A", "Problem P", "property (T)" name concepts.
+BOLD_LABELS_PUNCTUATED = frozenset({
+    "solution", "answer", "problem", "question", "input", "output", "statement",
+    "observation", "axiom", "axioms", "fact", "result", "construction", "algorithm",
+    "property", "properties", "assumption", "assumptions", "special case", "idea"})
+_LABEL_TRIM = " \t.:;,!?–—-"
+#: an enumerator a label may carry after its word: 2, 2.1, 3a, iv, (b), (2)
+_LABEL_ENUMERATOR = re.compile(r"(?:\s+(?:\(?(?:\d+(?:\.\d+)*[a-z]?|[ivxlc]+|[a-z])\)?))+$")
+
+
+def is_bold_label(text) -> bool:
+    """Is a bold run's text only a paragraph label, in :data:`BOLD_LABELS`?
+
+    Case-folded, with its punctuation stripped and an enumerator after the label word
+    dropped ("Case 2:", "Step 1a.", "Example (iii)"); a word of
+    :data:`BOLD_LABELS_PUNCTUATED` counts only when a label's punctuation was there
+    ("Solution:", "Problem 3."), never for an enumerator alone, which is how a concept
+    is named ("Axiom A", "property (T)"); and a proof of something ("Proof of the
+    lemma:", "Proof (sketch).") is a label too. A label word followed by a
+    parenthesised NAME ("Theorem (Widget lemma).") is no label: it names a statement,
+    and its paragraph is a passage.
+
+    The renderer's finders read this rule, so any change to it, or to the two label
+    sets, is a new :data:`RENDERER_WEB_HTML` id.
+    """
+    spaced = " ".join(str(text or "").split()).casefold()
+    bare = spaced.strip(_LABEL_TRIM)
+    punctuated = bare != spaced
+    core = _LABEL_ENUMERATOR.sub("", bare).strip(_LABEL_TRIM)
+    if core in BOLD_LABELS or (punctuated and core in BOLD_LABELS_PUNCTUATED):
+        return True
+    return core.startswith("proof of ") or core.startswith("proof (")
 ATTRIBUTION_LICENCE_CLASSES = frozenset({"open_permissive", "open_share_alike"})
 
 HEX40 = re.compile(r"^[0-9a-f]{40}\Z")
