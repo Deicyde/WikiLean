@@ -252,7 +252,7 @@ The maintainer tracks outstanding production actions (backup restores, credentia
 
 Release R1 of the public-editing plan challenges a **new account's first community tag** on
 the formalization reader, and nothing after it (docs/ARTICLES.md, section 10a). The public
-site key is in `wiki/wrangler.jsonc`; its matching secret is stored only with the Worker.
+site key is in `wiki/wrangler.jsonc`; its matching secret is configured separately as a Worker secret.
 Jack staged that secret on an undeployed version on 2026-11-07. A names-only check
 confirmed its presence and that the active Worker version had not changed.
 
