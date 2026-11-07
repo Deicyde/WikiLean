@@ -27,6 +27,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "site"))
+from native_annotations import mathlib_targets  # noqa: E402
+
+
 HERE = Path(__file__).resolve().parent
 DATA = HERE / "data"
 LIVE = DATA / "concept_graph.json"
@@ -258,8 +262,7 @@ def main() -> int:
         if not qid:
             continue
         for a in (d.get("annotations") or []):
-            dec = (a.get("mathlib") or {}).get("decl")
-            if dec:
+            for dec in dict.fromkeys(t["decl"] for t in mathlib_targets(a)):
                 decl_to_qid[dec].append(qid)
                 # formalization wins when a decl carries both roles for a QID
                 decl_qid_roles.setdefault(dec, {}).setdefault(qid, "citation")

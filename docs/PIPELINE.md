@@ -150,11 +150,11 @@ and its checker. Every record this pipeline writes is validated against it befor
 sealed.
 
 **Source in formal-companion.** `vendor/literature_links/` (the Python package at tag
-`v1.0.1`, commit `789af9af`), used through `records.check` / `check_all`.
+`v1.0.2`, commit `e7eeafb8`), used through `records.check` / `check_all`.
 
 **What changes.** Nothing is copied from formal-companion. WikiLean already vendors the same
 release at the same commit — `wiki/src/vendor/literature-links/`, whose `provenance.json`
-names tag `v1.0.1`, commit `789af9af85ae7590d7149cb8312f09cfac0752b4`, and the schema's
+names tag `v1.0.2`, commit `e7eeafb823eb3bc64a8ab2077cd3569f572d459f`, and the schema's
 sha256 `9387537f…` — and already has a Python checker over it,
 `site/native_annotations.validate_link_record`, which refuses to run until the schema's bytes
 match that provenance. `links.py` is a thin, explicit front door to that pair:
@@ -649,15 +649,15 @@ section 3 and checked by two implementations.
 
 ## 6. The one vendored piece, and how WikiLean pins it
 
-**Literature Links 1.0.1** — and nothing else.
+**Literature Links 1.0.2** — and nothing else.
 
 WikiLean's pin is `wiki/src/vendor/literature-links/provenance.json`:
 
 ```
 repository  https://github.com/mathlib-initiative/literature-links
-tag         v1.0.1
-commit      789af9af85ae7590d7149cb8312f09cfac0752b4
-version     1.0.1
+tag         v1.0.2
+commit      e7eeafb823eb3bc64a8ab2077cd3569f572d459f
+version     1.0.2
 schema      schema/companion.schema.json
 sha256      9387537f21e69dc368357fcc8939fffa3c6846d33ab2b3a3b7c2a20a4350a797
 ```
@@ -676,7 +676,7 @@ The rules:
 3. **WikiLean does not take formal-companion's copy.** The two happen to be the same release
    at the same commit today, which is why batch 1 reproduces. Formal-companion's unmerged
    `locate/contribute` branch has already moved its vendor to an unreleased `format-2.0`
-   branch (`2bb328c`, a different schema sha); WikiLean stays on `v1.0.1` until the version
+   branch (`2bb328c`, a different schema sha); WikiLean stays on `v1.0.2` until the version
    it pins is a release, and a set validated against anything else is a different format.
 4. **Upgrading the pin is its own change**: a new `provenance.json`, a new
    `companion.schema.json` and `validate.js`, and both the Worker tests and

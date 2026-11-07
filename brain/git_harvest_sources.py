@@ -46,7 +46,7 @@ OUTPUTS = {"formal-conjectures": "catalog/data/formal_conjectures.jsonl", "erdos
 TOOL_FILES = tuple(sorted({*parent.TOOL_FILES, "brain/git_harvest_sources.py", "brain/export_git_harvest.py",
     "brain/git_harvest_adapters.py", "brain/git_harvest_dependencies.py", "brain/build_common.py", "brain/build_context.py",
     "brain/ingest/common.py", "brain/ingest/git_snapshot.py", "brain/ingest/formal_conjectures.py",
-    "brain/ingest/erdosproblems.py", "brain/ingest/lean_repo.py"}))
+    "brain/ingest/erdosproblems.py", "brain/ingest/lean_repo.py", "site/native_annotations.py"}))
 
 
 def validate_plan(plan):
@@ -69,7 +69,9 @@ def profiles():
     ids = []
     for profile in registry["profiles"]:
         exact(profile, {"profile_id", "files", "runtime"}, "profile")
-        require([item["path"] for item in profile["files"]] == list(TOOL_FILES), "harvester profile lacks the full local closure")
+        paths = [item["path"] for item in profile["files"]]
+        historical = [path for path in TOOL_FILES if path != "site/native_annotations.py"]
+        require(paths in [list(TOOL_FILES), historical], "harvester profile lacks the full local closure")
         for item in profile["files"]:
             exact(item, {"path", "sha256"}, "program digest")
             contracts._digest(item["sha256"], "program digest")
@@ -85,7 +87,8 @@ def module_origins():
              (dependencies, "brain/git_harvest_dependencies.py"), (adapters.common, "brain/ingest/common.py"),
              (adapters.fc, "brain/ingest/formal_conjectures.py"), (adapters.erdosproblems, "brain/ingest/erdosproblems.py"),
              (adapters.lean_repo, "brain/ingest/lean_repo.py"), (adapters.git_snapshot, "brain/ingest/git_snapshot.py"),
-             (adapters.fc.build_common, "brain/build_common.py"), (sys.modules["build_context"], "brain/build_context.py")]
+             (adapters.fc.build_common, "brain/build_common.py"), (sys.modules["build_context"], "brain/build_context.py"),
+             (sys.modules["native_annotations"], "site/native_annotations.py")]
     for module, name in pairs:
         require(Path(module.__file__).resolve(strict=True) == ROOT / name, "harvester helper has a different origin: " + name)
     require(adapters.fc.common is adapters.common and adapters.lean_repo.fc is adapters.fc and

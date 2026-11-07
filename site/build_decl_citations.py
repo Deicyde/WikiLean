@@ -12,6 +12,8 @@ deploy); wiki/src/decl.ts serves it on JSON requests.
 """
 import json
 from pathlib import Path
+from native_annotations import mathlib_targets
+
 
 HERE = Path(__file__).resolve().parent
 ANNOT = HERE / "annotations"
@@ -33,15 +35,15 @@ def main() -> int:
         for a in doc.get("annotations") or []:
             if a.get("status") not in ("formalized", "partial"):
                 continue
-            decl = (a.get("mathlib") or {}).get("decl")
             aid = a.get("id")
-            if not (isinstance(decl, str) and decl and isinstance(aid, str)):
+            if not isinstance(aid, str):
                 continue
-            cites.setdefault(decl, []).append({
-                "slug": slug, "id": aid,
-                "label": (a.get("label") or "")[:120],
-                "status": a["status"],
-            })
+            for decl in dict.fromkeys(target["decl"] for target in mathlib_targets(a)):
+                cites.setdefault(decl, []).append({
+                    "slug": slug, "id": aid,
+                    "label": (a.get("label") or "")[:120],
+                    "status": a["status"],
+                })
     OUT.parent.mkdir(exist_ok=True)
     OUT.write_text(json.dumps(cites, ensure_ascii=False))
     n_cites = sum(len(v) for v in cites.values())

@@ -37,7 +37,10 @@ import sys
 import unicodedata
 from pathlib import Path
 
+
 ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT))
+from native_annotations import mathlib_targets  # noqa: E402
 ANNOT = ROOT / "annotations"
 OUT = ROOT / "out"
 OUT_W3C = ROOT / "out_w3c"
@@ -240,12 +243,11 @@ def main(argv: list[str] | None = None) -> None:
         decls = []
         seen = set()
         for a in d.get("annotations", []):
-            ml = a.get("mathlib") or {}
-            decl = ml.get("decl")
-            module = ml.get("module")
-            if decl and a.get("status") == "formalized" and decl not in seen:
-                seen.add(decl)
-                decls.append((decl, module))
+            for target in mathlib_targets(a):
+                decl, module = target["decl"], target.get("module")
+                if a.get("status") == "formalized" and decl not in seen:
+                    seen.add(decl)
+                    decls.append((decl, module))
         if not decls:
             continue
         n_links += 1

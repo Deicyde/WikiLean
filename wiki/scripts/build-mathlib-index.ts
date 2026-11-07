@@ -7,25 +7,23 @@
 // or imported by build-public.ts to run inline.
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import { mathlibTargets, type JsonObject } from "../src/native-companion.ts";
 
 export function buildMathlibIndex(siteDir: string, outPath: string): number {
   const annotDir = resolve(siteDir, "annotations");
   const pairs = new Map<string, string>();
   for (const f of readdirSync(annotDir)) {
     if (!f.endsWith(".json") || f.includes(".agent1.")) continue;
-    let d: { annotations?: Array<{ status?: string; mathlib?: { decl?: string; module?: string } }> };
+    let d: { annotations?: JsonObject[] };
     try {
       d = JSON.parse(readFileSync(resolve(annotDir, f), "utf8"));
     } catch {
       continue;
     }
     for (const a of d.annotations ?? []) {
-      const decl = a.mathlib?.decl;
-      const module = a.mathlib?.module;
-      // Only "formalized" entries: those are the high-confidence (decl, module)
-      // matches we'd want to suggest to a future editor.
-      if (decl && module && a.status === "formalized" && !pairs.has(decl)) {
-        pairs.set(decl, module);
+      // Only confirmed Mathlib targets belong in this Mathlib-only asset.
+      for (const { decl, module } of mathlibTargets(a)) {
+        if (module && a.status === "formalized" && !pairs.has(decl)) pairs.set(decl, module);
       }
     }
   }

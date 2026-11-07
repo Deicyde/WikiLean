@@ -41,6 +41,7 @@ sys.path.insert(0, str(REPO / "site"))
 sys.path.insert(0, str(REPO / "manage"))
 import update_from_upstream as ufu  # noqa: E402
 import apply_decl_sweep as ads  # noqa: E402  (get_decl/set_decl/load_token)
+import native_annotations as native  # noqa: E402
 
 DATA = REPO / "manage" / "data"
 SWEEP = DATA / "decl_sweep_proposal.json"
@@ -76,6 +77,17 @@ def proposal_fields_for(a: dict, verdict: dict) -> dict:
     """The whitelisted-field delta for a proposal targeting live annotation `a`.
     applyProposalFields (wiki/src/proposals.ts) replaces whole fields, and
     'decl' alone is not approvable — rename deltas ship the full mathlib obj."""
+    if native.is_native(a):
+        if verdict["action"] == "propose_status":
+            return {"status": verdict["new_status"]}
+        expected = ads.get_decl(a)
+        changed = (native.clear_mathlib_target(a, expected) if verdict["action"] == "clear_decl"
+                   else native.rename_mathlib_target(a, expected, verdict["new_decl"]))
+        fields = {"links": changed["links"], "unlinked": changed["unlinked"]}
+        if verdict["action"] == "clear_decl":
+            fields.update(status=verdict.get("new_status") or "not_formalized",
+                          note=((a.get("note") or "") + CLEAR_NOTE)[:2000])
+        return fields
     if verdict["action"] == "propose_status":
         return {"status": verdict["new_status"]}
     if verdict["action"] == "clear_decl":
@@ -89,7 +101,7 @@ def proposal_fields_for(a: dict, verdict: dict) -> dict:
 
 # Fields an approved proposal may overwrite — mirror APPROVABLE in
 # wiki/src/proposals.ts (provenance/id are never proposal-writable).
-APPROVABLE_FIELDS = ("status", "mathlib", "note", "label", "kind", "match_kind")
+APPROVABLE_FIELDS = ("status", "mathlib", "links", "unlinked", "note", "label", "kind", "match_kind")
 
 
 def _stable(v) -> str:
@@ -166,6 +178,11 @@ def process_slug(s, base: str, token: str, slug: str, edits: list[dict],
                 skipped.append((e, "id-not-in-live-D1")); continue
             if ads.get_decl(a) != e["expect_decl"]:
                 skipped.append((e, f"decl already {ads.get_decl(a)!r}")); continue
+            if native.is_native(a):
+                try:
+                    native.editable_mathlib_targets(a, e["expect_decl"])
+                except native.NativeAnnotationError as exc:
+                    skipped.append((e, str(exc))); continue
             if a.get("provenance") == "human":
                 # never bot-edit a human annotation — convert to a proposal
                 fields = proposal_fields_for(a, e["verdict"])
@@ -183,7 +200,11 @@ def process_slug(s, base: str, token: str, slug: str, edits: list[dict],
                 ads.set_decl(a, e["new_decl"])
             else:  # clear
                 a["status"] = e["new_status"]
-                if a.get("mathlib") and (a["mathlib"] or {}).get("decl") is not None:
+                if native.is_native(a):
+                    changed = native.clear_mathlib_target(a, e["expect_decl"])
+                    a.clear()
+                    a.update(changed)
+                elif a.get("mathlib") and (a["mathlib"] or {}).get("decl") is not None:
                     a["mathlib"].pop("decl", None)
                 a.pop("decl", None)
                 note = a.get("note") or ""
@@ -198,6 +219,11 @@ def process_slug(s, base: str, token: str, slug: str, edits: list[dict],
                 skipped.append((p, "overclaim target gone/tombstoned")); continue
             if ads.get_decl(a) != p["expect_decl"]:
                 skipped.append((p, "overclaim decl drifted")); continue
+            if native.is_native(a):
+                try:
+                    native.editable_mathlib_targets(a, p["expect_decl"])
+                except native.NativeAnnotationError as exc:
+                    skipped.append((p, str(exc))); continue
             fields = proposal_fields_for(a, p["verdict"])
             if not proposal_has_delta(a, fields):
                 skipped.append((p, "no-delta, not filed"))

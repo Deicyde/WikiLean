@@ -37,7 +37,12 @@ import csv
 import glob
 import json
 import os
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "site"))
+from native_annotations import mathlib_targets  # noqa: E402
+
 
 from huggingface_download import (
     ArtifactRequest,
@@ -111,8 +116,7 @@ def wikilean_decls() -> tuple[dict[str, set[str]], dict[str, set[str]]]:
         if not qid:
             continue
         for a in (d.get("annotations") or []):
-            dec = (a.get("mathlib") or {}).get("decl")
-            if dec:
+            for dec in dict.fromkeys(t["decl"] for t in mathlib_targets(a)):
                 cited[dec].add(qid)
     return primary, cited
 

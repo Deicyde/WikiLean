@@ -80,27 +80,25 @@ recommendation. Remove an item once its decision is recorded below.
     resume it.
 14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
     flags. Options: triage them now, or let them wait.
-15. **Native companion cutover (#64, merged 2026-10-16).** `main` stores native Literature
-    Links items, D1 still holds schema-3 rows, and 0014 is not applied. Open choices:
-    - Runbook: docs/COMPANION-NATIVE.md covers only the copied-database rehearsal. It has no
-      write freeze (the nightly moderate job and the drift cron), no way to get the migrated
-      copy into D1, and no concrete rollback.
-    - Item 51 of `site/annotations/Students_t-distribution.json` has status `not_applicable`,
-      which stops the migration batch. Options: change its status, or remove the item.
-    - Legacy `mathlib.decl` readers with no native branch, which find nothing once native rows
-      are mirrored (Brain citation edges, the declaration sweeps, the editor's autocomplete
-      index): `bench/generate_tasks.py`, `brain/build_common.py`, `catalog/build_graph_v2.py`,
-      `catalog/derived_graph_adapters.py`, `catalog/ingest_theorem_graph.py`,
-      `manage/apply_decl_sweep.py`, `manage/apply_sweep_verdicts.py`,
-      `manage/decl_existence_sweep.py`, `site/build_decl_citations.py`,
-      `site/eval_moderation.py`, `site/export_w3c.py`, `site/export_wikidata_rdf.py`,
-      `site/ops/fix_decl.py`, `site/resolve_proposals.py` and
-      `wiki/scripts/build-mathlib-index.ts`. Options: port them before the cutover, or after.
-    - Relations: `special_case` exports no relation, because the tags use it in both
-      directions, and `partial` items export `exactMatch` or `broadMatch` from their match
-      kind. Options: keep both, or choose other relations.
-    - WikiLean records no Mathlib commit per link, so it exports no `noMatch`. Options:
-      record one, or keep exporting none.
+15. **Native companion cutover (#64 plus the 2026-11-07 transition work).**
+    Native storage, editor and lossless exports exist; live D1 migration and a
+    release containing the transition remain operator gates. The remaining
+    Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
+    autocomplete, exports and repair tools now consume native links. Pinned and
+    multi-target repairs require explicit per-target review. The schema and
+    validator are pinned to Literature Links 1.0.2.
+    - docs/COMPANION-NATIVE.md now describes the freeze, copied-snapshot
+      rehearsal, admin-session preview/apply path, concurrent-write refusals,
+      post-migration audit and guarded per-article rollback. Prepare and approve
+      the exact frozen release, baseline, fresh P1B and exclusive operator window.
+    - Recheck the old cached Students_t-distribution item 51 against fresh
+      canonical D1. Its not_applicable status stops migration; it must be
+      explicitly reviewed rather than heuristically changed or deleted.
+    - Migration retains ambiguous special_case direction and missing Mathlib
+      commit pins without inventing a relation, pin or noMatch. Imported native
+      records keep their existing relation, version/hash and carrier bases.
+    - This structural migration does not authorize the old plane's R2 cutover,
+      reopen /:slug editing or ship R2–R6.
 16. **The formalization reader at `/articles` (docs/ARTICLES.md).**
     A read-only data plane for the locate pipeline's sealed record sets: a store builder,
     `/articles` pages and APIs behind the R2 binding `ARTICLES` (`wiki/wrangler.jsonc`, a
@@ -1399,6 +1397,15 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-11-07: **Literature Links transition prepared.** Pinned upstream 1.0.2,
+  ported the remaining citation/graph/export/oracle/repair readers, and added a
+  preview-first admin structural migration sharing the copied-database converter.
+  Concurrent article/proposal/history changes and unlocked maintenance windows
+  fail without side effects. This is code readiness, not a production migration:
+  exact release approval, live backup/rehearsal, invalid-row review and live audit
+  remain required. See docs/COMPANION-NATIVE.md.
+
 
 - 2026-11-06: **Jack signed the public-editing plan, and release R1 is built.** The plan's
   releases and its thirteen decisions are recorded above, in "Public editing and outside

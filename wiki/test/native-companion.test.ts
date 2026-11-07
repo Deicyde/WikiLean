@@ -18,7 +18,7 @@ describe('canonical native companion records', () => {
     const bytes = readFileSync(new URL('../src/vendor/literature-links/companion.schema.json', import.meta.url));
     const provenance = JSON.parse(readFileSync(new URL('../src/vendor/literature-links/provenance.json', import.meta.url), 'utf8'));
     expect(createHash('sha256').update(bytes).digest('hex')).toBe(provenance.sha256);
-    expect(provenance).toMatchObject({ repository: 'https://github.com/mathlib-initiative/literature-links', tag: 'v1.0.1', version: '1.0.1' });
+    expect(provenance).toMatchObject({ repository: 'https://github.com/mathlib-initiative/literature-links', tag: 'v1.0.2', version: '1.0.2' });
     expect(provenance.commit).toMatch(/^[0-9a-f]{40}$/);
     const license = readFileSync(new URL('../src/vendor/literature-links/LICENSE', import.meta.url));
     expect(createHash('sha256').update(license).digest('hex')).toBe(provenance.license_sha256);

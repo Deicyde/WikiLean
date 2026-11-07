@@ -29,6 +29,10 @@ from contextlib import ExitStack
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "site"))
+from native_annotations import mathlib_targets  # noqa: E402
+
 from types import MappingProxyType
 from typing import Any
 
@@ -2024,20 +2028,18 @@ def _build(
                 st = a.get("status")
                 if st in summ:
                     summ[st] += 1
-                dec = (a.get("mathlib") or {}).get("decl")
-                if not dec:
-                    continue
-                if qid in ann_new_concepts:
-                    ann_extra_pairs.append((qid, dec))
-                ev = ann_ev.setdefault((qid, dec), {
-                    "role": "citation", "n_annotations": 0, "statuses": {},
-                    "sample": []})
-                ev["n_annotations"] += 1
-                ev["statuses"][st] = ev["statuses"].get(st, 0) + 1
-                if len(ev["sample"]) < 3:
-                    ev["sample"].append({"id": a.get("id"),
-                                         "label": (a.get("label") or "")[:80],
-                                         "status": st})
+                for dec in dict.fromkeys(t["decl"] for t in mathlib_targets(a)):
+                    if qid in ann_new_concepts:
+                        ann_extra_pairs.append((qid, dec))
+                    ev = ann_ev.setdefault((qid, dec), {
+                        "role": "citation", "n_annotations": 0, "statuses": {},
+                        "sample": []})
+                    ev["n_annotations"] += 1
+                    ev["statuses"][st] = ev["statuses"].get(st, 0) + 1
+                    if len(ev["sample"]) < 3:
+                        ev["sample"].append({"id": a.get("id"),
+                                             "label": (a.get("label") or "")[:80],
+                                             "status": st})
             ann_summary[qid] = summ
         if ann_new_concepts:
             print(f"  annotated articles outside the graph, minted as concepts: "

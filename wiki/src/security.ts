@@ -366,6 +366,7 @@ export const MAX_JSON_BODY_BYTES = {
   articlesFeedback: 4 * 1024,
   articlesTag: 4 * 1024,
   agents: 4 * 1024,
+  nativeMigration: 4 * 1024,
 } as const;
 
 export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };
