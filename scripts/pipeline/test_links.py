@@ -44,11 +44,11 @@ def minimal_record() -> dict:
 class PinTests(unittest.TestCase):
     """The vendored release, and what happens when the vendored bytes are not it."""
 
-    def test_the_pin_is_literature_links_1_0_1(self):
+    def test_the_pin_is_literature_links_1_0_2(self):
         provenance = links.pin()
-        self.assertEqual(provenance["tag"], "v1.0.1")
-        self.assertEqual(provenance["version"], "1.0.1")
-        self.assertEqual(provenance["commit"], "789af9af85ae7590d7149cb8312f09cfac0752b4")
+        self.assertEqual(provenance["tag"], "v1.0.2")
+        self.assertEqual(provenance["version"], "1.0.2")
+        self.assertEqual(provenance["commit"], "e7eeafb823eb3bc64a8ab2077cd3569f572d459f")
         self.assertEqual(provenance["repository"],
                          "https://github.com/mathlib-initiative/literature-links")
         self.assertEqual(provenance["schema"], "schema/companion.schema.json")

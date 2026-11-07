@@ -8,17 +8,16 @@ report records which release passed it.
 WikiLean already vendors the release and already has a checker over it; this module is
 the pipeline's front door to that pair, so the repository has one checker and one pin:
 
-* the pin is ``wiki/src/vendor/literature-links/provenance.json`` (tag v1.0.1, commit
-  789af9af, the schema's sha256);
+* the pin is ``wiki/src/vendor/literature-links/provenance.json`` (tag v1.0.2, commit
+  e7eeafb8, the schema's sha256);
 * the schema's bytes are checked against that file before anything is validated, so a
   vendored copy that drifted from its provenance refuses rather than passing records
   against an unknown schema;
 * the checker is ``site/native_annotations.validate_link_record``, which validates the
   record against the vendored JSON schema and the two numeric invariants of the format.
 
-It does **not** reach into formal-companion's ``vendor/literature_links``. The two are
-the same release at the same commit today, which is why batch 1 reproduces; keeping the
-pin here is what makes that a fact rather than an assumption.
+It does **not** reach into formal-companion's ``vendor/literature_links``. The historical proof and record sets retain their producer pins. Upgrading this
+checker does not assert that another producer has upgraded or that a paid run was repeated.
 """
 from __future__ import annotations
 
@@ -35,9 +34,9 @@ SCHEMA = VENDOR / "companion.schema.json"
 #: What the pin must say. An upgrade of the vendored release changes these and
 #: scripts/pipeline/test_links.py with them, in one deliberate change; a pipeline change
 #: never moves them as a side effect (docs/PIPELINE.md section 6, rule 4).
-PINNED_TAG = "v1.0.1"
-PINNED_VERSION = "1.0.1"
-PINNED_COMMIT = "789af9af85ae7590d7149cb8312f09cfac0752b4"
+PINNED_TAG = "v1.0.2"
+PINNED_VERSION = "1.0.2"
+PINNED_COMMIT = "e7eeafb823eb3bc64a8ab2077cd3569f572d459f"
 
 
 class LinksProblem(RuntimeError):
