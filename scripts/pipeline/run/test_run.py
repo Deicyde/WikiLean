@@ -64,6 +64,36 @@ def _write(path: Path, value) -> None:
     path.write_text(json.dumps(value, indent=1, sort_keys=True) + "\n", encoding="utf-8")
 
 
+class LiveCallDeadline(unittest.TestCase):
+    def test_timeout_closes_the_sdk_stream_and_retains_an_unpriced_envelope(self):
+        import asyncio
+        import types
+        from unittest.mock import patch
+
+        closed = []
+        async def stalled(*, prompt, options):
+            try:
+                await asyncio.sleep(30)
+                yield None
+            finally:
+                closed.append(True)
+
+        sdk = types.SimpleNamespace(query=stalled)
+        with tempfile.TemporaryDirectory() as temporary, \
+                patch.dict(sys.modules, {"claude_agent_sdk": sdk}), \
+                patch.object(agent_mod, "options", return_value=object()):
+            root = Path(temporary)
+            record = agent_mod.call(root=root, task_id="deadline", role="worker",
+                                    prompt="synthetic", execute=True, timeout=0.02)
+            self.assertTrue(record["is_error"])
+            self.assertIsNone(record["total_cost_usd"])
+            self.assertIn("TimeoutError", record["agent_call"]["why"])
+            self.assertEqual(closed, [True])
+            envelopes = list((root / "usage").glob("*.json"))
+            self.assertEqual(len(envelopes), 1)
+            self.assertEqual(json.loads(envelopes[0].read_text()), record)
+
+
 class Workspace:
     """A synthetic workspace: a rendered source, an inventory corpus and a universe."""
 
@@ -540,7 +570,7 @@ class AgentTests(unittest.TestCase):
         self.assertNotIn("Write", opts.disallowed_tools)
         self.assertIn("Bash", opts.disallowed_tools)
         self.assertEqual(agent_sandbox.tool_decision(
-            "Write", {"file_path": "a.json"}, write_dir=findings,
+            "Write", {"file_path": str(findings / "a.json")}, write_dir=findings,
             tools=opts.tools)[0], agent_sandbox.ALLOW)
         self.assertEqual(agent_sandbox.tool_decision(
             "Write", {"file_path": str(self.root / "a.json")}, write_dir=findings,

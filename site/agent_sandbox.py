@@ -306,7 +306,7 @@ def tool_decision(tool_name: str, tool_input: Any, *, write_dir: Path | None,
     model and without the SDK:
 
     * ``Write`` is **allowed** only with a ``file_path`` that resolves inside
-      ``write_dir`` — a relative path is taken from there, ``..`` is resolved
+      ``write_dir`` — an absolute path is required, ``..`` is resolved
       before the check, and a symlink at the target is refused, so a link
       planted in the staged material cannot carry a write outside. Any other
       ``Write`` is denied;
@@ -323,7 +323,8 @@ def tool_decision(tool_name: str, tool_input: Any, *, write_dir: Path | None,
             return DENY, "a write names the file it writes"
         target = Path(raw)
         if not target.is_absolute():
-            target = write_dir / target
+            return DENY, ("Write needs an absolute file_path inside the write directory; "
+                          "relative paths can be interpreted from a different directory")
         try:
             if target.is_symlink():
                 return DENY, f"{raw} is a symlink; a document is written to a real path"

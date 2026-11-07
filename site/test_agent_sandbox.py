@@ -441,9 +441,19 @@ class TheWriteBoundary(unittest.TestCase):
     # -- what the hook decides ----------------------------------------------------
 
     def test_a_write_inside_the_write_directory_is_allowed(self):
-        for path in (str(self.findings / "doc.json"), "doc.json", "./sub/doc.json"):
+        for path in (str(self.findings / "doc.json"), str(self.findings / "sub" / "doc.json")):
             decision, _why = self.decide("Write", {"file_path": path, "content": "{}"})
             self.assertEqual(decision, agent_sandbox.ALLOW, path)
+
+    def test_relative_writes_are_refused_at_the_real_hook(self):
+        options = self.options()
+        (matcher,) = options.hooks["PreToolUse"]
+        (hook,) = matcher.hooks
+        for path in ("doc.json", "./sub/doc.json", "findings/doc.json", "../escaped.json"):
+            with self.subTest(path=path):
+                result = asyncio.run(hook({"tool_name": "Write", "tool_input": {
+                    "file_path": path, "content": "{}"}}, None, {}))
+                self.assertEqual(result["hookSpecificOutput"]["permissionDecision"], "deny")
 
     def test_a_write_outside_the_write_directory_is_refused(self):
         for path in (str(self.outside / "doc.json"),

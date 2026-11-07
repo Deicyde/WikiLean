@@ -1189,7 +1189,7 @@ class BridgeTests(unittest.TestCase):
                              [os.path.realpath(worktree) + "/**"])
             argv = self.record.read_text(encoding="utf-8").splitlines()
             self.assertIn("--settings", argv)
-            self.assertEqual(argv[argv.index("--settings") + 1], str(written))
+            self.assertEqual(argv[argv.index("--settings") + 1], str(written.resolve()))
         # each call's file is its own worktree's, not the other's
         one = json.loads((self.tmp / "wt-one" / sandbox.CALL_SETTINGS_RELATIVE)
                          .read_text(encoding="utf-8"))
