@@ -55,7 +55,7 @@ secrets — a Turnstile **site** key is public by design (it is in the page's HT
 | `REVIEW_GITHUB_APP_SLUG` | same | Not secret (builds the install URL) | `/review` | — | — |
 | `REVIEW_TOKEN_KEY` | Jack | Seals stored review GitHub tokens at rest (`review.ts`: HKDF → AES-256-GCM, cookie id as additional data, KV key = SHA-256 of the cookie id). At least 32 characters | Worker only | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter) signs reviewers out of `/review` posting (they reconnect). Unset, tokens are stored as plaintext JSON | not set yet ([P1](#p1-seal-review-tokens-and-give-them-their-own-kv-namespace)) |
 | `REVIEW_POSTING_PAT` | Deicyde | **Classic `public_repo`**: write to every public repo of its owner | `/review` POST when the connectee is the PAT owner | Prefer retiring it for the GitHub App. Else: new classic PAT with an explicit expiry, put, revoke old, record the expiry here | unknown |
-| `TURNSTILE_SECRET` | Jack (Cloudflare account) | Verifies a Cloudflare Turnstile token against `challenges.cloudflare.com`, for the challenge on a **new account's first community tag** on the formalization reader (`wiki/src/articles-overlay.ts verifyTurnstile`; docs/ARTICLES.md section 10a). It authorises nothing else and reads nothing | Worker only | Create a second Turnstile widget in the Cloudflare dashboard, put its secret, then delete the old widget. Rotation only re-challenges accounts making a first edit | not set yet ([setup](#turnstile-keys-for-the-first-community-edit)) |
+| `TURNSTILE_SECRET` | Jack (Cloudflare account) | Verifies a Cloudflare Turnstile token against `challenges.cloudflare.com`, for the challenge on a **new account's first community tag** on the formalization reader (`wiki/src/articles-overlay.ts verifyTurnstile`; docs/ARTICLES.md section 10a). It authorises nothing else and reads nothing | Worker only | Create a second Turnstile widget in the Cloudflare dashboard, put its secret, then delete the old widget. Rotation only re-challenges accounts making a first edit | staged 2026-11-07 on an undeployed version; live from the next reviewed promotion ([setup](#turnstile-keys-for-the-first-community-edit)) |
 | `IP_HASH_SECRET` | — | Nothing reads it (removed in `783e55c8`) | — | If `wrangler secret list` shows it, delete it with the next promotion (`wrangler versions secret delete IP_HASH_SECRET`) | orphan if present |
 
 Kill switch for `PIPELINE_TOKEN` (no deploy, no rotation): the bearer resolves to the
@@ -163,6 +163,7 @@ and `cd wiki && npx wrangler secret list` (names only).
 | Name | Last rotated | Expires | Recorded by |
 |---|---|---|---|
 | `GITHUB_API_TOKEN` (Worker) | 2026-11-02, [version-only](#rotating-a-worker-secret-without-bypassing-the-promoter); live from the next promotion | about 2027-01-31 (90 days) | Jack |
+| `TURNSTILE_SECRET` (Worker) | 2026-11-07, [version-only](#rotating-a-worker-secret-without-bypassing-the-promoter); live from the next reviewed promotion | no scheduled expiry | Jack |
 | `MATHLIB_FORK_PAT` (Actions) | 2026-11-01 UTC (2026-10-31 US Eastern) | about 2027-01-29 (90 days); reminder in `bot/README.md`, "Token rotation" | Jack |
 
 ## Security notes
@@ -250,8 +251,10 @@ The maintainer tracks outstanding production actions (backup restores, credentia
 ## Turnstile keys for the first community edit
 
 Release R1 of the public-editing plan challenges a **new account's first community tag** on
-the formalization reader, and nothing after it (docs/ARTICLES.md, section 10a). Both halves
-of the key pair are the maintainer's; neither is in this repository.
+the formalization reader, and nothing after it (docs/ARTICLES.md, section 10a). The public
+site key is in `wiki/wrangler.jsonc`; its matching secret is configured separately as a Worker secret.
+Jack staged that secret on an undeployed version on 2026-11-07. A names-only check
+confirmed its presence and that the active Worker version had not changed.
 
 1. In the Cloudflare dashboard, create a Turnstile widget for
    `wikilean.jackmccarthy.org`. The **Managed** mode is the right default.
