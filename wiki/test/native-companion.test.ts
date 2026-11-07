@@ -231,6 +231,20 @@ describe('canonical native companion records', () => {
     a.links[1].id = 'record-2';
     expect(validateNativeItems([a])).toEqual([]);
   });
+  it.each([undefined, null, ''])('retains a declaration whose legacy module is %s', module => {
+    const original = { id: 'aaaaaaaaaaaa', status: 'formalized', provenance: 'human',
+      anchor: { snippet: 'the successor of a natural number' }, mathlib: { decl: 'Nat.succ', module } };
+    const result = migrateLegacyItems([original], context);
+    expect(result.items[0].links).toHaveLength(1);
+    expect(result.items[0].unlinked).toEqual([]);
+    const target = result.items[0].links[0].annotation.object[0];
+    expect(target).toEqual({ type: 'lean', uri: MATHLIB_REPOSITORY, location: { declaration: 'Nat.succ' } });
+    expect(endReference(target)).toBe(MATHLIB_REPOSITORY);
+    expect(validateNativeItems(result.items, context)).toEqual([]);
+    expect(result.diagnostics).toEqual([]);
+    expect(result.items[0].legacy).toEqual(JSON.parse(JSON.stringify(original)));
+    expect(storedCompanionRecords(result.items, context)[0].annotation.object).toEqual([target]);
+  });
   it('migrates all work items, targetless spans, tombstones and private originals', () => {
     const legacy = [
       { id: 'aaaaaaaaaaaa', status: 'not_formalized', provenance: 'human', anchors: [{ snippet: 'x' }, {}], mathlib: { module: 'Mathlib.Ü%X', decl: 'x', match_kind: 'exact' }, secret: { x: 1 } },

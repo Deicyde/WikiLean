@@ -59,9 +59,11 @@ export function isNativeItem(value: unknown): value is NativeItem {
 export const isAbsoluteReference = (value: string): boolean => ABSOLUTE.test(value);
 const copy = <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T;
 
-/** A Mathlib declaration as a lean end: the repository, and the declaration with its module. */
-export function mathlibEnd(module: string, decl: string): LinkEnd {
-  return { type: 'lean', uri: MATHLIB_REPOSITORY, location: { declaration: decl, module } };
+/** A Mathlib declaration as a lean end, with its module when known. */
+export function mathlibEnd(module: string | undefined, decl: string): LinkEnd {
+  const location: JsonObject = { declaration: decl };
+  if (module !== undefined) location.module = module;
+  return { type: 'lean', uri: MATHLIB_REPOSITORY, location };
 }
 export function mathlibDocsUri(module: string, decl: string): string {
   return MATHLIB_DOCS + module.split('.').map(encodeURIComponent).join('/') + '.html#' + encodeURIComponent(decl);
@@ -342,12 +344,14 @@ export function migrateLegacyItems(items: JsonObject[], context: SourceContext):
     const mathlib = isObject(original.mathlib) ? original.mathlib : {};
     if (!('match_kind' in item) && typeof mathlib.match_kind === 'string') item.match_kind = mathlib.match_kind;
     const decl = mathlib.decl || original.decl; const module = mathlib.module || original.module;
-    // The legacy module and declaration become a lean object end on Mathlib, so
-    // the only remaining copy of that information is not the private archive.
+    // Lean declaration locations may omit the module, including core Lean names.
+    // Keep each known declaration active and retain a module when one was supplied.
     let object: LinkEnd | null = null;
-    if (typeof decl === 'string' && decl.trim() && typeof module === 'string' && module.trim()
-      && !jsonProblem(decl) && !jsonProblem(module) && module.split('.').every(part => part && !/[\s/\\#?]/u.test(part))) {
-      object = mathlibEnd(module, decl);
+    const validModule = typeof module === 'string' && module.trim() && !jsonProblem(module)
+      && module.split('.').every(part => part && !/[\s/\\#?]/u.test(part));
+    if (typeof decl === 'string' && decl.trim() && !jsonProblem(decl)
+      && (module === undefined || module === null || module === '' || validModule)) {
+      object = mathlibEnd(typeof module === 'string' && module ? module : undefined, decl);
     }
     if (!object) diagnostics.push({ item: index, code: 'NO_FORMAL_TARGET' });
     if (object && original.status === 'not_formalized') diagnostics.push({ item: index, code: 'STATUS_TARGET_CONFLICT' });

@@ -96,6 +96,12 @@ recommendation. Remove an item once its decision is recorded below.
       not_applicable report was absent from canonical D1. The rehearsal retained
       all prior history, human annotations, source revisions and exact archives;
       live conversion still requires the frozen window and fresh final checks.
+    - A separate declaration-projection audit found 97 legacy mappings with no
+      module (80 formalized, 17 partial). Migration now retains their declaration
+      as a native Lean target with an optional module. The repeated copied-cohort
+      audit preserves all 15,963 per-item declaration targets and review statuses
+      across 38,259 items, including all 35 human records. This checks structural
+      preservation, not mathematical correctness.
     - Sealed reducer imports are checked against every declared inventory scope.
       Historical source verification retains its reviewed helper closure and
       original legacy annotation semantics; current exports use fresh profiles.
