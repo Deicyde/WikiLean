@@ -79,7 +79,6 @@ for _candidate in (HERE, PIPELINE, PIPELINE / "gate", PIPELINE / "run"):
 
 import package as package_mod  # noqa: E402
 import results as results_mod  # noqa: E402
-import sandbox  # noqa: E402
 import seal as seal_mod  # noqa: E402
 import task as task_mod  # noqa: E402
 import work as work_mod  # noqa: E402
@@ -311,7 +310,7 @@ def staged_notice(log=print) -> None:
     log("# declaration index and the search corpus. `--stage run` names any missing.")
     log("# Run it WITHOUT --execute first: it stages everything and checks every path")
     log("# the prompts name, free, and calls no model.")
-    log(f"# The agents run under {sandbox.SETTINGS_NAME}, written per call by bridge.sh.")
+    log("# Workers read staged inputs and write their own results; the runner runs the gate.")
 
 
 def run_stage(*, repo: Path, workdir: Path, package: str, worker_command: str = "",

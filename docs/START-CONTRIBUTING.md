@@ -124,16 +124,17 @@ first. It is the most work and it produces the most.
 **We do not know yet, and we are not going to guess.** What an article costs out of a
 Claude subscription's weekly allowance is **unmeasured** — nobody has run it on a
 subscription and counted. The figures that exist are API prices for the model calls a
-batch made, which is not the number you would actually feel. Measuring it is the first
-thing on [docs/CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md), and this page will
-carry the answer when there is one. Until then: it is a weekend of setup and a real
-amount of your own model time, and you cap your own spend.
+batch made, which is not the number you would actually feel. The procedure is in
+[CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md), and this page will carry
+the answer when there is one. The runner records a requested spend cap but does
+not enforce it; no contributor watchdog runs. Its per-call timeout is a time
+limit, not a money limit.
 
 ### What you need
 
 | | What | Why |
 |---|---|---|
-| OS | macOS (Apple silicon or Intel) | Claude Code's sandbox is the confinement, and it is unverified elsewhere — [docs/CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md) |
+| OS | macOS (Apple silicon or Intel) | the pinned SDK/client boundary has native evidence on Apple silicon; other platforms need their own check — [docs/CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md) |
 | Python | 3.12 | every pipeline module; `scripts/ci-python.sh` is the gate |
 | Git + a GitHub account | read/write on the private work repo | the transport |
 | A WikiLean checkout | `git clone https://github.com/Deicyde/WikiLean` | the pipeline and the verifier |
@@ -145,10 +146,12 @@ amount of your own model time, and you cap your own spend.
 
 ### What is outstanding
 
-1. **One afternoon on one Mac.** Seven things about Claude Code's sandbox on macOS are
-   tested on Linux and unproven there: [docs/CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md)
-   is the runnable checklist. **Nothing on this path should be promised to anybody until
-   those are done.**
+1. **Fresh source plans and a subscription measurement.** Native worker
+   permissions and the offline suite have passed on macOS. Real Wikipedia
+   refetch reproduced one of three pinned sources; the other two were correctly
+   refused and need new plans. One article's subscription usage remains unmeasured.
+   [CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md) records the evidence and
+   repeatable checks. The scripted client fixture calls no model.
 2. **Publishing the index.** The signed destination is a bucket behind short-lived
    signed URLs, with a per-library licence manifest. The offline packager is built;
    uploading the bundle and issuing access are still operator steps.

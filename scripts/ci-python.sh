@@ -102,6 +102,7 @@ run_check "Pipeline run, harvest reconciliation and spend watchdog" "$PYTHON_BIN
 run_check "Pipeline worker contract: the spend CLI, and what a prompt may ask" "$PYTHON_BIN" scripts/pipeline/run/test_worker_contract.py
 run_check "Pipeline task runner: a stub worker through gate and harvest" "$PYTHON_BIN" scripts/pipeline/run/test_task_runner.py
 run_check "Pipeline contribute transport, claim and sandbox" "$PYTHON_BIN" scripts/pipeline/contribute/test_contribute.py
+run_check "Mac client fixture safety (no client or model)" "$PYTHON_BIN" scripts/pipeline/contribute/test_mac_client_harness.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py
 run_check "Sealed proposal fold source evidence tests" "$PYTHON_BIN" brain/test_proposal_fold_sources.py
