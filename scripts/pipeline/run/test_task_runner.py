@@ -102,8 +102,6 @@ class StubWorker:
         if decision != agent_sandbox.ALLOW:
             raise Refused(f"Write({path}): {why}")
         target = Path(path)
-        if not target.is_absolute():
-            target = self.write_dir / target
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
 
@@ -130,7 +128,7 @@ source_id = manifest["documents"][0]["source_id"]
 worker.read("sources/%s/text.txt" % source_id)
 worker.read("sources/%s/layer.txt" % source_id)
 document = json.loads({document!r})
-worker.write("%s.json" % source_id, json.dumps(document, sort_keys=True))
+worker.write(worker.write_dir / ("%s.json" % source_id), json.dumps(document, sort_keys=True))
 """
 
 
@@ -237,7 +235,7 @@ class RunnerTests(unittest.TestCase):
 
     def test_a_worker_writing_outside_its_directory_is_refused(self):
         worker = self.stub()
-        worker.write("ok.json", "{}")
+        worker.write(worker.write_dir / "ok.json", "{}")
         self.assertTrue((self.findings / "ok.json").is_file())
         for path in (str(self.root / "planted.json"),
                      str(self.work / "task.json"),
@@ -332,7 +330,7 @@ manifest = json.loads(worker.read("task.json"))
 source_id = manifest["documents"][0]["source_id"]
 worker.read("sources/%s/text.txt" % source_id)
 document = json.loads({document!r})
-worker.write("%s.json" % source_id, json.dumps(document, sort_keys=True))
+worker.write(worker.write_dir / ("%s.json" % source_id), json.dumps(document, sort_keys=True))
 """
 
 

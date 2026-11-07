@@ -183,7 +183,7 @@ def call(*, root: Path, task_id: str, role: str, prompt: str, system: str = "",
     started = time.monotonic()
     try:
         envelope = _execute(prompt=prompt, system=system, model=model, workdir=workdir,
-                            tools=tools_for(role), write_dir=write_dir)
+                            tools=tools_for(role), write_dir=write_dir, timeout=timeout)
     except Exception as exc:  # noqa: BLE001 — any failure is still a call that spent time
         envelope = unpriced(time.monotonic() - started,
                             f"{exc.__class__.__name__}: {exc}")
@@ -194,7 +194,8 @@ def call(*, root: Path, task_id: str, role: str, prompt: str, system: str = "",
 
 
 def _execute(*, prompt: str, system: str, model: str | None, workdir: Path,
-             tools=WORKER_TOOLS, write_dir: Path | None = None) -> dict:
+             tools=WORKER_TOOLS, write_dir: Path | None = None,
+              timeout: float = 5400.0) -> dict:
     """The real call. Imported lazily; the result object is the envelope."""
     import asyncio  # noqa: PLC0415
 
@@ -205,11 +206,12 @@ def _execute(*, prompt: str, system: str, model: str | None, workdir: Path,
 
     async def _go() -> dict:
         result: dict = {}
-        async for message in query(prompt=prompt, options=opts):
-            payload = getattr(message, "__dict__", None)
-            if isinstance(payload, dict) and payload.get("subtype") in (None, "success") \
-                    and "total_cost_usd" in payload:
-                result = dict(payload)
+        async with asyncio.timeout(timeout):
+            async for message in query(prompt=prompt, options=opts):
+                payload = getattr(message, "__dict__", None)
+                if isinstance(payload, dict) and payload.get("subtype") in (None, "success") \
+                        and "total_cost_usd" in payload:
+                    result = dict(payload)
         return result
 
     got = asyncio.run(_go())
