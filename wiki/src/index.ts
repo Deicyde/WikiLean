@@ -48,6 +48,7 @@ import { registerMcpRoutes } from "./mcp.js";
 import { registerQueueRoutes } from "./queue.js";
 import { registerRepoRoutes } from "./repos.js";
 import { AGENT_MODEL_MAX, AGENT_PENDING_PER_ARTICLE, AGENT_PENDING_TOTAL, editLimitKey, registerAgentRoutes } from "./agents.js";
+import { registerNativeMigrationRoutes } from "./native-migration-api.js";
 import { registerCompanionRoutes } from "./companion.js";
 import { articlesHref, articlesSummaryFor, registerArticlesRoutes } from "./articles.js";
 import { articlesSummaryBox } from "./articles-render.js";
@@ -150,6 +151,7 @@ registerQueueRoutes(app);
 registerRepoRoutes(app);
 registerAgentRoutes(app);
 registerCompanionRoutes(app);
+registerNativeMigrationRoutes(app);
 registerVersionRoutes(app);
 registerArticlesRoutes(app);
 
@@ -2376,6 +2378,10 @@ app.post("/api/article/:slug/revert/:revid", async (c) => {
   if (row.schemaVersion === NATIVE_SCHEMA_VERSION && (rev.sourceRevid === null || (revAnnotations as AnnRecord[]).some(a => !isNativeItem(a)))) {
     return c.json({ ok: false, error: "historical snapshot predates native storage" }, 409);
   }
+  if (row.schemaVersion !== NATIVE_SCHEMA_VERSION &&
+      (rev.schemaVersion === NATIVE_SCHEMA_VERSION || (revAnnotations as AnnRecord[]).some(isNativeItem))) {
+    return c.json({ ok: false, error: "explicit native migration required" }, 409);
+  }
   const restoreRevid = rev.sourceRevid ?? row.revid;
   const restoreSchemaVersion = row.schemaVersion;
   const restoreJson = JSON.stringify(revAnnotations);
@@ -2549,7 +2555,7 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
 
     // HUMAN-PRESERVATION: a human edit/revert landed after the run's last touch.
     const humanAfter = revs.some(
-      (r) => r.id > latest && !runIds.has(r.id) && (r.kind === "edit" || r.kind === "agent" || r.kind === "revert" || r.kind === "proposal-approved"),
+      (r) => r.id > latest && !runIds.has(r.id) && (r.kind === "edit" || r.kind === "agent" || r.kind === "revert" || r.kind === "proposal-approved" || r.kind.startsWith("native-migration")),
     );
     if (humanAfter) {
       skipped.push({ slug, reason: "human-edited-since" });
@@ -2582,6 +2588,10 @@ app.post("/api/admin/revert-run/:runId", async (c) => {
     const current = JSON.parse(row.annotations) as AnnRecord[];
     if (row.schemaVersion === NATIVE_SCHEMA_VERSION && preRev && (preRev.sourceRevid === null || preAnnotations.some(a => !isNativeItem(a)))) {
       skipped.push({ slug, reason: "unknown-source-revision" }); continue;
+    }
+    if (row.schemaVersion !== NATIVE_SCHEMA_VERSION && preRev &&
+        (preRev.schemaVersion === NATIVE_SCHEMA_VERSION || preAnnotations.some(isNativeItem))) {
+      skipped.push({ slug, reason: "native-migration-required" }); continue;
     }
     const restoreRevid = preRev?.sourceRevid ?? row.revid;
     const restoreSchemaVersion = row.schemaVersion;

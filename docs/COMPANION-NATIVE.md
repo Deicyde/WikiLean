@@ -2,7 +2,7 @@
 
 WikiLean's native application format stores complete Literature Links 1.0
 annotations in D1. Normal native reads and edits use those objects directly. The
-vendored schema and its pin are in `wiki/src/vendor/literature-links/`.
+vendored schema is pinned to Literature Links 1.0.2; its provenance is in `wiki/src/vendor/literature-links/`.
 No production database has been migrated, and no Worker built from this code
 has been deployed.
 
@@ -251,6 +251,96 @@ exclude native rows at read and write time. Count backfill supports native work
 items and guards its derived update against a changed article version. These tools
 do not replace the canonical native API and are not authorization to reseed D1.
 
+## Live migration procedure
+
+This procedure is separate from the R2 retirement of the old article plane. It
+does not enable editing there, retire any URL, or authorize R2–R6. The endpoint
+below is implemented but is unavailable until a release containing it is
+promoted. No production migration is implied by merging this code.
+
+Use the authenticated operator host and the exact release process in
+[the release runbook](BRAIN-RELEASE-RUNBOOK.md). Retain the frozen release, public
+baseline, fresh P1B evidence and external journal; obtain Jack's approval for
+those exact identities and the exclusive migration window. A checkout with no
+Cloudflare login or retained assets cannot stand in for that host. Do not use a
+direct Worker deploy or restore an entire modified SQLite database into D1.
+
+1. Identify and stop the installed operator moderation service and any other
+   pipeline writers. Record their previous state so only previously running jobs
+   are resumed. Hold the release journal's exclusive operator window. Set
+   site_settings.site_write_mode to locked, retaining its previous value.
+   This brakes community/agent writes; it does not stop the pipeline bearer.
+   Record and disable the drift cron's writes for the window using the reviewed
+   release procedure. Do not rely on a quiet site as evidence of a freeze.
+2. Create and verify the encrypted D1 backup from docs/BACKUP.md, then acquire a
+   fresh consistent snapshot. Keep it private. Verify 0014's columns and table,
+   and the release's other migration prerequisites, against the live database;
+   apply only the numbered files actually missing, once, after the backup.
+3. Rehearse the structural conversion on that snapshot with migrate-native.ts
+   above. Resolve each reported invalid item explicitly against live D1; never
+   substitute the disk cache or coerce an unknown status. The old cached
+   Students_t-distribution item with not_applicable is a review lead, not
+   authority to delete or relabel today's record. Retake the snapshot and repeat
+   rehearsal after any correction.
+4. Review the item/link/unlinked totals, diagnostics, human provenance and
+   tombstones, exact archives, proposal bytes, counts, source pins and new history
+   against the rehearsal. Legacy special_case direction remains unknown;
+   migration invents neither its direction nor a Mathlib commit or noMatch.
+   Profile locations are retained without inventing quotations. The optional
+   source-resolution pass above is a separate, reviewed transformation; it is not
+   automatically applied by this structural endpoint.
+5. Promote the approved exact release through the promoter. Verify its deployed
+   source identity before making the first migration request.
+
+The live path accepts one article at a time from a signed-in **admin session**:
+POST /api/admin/article/:slug/native-migration. It requires a same-origin
+Origin header and a small JSON options body; pipeline and agent tokens cannot
+call it. An empty options object previews without writing. It returns
+base_version, source_revid, an opaque snapshot digest and report. Record those
+exact values in the private migration journal and review diagnostics before
+applying.
+
+To apply, send only those three returned values and the boolean option apply:
+true. Supplied annotation data is rejected. The community write brake must be
+locked. The server recomputes the same conversion as the rehearsal, then atomically:
+
+- archives the exact old annotation and pending/rejected proposal strings;
+- inserts the observed source-pinned checkpoint and native revision, attributed
+  to the administrator;
+- updates the article, coverage counts and content version while retaining its
+  source revision, item identities, human attribution and veto tombstones;
+- advances an already-current moderation review stamp without deciding proposals.
+
+The batch checks the original bytes, version, schema, Wikipedia title, source pin,
+proposal strings, review stamp and latest revision, and checks that the write
+brake is still locked. A changed or deleted article, concurrent proposal,
+history change or unlocked brake returns 409 with no migration side effects.
+Preview again and investigate the writer; do not retry automatically. A failed
+SQL statement rolls the complete batch back. An already-native article is
+validated and leaves its version/history unchanged.
+
+After each apply, read /api/article/:slug.json and
+/api/article/:slug/companion-records.json, validate the stored records, compare
+the journaled totals and source pin, and verify archives and checkpoints in D1.
+Use companion-records.json for relative records; standalone companion.jsonl
+correctly refuses them without their carrier bases. Refresh the canonical D1
+mirror and its derived citation, graph and autocomplete assets. Their readers
+now handle every Mathlib target, exclude other libraries and preserve the
+distinction between a work item and its several links. Current-checkout sweeps
+and benchmark oracles defer version/hash-pinned targets, and automatic proposal
+resolution leaves native rewrites pending for per-target review.
+
+For a new Brain release, its sealed reducer inputs must include the link reader
+site/native_annotations.py; the Git-harvest and derived-catalog normalizer
+closures record that dependency too. New source exports need a reviewed current
+normalizer profile and fresh source identities. Old source bundles and paid proof
+receipts are not relabeled as products of the new code.
+
+Close the migration window only after the live audit and remaining schema-3
+count match the approved scope. Restore the recorded brake/cron/job state
+deliberately; leave slug_editing off. If an article fails, leave it unchanged
+and journal it. Report partial progress as partial, with the remaining slugs.
+
 ## History and rollback
 
 New revisions store `source_revid` and the application `schema_version` beside
@@ -262,7 +352,22 @@ a known-context restore point without altering older evidence.
 
 Run rollback preserves edits and human proposal approvals made after the affected
 run. Native snapshots can be restored after subsequent native edits with the
-usual authorized revert workflow. Rolling back software requires a reader that
+usual authorized revert workflow. Structural rollback uses the same administrator
+endpoint with the boolean option rollback: true. Preview it first, then send the
+returned base_version, source_revid and snapshot with rollback: true and apply:
+true while community writes remain locked. Only the unchanged article immediately
+after its migration qualifies: its version, latest migration revision and
+checkpoint, source pin, proposal strings and reconstructed native conversion must
+still match the archive. The batch guards the archive too. Any subsequent edit,
+history entry, proposal delta or mismatched archive refuses rollback; preserve
+later contributions with explicit per-item corrections instead.
+
+A successful structural rollback archives the native bytes and creates new
+checkpoint/rollback revisions, restores the exact original legacy annotation
+string, recomputes counts and increments the content version again. It does not
+delete migration history, revert the version counter or restore a whole database.
+Keep both readers available and verify the result before reopening writes.
+Rolling back software requires a reader that
 understands native snapshots. Restoring the original input database would discard
 new edits and is not the rollback procedure.
 
