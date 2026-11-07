@@ -14,9 +14,19 @@ The root:
     <root>/gate/                   the staged gate and its gate.json, out of tree
     <root>/tasks/<task-id>.json    one manifest per task
     <root>/prompts/*.md            the prompts, by sha
-    <root>/work/<task-id>/         where a worker writes its document
+    <root>/work/<task-id>/         the worker's whole world: its manifest, the article's
+                                   rendered views, the candidates, the declaration
+                                   search, and findings/<task-id>/ to write into
+    <root>/findings/<task-id>/     what the gate passed, promoted out of work/
     <root>/usage/                  the agents' envelopes, which the watchdog reads
     <root>/gate-log/               the gate's own log, which the watchdog reads
+    <root>/attempts/<task-id>.json what the runner did, attempt by attempt
+
+**A worker reads only its own working directory**, because that is all
+``site/agent_sandbox.py`` lets it reach, so everything a prompt names is staged there
+before the call (``run/workdir.py``). The gate is **not** staged there: it runs out of
+tree, and the *runner* runs it after the worker and before the reviewer
+(``run/task.py``). A worker has no shell and is told to run nothing.
 
 What is **not** here: the agent runner itself. tend, agentbox and the run host are a
 separate tool a host has; WikiLean's pipeline drives whatever runs the calls rather than
@@ -52,6 +62,7 @@ import items  # noqa: E402
 import keys  # noqa: E402
 import stage as stage_mod  # noqa: E402 — scripts/pipeline/gate/stage.py
 import vocab  # noqa: E402
+import workdir as workdir_mod  # noqa: E402 — scripts/pipeline/run/workdir.py
 
 PLAN_SCHEMA = "wikilean.pipeline.plan/1"
 RUN_SCHEMA = "wikilean.pipeline.run/1"
@@ -193,7 +204,8 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
          task_documents: list[dict] | None = None, entries: dict | None = None,
          inventory_passages: dict | None = None,
          candidates: Path | None = None,
-         index: Path | None = None, per_task: int = PER_TASK,
+         index: Path | None = None, search: Path | None = None,
+         per_task: int = PER_TASK,
          inventory_run: str = "", status_rule: int = vocab.STATUS_RULE_BROAD,
          span_end_rule: int = 3, statement_cut_rule: int = 3, judgment_rules: int = 4,
          model: str = "", max_cost: float = 0.0, source_ids: Iterable[str] = (),
@@ -340,20 +352,22 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
     # in the one directory a worker cannot edit
     scratch = out / "gate.json"
     gate_config_sha = _write_json(scratch, gate_config)
-    staged = stage_mod.stage(out / "gate", scratch, sorted((out / "tasks").glob("*.json")))
+    gate_files = stage_mod.stage(out / "gate", scratch,
+                                 sorted((out / "tasks").glob("*.json")))
     scratch.unlink()
 
     prompt_shas: dict[str, str] = {}
     if render_prompts:
         import prompts as prompts_mod  # noqa: PLC0415 — only a rendering run needs it
+        # every slot is relative to the worker's own working directory, which
+        # workdir.stage fills below: a worker reads nothing else and writes nowhere else
         prompts_mod.write(out / "prompts", mode, prompts_mod.slots(
             run_id=run_id, mode=mode,
-            sources_dir=gate_config["sources_dir"] or "sources",
-            tasks_dir=gate_config["tasks_dir"],
-            candidates_dir=gate_config["candidates_dir"] or "",
-            gate_command="python3 gate/verify_locate.py --gate-config gate/gate.json",
-            ids_command="python3 gate/passage_ids.py",
-            index_command=("python3 gate/index_search.py" if index is not None else ""),
+            sources_dir=workdir_mod.SOURCES_DIR,
+            findings_dir=workdir_mod.FINDINGS,
+            candidates_dir=(workdir_mod.CANDIDATES_DIR if candidates else ""),
+            index_dir=(workdir_mod.INDEX_DIR if search else ""),
+            gate_verdict_file=workdir_mod.GATE_VERDICT,
             universe=str(universe_doc.get("id") or ""),
             universe_sha256=str(universe_doc.get("universe_sha256") or "")))
     if prompts is not None:
@@ -362,6 +376,15 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
             target.write_bytes(path.read_bytes())
     for path in sorted((out / "prompts").glob("*.md")):
         prompt_shas[path.name] = sha256_file(path)
+
+    # Stage every task's working directory: the manifest, the article's rendered views,
+    # the candidates and the declaration search, plus the one directory the worker may
+    # write in. A prompt names these and nothing else, so staging is what makes the
+    # prompt true — stage 9's prompts and stage 10's sandbox meet here and nowhere else.
+    staged = {task["task_id"]: workdir_mod.stage(
+        root=out, task_id=task["task_id"], sources=Path(sources),
+        candidates=Path(candidates) if candidates else None,
+        search=Path(search) if search else None)["files"] for task in tasks}
 
     planned = {"schema": PLAN_SCHEMA, "run_id": run_id, "mode": mode, "tasks": tasks}
     _write_json(out / "planned.json", planned)
@@ -373,9 +396,17 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
         "prompts": prompt_shas,
         # relative to the root, so the root names no directory of the machine that
         # planned it and a package can carry it unchanged
-        "gate": {"config_sha256": gate_config_sha, "files": staged,
+        "gate": {"config_sha256": gate_config_sha, "files": gate_files,
                  "out_of_tree": True,
+                 "run_by": "the runner, after the worker and before the reviewer "
+                           "(scripts/pipeline/run/task.py); never by the worker, which "
+                           "has no shell",
                  "command": "python3 gate/verify_locate.py --gate-config gate/gate.json"},
+        # what each task's working directory was staged with: the free pre-flight check
+        # of run/workdir.py reads this beside the rendered prompt
+        "work": {"staged": {task: len(files) for task, files in sorted(staged.items())},
+                 "findings_dir": workdir_mod.FINDINGS,
+                 "search": bool(search), "candidates": bool(candidates)},
         "locate": {
             "mode": mode, "status_rule": status_rule,
             "sourceset": {"id": None, "manifest_sha256": sha256_file(manifest)},
@@ -403,11 +434,24 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--universe", required=True, type=Path)
     parser.add_argument("--manifest", required=True, type=Path,
                         help="the sourceset manifest the run pins")
+    parser.add_argument("--sourceset", type=Path,
+                        help="the sourceset directory, when --manifest names a delta "
+                             "version: a delta holds only what changed, so the chain "
+                             "is resolved here rather than planned against a handful "
+                             "of entries")
+    parser.add_argument("--sourceset-id")
     parser.add_argument("--sources", required=True, type=Path,
                         help="the sourceset's rendered sources")
     parser.add_argument("--candidates", type=Path)
     parser.add_argument("--index", type=Path, help="the declaration index")
+    parser.add_argument("--search", type=Path,
+                        help="the worker's read-only declaration search corpus "
+                             "(index_from_corpus.py --search), staged into each task")
     parser.add_argument("--prompts", type=Path, help="extra prompt files to stage")
+    parser.add_argument("--task-documents", type=Path,
+                        help="a directory of task manifests this batch's mode module "
+                             "already cut (stage 9d's challenge.py writes them into "
+                             "<out>/tasks); with it the locate cut below is not used")
     parser.add_argument("--render-prompts", action="store_true",
                         help="render this pipeline's own prompts into the root")
     parser.add_argument("--sources-as", help="what gate.json names the sources directory, "
@@ -420,11 +464,30 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-cost", type=float, default=0.0)
     parser.add_argument("--source", action="append", default=[], dest="source_ids")
     args = parser.parse_args(argv)
+    entries = None
+    if args.sourceset is not None:
+        sys.path.insert(0, str(PIPELINE))
+        import sourceset as sourceset_mod  # noqa: PLC0415
+
+        ss = sourceset_mod.Sourceset.open(args.sourceset, args.sourceset_id)
+        entries = ss.latest().entries
+    documents = None
+    if args.task_documents is not None:
+        documents = []
+        for path in sorted(Path(args.task_documents).glob("*.json")):
+            value = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(value, dict):
+                documents.append(value)
+        if not documents:
+            print(f"no task manifest in {args.task_documents}", file=sys.stderr)
+            return 2
     try:
         planned = plan(run_id=args.run_id, mode=args.mode, out=args.out,
+                       task_documents=documents, entries=entries,
                        inventory=args.inventory, universe=args.universe,
                        manifest=args.manifest, sources=args.sources,
                        candidates=args.candidates, index=args.index,
+                       search=args.search,
                        per_task=args.per_task, inventory_run=args.inventory_run,
                        render_prompts=args.render_prompts,
                        model=args.model, max_cost=args.max_cost,
@@ -434,9 +497,12 @@ def main(argv: list[str] | None = None) -> int:
     except (PlanProblem, corpus_mod.CorpusProblem, stage_mod.StageProblem) as exc:
         print(str(exc), file=sys.stderr)
         return 2
-    passages = sum(len(d["passages"]) for t in planned["tasks"] for d in t["documents"])
+    # a challenge task's documents hold records, not passages
+    items = sum(len(d.get("passages") or d.get("records") or [])
+                for t in planned["tasks"] for d in t["documents"])
+    what = "record" if args.mode == vocab.MODE_CHALLENGE else "passage"
     print(f"{args.run_id} [{args.mode}]: {len(planned['tasks'])} task(s), "
-          f"{passages} passage(s) -> {args.out}")
+          f"{items} {what}(s) -> {args.out}")
     return 0
 
 

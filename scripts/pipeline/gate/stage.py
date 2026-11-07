@@ -6,6 +6,7 @@ the worktree the worker writes into: a worker that can edit the gate has no gate
 writes a self-contained gate directory —
 
     <gate dir>/verify_locate.py     the rules
+    <gate dir>/passage_ids.py       the runner's pre-gate step: the ids and the spans
     <gate dir>/locate_text.py       the head rule, the quote and the blocks
     <gate dir>/anchor_resolve.py    WikiLean's own text-layer whitespace rule
     <gate dir>/records.py           the record builder rule 1 holds a location to
@@ -37,6 +38,7 @@ ROOT = PIPELINE.parents[1]
 #: stray file onto a run host, and the list is the contract with the run.
 GATE_FILES = (
     (HERE / "verify_locate.py", "verify_locate.py"),
+    (HERE / "passage_ids.py", "passage_ids.py"),
     (HERE / "locate_text.py", "locate_text.py"),
     (ROOT / "site" / "anchor_resolve.py", "anchor_resolve.py"),
     (PIPELINE / "records.py", "records.py"),

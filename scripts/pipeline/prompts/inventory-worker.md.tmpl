@@ -1,4 +1,4 @@
-Your task is the **inventory** of one web source: the table of every passage of it that states something. Read `{{tasks_dir}}/<your task id>.json`, then the source's reading copy `{{sources_dir}}/<source-id>/text.txt` from top to bottom. Never work from memory of the article: this revision is the one being inventoried.
+Your task is the **inventory** of one web source: the table of every passage of it that states something. Read `task.json`, then the source's reading copy `{{sources_dir}}/<source-id>/text.txt` from top to bottom. Never work from memory of the article: this revision is the one being inventoried.
 
 ## What a passage is
 
@@ -47,7 +47,7 @@ Every paragraph of `paragraphs.json` marked `"math": true` must be covered by a 
 
 ## The document
 
-Write `<source-id>.json`, one per source of the task:
+Write `<source-id>.json`, one per source of the task, into `{{findings_dir}}/<your task id>/`:
 
 ```json
 {"schema": "{{schema}}", "mode": "{{mode}}",
@@ -55,13 +55,11 @@ Write `<source-id>.json`, one per source of the task:
  "source_id": "<from the manifest>", "source_sha": "<from the manifest>",
  "layer_sha256": "<from the manifest>", "renderer": "<from the manifest>",
  "passages": [
-   {"item": "", "head_words": 0, "span": null,
-    "quote": {"exact": "<the passage's first words, verbatim from layer.txt>", "prefix": "", "suffix": ""},
+   {"quote": {"exact": "<the passage's first words, verbatim from layer.txt>", "prefix": "", "suffix": ""},
     "section": ["<heading path from sections.json>"], "fragment": "<the section's fragment, or null>",
     "passage_kind": "theorem", "prominence": "central", "scope": "formal_math",
     "statement": "<informal restatement>", "concept": null, "finder": "model"},
-   {"item": "", "head_words": 0, "span": null,
-    "quote": {"exact": "<a compound statement's first words>", "prefix": "", "suffix": ""},
+   {"quote": {"exact": "<a compound statement's first words>", "prefix": "", "suffix": ""},
     "section": ["<heading path>"], "fragment": null,
     "passage_kind": "theorem", "prominence": "supporting", "scope": "formal_math",
     "statement": "For a finite widget W: W has a spanning gadget, and any two spanning gadgets of W are equal.",
@@ -74,13 +72,7 @@ Write `<source-id>.json`, one per source of the task:
 
 - `quote.exact` **starts the passage**: copy its first words character for character from `layer.txt` (not from `text.txt`). Add a `prefix`/`suffix` of a few words only when `exact` alone occurs more than once. A passage must start at a word, and never inside a formula.
 - `conjuncts` are `{"id": "c1", "text": "…"}` objects with exactly those two keys, the ids `c1`, `c2`, … in order with no gap; each `text` is one line of at most {{max_conjunct_chars}} characters in your own words, never more than {{quote_max_words}} consecutive words of the article. `shape` is one of {{compound_shapes}}.
-- Leave `item`, `head_words` and `span` for the tool, then run it:
-
-```
-{{ids_command}} --source-dir {{sources_dir}}/<source-id> --document <source-id>.json --write
-```
-
-  It places each quote on the layer, keys every passage with its `In-text #<hex>` id, and prints what it could not place. Fix those quotes and run it again; never edit an id or an offset by hand.
+- **Write no `item`, no `head_words` and no `span`**, and leave the keys out altogether rather than writing a placeholder. An id is a hash of the passage's first words on the layer and a span is a pair of code-point offsets into it: the **runner** derives all three from your quote, before the gate, with the rule the gate checks. Your part is the quote, and a quote that does not occur exactly once on the layer is what makes a passage unplaceable — so copy it off `layer.txt`, character for character.
 
 - **Where a passage ends**: at the earlier of the end of its paragraph or list item — of its theorem box when it starts in one, with the displays its last sentence introduces and the paragraph that finishes that sentence after them — and the start of the next passage, less what separates the two. Give `"until": "<its last words>"` only to end a passage *sooner*: at the end of its own clause when the rest of its sentence is no passage, to run a compound statement over the items of its list, to run a sentence to its last word over the words that finish it after its display, or to take in the word that tells two R-INSTANCE pieces apart.
 - The gate holds the cut's mechanical part: two passages that share a character, an end past what the units rule allows, an end inside a formula, `conjuncts` and `shape` that break the rules above, `conjuncts` on a passage not scoped `formal_math`, a passage not scoped `formal_math` that is not `supporting`, two passages marked `subject`, and two passages with the same text. What one statement is, where a sentence is cut, and the context are yours: the gate refuses none of them.
@@ -93,10 +85,4 @@ Write `<source-id>.json`, one per source of the task:
 - No passage starts inside a sentence except where you cut it or after a list item.
 - No context sentence is a `formal_math` passage of its own, and `prominence: subject` is on at most one passage.
 
-Then run the gate:
-
-```
-{{gate_command}} --findings <source-id>.json
-```
-
-{{worker_exits}}
+Then you are finished. The runner keys your passages, runs the gate and, if the gate refuses, calls you again with what it refused.

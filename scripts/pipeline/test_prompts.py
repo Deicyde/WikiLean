@@ -12,7 +12,7 @@ import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-for _candidate in (HERE / "gate", HERE):
+for _candidate in (HERE / "gate", HERE / "run", HERE):
     if str(_candidate) not in sys.path:
         sys.path.insert(0, str(_candidate))
 
@@ -24,11 +24,9 @@ import vocab  # noqa: E402
 
 def values(mode: str) -> dict:
     return prompts.slots(
-        run_id="r1", mode=mode, sources_dir="../sources", tasks_dir="../tasks",
-        candidates_dir="../candidates",
-        gate_command="python3 gate/verify_locate.py --gate-config gate/gate.json",
-        ids_command="python3 gate/passage_ids.py",
-        index_command="python3 gate/index_search.py",
+        run_id="r1", mode=mode, sources_dir="sources", findings_dir="findings",
+        candidates_dir="candidates", index_dir="index",
+        gate_verdict_file="gate-verdict.txt",
         universe="u-test", universe_sha256="c" * 64)
 
 
@@ -51,8 +49,19 @@ class TestTheRenderer(unittest.TestCase):
 
     def test_an_unknown_mode_is_refused(self):
         with self.assertRaises(prompts.PromptProblem):
-            prompts.slots(run_id="r", mode="guesswork", sources_dir="", tasks_dir="",
-                          gate_command="", ids_command="")
+            prompts.slots(run_id="r", mode="guesswork", sources_dir="",
+                          findings_dir="")
+
+    def test_a_path_a_worker_could_not_reach_is_refused(self):
+        """A prompt names a path inside the worker's own directory, or it is asking
+        for what the sandbox cannot do — the whole defect of 2026-11-06."""
+        for bad in ({"sources_dir": "/abs/sources"}, {"sources_dir": "../sources"},
+                    {"candidates_dir": "../candidates"}, {"index_dir": "/idx"},
+                    {"findings_dir": "/out"}, {"gate_verdict_file": "../gate.txt"}):
+            with self.assertRaises(prompts.PromptProblem):
+                prompts.slots(**{"run_id": "r", "mode": vocab.MODE_LOCATE,
+                                 "sources_dir": "sources", "findings_dir": "findings",
+                                 **bad})
 
 
 class TestEveryPromptRenders(unittest.TestCase):
@@ -96,7 +105,8 @@ class TestTheGateVocabulary(unittest.TestCase):
         text = prompts.gate_exits("worker")
         self.assertIn("exit 3", text)
         self.assertIn("not a verdict", text)
-        self.assertIn("do not weaken your document", text)
+        self.assertIn("do not", text)
+        self.assertIn("weaken your document", text)
 
     def test_a_reviewer_is_told_an_exit_three_is_not_the_workers_fault(self):
         text = prompts.gate_exits("reviewer")
@@ -166,6 +176,30 @@ class TestThePromptsSayWhatTheVocabularySays(unittest.TestCase):
             text = self.rendered[mode]["reviewer-system.md"]
             self.assertIn("form, not judgment", text)
             self.assertIn("conditional", text)
+
+    def test_no_prompt_tells_anyone_to_run_a_command(self):
+        """The worker has no shell and the reviewer has none either: the runner runs
+        the gate and the passage ids. A prompt that named a command would be the
+        defect this pipeline stopped at on 2026-11-06."""
+        for mode, files in self.rendered.items():
+            for name, text in files.items():
+                for word in ("python3 ", "Run it before you finish",
+                             "run the gate again", "$ ", "Bash"):
+                    self.assertNotIn(word, text, f"{mode}/{name}: {word!r}")
+            self.assertIn("You do not run the gate", files["worker-system.md"])
+
+    def test_every_path_a_prompt_names_is_inside_the_working_directory(self):
+        """A relative path, never an absolute one and never one that climbs out."""
+        import workdir as workdir_mod  # noqa: PLC0415 — scripts/pipeline/run/workdir.py
+
+        for mode, files in self.rendered.items():
+            for name, text in files.items():
+                named = workdir_mod.prompt_paths(text, task_id="t-1",
+                                                 sources=["enwiki-1-1"])
+                self.assertTrue(named, f"{mode}/{name} names no path")
+                for rel in named:
+                    self.assertFalse(rel.startswith("/"), f"{mode}/{name}: {rel}")
+                    self.assertNotIn("..", rel, f"{mode}/{name}: {rel}")
 
     def test_no_prompt_names_another_producer_or_a_host(self):
         banned = ("formal-companion", "formal_companion", "agentbox", "tend ", "TEND_",

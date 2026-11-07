@@ -204,6 +204,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sourceset-id")
     parser.add_argument("--universe", required=True, type=Path)
     parser.add_argument("--index", type=Path, help="the declaration index")
+    parser.add_argument("--candidates", type=Path,
+                        help="the retrieval's candidates directory. The inventory "
+                             "prompt reads it (a source with a curated hit keeps a "
+                             "formal_math subject passage, gate rule 4), so a cut "
+                             "planned beside a retrieval hands it over")
+    parser.add_argument("--search", type=Path,
+                        help="the worker's read-only declaration search corpus "
+                             "(index_from_corpus.py --search)")
     parser.add_argument("--prompts", action="store_true",
                         help="render the prompts into the root")
     parser.add_argument("--source", action="append", default=[], dest="source_ids")
@@ -215,6 +223,7 @@ def main(argv: list[str] | None = None) -> int:
                                sourceset_dir=args.sourceset,
                                sourceset_id=args.sourceset_id, universe=args.universe,
                                source_ids=args.source_ids, index=args.index,
+                               search=args.search, candidates=args.candidates,
                                render_prompts=args.prompts, model=args.model,
                                max_cost=args.max_cost)
     except (CutProblem, sourceset_mod.SourcesetError, plan_mod.PlanProblem) as exc:

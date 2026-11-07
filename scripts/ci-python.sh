@@ -92,9 +92,12 @@ run_check "Pipeline web-html/3 renderer, a use of the site text layer" "$PYTHON_
 run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/pipeline/test_sourceset.py
 run_check "Pipeline Wikipedia client, behind --execute, no network" "$PYTHON_BIN" scripts/pipeline/test_wikinet.py
 run_check "Pipeline stage-9 prompts render and read the gate" "$PYTHON_BIN" scripts/pipeline/test_prompts.py
+run_check "Pipeline declaration index converted from a universe corpus" "$PYTHON_BIN" scripts/pipeline/test_index_from_corpus.py
 run_check "Pipeline cut, retrieval, locate and challenge plans" "$PYTHON_BIN" scripts/pipeline/test_model_stages.py
 run_check "Pipeline locate gate, rules 1 to 10 out of tree" "$PYTHON_BIN" scripts/pipeline/gate/test_gate.py
 run_check "Pipeline run, harvest reconciliation and spend watchdog" "$PYTHON_BIN" scripts/pipeline/run/test_run.py
+run_check "Pipeline worker contract: the spend CLI, and what a prompt may ask" "$PYTHON_BIN" scripts/pipeline/run/test_worker_contract.py
+run_check "Pipeline task runner: a stub worker through gate and harvest" "$PYTHON_BIN" scripts/pipeline/run/test_task_runner.py
 run_check "Pipeline contribute transport, claim and sandbox" "$PYTHON_BIN" scripts/pipeline/contribute/test_contribute.py
 run_check "Brain fold finalization tests" "$PYTHON_BIN" brain/test_fold_proposals.py
 run_check "Sealed proposal fold adapter tests" "$PYTHON_BIN" brain/test_proposal_fold_adapter.py

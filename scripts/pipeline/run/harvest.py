@@ -149,18 +149,29 @@ def document_counts(directory: Path) -> dict:
 def gate_summary(log_path: Path | None) -> dict | None:
     """The gate's verdict over the run, from the gate log the host kept.
 
-    ``{ok, calls, failed, rejected}`` over the calls that judged a change set. A run
-    whose gate rejected a contribution that then merged anyway is not a gated run, and
-    the receipt says so; a log that cannot be read is ``None`` — no gate ran that this
-    harvest can see, which is not the same as one that passed.
+    ``{ok, calls, tasks, failed, retried, rejected}`` over the calls that judged a
+    change set. A run whose gate rejected a contribution that then merged anyway is not
+    a gated run, and the receipt says so; a log that cannot be read is ``None`` — no
+    gate ran that this harvest can see, which is not the same as one that passed.
+
+    **A task's verdict is its last call, not its first.** The runner retries a refused
+    document with the gate's own refusals and gates it again (:mod:`task`), so a log of
+    one shard holds an attempt's refusal beside the pass that replaced it, and only the
+    document whose last call passed is promoted into the corpus at all. Counting the
+    superseded refusal would make every run with a retry "not gated" while the corpus
+    holds nothing the gate refused — the opposite of what this guard is for. What is
+    counted is ``failed``: tasks whose **last** call refused. ``retried`` says how many
+    were refused earlier and passed later, so a retry is still visible and never
+    silent.
     """
     if log_path is None:
         return None
     path = Path(log_path)
     if not path.is_file():
         return None
-    calls = failed = 0
-    rejected: list[str] = []
+    calls = 0
+    last: dict[str, bool] = {}
+    ever_failed: set[str] = set()
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
@@ -173,12 +184,14 @@ def gate_summary(log_path: Path | None) -> dict | None:
         if record.get("pre_merge") is True:
             continue
         calls += 1
+        # a call with no task id is its own verdict and cannot be superseded by another
+        task = str(record.get("task_id") or f"call-{calls}")
+        last[task] = bool(record.get("ok"))
         if not record.get("ok"):
-            failed += 1
-            task = str(record.get("task_id") or "")
-            if task and task not in rejected:
-                rejected.append(task)
-    return {"ok": True, "calls": calls, "failed": failed, "rejected": sorted(rejected)}
+            ever_failed.add(task)
+    rejected = sorted(task for task, ok in last.items() if not ok)
+    return {"ok": True, "calls": calls, "tasks": len(last), "failed": len(rejected),
+            "retried": len(ever_failed - set(rejected)), "rejected": rejected}
 
 
 def build_receipt(*, run_id: str, expected: Iterable[str], dest: Path,

@@ -73,6 +73,14 @@ class Workspace:
         (self.sources / fixture.SOURCE).mkdir(parents=True)
         (self.sources / fixture.SOURCE / "layer.txt").write_text(fixture.LAYER,
                                                                  encoding="utf-8")
+        # the reading copy and the two views a worker's prompt also names: the staged
+        # working directory is built out of exactly the files run/workdir.py lists
+        (self.sources / fixture.SOURCE / "text.txt").write_text(fixture.LAYER,
+                                                                encoding="utf-8")
+        _write(self.sources / fixture.SOURCE / "sections.json", [])
+        _write(self.sources / fixture.SOURCE / "layer_map.json",
+               {"schema": "cf-layer-map/2", "renderer": "web-html/3",
+                "segments": [[0, len(fixture.LAYER), 0, len(fixture.LAYER)]]})
         _write(self.sources / fixture.SOURCE / "paragraphs.json", fixture.PARAGRAPHS)
         _write(self.sources / fixture.SOURCE / "formulas.json", fixture.FORMULAS)
         _write(self.sources / fixture.SOURCE / "finders.json", fixture.FINDERS)
@@ -238,6 +246,39 @@ class HarvestTests(unittest.TestCase):
                                       gate_log=log)
         self.assertFalse(receipt["complete"])
         self.assertEqual(receipt["gate"]["rejected"], ["task-0"])
+
+    def test_a_task_the_gate_passed_on_a_retry_is_gated_and_the_retry_is_counted(self):
+        """The runner retries a refused document with the gate's own refusals, so one
+        shard's log holds an attempt's refusal beside the pass that replaced it. Only
+        the document whose last call passed is in the corpus, so the verdict is the
+        last call — and the retry is still reported."""
+        log = self.root / "gate.jsonl"
+        log.write_text("".join(json.dumps(row) + "\n" for row in (
+            {"changed_files": True, "pre_merge": False, "ok": False, "task_id": "task-0"},
+            {"changed_files": True, "pre_merge": False, "ok": True, "task_id": "task-0"},
+            {"changed_files": True, "pre_merge": False, "ok": True, "task_id": "task-1"},
+            {"changed_files": True, "pre_merge": False, "ok": False, "task_id": "task-2"},
+        )), encoding="utf-8")
+        receipt = harvest_mod.harvest(run_id="r1", source=self.source, dest=self.dest,
+                                      gate_log=log)
+        gate = receipt["gate"]
+        self.assertEqual(gate["calls"], 4)
+        self.assertEqual(gate["tasks"], 3)
+        self.assertEqual(gate["retried"], 1)
+        self.assertEqual(gate["rejected"], ["task-2"])
+        self.assertFalse(receipt["complete"])          # task-2 is still refused
+
+    def test_every_task_passing_on_a_retry_is_a_complete_harvest(self):
+        log = self.root / "gate.jsonl"
+        log.write_text("".join(json.dumps(row) + "\n" for row in (
+            {"changed_files": True, "pre_merge": False, "ok": False, "task_id": "task-0"},
+            {"changed_files": True, "pre_merge": False, "ok": True, "task_id": "task-0"},
+        )), encoding="utf-8")
+        receipt = harvest_mod.harvest(run_id="r1", source=self.source, dest=self.dest,
+                                      gate_log=log)
+        self.assertEqual(receipt["gate"]["failed"], 0)
+        self.assertEqual(receipt["gate"]["retried"], 1)
+        self.assertTrue(receipt["complete"], harvest_mod.describe(receipt))
 
 
 class CostTests(unittest.TestCase):
@@ -477,10 +518,33 @@ class AgentTests(unittest.TestCase):
             self.skipTest("claude-agent-sdk is not installed")
         import agent_sandbox  # noqa: PLC0415
 
-        opts = agent_mod.options(model=None, system_prompt="s", cwd=None)
+        opts = agent_mod.options(model=None, system_prompt="s", cwd=None,
+                                 tools=agent_mod.REVIEWER_TOOLS)
         self.assertEqual(opts.permission_mode, agent_sandbox.PERMISSION_MODE)
         self.assertNotIn("Bash", opts.tools)
+        self.assertIn("Write", opts.disallowed_tools)
         self.assertEqual(opts.setting_sources, [])
+
+    def test_a_worker_writes_in_its_findings_directory_and_nowhere_else(self):
+        try:
+            import claude_agent_sdk  # noqa: F401, PLC0415
+        except ImportError:
+            self.skipTest("claude-agent-sdk is not installed")
+        import agent_sandbox  # noqa: PLC0415
+
+        findings = self.root / "work" / "t1" / "findings" / "t1"
+        findings.mkdir(parents=True)
+        opts = agent_mod.options(model=None, system_prompt="s",
+                                 cwd=self.root / "work" / "t1", write_dir=findings)
+        self.assertIn("Write", opts.tools)
+        self.assertNotIn("Write", opts.disallowed_tools)
+        self.assertIn("Bash", opts.disallowed_tools)
+        self.assertEqual(agent_sandbox.tool_decision(
+            "Write", {"file_path": "a.json"}, write_dir=findings,
+            tools=opts.tools)[0], agent_sandbox.ALLOW)
+        self.assertEqual(agent_sandbox.tool_decision(
+            "Write", {"file_path": str(self.root / "a.json")}, write_dir=findings,
+            tools=opts.tools)[0], agent_sandbox.DENY)
 
 
 class EndToEndTests(unittest.TestCase):
@@ -505,7 +569,7 @@ class EndToEndTests(unittest.TestCase):
             handed = {p["item"] for p in planned["tasks"][0]["documents"][0]["passages"]}
             document["passages"] = [p for p in document["passages"] if p["item"] in handed]
             worktree = run_root / "work" / task
-            (worktree / "findings" / task).mkdir(parents=True)
+            (worktree / "findings" / task).mkdir(parents=True, exist_ok=True)
             payload = json.dumps(document, sort_keys=True)
             script = root / "stub-worker.py"
             script.write_text(

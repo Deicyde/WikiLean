@@ -20,10 +20,14 @@ Ported from ``cost/fleet.py``'s envelope basis and ``run_cost``/``tasks_of``. Wh
 changes: the price table is optional and the envelope's own ``total_cost_usd`` is the
 primary figure, since that is what the SDK already priced; no workspace is read, and the
 task count comes from the run's own configuration.
+
+    python3 scripts/pipeline/run/cost.py --usage <dir> [--run-id <id>] [--json]
 """
 from __future__ import annotations
 
+import argparse
 import json
+import sys
 from pathlib import Path
 from typing import Any, Iterable, Mapping
 
@@ -207,3 +211,51 @@ def runs_cost(receipts: Mapping[str, Mapping[str, Any] | None],
 def iter_envelope_names(names: Iterable[str]) -> list[str]:
     """The envelope names, sorted: used only to report what a usage directory holds."""
     return sorted(str(name) for name in names)
+
+
+def render_block(block: Mapping[str, Any], *, run_id: str = "") -> list[str]:
+    """What one ``usage/`` directory cost, for an operator reading between shards.
+
+    The unpriced line is the point of it: a shard whose calls timed out has a ``usd``
+    that is a **lower bound**, and an operator deciding whether a spend rule has fired
+    must be told so rather than left to read a total that counts a timeout at zero.
+    """
+    where = f" {run_id}" if run_id else ""
+    lines = [f"cost{where}: ${block['usd']:.2f} over {block['envelope_count']} envelope(s); "
+             f"models {', '.join(block['models']) or 'none'}"]
+    if block.get("unpriced_calls"):
+        lines.append(f"  {block['unpriced_calls']} call(s) left no priced envelope "
+                     f"({block['unpriced_seconds']:.1f}s): ${block['usd']:.2f} is a LOWER BOUND")
+    if block.get("unreadable"):
+        lines.append(f"  {block['unreadable']} envelope(s) could not be read")
+    for model, value in (block.get("usd_by_model") or {}).items():
+        lines.append(f"  {model}: ${value:.2f}")
+    return lines
+
+
+def main(argv: list[str] | None = None) -> int:
+    """``--usage <dir>``: what the calls under one run root have cost so far.
+
+    The spend rules of a campaign are checked between shards, from the envelopes a
+    shard left behind, so this module needs a command line and not only an import.
+    """
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument("--usage", required=True, type=Path,
+                        help="the run root's usage/ directory")
+    parser.add_argument("--run-id", default="", help="named in the output, nothing more")
+    parser.add_argument("--price-table-sha256", default="")
+    parser.add_argument("--json", action="store_true", help="the whole cost block")
+    args = parser.parse_args(argv)
+    if not Path(args.usage).is_dir():
+        print(f"cost: no usage directory at {args.usage}", file=sys.stderr)
+        return 2
+    block = cost_block(Path(args.usage), price_table_sha256=args.price_table_sha256)
+    if args.json:
+        print(json.dumps(block, indent=1, sort_keys=True))
+    else:
+        print("\n".join(render_block(block, run_id=args.run_id)))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

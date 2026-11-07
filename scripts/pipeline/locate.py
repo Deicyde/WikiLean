@@ -85,6 +85,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--sourceset-id")
     parser.add_argument("--universe", required=True, type=Path)
     parser.add_argument("--index", type=Path, help="the declaration index")
+    parser.add_argument("--search", type=Path,
+                        help="the worker's read-only declaration search corpus "
+                             "(index_from_corpus.py --search)")
     parser.add_argument("--candidates", type=Path, help="the candidates directory")
     parser.add_argument("--retrieve", action="store_true",
                         help="run the retrieval into --candidates first")
@@ -100,6 +103,7 @@ def main(argv: list[str] | None = None) -> int:
         built = plan_locate(run_id=args.run_id, out=args.out, inventory=args.inventory,
                             sourceset_dir=args.sourceset, sourceset_id=args.sourceset_id,
                             universe=args.universe, index=args.index,
+                            search=args.search,
                             candidates=args.candidates, retrieve=args.retrieve,
                             source_ids=args.source_ids, per_task=args.per_task,
                             inventory_run=args.inventory_run,

@@ -1,12 +1,8 @@
 Review the documents the worker wrote for its task in run `{{run_id}}` (mode `{{mode}}`).
 
-Read the task manifest `{{tasks_dir}}/<task id>.json` and the documents beside it in the task's working directory — one `<source-id>.json` per source the manifest names — then check form and the gate's output, as your system prompt sets out:
+Read the task manifest `task.json` and the worker's documents under `{{findings_dir}}/<task id>/` — one `<source-id>.json` per source the manifest names — then check their form.
 
-```
-{{gate_command}} --findings <source-id>.json
-```
-
-{{reviewer_exits}}
+**The gate has already run.** The runner ran it, out of tree, over exactly those documents, and left what it printed in `{{gate_verdict_file}}`. Read that file; it is the gate's word and not the worker's. {{reviewer_exits}}
 
 ## How to finish
 
