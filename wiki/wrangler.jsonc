@@ -77,6 +77,30 @@
         "type": "ratelimit",
         "namespace_id": "1005",
         "simple": { "limit": 20, "period": 60 }
+      },
+      // Community tags on the formalization reader's overlay (the three tag
+      // routes in src/articles.ts): 60 writes a minute. Keyed tag:<user.id>
+      // for an established editor and tagnew:<user.id> for a newcomer, so a
+      // fresh account gets a tenth of the budget off one counter. Agents are
+      // not keyed here — all of one person's agents share the 30/min
+      // EDIT_LIMITER key PR #126 gave them, so minting agents buys no more
+      // writes on this plane either.
+      {
+        "name": "TAG_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1006",
+        "simple": { "limit": 60, "period": 60 }
+      },
+      // The newcomer half of the same control: 6 writes a minute, keyed
+      // tagnew:<user.id>. A rate-limit binding carries one limit, so the plan's
+      // two burst budgets (60/min established, 6/min newcomer) are two
+      // bindings. A newcomer is an account under four days old or with fewer
+      // than ten overlay edits (src/articles-overlay.ts tagAllowance).
+      {
+        "name": "TAG_NEW_LIMITER",
+        "type": "ratelimit",
+        "namespace_id": "1007",
+        "simple": { "limit": 6, "period": 60 }
       }
     ]
   },
@@ -84,7 +108,14 @@
     // Deployed Worker uses real OAuth. Local `wrangler dev` reads .dev.vars,
     // which can override this to "dev" for the cookie stub.
     "AUTH_MODE": "oauth",
-    "BETTER_AUTH_URL": "https://wikilean.jackmccarthy.org"
+    "BETTER_AUTH_URL": "https://wikilean.jackmccarthy.org",
+    // Cloudflare Turnstile's PUBLIC site key, shown in the widget that gates a
+    // new account's first community tag. Not a secret (it is in the page's
+    // HTML); its secret half is the Worker secret TURNSTILE_SECRET, which is
+    // listed by name in docs/SECRETS.md and never written down here. Set this
+    // to the site key of the Turnstile widget for wikilean.jackmccarthy.org;
+    // empty means no widget is rendered and no token is asked for.
+    "TURNSTILE_SITE_KEY": ""
   },
   "d1_databases": [
     {

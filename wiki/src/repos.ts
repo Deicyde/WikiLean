@@ -71,11 +71,14 @@ function checkOrigin(c: Ctx): Response | null {
 }
 
 // Repo registration is a PERSON's surface: 401 anonymous/blocked, 403 for the
-// pipeline bearer (role 'bot' — it has no GitHub identity or repo prefs).
+// pipeline bearer (role 'bot' — it has no GitHub identity or repo prefs) and
+// for agents (role 'agent', agents.ts).
 async function sessionUser(c: Ctx): Promise<AuthUser | Response> {
   const user = await getUser(c);
   if (!user) return c.json({ ok: false, error: "login required" }, 401);
-  if (user.role === "bot") return c.json({ ok: false, error: "session required (no bots)" }, 403);
+  if (user.role === "bot" || user.role === "agent") {
+    return c.json({ ok: false, error: "session required (no bots)" }, 403);
+  }
   return user;
 }
 

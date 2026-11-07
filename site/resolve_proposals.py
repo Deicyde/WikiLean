@@ -13,6 +13,7 @@ agent:
       masquerading as a change)                  -> reject, reason not_better
   R2  decl rename: the proposal's mathlib.decl EXISTS in the union oracle
       AND the current annotation's mathlib.decl is GONE from it
+      (an agent's proposal stays pending: it picks the new name itself)
                                                  -> approve
   R3  proof_wanted downgrade: the cited decl is a proof_wanted stub and the
       proposal sets status 'partial' ('formalized' alone is an overclaim —
@@ -124,10 +125,14 @@ def verdict(row: dict, oracle: set[str], proof_wanted: set[str]) -> tuple[str, s
     eff_status = fields.get("status", current.get("status"))
 
     # The rename leg, verified once and shared by R2/R3 (exact names — a bare
-    # suffix is structurally impossible: set membership on FQ names).
+    # suffix is structurally impossible: set membership on FQ names). An agent
+    # (docs/AGENT-CONTRIBUTIONS.md, `proposedBy`) picks its new name itself, and
+    # the oracle shows only that the new name exists and the old one is gone,
+    # not that one became the other: an agent's rename is a human call.
+    agent = bool(row.get("proposedBy"))
     rename_ok = False
     if new_decl and old_decl and new_decl != old_decl:
-        rename_ok = new_decl in oracle and old_decl not in oracle
+        rename_ok = not agent and new_decl in oracle and old_decl not in oracle
 
     # R3 — proof_wanted downgrade (checked BEFORE R2: a rename onto a
     # proof_wanted stub must still land as 'partial', not silently approve a
@@ -145,6 +150,9 @@ def verdict(row: dict, oracle: set[str], proof_wanted: set[str]) -> tuple[str, s
 
     # R2 — verified decl rename: the new name exists, the old one is gone.
     if new_decl and old_decl and new_decl != old_decl:
+        if agent:
+            return ("pending", f"R2 agent rename {old_decl} -> {new_decl}: the oracle cannot "
+                               f"show it is a rename — human call")
         if rename_ok:
             # A rename may not smuggle an overclaim — judged on the EFFECTIVE
             # status (proposed, else the current one that stays standing).

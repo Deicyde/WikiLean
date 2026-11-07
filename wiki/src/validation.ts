@@ -237,14 +237,15 @@ export function serializeFieldChanges(fields: AnnotationFieldChange[]): string |
 // (F8): id identity is findMatch's job, so a client that merely drops the id
 // field cannot launder an unchanged 'ai' annotation into 'human' (and a bare
 // provenance flip cannot launder in either direction).
-// Bot writes never come through here — their provenance passes verbatim.
-export function stampProvenance(stored: AnnRecord[], posted: AnnRecord[]): AnnRecord[] {
+// Agent saves stamp with actor 'ai' instead (after findLostHuman). Pipeline
+// bot writes never come through here — their provenance passes verbatim.
+export function stampProvenance(stored: AnnRecord[], posted: AnnRecord[], actor: "human" | "ai" = "human"): AnnRecord[] {
   const strip = ({ provenance: _p, id: _id, ...rest }: AnnRecord): AnnRecord => rest;
   return posted.map((p) => {
     const match = findMatch(p, stored);
     if (match && deepEqual(strip(p), strip(match))) {
       return { ...p, provenance: match.provenance };
     }
-    return { ...p, provenance: "human" };
+    return { ...p, provenance: actor };
   });
 }

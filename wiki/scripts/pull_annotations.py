@@ -85,9 +85,12 @@ class TreeEntry:
     size: int
     mtime_ns: int
     ctime_ns: int
+    sha256: str | None = None
 
 
-def _entry(metadata: os.stat_result, kind: str) -> TreeEntry:
+def _entry(
+    metadata: os.stat_result, kind: str, *, sha256: str | None = None
+) -> TreeEntry:
     return TreeEntry(
         kind=kind,
         mode=stat.S_IMODE(metadata.st_mode),
@@ -96,6 +99,7 @@ def _entry(metadata: os.stat_result, kind: str) -> TreeEntry:
         size=metadata.st_size,
         mtime_ns=metadata.st_mtime_ns,
         ctime_ns=metadata.st_ctime_ns,
+        sha256=sha256,
     )
 
 
@@ -134,7 +138,18 @@ def _snapshot_tree(root: Path) -> dict[str, TreeEntry]:
             if stat.S_ISDIR(child_meta.st_mode):
                 visit(Path(child.path), child_relative)
             elif stat.S_ISREG(child_meta.st_mode):
-                result[child_relative.as_posix()] = _entry(child_meta, "file")
+                path = Path(child.path)
+                data = _read_regular(path)
+                current = path.lstat()
+                if _entry(child_meta, "file") != _entry(current, "file"):
+                    raise AnnotationMirrorError(
+                        f"cache member changed while being inspected: {path}"
+                    )
+                # Timestamps may remain unchanged for an entire filesystem tick.
+                # Bind the actual bytes so equal-size edits cannot evade the check.
+                result[child_relative.as_posix()] = _entry(
+                    current, "file", sha256=hashlib.sha256(data).hexdigest()
+                )
             else:
                 raise AnnotationMirrorError(f"cache tree contains a special file: {child.path}")
 
@@ -493,7 +508,8 @@ def _clone_tree(source: Path, destination: Path, snapshot: Mapping[str, TreeEntr
         target_file = destination / relative
         data = _read_regular(source_file)
         current = source_file.lstat()
-        if _entry(current, "file") != entry:
+        copied = _entry(current, "file", sha256=hashlib.sha256(data).hexdigest())
+        if copied != entry:
             raise AnnotationMirrorError(f"cache member changed while cloning: {source_file}")
         stage_io.write_bytes_exclusive(target_file, data, mode=entry.mode)
 

@@ -53,7 +53,7 @@ RESERVED_ARTICLE_SLUGS = frozenset({
     "recent-changes", "flags", "stats", "wikifunctions", "wikifunctions/verify",
     "login", "logout", "graph", "graph_data.json", "article-graph",
     "article-graph-data.json", "review", "queue", "quickstatements", "u",
-    "decl", "proposals", "atlas", "brain", "articles", "mcp", "repos", "about",
+    "decl", "proposals", "atlas", "brain", "articles", "mcp", "repos", "agents", "about",
     "concepts", "map", "map-v2", "map_data_v2.json", "atlas_data.json",
     "wikilean.ttl", "404.html", "brain.html", "concepts.html",
 })

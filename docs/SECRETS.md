@@ -16,7 +16,8 @@ Contents: [rules](#rules) · [Worker secrets](#worker-secrets-wrangler) ·
 [nightly and operator host](#nightly-host-and-operator-machine) ·
 [rotation](#rotating-a-worker-secret-without-bypassing-the-promoter) ·
 [expiry register](#expiry-register) · [security notes](#security-notes) ·
-[P0 actions for the maintainer](#p0-actions-for-the-maintainer)
+[outstanding production actions](#outstanding-production-actions) ·
+[Turnstile keys](#turnstile-keys-for-the-first-community-edit)
 
 ## Rules
 
@@ -37,8 +38,10 @@ Contents: [rules](#rules) · [Worker secrets](#worker-secrets-wrangler) ·
 
 ## Worker secrets (`wrangler`)
 
-Set on the `wikilean` Worker. `wiki/src/env.ts` is the typed list; `AUTH_MODE`
-and `BETTER_AUTH_URL` are plain vars in `wiki/wrangler.jsonc`, not secrets.
+Set on the `wikilean` Worker. `wiki/src/env.ts` is the typed list; `AUTH_MODE`,
+`BETTER_AUTH_URL` and `TURNSTILE_SITE_KEY` are plain vars in `wiki/wrangler.jsonc`, not
+secrets — a Turnstile **site** key is public by design (it is in the page's HTML); only its
+**secret** half, below, is one.
 
 | Name | Holder | Scope / power | Consumers | Rotation | Expiry |
 |---|---|---|---|---|---|
@@ -52,6 +55,7 @@ and `BETTER_AUTH_URL` are plain vars in `wiki/wrangler.jsonc`, not secrets.
 | `REVIEW_GITHUB_APP_SLUG` | same | Not secret (builds the install URL) | `/review` | — | — |
 | `REVIEW_TOKEN_KEY` | Jack | Seals stored review GitHub tokens at rest (`review.ts`: HKDF → AES-256-GCM, cookie id as additional data, KV key = SHA-256 of the cookie id). At least 32 characters | Worker only | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter) signs reviewers out of `/review` posting (they reconnect). Unset, tokens are stored as plaintext JSON | not set yet ([P1](#p1-seal-review-tokens-and-give-them-their-own-kv-namespace)) |
 | `REVIEW_POSTING_PAT` | Deicyde | **Classic `public_repo`**: write to every public repo of its owner | `/review` POST when the connectee is the PAT owner | Prefer retiring it for the GitHub App. Else: new classic PAT with an explicit expiry, put, revoke old, record the expiry here | unknown |
+| `TURNSTILE_SECRET` | Jack (Cloudflare account) | Verifies a Cloudflare Turnstile token against `challenges.cloudflare.com`, for the challenge on a **new account's first community tag** on the formalization reader (`wiki/src/articles-overlay.ts verifyTurnstile`; docs/ARTICLES.md section 10a). It authorises nothing else and reads nothing | Worker only | Create a second Turnstile widget in the Cloudflare dashboard, put its secret, then delete the old widget. Rotation only re-challenges accounts making a first edit | not set yet ([setup](#turnstile-keys-for-the-first-community-edit)) |
 | `IP_HASH_SECRET` | — | Nothing reads it (removed in `783e55c8`) | — | If `wrangler secret list` shows it, delete it with the next promotion (`wrangler versions secret delete IP_HASH_SECRET`) | orphan if present |
 
 Kill switch for `PIPELINE_TOKEN` (no deploy, no rotation): the bearer resolves to the
@@ -70,6 +74,7 @@ cd wiki && npx wrangler d1 execute wikilean --remote \
 |---|---|---|---|
 | Review GitHub user tokens (access + refresh, 12 h TTL): plaintext `reviewtok:<cookie-uuid>`, or sealed `reviewtok:s1:<sha256(cookie)>` once `REVIEW_TOKEN_KEY` is set | KV `REVIEW_TOKENS` when bound, else KV `RENDER_CACHE` (`review.ts reviewTokenStore`) | plaintext: anyone with KV read in the account; sealed: only the Worker | Cloudflare grants KV access per account, so a separate namespace does not keep out a credential that can write `RENDER_CACHE` (the nightly host's `wrangler login`); only the seal does. [P1 step](#p1-seal-review-tokens-and-give-them-their-own-kv-namespace) |
 | better-auth OAuth tokens (`accounts.access_token`, `refresh_token`, `id_token`) and sessions (`sessions.token`, `ip_address`, `user_agent`) | D1 `wikilean` | anyone with D1 read; every D1 backup | Logins from 2026-06-15/16 may hold `public_repo` tokens (`git log -- wiki/src/auth.ts`). Pre-2026-10-13 backups were public plaintext: P0 3; `scripts/revoke_github_tokens.py` revokes the leaked ones |
+| Agent tokens (`wla_…`, minted at `/agents`; docs/AGENT-CONTRIBUTIONS.md) | D1 `agent_tokens.token_hash`: SHA-256 only, never the token | the person who minted it holds the token | Shown once at minting. The owner revokes at `/agents`; an admin blocks the agent's or the owner's `users` row. Write power is an agent's (`role` `agent`), not the pipeline's |
 
 ## GitHub Actions secrets and variables
 
@@ -241,6 +246,33 @@ and `cd wiki && npx wrangler secret list` (names only).
 ## Outstanding production actions
 
 The maintainer tracks outstanding production actions (backup restores, credential revocations and rotations, repository security settings) privately, not in this public repository.
+
+## Turnstile keys for the first community edit
+
+Release R1 of the public-editing plan challenges a **new account's first community tag** on
+the formalization reader, and nothing after it (docs/ARTICLES.md, section 10a). Both halves
+of the key pair are the maintainer's; neither is in this repository.
+
+1. In the Cloudflare dashboard, create a Turnstile widget for
+   `wikilean.jackmccarthy.org`. The **Managed** mode is the right default.
+2. Put the **site key** — public, it appears in the page's HTML — into
+   `wiki/wrangler.jsonc` `vars.TURNSTILE_SITE_KEY`, in a reviewed PR, and ship it with the
+   release. Empty means no widget is rendered.
+3. Put the **secret key** with the
+   [version-only procedure](#rotating-a-worker-secret-without-bypassing-the-promoter), so it
+   rides the next promotion rather than deploying outside the promoter:
+
+   ```bash
+   cd wiki && npx wrangler versions secret put TURNSTILE_SECRET   # value on stdin, never on argv
+   ```
+
+4. Record the date in the [expiry register](#expiry-register). Turnstile keys do not expire;
+   rotating is creating a second widget, putting its secret, shipping its site key and
+   deleting the old widget.
+
+Until the secret is set the check is **skipped and logged** rather than failing everyone:
+the account requirement, the burst and daily caps and the site-wide write brake still stand.
+Until the site key is set no widget is rendered, so nobody is asked for a token.
 
 ## P1: seal review tokens and give them their own KV namespace
 
