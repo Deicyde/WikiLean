@@ -235,7 +235,7 @@ class RunnerTests(unittest.TestCase):
 
     def test_a_worker_writing_outside_its_directory_is_refused(self):
         worker = self.stub()
-        worker.write("ok.json", "{}")
+        worker.write(worker.write_dir / "ok.json", "{}")
         self.assertTrue((self.findings / "ok.json").is_file())
         for path in (str(self.root / "planted.json"),
                      str(self.work / "task.json"),
