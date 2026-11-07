@@ -860,5 +860,33 @@ class CommandLineTest(BaselineFixture):
         self.assertEqual(json.loads(verified.stdout)["baseline_id"], freeze_result["baseline_id"])
 
 
+class CommittedSourceAssetAttestation(unittest.TestCase):
+    """Copied UI sources must agree with the release's committed inventory."""
+
+    def test_copied_ui_assets_match_the_committed_attestation(self):
+        repo = HERE.parents[1]
+        inventory = json.loads((repo / baseline.SOURCE_ATTESTATION_PATH).read_bytes())
+        entries = {entry["path"]: entry for entry in inventory["files"]}
+        # build-public.ts copies these tracked inputs verbatim. The full index
+        # closure remains a corpus check; these UI files need no private data.
+        source_paths = {
+            **{f"assets/{name}": f"site/assets/{name}" for name in (
+                "style.css", "script.js", "review.css", "articles.css",
+                "articles.js", "articles-reader.css", "articles-reader.js",
+            )},
+            "assets/editor.js": "wiki/assets/editor.js",
+        }
+        for public_path, source_path in source_paths.items():
+            with self.subTest(asset=public_path):
+                content = (repo / source_path).read_bytes()
+                entry = entries[public_path]
+                self.assertEqual(
+                    {key: entry[key] for key in ("bytes", "sha256")},
+                    {"bytes": len(content), "sha256": hashlib.sha256(content).hexdigest()},
+                    "Regenerate and review the public source attestation after "
+                    "building the complete public tree from changed UI sources.",
+                )
+
+
 if __name__ == "__main__":
     unittest.main()
