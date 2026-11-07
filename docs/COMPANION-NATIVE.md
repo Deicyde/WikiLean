@@ -57,10 +57,12 @@ formal ends remain several links within one coverage item. Every subject end of
 a link and every unlinked end is an occurrence of the item.
 
 A link's annotation has at least one object end. Migration turns the legacy
-Mathlib module and declaration into a `lean` object end (`uri` the Mathlib
-repository, `location` with `declaration` and `module`, no `version`, because
-legacy items never recorded the commit), so that information is stored on the
-link itself rather than only in the private archive. A `noMatch` link, a checked
+Mathlib declaration into a `lean` object end (`uri` the Mathlib repository,
+`location` with `declaration` and, when known, `module`; no `version`, because
+legacy items never recorded the commit). A declaration with no module remains
+an active target, including Lean core names; its reference uses the repository
+URI. The link stores this information beside the exact private archive.
+A `noMatch` link, a checked
 absence, is stored only when every object end has the `version` that was
 searched. The editor shows a Mathlib declaration as its docs page; a docs page
 entered there becomes a `lean` end, and any other reference a `generic` end. A
