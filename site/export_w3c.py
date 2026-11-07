@@ -27,6 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from render import mathlib_docs_url  # reuse the docs-URL builder
+import native_annotations as native
 
 HERE = Path(__file__).resolve().parent
 ANNOT = HERE / "annotations"
@@ -99,19 +100,20 @@ def _anchor_exact(anchor: dict) -> str | None:
 
 
 def _bodies(a: dict) -> list[dict]:
-    m = a.get("mathlib") or {}
-    decl = m.get("decl") or a.get("decl")
-    module = m.get("module") or a.get("module")
+    m = a.get("mathlib") if not native.is_native(a) else {}
+    m = m if isinstance(m, dict) else {}
     bodies: list[dict] = []
-
-    url = mathlib_docs_url(module, decl)
-    if url and decl:
-        bodies.append({
-            "type": "SpecificResource",
-            "purpose": "linking",
-            "source": url,
-            "identifier": decl,
-        })
+    if native.is_native(a):
+        for target in native.formal_links(a):
+            if target.get("url"):
+                bodies.append({"type": "SpecificResource", "purpose": "linking",
+                               "source": target["url"], "identifier": target["label"]})
+    else:
+        for target in native.mathlib_targets(a):
+            url = mathlib_docs_url(target.get("module"), target["decl"])
+            if url:
+                bodies.append({"type": "SpecificResource", "purpose": "linking",
+                               "source": url, "identifier": target["decl"]})
     status = a.get("status")
     if status:
         bodies.append({"type": "TextualBody", "purpose": "classifying", "value": status})
@@ -122,11 +124,62 @@ def _bodies(a: dict) -> list[dict]:
     kind = a.get("kind")
     if kind:
         bodies.append({"type": "TextualBody", "purpose": "tagging", "value": kind})
-    note = a.get("note") or a.get("proof_note")
+    note = a.get("note")
     if note:
         bodies.append({"type": "TextualBody", "purpose": "describing",
                        "value": note, "format": "text/plain"})
     return bodies
+
+
+def _native_targets(a: dict):
+    """Project each record's own HTML subjects; never cross-join separate links.
+
+    Unsupported locations are omitted from this derived W3C view, never broadened
+    into whole-resource selections. The native record export remains lossless.
+    """
+    carriers = [(link["annotation"], link.get("base_uri"), link)
+                for link in a.get("links") or []]
+    carriers += [({"subject": [{k: v for k, v in end.items() if k != "base_uri"}],
+                  "object": []}, end.get("base_uri"), None)
+                 for end in a.get("unlinked") or []]
+    for annotation, base, link in carriers:
+        body_item = {**a, "links": [link] if link else [], "unlinked": []}
+        bodies = _bodies(body_item)
+        # Preserve pins, selectors and opaque record fields in the derived view too.
+        raw = {"stored_annotation": annotation}
+        if base is not None:
+            raw["base_uri"] = base
+        bodies.append({"type": "TextualBody", "purpose": "describing",
+                       "format": "application/json",
+                       "value": json.dumps(raw, ensure_ascii=False)})
+        for end in annotation["subject"]:
+            if end.get("type") != "html":
+                continue
+            source = native.resolved_web_uri(end["uri"], base)
+            if not source:
+                continue
+            target = {"source": source}
+            location = end.get("location")
+            if location is not None:
+                if not isinstance(location, dict):
+                    continue
+                if "quote" in location:
+                    quote = location["quote"]
+                    selector = {"type": "TextQuoteSelector",
+                                **{k: quote[k] for k in ("exact", "prefix", "suffix") if k in quote}}
+                elif "css" in location:
+                    selector = {"type": "CssSelector", "value": location["css"]}
+                elif "fragment" in location:
+                    selector = {"type": "FragmentSelector", "value": location["fragment"]}
+                elif location.get("profile") == native.ANCHOR_PROFILE:
+                    exact = _anchor_exact(location.get("anchor") or {})
+                    if not exact:
+                        continue
+                    selector = _quote_selector(exact, None)
+                else:
+                    continue
+                target["selector"] = selector
+            yield target, bodies, bool(annotation.get("object"))
 
 
 def convert(path: Path) -> dict | None:
@@ -143,7 +196,7 @@ def convert(path: Path) -> dict | None:
     live_url = WIKI_BASE + urllib.parse.quote(title.replace(" ", "_"))
     # Pin the target to the immutable revision the annotation was made for.
     # Fall back to the live (mutable) URL only when no revid was recorded.
-    revid = _load_revid(slug)
+    revid = data.get("revid") or _load_revid(slug)
     target_url = f"{live_url}?oldid={revid}" if revid else live_url
     haystack = _section_plaintext(slug)
     created = datetime.fromtimestamp(
@@ -151,6 +204,15 @@ def convert(path: Path) -> dict | None:
 
     items = []
     for i, a in enumerate(annos):
+        if a.get("status") == "rejected":
+            continue
+        if native.is_native(a):
+            for n, (target, bodies, has_link) in enumerate(_native_targets(a)):
+                items.append({"id": f"urn:wikilean:{slug}:anno-{i}-{n}",
+                              "type": "Annotation", "created": created,
+                              "motivation": "linking" if has_link else "classifying",
+                              "generator": GENERATOR, "body": bodies, "target": target})
+            continue
         anchor = a.get("anchor") or {}
         exact = _anchor_exact(anchor)
         if not exact:

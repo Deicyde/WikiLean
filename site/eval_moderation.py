@@ -54,6 +54,8 @@ import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from native_annotations import mathlib_targets
+
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
@@ -296,9 +298,9 @@ def eval_live_scenario(fix: dict, verbose: bool) -> dict:
     results.append((ok, f"coverage heuristic: {len(posted)} >= "
                         f"{len(fix['existing'])} existing"))
     # Heuristic 2: every cited decl exists in the local Mathlib checkout.
-    bad = [a["mathlib"]["decl"] for a in posted
-           if isinstance(a.get("mathlib"), dict) and a["mathlib"].get("decl")
-           and not _decl_exists_in_mathlib(a["mathlib"]["decl"])]
+    bad = [target["decl"] for a in posted for target in mathlib_targets(a)
+           if not (target.get("version") or target.get("sha256"))
+           and not _decl_exists_in_mathlib(target["decl"])]
     results.append((not bad, f"decl-sanity heuristic (hallucinated: {bad})"))
     status = "PASS" if all(ok for ok, _ in results) else "FAIL"
     return {"name": fix["name"], "status": status, "results": results,

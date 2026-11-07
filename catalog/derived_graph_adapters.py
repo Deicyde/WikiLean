@@ -11,6 +11,11 @@ import copy
 import math
 import re
 from typing import Iterable, Mapping
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "site"))
+from native_annotations import mathlib_targets  # noqa: E402
+
 
 import build_concept_layer
 import build_graph_v2
@@ -143,8 +148,7 @@ def concept_graph(*, grounding: list[dict], overrides: list[dict], crossrefs: di
         qid = slug_to_qid.get(article.get("slug"))
         if qid:
             for annotation in article.get("annotations") or []:
-                declaration = (annotation.get("mathlib") or {}).get("decl")
-                if declaration:
+                for declaration in dict.fromkeys(t["decl"] for t in mathlib_targets(annotation)):
                     mapping[declaration].append(qid)
                     roles.setdefault(declaration, {}).setdefault(qid, "citation")
     mapping = {key: sorted(set(value)) for key, value in mapping.items()}
@@ -228,8 +232,7 @@ def theoremgraph_links(*, prior: list[dict], annotations: list[tuple[str, dict]]
         qid = slugs.get(article.get("slug"))
         if qid:
             for annotation in article.get("annotations") or []:
-                name = (annotation.get("mathlib") or {}).get("decl")
-                if name:
+                for name in dict.fromkeys(t["decl"] for t in mathlib_targets(annotation)):
                     cited[name].add(qid)
     interests = set(primary) | set(cited)
     links, seen = collections.defaultdict(list), collections.defaultdict(set)

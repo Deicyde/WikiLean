@@ -35,6 +35,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "site"))
 import update_from_upstream as ufu  # noqa: E402  (reuse the contract-correct HTTP)
+import native_annotations as native  # noqa: E402
 
 PROPOSAL = REPO / "manage" / "data" / "decl_sweep_proposal.json"
 DEV_VARS = REPO / "wiki" / ".dev.vars"
@@ -54,11 +55,17 @@ def load_token() -> str:
 
 
 def get_decl(a: dict) -> str | None:
-    return (a.get("mathlib") or {}).get("decl") or a.get("decl")
+    names = {target["decl"] for target in native.mathlib_targets(a)}
+    return next(iter(names)) if len(names) == 1 else None
 
 
 def set_decl(a: dict, new: str) -> None:
-    if a.get("mathlib") and (a["mathlib"] or {}).get("decl") is not None:
+    if native.is_native(a):
+        old = get_decl(a)
+        changed = native.rename_mathlib_target(a, old, new)
+        a.clear()
+        a.update(changed)
+    elif a.get("mathlib") and (a["mathlib"] or {}).get("decl") is not None:
         a["mathlib"]["decl"] = new
     else:
         a["decl"] = new
@@ -109,6 +116,12 @@ def apply_edits(annotations: list[dict], edits: list[dict], stamp_moderated: boo
         if cur_decl != e["expect_decl"]:
             skipped.append({**e, "why": f"decl already {cur_decl!r} (expected {e['expect_decl']!r})"})
             continue
+        if native.is_native(a):
+            try:
+                native.editable_mathlib_targets(a, e["expect_decl"])
+            except native.NativeAnnotationError as exc:
+                skipped.append({**e, "why": str(exc)})
+                continue
         if e["kind"] == "downgrade":
             if a.get("status") not in e["expect_status"]:
                 skipped.append({**e, "why": f"status already {a.get('status')!r}"})

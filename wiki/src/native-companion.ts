@@ -73,6 +73,32 @@ export function endReference(end: LinkEnd): string {
     && typeof location.declaration === 'string' && typeof location.module === 'string') return mathlibDocsUri(location.module, location.declaration);
   return end.uri;
 }
+/** Mathlib-specific readers inspect every native object and keep its library identity. */
+export function mathlibTargets(item: JsonObject): Array<{ decl: string; module?: string; version?: string; sha256?: string }> {
+  if (!isNativeItem(item)) {
+    const old = isObject(item.mathlib) ? item.mathlib : {};
+    const decl = old.decl ?? item.decl;
+    const module = old.module ?? item.module;
+    return typeof decl === 'string' && decl
+      ? [{ decl, ...(typeof module === 'string' ? { module } : {}) }] : [];
+  }
+  const targets: Array<{ decl: string; module?: string; version?: string; sha256?: string }> = [];
+  for (const link of item.links ?? []) {
+    if (link.annotation?.relation === 'noMatch') continue;
+    for (const end of link.annotation?.object ?? []) {
+      if (end.type !== 'lean' || !isObject(end.location) || 'profile' in end.location) continue;
+      let repository: string;
+      try { repository = new URL(end.uri, link.base_uri).href; } catch { continue; }
+      if (repository !== MATHLIB_REPOSITORY || typeof end.location.declaration !== 'string' || !end.location.declaration) continue;
+      targets.push({ decl: end.location.declaration,
+        ...(typeof end.location.module === 'string' ? { module: end.location.module } : {}),
+        ...(end.version !== undefined ? { version: end.version } : {}),
+        ...(end.sha256 !== undefined ? { sha256: end.sha256 } : {}) });
+    }
+  }
+  return targets;
+}
+
 /** Every source selection of an item: each subject end of each link, then each unlinked end, with its base. */
 export function itemOccurrences(item: NativeItem): Array<{ end: LinkEnd; base_uri?: string }> {
   return [

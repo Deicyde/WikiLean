@@ -46,6 +46,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from tasklib import DATA_DIR, REPO, TASKS_PATH, write_jsonl  # noqa: E402
+sys.path.insert(0, str(REPO / "site"))
+from native_annotations import mathlib_targets, anchors  # noqa: E402
+
 
 TAG_XREFS = REPO / "catalog" / "data" / "mathlib_tag_xrefs.jsonl"
 GROUNDING = REPO / "catalog" / "data" / "rebuild_grounding.json"
@@ -240,24 +243,34 @@ def load_annotation_statements(oracle: set[str], slug_to_qid: dict[str, str]) ->
         for i, a in enumerate(d.get("annotations") or []):
             if not isinstance(a, dict) or a.get("status") != "formalized":
                 continue
-            ml = a.get("mathlib") or {}
-            decl = ml.get("decl")
-            snippet = ((a.get("anchor") or {}).get("snippet") or "").strip()
-            if not decl or decl not in oracle or len(snippet) < MIN_STATEMENT_LEN:
-                continue
-            if decl in seen_decls or kept >= MAX_ANNOT_PER_ARTICLE:
-                continue
-            seen_decls.add(decl)
-            kept += 1
-            stmt = snippet if not a.get("label") else f"{a['label']} — {snippet}"
-            out.append({
-                "slug": slug, "qid": qid,
-                "display_title": d.get("display_title") or slug.replace("_", " "),
-                "statement": stmt, "decl": decl,
-                "module": ml.get("module"), "match_kind": ml.get("match_kind"),
-                "provenance": a.get("provenance"),
-                "annot_key": a.get("id") or f"i{i}",
-            })
+            for ml in mathlib_targets(a):
+                # This benchmark verifies against the current checkout, not a pinned oracle.
+                if ml.get("version") or ml.get("sha256"):
+                    continue
+                source_item = a
+                if ml.get("link_id") is not None:
+                    source_item = {**a, "links": [link for link in a["links"]
+                                                  if link["id"] == ml["link_id"]], "unlinked": []}
+                selections = [span for span in anchors(source_item) if isinstance(span, dict)]
+                snippet = next((span.get("exact") or span.get("snippet") or ""
+                                for span in selections
+                                if span.get("exact") or span.get("snippet")), "").strip()
+                decl = ml["decl"]
+                if not decl or decl not in oracle or len(snippet) < MIN_STATEMENT_LEN:
+                    continue
+                if decl in seen_decls or kept >= MAX_ANNOT_PER_ARTICLE:
+                    continue
+                seen_decls.add(decl)
+                kept += 1
+                stmt = snippet if not a.get("label") else f"{a['label']} — {snippet}"
+                out.append({
+                    "slug": slug, "qid": qid,
+                    "display_title": d.get("display_title") or slug.replace("_", " "),
+                    "statement": stmt, "decl": decl,
+                    "module": ml.get("module"), "match_kind": ml.get("match_kind"),
+                    "provenance": a.get("provenance"),
+                    "annot_key": a.get("id") or f"i{i}",
+                })
     return out
 
 

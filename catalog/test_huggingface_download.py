@@ -138,8 +138,9 @@ class RevisionAndUrlTest(unittest.TestCase):
                 ROOT / "brain/build_context.py",
                 workspace / "build_context.py",
             )
+            shutil.copy2(ROOT / "site/native_annotations.py", workspace / "native_annotations.py")
             completed = subprocess.run(
-                [sys.executable, "-c", "import build_common"],
+                [sys.executable, "-c", "import build_common; import sys; assert 'huggingface_download' not in sys.modules"],
                 cwd=workspace,
                 capture_output=True,
                 text=True,

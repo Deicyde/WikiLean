@@ -26,6 +26,8 @@ import requests
 
 API = "https://wikilean.jackmccarthy.org"
 REPO = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "site"))
+import native_annotations as native  # noqa: E402
 
 
 def token() -> str:
@@ -57,7 +59,7 @@ def main() -> int:
     anns = art["annotations"]
     ver = art["version"]
     revid = art.get("revid")
-    hits = [x for x in anns if (x.get("mathlib") or {}).get("decl") == a.wrong_decl]
+    hits = [x for x in anns if any(t["decl"] == a.wrong_decl for t in native.mathlib_targets(x))]
     print(f"{a.slug}: version={ver} revid={revid} annotations={len(anns)}")
     print(f"matches for decl {a.wrong_decl!r}: {len(hits)}")
     for x in hits:
@@ -66,8 +68,21 @@ def main() -> int:
     if not hits:
         print("nothing to change.")
         return 0
-    for x in hits:
-        x["mathlib"]["decl"] = a.right_decl
+    if any(x.get("provenance") == "human" or x.get("status") == "rejected" for x in hits):
+        print("human-owned items and tombstones require the proposal/editor path", file=sys.stderr)
+        return 2
+    try:
+        replacements = [native.rename_mathlib_target(x, a.wrong_decl, a.right_decl)
+                        if native.is_native(x) else ({**x, "mathlib": {**x["mathlib"], "decl": a.right_decl}}
+                              if isinstance(x.get("mathlib"), dict) and x["mathlib"].get("decl") is not None
+                              else {**x, "decl": a.right_decl})
+                        for x in hits]
+    except native.NativeAnnotationError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    for x, changed in zip(hits, replacements):
+        x.clear()
+        x.update(changed)
     print(f"-> would set decl to {a.right_decl!r} on {len(hits)} annotation(s)")
     if not a.apply:
         print("(dry-run; re-run with --apply to write)")

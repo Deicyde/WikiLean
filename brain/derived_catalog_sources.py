@@ -62,7 +62,7 @@ TOOL_FILES = tuple(sorted({
     "brain/tools/execution_environment.py", "brain/tools/source_plan_contracts.py",
     "catalog/derived_graph_adapters.py", "catalog/build_concept_layer.py", "catalog/build_graph_v2.py",
     "catalog/build_hierarchy.py", "catalog/ingest_theorem_graph.py", "catalog/lift_formal_edges.py",
-    "catalog/huggingface_download.py",
+    "catalog/huggingface_download.py", "site/native_annotations.py",
 }))
 MAX_CONTROL = 64 * 1024 * 1024
 
@@ -163,7 +163,9 @@ def profiles():
     ids = []
     for profile in registry["profiles"]:
         exact(profile, {"profile_id", "files"}, "profile")
-        require([item["path"] for item in profile["files"]] == list(TOOL_FILES), "profile must close every executed helper")
+        paths = [item["path"] for item in profile["files"]]
+        historical = [path for path in TOOL_FILES if path != "site/native_annotations.py"]
+        require(paths in [list(TOOL_FILES), historical], "profile must close every executed helper")
         for item in profile["files"]:
             exact(item, {"path", "sha256"}, "helper")
             contracts._digest(item["sha256"], "helper digest")
@@ -182,6 +184,7 @@ def module_origins():
     for name in ("build_concept_layer", "build_graph_v2", "build_hierarchy", "ingest_theorem_graph", "lift_formal_edges"):
         pairs.append((getattr(adapters, name), "catalog/" + name + ".py"))
     pairs.append((sys.modules["huggingface_download"], "catalog/huggingface_download.py"))
+    pairs.append((sys.modules["native_annotations"], "site/native_annotations.py"))
     for module, relative in pairs:
         require(Path(module.__file__).resolve() == ROOT / relative, "loaded helper origin differs: " + relative)
     require(source_plan_contracts.contracts is contracts, "source helper loaded another contract module")

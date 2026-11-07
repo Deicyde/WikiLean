@@ -110,6 +110,8 @@ def verdict(row: dict, oracle: set[str], proof_wanted: set[str]) -> tuple[str, s
 
     fields = row.get("fields") or {}
     current = row.get("current") or {}
+    if any(key in current or key in fields for key in ("links", "unlinked")):
+        return ("pending", "native Literature Links need a version-aware, per-target review")
     new_decl = decl_of(fields.get("mathlib"))
     old_decl = decl_of(current.get("mathlib"))
     new_status = fields.get("status")

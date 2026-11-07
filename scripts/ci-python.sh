@@ -29,6 +29,7 @@ run_check() {
 
 run_check "Every tracked test file runs here or is corpus-only" "$PYTHON_BIN" scripts/check_ci_python_tests.py
 run_check "native annotation lifecycle tests" "$PYTHON_BIN" site/test_native_annotations.py
+run_check "native annotation consumers" "$PYTHON_BIN" site/test_annotation_consumers.py
 run_check "anchor resolution tests" "$PYTHON_BIN" site/test_anchor_resolve.py
 run_check "moderation unit tests" "$PYTHON_BIN" site/test_moderate.py
 run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py

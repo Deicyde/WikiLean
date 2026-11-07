@@ -44,6 +44,10 @@ import time
 from collections import Counter, defaultdict
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "site"))
+from native_annotations import mathlib_targets  # noqa: E402
+
+
 REPO = Path(__file__).resolve().parent.parent
 ANNOT_DIR = REPO / "site" / "annotations"
 CACHE_ORACLE = REPO / ".claude" / "skills" / "mathlib-search" / ".cache" / "declaration-data.json"
@@ -127,7 +131,7 @@ def parse_source_names(mathlib_dir: Path) -> tuple[set[str], set[str]]:
 # ---------------------------------------------------------------------------
 # Corpus scan
 # ---------------------------------------------------------------------------
-def scan_corpus() -> tuple[dict, Counter]:
+def scan_corpus(pinned: list[dict] | None = None) -> tuple[dict, Counter]:
     """Returns (by_decl, match_kind_counter). by_decl[decl] = list of citation
     records {slug, id, status, label, note, match_kind, provenance}."""
     by_decl: dict[str, list[dict]] = defaultdict(list)
@@ -143,20 +147,23 @@ def scan_corpus() -> tuple[dict, Counter]:
         for a in d.get("annotations") or []:
             if not isinstance(a, dict):
                 continue
-            ml = a.get("mathlib") or {}
-            decl = ml.get("decl") or a.get("decl")
-            if not decl:
-                continue
-            by_decl[decl].append({
-                "slug": slug,
-                "id": a.get("id"),
-                "status": a.get("status"),
-                "label": a.get("label"),
-                "note": (a.get("note") or "")[:240],
-                "match_kind": ml.get("match_kind"),
-                "provenance": a.get("provenance"),
-            })
-            mk_counter[ml.get("match_kind")] += 1
+            for ml in mathlib_targets(a):
+                # A current-checkout oracle cannot disprove an older pinned result.
+                if ml.get("version") or ml.get("sha256"):
+                    if pinned is not None:
+                        pinned.append({"slug": slug, "id": a.get("id"), **ml})
+                    continue
+                decl = ml["decl"]
+                by_decl[decl].append({
+                    "slug": slug,
+                    "id": a.get("id"),
+                    "status": a.get("status"),
+                    "label": a.get("label"),
+                    "note": (a.get("note") or "")[:240],
+                    "match_kind": ml.get("match_kind"),
+                    "provenance": a.get("provenance"),
+                })
+                mk_counter[ml.get("match_kind")] += 1
     return by_decl, mk_counter
 
 
@@ -192,7 +199,8 @@ def main() -> int:
     for name in oracle:
         last_seg_index[name.split(".")[-1]].append(name)
 
-    by_decl, mk_counter = scan_corpus()
+    pinned: list[dict] = []
+    by_decl, mk_counter = scan_corpus(pinned)
     total_decls = len(by_decl)
     total_citations = sum(len(v) for v in by_decl.values())
 
@@ -256,6 +264,7 @@ def main() -> int:
         "corpus": {
             "distinct_cited_decls": total_decls,
             "total_citations": total_citations,
+            "pinned_citations_deferred": len(pinned),
             "match_kind_dist": {str(k): v for k, v in mk_counter.items()},
         },
         "misses": {
@@ -267,6 +276,7 @@ def main() -> int:
         },
         "overclaims_proof_wanted_badged_formalized": overclaims,
         "proof_wanted_cited": proof_wanted_cited,
+        "pinned_citations_deferred": pinned,
         "categories": cats,
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -278,7 +288,8 @@ def main() -> int:
         print(f"decl-existence sweep  ({time.time() - t0:.1f}s)")
         print(f"  oracle: {len(cache):,} cache + {len(src_names):,} source "
               f"= {len(oracle):,} union names  ({len(proof_wanted)} proof_wanted stubs)")
-        print(f"  corpus: {total_citations:,} citations / {total_decls:,} distinct decls")
+        print(f"  corpus: {total_citations:,} unpinned citations / {total_decls:,} distinct decls")
+        print(f"  pinned citations deferred to a version-aware oracle: {len(pinned)}")
         print(f"  MISSES: {n_miss_decls} distinct ({proposal['misses']['pct_distinct']}%) "
               f"= {n_miss_cit} citations ({proposal['misses']['pct_citations']}%)")
         for c in ("likely_rename", "ambiguous_rename", "no_match"):

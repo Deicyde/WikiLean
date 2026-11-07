@@ -362,6 +362,105 @@ def resolved_web_uri(reference: str, base: str | None = None) -> str | None:
         return None
 
 
+def mathlib_targets(item: dict) -> list[dict]:
+    """Read every Mathlib declaration without treating another library as Mathlib.
+
+    Native links are the authority: the private legacy archive and stray old fields
+    are never fallbacks. Keep version and carrier identity for callers that need to
+    distinguish a pinned result from a name in the current checkout.
+    """
+    if not is_native(item):
+        old = item.get("mathlib")
+        old = old if isinstance(old, dict) else {}
+        name = old.get("decl") or item.get("decl")
+        return _legacy_mathlib_targets(item, old, name)
+    result = []
+    for link in item.get("links") or []:
+        annotation = link.get("annotation") if isinstance(link, dict) else None
+        if not isinstance(annotation, dict) or annotation.get("relation") == "noMatch":
+            continue
+        for index, end in enumerate(annotation.get("object") or []):
+            if not isinstance(end, dict) or end.get("type") != "lean":
+                continue
+            uri = end.get("uri")
+            location = end.get("location")
+            if (not isinstance(uri, str)
+                    or urljoin(link.get("base_uri") or "", uri) != MATHLIB_REPOSITORY
+                    or not isinstance(location, dict) or "profile" in location):
+                continue
+            name = location.get("declaration")
+            if not isinstance(name, str) or not name:
+                continue
+            result.append({"decl": name, "module": location.get("module"),
+                           "version": end.get("version"), "sha256": end.get("sha256"), "relation": annotation.get("relation"),
+                           "match_kind": item.get("match_kind"),
+                           "link_id": link.get("id"), "object_index": index})
+    return result
+
+
+def _legacy_mathlib_targets(item: dict, old: dict, name: object) -> list[dict]:
+    if not isinstance(name, str) or not name:
+        return []
+    return [{**old, "decl": name, "module": old.get("module") or item.get("module"),
+             "match_kind": old.get("match_kind") or item.get("match_kind")}]
+
+
+def editable_mathlib_targets(item: dict, expected: str) -> list[dict]:
+    """Refuse current-checkout repairs of pinned or opaque native targets."""
+    if item.get("status") == "rejected":
+        raise NativeAnnotationError("tombstones are not repair targets")
+    targets = mathlib_targets(item)
+    if not targets or {target["decl"] for target in targets} != {expected}:
+        raise NativeAnnotationError("repair needs exactly one distinct Mathlib declaration")
+    selected = {(target["link_id"], target["object_index"]) for target in targets}
+    if any((link["id"], index) not in selected
+           for link in item["links"] for index, _end in enumerate(link["annotation"]["object"])):
+        raise NativeAnnotationError("multi-target item requires per-target review")
+    for target in targets:
+        link = next(link for link in item["links"] if link["id"] == target["link_id"])
+        end = link["annotation"]["object"][target["object_index"]]
+        if (end.get("version") or end.get("sha256") or end.get("junk")
+                or set(end.get("location") or {}) - {"declaration", "module"}):
+            raise NativeAnnotationError("pinned or opaque target requires a version-aware repair")
+    return targets
+
+
+def rename_mathlib_target(item: dict, expected: str, new: str) -> dict:
+    """Change explicit unpinned declaration identities, preserving all other ends."""
+    targets = editable_mathlib_targets(item, expected)
+    result = deepcopy(item)
+    for target in targets:
+        link = next(link for link in result["links"] if link["id"] == target["link_id"])
+        end = link["annotation"]["object"][target["object_index"]]
+        # A rename supplies no evidence for the old module or source coordinates.
+        end["location"] = {"declaration": new}
+        end.pop("junk", None)
+    return result
+
+
+def clear_mathlib_target(item: dict, expected: str) -> dict:
+    """Explicitly remove a bad unpinned target; keep every source occurrence."""
+    targets = editable_mathlib_targets(item, expected)
+    result = deepcopy(item)
+    positions = {(target["link_id"], target["object_index"]) for target in targets}
+    links = []
+    for link in result["links"]:
+        annotation = link["annotation"]
+        annotation["object"] = [end for index, end in enumerate(annotation["object"])
+                                if (link["id"], index) not in positions]
+        if annotation["object"]:
+            # Other libraries or objects survive; the caller must review item-wide status.
+            links.append(link)
+        else:
+            for end in annotation["subject"]:
+                span = deepcopy(end)
+                if "base_uri" in link:
+                    span["base_uri"] = link["base_uri"]
+                result["unlinked"].append(span)
+    result["links"] = links
+    return result
+
+
 def formal_links(item: dict) -> list[dict]:
     """Public labels of the formal ends an item links to, with navigation restricted to HTTP(S).
 
