@@ -591,10 +591,10 @@ cannot run WikiLean's code. Here it is a step of the command:
    `/var` and `/tmp` are symlinks into `/private`. So the bridge names the worktree by
    `pwd -P` and `settings_json()` passes every other root through `os.path.realpath`.
 
-**No article text travels, either way.** A package carries no layer, no canonical body, no
-raw response and no candidates file (the contributor refetches and regenerates, and every sha
-is checked); a result carries the gated documents and the run's own receipts, and refuses by
-name any file that is article text.
+**Full source layers are not packaged.** A package omits the layer, canonical body,
+raw response and candidates file; the contributor refetches and regenerates pinned inputs.
+Results carry gated findings and receipts, including passage quotations, and refuse the
+named source-layer files. This filename check does not filter arbitrary file contents.
 
 **Cost.** The contributor's own Claude subscription. Nothing is spent from this host, and the
 spend cap is recorded, not enforced: no watchdog runs on a contributor machine.

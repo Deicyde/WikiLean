@@ -9,10 +9,11 @@ reach over ssh::
         [--execute]
 
 **A DRY RUN IS THE DEFAULT, and it is the documented way to start.** Without
-``--execute`` nothing is pushed, no model is called and no document is written: every
-step says what it would do and stops. Run each stage once without ``--execute``, read
-what it prints, and add ``--execute`` when you agree with it. ``--execute`` is the only
-thing in this command that spends your money or writes to the work repo, and no command
+``--execute``, nothing is pushed and no model is called. Run previews write local
+staging files; results previews write and verify a local bundle. The seal stage always
+writes its local sealed set and sends nothing, with or without ``--execute``.
+``--execute`` is the only thing in this command that starts a paid run or pushes to
+the work repo, and no command
 line can start a paid run by omitting a flag.
 
 Two more checks that cost nothing, and are worth running before any paid call:
@@ -52,7 +53,8 @@ about who made them and neither is inferred from a working directory.
 **What travels back**: the gated documents, the run's own records, and — when the
 contributor has sealed one — a record set, which is checked here by
 ``scripts/articles/verify_submission.py`` before anything is pushed, so a defect is seen
-on this machine and not first on the coordinator's. Never article text.
+on this machine and not first on the coordinator's. Findings carry passage quotations;
+full source-layer files are excluded.
 
 **The spend cap is recorded, not enforced.** No watchdog runs on a contributor machine,
 so a person watches the cost and stops the run.
@@ -456,11 +458,11 @@ def main(argv: list[str] | None = None) -> int:
         machine = workrepo.machine_id(args.machine_id)
         package = args.package
         # `seal` is not one of the stages --execute governs: it writes a set and pushes
-        # nothing either way, so saying "no document is written" in front of it would be
-        # untrue. Say that instead.
+        # nothing either way. Preview stages can also write local staging/result files;
+        # describe the model and push boundary explicitly.
         if not args.execute and set(stages) - {"seal"}:
-            print("# DRY RUN: nothing is pushed, no model is called and no document is "
-                  "written.\n# This is the default. Read what follows, then add "
+            print("# DRY RUN: nothing is pushed and no model is called; local staging "
+                  "and result files may be written.\n# This is the default. Read what follows, then add "
                   "--execute if you agree with it.")
         if "seal" in stages:
             print("# --stage seal writes a record set and pushes nothing, with or "

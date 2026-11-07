@@ -5,13 +5,12 @@ has been issued, and nothing here is deployed. What *is* built is
 `scripts/articles/verify_submission.py`, the offline statement of section 3's checks, so the
 contract can be tested from this side before anything is written on either.
 
-The formalization reader ([ARTICLES.md](ARTICLES.md)) takes sealed locate record sets from the
-formal-companion skill's locate pipeline. Today an **operator copies** one from the machine
-that produced it and runs `scripts/articles/build_store.py` by hand (ARTICLES.md section 2). That
-is right while one person runs every locate run. It is a bottleneck as soon as several
-machines produce sets a reviewer would accept as they stand — which is what formal-companion's
-*contribute mode* makes possible: locate work on a machine no ssh reaches, run by somebody
-who is not the maintainer.
+The formalization reader ([ARTICLES.md](ARTICLES.md)) takes sealed locate record sets,
+including sets produced by WikiLean's own pipeline. Today an **operator copies** a set
+from the producing machine, verifies it and reviews an import or builds a static store
+(ARTICLES.md section 2). That becomes a bottleneck when several contributor machines
+produce accepted sets. WikiLean's contribute mode supplies that transport today; the
+endpoint below would replace its manual return and review queue.
 
 This document specifies the **contract** for taking such a set over the wire: what a
 contributor machine posts, what WikiLean must check before it accepts it, where an accepted
@@ -19,9 +18,10 @@ set goes, and what a promotion step would need from Jack before any of it reache
 The two sides can then be built independently, and either can be tested against the contract
 alone.
 
-It is the WikiLean half only. Everything about *producing* a set — the planner, the work
-repo, the sandbox, the gate, the challenge, the export — belongs to formal-companion and is
-documented there; a contributor installs that skill, and WikiLean vendors no part of it.
+The producer implementation lives in `scripts/pipeline/`: the planner, work repo,
+sandbox, gate, challenge and export. [START-CONTRIBUTING.md](START-CONTRIBUTING.md)
+describes that path. The shared Literature Links format remains compatible with
+formal-companion exports; installing formal-companion is not a prerequisite.
 
 ## 1. What a machine posts
 

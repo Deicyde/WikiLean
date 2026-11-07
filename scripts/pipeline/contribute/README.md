@@ -29,14 +29,15 @@ claim on one, and `result/<run-id>/<machine-id>` is what it sends back. Nothing 
 pushed and nothing is rewritten.
 
 The declaration index does **not** go in git: it is hundreds of megabytes and travels as
-a release asset of the work repo, uploaded once per universe. No command here does that
-— it is the coordinator's own decision.
+a bucket download behind a short-lived signed URL, with a per-library licence
+manifest. The operator uploads it; no command here publishes the bundle.
 
 ## The commands
 
-**A dry run is the default, and it is how to start.** Without `--execute` nothing is
-pushed, no model is called and no document is written: every step prints what it would
-do and stops. Run each stage once without it, read what it says, then add `--execute`.
+**A dry run is the default, and it is how to start.** Without `--execute`, nothing is
+pushed and no model is called. Run previews write local staging files; results previews
+write and verify local result bundles. `--stage seal` always writes its local sealed
+set and sends nothing, with or without `--execute`.
 
 ```bash
 # the coordinator
@@ -79,8 +80,8 @@ A planned root carries `work/<task-id>/` — the manifest, the article's rendere
 the candidates and the declaration search, and the one directory the worker may write
 in. **A package deliberately leaves them behind** (`package.NOT_PACKAGED`): they hold
 the coordinator's own copy of the article text. So `--stage run` stages them again here,
-through `run/workdir.py`, out of the pages this machine refetched. That is the "no
-article text ever leaves your machine" promise, enforced rather than asserted.
+through `run/workdir.py`, out of the pages this machine refetched. Full source-layer files stay out of the transport; returned findings still contain
+the passage quotations needed to identify their claims.
 
 `--stage run` then drives each task through `run/task.py`, which is the same module the
 coordinator's run host uses: the worker call, the mechanical passage ids, **the runner's
@@ -122,8 +123,9 @@ Two checks that cost nothing and are worth running before any paid call:
   contributor refetches each page at its pinned revision and every sha is checked. No
   path of the coordinator's machine either — a package that names one is refused, never
   rewritten.
-- **Out of a result**: no article text. `results.py` refuses the listed names rather than
-  copying them, and nothing is filtered silently.
+- **Out of a result**: the named full source-layer files are refused by `results.py`.
+  Gated findings and sealed records contain passage quotations. Filename refusal is
+  not a general content filter for arbitrary files.
 
 ## The intake contract
 

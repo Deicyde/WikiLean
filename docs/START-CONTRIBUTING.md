@@ -11,7 +11,7 @@ every "coming" below is a release that has been scoped and signed off, not a wis
 |---|---|---|
 | **0** | Read an article, and **Confirm** or **Report** a link | **live now** |
 | **1** | **Tag a passage** yourself — add, change or remove a link | **coming in the next release** |
-| **2** | Run **your own agent** against the API | after release 1; needs agent accounts (PR #126) merged first |
+| **2** | Run **your own agent** against the tag API | merged with release 1; waiting on its deployment |
 | **3** | Run **WikiLean's whole locate pipeline** on your own machine | built, not yet open — **ask first** |
 
 ---
@@ -80,17 +80,18 @@ Three things that will be true of every tag:
 - it stores the declaration **name and location, never a pasted Lean signature** — the
   libraries' source text is under the libraries' own licences, and the reader renders
   signatures from the universe's own data;
-- it is public, attributed, in full history, and anybody can undo it.
+- it is public and attributed. R1 supports changing a tag and removing it with a reason;
+  full history, diffs and revert are planned for R2 and are not available in R1.
 
 ---
 
-## 2. Run an agent against the API — **after release 1**
+## 2. Run an agent against the tag API — **with release 1**
 
-> **Not open yet,** and it is waiting on two things, both named: PR #126 (agent
-> accounts) has to merge, and the reader's write surface has to be opened to agents,
-> which is a later release. Today the reader explicitly refuses agent writes.
+> **Merged, not deployed.** Agent accounts (PR #126) and the reader's two tag-write
+> routes (PR #138) are merged. They need migrations 0017–0019, the Turnstile setup and
+> an approved Worker release before they are available on the live site.
 
-When it opens, the shape is already decided and is PR #126's:
+When deployed:
 
 - you mint an **agent account yourself** at `/agents`. No asking a maintainer for a
   token;
@@ -102,17 +103,17 @@ When it opens, the shape is already decided and is PR #126's:
   minute**;
 - you revoke any of them from the same page.
 
-Then you point your agent at the tag route, or at the MCP tool beside the nine already
-at `POST /mcp`. **Your model, your spend, your cap.** WikiLean never sees your model
-key, and stores only the SHA-256 of the one it issues you.
+Then you point your agent at the tag routes documented in
+[ARTICLES.md section 10a](ARTICLES.md). The overlay MCP tool is later work (R4).
+**Your model, your spend, your cap.** WikiLean never sees your model key, and stores
+only the SHA-256 of the token it issues you.
 
 ---
 
 ## 3. Run the whole locate pipeline on your machine — **ask first**
 
-> **Built, tested, and not yet open.** Please open an issue before you start. Four
-> things are outstanding and each is named below, so you can see exactly where it
-> stands rather than being told "soon".
+> **Built, tested, and not yet open.** Please open an issue before you start. The
+> remaining prerequisites are listed below.
 
 This is how an article gets checked end to end: every passage cut out, every candidate
 declaration retrieved, every match judged, and a second pass that tries to refute the
@@ -137,8 +138,8 @@ amount of your own model time, and you cap your own spend.
 | Git + a GitHub account | read/write on the private work repo | the transport |
 | A WikiLean checkout | `git clone https://github.com/Deicyde/WikiLean` | the pipeline and the verifier |
 | Claude Code, logged in | **your own** Pro/Max subscription or API key | the three model stages |
-| `tend` | the task runner the gate's ownership check reads `TEND_TASK_ID` from | stage 10 |
-| The declaration index **and** the search corpus | about **0.5 GB per universe**, one download; where it is published is not decided yet | stage 9c's retrieval joins the index; the worker greps the search corpus |
+| Python dependencies | install the pinned dependencies listed in [PIPELINE.md](PIPELINE.md) | the runner uses the Claude Agent SDK; no separate `tend` installation is needed |
+| The declaration index **and** the search corpus | about **0.5 GB per universe**, one download; signed bucket access is not available yet | stage 9c's retrieval joins the index; the worker greps the search corpus |
 | Disk | about 2 GB per universe | the index, the search corpus and the fetched sources |
 | **Not** needed | an Anthropic key held by WikiLean, any WikiLean credential beyond the work-repo access, a Lean or Mathlib checkout | — |
 
@@ -148,19 +149,26 @@ amount of your own model time, and you cap your own spend.
    tested on Linux and unproven there: [docs/CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md)
    is the runnable checklist. **Nothing on this path should be promised to anybody until
    those are done.**
-2. **Where the index is published.** About half a gigabyte per universe, too big for git
-   and too big for a Worker asset. The decision is made but not executed.
+2. **Publishing the index.** The signed destination is a bucket behind short-lived
+   signed URLs, with a per-library licence manifest. The offline packager is built;
+   uploading the bundle and issuing access are still operator steps.
 3. **The submission endpoint and the claims API.** They are specified
    ([docs/INTAKE.md](INTAKE.md)) and the verifier half is built and runs offline today;
    the HTTP half is a later release. Until it exists, a set comes back through the work
    repo and the maintainer promotes it by hand.
-4. **A verdict on the paid proof** of the model stages.
+
+The paid three-article proof is complete: all 51 tasks passed the gate, and derived
+status agreed on 172 of 203 unchanged passages (84.7%, against the signed 80% bar).
+This measures agreement with the earlier run, not mathematical accuracy. It does not
+measure subscription usage or replace the Mac checks.
 
 ### The sequence
 
-Each command below is a **dry run until you pass `--execute`**. That is the documented
-way to use them: run each one without it, read what it says it would do, and add
-`--execute` when you agree. Nothing spends your money by omission.
+Claims, model runs and result pushes require **`--execute`**. Start without it.
+A run preview writes local staging files and checks the prompts; a results preview
+writes and verifies a local result bundle. Neither calls a model or pushes.
+**`--stage seal` always writes the local sealed set**, with or without `--execute`;
+it is free and sends nothing. No omitted flag starts a paid model run.
 
 ```sh
 git clone https://github.com/Deicyde/WikiLean && cd WikiLean
@@ -218,13 +226,14 @@ python3 scripts/pipeline/contribute/run_package.py \
   python3 scripts/articles/verify_submission.py --record-set <dir>/set --machine-id <you>
   ```
 
-### Two promises this path keeps mechanically, not by convention
+### What the transport carries
 
-- **No article text ever leaves your machine.** A package carries the plan, the sources'
-  pins and the universe — no text layer, no HTML, no candidates. It also deliberately
-  leaves the coordinator's own staged working directories behind, so your machine stages
-  its own out of the pages *you* refetched. A result carries the gated documents and the
-  run's receipts, and refuses by name any file that is article text.
+- **Source layers are refetched locally.** A package carries the plan, source pins and
+  universe; it omits full text layers, HTML, candidates and the coordinator's staged
+  working directories. Your machine stages its own inputs. Returned findings and
+  sealed records do contain the passage quotations needed to identify their claims.
+  The result copier refuses the named source-layer files; it is not a general filter
+  for arbitrary text placed in other files.
 - **We never see your model credentials.** WikiLean collects and stores no API key and
   no subscription credential, anywhere. The only credential WikiLean would ever *issue*
   you is a submit-only machine key, bound to your machine, quota'd and revocable on its
@@ -234,10 +243,14 @@ python3 scripts/pipeline/contribute/run_package.py \
 
 ## What happens to your work
 
-Everything you contribute becomes an ordinary community edit on the article pages:
-attributed to you (and, for an agent, to you as its owner), visible in recent changes,
-and revertible by anybody. Nothing is approved first. After a few accepted sets you
-become a **trusted** contributor and your sets go live without review.
+In R1, a tag saved through the website or tag API is a live community edit, attributed
+to its author. An agent has its own account and a named human owner. History, recent
+changes and general revert belong to R2; the trust ladder belongs to R3.
+
+A contributed record set follows a different path today: the maintainer verifies and
+reviews it offline. The importer writes pending JSON by default; it generates live
+SQL only with explicit approval (`--trusted`). Applying that SQL is a separate
+operator action after a backup. Accepted sets do not publish themselves.
 
 None of this makes a link *correct* — only that more than one party looked and did not
 object. The reader's "these links have not yet had an independent audit" notice stays,
@@ -251,9 +264,10 @@ and Wikipedia's text stays CC BY-SA 4.0 — by contributing you agree to that, a
 are running an agent, you are agreeing on its behalf.
 
 One thing that follows from it: **do not paste Lean source into a note.** The libraries'
-signatures and docstrings are under their own licences, not CC0, and at least one
-library in the current universe has terms that restrict evaluation use. A tag stores a
+signatures and docstrings are under their own licences, not CC0; check their terms
+for the intended use. A tag stores a
 declaration's *name*; the reader renders its statement from the library's own data.
+Check the bundle's per-library licence manifest before using its source text.
 
 ## Being useful
 
@@ -264,5 +278,5 @@ wrong link is worse than no link. Say why in the note. And if you are not sure, 
 ## Where to ask
 
 Open an issue on [Deicyde/WikiLean](https://github.com/Deicyde/WikiLean). For path 3,
-open one **before** you start: it is the path with four outstanding items above, and we
+open one **before** you start: it is the path with the outstanding prerequisites above, and we
 would rather tell you where they stand than have you find out at the end of a weekend.
