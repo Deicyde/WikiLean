@@ -67,19 +67,23 @@ def verify(bundle, roots, *, scratch_parent=None):
     core.validate_plan(plan)
     core.require(profile in core.profiles()["profiles"] and profile["profile_id"] == export["normalization_profile_id"],
                  "export profile is not a reviewed complete generation")
-    programs = {path: files["implementation/" + path] for path in core.TOOL_FILES}
-    core.require(profile["files"] == [{"path": path, "sha256": core.sha(programs[path])} for path in core.TOOL_FILES],
+    paths = core.profile_paths(profile)
+    programs = {path.removeprefix("implementation/"): raw for path, raw in files.items()
+                if path.startswith("implementation/")}
+    core.require(set(programs) == set(paths) and
+                 profile["files"] == [{"path": path, "sha256": core.sha(programs[path])} for path in paths],
                  "export implementation preimage differs")
     # A historical profile remains verifiable only while its normalization
-    # semantics are explicitly handled by this consumer. Version one has a
-    # single algorithm; helper generations do not dispatch arbitrary code.
+    # semantics are explicitly handled by this consumer. The pre-native
+    # closure retains its original nested-only annotation projection; profile
+    # selection never executes code supplied by an export.
     curated = {name: files["curated/" + name] for name in core.CURATED_PATHS}
     proof = {path.removeprefix("curated/proof/"): raw for path, raw in files.items() if path.startswith("curated/proof/")}
     core.verify_curated_proof(curated, plan["curated_git_commit"], export["curated_tree"], proof)
     with tempfile.TemporaryDirectory(prefix="wikilean-derived-verify-", dir=scratch_parent) as temporary:
         workspace = Path(temporary).resolve(strict=True)
         sources, manifests, objects, captured, _, lineages = core.capture_parents(plan, roots, workspace)
-        output = core.reduce_inputs(plan, curated, manifests, objects, captured, lineages)
+        output = core.reduce_inputs(plan, curated, manifests, objects, captured, lineages, profile=profile)
         expected = core.build_documents(plan, curated, export["curated_tree"], parse("curated/git-tool.json"), proof,
             sources, manifests, objects, output, profile, programs, export["normalized_at"])
     core.require(expected == {**files, "export.json": core.canonical(export)}, "export differs from independent normalization")
@@ -100,7 +104,7 @@ def export(plan, roots, repository, store, *, normalized_at=None):
     with tempfile.TemporaryDirectory(prefix=".derived-inputs-", dir=store) as temporary:
         sources, manifests, objects, captured, _, lineages = core.capture_parents(plan, roots, Path(temporary))
         curated, tree, git_tool, proof = core.capture_curated(repository, plan["curated_git_commit"])
-        output = core.reduce_inputs(plan, curated, manifests, objects, captured, lineages)
+        output = core.reduce_inputs(plan, curated, manifests, objects, captured, lineages, profile=profile)
         files = core.build_documents(plan, curated, tree, git_tool, proof, sources, manifests, objects, output, profile, programs, when)
     core.require(core.current_profile() == profile, "normalizer profile changed during reduction")
     implementation()

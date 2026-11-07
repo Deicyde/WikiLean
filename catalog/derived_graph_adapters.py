@@ -99,10 +99,19 @@ def formal_edges(decl_to_qid: dict[str, list[str]], statements: Iterable[dict],
              "edge_types": sorted(value["types"])} for (left, right), value in edges.items()]
 
 
+def _annotation_declarations(annotation: dict, legacy: bool) -> list[str]:
+    if legacy:
+        # Reproduce the pre-native producer: top-level decl was not a citation.
+        declaration = (annotation.get("mathlib") or {}).get("decl")
+        return [declaration] if declaration else []
+    return list(dict.fromkeys(t["decl"] for t in mathlib_targets(annotation)))
+
+
 def concept_graph(*, grounding: list[dict], overrides: list[dict], crossrefs: dict,
                   prior: list[dict], annotations: list[tuple[str, dict]], oracle: dict,
                   mathlib_text: Iterable[str], statements: Iterable[dict],
-                  dependencies: Iterable[dict], wikidata_edges: Iterable[dict]) -> dict:
+                  dependencies: Iterable[dict], wikidata_edges: Iterable[dict],
+                  legacy_annotations: bool = False) -> dict:
     declarations = oracle.get("declarations")
     if not isinstance(declarations, dict) or not declarations:
         raise ValueError("the explicit declaration oracle must be nonempty")
@@ -148,7 +157,7 @@ def concept_graph(*, grounding: list[dict], overrides: list[dict], crossrefs: di
         qid = slug_to_qid.get(article.get("slug"))
         if qid:
             for annotation in article.get("annotations") or []:
-                for declaration in dict.fromkeys(t["decl"] for t in mathlib_targets(annotation)):
+                for declaration in _annotation_declarations(annotation, legacy_annotations):
                     mapping[declaration].append(qid)
                     roles.setdefault(declaration, {}).setdefault(qid, "citation")
     mapping = {key: sorted(set(value)) for key, value in mapping.items()}
@@ -218,7 +227,8 @@ def hierarchy(statements: Iterable[dict], metadata: dict) -> dict:
 
 
 def theoremgraph_links(*, prior: list[dict], annotations: list[tuple[str, dict]],
-                       matches: Iterable[dict], metadata: dict, tier: str = "affirmed") -> dict:
+                       matches: Iterable[dict], metadata: dict, tier: str = "affirmed",
+                       legacy_annotations: bool = False) -> dict:
     if tier != "affirmed":
         raise ValueError("this normalization profile requires the explicitly reviewed affirmed tier")
     primary, cited = collections.defaultdict(set), collections.defaultdict(set)
@@ -232,7 +242,7 @@ def theoremgraph_links(*, prior: list[dict], annotations: list[tuple[str, dict]]
         qid = slugs.get(article.get("slug"))
         if qid:
             for annotation in article.get("annotations") or []:
-                for name in dict.fromkeys(t["decl"] for t in mathlib_targets(annotation)):
+                for name in _annotation_declarations(annotation, legacy_annotations):
                     cited[name].add(qid)
     interests = set(primary) | set(cited)
     links, seen = collections.defaultdict(list), collections.defaultdict(set)

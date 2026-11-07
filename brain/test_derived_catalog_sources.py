@@ -149,6 +149,62 @@ class DerivedSourcesTest(unittest.TestCase):
         self.assertEqual(graph["nodes"][0]["xrefs"], {"nlab": "one"})
         self.assertEqual(self.build(), path)
 
+    def historical_profile(self):
+        historical = copy.deepcopy(self.profile)
+        historical["files"] = [item for item in historical["files"] if item["path"] != "site/native_annotations.py"]
+        historical["profile_id"] = core.profile_id(historical)
+        registry = {**self.registry, "profiles": sorted([self.profile, historical], key=lambda item: item["profile_id"])}
+        core.REGISTRY.write_bytes(core.canonical(registry))
+        return historical
+
+    def test_reviewed_pre_native_closure_round_trips_and_requires_exact_preimages(self):
+        historical = self.historical_profile()
+        implementation = {path: (core.ROOT / path).read_bytes() for path in core.profile_paths(historical)}
+        with tempfile.TemporaryDirectory(dir=self.root) as scratch:
+            sources, manifests, objects, captured, _, lineages = core.capture_parents(self.plan, self.roots, Path(scratch))
+            curated, tree, git_tool, proof = core.capture_curated(self.repository, self.plan["curated_git_commit"])
+            output = core.reduce_inputs(self.plan, curated, manifests, objects, captured, lineages, profile=historical)
+            args = (self.plan, curated, tree, git_tool, proof, sources, manifests, objects, output)
+            files = core.build_documents(*args, historical, implementation, WHEN)
+            for profile, preimages in [
+                    (self.profile, implementation),
+                    (historical, {**implementation, "site/native_annotations.py": b"extra"})]:
+                with self.subTest(profile=profile["profile_id"]):
+                    with self.assertRaisesRegex(core.DerivationError, "whole profile preimage"):
+                        core.build_documents(*args, profile, preimages, WHEN)
+        path = self.store / "historical"; path.mkdir(mode=0o700)
+        for relative, raw in files.items():
+            target = path / relative; target.parent.mkdir(parents=True, exist_ok=True); target.write_bytes(raw)
+        for directory in path.rglob("*"):
+            if directory.is_dir():
+                directory.chmod(0o700)
+        self.assertEqual(producer.verify(path, self.roots)["normalization_profile_id"], historical["profile_id"])
+
+    def test_historical_profile_refuses_native_annotations_before_adapters(self):
+        historical = self.historical_profile()
+        with tempfile.TemporaryDirectory(dir=self.root) as scratch:
+            _, manifests, objects, captured, _, lineages = core.capture_parents(self.plan, self.roots, Path(scratch))
+            member = self.plan["bindings"]["annotations"][0]
+            path = core.member_path(member, captured)
+            original = core.json_object
+            # The source-contract checks still run; isolate the format boundary
+            # by substituting the decoded application record at its reader.
+            def decoded(selected):
+                if selected == path:
+                    return {"slug": "One", "annotations": [{"links": [], "unlinked": []}]}
+                return original(selected)
+            with mock.patch.object(core, "json_object", side_effect=decoded), \
+                    mock.patch.object(core.adapters, "concept_graph", side_effect=AssertionError("adapter ran")):
+                with self.assertRaisesRegex(core.DerivationError, "historical normalizer profile cannot consume native"):
+                    core.reduce_inputs(self.plan, self.curated, manifests, objects, captured, lineages, profile=historical)
+
+    def test_historical_annotation_projection_keeps_the_original_nested_only_semantics(self):
+        values = [{"decl": "Top.level"}, {"mathlib": {"decl": "Nested"}, "decl": "Other"}]
+        self.assertEqual([core.adapters._annotation_declarations(value, True) for value in values],
+                         [[], ["Nested"]])
+        self.assertEqual([core.adapters._annotation_declarations(value, False) for value in values],
+                         [["Top.level"], ["Nested"]])
+
     def test_dirty_worktree_and_ambient_cache_do_not_supply_curated_inputs(self):
         first = self.build()
         for relative in core.CURATED_PATHS.values(): (self.repository / relative).write_bytes(b"uncommitted wrong bytes")

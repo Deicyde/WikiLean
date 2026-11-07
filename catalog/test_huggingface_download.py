@@ -128,25 +128,25 @@ class RevisionAndUrlTest(unittest.TestCase):
                 self.assertEqual(reference["revision"], pin.revision)
 
     def test_sealed_build_common_import_excludes_acquisition_helper(self) -> None:
-        with tempfile.TemporaryDirectory() as temp:
-            workspace = Path(temp)
-            shutil.copy2(
-                ROOT / "brain/build_common.py",
-                workspace / "build_common.py",
-            )
-            shutil.copy2(
-                ROOT / "brain/build_context.py",
-                workspace / "build_context.py",
-            )
-            shutil.copy2(ROOT / "site/native_annotations.py", workspace / "native_annotations.py")
-            completed = subprocess.run(
-                [sys.executable, "-c", "import build_common; import sys; assert 'huggingface_download' not in sys.modules"],
-                cwd=workspace,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-            self.assertEqual(completed.returncode, 0, completed.stderr)
+        inventories = sorted((ROOT / "brain/authority").glob("reducer-inputs-*.json"))
+        self.assertTrue(inventories)
+        for inventory in inventories:
+            scope = json.loads(inventory.read_text())["scope"]
+            with self.subTest(inventory=inventory.name), tempfile.TemporaryDirectory() as temp:
+                workspace = Path(temp)
+                for relative in scope:
+                    target = workspace / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(ROOT / relative, target)
+                completed = subprocess.run(
+                    [sys.executable, "-I", "-S", "-c",
+                     "import sys; sys.path.insert(0, sys.argv[1]); import build_common; "
+                     "assert 'huggingface_download' not in sys.modules; "
+                     "assert 'native_annotations' not in sys.modules",
+                     str(workspace / "brain")],
+                    cwd=workspace, capture_output=True, text=True, check=False,
+                )
+                self.assertEqual(completed.returncode, 0, completed.stderr)
 
     def test_exact_url_construction_and_path_validation(self) -> None:
         self.assertEqual(

@@ -144,6 +144,23 @@ class GitHarvestTest(unittest.TestCase):
         self.assertEqual((path / "parents/formal-conjectures-source/source-fragment.json").read_bytes(),
             (self.roots["formal-conjectures-source"] / "source-fragment.json").read_bytes())
 
+    def test_reviewed_pre_native_closure_round_trips_without_new_helper(self):
+        historical = copy.deepcopy(self.profile)
+        historical["files"] = [item for item in historical["files"] if item["path"] != "site/native_annotations.py"]
+        historical["profile_id"] = core.profile_id(historical)
+        registry = {"schema": core.PROFILE_SCHEMA, "current_profile": self.profile["profile_id"],
+                    "profiles": sorted([self.profile, historical], key=lambda item: item["profile_id"])}
+        core.REGISTRY.write_bytes(core.canonical(registry))
+        programs = {name: raw for name, raw in self.programs.items() if name != "site/native_annotations.py"}
+        files = core.build_documents(self.plan, core.capture_parents(self.plan, self.roots),
+                                     historical, programs, self.dependencies, WHEN)
+        path = core.parent.archive.publish(files, self.store, core.EXPORT_SCHEMA)
+        self.assertEqual(set(core.verify_export(path, self.roots)["source_manifest_ids"]), set(self.families))
+        for profile, preimages in [(self.profile, programs), (historical, self.programs)]:
+            with self.subTest(profile=profile["profile_id"]):
+                with self.assertRaisesRegex(core.parent.EvidenceError, "reviewed generation"):
+                    core.validate_preimages(profile, preimages, self.dependencies)
+
     def test_wrong_reviewed_parent_identity_rejected_before_publication(self):
         self.ids["tauceti-source"] = "sha256:" + "f" * 64
         with self.assertRaisesRegex(core.parent.EvidenceError, "explicitly reviewed"):

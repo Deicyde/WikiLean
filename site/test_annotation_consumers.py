@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
-for path in (ROOT / "site", ROOT / "manage", ROOT / "catalog", ROOT / "bench"):
+for path in (ROOT / "site", ROOT / "manage", ROOT / "catalog", ROOT / "bench", ROOT / "brain"):
     sys.path.insert(0, str(path))
 import native_annotations as native
 import build_decl_citations as citations
@@ -20,6 +20,7 @@ import apply_sweep_verdicts
 import decl_existence_sweep
 import generate_tasks
 import derived_graph_adapters
+import build_common
 
 REPO = native.MATHLIB_REPOSITORY
 def target(name, repo=REPO, **extra):
@@ -67,6 +68,32 @@ class NativeConsumerTests(unittest.TestCase):
         value["links"][0]["base_uri"] = REPO
         value["links"][0]["annotation"]["object"][0]["uri"] = ""
         self.assertEqual(native.mathlib_targets(value)[0]["decl"], "Example.first")
+
+    def test_sealed_brain_projection_matches_application_reader(self):
+        native_item = item()
+        native_item["links"][0]["annotation"]["object"] += [
+            target("Example.pinned", version="v4.33.0", sha256="a" * 64),
+            target("Foreign.name", repo="https://example.org/lean"),
+            {"type": "lean", "uri": REPO, "location": {"profile": "urn:opaque", "declaration": "Opaque"}},
+            {"type": "html", "uri": REPO, "location": {"declaration": "Wrong.type"}},
+        ]
+        absence = link("Absent")
+        absence["annotation"]["relation"] = "noMatch"
+        relative = link("Relative")
+        relative["base_uri"] = REPO
+        relative["annotation"]["object"][0]["uri"] = ""
+        native_item["links"] += [absence, relative, copy.deepcopy(native_item["links"][0])]
+        cases = [native_item, {"links": [], "unlinked": [], "decl": "Archived.wrong"},
+                 {"mathlib": {"decl": "Legacy.nested"}, "decl": "Legacy.fallback"},
+                 {"decl": "Legacy.top"}, {"mathlib": None}, {}]
+        for value in cases:
+            before = copy.deepcopy(value)
+            with self.subTest(value=value):
+                self.assertEqual(build_common._annotation_mathlib_decls(value),
+                                 list(dict.fromkeys(ref["decl"] for ref in native.mathlib_targets(value))))
+                self.assertEqual(value, before)
+        self.assertEqual(build_common._annotation_mathlib_decls(native_item),
+                         ["Example.first", "Example.pinned", "Example.second", "Relative"])
 
     def test_reverse_citations_keep_all_native_declarations(self):
         value = item()
