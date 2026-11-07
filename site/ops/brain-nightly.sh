@@ -831,6 +831,7 @@ PY
       brain/tools/execution_environment.py catalog/huggingface_download.py \
       brain/authority/reducer-inputs-v1.json \
       $REDUCER_SCOPE \
+      site/native_annotations.py site/anchor_resolve.py site/render.py \
       site/test_frontier_page.py \
       site/ops/brain-nightly.sh site/ops/nightly.env)"; then
     echo "!!! RELEASE ABORTED: could not inspect release-affecting source status"
