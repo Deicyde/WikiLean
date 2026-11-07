@@ -206,7 +206,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 6 | Revert open to established editors | yes, in R2; patroller-only is a queue with no patrollers |
 | 7 | One actor vocabulary across the four the codebase uses | unify on `human`/`agent`, by R4. The overlay's own tables already do; nothing else was renamed in R1 |
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
-| 9 | Contribute mode's trigger | name the Mac; the seven pipeline checks are the last unmeasured gate on the self-run path |
+| 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain |
 | 10 | Where the declaration index and search corpus are published | a bucket behind a short-lived signed URL, issued per contributor, with a per-library licence manifest beside it. Not git, under any option |
 | 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. R1 implements it; **the wording is Jack's to review** |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |

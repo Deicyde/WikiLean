@@ -550,9 +550,9 @@ and the thing that comes back is a WikiLean record set.
 |---|---|
 | `cf contribute publish\|run\|collect` | `python3 scripts/pipeline/contribute/publish_package.py`, `run_package.py`, `collect_results.py` |
 | `scripts/contribute/workrepo.py` | `scripts/pipeline/contribute/workrepo.py` — the git transport, unchanged in substance |
-| `scripts/contribute/sandbox.py` | `scripts/pipeline/contribute/sandbox.py` — the per-call Claude Code settings, with the macOS real-path fix |
-| `scripts/run/bridge-claude-p.sh` | `scripts/pipeline/contribute/bridge.sh` — the per-call settings write, `pwd -P`, exit 78 |
-| the whole of `cf contribute run` | **the transport's two ends only**: claim, and results. What lies between them is pipeline stages 9 and 10, which are TODO |
+| `scripts/contribute/sandbox.py` | Current execution uses guarded SDK options in `site/agent_sandbox.py`; the old settings helper remains a compatibility fixture |
+| `scripts/run/bridge-claude-p.sh` | Current execution calls `run/agent.py` directly; the bridge remains a compatibility fixture |
+| the whole of `cf contribute run` | claim, staged run, harvest, local seal/verification and results are implemented |
 | a result is the gated documents and the run's records | **and**, new: the contributor may seal and verify its own set |
 | the results leg's "designed replacement" is WikiLean's endpoint | the verifier is already here: `scripts/articles/verify_submission.py` is wired in as the contributor's last step and the coordinator's first |
 
@@ -581,15 +581,16 @@ cannot run WikiLean's code. Here it is a step of the command:
    no such ref", which overwrites nothing — and the contributor then fetches the ref back and
    starts only if it is its own commit. The lease is not the mechanism; the unique commit plus
    the read-back is.
-2. **The sandbox is written per agent call.** The staged settings file is a template naming
-   the task worktree as `{{CF_TASK_WORKTREE}}`; the bridge replaces it with the directory tend
-   ran the call in and writes `<that worktree>/.tend/claude-settings.json`. A file written at
-   stage time could only name the whole entrypoint repository every worktree sits under, and a
-   worker for one task could then write into another's. The bridge exits 78 rather than run an
-   agent unsandboxed.
-3. **The macOS path fix.** The sandbox matches the *real* path a write lands on, and on macOS
-   `/var` and `/tmp` are symlinks into `/private`. So the bridge names the worktree by
-   `pwd -P` and `settings_json()` passes every other root through `os.path.realpath`.
+2. **Task inputs and writes have separate scopes.** The runner stages each task's
+   inputs under its own working directory. The SDK receives only Read, Grep, Glob
+   and Write, with no shell, Edit, imported settings or MCP servers. Its host-side
+   hook permits Write only with an absolute path resolving inside that task's
+   findings directory. The runner then runs the gate itself, supplying TEND_TASK_ID.
+   Workers cannot approve their own files by running the gate.
+3. **Compare physical paths.** Both the working directory and allowed findings
+   directory are resolved before comparison, including macOS's /var and /tmp
+   symlinks into /private. Relative Write paths fail closed. Native Mac client
+   checks cover inside writes and outside, relative and symlink refusals.
 
 **Full source layers are not packaged.** A package omits the layer, canonical body,
 raw response and candidates file; the contributor refetches and regenerates pinned inputs.
@@ -775,109 +776,60 @@ synthetic fixtures under `scripts/pipeline/fixtures/`: a two-article synthetic r
 prompt renderers. No test calls a model; `scripts/ci-python.sh` unsets every credential
 variable before it runs.
 
-## 9. What only a real Mac can prove (stage 11)
+## 9. Native Mac checks (stage 11)
 
-Everything in `scripts/pipeline/contribute/` is tested on Linux, including the macOS real-path
-substitution (`os.path.realpath`, `pwd -P`) on a symlinked temporary directory that stands in
-for `/var` → `/private/var`. Seven things remain, and none of them is a thing a Linux box can
-answer.
+[CONTRIBUTE-MAC-CHECKS.md](CONTRIBUTE-MAC-CHECKS.md) records the current SDK
+execution path, the platform/version evidence and the repeatable manual check.
+On 2026-11-07, the complete offline Python suite passed on macOS, and the real
+pinned SDK/client handled 24 scripted tool calls against a loopback-only fake
+provider. Inside reads/searches/writes succeeded; outside paths and symlinks
+revealed no outside files or contents; invalid writes and unlisted shell/Edit
+calls were refused. No model or subscription was used by this fixture.
 
-> **`docs/CONTRIBUTE-MAC-CHECKS.md` is the runnable form of this list**: the same seven,
-> each as a command to run and a line to write down, plus an eighth — what one article
-> costs out of a *subscription's* weekly allowance, which is unmeasured and is the
-> number a contributor actually cares about. Hand that page to whoever sits at the Mac.
-> **These are unrun, and nothing on path 3 should be promised to anybody until they are
-> done.**
-
-1. **The settings keys are this build's.** `sandbox.enabled`,
-   `sandbox.filesystem.disabled`, `allowWrite` / `denyWrite` and
-   `sandbox.autoAllowBashIfSandboxed` were read out of a Claude Code binary. Run
-   `claude /sandbox` on the Mac with the per-call file a staged run writes and confirm it
-   reports a confining filesystem sandbox. A renamed key leaves the agents unsandboxed with
-   only the prompt stopping them.
-2. **Whether `--settings` contributes `allowWrite` at all.** The binary's own telemetry note
-   says project settings contribute none. One `claude --settings <that file> -p '<write a
-   file outside the worktree>'` settles it. If it is ignored, the confinement rests on the
-   prompt and the allowlist.
-3. **macOS's sandbox backend.** Linux uses `bwrap`; macOS has its own. Check that a worker can
-   still write its document and run `git` inside its worktree (the entrypoint's `.git` is in
-   `allowWrite` for exactly that), and whether a call needs to write Claude Code's state under
-   `$HOME/.claude`, which no root admits.
-4. **tend on macOS.** `tend --version`, a one-task smoke run, and whether `TEND_TASK_ID`
-   reaches the validation command; without it the gate's ownership check falls back to the
-   weaker rule.
-5. **bash 3.2.** macOS ships it. `bash -n` over `bridge.sh` and the staged wrappers; the
-   bridge avoids heredocs inside `$(...)` for this reason.
-6. **A refetch may not reproduce the layer.** An old revision's parse output expands templates
-   as they are *now*, so a page can render to another layer than the coordinator's. The
-   command refuses such a source by name and the coordinator re-plans; a package carries no
-   bytes by rule, so there is no way to avoid the refetch. A synthetic run replays recorded
-   responses and cannot rule this out.
-7. **The agents' tool allowlist.** The worker's allowlist names host tools by absolute path;
-   the paths are staged and right by construction, but whether Claude Code's allowlist
-   matching behaves the same on macOS is unverified.
+The former seven-question checklist concerned a settings-file/bridge execution
+path. Current execution uses guarded SDK options and a runner-owned gate.
+The real refetch check also ran: one of the three pinned sources reproduced
+exactly; two returned different source bytes at the requested revisions and
+were correctly refused. Their packages need fresh source plans. The separate
+one-article subscription-usage measurement remains pending. See the linked
+check report for article/revision counts and the retained-body control.
 
 ## 10. What is not done
 
-Marked TODO in the tree, each with the section that specifies it:
+- Two of the three real refetched sources need fresh source plans after their
+  pinned hashes failed to reproduce. The source check refuses them before any
+  model call. One article's subscription allowance consumption remains unmeasured.
+- The declaration-index/search bundle is built and coverage-tested, but controlled
+  publication and access still require the operator's licence review and upload.
+- The submission verifier, local seal and pending importer are implemented.
+  The submission endpoint and claims API remain a later, separately scoped release.
+- The optional biography flag (wikinet) remains unported. flags.biography stays
+  null; an undetermined flag causes planning rather than skipping.
+- Four gate checks remain listed in verify_locate.TODO_CHECKS and printed by
+  --self-check. A passing implemented gate does not imply these checks ran.
 
-- **the paid proof of stage 9** (section 12). Every stage is built and every plan is proved;
-  what no offline check can tell us is whether WikiLean's own prompts, given WikiLean's own
-  retrieval, produce the same judgements. **No model call of any kind has been made from
-  this host.**
-- **the declaration index** stage 9c retrieves over and stage 8 joins from. Its *shape* is
-  built (`index.py`, with a JSONL and a SQLite reader, and `candidates.Retrieval` as a second
-  view of the same rows) and its *source* is open — section 11's question 3, which is now
-  precondition P1 of the paid proof;
-- **the biography flag** (`wikinet`): the Wikidata Query Service is a second endpoint for one
-  optional page flag, and it is not ported. `flags.biography` stays null on an entry this
-  pipeline writes, and a page with an undetermined flag is planned, not skipped;
-- **four checks of the gate** the port does not make: `verify_locate.TODO_CHECKS` names them,
-  and `--self-check` prints them, so a run host sees what this gate does not refuse;
-- ~~**the contributor's own seal**~~ — **done.** `run_package.py --stage seal`
-  (`scripts/pipeline/contribute/seal.py`) runs stage 8 and stage 6 on the contributor's
-  machine over the run it just finished, and puts the set it wrote straight through
-  `verify_submission.py` before anything is pushed. Its pins come from the package (the
-  universe, the sourceset's manifest sha, the status rule) and its identity from the
-  command line (the set id, the campaign, the producer commit, the creation time). Two
-  preconditions it refuses rather than works around: a locate run with no challenge
-  verdicts exports no record, and the inventory the plan was cut from has to be in the
-  contributor's own corpus.
+The three-article paid proof is complete; it is no longer a prerequisite waiting
+for its first model call. Its result does not authorize publication, a new paid
+run or bypassing the contributor prerequisites above.
 
-Until that proof is made and read, **a batch's model judgements are still
-formal-companion's and are consumed here.** That is a true statement about today and it is
-why nothing published moves. Everything around them is WikiLean's own and is proved to be:
-the sources, the renderer, the plans, the gate, the tally, the carry-over, the harvest, the
-watchdog, the export and the store all run with formal-companion nowhere on the machine, and
-together they reproduce batch 1 from its bytes to its seals.
+## 12. The completed paid proof of stage 9
 
-## 12. The paid proof of stage 9 — what is left, and what it costs
+The signed 2026-11-06 proof used Group homomorphism, Distributive property and
+Gradient from batch 1's pinned wpm3 sources. WikiLean re-cut, re-located and
+re-challenged them, then compared only passages whose carry-over fate was
+unchanged. The producer commit remains b24858ed; later fixes do not relabel
+that run.
 
-The three model stages are built and their **plans** are proved against batch 1 (R14, R15):
-WikiLean's own planners reproduce batch 1's inventory task manifests and the whole of its
-challenge plan. A plan cannot prove what a model does with the prompt it stages, and two
-things in stage 9 are deliberately *not* formal-companion's — WikiLean's prompts, and
-WikiLean's narrower retrieval (stage 9a's `@[wikidata]` join only) — so the question is real
-and not rhetorical.
+All **51/51 tasks passed** the gate. Derived status agreed on **172/203
+unchanged passages (84.73%)**, above the signed 80% bar. The conservative
+total was **$228.83 under the $400 cap**, including coordinator and unpriced
+allowances. The own-universe index contained 572,467 declarations across 48
+libraries and covered **208/208** baseline declarations before the run.
 
-**The run that answers it**, in full in the operator's proof plan of 2026-11-06 and
-summarised here:
-
-- **three articles of batch 1's own `wpm3` sourceset**, re-cut, re-located and re-challenged
-  by WikiLean's own code, their rows compared against batch 1's **through the carry-over map
-  of stage 8**: only a passage whose fate is `unchanged` has the same text in both runs, and
-  only those judgements may be put beside each other;
-- **about $238** at batch 1's own unit prices ($0.1538 a passage cut, $0.4336 a passage
-  located, $0.2699 a required record), under a **$400 cap** and three per-shard watchdog caps;
-- the headline measure is the **derived status**, which is the only value a reader ever
-  sees; the two hard bars are that every harvested document passes the gate and that the
-  tally produces no new kind of problem — a failure there is a defect of the port, not a
-  disagreement with batch 1;
-- **precondition P1**: a declaration index for the universe carrying the `@[wikidata]` tags.
-  Without it the retrieval hands out no curated hits, gate rule 4 is vacuous, and only the
-  cut (9b, about $33) is worth running.
-
-Nothing of it runs until Jack signs the plan.
+See [PIPELINE-PROOF-2026-11-06.md](PIPELINE-PROOF-2026-11-06.md) for the
+verdict, stage metrics, stop rules, spend accounting and limitations.
+Agreement with batch 1 is not mathematical accuracy. No new paid run is
+authorized by this report.
 
 ## 11. Questions for Jack
 
@@ -890,26 +842,21 @@ Nothing of it runs until Jack signs the plan.
    Rename it `producer_commit` in a future `/3`, or leave it — it is a 40-hex commit of
    whatever produced the set, and renaming is a change on both sides at once. *Recommendation:*
    leave it; note it for `/3`.
-3. **Where the declaration index lives** (section 3, stage 9) — **now a blocker, not only a
-   design question.** A new SQLite under `scripts/pipeline/`, or served out of the Brain,
-   which is already a map of Lean libraries? It decides whether the Brain's nightly and the
-   locate run share an input, and it is precondition P1 of the paid proof (section 12): the
-   retrieval joins the `@[wikidata]` tag, and no index on any host here carries one.
-   *Recommendation:* the Brain's declaration data plus the tagging bot's
-   `catalog/data/*.jsonl` — those tags are already WikiLean's and already human-reviewed, so
-   the curated join is WikiLean's own all the way down.
+3. **Declaration index publication.** The proof's own-universe corpus is now
+   converted and coverage-checked: 572,467 declarations, 48 libraries and all
+   208 baseline declarations. Source selection no longer blocks the proof.
+   The signed R0 destination is a bucket behind short-lived signed URLs, with
+   a per-library licence manifest. Operator licence review and publication
+   remain required.
 4. **Does formal-companion keep its locate pipeline?** The ruling does not say. Two producers
    of one format is a safety margin (section 5) and costs nothing here, but it is two things to
    keep in step. *Recommendation:* keep both; the shared parity tables are the join.
-5. **The paid proof: sign it, or change it** (section 12). Three articles, **$238**
-   estimated under a **$400** cap, the comparison through the carry-over map, and the
-   derived status as the headline measure. The operator's proof plan of 2026-11-06 names
-   the three articles, every command, the watchdog settings, eight stop rules and what
-   counts as agreeing, so the result cannot be argued into a pass afterwards. Nothing of it
-   runs until it is signed.
-6. **Contribute mode's trigger.** ROADMAP's P3 gates the contributions queue on "first real
-   compute donor asks". The transport and its middle are built; is a contributor expected,
-   and on which Mac, so section 9's seven checks can be run?
+5. **Paid proof completed.** Section 12 and the proof report record its signed
+   verdict and conservative spend. Any new prompt-changing run needs its own scope.
+6. **Contribute mode's trigger.** Native Mac boundary and offline checks now have
+   evidence. Real refetch exposed two old packages needing new source plans;
+   subscription usage and controlled bundle access also remain gates before
+   inviting a compute contributor.
 7. **Consolidating `derive_status` (question 1) is now unblocked.** Stage 8 has landed, which
    was the condition in that recommendation.
 8. **The task id.** WikiLean names a locate task `<run>-<source>-<n>` where
