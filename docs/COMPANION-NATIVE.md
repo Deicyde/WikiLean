@@ -3,8 +3,9 @@
 WikiLean's native application format stores complete Literature Links 1.0
 annotations in D1. Normal native reads and edits use those objects directly. The
 vendored schema is pinned to Literature Links 1.0.2; its provenance is in `wiki/src/vendor/literature-links/`.
-No production database has been migrated, and no Worker built from this code
-has been deployed.
+Merging this code neither migrates production data nor deploys a Worker. Record
+live completion only after the operator verifies the deployed release and audits
+the canonical D1 state; a local rehearsal is not a production receipt.
 
 ## Before any deploy from this commit on
 
