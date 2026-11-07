@@ -270,8 +270,15 @@ direct Worker deploy or restore an entire modified SQLite database into D1.
    are resumed. Hold the release journal's exclusive operator window. Set
    site_settings.site_write_mode to locked, retaining its previous value.
    This brakes community/agent writes; it does not stop the pipeline bearer.
-   Record and disable the drift cron's writes for the window using the reviewed
-   release procedure. Do not rely on a quiet site as evidence of a freeze.
+   Journal the drift Cron Trigger's exact schedule in the approved window. In
+   Cloudflare's Workers dashboard, select this Worker, open Triggers, and remove
+   each recorded Cron Trigger through its menu. Allow the documented propagation
+   interval (up to 15 minutes), then confirm in Workers Logs that every in-flight
+   scheduled invocation has finished before taking the snapshot. This is a
+   temporary operator maintenance action: do not deploy an edited local config.
+   [Cloudflare's trigger procedure](https://developers.cloudflare.com/workers/configuration/cron-triggers/#remove-a-cron-trigger)
+   documents removal and propagation. Do not rely on a quiet site as evidence of
+   a freeze.
 2. Create and verify the encrypted D1 backup from docs/BACKUP.md, then acquire a
    fresh consistent snapshot. Keep it private. Verify 0014's columns and table,
    and the release's other migration prerequisites, against the live database;
@@ -290,7 +297,10 @@ direct Worker deploy or restore an entire modified SQLite database into D1.
    source-resolution pass above is a separate, reviewed transformation; it is not
    automatically applied by this structural endpoint.
 5. Promote the approved exact release through the promoter. Verify its deployed
-   source identity before making the first migration request.
+   source identity before making the first migration request. Recheck the Cron
+   Triggers afterwards: a promotion can reinstall the configured schedule. If it
+   does, repeat the temporary removal and propagation/in-flight checks before
+   taking the final snapshot, rehearsal and first migration preview.
 
 The live path accepts one article at a time from a signed-in **admin session**:
 POST /api/admin/article/:slug/native-migration. It requires a same-origin
@@ -338,7 +348,9 @@ receipts are not relabeled as products of the new code.
 
 Close the migration window only after the live audit and remaining schema-3
 count match the approved scope. Restore the recorded brake/cron/job state
-deliberately; leave slug_editing off. If an article fails, leave it unchanged
+deliberately, including recreating the exact journaled Cron Trigger schedule
+through the dashboard and verifying it; leave slug_editing off. If an article
+fails, leave it unchanged
 and journal it. Report partial progress as partial, with the remaining slugs.
 
 ## History and rollback
