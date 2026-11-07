@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
 from unittest import mock
@@ -79,6 +80,15 @@ def tree_bytes(root: Path) -> dict[str, bytes]:
 
 
 class AnnotationMirrorTests(unittest.TestCase):
+    def frozen_timestamps(self):
+        """Model a filesystem whose timestamp tick contains the entire update."""
+        real_entry = mirror._entry
+
+        def frozen(metadata, kind, **kwargs):
+            return replace(real_entry(metadata, kind, **kwargs), mtime_ns=0, ctime_ns=0)
+
+        return mock.patch.object(mirror, "_entry", side_effect=frozen)
+
     def make_cache(self, root: Path) -> Path:
         cache = root / "annotations"
         cache.mkdir()
@@ -324,6 +334,7 @@ class AnnotationMirrorTests(unittest.TestCase):
                 )
 
             with (
+                self.frozen_timestamps(),
                 mock.patch.object(
                     mirror, "verify_snapshot_bundle", return_value=fake_bundle(article())
                 ),
@@ -356,6 +367,7 @@ class AnnotationMirrorTests(unittest.TestCase):
                 real_exchange(left, right)
 
             with (
+                self.frozen_timestamps(),
                 mock.patch.object(
                     mirror, "verify_snapshot_bundle", return_value=fake_bundle(article())
                 ),
@@ -369,6 +381,31 @@ class AnnotationMirrorTests(unittest.TestCase):
             self.assertTrue(os.path.samestat(cache_root, cache.stat()))
             self.assertEqual((cache / "Abelian_group.json").read_bytes(), old_article)
             self.assertEqual((cache / mirror.MANIFEST_NAME).read_bytes(), old_manifest)
+            self.assertFalse(list(root.glob(".annotations.pull.*.tmp")))
+
+    def test_clone_rejects_bytes_that_differ_from_planned_snapshot(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            cache = self.make_cache(root)
+            before = tree_bytes(cache)
+            real_clone, real_read = mirror._clone_tree, mirror._read_regular
+
+            def clone_with_changed_read(source, destination, snapshot):
+                def changed_read(path):
+                    data = real_read(path)
+                    return b"Z" * len(data) if path == source / "Disk_only.json" else data
+                with mock.patch.object(mirror, "_read_regular", side_effect=changed_read):
+                    real_clone(source, destination, snapshot)
+
+            with (
+                self.frozen_timestamps(),
+                mock.patch.object(mirror, "verify_snapshot_bundle",
+                                  return_value=fake_bundle(article())),
+                mock.patch.object(mirror, "_clone_tree", side_effect=clone_with_changed_read),
+            ):
+                with self.assertRaisesRegex(mirror.AnnotationMirrorError, "changed while cloning"):
+                    mirror.pull(Path("/absolute/bundle"), annotations_dir=cache)
+            self.assertEqual(tree_bytes(cache), before)
             self.assertFalse(list(root.glob(".annotations.pull.*.tmp")))
 
     def test_replaced_lock_inode_is_rejected_after_lock_acquisition(self) -> None:
