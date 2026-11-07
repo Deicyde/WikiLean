@@ -1409,6 +1409,13 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-07: **R1 public Turnstile configuration prepared.** The formalization
+  reader now names the operator-supplied public site key for
+  `wikilean.jackmccarthy.org`. The matching `TURNSTILE_SECRET` remains an
+  operator-only, version-staged prerequisite. This does not activate a widget on
+  the live site: the new configuration ships only with the final frozen release,
+  fresh P1B and Jack's release approval.
+
 - 2026-11-07: **Literature Links transition prepared.** Pinned upstream 1.0.2,
   ported the remaining citation/graph/export/oracle/repair readers, and added a
   preview-first admin structural migration sharing the copied-database converter.
