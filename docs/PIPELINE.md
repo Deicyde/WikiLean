@@ -591,10 +591,10 @@ cannot run WikiLean's code. Here it is a step of the command:
    `/var` and `/tmp` are symlinks into `/private`. So the bridge names the worktree by
    `pwd -P` and `settings_json()` passes every other root through `os.path.realpath`.
 
-**No article text travels, either way.** A package carries no layer, no canonical body, no
-raw response and no candidates file (the contributor refetches and regenerates, and every sha
-is checked); a result carries the gated documents and the run's own receipts, and refuses by
-name any file that is article text.
+**Full source layers are not packaged.** A package omits the layer, canonical body,
+raw response and candidates file; the contributor refetches and regenerates pinned inputs.
+Results carry gated findings and receipts, including passage quotations, and refuse the
+named source-layer files. This filename check does not filter arbitrary file contents.
 
 **Cost.** The contributor's own Claude subscription. Nothing is spent from this host, and the
 spend cap is recorded, not enforced: no watchdog runs on a contributor machine.
@@ -780,7 +780,14 @@ variable before it runs.
 Everything in `scripts/pipeline/contribute/` is tested on Linux, including the macOS real-path
 substitution (`os.path.realpath`, `pwd -P`) on a symlinked temporary directory that stands in
 for `/var` → `/private/var`. Seven things remain, and none of them is a thing a Linux box can
-answer:
+answer.
+
+> **`docs/CONTRIBUTE-MAC-CHECKS.md` is the runnable form of this list**: the same seven,
+> each as a command to run and a line to write down, plus an eighth — what one article
+> costs out of a *subscription's* weekly allowance, which is unmeasured and is the
+> number a contributor actually cares about. Hand that page to whoever sits at the Mac.
+> **These are unrun, and nothing on path 3 should be promised to anybody until they are
+> done.**
 
 1. **The settings keys are this build's.** `sandbox.enabled`,
    `sandbox.filesystem.disabled`, `allowWrite` / `denyWrite` and
@@ -827,10 +834,15 @@ Marked TODO in the tree, each with the section that specifies it:
   pipeline writes, and a page with an undetermined flag is planned, not skipped;
 - **four checks of the gate** the port does not make: `verify_locate.TODO_CHECKS` names them,
   and `--self-check` prints them, so a run host sees what this gate does not refuse;
-- **the contributor's own seal**: stage 11 wires `verify_submission.py` in, stage 8 produces
-  rows on the contributor's machine and stage 9a now gives it the sourceset the export's
-  source rows come from, so sealing there is reachable; what is missing is the command that
-  does it on the contributor's side.
+- ~~**the contributor's own seal**~~ — **done.** `run_package.py --stage seal`
+  (`scripts/pipeline/contribute/seal.py`) runs stage 8 and stage 6 on the contributor's
+  machine over the run it just finished, and puts the set it wrote straight through
+  `verify_submission.py` before anything is pushed. Its pins come from the package (the
+  universe, the sourceset's manifest sha, the status rule) and its identity from the
+  command line (the set id, the campaign, the producer commit, the creation time). Two
+  preconditions it refuses rather than works around: a locate run with no challenge
+  verdicts exports no record, and the inventory the plan was cut from has to be in the
+  contributor's own corpus.
 
 Until that proof is made and read, **a batch's model judgements are still
 formal-companion's and are consumed here.** That is a true statement about today and it is

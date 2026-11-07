@@ -164,12 +164,18 @@ on the old annotation plane: the reader is where batch 1's data is, the producer
 the sealed store needs no change to any existing invariant. The sealed record set is never
 written.
 
+**Product direction (Jack, 2026-11-06).** WikiLean should become a place where anybody
+can post formalizations, with human and agent identities, visible contributions and
+community moderation. R0 and R1 establish the contribution and posting paths. Profiles,
+recent changes, trust and self-service intake remain in the later releases below;
+this direction does not mark those releases authorised or deployed.
+
 ### The releases
 
 | | What | Migrations | State |
 |---|---|---|---|
 | **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` (operator action) | in progress |
-| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` | **built; waiting on a release** |
+| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` | **merged (#138); waiting on a release** |
 | **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | `0020`, `0021` | not authorised |
 | **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | `0022`, `0023` | not authorised |
 | **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | `0024` | not authorised |

@@ -29,10 +29,15 @@ claim on one, and `result/<run-id>/<machine-id>` is what it sends back. Nothing 
 pushed and nothing is rewritten.
 
 The declaration index does **not** go in git: it is hundreds of megabytes and travels as
-a release asset of the work repo, uploaded once per universe. No command here does that
-— it is the coordinator's own decision.
+a bucket download behind a short-lived signed URL, with a per-library licence
+manifest. The operator uploads it; no command here publishes the bundle.
 
-## The three commands
+## The commands
+
+**A dry run is the default, and it is how to start.** Without `--execute`, nothing is
+pushed and no model is called. Run previews write local staging files; results previews
+write and verify local result bundles. `--stage seal` always writes its local sealed
+set and sends nothing, with or without `--execute`.
 
 ```bash
 # the coordinator
@@ -40,17 +45,57 @@ python3 scripts/pipeline/contribute/publish_package.py --run-id loc-7 \
     --plan <planned-run dir> --sources <sources.jsonl> --universe <universe.json> \
     --repo <work-repo clone> --max-cost 20
 
-# the contributor, on the Mac (a dry run until --execute)
+# the contributor, on the Mac. Each of these is a dry run until --execute.
 python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
     --stage claim --execute
-#   ... run the work (see "What is not built yet") ...
+
+#   ... refetch the pinned revisions and render them into <workdir>/root/sources/,
+#   ... put the candidates in <workdir>/root/candidates/, the declaration index and
+#   ... the search corpus under <workdir>/root/index/. `--stage run` names any missing.
+
+# free: stage every task's working directory and check every path the prompts name
 python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
-    --stage results --documents <dir> --host <dir> [--record-set <dir>] --execute
+    --stage run
+# then, when that is clean, the paid run
+python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
+    --stage run --execute [--model <name>] [--no-reviewer]
+
+# seal it here: stage 8 and stage 6 on this machine, then the intake contract
+python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
+    --stage seal --set-id <token> --campaign 'run:loc-7+chl-7' \
+    --challenge-run chl-7 --producer-commit "$(git rev-parse HEAD)" \
+    --created "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
+    --stage results --documents <dir> --host <dir> --record-set <dir> --execute
 
 # the coordinator
 python3 scripts/pipeline/contribute/collect_results.py --run-id loc-7 \
     --repo <clone> --out <dir> --fetch
 ```
+
+## Staging: the contributor builds its own working directories
+
+A planned root carries `work/<task-id>/` — the manifest, the article's rendered views,
+the candidates and the declaration search, and the one directory the worker may write
+in. **A package deliberately leaves them behind** (`package.NOT_PACKAGED`): they hold
+the coordinator's own copy of the article text. So `--stage run` stages them again here,
+through `run/workdir.py`, out of the pages this machine refetched. Full source-layer files stay out of the transport; returned findings still contain
+the passage quotations needed to identify their claims.
+
+`--stage run` then drives each task through `run/task.py`, which is the same module the
+coordinator's run host uses: the worker call, the mechanical passage ids, **the runner's
+own gate call** out of tree, one retry that hands the gate's refusal list back, and the
+promotion of a gated document into the corpus. The worker never runs the gate — it has
+no shell.
+
+Two checks that cost nothing and are worth running before any paid call:
+
+* `--stage run` with no `--execute` stages everything and then reads the rendered
+  prompts, pulling every path out of them and asking whether staging put it there. A
+  prompt naming a file that is not there is what stops a paid run halfway;
+* `--stage results` with no `--execute` runs the intake contract over a sealed set and
+  pushes nothing.
 
 ## The three things that must not be lost
 
@@ -78,8 +123,9 @@ python3 scripts/pipeline/contribute/collect_results.py --run-id loc-7 \
   contributor refetches each page at its pinned revision and every sha is checked. No
   path of the coordinator's machine either — a package that names one is refused, never
   rewritten.
-- **Out of a result**: no article text. `results.py` refuses the listed names rather than
-  copying them, and nothing is filtered silently.
+- **Out of a result**: the named full source-layer files are refused by `results.py`.
+  Gated findings and sealed records contain passage quotations. Filename refusal is
+  not a general content filter for arbitrary files.
 
 ## The intake contract
 
@@ -91,13 +137,40 @@ untrusted input whoever pushed it. The refusal codes and HTTP statuses are the o
 submission endpoint will answer with, so the work-repo leg and the endpoint that will
 replace it refuse the same sets for the same reasons.
 
+## Sealing it here
+
+`--stage seal` is the command docs/PIPELINE.md section 10's last bullet said was
+missing. Three steps of WikiLean's own pipeline, on the contributor's machine:
+
+1. **stage 8** (`tally.py`): the harvested documents become outcome rows under the
+   challenge's verdicts, then the rows the exporter takes — each passage's quote cut
+   out of *this machine's* rendered layer;
+2. **stage 6** (`export_records.py`): those rows become `SEAL.json`, `universe.json`,
+   `sources.jsonl`, `records/*.jsonl` and `receipts/*.json`;
+3. **the intake contract** (`verify_submission.py`), right there, before anything is
+   pushed.
+
+Every pin comes from the package, not from this machine: the universe, the sourceset's
+manifest sha and the status rule are the coordinator's. The set id, the campaign, the
+producer commit and the creation time are given on the command line, because a seal is
+a statement about bytes and about who made them.
+
+Two preconditions worth knowing before you try it:
+
+* **a challenge run.** Nothing leaves this pipeline without a challenge value, so a
+  locate run with no stage-9d verdicts exports no record. `--stage seal` refuses to
+  write an empty set and says so;
+* **the inventory run** the plan was cut from, in the same corpus. It is your own stage
+  9b over the same pinned revisions; the package cannot carry it, because its passages
+  are article text.
+
 ## What is not built yet
 
-Between `claim` and `results`: fetching the package's sources at their pinned revisions,
-placing the declaration index, regenerating the candidates, staging the run and driving
-the agents. Those are pipeline stages 9 and 10 (docs/PIPELINE.md section 10), and a
-contributor does that part by hand until they land. The transport at both ends, the
-claim, the sandbox, the bridge and the result's checks are built and tested.
+Fetching the package's sources at their pinned revisions and rendering them (stage 9a),
+and regenerating the candidates (9c's retrieval), are still by hand: `--stage run` names
+what is missing but does not go and get it. Everything else between `claim` and
+`results` — staging, the agent calls, the gate, the retry, the harvest and the seal — is
+built and tested.
 
 ## What only a real Mac can prove
 

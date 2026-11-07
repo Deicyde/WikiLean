@@ -749,6 +749,9 @@ class WikidataEntityAcquisitionTest(unittest.TestCase):
             target.mkdir(mode=0o700)
             sentinel = target / "intruder"
             sentinel.write_text("preserve")
+            # Exercise an unexpected member, not the earlier permissions check:
+            # the fixture must not depend on the caller's umask.
+            sentinel.chmod(0o644)
             with self.assertRaisesRegex(
                 acquire.WikidataEntityAcquisitionError, "member set"
             ):

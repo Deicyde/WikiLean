@@ -81,6 +81,7 @@ run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
 run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
+run_check "Contributed set promoted to reviewable overlay rows" "$PYTHON_BIN" scripts/articles/test_promote_submission.py
 run_check "Pipeline Literature Links pin" "$PYTHON_BIN" scripts/pipeline/test_links.py
 run_check "Pipeline revision-free key tests" "$PYTHON_BIN" scripts/pipeline/test_keys.py
 run_check "Pipeline locate vocabulary parity" "$PYTHON_BIN" scripts/pipeline/test_vocab.py
@@ -93,6 +94,7 @@ run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/p
 run_check "Pipeline Wikipedia client, behind --execute, no network" "$PYTHON_BIN" scripts/pipeline/test_wikinet.py
 run_check "Pipeline stage-9 prompts render and read the gate" "$PYTHON_BIN" scripts/pipeline/test_prompts.py
 run_check "Pipeline declaration index converted from a universe corpus" "$PYTHON_BIN" scripts/pipeline/test_index_from_corpus.py
+run_check "Pipeline index bundle: manifest, licences, names-only subset" "$PYTHON_BIN" scripts/pipeline/test_package_index.py
 run_check "Pipeline cut, retrieval, locate and challenge plans" "$PYTHON_BIN" scripts/pipeline/test_model_stages.py
 run_check "Pipeline locate gate, rules 1 to 10 out of tree" "$PYTHON_BIN" scripts/pipeline/gate/test_gate.py
 run_check "Pipeline run, harvest reconciliation and spend watchdog" "$PYTHON_BIN" scripts/pipeline/run/test_run.py

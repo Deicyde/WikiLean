@@ -34,6 +34,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 PIPELINE = HERE.parent
@@ -47,7 +48,10 @@ import publish_package  # noqa: E402
 import results as results_mod  # noqa: E402
 import run_package  # noqa: E402
 import sandbox  # noqa: E402
+import seal as seal_mod  # noqa: E402
+import tally as tally_mod  # noqa: E402
 import work as work_mod  # noqa: E402
+import workdir as workdir_mod  # noqa: E402
 import workrepo  # noqa: E402
 
 FIXTURE_SET = PIPELINE / "fixtures" / "recordset"
@@ -478,11 +482,48 @@ class MiddleTests(WorkRepoCase):
                       inventory_run=run_tests.fixture.INV_RUN,
                       universe=workspace.universe, manifest=workspace.manifest,
                       sources=workspace.sources, candidates=workspace.candidates,
-                      index=workspace.index, per_task=8,
+                      index=workspace.index, per_task=8, render_prompts=True,
                       # what the package NAMES; the contributor fills these three
                       sources_as="../sources", candidates_as="../candidates",
                       index_as="../index/decls.jsonl")
         return plan_root, workspace
+
+    def fill_inputs(self, root: Path, workspace) -> None:
+        """What the contributor refetches and builds, into the names the plan gives them.
+
+        The package carries none of this: the sources are article text, and the index
+        is a map of a Lean library. Here they are the stage-10 suite's synthetic ones.
+        """
+        shutil.copytree(workspace.sources, root / "sources", dirs_exist_ok=True)
+        shutil.copytree(workspace.candidates, root / "candidates", dirs_exist_ok=True)
+        (root / "index").mkdir(exist_ok=True)
+        shutil.copyfile(workspace.index, root / "index" / "decls.jsonl")
+
+    def stub_worker(self, root: Path, task: str, document: dict) -> str:
+        """A local command that writes ``document`` where the worker would, and nothing else."""
+        import test_gate as fixture  # noqa: PLC0415
+
+        out = root / "work" / task / "findings" / task / f"{fixture.SOURCE}.json"
+        script = self.tmp / f"stub-{task}.py"
+        script.write_text(
+            "import json, pathlib\n"
+            f"path = pathlib.Path({str(out)!r})\n"
+            "path.parent.mkdir(parents=True, exist_ok=True)\n"
+            f"path.write_text({json.dumps(document, sort_keys=True)!r}, encoding='utf-8')\n",
+            encoding="utf-8")
+        return f"{sys.executable} {script}"
+
+    def task_document(self, root: Path, task: str, run_id: str = "loc-7") -> dict:
+        """The gate suite's good document, cut down to the passages this task was handed."""
+        import test_gate as fixture  # noqa: PLC0415
+
+        document = fixture.good_locate_document()
+        document["run_id"] = run_id
+        document["task_id"] = task
+        handed = {p["item"] for p in json.loads(
+            (root / "tasks" / f"{task}.json").read_text())["documents"][0]["passages"]}
+        document["passages"] = [p for p in document["passages"] if p["item"] in handed]
+        return document
 
     def test_a_real_plan_carries_no_path_of_the_coordinators(self):
         plan_root, _workspace = self.real_plan()
@@ -493,8 +534,6 @@ class MiddleTests(WorkRepoCase):
         self.assertNotIn("sources/", "".join(manifest["files"]))
 
     def test_claim_then_a_stub_worker_then_gate_harvest_and_results(self):
-        import test_gate as fixture  # noqa: PLC0415
-
         plan_root, workspace = self.real_plan()
         self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
         clone = self.contributor("mac-one")
@@ -503,39 +542,25 @@ class MiddleTests(WorkRepoCase):
                         package="loc-7", execute=True)
         self.assertEqual(package, "loc-7")
 
-        # before the inputs are in place, the middle says which are missing and harvests
-        # nothing: a contributor learns that from one line, not from a task of model time
+        # before the inputs are in place, the middle says which are missing, stages
+        # nothing and harvests nothing: a contributor learns that from one line, not
+        # from a task of model time
         done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
         self.assertTrue(done["missing_inputs"])
+        self.assertEqual(done["staged"], {})
         self.assertEqual(done["receipt"]["actual"]["count"], 0)
 
-        # the contributor fills the three directories the plan names
+        # the contributor fills what the plan names and the package cannot carry
         root = done["root"]
-        shutil.copytree(workspace.sources, root / "sources", dirs_exist_ok=True)
-        shutil.copytree(workspace.candidates, root / "candidates", dirs_exist_ok=True)
-        (root / "index").mkdir(exist_ok=True)
-        shutil.copyfile(workspace.index, root / "index" / "decls.jsonl")
+        self.fill_inputs(root, workspace)
         self.assertEqual(work_mod.missing_inputs(root), [])
 
         # a stub worker writes the task's document, through the same agent entry a model
-        # call takes
+        # call takes, after the runner has staged the task's own working directory
         task = work_mod.tasks_of(root)[0]
-        document = fixture.good_locate_document()
-        document["run_id"] = "loc-7"
-        document["task_id"] = task
-        handed = {p["item"] for p in json.loads(
-            (root / "tasks" / f"{task}.json").read_text())["documents"][0]["passages"]}
-        document["passages"] = [p for p in document["passages"] if p["item"] in handed]
-        out = root / "work" / task / "findings" / task / f"{fixture.SOURCE}.json"
-        script = self.tmp / "stub-worker.py"
-        script.write_text(
-            "import json, pathlib\n"
-            f"path = pathlib.Path({str(out)!r})\n"
-            "path.parent.mkdir(parents=True, exist_ok=True)\n"
-            f"path.write_text({json.dumps(document, sort_keys=True)!r}, encoding='utf-8')\n",
-            encoding="utf-8")
+        command = self.stub_worker(root, task, self.task_document(root, task))
         done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7",
-                     worker_command=f"{sys.executable} {script}")
+                     worker_command=command, reviewer=False)
         self.assertEqual(done["rejected"], [], done)
         self.assertEqual(done["passed"], [task])
         self.assertTrue(done["receipt"]["complete"], done["receipt"])
@@ -555,8 +580,6 @@ class MiddleTests(WorkRepoCase):
         self.assertEqual(sorted(collected["machines"]), ["mac-one"])
 
     def test_a_task_the_gate_rejects_is_not_harvested(self):
-        import test_gate as fixture  # noqa: PLC0415
-
         plan_root, workspace = self.real_plan()
         self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
         clone = self.contributor("mac-one")
@@ -564,26 +587,497 @@ class MiddleTests(WorkRepoCase):
         quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
               package="loc-7", execute=True)
         root = work_mod.materialise(package_mod.package_dir(clone, "loc-7"), workdir)
-        shutil.copytree(workspace.sources, root / "sources", dirs_exist_ok=True)
-        shutil.copytree(workspace.candidates, root / "candidates", dirs_exist_ok=True)
-        (root / "index").mkdir(exist_ok=True)
-        shutil.copyfile(workspace.index, root / "index" / "decls.jsonl")
+        self.fill_inputs(root, workspace)
         task = work_mod.tasks_of(root)[0]
-        document = fixture.good_locate_document()
-        document["run_id"] = "loc-7"
-        document["task_id"] = task
-        handed = {p["item"] for p in json.loads(
-            (root / "tasks" / f"{task}.json").read_text())["documents"][0]["passages"]}
-        document["passages"] = [p for p in document["passages"] if p["item"] in handed]
+        document = self.task_document(root, task)
         # break rule 6: two locations with one rank
         document["passages"][1]["locations"][1]["rank"] = 1
-        out = root / "work" / task / "findings" / task / f"{fixture.SOURCE}.json"
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(document, sort_keys=True), encoding="utf-8")
-        passed, rejected = quiet(work_mod.gate_all, root)
-        self.assertEqual((passed, rejected), ([], [task]))
+        command = self.stub_worker(root, task, document)
+        records = quiet(work_mod.run_tasks, root, worker_command=command,
+                        reviewer=False, max_attempts=1)
+        self.assertEqual([r["task_id"] for r in records], [task])
+        self.assertFalse(records[0]["gate"]["ok"])
+        self.assertEqual(records[0]["promoted"], [])
+        passed = [r["task_id"] for r in records if r["gate"]["ok"]]
+        self.assertEqual(passed, [])
         receipt = quiet(work_mod.harvest, root, workdir, "loc-7", passed)
         self.assertEqual(receipt["actual"]["count"], 0)
+
+
+class StagingTests(MiddleTests):
+    """The contributor stages its **own** working directories, after refetching.
+
+    A package deliberately leaves the coordinator's staged directories behind — they
+    hold its copy of the article text — so the contributor's side has to build them
+    from the pages it refetched. This is that step, and the free check over it.
+    """
+
+    def ready(self, run_id: str = "loc-7"):
+        """``(clone, workdir, root)``: a claimed package with every input in place."""
+        plan_root, workspace = self.real_plan(run_id)
+        self.publish(run_id=run_id, plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package=run_id, execute=True)
+        root = work_mod.materialise(package_mod.package_dir(clone, run_id), workdir)
+        self.fill_inputs(root, workspace)
+        return clone, workdir, root
+
+    def test_the_package_carries_no_staged_working_directory(self):
+        plan_root, _workspace = self.real_plan()
+        # the coordinator's plan staged its own, out of its own rendered sources
+        self.assertTrue(any((plan_root / "work").rglob("STAGED.json")))
+        manifest = self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        self.assertEqual([rel for rel in manifest["files"] if rel.startswith("work/")],
+                         [])
+
+    def test_staging_builds_each_task_s_directory_from_this_machine_s_files(self):
+        _clone, _workdir, root = self.ready()
+        staged = quiet(work_mod.stage_tasks, root)
+        self.assertTrue(staged)
+        for task, record in staged.items():
+            work = root / "work" / task
+            self.assertTrue((work / workdir_mod.STAGED_NAME).is_file())
+            self.assertTrue((work / "task.json").is_file())
+            for rel in record["files"]:
+                self.assertTrue((work / rel).is_file(), rel)
+            # every rendered view the prompts name, by name and never globbed
+            for sid in record["sources"]:
+                for name in workdir_mod.WORKER_VIEWS:
+                    self.assertTrue((work / "sources" / sid / name).is_file(), name)
+            # and the one directory the worker may write in
+            self.assertTrue(workdir_mod.findings_dir(root, task).is_dir())
+
+    def test_a_staged_file_is_this_machine_s_own_bytes(self):
+        _clone, _workdir, root = self.ready()
+        staged = quiet(work_mod.stage_tasks, root)
+        task, record = next(iter(staged.items()))
+        sid = record["sources"][0]
+        self.assertEqual((root / "work" / task / "sources" / sid / "layer.txt")
+                         .read_text(encoding="utf-8"),
+                         (root / "sources" / sid / "layer.txt").read_text(encoding="utf-8"))
+
+    def test_the_free_check_says_every_path_the_prompts_name_is_staged(self):
+        _clone, _workdir, root = self.ready()
+        quiet(work_mod.stage_tasks, root)
+        got = quiet(work_mod.check_prompts, root)
+        self.assertTrue(got)
+        for task, answer in got.items():
+            self.assertTrue(answer["ok"], f"{task}: {answer['missing']}")
+            self.assertTrue(answer["present"])
+
+    def test_the_free_check_names_a_path_staging_did_not_put_there(self):
+        _clone, _workdir, root = self.ready()
+        quiet(work_mod.stage_tasks, root)
+        task = work_mod.tasks_of(root)[0]
+        (root / "prompts" / "worker.md").write_text(
+            "Read `sources/<source-id>/nowhere.json` and write your document.\n",
+            encoding="utf-8")
+        got = quiet(work_mod.check_prompts, root, tasks=[task])
+        self.assertFalse(got[task]["ok"])
+        self.assertTrue(any(name.endswith("nowhere.json")
+                            for name in got[task]["missing"]))
+
+    def test_a_missing_input_stages_nothing_and_runs_nothing(self):
+        plan_root, _workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package="loc-7", execute=True)
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertTrue(done["missing_inputs"])
+        self.assertEqual(done["staged"], {})
+        self.assertEqual(done["records"], [])
+        self.assertEqual(done["receipt"]["actual"]["count"], 0)
+        # and it says what to go and get, by name
+        self.assertTrue(any("rendered source" in line for line in done["missing_inputs"]))
+
+    def test_a_stopped_rerun_leaves_an_earlier_harvest_s_receipt_alone(self):
+        """A run that harvests nothing must not write over a harvest it did not make.
+
+        The failure this guards: a contributor finishes a paid run, then loses an
+        input -- moves the workdir, clears the refetched sources -- and runs the
+        command again. A harvest of no documents over a corpus that holds some writes
+        a receipt saying `complete: false` and lists every document already there as
+        unexpected, and `--stage seal` then refuses the corpus. The documents survive;
+        the receipt that vouches for them does not, and the only way back is to pay
+        for the tasks again.
+        """
+        clone, workdir, root = self.ready()
+        task = work_mod.tasks_of(root)[0]
+        command = self.stub_worker(root, task, self.task_document(root, task))
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir,
+                     package="loc-7", worker_command=command, reviewer=False)
+        self.assertTrue(done["harvested"])
+        self.assertTrue(done["receipt"]["complete"])
+        receipt = workdir / work_mod.CORPUS_DIR / "loc-7" / "RECEIPT.json"
+        before = receipt.read_bytes()
+
+        # the contributor loses a refetched source and runs it again
+        shutil.rmtree(root / "sources")
+        again = quiet(run_package.run_stage, repo=clone, workdir=workdir,
+                      package="loc-7", worker_command=command, reviewer=False)
+        self.assertTrue(again["missing_inputs"])
+        self.assertFalse(again["harvested"])
+        self.assertEqual(receipt.read_bytes(), before)
+        # and what it reports is the harvest that is really there, not an empty one
+        self.assertTrue(again["receipt"]["complete"])
+        self.assertEqual(again["receipt"]["actual"]["count"], 1)
+
+    def test_a_stopped_first_run_reports_an_empty_receipt_and_writes_none(self):
+        plan_root, _workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package="loc-7", execute=True)
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertFalse(done["harvested"])
+        self.assertEqual(done["receipt"]["actual"]["count"], 0)
+        self.assertFalse((workdir / work_mod.CORPUS_DIR / "loc-7" / "RECEIPT.json")
+                         .exists())
+
+    def test_a_dry_run_stages_and_checks_and_calls_no_model(self):
+        clone, workdir, root = self.ready()
+        with io.StringIO() as sink, redirect_stdout(sink):
+            done = run_package.run_stage(repo=clone, workdir=workdir, package="loc-7")
+            printed = sink.getvalue()
+        self.assertIn("DRY RUN", printed)
+        self.assertTrue(done["staged"])
+        self.assertTrue(all(answer["ok"] for answer in done["prompts"].values()))
+        # every envelope says it was a dry run, and nothing was promoted
+        envelopes = sorted((root / "usage").rglob("*.json"))
+        self.assertTrue(envelopes)
+        for path in envelopes:
+            self.assertTrue(json.loads(path.read_text())["dry_run"])
+        self.assertEqual(done["passed"], [])
+        self.assertFalse(any((root / "findings").rglob("*.json")))
+
+
+class SealTests(MiddleTests):
+    """``--stage seal``: the command PIPELINE.md section 10 said was missing.
+
+    Stage 8 and stage 6 on the contributor's machine, over the run it just finished,
+    and then the intake contract over what came out — all offline, nothing posted.
+    """
+
+    def real_plan(self, run_id: str = "loc-7"):
+        plan_root, workspace = super().real_plan(run_id)
+        self.workspace = workspace
+        return plan_root, workspace
+
+    def publish(self, run_id: str = "loc-7", **over):
+        """Publish with the stage-10 workspace's own universe and sourceset pins.
+
+        The seal pins the universe the plan froze and the sourceset the run was planned
+        against, and both come from the package, so the package has to carry the ones
+        this plan was made from rather than an unrelated fixture's.
+        """
+        over.setdefault("universe", self.workspace.universe)
+        over.setdefault("sources", self.workspace.manifest)
+        return super().publish(run_id, **over)
+
+    def finished_run(self, run_id: str = "loc-7"):
+        """``(clone, workdir)`` after a stub worker's document has been gated and harvested."""
+        plan_root, workspace = self.real_plan(run_id)
+        self.publish(run_id=run_id, plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package=run_id, execute=True)
+        root = work_mod.materialise(package_mod.package_dir(clone, run_id), workdir)
+        self.fill_inputs(root, workspace)
+        task = work_mod.tasks_of(root)[0]
+        command = self.stub_worker(root, task, self.task_document(root, task, run_id))
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir,
+                     package=run_id, worker_command=command, reviewer=False)
+        self.assertEqual(done["passed"], [task], done)
+        # the inventory the plan was cut from: on a real machine it is the
+        # contributor's own stage-9b run over the same pinned revisions, which lands in
+        # the same corpus. Here it is the stage-10 suite's, copied in.
+        import test_run as run_tests  # noqa: PLC0415
+
+        shutil.copytree(workspace.corpus / run_tests.fixture.INV_RUN,
+                        workdir / work_mod.CORPUS_DIR / run_tests.fixture.INV_RUN)
+        self.root = root
+        return clone, workdir
+
+    def write_challenge(self, workdir: Path, root: Path, *, run_id: str = "chl-7",
+                        challenged: str = "loc-7") -> str:
+        """A synthetic challenge run of this contributor's own, under <workdir>/runs/.
+
+        Nothing leaves this pipeline without a challenge value, so a set is sealed
+        after stage 9d. This is the smallest honest stand-in for one: every record the
+        locate run produced, upheld. It lives where a contributor's own runs live.
+        """
+        import keys  # noqa: PLC0415
+        import test_gate as fixture  # noqa: PLC0415
+        import vocab  # noqa: PLC0415
+
+        document = self.task_document(root, work_mod.tasks_of(root)[0], challenged)
+        universe = json.loads(
+            (self.workspace.universe).read_text(encoding="utf-8"))
+        commits = {str(lib["id"]): str(lib["commit"])
+                   for lib in universe["libraries"]}
+        records, verdicts = [], []
+        for passage in document["passages"]:
+            for location in passage.get("locations") or []:
+                key = keys.location_key(fixture.SOURCE, passage["item"],
+                                        location["library"],
+                                        commits[location["library"]],
+                                        location["declaration"])
+                records.append({"key": key, "run_id": challenged,
+                                "source_id": fixture.SOURCE, "item": passage["item"],
+                                "target": "location", "location_key": key,
+                                "planned": "required",
+                                "relation": location["relation"],
+                                "library": location["library"],
+                                "declaration": location["declaration"]})
+                verdicts.append({"item": passage["item"], "target": "location",
+                                 "location_key": key, "action": "confirm",
+                                 "witness": "The declaration says it.",
+                                 "instantiation": location.get("instantiation")
+                                 or "at the gadget of the passage"})
+            if passage.get("coverage") is not None:
+                records.append({
+                    "key": tally_mod.record_key("coverage", fixture.SOURCE,
+                                                passage["item"], None),
+                    "run_id": challenged, "source_id": fixture.SOURCE,
+                    "item": passage["item"], "target": "coverage",
+                    "planned": "required",
+                    "parts": [row["location_key"] for row in records
+                              if row["item"] == passage["item"]
+                              and row["target"] == "location"]})
+                verdicts.append({"item": passage["item"], "target": "coverage",
+                                 "action": "confirm",
+                                 "witness": "Both clauses are stated."})
+            if passage.get("outcome") == "absent":
+                records.append({
+                    "key": tally_mod.record_key("absence", fixture.SOURCE,
+                                                passage["item"], None),
+                    "run_id": challenged, "source_id": fixture.SOURCE,
+                    "item": passage["item"], "target": "absence",
+                    "planned": "required"})
+                verdicts.append({
+                    "item": passage["item"], "target": "absence", "action": "uphold",
+                    "witness": "Nothing in the universe states it.",
+                    "queries": list((passage.get("receipt") or {}).get("queries") or [])})
+        runs = Path(workdir) / seal_mod.RUNS_DIR / run_id
+        runs.mkdir(parents=True, exist_ok=True)
+        plan = json.loads((root / "run.json").read_text(encoding="utf-8"))
+        (runs / "run.json").write_text(json.dumps({
+            "run_id": run_id, "mode": vocab.MODE_CHALLENGE,
+            "locate": {**plan["locate"], "mode": vocab.MODE_CHALLENGE,
+                       "challenged_runs": [challenged]}}, indent=1) + "\n",
+            encoding="utf-8")
+        (runs / "challenge-plan.json").write_text(json.dumps({
+            "schema": vocab.CHALLENGE_PLAN_SCHEMA, "run_id": run_id,
+            "challenged_runs": [challenged], "records": records}, indent=1) + "\n",
+            encoding="utf-8")
+        task = f"{run_id}-t1"
+        out = Path(workdir) / work_mod.CORPUS_DIR / run_id / task
+        out.mkdir(parents=True, exist_ok=True)
+        (out / f"{fixture.SOURCE}.json").write_text(json.dumps({
+            "schema": vocab.DOCUMENT_SCHEMA, "mode": vocab.MODE_CHALLENGE,
+            "run_id": run_id, "task_id": task, "source_id": fixture.SOURCE,
+            "source_sha": document["source_sha"],
+            "layer_sha256": document["layer_sha256"],
+            "renderer": document["renderer"], "universe": document["universe"],
+            "universe_sha256": document["universe_sha256"],
+            "verdicts": verdicts}, indent=1) + "\n", encoding="utf-8")
+        (Path(workdir) / work_mod.CORPUS_DIR / run_id / "RECEIPT.json").write_text(
+            json.dumps({"complete": True, "gate": {"ok": True},
+                        "harvested_at": "2026-01-02T03:04:05Z"}, indent=1) + "\n",
+            encoding="utf-8")
+        return run_id
+
+    def seal(self, clone, workdir, **over):
+        fields = {"repo": clone, "workdir": workdir, "package": "loc-7",
+                  "set_id": "contrib-1", "campaign": "run:loc-7",
+                  "producer_commit": "a" * 40, "created": "2026-11-06T00:00:00Z",
+                  "machine": "mac-one", "received_at": RECEIVED_AT}
+        fields.update(over)
+        return quiet(run_package.seal_stage, **fields)
+
+    def challenged(self, clone, workdir, **over):
+        run = self.write_challenge(workdir, self.root)
+        return self.seal(clone, workdir, challenge_runs=(run,), **over)
+
+    def test_a_run_with_no_challenge_seals_nothing_and_says_why(self):
+        """Nothing leaves this pipeline without a challenge value — not even here."""
+        clone, workdir = self.finished_run()
+        with self.assertRaises(seal_mod.SealProblem) as caught:
+            self.seal(clone, workdir)
+        self.assertIn("--challenge-run", str(caught.exception))
+        self.assertIn("challenge value", str(caught.exception))
+
+    def test_a_finished_run_seals_and_the_intake_contract_accepts_it(self):
+        clone, workdir = self.finished_run()
+        done = self.challenged(clone, workdir)
+        set_dir = Path(done["set_dir"])
+        self.assertTrue((set_dir / "SEAL.json").is_file())
+        seal = json.loads((set_dir / "SEAL.json").read_text(encoding="utf-8"))
+        self.assertEqual(seal["set_id"], "contrib-1")
+        self.assertEqual(seal["campaign"], "run:loc-7")
+        self.assertEqual(seal["skill_commit"], "a" * 40)
+        self.assertEqual(seal["created"], "2026-11-06T00:00:00Z")
+        # /2, because a /1 set carries no passage_key and intake refuses it
+        self.assertEqual(seal["schema"], "cf-locate-recordset/2")
+        # the intake contract ran here, on this machine, before anything was pushed
+        self.assertTrue(done["submission"]["records"])
+        self.assertEqual(done["submission"]["set_id"], "contrib-1")
+
+    def test_the_seal_pins_the_universe_and_sourceset_the_plan_froze(self):
+        clone, workdir = self.finished_run()
+        done = self.challenged(clone, workdir)
+        seal = json.loads((Path(done["set_dir"]) / "SEAL.json").read_text(encoding="utf-8"))
+        run = json.loads((workdir / work_mod.ROOT_DIR / "run.json")
+                         .read_text(encoding="utf-8"))
+        self.assertEqual(seal["universe"]["universe_sha256"],
+                         run["locate"]["universe"]["sha256"])
+        self.assertEqual(seal["sourceset"]["manifest_sha256"],
+                         run["locate"]["sourceset"]["manifest_sha256"])
+
+    def test_the_sealed_set_goes_back_through_the_results_leg(self):
+        clone, workdir = self.finished_run()
+        done = self.challenged(clone, workdir)
+        result = quiet(run_package.send_results, repo=clone, workdir=workdir,
+                       machine="mac-one", package="loc-7",
+                       documents=workdir / work_mod.CORPUS_DIR / "loc-7",
+                       record_set=Path(done["set_dir"]), execute=True,
+                       received_at=RECEIVED_AT)
+        self.assertEqual(result["submission"]["set_id"], "contrib-1")
+
+    def test_a_bad_producer_commit_is_refused_before_anything_is_written(self):
+        clone, workdir = self.finished_run()
+        with self.assertRaises(seal_mod.SealProblem) as caught:
+            self.seal(clone, workdir, producer_commit="HEAD")
+        self.assertIn("40-hex", str(caught.exception))
+        self.assertFalse((workdir / run_package.SET_DIR).exists())
+
+    def test_a_root_that_was_never_materialised_is_refused(self):
+        plan_root, _workspace = self.real_plan()
+        self.publish(run_id="loc-7", plan=plan_root, tasks=["t1"])
+        clone = self.contributor("mac-one")
+        with self.assertRaises(run_package.RunProblem) as caught:
+            self.seal(clone, self.tmp / "nothing")
+        self.assertIn("--stage run", str(caught.exception))
+
+    def test_a_stage_8_refusal_exits_two_and_not_three(self):
+        """Exit 3 is "the command broke"; a corpus the tally will not read is exit 2.
+
+        The tally, the corpus gate check, the export and the index reader all raise
+        ValueError subclasses, so a catch-all would report every one of them as a
+        crash and send a contributor looking for a bug in the tool.
+        """
+        clone, workdir = self.finished_run()
+        run = self.write_challenge(workdir, self.root)
+        # the inventory the plan was cut from goes missing
+        import test_run as run_tests  # noqa: PLC0415
+
+        shutil.rmtree(workdir / work_mod.CORPUS_DIR / run_tests.fixture.INV_RUN)
+        code = quiet(run_package.main,
+                     ["--repo", str(clone), "--workdir", str(workdir),
+                      "--package", "loc-7", "--stage", "seal",
+                      "--set-id", "contrib-3", "--campaign", "run:loc-7",
+                      "--producer-commit", "c" * 40, "--challenge-run", run,
+                      "--created", "2026-11-06T00:00:00Z"])
+        self.assertEqual(code, 2)
+
+    def test_the_command_line_refuses_a_seal_with_no_pins(self):
+        clone, workdir = self.finished_run()
+        code = quiet(run_package.main,
+                     ["--repo", str(clone), "--workdir", str(workdir),
+                      "--package", "loc-7", "--stage", "seal"])
+        self.assertEqual(code, 2)
+
+    def test_the_command_line_seals_and_writes_the_set(self):
+        clone, workdir = self.finished_run()
+        run = self.write_challenge(workdir, self.root)
+        out = self.tmp / "my-set"
+        code = quiet(run_package.main,
+                     ["--repo", str(clone), "--workdir", str(workdir),
+                      "--package", "loc-7", "--stage", "seal",
+                      "--set-id", "contrib-2", "--campaign", "run:loc-7",
+                      "--producer-commit", "b" * 40, "--challenge-run", run,
+                      "--created", "2026-11-06T00:00:00Z", "--set-out", str(out)])
+        self.assertEqual(code, 0)
+        self.assertTrue((out / "SEAL.json").is_file())
+        self.assertEqual(
+            json.loads((out / "SEAL.json").read_text(encoding="utf-8"))["set_id"],
+            "contrib-2")
+
+
+class ResultBoundaryTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name)
+        self.root = self.base / "result"
+        self.root.mkdir()
+        self.outside = self.base / "outside.json"
+        self.outside.write_text("private test bytes", encoding="utf-8")
+        self.sha = results_mod.keys.sha256_file(self.outside)
+
+    def receipt(self, files):
+        (self.root / results_mod.RESULT_JSON).write_text(
+            json.dumps({"schema": results_mod.RESULT_SCHEMA, "files": files}),
+            encoding="utf-8")
+
+    def assert_refused_without_hashing(self):
+        with patch.object(results_mod.keys, "sha256_file",
+                          side_effect=AssertionError("untrusted path was read")):
+            self.assertTrue(results_mod.check_receipt(self.root))
+
+    def test_parent_path_in_a_receipt_is_refused_before_reading(self):
+        self.receipt({"../outside.json": self.sha})
+        self.assert_refused_without_hashing()
+
+    def test_absolute_path_in_a_receipt_is_refused_before_reading(self):
+        self.receipt({str(self.outside): self.sha})
+        self.assert_refused_without_hashing()
+
+    def test_symlink_directory_in_a_receipt_is_refused_before_reading(self):
+        (self.root / "linked").symlink_to(self.base, target_is_directory=True)
+        self.receipt({"linked/outside.json": self.sha})
+        self.assert_refused_without_hashing()
+
+    def test_a_symlink_receipt_is_refused(self):
+        self.outside.write_text(json.dumps(
+            {"schema": results_mod.RESULT_SCHEMA, "files": {}}), encoding="utf-8")
+        (self.root / results_mod.RESULT_JSON).symlink_to(self.outside)
+        self.assertTrue(results_mod.check_receipt(self.root))
+
+    def test_copy_refuses_symlinks_before_copying_any_file(self):
+        (self.root / "a.json").write_text("{}", encoding="utf-8")
+        (self.root / "z.json").symlink_to(self.outside)
+        dest = self.base / "copy"
+        with self.assertRaises(results_mod.ResultProblem):
+            results_mod.copy_tree(self.root, dest)
+        self.assertFalse(dest.exists())
+
+    def test_a_non_object_receipt_is_a_refusal(self):
+        (self.root / results_mod.RESULT_JSON).write_text("[]", encoding="utf-8")
+        self.assertTrue(results_mod.check_receipt(self.root))
+
+
+    def test_a_special_file_is_refused_without_opening_it(self):
+        os.mkfifo(self.root / "fifo.json")
+        self.receipt({"fifo.json": "a" * 64})
+        self.assert_refused_without_hashing()
+
+    def test_malformed_file_maps_are_refused(self):
+        path = self.root / results_mod.RESULT_JSON
+        for files in [[], None, {"./x": self.sha}, {"a//b": self.sha},
+                      {"x": 123}, {"x": "not-a-hash"},
+                      {results_mod.RESULT_JSON: self.sha}]:
+            with self.subTest(files=files):
+                path.write_text(json.dumps(
+                    {"schema": results_mod.RESULT_SCHEMA, "files": files}),
+                    encoding="utf-8")
+                self.assert_refused_without_hashing()
 
 
 class SandboxTests(unittest.TestCase):
