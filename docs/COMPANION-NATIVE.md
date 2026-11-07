@@ -341,11 +341,17 @@ distinction between a work item and its several links. Current-checkout sweeps
 and benchmark oracles defer version/hash-pinned targets, and automatic proposal
 resolution leaves native rewrites pending for per-target review.
 
-For a new Brain release, its sealed reducer inputs must include the link reader
-site/native_annotations.py; the Git-harvest and derived-catalog normalizer
-closures record that dependency too. New source exports need a reviewed current
-normalizer profile and fresh source identities. Old source bundles and paid proof
-receipts are not relabeled as products of the new code.
+The sealed Brain reducer keeps its small declaration projection inside
+brain/build_common.py, within every declared reducer scope. An isolated import
+test copies only those declared files; parity fixtures check the application
+reader's native, legacy, relative, pinned and excluded targets. The application
+and derived-catalog normalizers retain their reviewed helper closures.
+
+New source exports need a reviewed current normalizer profile and fresh source
+identities. Verification retains each older reviewed profile's exact helper list
+and original annotation semantics; a pre-native producer cannot consume native
+annotations. Old source bundles and paid proof receipts are not relabeled as
+products of the new code.
 
 Close the migration window only after the live audit and remaining schema-3
 count match the approved scope. Restore the recorded brake/cron/job state

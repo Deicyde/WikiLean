@@ -91,9 +91,14 @@ recommendation. Remove an item once its decision is recorded below.
       rehearsal, admin-session preview/apply path, concurrent-write refusals,
       post-migration audit and guarded per-article rollback. Prepare and approve
       the exact frozen release, baseline, fresh P1B and exclusive operator window.
-    - Recheck the old cached Students_t-distribution item 51 against fresh
-      canonical D1. Its not_applicable status stops migration; it must be
-      explicitly reviewed rather than heuristically changed or deleted.
+    - The 2026-11-07 read-only canonical snapshot and copied application-database
+      rehearsal converted all 778 articles without a blocked item. The old cached
+      not_applicable report was absent from canonical D1. The rehearsal retained
+      all prior history, human annotations, source revisions and exact archives;
+      live conversion still requires the frozen window and fresh final checks.
+    - Sealed reducer imports are checked against every declared inventory scope.
+      Historical source verification retains its reviewed helper closure and
+      original legacy annotation semantics; current exports use fresh profiles.
     - Migration retains ambiguous special_case direction and missing Mathlib
       commit pins without inventing a relation, pin or noMatch. Imported native
       records keep their existing relation, version/hash and carrier bases.

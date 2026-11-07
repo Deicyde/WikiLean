@@ -30,9 +30,6 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "site"))
-from native_annotations import mathlib_targets  # noqa: E402
-
 from types import MappingProxyType
 from typing import Any
 
@@ -316,6 +313,37 @@ _OPTIONAL_INPUT_KEYS = {
     "tauceti.jsonl": "tauceti",
     "tauceti_links.jsonl": "tauceti-links",
 }
+
+
+def _annotation_mathlib_decls(item: dict) -> list[str]:
+    """Project declaration names inside the sealed reducer's existing code scope.
+
+    Keep this small reader independent of site modules. Parity fixtures cover the
+    richer application's reader; pins remain in the authoritative input records.
+    """
+    if "links" not in item and "unlinked" not in item:
+        old = item.get("mathlib")
+        old = old if isinstance(old, dict) else {}
+        name = old.get("decl") or item.get("decl")
+        return [name] if isinstance(name, str) and name else []
+    names = []
+    for link in item.get("links") or []:
+        annotation = link.get("annotation") if isinstance(link, dict) else None
+        if not isinstance(annotation, dict) or annotation.get("relation") == "noMatch":
+            continue
+        for end in annotation.get("object") or []:
+            if not isinstance(end, dict) or end.get("type") != "lean":
+                continue
+            uri, location = end.get("uri"), end.get("location")
+            if (not isinstance(uri, str)
+                    or urllib.parse.urljoin(link.get("base_uri") or "", uri)
+                    != "https://github.com/leanprover-community/mathlib4"
+                    or not isinstance(location, dict) or "profile" in location):
+                continue
+            name = location.get("declaration")
+            if isinstance(name, str) and name:
+                names.append(name)
+    return list(dict.fromkeys(names))
 
 
 @dataclass(frozen=True, slots=True)
@@ -2028,7 +2056,7 @@ def _build(
                 st = a.get("status")
                 if st in summ:
                     summ[st] += 1
-                for dec in dict.fromkeys(t["decl"] for t in mathlib_targets(a)):
+                for dec in _annotation_mathlib_decls(a):
                     if qid in ann_new_concepts:
                         ann_extra_pairs.append((qid, dec))
                     ev = ann_ev.setdefault((qid, dec), {

@@ -61,6 +61,14 @@ def profile_id(profile):
     return contracts.domain_hash("wikilean.git-harvest-normalizer-profile.v1", {key: value for key, value in profile.items() if key != "profile_id"})
 
 
+def profile_paths(profile):
+    """Admit only the current closure or the explicit pre-native closure."""
+    paths = [item["path"] for item in profile["files"]]
+    historical = [path for path in TOOL_FILES if path != "site/native_annotations.py"]
+    require(paths in [list(TOOL_FILES), historical], "profile lacks a recognized complete helper closure")
+    return paths
+
+
 def profiles():
     raw = parent.read_regular(REGISTRY)
     registry = exact(parse(raw, "harvester profiles"), {"schema", "current_profile", "profiles"}, "profiles")
@@ -69,9 +77,7 @@ def profiles():
     ids = []
     for profile in registry["profiles"]:
         exact(profile, {"profile_id", "files", "runtime"}, "profile")
-        paths = [item["path"] for item in profile["files"]]
-        historical = [path for path in TOOL_FILES if path != "site/native_annotations.py"]
-        require(paths in [list(TOOL_FILES), historical], "harvester profile lacks the full local closure")
+        profile_paths(profile)
         for item in profile["files"]:
             exact(item, {"path", "sha256"}, "program digest")
             contracts._digest(item["sha256"], "program digest")
@@ -87,8 +93,7 @@ def module_origins():
              (dependencies, "brain/git_harvest_dependencies.py"), (adapters.common, "brain/ingest/common.py"),
              (adapters.fc, "brain/ingest/formal_conjectures.py"), (adapters.erdosproblems, "brain/ingest/erdosproblems.py"),
              (adapters.lean_repo, "brain/ingest/lean_repo.py"), (adapters.git_snapshot, "brain/ingest/git_snapshot.py"),
-             (adapters.fc.build_common, "brain/build_common.py"), (sys.modules["build_context"], "brain/build_context.py"),
-             (sys.modules["native_annotations"], "site/native_annotations.py")]
+             (adapters.fc.build_common, "brain/build_common.py"), (sys.modules["build_context"], "brain/build_context.py")]
     for module, name in pairs:
         require(Path(module.__file__).resolve(strict=True) == ROOT / name, "harvester helper has a different origin: " + name)
     require(adapters.fc.common is adapters.common and adapters.lean_repo.fc is adapters.fc and
@@ -117,8 +122,10 @@ def current_profile():
 
 
 def validate_preimages(profile, programs, dependency_files):
-    require(profile in profiles()["profiles"] and set(programs) == set(TOOL_FILES) and
-            profile["files"] == [{"path": name, "sha256": sha(programs[name])} for name in TOOL_FILES],
+    require(profile in profiles()["profiles"], "normalizer preimages do not match one reviewed generation")
+    paths = profile_paths(profile)
+    require(set(programs) == set(paths) and
+            profile["files"] == [{"path": name, "sha256": sha(programs[name])} for name in paths],
             "normalizer preimages do not match one reviewed generation")
     require(profile["runtime"]["pyyaml"]["files"] == [{"path": name, "sha256": sha(raw), "bytes": len(raw)}
             for name, raw in sorted(dependency_files.items())], "PyYAML preimage closure differs")

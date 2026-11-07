@@ -156,6 +156,14 @@ def profile_id(profile):
     return contracts.domain_hash("wikilean.derived-catalog-profile.v1", {"files": profile["files"]})
 
 
+def profile_paths(profile):
+    """Admit only the current closure or the explicit pre-native closure."""
+    paths = [item["path"] for item in profile["files"]]
+    historical = [path for path in TOOL_FILES if path != "site/native_annotations.py"]
+    require(paths in [list(TOOL_FILES), historical], "profile lacks a recognized complete helper closure")
+    return paths
+
+
 def profiles():
     raw = read(REGISTRY)
     registry = exact(contracts.parse_json_bytes(raw, location="profiles"), {"schema", "current_profile", "profiles"}, "profiles")
@@ -163,9 +171,7 @@ def profiles():
     ids = []
     for profile in registry["profiles"]:
         exact(profile, {"profile_id", "files"}, "profile")
-        paths = [item["path"] for item in profile["files"]]
-        historical = [path for path in TOOL_FILES if path != "site/native_annotations.py"]
-        require(paths in [list(TOOL_FILES), historical], "profile must close every executed helper")
+        profile_paths(profile)
         for item in profile["files"]:
             exact(item, {"path", "sha256"}, "helper")
             contracts._digest(item["sha256"], "helper digest")
@@ -460,7 +466,7 @@ def hf_metadata(plan, name, manifests, objects):
             "sha256": item["sha256"], "size": item["bytes"]}
 
 
-def reduce_inputs(plan, curated, manifests, objects, captured, lineages):
+def reduce_inputs(plan, curated, manifests, objects, captured, lineages, *, profile=None):
     input_contracts(plan, manifests, objects, captured, lineages)
     def document(name):
         return json_object(member_path(selected_member(plan, name), captured))
@@ -473,6 +479,11 @@ def reduce_inputs(plan, curated, manifests, objects, captured, lineages):
     layer = adapters.concept_layer({"pilot_tagged.jsonl": curated_rows("pilot-tagged"), "tier2_tagged.jsonl": curated_rows("tier2-tagged")})
     prior = adapters.prior_nodes(layer)
     annotations = [(member["path"], json_object(member_path(member, captured))) for member in plan["bindings"]["annotations"]]
+    legacy_annotations = profile is not None and "site/native_annotations.py" not in profile_paths(profile)
+    if legacy_annotations:
+        require(not any("links" in item or "unlinked" in item
+                        for _, article in annotations for item in article.get("annotations") or []),
+                "historical normalizer profile cannot consume native annotations")
     grounding = curated_json("grounding")
     if isinstance(grounding, dict):
         grounding = grounding.get("concepts", [])
@@ -489,14 +500,14 @@ def reduce_inputs(plan, curated, manifests, objects, captured, lineages):
     source_text = (capture_file(member_path(member, captured), limit=64 * 1024 * 1024).decode("utf-8")
                    for member in plan["bindings"]["mathlib-source-tree"])
     graph = adapters.concept_graph(grounding=grounding, overrides=curated_rows("grounding-overrides"),
-        crossrefs=document("wikidata-crossrefs"), prior=prior, annotations=annotations,
+        crossrefs=document("wikidata-crossrefs"), prior=prior, annotations=annotations, legacy_annotations=legacy_annotations,
         oracle=document("declaration-oracle"), mathlib_text=source_text,
         statements=rows("statement-formal"), dependencies=rows("formal-dependency"),
         wikidata_edges=json_lines(member_path(selected_member(plan, "wikidata-edges"), captured)))
     return {"concept-layer": b"".join(artifact(row) + b"\n" for row in layer),
             **{name: artifact(value) for name, value in graph.items()},
             "hierarchy": artifact(adapters.hierarchy(rows("statement-formal"), hf_metadata(plan, "statement-formal", manifests, objects))),
-            "theoremgraph-links": artifact(adapters.theoremgraph_links(prior=prior, annotations=annotations,
+            "theoremgraph-links": artifact(adapters.theoremgraph_links(prior=prior, annotations=annotations, legacy_annotations=legacy_annotations,
                 matches=rows("theorem-matching"), metadata=hf_metadata(plan, "theorem-matching", manifests, objects)))}
 
 
@@ -512,10 +523,11 @@ def build_documents(plan, curated, tree, git_tool, proof, sources, manifests, ob
                     output, profile, implementation, normalized_at):
     """Construct a source closure; external parent roots keep their exact evidence."""
     require(set(output) == set(OUTPUTS), "normalization output closure differs")
-    require(set(implementation) == set(TOOL_FILES) and
-            profile["files"] == [{"path": path, "sha256": sha(implementation[path])} for path in TOOL_FILES],
-            "normalizer bytes do not match their whole profile preimage")
     require(profile in profiles()["profiles"], "unreviewed normalization profile")
+    paths = profile_paths(profile)
+    require(set(implementation) == set(paths) and
+            profile["files"] == [{"path": path, "sha256": sha(implementation[path])} for path in paths],
+            "normalizer bytes do not match their whole profile preimage")
     files = {"plan.json": canonical(plan), "normalization/tool-profile.json": canonical(profile),
              "curated/git-tool.json": canonical(git_tool)}
     for path, raw in implementation.items():
@@ -560,7 +572,7 @@ def build_documents(plan, curated, tree, git_tool, proof, sources, manifests, ob
                planned("git-reader", "curated/git-tool.json", ["receipt"]),
                *(planned("git-proof-" + name, "curated/proof/" + name, ["receipt"], "application/octet-stream") for name in sorted(proof)),
                *(planned("normalizer-program-" + str(index), "implementation/" + path, ["receipt"], "text/x-python")
-                 for index, path in enumerate(TOOL_FILES))]
+                 for index, path in enumerate(paths))]
     observation_plan_object = objects[(selected_member(plan, "wikidata-edges")["source"], "request_plan")]
     families = [
         ("concept-layer", ["concept-layer"], ["pilot-tagged", "tier2-tagged"], []),
