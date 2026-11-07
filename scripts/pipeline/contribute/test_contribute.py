@@ -34,6 +34,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stdout
 from pathlib import Path
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 PIPELINE = HERE.parent
@@ -1007,6 +1008,76 @@ class SealTests(MiddleTests):
         self.assertEqual(
             json.loads((out / "SEAL.json").read_text(encoding="utf-8"))["set_id"],
             "contrib-2")
+
+
+class ResultBoundaryTests(unittest.TestCase):
+    def setUp(self):
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        self.base = Path(temp.name)
+        self.root = self.base / "result"
+        self.root.mkdir()
+        self.outside = self.base / "outside.json"
+        self.outside.write_text("private test bytes", encoding="utf-8")
+        self.sha = results_mod.keys.sha256_file(self.outside)
+
+    def receipt(self, files):
+        (self.root / results_mod.RESULT_JSON).write_text(
+            json.dumps({"schema": results_mod.RESULT_SCHEMA, "files": files}),
+            encoding="utf-8")
+
+    def assert_refused_without_hashing(self):
+        with patch.object(results_mod.keys, "sha256_file",
+                          side_effect=AssertionError("untrusted path was read")):
+            self.assertTrue(results_mod.check_receipt(self.root))
+
+    def test_parent_path_in_a_receipt_is_refused_before_reading(self):
+        self.receipt({"../outside.json": self.sha})
+        self.assert_refused_without_hashing()
+
+    def test_absolute_path_in_a_receipt_is_refused_before_reading(self):
+        self.receipt({str(self.outside): self.sha})
+        self.assert_refused_without_hashing()
+
+    def test_symlink_directory_in_a_receipt_is_refused_before_reading(self):
+        (self.root / "linked").symlink_to(self.base, target_is_directory=True)
+        self.receipt({"linked/outside.json": self.sha})
+        self.assert_refused_without_hashing()
+
+    def test_a_symlink_receipt_is_refused(self):
+        self.outside.write_text(json.dumps(
+            {"schema": results_mod.RESULT_SCHEMA, "files": {}}), encoding="utf-8")
+        (self.root / results_mod.RESULT_JSON).symlink_to(self.outside)
+        self.assertTrue(results_mod.check_receipt(self.root))
+
+    def test_copy_refuses_symlinks_before_copying_any_file(self):
+        (self.root / "a.json").write_text("{}", encoding="utf-8")
+        (self.root / "z.json").symlink_to(self.outside)
+        dest = self.base / "copy"
+        with self.assertRaises(results_mod.ResultProblem):
+            results_mod.copy_tree(self.root, dest)
+        self.assertFalse(dest.exists())
+
+    def test_a_non_object_receipt_is_a_refusal(self):
+        (self.root / results_mod.RESULT_JSON).write_text("[]", encoding="utf-8")
+        self.assertTrue(results_mod.check_receipt(self.root))
+
+
+    def test_a_special_file_is_refused_without_opening_it(self):
+        os.mkfifo(self.root / "fifo.json")
+        self.receipt({"fifo.json": "a" * 64})
+        self.assert_refused_without_hashing()
+
+    def test_malformed_file_maps_are_refused(self):
+        path = self.root / results_mod.RESULT_JSON
+        for files in [[], None, {"./x": self.sha}, {"a//b": self.sha},
+                      {"x": 123}, {"x": "not-a-hash"},
+                      {results_mod.RESULT_JSON: self.sha}]:
+            with self.subTest(files=files):
+                path.write_text(json.dumps(
+                    {"schema": results_mod.RESULT_SCHEMA, "files": files}),
+                    encoding="utf-8")
+                self.assert_refused_without_hashing()
 
 
 class SandboxTests(unittest.TestCase):

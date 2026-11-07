@@ -244,11 +244,7 @@ def send_results(*, repo: Path, workdir: Path, machine: str, package: str,
         results_mod.copy_tree(Path(host), out / results_mod.HOST)
     submission = None
     if record_set:
-        for path in sorted(Path(record_set).rglob("*")):
-            if path.is_file():
-                target = out / results_mod.RECORD_SET / path.relative_to(Path(record_set))
-                target.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copy2(path, target)
+        results_mod.copy_tree(Path(record_set), out / results_mod.RECORD_SET)
         # the intake contract, run here so a defect is seen on this machine first
         submission = results_mod.verify_record_set(
             out / results_mod.RECORD_SET, machine_id=machine,

@@ -28,6 +28,8 @@ submission endpoint that will replace it refuse the same sets for the same reaso
 from __future__ import annotations
 
 import json
+import re
+import stat
 import shutil
 import sys
 from pathlib import Path
@@ -67,13 +69,31 @@ def refuse_article_text(paths: list[Path]) -> None:
             "nothing of the rendered source leaves the contributor machine")
 
 
+def regular_files(root: Path) -> list[Path]:
+    """Inspect the whole result tree before reading or copying any payload bytes."""
+    root = Path(root)
+    if root.is_symlink():
+        raise ResultProblem(f"{root.name}: a symlink")
+    if not root.is_dir():
+        return []
+    files = []
+    for path in sorted(root.rglob("*")):
+        mode = path.lstat().st_mode
+        rel = path.relative_to(root).as_posix()
+        if stat.S_ISLNK(mode):
+            raise ResultProblem(f"{rel}: a symlink")
+        if stat.S_ISREG(mode):
+            files.append(path)
+        elif not stat.S_ISDIR(mode):
+            raise ResultProblem(f"{rel}: not a regular file or directory")
+    return files
+
+
 def copy_tree(src: Path, dest: Path, pattern: str = "*") -> list[Path]:
     """Copy ``src`` under ``dest``; returns what landed, article text refused."""
     src, dest = Path(src), Path(dest)
-    if not src.is_dir():
-        return []
-    files = sorted(p for p in src.rglob(pattern)
-                   if p.is_file() and "__pycache__" not in p.parts)
+    files = [p for p in regular_files(src)
+             if p.match(pattern) and "__pycache__" not in p.parts]
     refuse_article_text(files)
     out = []
     for path in files:
@@ -88,7 +108,7 @@ def sha_manifest(root: Path) -> dict[str, str]:
     """``{path relative to root: sha256}`` of every file under it, sorted."""
     root = Path(root)
     return {p.relative_to(root).as_posix(): keys.sha256_file(p)
-            for p in sorted(root.rglob("*")) if p.is_file() and p.name != RESULT_JSON}
+            for p in regular_files(root) if p != root / RESULT_JSON}
 
 
 def write_receipt(root: Path, payload: dict) -> Path:
@@ -103,29 +123,45 @@ def write_receipt(root: Path, payload: dict) -> Path:
 def check_receipt(root: Path) -> list[str]:
     """What a coordinator checks of a fetched result: every file the receipt names."""
     root = Path(root)
-    path = root / RESULT_JSON
-    if not path.is_file():
+    try:
+        actual = {p.relative_to(root).as_posix(): p for p in regular_files(root)}
+    except (OSError, ResultProblem) as exc:
+        return [str(exc)]
+    path = actual.get(RESULT_JSON)
+    if path is None:
         return [f"{RESULT_JSON}: missing"]
     try:
         receipt = json.loads(path.read_text(encoding="utf-8"))
-    except ValueError as exc:
-        return [f"{RESULT_JSON}: not JSON ({exc})"]
+    except (OSError, ValueError) as exc:
+        return [f"{RESULT_JSON}: unreadable JSON ({exc})"]
+    if not isinstance(receipt, dict):
+        return [f"{RESULT_JSON}: must be an object"]
     if receipt.get("schema") != RESULT_SCHEMA:
         return [f"{RESULT_JSON}: schema is {receipt.get('schema')!r}, not {RESULT_SCHEMA!r}"]
+    named = receipt.get("files")
+    if not isinstance(named, dict):
+        return [f"{RESULT_JSON}: files must be an object"]
     problems = []
-    named = dict(receipt.get("files") or {})
+    for rel, sha in named.items():
+        parts = rel.split("/")
+        if (not rel or "\\" in rel or any(ord(c) < 32 for c in rel)
+                or Path(rel).is_absolute() or any(p in ("", ".", "..") for p in parts)
+                or rel == RESULT_JSON):
+            problems.append(f"{rel!r}: not a canonical relative payload path")
+        elif not isinstance(sha, str) or not re.fullmatch(r"[0-9a-f]{64}", sha):
+            problems.append(f"{rel}: not a SHA-256")
+    # Validate every name before joining paths or reading payloads. A manifest from
+    # another machine has no authority over any file outside this inspected tree.
+    if problems:
+        return problems
     for rel, sha in sorted(named.items()):
-        target = root / rel
-        if target.is_symlink():
-            problems.append(f"{rel}: a symlink")
-        elif not target.is_file():
+        target = actual.get(rel)
+        if target is None:
             problems.append(f"{rel}: missing")
         elif keys.sha256_file(target) != sha:
             problems.append(f"{rel}: sha256 does not match {RESULT_JSON}")
-    for target in sorted(root.rglob("*")):
-        rel = target.relative_to(root).as_posix()
-        if target.is_file() and rel != RESULT_JSON and rel not in named:
-            problems.append(f"{rel}: not in {RESULT_JSON}")
+    problems.extend(f"{rel}: not in {RESULT_JSON}"
+                    for rel in sorted(set(actual) - set(named) - {RESULT_JSON}))
     problems.extend(f"{name}: article text, which a result never carries"
                     for name in sorted({Path(rel).name for rel in named}
                                        & set(REFUSED_NAMES)))
