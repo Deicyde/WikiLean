@@ -92,6 +92,8 @@ class FakeD1:
         self.fail_after: set[int] = set()
         self.crash_at: tuple[int, int] | None = None   # (call, statements applied first)
         self.tamper = None          # callable(fake, statements) after a call applies
+        self.reject = None          # callable(statement) -> error text: the call fails, applying nothing
+        self.duration = 0.5         # meta.duration of every statement, in ms
         self.verified: dict[str, str] = {}   # manifest path -> release id for verify_release
         self.records: list[dict] = []
 
@@ -115,6 +117,9 @@ class FakeD1:
             raise Crash(f"crash at call {self.calls}")
         if self.calls in self.fail_before:
             return RunResult(tuple(args), 1, b"", b"D1_ERROR: network")
+        errors = [self.reject(s) for s in statements] if self.reject is not None else []
+        if any(errors):
+            return RunResult(tuple(args), 1, b"", next(e for e in errors if e).encode())
         results = []
         for statement in statements:
             self.statements.append(statement)
@@ -123,7 +128,7 @@ class FakeD1:
                     if cursor.description else [])
             pages = self.db.execute("PRAGMA page_count").fetchone()[0]
             results.append({"results": rows, "success": True, "meta": {
-                "duration": 0.5, "changes": max(cursor.rowcount, 0), "rows_written": max(cursor.rowcount, 0),
+                "duration": self.duration, "changes": max(cursor.rowcount, 0), "rows_written": max(cursor.rowcount, 0),
                 "size_after": pages * 4096}})
         if self.tamper is not None:
             self.tamper(self, statements)
@@ -201,21 +206,23 @@ class Base(unittest.TestCase):
         fake.fail_before, fake.fail_after, fake.crash_at, fake.tamper = set(), set(), None, None
         return fake
 
-    def importer(self, fake, *, execute=True, budget=BUDGET, ranges=3, attempts=3, root="default"):
-        call_bytes = budget * (ranges + 1) + 4096
+    def importer(self, fake, *, execute=True, budget=BUDGET, ranges=3, attempts=3, root="default",
+                 call_bytes=None, sleep=lambda seconds: None):
+        call_bytes = call_bytes or budget * (ranges + 1) + 4096
         d1 = bdi.D1(repo=REPO, database="wikilean-brain", config=Path("/nowhere/wrangler.json"),
                     runner=fake, statement_bytes=budget, call_bytes=call_bytes, attempts=attempts,
-                    node=Path("node"), wrangler=Path("wrangler.js"), sleep=lambda seconds: None, log=fake.log)
+                    node=Path("node"), wrangler=Path("wrangler.js"), sleep=sleep, log=fake.log)
         options = bdi.Options(execute=execute, statement_bytes=budget, call_bytes=call_bytes,
                               ranges_per_call=ranges)
         return bdi.Importer(d1, options=options, selector=self.selector,
                             receipt_root=self.root if root == "default" else root)
 
-    def do_import(self, fake, local=None, release_id=None, **kwargs):
+    def do_import(self, fake, local=None, release_id=None, names_mode=None, **kwargs):
         local = local or self.local
         importer = self.importer(fake, **kwargs)
         with importer.locked():
-            return importer.import_dataset(local, release_id or bdi.SCRATCH_PREFIX + local.dataset_id, "f" * 64)
+            return importer.import_dataset(local, release_id or bdi.SCRATCH_PREFIX + local.dataset_id, "f" * 64,
+                                           names_mode)
 
     def do_prune(self, fake, **kwargs):
         importer = self.importer(fake, **kwargs)
@@ -246,8 +253,9 @@ class Base(unittest.TestCase):
                              list(range(1, local.rows(source) + 1)), kind)
         hits = fake.all(f"SELECT rowid FROM names_{local.hex} WHERE names_{local.hex} MATCH ? ORDER BY rowid",
                         '"brien"')
-        self.assertEqual(hits, local.db.execute("SELECT rowid FROM names WHERE names MATCH ? ORDER BY rowid",
-                                                ('"brien"',)).fetchall())
+        if fake.one("SELECT names_mode FROM datasets WHERE ds = ?", ds) == ("trigram",):
+            self.assertEqual(hits, local.db.execute("SELECT rowid FROM names WHERE names MATCH ? ORDER BY rowid",
+                                                    ('"brien"',)).fetchall())
         self.assertTrue(hits)
         covered = {}
         for tbl, lo, hi in fake.all("SELECT tbl, lo, hi FROM import_ranges WHERE ds = ? ORDER BY tbl, lo", ds):
@@ -276,7 +284,8 @@ class Base(unittest.TestCase):
 class EscapingTest(unittest.TestCase):
     CASES = ["", "plain", "it's", "''", "a\x00b", "\x00", "\x00\x00lead", "trail\x00", "O'Brien\x00'x'",
              "Cauchy–Schwarz", "Ångström", "\U0001d53dield", "line\nbreak\r\ttab", "back\\slash",
-             'double "quote"', "semi;colon -- not a comment /* nor this */", " ﻿‮"]
+             'double "quote"', "semi;colon -- not a comment /* nor this */", " ﻿‮",
+             "\x00" * 3000 + "'x;--$$\\'"]     # far past SQLite's expression depth of 1000
 
     def test_literals_round_trip_through_sqlite(self):
         db = sqlite3.connect(":memory:")
@@ -291,6 +300,9 @@ class EscapingTest(unittest.TestCase):
         for value in (0, 7, -3, bdi.MAX_JSON_INT, -bdi.MAX_JSON_INT):
             self.assertEqual(db.execute(f"SELECT {bdi.sql_literal(value)}").fetchone(), (value,))
         self.assertEqual(bdi.sql_literal(None), "NULL")
+        # a string with NUL is one node however many NULs it holds; without NUL it stays quoted
+        self.assertEqual(bdi.sql_literal("a\x00'"), "CAST(X'610027' AS TEXT)")
+        self.assertEqual(bdi.sql_literal("it's"), "'it''s'")
 
     def test_refuses_what_does_not_round_trip(self):
         for value in (1.5, 12.0, True, b"bytes", bdi.MAX_JSON_INT + 1, "\ud800", ["list"]):
@@ -298,18 +310,18 @@ class EscapingTest(unittest.TestCase):
                 bdi.sql_literal(value)
 
     def test_chunks_fit_their_budget_and_rejoin(self):
-        text = "a'\x00é\U0001d53d" * 50
-        for budget in (15, 16, 17, 40, 333):
-            pos, parts = 0, []
-            while pos < len(text):
-                end = bdi.chunk_end(text, pos, budget)
-                self.assertGreater(end, pos)
-                self.assertLessEqual(len(bdi.sql_literal(text[pos:end]).encode()), budget)
-                if end < len(text):   # maximal: one more character would not fit
-                    self.assertGreater(len(bdi.sql_literal(text[pos:end + 1]).encode()), budget)
-                parts.append(text[pos:end])
-                pos = end
-            self.assertEqual("".join(parts), text)
+        for text in ("a'\x00é\U0001d53d" * 50, "a'é\U0001d53d" * 50):     # hex form, quoted form
+            for budget in (25, 26, 27, 40, 333):
+                pos, parts = 0, []
+                while pos < len(text):
+                    end = bdi.chunk_end(text, pos, budget)
+                    self.assertGreater(end, pos)
+                    self.assertLessEqual(len(bdi.sql_literal(text[pos:end]).encode()), budget)
+                    if end < len(text):   # maximal: one more character would not fit
+                        self.assertGreater(len(bdi.sql_literal(text[pos:end + 1]).encode()), budget)
+                    parts.append(text[pos:end])
+                    pos = end
+                self.assertEqual("".join(parts), text)
 
     def test_identifiers_are_fixed_names_or_checked_hex(self):
         self.assertEqual(bdi.fts_table("names", "0" * 64), "names_" + "0" * 64)
@@ -378,7 +390,7 @@ class ImportTest(Base):
         self.assertGreater(max(sizes), BUDGET * 0.7)       # ranges fill the budget
         appends = [s for s in fake.statements if "length(CAST(" in s]
         self.assertTrue(any(s.startswith("UPDATE cell_pages SET json = json ||") for s in appends))
-        self.assertTrue(any(s.startswith("UPDATE labels SET aka = aka ||") and "char(0)" in s for s in appends))
+        self.assertTrue(any(s.startswith("UPDATE labels SET aka = aka ||") and "CAST(X'" in s for s in appends))
         ranges = fake.all("SELECT tbl, count(*) FROM import_ranges GROUP BY tbl")
         self.assertGreater(dict(ranges)["name_keys"], 3)
         self.assertGreater(len(fake.commands), 20)
@@ -539,10 +551,10 @@ class ImportTest(Base):
         hits = fake.all(f"SELECT rowid FROM names_{hex_id} WHERE names_{hex_id} MATCH 'Semigroup' ORDER BY rowid")
         self.assertIn(self.local.db.execute("SELECT seq FROM name_keys WHERE name = ?",
                                             ("StronglyContinuousSemigroup.mk",)).fetchone(), hits)
-        with importer.locked(), self.assertRaisesRegex(bdi.D1ImportError, "names_mode"):
+        with importer.locked(), self.assertRaisesRegex(bdi.D1ImportError, "names_mode parts.*supersede"):
             importer.import_dataset(self.local, "scratch:" + self.local.dataset_id, "f" * 64, "trigram")
 
-    def test_an_fts_mismatch_fails_the_sample_check(self):
+    def test_an_fts_mismatch_empties_that_index_for_the_rerun(self):
         fake = FakeD1()
 
         def drop_one(fake_, statements):
@@ -550,8 +562,160 @@ class ImportTest(Base):
                 fake_.db.execute(f"DELETE FROM texts_{self.local.hex} WHERE rowid = 1")
                 fake_.db.execute(f"INSERT INTO texts_{self.local.hex}(rowid, body) VALUES (1, 'nothing')")
         fake.tamper = drop_one
-        with self.assertRaisesRegex(bdi.D1ImportError, "texts MATCH"):
+        with self.assertRaisesRegex(bdi.D1ImportError, "texts MATCH.*rerun the import"):
             self.do_import(fake)
+        ds = self.ds(fake)
+        self.assertEqual(fake.one("SELECT count(*) FROM import_ranges WHERE ds = ? AND tbl = 'texts'", ds), (0,))
+        self.assertGreater(fake.one("SELECT count(*) FROM import_ranges WHERE ds = ? AND tbl = 'names'", ds)[0], 0)
+        self.assertIsNone(fake.one("SELECT name FROM sqlite_master WHERE name = ?", f"texts_{self.local.hex}"))
+        before = len(fake.statements)
+        self.do_import(self._resume(fake))
+        self.assert_imported(fake)
+        self.assertFalse([s for s in fake.statements[before:] if s.startswith("INSERT INTO labels")])
+
+    def test_a_range_that_read_back_wrong_is_not_journaled_before_its_rewrite(self):
+        fake = FakeD1()
+        seen = []
+
+        def damage_then_crash(fake_, statements):
+            if any(s.startswith("DELETE FROM labels WHERE ds = 1 AND seq BETWEEN 1 AND") for s in statements):
+                seen.append(True)
+                if len(seen) == 1:
+                    fake_.db.execute("UPDATE labels SET label = 'damaged' WHERE seq = 2")
+                else:
+                    raise Crash("during the rewrite")
+        fake.tamper = damage_then_crash
+        with self.assertRaises(Crash):
+            self.do_import(fake)
+        self.assertEqual(len(seen), 2)
+        self.assertEqual(fake.all("SELECT lo FROM import_ranges WHERE tbl = 'labels' AND lo = 1"), [])
+        self.do_import(self._resume(fake))
+        self.assert_imported(fake)
+
+    def test_a_refused_trigram_tokenizer_falls_back_to_parts_before_any_data_range(self):
+        fake = FakeD1()
+        fake.reject = lambda s: "D1_ERROR: no such tokenizer: trigram" if "tokenize='trigram'" in s else None
+        report = self.do_import(fake)
+        self.assertTrue(report["imported"])
+        self.assertEqual(fake.one("SELECT names_mode FROM datasets"), ("parts",))
+        self.assertIn("prefix='2 3'", fake.one("SELECT sql FROM sqlite_master WHERE name = ?",
+                                               f"names_{self.local.hex}")[0])
+        creates = [i for i, s in enumerate(fake.statements) if s.startswith("CREATE VIRTUAL TABLE")]
+        first_data = next(i for i, s in enumerate(fake.statements) if s.startswith("INSERT INTO cell_pages"))
+        self.assertEqual(len(creates), 2)
+        self.assertLess(max(creates), first_data)
+        self.assert_imported(fake)
+
+    def test_a_names_mode_change_is_free_until_a_names_range_is_copied(self):
+        fake = FakeD1()
+        fake.reject = lambda s: "D1_ERROR: no such tokenizer: trigram" if "tokenize='trigram'" in s else None
+        with self.assertRaisesRegex(bdi.D1ImportError, "rerun with --names-mode parts"):
+            self.do_import(fake, names_mode="trigram")
+        for table in bdi.DATA_TABLES:       # it failed before the copy
+            self.assertEqual(fake.one(f"SELECT count(*) FROM {table}"), (0,), table)
+        self.assertEqual(fake.one("SELECT names_mode, state FROM datasets"), ("trigram", "importing"))
+        self.assertEqual(self.do_import(fake, names_mode="parts", execute=False)["names_mode"], "trigram -> parts")
+        self.assertTrue(self.do_import(fake, names_mode="parts")["imported"])
+        self.assertEqual(fake.one("SELECT names_mode FROM datasets"), ("parts",))
+        self.assert_imported(fake)
+        with self.assertRaisesRegex(bdi.D1ImportError, "it is ready.*supersede scratch:"):
+            self.do_import(fake, names_mode="trigram")
+        # an importing dataset with names ranges journaled keeps its mode too
+        fake = FakeD1()
+
+        def stop(fake_, statements):
+            if any(s.startswith("INSERT INTO import_ranges") and ", 'names', " in s for s in statements):
+                raise Crash("mid-names")
+        fake.tamper = stop
+        with self.assertRaises(Crash):
+            self.do_import(fake)
+        with self.assertRaisesRegex(bdi.D1ImportError, "names ranges are already copied"):
+            self.do_import(self._resume(fake), names_mode="parts")
+        self.do_import(fake)
+        self.assert_imported(fake)
+
+    def test_what_could_never_finish_is_refused_before_any_call(self):
+        (self.work / "long").mkdir()
+        serving, sidecar = build_fixture(self.work / "long", description="word " * 1000)
+        local = bdi.open_local(serving, sidecar, full_check=True)
+        self.addCleanup(local.close)
+        fake = FakeD1()
+        with self.assertRaisesRegex(bdi.D1ImportError, "text_ids seq .* does not fit one 2000-byte statement"):
+            self.do_import(fake, local=local)
+        with mock.patch.object(bdi, "ROW_BYTES", 5000), \
+                self.assertRaisesRegex(bdi.D1ImportError, "cell_pages seq .* over D1's 5000-byte row limit"):
+            self.do_import(fake)
+        self.assertEqual(fake.calls, 0)
+
+    def test_a_gap_in_a_local_table_is_refused(self):
+        gap = self.work / "gap.sqlite3"
+        gap.write_bytes(self.serving.read_bytes())
+        with contextlib.closing(sqlite3.connect(gap)) as db:
+            db.execute("DELETE FROM labels WHERE seq = 5")
+            db.commit()
+        local = bdi.open_local(gap, self.sidecar, full_check=False)
+        self.addCleanup(local.close)
+        with self.assertRaisesRegex(bdi.D1ImportError, "labels has seq 6 where 5 belongs"):
+            self.do_import(FakeD1(), local=local)
+
+    def test_finish_refuses_coverage_with_a_hole(self):
+        fake = FakeD1()
+
+        def hole(fake_, statements):
+            if any(s.startswith("SELECT rowid FROM names_") for s in statements):
+                fake_.db.execute("DELETE FROM import_ranges WHERE tbl = 'labels' AND lo = 1")
+        fake.tamper = hole
+        with self.assertRaisesRegex(bdi.D1ImportError, "import_ranges cover .* rows of labels"):
+            self.do_import(fake)
+        self.assertEqual(fake.one("SELECT state FROM datasets"), ("importing",))
+
+    def test_a_datasets_row_that_disagrees_with_its_sidecar_is_refused(self):
+        fake = FakeD1()
+        self.do_import(fake)
+        fake.db.execute("UPDATE datasets SET longest_name = longest_name + 1")
+        with self.assertRaisesRegex(bdi.D1ImportError, "disagrees with its sidecar"):
+            self.do_import(fake)
+
+    def test_groups_count_every_separator_against_the_call_budget(self):
+        importer = self.importer(FakeD1(), ranges=5, call_bytes=405)
+        items = [bdi.Range("labels", i, i, "d", ["A" * 100, "B" * 100]) for i in (1, 2, 3)]
+        groups = []
+
+        def land(ds, group, read):
+            groups.append(list(group))
+            return len(group)
+        with mock.patch.object(importer, "_land", land):
+            importer._copy_spans(1, [(1, 3)], lambda a, b: iter(items), lambda r: "", name="labels", total=3)
+            self.assertEqual([len(g) for g in groups], [1, 1, 1])     # two ranges make a 407-byte call
+            importer.options.call_bytes = 407
+            groups.clear()
+            importer._copy_spans(1, [(1, 3)], lambda a, b: iter(items), lambda r: "", name="labels", total=3)
+            self.assertEqual([len(g) for g in groups], [2, 1])
+        # a whole import at the smallest call budget the command line allows over the statements
+        fake = FakeD1()
+        self.do_import(fake, budget=2000, ranges=5, call_bytes=3100)
+        self.assert_imported(fake)
+        self.assertLessEqual(max(len(c[10].encode()) for c in fake.commands), 3100)
+
+    def test_every_copy_call_logs_its_range_and_progress(self):
+        fake = FakeD1()
+        self.do_import(fake)
+        writes = [r for r in fake.records if r.get("phase") == "copy" and r.get("table") == "labels"
+                  and r.get("rows_written")]
+        self.assertTrue(writes)
+        for key in ("lo", "hi", "duration_ms", "rows_written", "size_after"):
+            self.assertIn(key, writes[0])
+        progress = [r for r in fake.records if r.get("progress") == "labels"]
+        self.assertGreater(len(progress), 1)
+        self.assertEqual((progress[-1]["rows_done"], progress[-1]["rows_total"]),
+                         (self.local.rows("labels"),) * 2)
+
+    def test_a_slow_call_makes_the_importer_pause(self):
+        fake = FakeD1()
+        fake.duration = 5000
+        slept = []
+        self.importer(fake, sleep=slept.append).d1.call(["SELECT 1"])
+        self.assertEqual(slept, [5.0])
 
 
 class SchemaTest(Base):
@@ -572,6 +736,17 @@ class SchemaTest(Base):
             self.do_import(fake)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
 
+    def test_refuses_a_table_without_its_seq_key(self):
+        fake = FakeD1(migrate=False)
+        text = MIGRATION.read_text()
+        keyed = "  UNIQUE(ds, seq), UNIQUE(ds, ord), UNIQUE(ds, id));\nCREATE INDEX IF NOT EXISTS labels_p"
+        self.assertIn(keyed, text)
+        fake.db.executescript(text.replace(keyed, "  UNIQUE(ds, ord), UNIQUE(ds, id));\n"
+                                                  "CREATE INDEX IF NOT EXISTS labels_p"))
+        with self.assertRaisesRegex(bdi.D1ImportError, r"missing labels UNIQUE\(ds, seq\)$"):
+            self.do_import(fake)
+        self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+
     def test_refuses_a_serving_file_that_differs_from_its_sidecar(self):
         sidecar = json.loads(self.sidecar.read_text())
         sidecar["tables"]["labels"]["digest"] = "0" * 64
@@ -587,7 +762,7 @@ class ProtectionTest(Base):
         self.incomplete_attempt()
         for action in (lambda: self.do_import(fake), lambda: self.do_prune(fake),
                        lambda: self.do_supersede(fake, LIVE_A)):
-            with self.assertRaisesRegex(bdi.D1ImportError, "incomplete promotion attempt"):
+            with self.assertRaisesRegex(bdi.D1ImportError, "incomplete promotion attempt.*--reconcile-attempt"):
                 action()
         self.assertEqual(fake.calls, 0)
 
@@ -722,6 +897,16 @@ class ProtectionTest(Base):
         fake.db.execute("DELETE FROM releases WHERE release_id = ?", (LIVE_B,))
         self.assertEqual(self.do_prune(fake)["delete_datasets"], [self.local.dataset_id])
 
+    def test_a_protected_dataset_being_deleted_is_left_to_the_operator(self):
+        fake = FakeD1()
+        self.do_import(fake, release_id=LIVE_A)
+        self.live[:] = [LIVE_A, None]
+        fake.db.execute("UPDATE datasets SET state = 'deleting'")
+        before = self.control(fake)
+        with self.assertRaisesRegex(bdi.D1ImportError, "resolve by hand"):
+            self.do_prune(fake)
+        self.assertEqual(self.control(fake), before)
+
     def _live_static(self):
         self.live[:] = ["sha256:" + "c" * 64, None]
 
@@ -797,6 +982,27 @@ class PruneTest(Base):
                         self.assertEqual(self.control(fake)[1], [(LIVE_B, self.local.dataset_id, "candidate")])
 
 
+    def test_prune_deletes_by_the_dataset_s_own_schema_version(self):
+        fake = self.imported_then_abandoned()
+        fake.db.execute("UPDATE datasets SET schema_version = 9")
+        before = self.control(fake)
+        with self.assertRaisesRegex(bdi.D1ImportError, "schema_version this importer does not know"):
+            self.do_prune(fake)
+        self.assertEqual(self.control(fake), before)
+        fake.db.execute("UPDATE datasets SET schema_version = 1, tables_json = json_remove(tables_json, '$.xrefs')")
+        before = self.control(fake)
+        with self.assertRaisesRegex(bdi.D1ImportError, "malformed tables_json.*schema_version 1"):
+            self.do_prune(fake)
+        self.assertEqual(self.control(fake), before)
+        fake.db.execute("UPDATE datasets SET tables_json = ?", (self.local.tables_json,))
+        # an importer that knows more tables still deletes a v1 dataset by v1's tables
+        with mock.patch.object(bdi, "DATA_TABLES", (*bdi.DATA_TABLES, "explorer_edges")):
+            self.do_prune(fake)
+        self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+        for table in bdi.DATA_TABLES:
+            self.assertEqual(fake.one(f"SELECT count(*) FROM {table}"), (0,), table)
+
+
 class VerifyTest(Base):
     def test_verify_takes_no_lock_and_finds_a_damaged_row(self):
         fake = FakeD1()
@@ -811,10 +1017,22 @@ class VerifyTest(Base):
         fake.db.execute(f"DELETE FROM texts_{self.local.hex} WHERE rowid = 1")
         report = importer.verify([self.local], 1000, random.Random(2))
         self.assertFalse(report["ok"])
-        self.assertEqual(len(report["mismatches"]), 2)
+        self.assertEqual(len([m for m in report["mismatches"] if "D1 differs" in m]), 2)
         self.assertTrue(any(" xrefs " in m for m in report["mismatches"]))
         self.assertTrue(any(" texts " in m for m in report["mismatches"]))
         self.assertTrue(all(s.startswith("SELECT") for s in fake.statements[-20:]))
+
+    def test_verify_runs_the_fts_sample_queries(self):
+        fake = FakeD1()
+        self.do_import(fake)
+        importer = self.importer(fake, root=None)
+        self.assertTrue(importer.verify([self.local], 1000, random.Random(1))["ok"])
+        fake.db.execute(f"DELETE FROM texts_{self.local.hex} WHERE rowid = 1")     # same count, other text
+        fake.db.execute(f"INSERT INTO texts_{self.local.hex}(rowid, body) VALUES (1, 'nothing')")
+        report = importer.verify([self.local], 1000, random.Random(1))
+        self.assertFalse(report["ok"])
+        self.assertTrue(report["mismatches"])
+        self.assertTrue(all("texts MATCH" in m for m in report["mismatches"]), report["mismatches"])
 
     def test_verify_refuses_a_dataset_that_is_not_ready(self):
         with self.assertRaisesRegex(bdi.D1ImportError, "absent"):
@@ -855,7 +1073,7 @@ class CommandLineTest(Base):
                                  str(self.sidecar), "--seed", "3")
         self.assertTrue(result["ok"])
         result, _ = self.run_cli(fake, "--execute", "supersede", f"scratch:{self.local.dataset_id}")
-        result, _ = self.run_cli(fake, "prune")
+        result, _ = self.run_cli(fake, "--dry-run", "prune")
         self.assertEqual(result["delete_datasets"], [self.local.dataset_id])
         self.assertEqual(fake.one("SELECT count(*) FROM datasets"), (1,))   # a dry run
         self.run_cli(fake, "--execute", "prune")
@@ -887,6 +1105,44 @@ class CommandLineTest(Base):
         with self.assertRaisesRegex(bdi.D1ImportError, "did not confirm"):
             self.run_cli(fake, "--execute", "import", "--release-root", str(root), "--python", sys.executable)
 
+    def test_modes_timeout_and_the_linux_argument_limit(self):
+        base = ["--repo-root", str(REPO), "--receipt-dir", str(self.root),
+                "--database-id", "01234567-89ab-cdef-0123-456789abcdef"]
+        for argv in ([*base, "prune"], [*base, "--dry-run", "--execute", "prune"],
+                     [*base, "--execute", "verify", "--sample", "3", "--scratch", "a", "b"]):
+            with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+                bdi.parse_args(argv)
+        self.assertTrue(bdi.parse_args([*base, "--dry-run", "prune"]).dry_run)
+        with mock.patch.dict(os.environ, {"WIKILEAN_BRAIN_COMMAND_TIMEOUT": "12"}):
+            self.assertEqual(bdi.parse_args([*base, "--dry-run", "prune"]).command_timeout, 12)
+        with mock.patch.object(bdi.sys, "platform", "linux"), \
+                contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
+            bdi.parse_args([*base, "--call-bytes", "400000", "--dry-run", "prune"])
+
+    def test_main_reports_every_failure_as_json_with_the_call_stats(self):
+        fake = FakeD1()
+        fake.reject = lambda s: "D1_ERROR: boom" if s.startswith("INSERT INTO labels") else None
+        argv = ["--repo-root", str(REPO), "--receipt-dir", str(self.root),
+                "--database-id", "01234567-89ab-cdef-0123-456789abcdef", "--statement-bytes", "2500",
+                "--call-bytes", "12000", "--call-attempts", "1", "--execute",
+                "import", "--scratch", str(self.serving), str(self.sidecar)]
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            code = bdi.main(argv, runner=fake, selector=self.selector, base_url=TARGET, node=Path("node"),
+                            wrangler=Path("wrangler.js"), sleep=lambda s: None, log=fake.log)
+        self.assertEqual(code, 1)
+        record = json.loads(err.getvalue())
+        self.assertFalse(record["ok"])
+        self.assertIn("phase=copy table=labels lo=1", record["error"])
+        self.assertEqual(record["calls"]["calls"], fake.calls)
+        self.assertEqual((record["last_call"]["phase"], record["last_call"]["table"]), ("copy", "labels"))
+        for exc, want in ((KeyboardInterrupt(), 130), (OSError("node is missing"), 1),
+                          (sqlite3.OperationalError("disk I/O error"), 1)):
+            err = io.StringIO()
+            with mock.patch.object(bdi, "run", side_effect=exc), contextlib.redirect_stderr(err):
+                self.assertEqual(bdi.main(argv), want, exc)
+            self.assertFalse(json.loads(err.getvalue())["ok"])
+
     def test_requires_one_database_target_and_a_receipt_root(self):
         with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit):
             bdi.parse_args(["--receipt-dir", str(self.root), "prune"])
@@ -897,6 +1153,65 @@ class CommandLineTest(Base):
             bdi.parse_args(["--database-id", "x", "prune"])
         with self.assertRaisesRegex(bdi.D1ImportError, "UUID"):
             bdi.WranglerConfig(config=None, database_id="not-a-uuid", database="wikilean-brain")
+
+
+class WranglerBoundaryTest(unittest.TestCase):
+    """D1.call against literal Wrangler answers: everything unexpected fails closed."""
+
+    @staticmethod
+    def d1(runner, node=Path("node")):
+        return bdi.D1(repo=REPO, database="wikilean-brain", config=Path("/nowhere/wrangler.json"), runner=runner,
+                      attempts=1, node=node, wrangler=Path("wrangler.js"), sleep=lambda s: None,
+                      log=lambda record: None)
+
+    def test_parse_accepts_only_a_successful_result_list(self):
+        ok = [{"results": [{"n": 1}], "success": True, "meta": {}}]
+
+        def parse(stdout, **kwargs):
+            return bdi.D1._parse(RunResult(("wrangler",), 0, stdout, b""), **kwargs)[0]
+        self.assertEqual(parse(json.dumps(ok).encode()), ok)
+        banner = b"[wrangler:warn] a warning line\n\xe2\x9b\x85 wrangler 4\n" + json.dumps(ok, indent=1).encode() + b"\n"
+        self.assertEqual(parse(banner), ok)
+        for bad in (b'[{"success": false, "results": []}]', b"[]", b"{}", b"no json at all",
+                    json.dumps(ok).encode() + b"\ntrailing text", b'[{"success": true, "results": [1]}]',
+                    b'[{"success": true, "results": {}}]'):
+            self.assertIsNone(parse(bad), bad)
+        self.assertIsNone(parse(b'[{"success": true}]', expect_results=True))
+        self.assertEqual(parse(b'[{"success": true}]'), [{"success": True}])
+
+    def test_calls_fail_closed_at_the_boundary(self):
+        class Runner:
+            def __init__(self, stdout=b"", exc=None):
+                self.stdout, self.exc = stdout, exc
+
+            def run(self, args, *, cwd, timeout, env):
+                if self.exc is not None:
+                    raise self.exc
+                return RunResult(tuple(args), 0, self.stdout, b"")
+        one = json.dumps([{"results": [], "success": True, "meta": {}}]).encode()
+        with self.assertRaisesRegex(bdi.D1ImportError, "1 results for 2 statements"):
+            self.d1(Runner(one)).call(["DELETE FROM a", "DELETE FROM b"])       # a write, too
+        with self.assertRaisesRegex(bdi.D1ImportError, "lower --call-bytes"):
+            self.d1(Runner(exc=OSError(7, "Argument list too long"))).call(["SELECT 1"])
+        meta = json.dumps([{"results": [], "success": True, "meta": {"duration": "slow"}}]).encode()
+        with self.assertRaisesRegex(bdi.D1ImportError, "malformed meta"):
+            self.d1(Runner(meta)).call(["SELECT 1"])
+        with self.assertRaisesRegex(bdi.D1CallError, "not a successful D1 result"):
+            self.d1(Runner(b'[{"success": true}]')).call(["SELECT 1"], expect_results=True)
+
+    def test_a_real_node_gets_a_scrubbed_environment_with_the_cloudflare_token(self):
+        seen = []
+
+        class Runner:
+            def run(self, args, *, cwd, timeout, env):
+                seen.append(env)
+                return RunResult(tuple(args), 0, json.dumps([{"results": [], "success": True}]).encode(), b"")
+        node = Path(sys.executable).resolve()
+        with mock.patch.dict(os.environ, {"CLOUDFLARE_API_TOKEN": "test-token", "UNRELATED_SETTING": "x"}):
+            self.d1(Runner(), node=node).call(["SELECT 1"])
+        self.assertEqual(seen[0]["CLOUDFLARE_API_TOKEN"], "test-token")
+        self.assertTrue(seen[0]["PATH"].startswith(str(node.parent)))
+        self.assertNotIn("UNRELATED_SETTING", seen[0])
 
 
 if __name__ == "__main__":

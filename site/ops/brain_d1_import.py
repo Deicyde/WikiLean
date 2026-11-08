@@ -9,22 +9,27 @@
 
 Global options: --receipt-dir (or WIKILEAN_BRAIN_RECEIPT_DIR), one of --database-id UUID or
 --wrangler-config PATH (the Brain database has no entry in wiki/wrangler.jsonc yet), and
---execute. Without --execute, import, prune and supersede are dry runs: they take the lock,
-read the remote state and print what they would do, and change nothing.
+--dry-run or --execute, one of which import, prune and supersede need. A dry run takes the
+lock, reads the remote state, prints what it would do, and changes nothing.
 
 The design is the D1 read-layer design, section 5. Rows belong to serving datasets, named by
 the logical root of the sidecar build_serving_db.py writes; `releases` maps releases to them.
 
 - import: take the promoter's PromotionLock on its receipt root and refuse while any promotion
-  attempt is incomplete; check the serving file against its sidecar and the migration on D1;
+  attempt is incomplete; check the serving file against its sidecar (refusing up front an FTS
+  text too long for one statement or a row over D1's row limit) and the migration on D1;
   register the dataset (finishing an interrupted delete of it first) and the release as a
   candidate, then prune, so the prune can never delete the dataset this release reuses; skip
-  the copy when the dataset is already ready; otherwise copy every table in seq ranges, each
-  range a DELETE then one multi-row INSERT under the statement byte budget (rows too long for
-  one statement are finished with conditional appends), read each range back and compare the
-  digest of its copied columns with the local file before journaling it in import_ranges, then
-  fill the two FTS tables by rowid range the same way and finish with the state UPDATE.
-  A resumed import copies only the seq gaps between journaled ranges.
+  the copy when the dataset is already ready; otherwise create the two FTS tables first (names
+  falls back to parts, recorded in datasets, if D1 has no trigram tokenizer and --names-mode
+  was not given), copy every table in seq ranges, each range a DELETE then one multi-row
+  INSERT under the statement byte budget (rows too long for one statement are finished with
+  conditional appends), read each range back and compare the digest of its copied columns
+  with the local file before journaling it in import_ranges, then fill the FTS tables by rowid
+  range the same way, check sampled MATCH queries (a failure empties that FTS table for the
+  rerun) and finish with the state UPDATE. A resumed import copies only the seq gaps between
+  journaled ranges. --names-mode may change while the dataset imports and no names range is
+  journaled.
 - --scratch takes a serving file and its sidecar with no frozen release (the step-2 trial
   import): it recomputes every digest and registers the release row scratch:<dataset id>.
 - prune: deletes the release rows nothing protects, then every dataset no release references:
@@ -32,7 +37,7 @@ the logical root of the sidecar build_serving_db.py writes; `releases` maps rele
   datasets row last. An interrupted prune leaves a 'deleting' dataset the next prune finishes.
 - supersede: marks a candidate superseded, so the next prune can delete it.
 - verify: read-only and lock-free. Re-reads N random journaled ranges and compares them with
-  the local serving file and with import_ranges.
+  the local serving file and with import_ranges, and runs the sampled MATCH queries.
 
 Every statement reaches D1 through one function, D1.call, which runs
 `wrangler d1 execute <db> --remote --json --command <sql>` (never --file: on a remote database
@@ -72,6 +77,7 @@ from brain_promote_release import (
     PromotionError,
     RunResult,
     _node_environment,
+    _env_float,
     _resolved_executable,
     extract_last_json_value,
     selector_from_probe,
@@ -98,7 +104,9 @@ UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
 SCRATCH_PREFIX = "scratch:"
 
 STATEMENT_BYTES = 90_000      # D1 caps statement text at 100 KB (memory)
-CALL_BYTES = 400_000          # one --command argument; macOS caps argv plus environment at 1 MiB
+# one --command argument: macOS caps argv plus environment at 1 MiB, Linux each argument at
+# 128 KiB (MAX_ARG_STRLEN)
+CALL_BYTES = 120_000 if sys.platform.startswith("linux") else 400_000
 RANGES_PER_CALL = 4
 CALL_ATTEMPTS = 3
 SIZE_CEILING = 9_000_000_000  # stop before the 10 GB database cap
@@ -107,6 +115,8 @@ FTS_MERGE_PAGES = 500         # one ('merge', N) step after every FTS write call
 FTS_CRISISMERGE = 64
 FTS_SAMPLES = 30
 MAX_JSON_INT = 2**53 - 1      # D1 answers in JSON; larger integers would not round-trip
+ROW_BYTES = 2_000_000         # D1's largest row
+HEX_TEXT = "CAST(X'' AS TEXT)"   # the wrapper of a string that holds NUL (see sql_literal)
 
 # The D1 columns of every data table after `ds`, in the builder's column order. The local
 # file has these plus LOCAL_ONLY, which D1 omits (they only fill the FTS tables).
@@ -134,11 +144,40 @@ CONTROL_COLUMNS: dict[str, tuple[str, ...]] = {
     "releases": ("release_id", "seq", "ds", "manifest_sha256", "state", "registered_at"),
     "import_ranges": ("ds", "tbl", "lo", "hi", "digest", "verified_at"),
 }
-# the columns each schema_version needs on D1; the importer refuses any other version
+# The data tables and columns each schema_version has on D1, frozen: a later version adds its
+# own entry and never edits one, so the pruner can always delete a dataset of an older version.
+# The importer refuses any other version.
 REQUIRED_COLUMNS: dict[int, dict[str, tuple[str, ...]]] = {
-    1: {**CONTROL_COLUMNS, **{table: ("ds", *columns) for table, columns in D1_COLUMNS.items()}},
+    1: {
+        "datasets": ("ds", "dataset_id", "schema_version", "tables_json", "longest_name",
+                     "sup_names_from", "names_mode", "state", "imported_at"),
+        "releases": ("release_id", "seq", "ds", "manifest_sha256", "state", "registered_at"),
+        "import_ranges": ("ds", "tbl", "lo", "hi", "digest", "verified_at"),
+        "cell_pages": ("ds", "seq", "id", "json"),
+        "aliases": ("ds", "seq", "kind", "key", "owner"),
+        "labels": ("ds", "seq", "ord", "id", "label", "aka", "f", "p", "libs", "xy"),
+        "supercells": ("ds", "seq", "ord", "path", "label", "aka", "parent", "fa", "frontier",
+                       "n_cells", "n_sub", "fhist", "kids", "syn", "json"),
+        "name_keys": ("ds", "seq", "name_lc", "kind", "owner", "len16"),
+        "hot_prefixes": ("ds", "seq", "prefix", "cells", "sups", "live_sups"),
+        "cell_under": ("ds", "seq", "anc", "ord"),
+        "synapse_traces": ("ds", "seq", "pair", "json"),
+        "xrefs": ("ds", "seq", "page_ord", "node_ord", "page", "node"),
+        "text_ids": ("ds", "seq", "node", "owner"),
+    },
 }
+TABLES_BY_VERSION: dict[int, tuple[str, ...]] = {
+    version: tuple(t for t in columns if t not in CONTROL_COLUMNS)
+    for version, columns in REQUIRED_COLUMNS.items()}
+# the UNIQUE keys each table needs on D1: every range DELETE, readback and ON CONFLICT uses one
+REQUIRED_KEYS: dict[int, dict[str, tuple[str, ...]]] = {
+    version: {"datasets": ("dataset_id",), "releases": ("release_id",),
+              "import_ranges": ("ds", "tbl", "lo"), **{t: ("ds", "seq") for t in tables}}
+    for version, tables in TABLES_BY_VERSION.items()}
 assert DATA_TABLES == bsd.DATA_TABLES, "the importer and the builder disagree on the tables"
+assert REQUIRED_COLUMNS[SUPPORTED_SCHEMA_VERSIONS[-1]] == {
+    **CONTROL_COLUMNS, **{t: ("ds", *c) for t, c in D1_COLUMNS.items()}}, \
+    "D1_COLUMNS changed: add a schema_version to REQUIRED_COLUMNS instead of editing one"
 
 
 class D1ImportError(RuntimeError):
@@ -161,8 +200,9 @@ def sql_literal(value: object) -> str:
     """The one way a value enters SQL text: NULL, an integer, or a quoted string.
 
     A string is quoted with its single quotes doubled. NUL cannot appear in statement text
-    (nor in a command-line argument), so each NUL becomes `'...'||char(0)||'...'`, an
-    expression whose value is the same TEXT. Non-ASCII stays as UTF-8 text; a lone surrogate,
+    (nor in a command-line argument), so a string holding NUL becomes one expression node,
+    `CAST(X'<its UTF-8 in hex>' AS TEXT)`, whose value is the same TEXT (one node however many
+    NULs, so no expression-depth limit applies). Non-ASCII stays as UTF-8 text; a lone surrogate,
     which has no UTF-8 form, is refused. Floats are refused: they belong inside JSON text
     (the digest rule), and integers beyond 2**53 would not come back exactly from D1's JSON."""
     if value is None:
@@ -178,32 +218,34 @@ def sql_literal(value: object) -> str:
             value.encode("utf-8")
         except UnicodeEncodeError as exc:
             raise D1ImportError(f"string has no UTF-8 form: {exc}") from None
-        return "||char(0)||".join("'" + part.replace("'", "''") + "'" for part in value.split("\0"))
+        if "\0" in value:
+            return f"CAST(X'{value.encode('utf-8').hex().upper()}' AS TEXT)"
+        return "'" + value.replace("'", "''") + "'"
     raise D1ImportError(f"refusing to write a {type(value).__name__} value")
-
-
-def _char_cost(ch: str) -> int:
-    """Bytes one character adds to its string's literal (see sql_literal)."""
-    if ch == "'":
-        return 2
-    if ch == "\0":
-        return 13      # the literal closes, ||char(0)|| (11 bytes), and reopens
-    return len(ch.encode("utf-8"))
 
 
 def literal_bytes(text: str) -> int:
     """len(sql_literal(text).encode()) without building it."""
-    return 2 + sum(_char_cost(ch) for ch in text)
+    raw = utf8_len(text)
+    if "\0" in text:
+        return len(HEX_TEXT) + 2 * raw
+    return 2 + raw + text.count("'")
 
 
 def chunk_end(text: str, start: int, max_bytes: int) -> int:
-    """The largest end such that sql_literal(text[start:end]) is at most max_bytes long."""
-    cost, end = 2, start
+    """The largest end such that sql_literal(text[start:end]) is at most max_bytes long.
+
+    The cost only grows with end (a NUL switches to the hex form, which costs more than the
+    quoted form of the same text), so the first character that does not fit ends the chunk."""
+    raw = quotes = 0
+    nul = False
+    end = start
     while end < len(text):
-        step = _char_cost(text[end])
-        if cost + step > max_bytes:
+        ch = text[end]
+        raw_, quotes_, nul_ = raw + len(ch.encode("utf-8")), quotes + (ch == "'"), nul or ch == "\0"
+        if (len(HEX_TEXT) + 2 * raw_ if nul_ else 2 + raw_ + quotes_) > max_bytes:
             break
-        cost += step
+        raw, quotes, nul = raw_, quotes_, nul_
         end += 1
     return end
 
@@ -466,6 +508,7 @@ class D1:
         self.sleep = sleep
         self.log = log or (lambda record: print(json.dumps(record, sort_keys=True), file=sys.stderr))
         self.stats = CallStats()
+        self.last_label: dict[str, object] = {}
 
     def _tools(self) -> tuple[Path, Path]:
         if self._node is None:
@@ -482,13 +525,18 @@ class D1:
                 "--config", str(self.config), "--command", sql]
 
     def call(self, statements: Sequence[str], *, expect_results: bool = False,
-             attempts: int | None = None) -> list[dict[str, Any]]:
+             attempts: int | None = None, label: Mapping[str, object] | None = None) -> list[dict[str, Any]]:
         """Send statements as one call; return wrangler's per-statement results.
 
-        With expect_results the call must answer one result per statement (the reads index
-        them). A call that fails is sent again, up to `attempts` times in all."""
+        Every call must answer one result per statement; with expect_results each must also
+        carry a `results` list of rows (the reads index them). A call that fails is sent again,
+        up to `attempts` times in all. `label` (phase, table, seq range) goes into every log
+        record and into the error of a call that fails."""
         if not statements:
             return []
+        label = dict(label or {})
+        self.last_label = label
+        where = f" ({' '.join(f'{key}={value}' for key, value in label.items())})" if label else ""
         for statement in statements:
             size = utf8_len(statement)
             if size > self.statement_bytes:
@@ -504,47 +552,64 @@ class D1:
         detail = ""
         for attempt in range(1, (attempts or self.attempts) + 1):
             started = time.monotonic()
-            result = self.runner.run(args, cwd=self.wiki, timeout=self.timeout, env=env)
-            parsed, detail = self._parse(result)
+            try:
+                result = self.runner.run(args, cwd=self.wiki, timeout=self.timeout, env=env)
+            except OSError as exc:
+                raise D1ImportError(f"cannot run wrangler with a {utf8_len(sql)}-byte call{where}: "
+                                    f"{exc}; lower --call-bytes if the argument is too long") from exc
+            parsed, detail = self._parse(result, expect_results=expect_results)
             self.stats.calls += 1
             record: dict[str, object] = {
                 "call": self.stats.calls, "attempt": attempt, "statements": len(statements),
                 "bytes": utf8_len(sql), "largest_statement": max(map(utf8_len, statements)),
-                "wall_ms": round((time.monotonic() - started) * 1000, 3), "ok": parsed is not None}
+                "wall_ms": round((time.monotonic() - started) * 1000, 3), "ok": parsed is not None,
+                **label}
             if parsed is None:
                 record["error"] = detail[-500:]
                 self.log(record)
                 if attempt < (attempts or self.attempts):
                     self.sleep(min(30, 2 ** attempt))
                 continue
-            if expect_results and len(parsed) != len(statements):
+            if len(parsed) != len(statements):
                 raise D1ImportError(f"wrangler answered {len(parsed)} results for "
-                                    f"{len(statements)} statements")
+                                    f"{len(statements)} statements{where}")
             self._account(parsed, statements, record)
             self.log(record)
             return parsed
-        raise D1CallError(f"wrangler d1 execute failed {attempts or self.attempts} time(s): "
+        raise D1CallError(f"wrangler d1 execute failed {attempts or self.attempts} time(s){where}: "
                           f"{detail.strip()[-2000:]}")
 
     def _node_is_real(self) -> bool:
         return self._node is not None and self._node.is_absolute() and self._node.exists()
 
     @staticmethod
-    def _parse(result: RunResult) -> tuple[list[dict[str, Any]] | None, str]:
+    def _parse(result: RunResult, *, expect_results: bool = False) -> tuple[list[dict[str, Any]] | None, str]:
         detail = (result.stderr or result.stdout or b"").decode("utf-8", errors="replace")
         if not result.ok:
             state = "timed out" if result.timed_out else f"returned {result.returncode}"
             return None, f"{state}: {detail}"
+        text = (result.stdout or b"").decode("utf-8", errors="replace")
         try:
-            value = json.loads(result.stdout)
+            value = json.loads(text)
         except ValueError:
-            try:     # Wrangler may print a banner before the JSON
-                value = extract_last_json_value(result.stdout, "Wrangler D1 execute")
-            except PromotionError as exc:
-                return None, str(exc)
+            # Wrangler may print a banner before the JSON: take the first line that starts a
+            # JSON array running to the end of the output (one decode per candidate line)
+            decoder, value = json.JSONDecoder(), None
+            for match in re.finditer(r"(?m)^\[", text):
+                try:
+                    candidate, end = decoder.raw_decode(text, match.start())
+                except ValueError:
+                    continue
+                if not text[end:].strip():
+                    value = candidate
+                    break
+            if value is None:
+                return None, f"Wrangler D1 execute emitted no JSON array: {detail}"
         if (not isinstance(value, list) or not value
                 or any(not isinstance(item, dict) or item.get("success") is not True
-                       or not isinstance(item.get("results", []), list) for item in value)):
+                       or not isinstance(item.get("results", []), list)
+                       or any(not isinstance(row, dict) for row in item.get("results", []))
+                       or (expect_results and "results" not in item) for item in value)):
             return None, f"not a successful D1 result: {detail}"
         return value, ""
 
@@ -554,8 +619,11 @@ class D1:
         size_after = None
         for item in parsed:
             meta = item.get("meta") if isinstance(item.get("meta"), dict) else {}
-            duration += float(meta.get("duration") or 0)
-            written += int(meta.get("rows_written") or 0)
+            try:
+                duration += float(meta.get("duration") or 0)
+                written += int(meta.get("rows_written") or 0)
+            except (TypeError, ValueError) as exc:
+                raise D1ImportError(f"wrangler answered malformed meta {meta}: {exc}") from exc
             if isinstance(meta.get("size_after"), int):
                 size_after = meta["size_after"]
         stats = self.stats
@@ -577,6 +645,20 @@ class D1:
 
     def rows(self, statement: str) -> list[dict[str, Any]]:
         return self.call([statement], expect_results=True)[0].get("results") or []
+
+    def calls(self, statements: Sequence[str], **kwargs: Any) -> list[dict[str, Any]]:
+        """call() over as few calls as the call budget allows; the results in statement order."""
+        results: list[dict[str, Any]] = []
+        part: list[str] = []
+        size = -1               # a call is sum(len(statement) + 2) - 1 bytes
+        for statement in statements:
+            cost = utf8_len(statement) + 2
+            if part and size + cost > self.call_bytes:
+                results += self.call(part, **kwargs)
+                part, size = [], -1
+            part.append(statement)
+            size += cost
+        return results + self.call(part, **kwargs)
 
 
 class WranglerConfig(contextlib.AbstractContextManager):
@@ -732,8 +814,10 @@ class Range:
     appends: list[str] = field(default_factory=list)
 
     @property
-    def size(self) -> int:
-        return sum(map(utf8_len, self.primary))
+    def call_size(self) -> int:
+        """Bytes its statements add to a call: each one and its ";\\n" separator (the last
+        statement of a call ends in ";" alone, so a call is sum(call_size) - 1 bytes)."""
+        return sum(utf8_len(s) + 2 for s in self.primary)
 
 
 def gaps(ranges: Sequence[tuple[int, int]], rows: int) -> list[tuple[int, int]]:
@@ -804,7 +888,10 @@ class Importer:
                 incomplete = list_incomplete_attempts(self.receipt_root)
                 if incomplete:
                     raise D1ImportError("incomplete promotion attempt(s) block D1 import and prune: "
-                                        + ", ".join(j.attempt_id for j in incomplete))
+                                        + ", ".join(j.attempt_id for j in incomplete)
+                                        + "; reconcile each first with `bash site/ops/brain-promote-release.sh "
+                                        "--receipt-dir <receipt dir> --reconcile-attempt <attempt id> "
+                                        "--approval-note ...` (docs/BRAIN-RELEASE-RUNBOOK.md)")
                 yield
         except JournalError as exc:
             raise D1ImportError(str(exc)) from exc
@@ -816,18 +903,59 @@ class Importer:
 
     # -- reads ----------------------------------------------------------------------------------
 
+    def preflight(self, local: LocalDataset) -> None:
+        """Refuse, before any write, a dataset whose import could never finish (local, read-only):
+        an FTS text too long for one statement in either names mode (FTS rows cannot be appended
+        to), or a row larger than D1's row limit."""
+        budget = self.options.statement_bytes
+        for kind, (source, column) in FTS_TABLES.items():
+            modes = NAMES_MODES if kind == "names" else NAMES_MODES[:1]
+            headers = {m: utf8_len(f"INSERT INTO {fts_table(kind, local.hex)}(rowid, {fts_column(kind, m)}) VALUES ")
+                       for m in modes}
+            # a literal costs at most 4 bytes per byte of text (parts at most doubles a name, the
+            # hex form doubles again), plus its wrapper: only longer texts need the exact check
+            floor = (budget - max(headers.values()) - 64) // 4
+            for seq, text in local.db.execute(f"SELECT seq, {column} FROM {source} "
+                                              f"WHERE length(CAST({column} AS BLOB)) > ?", (floor,)):
+                for mode, header in headers.items():
+                    literal = f"({sql_literal(seq)}, {sql_literal(fts_content(kind, mode, text))})"
+                    if header + utf8_len(literal) > budget:
+                        raise D1ImportError(f"{source} seq {seq}: its {kind} text does not fit one "
+                                            f"{budget}-byte statement"
+                                            + (f" (names_mode {mode})" if kind == "names" else "")
+                                            + ", and FTS rows cannot be appended to: raise --statement-bytes")
+        for table, columns in D1_COLUMNS.items():
+            size = " + ".join(f"coalesce(length(CAST({c} AS BLOB)), 0)" for c in columns)
+            row = local.db.execute(f"SELECT seq, {size} FROM {table} WHERE {size} > ? LIMIT 1",
+                                   (ROW_BYTES,)).fetchone()
+            if row is not None:
+                raise D1ImportError(f"{table} seq {row[0]} holds {row[1]} bytes, over D1's {ROW_BYTES}-byte row limit")
+
     def require_schema(self, schema_version: int) -> None:
-        """Refuse unless the migration for schema_version is on D1 (read-only, one call)."""
+        """Refuse unless the migration for schema_version is on D1 (read-only): every
+        column, and a UNIQUE index on exactly each key the importer's statements rely on (a
+        table that predates the migration keeps its old shape under CREATE TABLE IF NOT EXISTS,
+        and without its (ds, seq) key every range statement would scan the whole table)."""
         required = REQUIRED_COLUMNS.get(schema_version)
         if required is None:
             raise D1ImportError(f"schema_version {schema_version} is not one this importer supports")
+        keys = REQUIRED_KEYS[schema_version]
         tables = list(required)
-        results = self.d1.call([f"SELECT name FROM pragma_table_info({sql_literal(checked_table(table))})"
-                                for table in tables], expect_results=True)
+        results = self.d1.calls(
+            [f"SELECT name FROM pragma_table_info({sql_literal(checked_table(table))})" for table in tables]
+            + [f"SELECT il.name AS idx, ii.name AS col FROM pragma_index_list({sql_literal(checked_table(table))}) "
+               "AS il, pragma_index_info(il.name) AS ii WHERE il.\"unique\" = 1 ORDER BY il.name, ii.seqno"
+               for table in keys], expect_results=True)
         present = {table: {str(row.get("name")) for row in result.get("results") or []}
                    for table, result in zip(tables, results)}
         missing = [f"{table}.{column}" for table, columns in required.items()
                    for column in columns if column not in present.get(table, set())]
+        for table, result in zip(keys, results[len(tables):]):
+            indexes: dict[str, list[str]] = {}
+            for row in result.get("results") or []:
+                indexes.setdefault(str(row.get("idx")), []).append(str(row.get("col")))
+            if list(keys[table]) not in indexes.values():
+                missing.append(f"{table} UNIQUE({', '.join(keys[table])})")
         if missing:
             raise D1ImportError("wiki/migrations-brain/0001_brain.sql is not applied to the Brain "
                                 f"database: missing {', '.join(missing[:8])}"
@@ -880,6 +1008,12 @@ class Importer:
             if d.state == "deleting" and d.ds in protection.datasets:
                 raise D1ImportError(f"dataset {d.dataset_id} is being deleted but a protected "
                                     "release references it; resolve by hand")
+        unknown = [d.dataset_id for d in datasets if d.schema_version not in TABLES_BY_VERSION]
+        if unknown:
+            raise D1ImportError(f"dataset(s) {', '.join(unknown)} have a schema_version this importer "
+                                "does not know: prune with the importer that wrote them")
+        for d in datasets:      # every delete plan is checked before the first delete
+            self._delete_bounds(d)
         return releases, datasets
 
     def prune(self, *, extra: Mapping[str, str] | None = None) -> dict[str, object]:
@@ -895,7 +1029,7 @@ class Importer:
             return report
         for chunk in self._within_budget("DELETE FROM releases WHERE release_id IN (", ", ", ")",
                                          [sql_literal(r) for r in releases]):
-            self.d1.call([chunk])
+            self.d1.call([chunk], label={"phase": "prune", "table": "releases"})
         for dataset in datasets:
             self.delete_dataset(dataset)
         return report
@@ -905,29 +1039,38 @@ class Importer:
         ds = sql_literal(dataset.ds)
         hex_id = dataset_hex(dataset.dataset_id)
         tables = self._delete_bounds(dataset)
-        self.d1.call([f"UPDATE datasets SET state = 'deleting' WHERE ds = {ds}"])
-        self.d1.call([f"DELETE FROM import_ranges WHERE ds = {ds}"])
-        self.d1.call([f"DROP TABLE IF EXISTS {fts_table(kind, hex_id)}" for kind in FTS_TABLES])
-        for table in DATA_TABLES:
-            rows, bounds = tables[table]
+        label = {"phase": "delete", "dataset_id": dataset.dataset_id}
+        self.d1.call([f"UPDATE datasets SET state = 'deleting' WHERE ds = {ds}"], label=label)
+        self.d1.call([f"DELETE FROM import_ranges WHERE ds = {ds}"], label=label)
+        self.d1.call([f"DROP TABLE IF EXISTS {fts_table(kind, hex_id)}" for kind in FTS_TABLES], label=label)
+        for table, (rows, bounds) in tables.items():
             lo = 1
             for hi in [*bounds, rows]:
                 if hi >= lo:
-                    self.d1.call([f"DELETE FROM {table} WHERE ds = {ds} AND seq BETWEEN "
-                                  f"{sql_literal(lo)} AND {sql_literal(hi)}"])
+                    self.d1.call([f"DELETE FROM {checked_table(table)} WHERE ds = {ds} AND seq BETWEEN "
+                                  f"{sql_literal(lo)} AND {sql_literal(hi)}"],
+                                 label={**label, "table": table, "lo": lo, "hi": hi})
                     lo = hi + 1
-        self.d1.call([f"DELETE FROM datasets WHERE ds = {ds} AND state = 'deleting'"])
+        self.d1.call([f"DELETE FROM datasets WHERE ds = {ds} AND state = 'deleting'"], label=label)
 
     @staticmethod
     def _delete_bounds(dataset: DatasetRow) -> dict[str, tuple[int, list[int]]]:
+        """The delete bounds of each data table of the dataset's own schema_version."""
+        version_tables = TABLES_BY_VERSION.get(dataset.schema_version)
+        if version_tables is None:
+            raise D1ImportError(f"dataset {dataset.dataset_id} has schema_version {dataset.schema_version}, "
+                                "which this importer does not know: prune with the importer that wrote it")
         try:
             tables = json.loads(dataset.tables_json)
+            if not isinstance(tables, dict) or set(tables) != set(version_tables):
+                raise ValueError(f"its tables are not those of schema_version {dataset.schema_version}")
             result = {}
-            for table in DATA_TABLES:
+            for table in version_tables:
                 meta = tables[table]
                 rows, bounds = meta["rows"], meta["delete_bounds"]
                 _int(rows, f"{table}.rows")
-                if any(not isinstance(b, int) or isinstance(b, bool) for b in bounds) or bounds != sorted(bounds):
+                if (not isinstance(bounds, list) or any(not isinstance(b, int) or isinstance(b, bool) for b in bounds)
+                        or bounds != sorted(bounds)):
                     raise ValueError(f"{table}.delete_bounds")
                 result[table] = (rows, list(bounds))
             return result
@@ -957,18 +1100,22 @@ class Importer:
 
     def import_dataset(self, local: LocalDataset, release_id: str, manifest_sha256: str,
                        names_mode: str | None = None) -> dict[str, object]:
+        """Register, prune and copy one dataset. names_mode None lets the importer choose:
+        trigram, or parts if D1 has no trigram tokenizer (the choice is recorded in datasets)."""
         if names_mode is not None and names_mode not in NAMES_MODES:
             raise D1ImportError(f"names_mode must be one of {NAMES_MODES}")
+        self.preflight(local)
         self.require_schema(local.schema_version)
         state = self.remote_state()
         live = self.selector()
         attempts = self._attempts()
         existing = state.dataset(local.dataset_id)
+        switch = False
         if existing is not None:
             self._check_same_dataset(existing, local)
             if existing.state != "deleting" and names_mode and existing.names_mode != names_mode:
-                raise D1ImportError(f"dataset {local.dataset_id} is recorded with names_mode "
-                                    f"{existing.names_mode}, not {names_mode}")
+                self._check_names_mode_switch(state, existing, local, names_mode)
+                switch = True
         row = state.release(release_id)
         if row is not None and row.dataset_id is not None and row.dataset_id != local.dataset_id:
             raise D1ImportError(f"release row {release_id} references dataset {row.dataset_id}, "
@@ -980,9 +1127,12 @@ class Importer:
                         and r.dataset_id != local.dataset_id)
         if others:
             raise D1ImportError("another protected candidate references a different dataset: "
-                                + ", ".join(others) + "; supersede it first")
+                                + ", ".join(others) + "; supersede it first with `brain_d1_import.py "
+                                "<global options> --execute supersede <release id>`")
         report: dict[str, object] = {"release_id": release_id, "dataset_id": local.dataset_id,
                                      "dataset_state": existing.state if existing else None}
+        if switch:
+            report["names_mode"] = f"{existing.names_mode} -> {names_mode}"
         mine = {release_id: "the release being imported"}
         if not self.options.execute:
             report["prune"] = self._dry_prune(state, live, attempts, mine, local.dataset_id)
@@ -1013,6 +1163,8 @@ class Importer:
             if existing is None:
                 raise D1ImportError(f"dataset {local.dataset_id} was not registered")
             self._check_same_dataset(existing, local)
+        elif switch:
+            existing = self._set_names_mode(existing, names_mode)
         self._register_release(state, release_id, existing.ds, manifest_sha256)
 
         report["prune"] = self.prune(extra=mine)
@@ -1025,7 +1177,7 @@ class Importer:
             return report
         if existing.state != "importing":
             raise D1ImportError(f"dataset {local.dataset_id} is {existing.state}, not importing")
-        report["copy"] = self.copy(local, existing)
+        report["copy"] = self.copy(local, existing, names_forced=names_mode is not None)
         report["imported"] = True
         return report
 
@@ -1036,6 +1188,33 @@ class Importer:
         releases, datasets = self.prune_plan(state, protection)
         return {"protected": dict(sorted(protection.releases.items())), "delete_releases": releases,
                 "delete_datasets": [d.dataset_id for d in datasets if d.dataset_id != dataset_id]}
+
+    def _check_names_mode_switch(self, state: RemoteState, existing: DatasetRow, local: LocalDataset,
+                                 names_mode: str) -> None:
+        """A dataset's names_mode may change only while it imports and no names range is journaled."""
+        why = None
+        if existing.state != "importing":
+            why = f"it is {existing.state}"
+        elif self.coverage(existing.ds, self._row_counts(local))["names"]:
+            why = "names ranges are already copied"
+        if why is not None:
+            releases = " ".join(r.release_id for r in state.releases if r.ds == existing.ds) or "<release id>"
+            raise D1ImportError(f"dataset {local.dataset_id} is recorded with names_mode {existing.names_mode}, "
+                                f"not {names_mode}, and {why}: to change it, run `brain_d1_import.py "
+                                f"<global options> --execute supersede {releases}`, then `... --execute prune`, "
+                                "and import again")
+
+    def _set_names_mode(self, dataset: DatasetRow, names_mode: str) -> DatasetRow:
+        """Drop the names table (it holds no journaled range), then record the new mode."""
+        label = {"phase": "names-mode", "dataset_id": dataset.dataset_id}
+        self.d1.call([f"DROP TABLE IF EXISTS {fts_table('names', dataset_hex(dataset.dataset_id))}"], label=label)
+        self.d1.call([f"UPDATE datasets SET names_mode = {sql_literal(names_mode)} "
+                      f"WHERE ds = {sql_literal(dataset.ds)} AND state = 'importing'"], label=label)
+        row = self.remote_state().dataset(dataset.dataset_id)
+        if row is None or row.state != "importing" or row.names_mode != names_mode:
+            raise D1ImportError(f"dataset {dataset.dataset_id} left 'importing' while its names_mode changed")
+        self.actions.append({"names_mode": names_mode})
+        return row
 
     @staticmethod
     def _check_same_dataset(row: DatasetRow, local: LocalDataset) -> None:
@@ -1068,62 +1247,109 @@ class Importer:
 
     # -- copy -----------------------------------------------------------------------------------
 
-    def copy(self, local: LocalDataset, dataset: DatasetRow) -> dict[str, object]:
+    def copy(self, local: LocalDataset, dataset: DatasetRow, *, names_forced: bool = False) -> dict[str, object]:
+        """Create the FTS tables, copy every data table, fill the FTS tables, check, finish.
+
+        The FTS tables come first, so a tokenizer or option D1 lacks fails before any data
+        range is written. names_forced says the operator chose the mode (no fallback)."""
         names_mode = dataset.names_mode
         if names_mode not in NAMES_MODES:
             raise D1ImportError(f"dataset {dataset.dataset_id} has names_mode {names_mode!r}")
         counts = self._row_counts(local)
         recorded = self.coverage(dataset.ds, counts)
+        hex_id = local.hex
+        names_mode = self._create_fts(local, dataset, names_mode,
+                                      fallback=not names_forced and not recorded["names"])
         copied: dict[str, int] = {}
         for table in DATA_TABLES:
             spans = gaps([(lo, hi) for lo, hi, _ in recorded[table]], counts[table])
             copied[table] = self._copy_spans(dataset.ds, spans,
                                              lambda a, b, t=table: self._plan_table(local, dataset.ds, t, a, b),
-                                             lambda r: self._read_table(dataset.ds, r))
-        hex_id = local.hex
-        statements = []
-        for kind in FTS_TABLES:
-            table = fts_table(kind, hex_id)
-            statements += [fts_create(kind, hex_id, names_mode),
-                           f"INSERT INTO {table}({table}, rank) VALUES ('automerge', 0)",
-                           f"INSERT INTO {table}({table}, rank) VALUES ('crisismerge', {FTS_CRISISMERGE})"]
-        self.d1.call(statements)
+                                             lambda r: self._read_table(dataset.ds, r),
+                                             name=table, total=counts[table])
         for kind in FTS_TABLES:
             spans = gaps([(lo, hi) for lo, hi, _ in recorded[kind]], counts[kind])
             copied[kind] = self._copy_spans(
                 dataset.ds, spans, lambda a, b, k=kind: self._plan_fts(local, k, names_mode, a, b),
-                lambda r, k=kind: self._read_fts(k, hex_id, r))
-        self.check_fts_samples(local, names_mode)
+                lambda r, k=kind: self._read_fts(k, hex_id, r), name=kind, total=counts[kind])
+        bad = self.check_fts_samples(local, names_mode)
+        if bad:
+            # a count check cannot see wrong FTS content: forget that index's ranges and drop it,
+            # so the rerun refills only the FTS table instead of failing this check forever
+            kinds = sorted({kind for kind, _ in bad})
+            label = {"phase": "fts-reset", "dataset_id": local.dataset_id}
+            for kind in kinds:
+                self.d1.call([f"DELETE FROM import_ranges WHERE ds = {sql_literal(dataset.ds)} "
+                              f"AND tbl = {sql_literal(kind)}"], label=label)
+                self.d1.call([f"DROP TABLE IF EXISTS {fts_table(kind, hex_id)}"], label=label)
+            raise D1ImportError(f"{bad[0][1]}: the {' and '.join(kinds)} index was emptied; rerun the "
+                                "import to refill it")
         self.finish(local, dataset)
         return copied
 
+    @staticmethod
+    def _fts_setup(kind: str, hex_id: str, names_mode: str) -> list[str]:
+        table = fts_table(kind, hex_id)
+        return [fts_create(kind, hex_id, names_mode),
+                f"INSERT INTO {table}({table}, rank) VALUES ('automerge', 0)",
+                f"INSERT INTO {table}({table}, rank) VALUES ('crisismerge', {FTS_CRISISMERGE})"]
+
+    def _create_fts(self, local: LocalDataset, dataset: DatasetRow, names_mode: str, *, fallback: bool) -> str:
+        """Create both FTS tables and return the names mode in force. If D1 refuses the trigram
+        tokenizer and the importer chose the mode (fallback), names falls back to parts and the
+        datasets row records it (the design, section 4)."""
+        hex_id = local.hex
+        label = {"phase": "fts-create", "dataset_id": local.dataset_id}
+        try:
+            self.d1.call(self._fts_setup("names", hex_id, names_mode), label=label)
+        except D1CallError as exc:
+            if names_mode != "trigram" or "tokenizer" not in str(exc):
+                raise
+            if not fallback:
+                raise D1ImportError(f"{exc}; D1 has no trigram tokenizer: rerun with --names-mode parts") from exc
+            self._set_names_mode(dataset, "parts")
+            names_mode = "parts"
+            self.d1.call(self._fts_setup("names", hex_id, names_mode), label=label)
+        self.d1.call(self._fts_setup("texts", hex_id, names_mode), label=label)
+        return names_mode
+
     def _copy_spans(self, ds: int, spans: list[tuple[int, int]], plan: Callable[[int, int], Iterator[Range]],
-                    read: Callable[[Range], str]) -> int:
+                    read: Callable[[Range], str], *, name: str, total: int) -> int:
         """Write, read back and journal every range of every span; return the rows copied."""
         copied = 0
+        done = total - sum(b - a + 1 for a, b in spans)
+
+        def land(group: list[Range]) -> int:
+            nonlocal done
+            rows = self._land(ds, group, read)
+            done += rows
+            self.d1.log({"progress": name, "rows_done": done, "rows_total": total})
+            return rows
+
         for a, b in spans:
             group: list[Range] = []
             for item in plan(a, b):
                 if group and (len(group) >= self.options.ranges_per_call
-                              or sum(r.size for r in group) + item.size + 2 * len(group) > self.options.call_bytes):
-                    copied += self._land(ds, group, read)
+                              or sum(r.call_size for r in group) + item.call_size - 1 > self.options.call_bytes):
+                    copied += land(group)
                     group = []
                 group.append(item)
             if group:
-                copied += self._land(ds, group, read)
+                copied += land(group)
         return copied
 
     def _land(self, ds: int, group: list[Range], read: Callable[[Range], str]) -> int:
         pending = list(group)
         for attempt in range(self.d1.attempts):
-            self._write(pending)
-            readback = self.d1.call([read(r) for r in pending], expect_results=True)
+            label = {"phase": "copy", "table": pending[0].table, "lo": pending[0].lo, "hi": pending[-1].hi}
+            self._write(pending, label)
+            readback = self.d1.call([read(r) for r in pending], expect_results=True, label=label)
             bad = []
             for item, result in zip(pending, readback):
                 if self._remote_digest(item, result.get("results") or []) != item.digest:
                     bad.append(item)
             good = [r for r in pending if r not in bad]
-            self._journal(ds, good)
+            self._journal(ds, good, label)
             if not bad:
                 return sum(r.hi - r.lo + 1 for r in group)
             self.actions.append({"rewrite": [(r.table, r.lo, r.hi) for r in bad], "attempt": attempt + 1})
@@ -1131,26 +1357,26 @@ class Importer:
         raise D1ImportError("ranges still differ from the local file after "
                             f"{self.d1.attempts} writes: {[(r.table, r.lo, r.hi) for r in pending]}")
 
-    def _write(self, ranges: list[Range]) -> None:
-        self.d1.call([s for r in ranges for s in r.primary])
+    def _write(self, ranges: list[Range], label: Mapping[str, object]) -> None:
+        self.d1.call([s for r in ranges for s in r.primary], label=label)
         appends = [s for r in ranges for s in r.appends]
         call: list[str] = []
         for statement in appends:
             if call and (len(call) >= self.options.ranges_per_call
-                         or sum(map(utf8_len, call)) + utf8_len(statement) + 2 * len(call) > self.options.call_bytes):
-                self.d1.call(call)
+                         or sum(utf8_len(s) + 2 for s in call) + utf8_len(statement) + 1 > self.options.call_bytes):
+                self.d1.call(call, label=label)
                 call = []
             call.append(statement)
-        self.d1.call(call)
+        self.d1.call(call, label=label)
 
-    def _journal(self, ds: int, ranges: list[Range]) -> None:
+    def _journal(self, ds: int, ranges: list[Range], label: Mapping[str, object] | None = None) -> None:
         if not ranges:
             return
         stamp = now()
         rows = ["(" + ", ".join(sql_literal(v) for v in (ds, r.table, r.lo, r.hi, r.digest, stamp)) + ")"
                 for r in ranges]
         self.d1.call(self._within_budget("INSERT INTO import_ranges(ds, tbl, lo, hi, digest, verified_at) VALUES ",
-                                         ", ", " ON CONFLICT(ds, tbl, lo) DO NOTHING", rows))
+                                         ", ", " ON CONFLICT(ds, tbl, lo) DO NOTHING", rows), label=label)
 
     def _within_budget(self, head: str, sep: str, tail: str, items: list[str]) -> list[str]:
         """head + items joined by sep + tail, split into as few statements as the budget allows."""
@@ -1350,21 +1576,24 @@ class Importer:
                 queries.append((kind, '"' + term.replace('"', '""') + '"'))
         return queries[: self.options.fts_samples]
 
-    def check_fts_samples(self, local: LocalDataset, names_mode: str) -> None:
-        """Sampled MATCH queries answer the same rowids on D1 as on the local file."""
+    def check_fts_samples(self, local: LocalDataset, names_mode: str) -> list[tuple[str, str]]:
+        """Sampled MATCH queries (read-only): the (kind, message) of each that answers other
+        rowids on D1 than on the local file."""
         queries = self.fts_queries(local, names_mode)
         if not queries:
-            return
+            return []
         statements = [f"SELECT rowid FROM {fts_table(kind, local.hex)} WHERE {fts_table(kind, local.hex)} "
                       f"MATCH {sql_literal(phrase)} ORDER BY rowid LIMIT 50" for kind, phrase in queries]
-        remote = self.d1.call(statements, expect_results=True)
+        remote = self.d1.calls(statements, expect_results=True, label={"phase": "fts-samples"})
+        bad: list[tuple[str, str]] = []
         with local_fts(local, names_mode) as reference:
             for (kind, phrase), result in zip(queries, remote):
                 want = [row[0] for row in reference.execute(
                     f"SELECT rowid FROM {kind} WHERE {kind} MATCH ? ORDER BY rowid LIMIT 50", (phrase,))]
                 got = [row.get("rowid") for row in result.get("results") or []]
                 if got != want:
-                    raise D1ImportError(f"{kind} MATCH {phrase} answers {got[:5]} on D1 and {want[:5]} locally")
+                    bad.append((kind, f"{kind} MATCH {phrase} answers {got[:5]} on D1 and {want[:5]} locally"))
+        return bad
 
     # -- finish ---------------------------------------------------------------------------------
 
@@ -1409,6 +1638,8 @@ class Importer:
                 raise D1ImportError(f"dataset {local.dataset_id} is "
                                     f"{dataset.state if dataset else 'absent'} on D1, not ready")
             self._check_same_dataset(dataset, local)
+            if dataset.names_mode not in NAMES_MODES:
+                raise D1ImportError(f"dataset {local.dataset_id} has names_mode {dataset.names_mode!r}")
             recorded = self.coverage(dataset.ds, self._row_counts(local))
             journaled = [(name, lo, hi, digest) for name, ranges in recorded.items() for lo, hi, digest in ranges]
             picks = rng.sample(journaled, min(sample, len(journaled)))
@@ -1428,6 +1659,8 @@ class Importer:
                     if self._remote_digest(item, result.get("results") or []) != item.digest:
                         mismatches.append(f"{local.dataset_id} {item.table} [{item.lo}, {item.hi}]: D1 differs "
                                           "from the local file")
+            mismatches += [f"{local.dataset_id} {message}"
+                           for _, message in self.check_fts_samples(local, dataset.names_mode)]
             checked.append({"dataset_id": local.dataset_id, "ranges": len(picks)})
         return {"checked": checked, "mismatches": mismatches, "ok": not mismatches}
 
@@ -1508,15 +1741,20 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     target = parser.add_mutually_exclusive_group(required=True)
     target.add_argument("--database-id", help="the D1 database UUID of wikilean-brain (issue #150 creates it)")
     target.add_argument("--wrangler-config", type=Path, help="an absolute Wrangler config that binds the database")
-    parser.add_argument("--execute", action="store_true", help="mutate; without it, a dry run")
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--dry-run", action="store_true",
+                       help="read the remote state and report; import, prune and supersede need this or --execute")
+    modes.add_argument("--execute", action="store_true", help="mutate")
     parser.add_argument("--statement-bytes", type=int, default=STATEMENT_BYTES)
-    parser.add_argument("--call-bytes", type=int, default=CALL_BYTES)
+    parser.add_argument("--call-bytes", type=int, default=CALL_BYTES,
+                        help=f"bytes of one --command argument (default {CALL_BYTES}; at most 131072 on Linux)")
     parser.add_argument("--ranges-per-call", type=int, default=RANGES_PER_CALL)
     parser.add_argument("--call-attempts", type=int, default=CALL_ATTEMPTS)
     parser.add_argument("--size-ceiling", type=int, default=SIZE_CEILING)
     parser.add_argument("--slow-call-ms", type=float, default=SLOW_CALL_MS)
     parser.add_argument("--fts-merge-pages", type=int, default=FTS_MERGE_PAGES)
-    parser.add_argument("--command-timeout", type=float, default=900.0)
+    parser.add_argument("--command-timeout", type=float,
+                        default=_env_float("WIKILEAN_BRAIN_COMMAND_TIMEOUT", 900))
     commands = parser.add_subparsers(dest="command", required=True)
 
     importing = commands.add_parser("import", help="import one dataset and register its release")
@@ -1526,7 +1764,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
                         help="a serving file and its sidecar, registered as scratch:<dataset id>")
     importing.add_argument("--python", type=Path, help="the interpreter for verify_release.py")
     importing.add_argument("--names-mode", choices=NAMES_MODES,
-                           help="trigram (default for a new dataset) or parts, if D1 lacks trigram")
+                           help="force a names mode; by default the importer takes trigram, or parts if D1 "
+                                "has no trigram tokenizer. It may change until a names range is copied")
 
     commands.add_parser("prune", help="delete what no protected release references")
     superseding = commands.add_parser("supersede", help="mark a candidate release superseded")
@@ -1545,10 +1784,16 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
                      "and --ranges-per-call >= 1")
     if args.command == "import" and args.release_root is not None and args.python is None:
         parser.error("import --release-root needs --python for verify_release.py")
+    if sys.platform.startswith("linux") and args.call_bytes > 131_072:
+        parser.error("Linux caps one argument at 131072 bytes (MAX_ARG_STRLEN): lower --call-bytes")
     if args.command == "verify" and not (args.release_root or args.scratch):
         parser.error("verify needs --release-root or --scratch")
+    if args.command == "verify" and (args.sample < 0 or args.execute):
+        parser.error("verify is read-only and needs --sample >= 0")
     if args.command in {"import", "prune", "supersede"} and args.receipt_dir is None:
         parser.error("--receipt-dir or WIKILEAN_BRAIN_RECEIPT_DIR is required")
+    if args.command in {"import", "prune", "supersede"} and not (args.dry_run or args.execute):
+        parser.error(f"{args.command} needs --dry-run or --execute")
     return args
 
 
@@ -1556,7 +1801,10 @@ def run(args: argparse.Namespace, *, runner: Any | None = None,
         selector: Callable[[], tuple[str | None, str | None]] | None = None,
         base_url: str = PRODUCTION_ORIGIN, node: Path | None = None, wrangler: Path | None = None,
         sleep: Callable[[float], None] = time.sleep,
-        log: Callable[[dict[str, object]], None] | None = None) -> dict[str, object]:
+        log: Callable[[dict[str, object]], None] | None = None,
+        progress: dict[str, Any] | None = None) -> dict[str, object]:
+    """Run one command. `progress` receives the D1 client as progress["d1"], so a caller can
+    report its call stats and last label even when the command fails."""
     runner = runner or CommandRunner()
     repo = args.repo_root.resolve(strict=True)
     options = Options(execute=args.execute, statement_bytes=args.statement_bytes,
@@ -1574,6 +1822,8 @@ def run(args: argparse.Namespace, *, runner: Any | None = None,
                 timeout=args.command_timeout, statement_bytes=args.statement_bytes,
                 call_bytes=args.call_bytes, attempts=args.call_attempts, size_ceiling=args.size_ceiling,
                 slow_call_ms=args.slow_call_ms, node=node, wrangler=wrangler, sleep=sleep, log=log)
+        if progress is not None:
+            progress["d1"] = d1
         importer = Importer(d1, options=options, selector=selector or (lambda: live_selector(base_url)),
                             receipt_root=receipt_root)
         result: dict[str, object] = {"schema": RESULT_SCHEMA, "command": args.command,
@@ -1618,13 +1868,26 @@ def run(args: argparse.Namespace, *, runner: Any | None = None,
         return result
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    args = parse_args(argv)
+def main(argv: Sequence[str] | None = None, **run_options: Any) -> int:
+    progress: dict[str, Any] = {}
+
+    def fail(error: str) -> None:
+        record: dict[str, object] = {"schema": RESULT_SCHEMA, "ok": False, "error": error}
+        d1 = progress.get("d1")
+        if d1 is not None:
+            record["calls"] = d1.stats.summary()
+            record["last_call"] = d1.last_label
+        print(json.dumps(record, sort_keys=True, default=str), file=sys.stderr)
+
     try:
-        result = run(args)
-    except D1ImportError as exc:
-        print(json.dumps({"schema": RESULT_SCHEMA, "ok": False, "error": str(exc)}, sort_keys=True),
-              file=sys.stderr)
+        args = parse_args(argv)
+        result = run(args, progress=progress, **run_options)
+    except KeyboardInterrupt:
+        fail("interrupted: rerun the same command; a resumed import copies only what is not journaled")
+        return 130
+    except (D1ImportError, PromotionError, JournalError, TransportError, OSError, ValueError,
+            sqlite3.Error) as exc:
+        fail(f"{type(exc).__name__}: {exc}" if not isinstance(exc, D1ImportError) else str(exc))
         return 1
     print(json.dumps(result, sort_keys=True))
     return 0 if result.get("ok") else 1
