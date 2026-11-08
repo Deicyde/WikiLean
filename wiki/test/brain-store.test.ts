@@ -99,7 +99,8 @@ const unavailable = (release: BrainReleaseContext) =>
 const XREF_PAGE = "xref:lmfdb_knowl:group.abelian";
 
 // Each call answers its HTTP status; the MCP call answers 503 for a 503 tool
-// result.
+// result. The POSTs sign in as u-human, the user fixture.ts seeds: an unknown
+// user gets a 401 before any store read.
 type Call = [string, (h: Harness) => Promise<number>];
 const getStatus = (path: string): Call => [`GET ${path}`, async (h) => (await get(h.env, path)).status];
 const postEdge: Call = [
@@ -110,11 +111,11 @@ const postEdge: Call = [
       dst: COMM_DECL,
       kind: "formalizes",
       evidence: { note: "store seam" },
-    }, { user: "u-store" })).status,
+    }, { user: "u-human" })).status,
 ];
 const postNode: Call = [
   "POST /api/brain/node",
-  async (h) => (await post(h.env, "/api/brain/node", { qid: ABELIAN }, { user: "u-store" })).status,
+  async (h) => (await post(h.env, "/api/brain/node", { qid: ABELIAN }, { user: "u-human" })).status,
 ];
 const mcpCell: Call = [
   "MCP brain_cell",
