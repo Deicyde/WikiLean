@@ -91,7 +91,7 @@ function safeParse(s: string): unknown {
 export {
   _resetXrefCaches as _resetBrainEditCaches,
   _xrefCacheReleaseIds as _brainEditCacheReleaseIds,
-} from "./brain-store-static.js";
+} from "./brain-store.js";
 
 function unavailableReleaseResponse(
   c: Context<{ Bindings: Env }>,
@@ -1381,7 +1381,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       try {
         staticNodes = await store.xrefNodes(pageArr);
       } catch (error) {
-        // the index was just loaded, but a concurrent selector rollover can evict it
+        // the static store reuses the index xrefPages loaded; a D1Store reads again
         if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
         throw error;
       }

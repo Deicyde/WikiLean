@@ -57,7 +57,16 @@ import {
   type BrainLabelRow,
   type BrainReleaseContext,
 } from "./brain.js";
-import { storeFor, type AtomHead, type SupercellHead } from "./brain-store.js";
+import {
+  storeFor,
+  type AtomHead,
+  type CellHead,
+  type Crumb,
+  type Organ,
+  type SupercellHead,
+  type Synapse,
+  type Trace,
+} from "./brain-store.js";
 import {
   bucketEntries,
   bucketTotal,
@@ -96,93 +105,8 @@ const MATHLIB_LICENSE = "Apache-2.0 (Mathlib)";
 
 // ---- shipped shapes (brain/build_cell_shards.py output, brain/SCHEMA.md#v3) ----
 
-// An organ is a PARTICLE, never a node: it exists only inside a cell (or, for
-// rule-5 field concepts and area pages, inside a supercell). Payloads are
-// EMBEDDED by the builder — one shard fetch renders the whole card, so no route
-// below fans out to fetch an organ's content.
-export interface Organ {
-  kind: string; // concept | decl | page | article | statement
-  id: string;
-  label?: string;
-  bond?: string; // exact | generalization | special_case | xref | field | … (absent on an anchor organ)
-  prov?: number; // index into the manifest `prov` table
-  // decl
-  module?: string;
-  decl_kind?: string;
-  docstring?: string;
-  code?: string;
-  library?: string;
-  renamed_to?: string; // the verified current FQ name when the cited name is dead (decl_renames.jsonl, baked in)
-  // concept
-  description?: string;
-  slug?: string;
-  article_annotations?: unknown;
-  status?: string;
-  // page
-  db?: string;
-  url?: string;
-  kind_hint?: string;
-  qid?: string;
-  snippet?: string;
-  snippet_license?: string;
-  // article
-  annotations?: unknown;
-  // statement
-  arxiv_id?: string;
-  ref?: string;
-  license_open?: boolean;
-  [k: string]: unknown;
-}
-
-// One constituent bond of a synapse; keeps its OWN direction (a synapse is an
-// undirected aggregate — SCHEMA v3 "src/dst are ordered lexicographically").
-// `src`/`dst` are ORGAN ids, not cell ids: the trace names the actual particles.
-export interface Trace {
-  kind: string;
-  src: string;
-  dst: string;
-  prov?: number;
-  evidence?: Record<string, unknown>;
-}
-
-export interface Synapse {
-  id: string; // the OTHER atom (cell:… or path:…)
-  w: number; // weight = every constituent bond, capped or not
-  kinds: Record<string, number>;
-  traces?: Trace[]; // trimmed to `caps.traces_per_synapse`; `tt` = the true total
-  tt?: number;
-}
-
-export interface CellHead {
-  id: string;
-  anchor: string;
-  label?: string;
-  supercells?: string[];
-  f?: number;
-  xy?: [number, number];
-}
-
-export interface CellEntry {
-  cell: CellHead;
-  organs?: Organ[];
-  syn?: Synapse[];
-  counts?: { syn?: number; organs?: number };
-  truncated?: { syn?: number };
-  breadcrumb?: Array<{ id: string; label?: string | null }>;
-}
-
-// supercells.json rows. Only 156 of ~9k carry organs and 37 carry synapses —
-// most are pure containment. `fa` is the subtree-AGGREGATE facet mask.
-export interface SupercellEntry {
-  label?: string;
-  fa?: number;
-  parent?: string;
-  children?: string[];
-  cells?: string[];
-  organs?: Organ[];
-  syn?: Synapse[];
-  counts?: { syn?: number };
-}
+// Organ, Trace, Synapse, CellHead, CellEntry and SupercellEntry live in
+// brain-store.ts, beside the interface that returns them.
 
 // The normalized atom every route works with: a cell or a supercell.
 export interface Atom {
@@ -194,7 +118,7 @@ export interface Atom {
   syn: Synapse[];
   counts: { syn: number; organs: number };
   truncated?: { syn?: number };
-  breadcrumb?: Array<{ id: string; label?: string | null }>;
+  breadcrumb?: Crumb[];
   cell?: CellHead; // kind==="cell"
   supercell?: { path: string; parent?: string; children?: string[]; cells?: string[]; fa?: number }; // kind==="supercell"
 }
@@ -507,8 +431,8 @@ function pickSuggestion(r: BrainLabelRow): Record<string, unknown> {
 }
 
 async function suggestionsFor(c: Ctx, release: BrainReleaseContext, text: string): Promise<Record<string, unknown>[]> {
-  const q = text.trim().toLowerCase();
-  if (q.length < 2) return [];
+  const q = text.trim();
+  if (q.toLowerCase().length < 2) return []; // the store lowercases q itself
   return (await storeFor(c, release).searchCellNames(q, 5)).map(pickSuggestion);
 }
 
@@ -670,7 +594,7 @@ async function informalToFormal(c: Ctx, release: BrainReleaseContext, q: string,
   let resolvedFrom: string | null = resolved?.resolved_from ?? null;
   if (!resolved && q.length >= 2) {
     // free text: best label/aka search hit
-    const hits = await storeFor(c, release).searchCellNames(q.toLowerCase(), 5);
+    const hits = await storeFor(c, release).searchCellNames(q, 5);
     if (hits.length) {
       resolved = { id: hits[0].id, resolved_from: "label" };
       resolvedFrom = "search";
@@ -913,6 +837,8 @@ export async function neighborhoodFor(
   minConfRaw?: unknown,
 ): Promise<ApiResult> {
   if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
+  // 50 is also the static store's TRACE_HYDRATION_MAX (brain-store-static.ts),
+  // so an unmodified call is fully hydrated: change the two together.
   const limit = clampLimit(limitRaw, 50, 200);
   const minW = Math.max(intOr(minWRaw, 0), 0);
   // min_conf floors trace-level confidence WHERE a trace carries one; shipped
@@ -1256,11 +1182,10 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
       },
     };
   }
-  const ql = q.toLowerCase();
   const store = storeFor(c, release);
   // Name hits first: the static store loads labels.json and supercells.json
   // here, before the key resolution below, as this route always has.
-  const named = await store.searchNames(ql, kind as "" | "cell" | "supercell", limit);
+  const named = await store.searchNames(q, kind as "" | "cell" | "supercell", limit);
 
   const hits: Record<string, unknown>[] = [];
   const seen = new Set<string>();
@@ -1945,17 +1870,18 @@ const NEXT_TOOLS = [
 ];
 const BRIDGE_DEPENDS_CAP = 12; // one-hop depends partners inlined; the rest counted
 
-// The depends partners oneHopDepends inlines (the first BRIDGE_DEPENDS_CAP in
-// synapse order), whose labels the bridge reads. Labels only; the bridge never
-// inlines a partner's whole neighborhood.
-function dependsPartnerIds(atom: Atom): string[] {
-  const ids: string[] = [];
+// An atom's depends synapses in synapse order: the first BRIDGE_DEPENDS_CAP,
+// which the bridge inlines (labels only, never a partner's whole
+// neighborhood), and how many there are.
+function dependsPicked(atom: Atom): { picked: Synapse[]; total: number } {
+  const picked: Synapse[] = [];
+  let total = 0;
   for (const s of [...atom.syn].sort(synCmp)) {
     if (!s.kinds?.depends) continue;
-    if (ids.length >= BRIDGE_DEPENDS_CAP) break;
-    ids.push(s.id);
+    total += 1;
+    if (picked.length < BRIDGE_DEPENDS_CAP) picked.push(s);
   }
-  return ids;
+  return { picked, total };
 }
 
 function headLabel(h: AtomHead | undefined): string | null {
@@ -1965,17 +1891,10 @@ function headLabel(h: AtomHead | undefined): string | null {
 
 function oneHopDepends(
   atom: Atom,
+  { picked, total }: { picked: Synapse[]; total: number },
   heads: Map<string, AtomHead>,
 ): Record<string, unknown> {
-  const partners: Array<Record<string, unknown>> = [];
-  let total = 0;
-  for (const s of [...atom.syn].sort(synCmp)) {
-    if (!s.kinds?.depends) continue;
-    total += 1;
-    if (partners.length < BRIDGE_DEPENDS_CAP) {
-      partners.push({ id: s.id, label: headLabel(heads.get(s.id)), w: s.w });
-    }
-  }
+  const partners = picked.map((s) => ({ id: s.id, label: headLabel(heads.get(s.id)), w: s.w }));
   const withheldByShard = atom.truncated?.syn ?? 0;
   return {
     partners,
@@ -2013,16 +1932,15 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
     seen.add(exact.id);
   }
   const store = storeFor(c, release);
-  const ql = q.toLowerCase();
   // labels CONTAINING the query (short concept queries)…
-  for (const r of await store.searchCellNames(ql, 5)) {
+  for (const r of await store.searchCellNames(q, 5)) {
     if (!seen.has(r.id)) {
       considered.push({ id: r.id, resolved_from: "search" });
       seen.add(r.id);
     }
   }
   // …then atoms whose label appears IN the query (statement queries)
-  for (const s of (await store.statementAtoms(ql, 5)).hits) {
+  for (const s of await store.statementAtoms(q, 5)) {
     if (!seen.has(s.id)) {
       considered.push({ id: s.id, resolved_from: "statement" });
       seen.add(s.id);
@@ -2114,8 +2032,11 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
   const primary = fetched[0];
   // Read even without a primary: the static store then still loads labels.json
   // and supercells.json, as this route always has.
-  const partnerHeads = await store.labelRows(primary ? dependsPartnerIds(primary) : []);
-  const depends = primary ? oneHopDepends(primary, partnerHeads) : { partners: [], returned: 0, total: 0, truncated: false };
+  const picked = primary ? dependsPicked(primary) : null;
+  const partnerHeads = await store.labelRows(picked ? picked.picked.map((s) => s.id) : []);
+  const depends = primary && picked
+    ? oneHopDepends(primary, picked, partnerHeads)
+    : { partners: [], returned: 0, total: 0, truncated: false };
 
   const bestBond = (chosen[0]?.o.bond as string | null) ?? null;
   // "search"/"statement" are fuzzy resolutions — not identity

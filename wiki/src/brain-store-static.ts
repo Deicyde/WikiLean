@@ -5,12 +5,14 @@
 // order under the same conditions, the same shape checks and the same memos.
 // Fetch-count tests pin that, so keep every loader awaited one after another
 // (never Promise.all two loaders): on a failure the later file must not be
-// requested at all.
+// requested at all. Each loader returns a validated file or throws (never
+// null), so callers read its fields directly.
 //
 // Every parsed file stays in brain.ts's release-keyed _assetMemo (through
 // requiredBrainAssetJson); the xref caches below are keyed by release id too.
-// A StaticStore instance holds nothing but its request and release, so one is
-// built per call. Keep this module's top level free of brain.ts value uses:
+// A StaticStore instance lives for one request (storeFor) and holds its
+// request, its release and, once /edges has read it, the xref index promise.
+// Keep this module's top level free of brain.ts value uses:
 // brain.ts imports brain-api.ts, which imports this module, so when brain.ts
 // is the entry point this module evaluates before brain.ts's own bindings
 // exist.
@@ -26,14 +28,25 @@ import {
   type BrainReleaseContext,
 } from "./brain.js";
 import { declShardFor } from "./decl.js";
-import type { CellEntry, SupercellEntry, Synapse } from "./brain-api.js";
-import type { AtomHead, BrainStore, Crumb, FilterPage, KeyHits, KeyLookup, SupercellHead } from "./brain-store.js";
+import type {
+  AtomHead,
+  BrainStore,
+  CellEntry,
+  Crumb,
+  FilterPage,
+  KeyHits,
+  KeyLookup,
+  SupercellEntry,
+  SupercellHead,
+  Synapse,
+  SynapseTraces,
+} from "./brain-store.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
 interface SupercellsFile {
   roots?: string[];
-  supercells?: Record<string, SupercellEntry>;
+  supercells: Record<string, SupercellEntry>; // checked by supercellsFile
 }
 
 interface CellsManifest {
@@ -49,9 +62,10 @@ interface CellsManifest {
 // a cell id or — for rule-5 field concepts — a supercell path. `decls`/`slugs`
 // are convenience indexes (bare FQ decl name / slug → atom).
 interface CellAliases {
-  organs?: Record<string, string>;
-  decls?: Record<string, string>;
-  slugs?: Record<string, string>;
+  // all three checked by cellAliases
+  organs: Record<string, string>;
+  decls: Record<string, string>;
+  slugs: Record<string, string>;
 }
 
 // ---- asset loaders (all memoized — see brain.ts memoAssetJson) ----------------
@@ -177,7 +191,8 @@ function supercellHead(path: string, e: SupercellEntry): SupercellHead {
 
 // Rows hydrated from partner shards per request (below). Each row costs at most
 // one shard fetch, so this bounds the fan-out; it equals the neighborhood's
-// default `limit`, so an unmodified call is fully hydrated. Whatever it drops is
+// default `limit` (neighborhoodFor's clampLimit in brain-api.ts, which points
+// back here), so an unmodified call is fully hydrated. Whatever it drops is
 // DECLARED per row (`traces_unavailable`) and counted in `traces_hydrated` —
 // never silent.
 const TRACE_HYDRATION_MAX = 50;
@@ -326,9 +341,9 @@ export class StaticStore implements BrainStore {
 
   async supercell(path: string): Promise<{ entry: SupercellEntry; breadcrumb: Crumb[] } | null> {
     const file = await supercellsFile(this.c, this.release);
-    const map = file?.supercells;
-    const e = map ? own(map, path) : undefined;
-    if (!e || !map) return null;
+    const map = file.supercells;
+    const e = own(map, path);
+    if (!e) return null;
     return { entry: e, breadcrumb: supercellBreadcrumb(map, path) };
   }
 
@@ -341,17 +356,17 @@ export class StaticStore implements BrainStore {
     const aliases = await cellAliases(this.c, this.release);
     const out: KeyHits = {};
     if (k.organ !== undefined) {
-      const organ = own(aliases?.organs, k.organ);
+      const organ = own(aliases.organs, k.organ);
       if (organ !== undefined) out.organ = organ;
       if (organ) return out;
     }
     if (k.decl !== undefined) {
-      const decl = own(aliases?.decls, k.decl);
+      const decl = own(aliases.decls, k.decl);
       if (decl !== undefined) out.decl = decl;
       if (decl) return out;
     }
     if (k.slug !== undefined) {
-      const slug = own(aliases?.slugs, k.slug);
+      const slug = own(aliases.slugs, k.slug);
       if (slug !== undefined) out.slug = slug;
       if (slug) return out;
     }
@@ -360,7 +375,7 @@ export class StaticStore implements BrainStore {
 
     // exact label / aka, case-insensitive, over the atom label index
     const labels = await cellLabels(this.c, this.release);
-    const byLabel = labels?.find(
+    const byLabel = labels.find(
       (r) =>
         (r.label || "").toLowerCase() === keyLc ||
         (r.aka || []).some((a) => a.toLowerCase() === keyLc),
@@ -378,7 +393,7 @@ export class StaticStore implements BrainStore {
     // concept QID"), so the caller undoes that (slugLc) and the organ label
     // matches. Cells are matched first, above, and so still win any collision.
     const file = await supercellsFile(this.c, this.release);
-    for (const [path, e] of Object.entries(file?.supercells ?? {})) {
+    for (const [path, e] of Object.entries(file.supercells)) {
       if (
         (e.organs ?? []).some((o) => {
           const ol = (o.label || "").toLowerCase();
@@ -406,7 +421,7 @@ export class StaticStore implements BrainStore {
     // limit, so the scan is skipped then.
     if (kind !== "cell" && out.length < limit) {
       const starts: AtomHead[] = [], contains: AtomHead[] = [];
-      for (const [path, e] of Object.entries(file?.supercells ?? {})) {
+      for (const [path, e] of Object.entries(file.supercells)) {
         const names = [e.label ?? "", ...(e.organs ?? []).map((o) => o.label ?? "")]
           .map((n) => n.toLowerCase())
           .filter(Boolean);
@@ -423,9 +438,9 @@ export class StaticStore implements BrainStore {
     return searchLabels(labels, q.toLowerCase(), "", limit);
   }
 
-  async statementAtoms(q: string, limit: number): Promise<{ hits: Array<{ id: string; len: number }>; truncated: boolean }> {
+  async statementAtoms(q: string, limit: number): Promise<Array<{ id: string; len: number }>> {
     const labels = await cellLabels(this.c, this.release);
-    return { hits: atomsInStatement(labels, q.toLowerCase()).slice(0, limit), truncated: false };
+    return atomsInStatement(labels, q.toLowerCase()).slice(0, limit);
   }
 
   // Cells from labels.json (the first row per id; ids are unique there), then
@@ -441,7 +456,7 @@ export class StaticStore implements BrainStore {
       if (want.has(row.id) && !out.has(row.id)) out.set(row.id, { kind: "cell", row });
     }
     for (const id of want) {
-      const e = own(file?.supercells, id);
+      const e = own(file.supercells, id);
       if (e) out.set(id, { kind: "supercell", head: supercellHead(id, e) });
     }
     return out;
@@ -461,16 +476,18 @@ export class StaticStore implements BrainStore {
   // have a cell partner whose OWN syn list was shard-capped past this supercell,
   // and 292 join two supercells, traceless on both ends. Those get NO `traces`
   // key plus a reason — never `traces: []`, which reads as "no evidence exists".
-  async supercellTraces(atomId: string, rows: Synapse[]): Promise<Map<string, Synapse>> {
+  async supercellTraces(atomId: string, rows: Synapse[]): Promise<Map<string, SynapseTraces>> {
     const want = rows
       .filter((s) => !s.id.startsWith("path:") && !s.traces?.length)
       .slice(0, TRACE_HYDRATION_MAX)
       .map((s) => s.id);
     const entries = await cellEntries(this.c, this.release, want);
-    const out = new Map<string, Synapse>();
+    const out = new Map<string, SynapseTraces>();
     for (const id of want) {
       const mirror = entries.get(id)?.syn?.find((s) => s.id === atomId);
-      if (mirror?.traces?.length) out.set(id, mirror);
+      if (mirror?.traces?.length) {
+        out.set(id, { traces: mirror.traces, ...(mirror.tt !== undefined ? { tt: mirror.tt } : {}) });
+      }
     }
     return out;
   }
@@ -496,7 +513,7 @@ export class StaticStore implements BrainStore {
     if (under) {
       const file = await supercellsFile(this.c, this.release);
       underSet = new Set<string>();
-      for (const [path, e] of Object.entries(file?.supercells ?? {})) {
+      for (const [path, e] of Object.entries(file.supercells)) {
         if (!inPrefix(path)) continue;
         for (const cid of e.cells ?? []) underSet.add(cid);
       }
@@ -524,7 +541,7 @@ export class StaticStore implements BrainStore {
     limit: number,
   ): Promise<FilterPage<Record<string, unknown>>> {
     const file = await supercellsFile(this.c, this.release);
-    const entries = Object.entries(file?.supercells ?? {});
+    const entries = Object.entries(file.supercells);
     const inPrefix = (p: string) => p === under || p.startsWith(under + "/");
     const rows: Array<Record<string, unknown>> = [];
     let next: number | null = null;
@@ -547,17 +564,28 @@ export class StaticStore implements BrainStore {
     return { rows, next };
   }
 
+  // Set by xrefPages and reused by xrefNodes, so one /edges request reads the
+  // index once even if a selector rollover evicts the release meanwhile (the
+  // old route held both parsed objects from one await).
+  private xrefIndex: Promise<Record<string, string[]>> | null = null;
+
   // The inversion can list a page twice for one node (build_shards.py appends
-  // base and graduated xref edges without deduping), so dedupe before taking 40:
-  // the route's union then sees every distinct page it saw with the whole list.
+  // base and graduated xref edges without deduping), so dedupe before taking 40.
+  // Cutting before the route's union with the community pages C changes
+  // nothing: the route keeps the first 40 of (C, then static pages not in C).
+  // With S the distinct static list and |S| >= 40, (C, S[0:40] minus C) has at
+  // least 40 pages, and S[0:40] minus C is a prefix of S minus C, so both
+  // orders give the same first 40.
   async xrefPages(node: string): Promise<string[]> {
+    this.xrefIndex ??= getXrefIndex(this.c, this.release);
+    await this.xrefIndex;
     const inversion = await getXrefPagesByNode(this.c, this.release);
     return [...new Set(inversion[node] || [])].slice(0, 40);
   }
 
   // Plain indexing on the parsed index, as the route always did.
   async xrefNodes(pages: string[]): Promise<Map<string, string[]>> {
-    const index = await getXrefIndex(this.c, this.release);
+    const index = await (this.xrefIndex ??= getXrefIndex(this.c, this.release));
     const out = new Map<string, string[]>();
     for (const p of pages) {
       const nodes = index[p];

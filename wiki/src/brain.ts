@@ -446,8 +446,9 @@ function evictBrainRelease(cacheIdentity: string, releaseId: string): void {
   for (const evict of _brainReleaseEvictors) evict(releaseId);
 }
 
-// brain-edits registers its release-keyed derived indexes here so every Brain
-// cache observes one overlap window rather than retaining a different pair.
+// brain-store-static registers its release-keyed xref caches here (on first
+// use, see its header) so every Brain cache observes one overlap window rather
+// than retaining a different pair.
 export function registerBrainReleaseCacheEvictor(evict: (releaseId: string) => void): void {
   _brainReleaseEvictors.add(evict);
 }
