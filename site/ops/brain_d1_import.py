@@ -1619,7 +1619,8 @@ class Importer:
                 if row is not None and row.state == "importing":
                     continue
                 raise D1ImportError(f"dataset {local.dataset_id} left 'importing' during the import")
-            changes = (result[0].get("meta") or {}).get("changes")
+            meta = result[0].get("meta")
+            changes = meta.get("changes") if isinstance(meta, dict) else None
             if changes != 1:
                 raise D1ImportError(f"the final UPDATE changed {changes} rows, not 1: dataset "
                                     f"{local.dataset_id} left 'importing' during the import")
@@ -1747,7 +1748,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     modes.add_argument("--execute", action="store_true", help="mutate")
     parser.add_argument("--statement-bytes", type=int, default=STATEMENT_BYTES)
     parser.add_argument("--call-bytes", type=int, default=CALL_BYTES,
-                        help=f"bytes of one --command argument (default {CALL_BYTES}; at most 131072 on Linux)")
+                        help=f"bytes of one --command argument (default {CALL_BYTES}; at most 131071 on Linux)")
     parser.add_argument("--ranges-per-call", type=int, default=RANGES_PER_CALL)
     parser.add_argument("--call-attempts", type=int, default=CALL_ATTEMPTS)
     parser.add_argument("--size-ceiling", type=int, default=SIZE_CEILING)
@@ -1784,8 +1785,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
                      "and --ranges-per-call >= 1")
     if args.command == "import" and args.release_root is not None and args.python is None:
         parser.error("import --release-root needs --python for verify_release.py")
-    if sys.platform.startswith("linux") and args.call_bytes > 131_072:
-        parser.error("Linux caps one argument at 131072 bytes (MAX_ARG_STRLEN): lower --call-bytes")
+    if sys.platform.startswith("linux") and args.call_bytes > 131_071:
+        parser.error("Linux caps one argument at 131071 bytes plus its NUL (MAX_ARG_STRLEN): lower --call-bytes")
     if args.command == "verify" and not (args.release_root or args.scratch):
         parser.error("verify needs --release-root or --scratch")
     if args.command == "verify" and (args.sample < 0 or args.execute):
