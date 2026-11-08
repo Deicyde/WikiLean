@@ -65,10 +65,11 @@ bundle" and lines 29-33. Defined here:
 
 ## Decisions
 
-Jack's decisions are quoted in [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md), Decisions. The
-design's own choices:
+Jack's decisions are quoted in [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md), Decisions. Choice 1
+is his (2026-11-08); the others are the design's own:
 
-1. **Content-addressed serving datasets.** Rows are keyed by serving dataset, not by release.
+1. **Content-addressed serving datasets** (Jack, 2026-11-08). Rows are keyed by serving
+   dataset, not by release.
    - Each row carries a small integer `ds`. The `datasets` table maps it one-to-one to the
      dataset id, which is the logical root of `brain/data/serving-tables.json`. That root
      hashes the whole sidecar (shape in section 4): its schema name and version, each table's

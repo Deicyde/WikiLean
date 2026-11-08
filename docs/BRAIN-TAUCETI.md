@@ -102,6 +102,8 @@ Where each break is fixed (steps are in Plan, below):
 - **Plan and database**, 2026-11-06: Workers Paid, confirmed in #135: D1 Time Travel returned
   a bookmark 17 days old, and the Free plan keeps only 7 days. Database: "I think one shared
   database is best".
+- **Row keying**, 2026-11-08: offered rows keyed by serving dataset or by release, Jack chose
+  "By serving dataset", so a release whose Brain tables didn't change imports nothing.
 - **Replay**, 2026-11-08. Asked whether D1 releases should be compatibility-only until the
   replay tools learn the D1 layout, Jack answered "Whatever is better long-term." So the
   replay tools move onto the D1 layout before the cutover, and D1 releases can be full

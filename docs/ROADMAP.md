@@ -400,6 +400,7 @@ Plan: [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md); read layer:
   agents." / "I like the current explorer, but I'm open to improving it if you have ideas."
 - Layout (2026-11-06): "Yes this bubble idea sounds very cool to me I love it."
 - Database (2026-11-06): Workers Paid (#135), and "I think one shared database is best".
+- Row keying (2026-11-08): Jack chose rows keyed by serving dataset over rows keyed by release.
 - Replay (2026-11-08): asked whether D1 releases should be compatibility-only until the replay
   tools learn the D1 layout, Jack answered "Whatever is better long-term." So the replay tools
   learn the D1 layout before the cutover.
