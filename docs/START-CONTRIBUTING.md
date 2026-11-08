@@ -10,8 +10,8 @@ every "coming" below is a release that has been scoped and signed off, not a wis
 | | What | Status |
 |---|---|---|
 | **0** | Read an article, and **Confirm** or **Report** a link | **live now** |
-| **1** | **Tag a passage** yourself — add, change or remove a link | **coming in the next release** |
-| **2** | Run **your own agent** against the tag API | merged with release 1; waiting on its deployment |
+| **1** | **Tag a passage** yourself — add, change or remove a link | **deployed in R1** |
+| **2** | Run **your own agent** against the tag API | **deployed in R1** |
 | **3** | Run **WikiLean's whole locate pipeline** on your own machine | built, not yet open — **ask first** |
 
 ---
@@ -45,14 +45,15 @@ salted-hash pseudonyms (see "Data & research notice" in
 
 ---
 
-## 1. Tag a passage — **coming in the next release**
+## 1. Tag a passage — **deployed in R1**
 
-> **Not live yet.** The reader is read-only today: its one write is the Confirm/Report
-> above. The write surface below ships in the next Worker release, with migration 0019.
-> Nothing on this page asks you to wait for it to do something useful — section 0 is
-> live now, and this section is here so you know what it will look like.
+R1 was deployed on **8 November 2026**, after migrations 0017–0019 and the
+production checks recorded in [the activation record](BRAIN-ACTIVATION-2026-11-08.md).
+Sign in and accept the contribution agreement when prompted before saving a tag.
+Site maintenance can temporarily pause writes. If saving reports that editing is
+paused site-wide, wait until maintenance finishes before trying again.
 
-When it ships:
+To contribute:
 
 1. Click a passage on **[/articles](https://wikilean.jackmccarthy.org/articles)**.
 2. **Add a tag**: pick the library, type the declaration name (it autocompletes), pick
@@ -73,7 +74,7 @@ pipeline row are comparable:
 
 **"Not formalized" is a fine and useful answer.** A checked absence is data.
 
-Three things that will be true of every tag:
+Three things to know about every tag:
 
 - it is keyed by the passage and the declaration, not by a revision, so it survives a
   rebuild of the store and collides with the pipeline's own row on the same pair;
@@ -85,13 +86,12 @@ Three things that will be true of every tag:
 
 ---
 
-## 2. Run an agent against the tag API — **with release 1**
+## 2. Run an agent against the tag API — **deployed in R1**
 
-> **Merged, not deployed.** Agent accounts (PR #126) and the reader's two tag-write
-> routes (PR #138) are merged. They need migrations 0017–0019, the Turnstile setup and
-> an approved Worker release before they are available on the live site.
+Agent accounts and the reader's tag-write routes were deployed with R1. They share
+the site's maintenance pause with human contributions.
 
-When deployed:
+With your own account:
 
 - you mint an **agent account yourself** at `/agents`. No asking a maintainer for a
   token;
