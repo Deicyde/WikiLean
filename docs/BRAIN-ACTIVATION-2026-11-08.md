@@ -34,10 +34,12 @@ in the operator's private stores. Live identity is available at
 - Agent identity and token-management routes. No operator token or contributor
   identity was minted for release verification.
 - Literature Links 1.0.2 support and the preview-first, admin-session migration
-  endpoint. A post-release read-only check found all 778 canonical articles
-  still at schema 3,
-  with 4,416 revisions and no migration archives. `site_write_mode` is `open`
-  and `slug_editing` is `off`. The canonical conversion has not run.
+  endpoint. The live structural conversion finished on 2026-11-08: the
+  08:15:42Z D1 observation found all 778 articles at schema 4, zero legacy
+  articles, 778 exact migration archives and 5,972 revisions. The full
+  preservation audit passed at 08:17Z. The write brake remains locked while
+  final browser-journal inspection and writer restoration are completed;
+  `slug_editing` remains off.
 - Migrations 0017, 0018 and 0019 applied after a fresh encrypted backup and an
   in-memory schema rehearsal. The existing 0014 schema was verified and left
   in place. All 19 original table row counts stayed unchanged through the DDL.
@@ -65,24 +67,51 @@ For a rollback after native data migration, follow
 [the guarded structural rollback procedure](COMPANION-NATIVE.md#history-and-rollback)
 and check reader compatibility first.
 
-A fresh post-release, 23-table export passed an in-memory restore, integrity
-check and foreign-key check. On a private application-data copy, the exact
-converter from the deployed commit migrated all 778 articles and 38,259 work
-items. The preservation audit verified all 4,416 original revision rows exactly,
-778 exact archives, all 35 human work items, pending/rejected proposal strings,
-source pins, statuses and formal target projections. The copy excludes
-authentication and account-lifecycle data. This is a preparatory rehearsal from
-an open site, so it does not replace the final snapshot after writers are frozen.
+The live conversion ran inside the recorded exclusive maintenance window.
+The local moderation job was paused while idle, the exact Cloudflare drift
+schedule was removed, and propagation and in-flight completion were verified
+before the final encrypted backup and copied-database rehearsal. Each article
+was converted by the deployed admin-session endpoint with its previewed version,
+source revision and snapshot digest. There was no whole-database restore or
+replacement from the disk cache.
 
-The previously loaded local moderation schedule was paused while idle; its
-original schedule file is retained. Cloudflare's scheduled writer has not been
-paused. WikiLean admin and Cloudflare browser sign-ins are still needed to
-establish the exclusive migration window. Resume only the previously active
-writers, using the native-aware runtime, after the live preservation audit.
+A fresh post-conversion encrypted export passed the full 23-table in-memory
+restore, integrity and foreign-key checks. The application-data comparison
+against the final pre-conversion backup verified all 38,259 work items,
+17,125 links, 23,374 unlinked records, 15,963 distinct per-item formal targets,
+35 human work items, 4,416 original revision rows, 778 exact archives and
+1,556 new checkpoint/native history rows. Source context, statuses, proposal
+strings and prior attribution were preserved. No special-case direction,
+Mathlib commit pin or noMatch was invented. This is structural preservation,
+not a claim of mathematical correctness. Authentication data was restored
+only in memory; the private application projection excludes it. The new
+ciphertext has not had an independent age-decryption test.
 
-The canonical Literature Links conversion remains a separate operation:
-quiesce the known writers, verify the encrypted backup and fresh copied
-rehearsal, preview/apply through the admin session, then audit every archive,
-source pin, work item and retained revision before resuming native-aware writers.
-Follow [the live migration procedure](COMPANION-NATIVE.md#live-migration-procedure).
-R2–R6 and the external launch announcement remain outside this activation.
+The dedicated native-aware operator runtime now mirrors all 778 articles from
+a fresh sealed D1 snapshot. Its 15,954 reverse citations and 5,432 autocomplete
+entries were checked against the audited database. The `declcites:v1` KV cache
+was updated and its exact bytes read back successfully. The private graph source
+rebuild passed independent verification under the current native-aware profile;
+its six outputs are installed only in the dedicated operator runtime. The
+control plane was refreshed using those outputs and the retained structural
+edge inputs. The autocomplete asset is also local to that runtime. Neither a
+new Worker nor new public static assets have been deployed.
+
+The final browser-journal inspection and deliberate restoration of the recorded
+writer state remain pending because the native browser controls cannot read the
+live page reliably. The operator has retained the previous moderation schedule
+and the exact drift
+schedule (`17 6 * * *`). Only the previously active writers may be resumed after
+all remaining checks. The browser's final client journal still needs inspection.
+
+The post-conversion encrypted backup and application projection were copied to
+ffmain and their hashes verified. Full evidence remains private. The source
+export follow-up ([PR #154](https://github.com/Deicyde/WikiLean/pull/154))
+preserves the existing community node and attribution, keeps the export
+restricted, and does not add that node to the static Brain. The original
+curated Git commit remains `d4ed6e42…`; the current normalizer uses fresh D1
+source identities without relabeling historical proof bundles.
+
+Follow [the live migration procedure](COMPANION-NATIVE.md#live-migration-procedure)
+for the remaining restoration and window closure. R2–R6, source-policy approvals
+and the external launch announcement remain outside this activation.

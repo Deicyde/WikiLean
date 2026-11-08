@@ -81,8 +81,11 @@ recommendation. Remove an item once its decision is recorded below.
 14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
     flags. Options: triage them now, or let them wait.
 15. **Native companion cutover (#64 plus the 2026-11-07 transition work).**
-    Native storage, editor and lossless exports exist; live D1 migration and a
-    release containing the transition remain operator gates. The remaining
+    The release is live and all 778 canonical D1 articles were converted on
+    2026-11-08. The full before/after preservation audit passed. Final derived
+    browser-journal inspection and restoration of the recorded writers remain
+    operator gates; the write brake is still locked. Canonical-derived citations,
+    the private graph source export and runtime autocomplete passed verification. The remaining
     Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
     autocomplete, exports and repair tools now consume native links. Pinned and
     multi-target repairs require explicit per-target review. The schema and
@@ -95,7 +98,9 @@ recommendation. Remove an item once its decision is recorded below.
       rehearsal converted all 778 articles without a blocked item. The old cached
       not_applicable report was absent from canonical D1. The rehearsal retained
       all prior history, human annotations, source revisions and exact archives;
-      live conversion still requires the frozen window and fresh final checks.
+      that rehearsal was followed by a fresh frozen-window backup, the live
+      conversion and a successful full preservation audit on 2026-11-08. See
+      the [activation record](BRAIN-ACTIVATION-2026-11-08.md).
     - A separate declaration-projection audit found 97 legacy mappings with no
       module (80 formalized, 17 partial). Migration now retains their declaration
       as a native Lean target with an optional module. The repeated copied-cohort
@@ -1417,11 +1422,14 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   an encrypted backup and copied-schema rehearsal; all 19 original table row
   counts were preserved. The reader's tag entry point, overlay reads, auth
   refusals and old URL redirects pass live checks. The Literature Links code
-  is deployed. A fresh post-release private rehearsal converted all 778 articles
-  and audited all 4,416 old revision rows, 778 exact archives and 35 human work
-  items successfully. The canonical article conversion has not run: it still
-  needs the admin session, writer freeze, fresh backup/rehearsal and full live
-  preservation audit. R2–R6 remain outside the signed scope. See the
+  is deployed. The live conversion completed for all 778 articles at 08:15Z;
+  the fresh post-conversion audit preserved all 38,259 work items, 4,416 old
+  revision rows, 778 exact archives and 35 human work items. The canonical mirror,
+  reverse citations and autocomplete were refreshed and verified; the citation
+  KV readback matches. The private graph source export passed independent
+  verification. Browser-journal inspection and writer restoration remain pending,
+  with the write brake locked; no new public static assets were published.
+  R2–R6 remain outside the signed scope. See the
   [activation record](BRAIN-ACTIVATION-2026-11-08.md).
 
 - 2026-11-07: **R1 public Turnstile configuration prepared.** The formalization
