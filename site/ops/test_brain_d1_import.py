@@ -964,6 +964,7 @@ class PruneTest(Base):
                     with self.assertRaises(Crash):
                         self.do_prune(fake)
                     fake.crash_at = None
+                    state = fake.one("SELECT state FROM datasets")
                     # journal rows go before any data row: while one remains, no row is deleted
                     if fake.one("SELECT count(*) FROM import_ranges") != (0,):
                         for table in bdi.DATA_TABLES:
