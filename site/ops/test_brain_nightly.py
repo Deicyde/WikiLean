@@ -555,6 +555,7 @@ class BrainNightlyShellTest(unittest.TestCase):
         scope = __import__("json").loads(inventory.read_text(encoding="utf-8"))["scope"]
         self.assertIn("brain/store.py", scope)
         self.assertIn("brain/frontier_suitability.py", scope)
+        self.assertIn("brain/build_serving_db.py", scope)
         self.assertIn(
             'cmp -s "$RELEASE_ROOT/site/out/brain.html" "$REPO/wiki/public/brain.html"',
             text,
