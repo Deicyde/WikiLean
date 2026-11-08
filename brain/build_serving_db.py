@@ -332,15 +332,18 @@ def publish_together(pairs: list[tuple[Path, Path]]) -> None:
     `tables` rows. If a rename fails, the destinations already replaced get their old bytes
     back from hard links taken first. A restore that fails is noted on the error, and its
     hard link stays in place (`<temp>.old`) so the old bytes are not lost."""
-    backups: list[tuple[Path, Path | None]] = []
+    backups: list[tuple[Path, Path | None]] = []    # destinations already replaced
+    pending = None                                  # the link taken for the rename in flight
     try:
         for temp, dest in pairs:
             backup = None
             if dest.exists():
                 backup = temp.with_suffix(".old")
                 os.link(dest, backup)
-            backups.append((dest, backup))
+            pending = backup
             os.replace(temp, dest)
+            backups.append((dest, backup))
+            pending = None
     except BaseException as exc:
         kept = []
         for dest, backup in reversed(backups):
@@ -356,6 +359,8 @@ def publish_together(pairs: list[tuple[Path, Path]]) -> None:
         backups = [(dest, backup) for dest, backup in backups if backup not in kept]
         raise
     finally:
+        if pending is not None:                     # its destination still holds these bytes
+            pending.unlink(missing_ok=True)
         for _, backup in backups:
             if backup is not None:
                 backup.unlink(missing_ok=True)

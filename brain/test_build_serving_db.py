@@ -358,6 +358,14 @@ class ServingDbTest(unittest.TestCase):
         self.assertEqual(db.execute("SELECT page_ord, node_ord, page, node FROM xrefs ORDER BY seq").fetchall(),
                          [(0, 0, "xref:nlab:compact", "Q1"), (0, 1, "xref:nlab:compact", "decl:TauCeti:Spectrum.compact"),
                           (1, 0, "xref:mw:Ring", "Q1")])
+        rows = db.execute("SELECT node, owner, body FROM text_ids ORDER BY seq").fetchall()
+        # owners' order: cells in labels order, then supercells in file order; Q404 has no owner
+        self.assertEqual(rows, [
+            ("Q1b", "cell:Q1", "Compact map an older name"),
+            ("Q1", "cell:Q1", "Compact operator operator mapping bounded sets to relatively compact sets"),
+            ("decl:TauCeti:Spectrum.compact", SPECTRUM, "Spectrum.compact The spectrum of a compact operator is countable."),
+            ("path:Mathlib", "path:Mathlib", "Mathlib the Lean mathematical library"),
+            ("Q82571", "path:Mathlib/LinearAlgebra", "Linear algebra branch of mathematics")])
 
     def test_xrefs_list_a_node_once_per_page(self):
         # a community xref repeating a base one lists the node twice; it keeps its first place
@@ -378,14 +386,6 @@ class ServingDbTest(unittest.TestCase):
         self.write_tree(nodes=NODES[1:])
         with self.assertRaisesRegex(ValueError, "_meta"):
             self.build()
-        rows = db.execute("SELECT node, owner, body FROM text_ids ORDER BY seq").fetchall()
-        # owners' order: cells in labels order, then supercells in file order; Q404 has no owner
-        self.assertEqual(rows, [
-            ("Q1b", "cell:Q1", "Compact map an older name"),
-            ("Q1", "cell:Q1", "Compact operator operator mapping bounded sets to relatively compact sets"),
-            ("decl:TauCeti:Spectrum.compact", SPECTRUM, "Spectrum.compact The spectrum of a compact operator is countable."),
-            ("path:Mathlib", "path:Mathlib", "Mathlib the Lean mathematical library"),
-            ("Q82571", "path:Mathlib/LinearAlgebra", "Linear algebra branch of mathematics")])
 
     def test_fts_indexes_are_keyed_by_seq(self):
         _, db = self.build()
@@ -560,7 +560,7 @@ class ServingDbTest(unittest.TestCase):
         self.assertNotEqual(out.read_bytes(), old[0])
         self.assertNotEqual(side.read_bytes(), old[1])
 
-    def test_a_failed_restore_keeps_the_other_restores_and_its_backup(self):
+    def test_a_failed_restore_keeps_its_backup(self):
         out, side = self.tmp / "serving.sqlite3", self.tmp / "serving-tables.json"
         bsd.build(self.cells, self.nodes, out)
         old = (out.read_bytes(), side.read_bytes())
@@ -570,20 +570,21 @@ class ServingDbTest(unittest.TestCase):
         real_replace = os.replace
 
         def replace(src, dst):
-            # the sidecar's forward rename fails, and so does its restore
-            if Path(dst) == side:
+            # the sidecar's forward rename fails, and so does putting the database back
+            if Path(dst) == side or str(src).endswith(".old"):
                 raise OSError("disk gone")
             return real_replace(src, dst)
         with mock.patch.object(bsd.os, "replace", side_effect=replace), self.assertRaises(OSError) as caught:
             bsd.build(self.cells, self.nodes, out)
-        # the database was still put back, and the sidecar's backup link was not deleted
-        self.assertEqual(out.read_bytes(), old[0])
+        # the sidecar was never replaced; the database's old bytes survive in its backup link
         self.assertEqual(side.read_bytes(), old[1])
+        self.assertNotEqual(out.read_bytes(), old[0])
         notes = " ".join(getattr(caught.exception, "__notes__", []))
-        self.assertIn(f"could not restore {side}", notes)
+        self.assertIn(f"could not restore {out}", notes)
+        self.assertNotIn(f"could not restore {side}", notes)
         kept = [name for name in self.leftovers() if name.endswith(".old")]
         self.assertEqual(len(kept), 1)
-        self.assertEqual((self.tmp / kept[0]).read_bytes(), old[1])
+        self.assertEqual((self.tmp / kept[0]).read_bytes(), old[0])
 
     def test_a_second_build_on_the_same_output_is_refused(self):
         out = self.tmp / "serving.sqlite3"
