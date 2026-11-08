@@ -14,11 +14,25 @@ number after a reference is a line in the same file. Bare file names:
 | `brain_promote_release.py`, `brain_activation_bundle.py`, `brain_deploy_journal.py`, `brain-canary.py`, `brain_release_authority.py`, `brain-nightly.sh` | `site/ops/` |
 | `build_brain_page.py` | `site/` |
 | `build_cell_shards.py`, `build_serving_db.py`, `store.py`, `query.py`, `layout.py` | `brain/` |
-| `cli.js` | wrangler 4.151.3's bundled CLI (`wrangler-dist/cli.js`), the version `wiki/package.json:46` pins |
 
-`build_serving_db.py` exists only in PR #153 and is cited by name. Limits marked
-"(unchecked)" are recalled from Cloudflare's documentation and have not been checked against
-it. Issue #150 (trigram support, row sizes, reads during an import) has no results yet.
+`build_serving_db.py` exists only in PR #153 and is cited by name. Wrangler behavior is as of
+wrangler 4.151.3, the version `wiki/package.json:46` pins. Limits marked "(unchecked)" are
+taken from Cloudflare's D1 limits documentation and have not been re-checked against it. Issue
+#150 (trigram support, row sizes, reads during an import) has no results yet.
+
+**Terms.** Cells, organs, supercells, synapses, the frontier and `fa` are defined in
+[`brain/SCHEMA.md`](../brain/SCHEMA.md); facet bits (`f`) in [`docs/BRAIN-V2.md`](BRAIN-V2.md).
+P1B and the two release profiles (compatibility and offline replay) are in
+[`docs/BRAIN-RELEASE-RUNBOOK.md`](BRAIN-RELEASE-RUNBOOK.md), "Build the P1B activation evidence
+bundle" and lines 29-33. Defined here:
+- a **serving dataset** is one build's set of Brain tables in D1, shared by every release that
+  binds the same tables;
+- the **sidecar**, `brain/data/serving-tables.json`, lists each serving table's row count and
+  digest;
+- a JSON artifact's **logical root** is the digest of its canonical JSON, recorded in
+  `release.json` beside the byte hash; the sidecar's logical root is the dataset id;
+- the **readiness check** is the statement that starts every D1 round trip (section 1);
+- the explorer's **ripple** is the neighbors it adds around a scope's own cells.
 
 ## Summary
 
@@ -36,8 +50,7 @@ it. Issue #150 (trigram support, row sizes, reads during an import) has no resul
   sidecar file.
 - **The importer can resume and repair.** It writes each table in sequence ranges as DELETE
   then INSERT, reads every range back, and records each verified range in a journal. It never
-  uses a file import, which wrangler says makes the database "unavailable to serve queries"
-  (`cli.js:238241`).
+  uses a file import, which wrangler warns makes the database "unavailable to serve queries".
 - **Pruning keeps everything that can still be served:** the live current and previous
   releases, the releases named in the latest promotion attempt until that attempt reaches a
   terminal outcome, and one candidate that hasn't been promoted yet. At most three datasets
@@ -52,25 +65,16 @@ it. Issue #150 (trigram support, row sizes, reads during an import) has no resul
 
 ## Decisions
 
-Jack's:
+Jack's decisions are quoted in [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md), Decisions. The
+design's own choices:
 
-1. **Storage** (2026-11-06): "Sure take them out of git. The data should really live on our
-   CloudFlare SQLite database."
-2. **One shared database on Workers Paid** (2026-11-06): "I think one shared database is
-   best". Workers Paid is confirmed in issue #135. The database is `wikilean-brain`, separate
-   from `wikilean`.
-3. **Search** (2026-11-06): "Whatever you think would be most useful for humans and agents."
-   The design's answer is decision 9 below.
-4. **Explorer** (2026-11-06): "I like the current explorer, but I'm open to improving it if
-   you have ideas." The design's answer is decision 12 below.
-5. **Layout** (2026-11-06): "Yes this bubble idea sounds very cool to me I love it."
-6. **Content-addressed serving datasets** (2026-11-08): rows are keyed by serving dataset,
-   not by release.
+1. **Content-addressed serving datasets.** Rows are keyed by serving dataset, not by release.
    - Each row carries a small integer `ds`. The `datasets` table maps it one-to-one to the
-     dataset id, which is the `logical_root` of `brain/data/serving-tables.json`. That root
-     hashes only the sidecar: the schema version, each table's row count, digest and delete
-     bounds, and two name constants. Every FTS input is a digested column, so the id also
-     binds what the search indexes are built from.
+     dataset id, which is the logical root of `brain/data/serving-tables.json`. That root
+     hashes the whole sidecar (shape in section 4): its schema name and version, each table's
+     row count, digest and delete bounds, `longest_name`, `sup_names_from` and
+     `aliases_counts`. Every FTS input is a digested column, so the id also binds what the
+     search indexes are built from.
    - `releases` maps each `release_id` to a dataset. The importer imports a dataset only if
      the database doesn't hold it yet. Pruning deletes a dataset only when no protected
      release references it.
@@ -81,60 +85,33 @@ Jack's:
    - Rows keyed by release would re-import about 1 GB for every release, however small,
      because the release id hashes `authority.git_commit` (`brain.ts:170-177`) and there is no
      Worker-only release path (`CLAUDE.md:202-206`).
-7. **Replay** (2026-11-08). Asked whether D1 releases should be compatibility-only until the
-   replay tools learn the D1 layout, Jack answered "Whatever is better long-term." So the
-   replay tools move onto the D1 layout before the cutover (section 6).
-
-The design's own choices:
-
-8. **Keep the selector static.** A selector row in D1 would cost one D1 read per request that
+2. **Keep the selector static.** A selector row in D1 would cost one D1 read per request that
    can't be cached (`brain.ts:3-5`), and switching releases would no longer roll back with the
    Worker.
-9. **Search behaves differently** (details in section 1):
-   - exact matches come first, then prefix matches, then fragment matches, with cells before
-     supercells within each tier;
-   - 2-character queries get exact and prefix matches only;
-   - text hits come after name hits, with their own limit, and every hit says which index
-     matched;
-   - text queries drop stopwords and fall back from "all words" to "any word".
-10. **Bind the tables through a sidecar.** `release.json` gains two artifacts:
-    `brain/data/serving.sqlite3` (opaque, `authority_contracts.py:187-188`) and
-    `brain/data/serving-tables.json` (JSON, so it gets a logical root under the existing
-    rules, `authority_contracts.py:183-184`). A release that lists the sidecar is a D1
-    release, so no new profile name is needed. New profiles would touch `brain.ts:111-114`,
-    `authority_contracts.py:3508-3509`, `brain-release-public.ts:369` and
-    `brain-canary.py:219-220`.
-11. **Page endpoints** live at `/api/brain/r/<release hex>/...`.
-    - Responses for the selector's current release (the Worker's own) are immutable, so the
-      edge caches them for good. Responses for the previous release get `max-age=300`,
-      because a newer Worker computes them. The Cache API key includes the Worker version id.
-    - The endpoint response format and each dataset's `schema_version` are a cross-release
-      contract: the next Worker must serve the previous release in the format its frozen page
-      expects (section 1, Caching).
-    - Rate limiters apply only on cache misses and are sized by D1 cost. Per IP: 300 a minute
-      for the light endpoints, 60 for search, 20 for explorer. A per-isolate cap limits
-      concurrent D1 requests from page misses, the agent API and MCP together.
-    - They stay off the agents' 120-a-minute budget (`brain-api.ts:2500-2509`). The agent API
-      and MCP get their own D1-cost budget (section 1, Limits and costs).
-12. **Explorer.**
-    - Nothing changes for today's data.
-    - In every scope, a neighbor that the ripple pulls in and that sits in a module bubble is
-      drawn as its module's dot, so Mathlib scopes look as they do now.
-    - Small scopes are computed live. Larger scopes and `all` are precomputed, and a
-      precomputed scope over 21k cells also collapses its own bubbled cells.
-    - Each precomputed scope is at most 8 MB. The build collapses more bubbles until a scope
-      fits, and fails if it still doesn't. The page fetches a scope's parts as separate
-      cacheable requests.
-    - Summed edges to a module dot are drawn but can't be clicked.
-13. **`brain_filter` pages can come back short.** A call examines at most 10,000 rows, so it
-    can return fewer than `limit` hits along with a non-null cursor. The cursor format doesn't
-    change.
-14. **Supercell evidence gets filled in** from a trace table. On the agent API it is trimmed
-    to 6 traces per row, the same cap cell rows have. Those rows also gain `traces_total`.
-15. **Integrity checking moves.** Today every Brain byte is hashed against the signed
-    inventory when it loads (`brain.ts:533-540`, `build_brain_page.py:596-597`). With D1,
-    integrity rests on three things: the importer's per-range digests, the readiness check on
-    every request, and a read-only sampled re-check after every canary and every night.
+3. **Search in tiers**: exact, then prefix, then fragment matches; 2-character queries get no
+   fragments, because the trigram index can't match fewer than 3 characters; text hits follow
+   name hits and say which index matched (section 1, Search).
+4. **Bind the tables through a sidecar.** `release.json` gains two artifacts:
+   `brain/data/serving.sqlite3` (opaque, `authority_contracts.py:187-188`) and
+   `brain/data/serving-tables.json` (JSON, so it gets a logical root under the existing
+   rules, `authority_contracts.py:183-184`). A release that lists the sidecar is a D1
+   release, so no new profile name is needed. New profiles would touch `brain.ts:111-114`,
+   `authority_contracts.py:3508-3509`, `brain-release-public.ts:369` and
+   `brain-canary.py:219-220`.
+5. **Page endpoints** at `/api/brain/r/<release hex>/...`, cached for good for the current
+   release and for 300 s for the previous one, behind their own D1-cost limits (section 1,
+   Caching, and Limits and costs).
+6. **Explorer**: unchanged for today's data; a cell in a module bubble shows as its module's
+   dot; large scopes are precomputed, at most 8 MB each (section 4, Explorer per scope).
+7. **`brain_filter` pages can come back short.** A call examines at most 10,000 rows, so it
+   can return fewer than `limit` hits along with a non-null cursor. The cursor format doesn't
+   change.
+8. **Supercell evidence gets filled in** from a trace table. On the agent API it is trimmed
+   to 6 traces per row, the same cap cell rows have. Those rows also gain `traces_total`.
+9. **Integrity checking moves.** Today every Brain byte is hashed against the signed
+   inventory when it loads (`brain.ts:533-540`, `build_brain_page.py:596-597`). With D1,
+   integrity rests on three things: the importer's per-range digests, the readiness check on
+   every request, and a read-only sampled re-check after every canary and every night.
 
 ## 1. The Worker module
 
@@ -157,9 +134,9 @@ The design's own choices:
   so a dataset that is importing, being deleted or absent matches nothing. The Worker never
   reads `releases`. The dataset id comes from the release's own signed manifest, and rows that
   match its digests are correct for any release that binds them.
-- **Readiness check.** `brainBatch(c, release, stmts)` sends `[probe, ...stmts]` as one
-  `BRAIN_DB.batch`. A batch runs as one transaction (unchecked), so the probe and the reads
-  see the same state. The probe is:
+- **Readiness check.** `brainBatch(c, release, stmts)` sends `[check, ...stmts]` as one
+  `BRAIN_DB.batch`. A batch runs as one transaction (unchecked), so the check and the reads
+  see the same state. The check is:
 
   `SELECT schema_version, names_mode, longest_name, sup_names_from FROM datasets WHERE dataset_id = ?1 AND state = 'ready'`
 
@@ -170,9 +147,9 @@ The design's own choices:
 - **Error handling stays as it is.** `withRelease` and MCP already turn that error into a 503
   carrying `release_id` (`brain-api.ts:2485-2491`, `mcp.ts:476-486`). Any other exception
   would become a 500, or "internal error" in MCP (`mcp.ts:487-497`).
-- **An empty result after a passing probe is a real miss.** It becomes null and then a 404,
-  as a missing shard entry does today (`brain-api.ts:404-405`). This matters most for the
-  community-edit check: "not a node" plus a QID creates a community node
+- **An empty result after a passing readiness check is a real miss.** It becomes null and then
+  a 404, as a missing shard entry does today (`brain-api.ts:404-405`). This matters most for
+  the community-edit check: "not a node" plus a QID creates a community node
   (`brain-edits.ts:269-273`).
 - **FTS tables** are named `names_<hex>` and `texts_<hex>`, using the dataset id's 64 hex
   digits. Nothing else is pasted into SQL.
@@ -209,7 +186,7 @@ organPages(ids, at most 100); organOwners is the same without joins [100 rows]
     LEFT JOIN cell_pages cp ON cp.ds = a.ds AND cp.id = a.owner
     LEFT JOIN supercells s ON s.ds = a.ds AND s.path = a.owner
   WHERE a.ds = $DS AND a.kind = 'organ' AND a.key IN (SELECT value FROM json_each(?2))
-partnerRows(id), label rows of one page's synapse partners          [200 rows, SYN_CAP]
+partnerRows(id), label rows of one page's synapse partners          [200 rows, `SYN_CAP`]
   SELECT l.id, l.label, l.f, l.p, l.libs FROM cell_pages cp, json_each(cp.json, '$.syn') j
     JOIN labels l ON l.ds = cp.ds AND l.id = json_extract(j.value, '$.id')
   WHERE cp.ds = $DS AND cp.id = ?2   (and the same join to supercells for path: partners)
@@ -325,9 +302,10 @@ D1 version works like this:
 
 `len16` is the lowercased name's length in UTF-16 units, stored by the builder, so lengths
 match what JS computes for the lowercased candidates. Within these bounds the results equal
-today's, with one exception: ties are ordered by id, and SQLite orders ids by code point where
-JS uses UTF-16 units. The two orders differ only between astral characters and characters in
-U+E000-U+FFFF.
+today's, with two exceptions. Ties are ordered by id, and SQLite orders ids by code point where
+JS uses UTF-16 units; the two orders differ only between astral characters and characters in
+U+E000-U+FFFF. And names are lowercased by Python at build time rather than by JS, which can
+differ outside ASCII (section 2).
 
 ### Filter
 
@@ -400,7 +378,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 - A response cut short by a LIMIT says `truncated`. A live explorer result that goes over its
   LIMIT means the builder and the data disagree, and it answers 503.
 - Ripple cells that have `bub` set become their module's dot, in live and precomputed scopes
-  alike (decision 12).
+  alike (decision 6).
 
 ### Caching
 
@@ -464,7 +442,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 
 - **One query at a time per database** (unchecked). One long statement stalls reads for every
   release. So:
-  - no file imports (`cli.js:238241`) and no exports (`cli.js:90322-90326`);
+  - no file imports and no exports (`wrangler d1 export`);
   - no statement over a whole table while serving: no `INSERT ... SELECT` over a table, no big
     `DELETE`, no FTS `optimize`, no `CREATE INDEX` on a populated table.
 - **30 s per statement** (unchecked).
@@ -482,7 +460,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
   number of rows an import writes.
 - **Latency.** Every request makes round trips to the database's region, which hasn't been
   measured (step 0). Read replicas (unchecked) would fail closed on lag, because every batch
-  starts with the probe.
+  starts with the readiness check.
 
 ## 2. Readers and their replacements
 
@@ -492,7 +470,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 |---|---|---|
 | `resolveBrainRelease`, `brain.ts:607-671` | Unchanged; the context gains `backend` and `datasetId`. A new `resolveBrainReleaseByHex` accepts only the selector's current or previous release, for the page endpoints, and says which one it is, which sets the response's cache lifetime. | none |
 | `parseReleaseManifest`, `REQUIRED_RUNTIME_ARTIFACTS`, `brain.ts:324-389`, `42-52` | Required files depend on the layout. A D1 release needs both serving artifacts, `cells/manifest.json`, `cells/frontier.json`, `cells/frontier_graph.json`, `sources.json` and `brain.html`. It must not carry the four whole files, the shards, the trace buckets or `xref_index.json`. | none |
-| `brainAssetJson`, `requiredBrainAssetJson`, `brain.ts:516-602` | Used only for the small static files. D1 reads go through `brainBatch` with the same error class. | decision 15 |
+| `brainAssetJson`, `requiredBrainAssetJson`, `brain.ts:516-602` | Used only for the small static files. D1 reads go through `brainBatch` with the same error class. | decision 9 |
 | memos and evictors, `brain.ts:423-458` | The context LRU is unchanged, per-dataset constants are memoized, and rows aren't cached. | memory is bounded by what one request reads |
 | `send`, `withRelease`, MCP `tools/call`, `brain-api.ts:2466-2494`, `mcp.ts:464-497` | Unchanged. | none |
 | `GET /api/version`, `version.ts:26` | Unchanged, with no D1 read (`version.ts:2`). The canary gets the dataset id from page responses instead (section 7). | none |
@@ -504,7 +482,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 | `snapshotFor`, `cellsManifest`, `brain-api.ts:304-317`, `386-390` | The slim static manifest; for D1 releases only `prov` and `_meta` are validated. | none |
 | `cellEntry`, `brain-api.ts:394-406` | `cellPage`, with the same bytes as the shard entry (the builder serializes each entry as `build_cell_shards.py` does). | none |
 | `atomFor` supercell branch and breadcrumb, `brain-api.ts:485-517`, `467-481` | `supercell`; a depth cap of 64 replaces the seen-set. | none on a tree |
-| `atomIdForOrgan`, `brainNodeExists`, `brain-api.ts:638-646`, `brain.ts:716-719` | `organOwners` and `atomsExist`, behind the probe. | fails closed when rows are missing |
+| `atomIdForOrgan`, `brainNodeExists`, `brain-api.ts:638-646`, `brain.ts:716-719` | `organOwners` and `atomsExist`, behind the readiness check. | fails closed when rows are missing |
 | `resolveAtomKey` alias passes, `brain-api.ts:568-584` | `aliasHits`. | none |
 | `resolveAtomKey` label and supercell organ-label passes, `586-594`, `611-622` | `exactName`. | names are lowercased at build time in Python and the key per request in JS: identical for ASCII, rare differences elsewhere |
 | `cellEntries`, `hydrateSupercellTraces`, `411-433`, `1037-1054` | `synapseTraces` for supercell rows. | Rows that say `traces_unavailable` today get traces: 1,413 whose partner's list was capped and 292 that join two supercells (`1032-1036`). They are trimmed to 6 per row (`build_cell_shards.py:94`). The sidecar always carries `tt` (`build_cell_shards.py:1244-1247`), while cell rows carry it only when trimmed (`896-897`), so these rows also gain `traces_total` (`brain-api.ts:1217`). |
@@ -518,7 +496,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 |---|---|---|
 | `searchLabels`, `suggestionsFor`, the free-text fallback, `brain.ts:696-712`, `brain-api.ts:683-688`, `846-854` | The name tiers. | exact matches rank above prefix matches; 2-character queries lose substring matches (`brain.ts:708`) |
 | `searchFor`, `brain-api.ts:1512-1586` | The single search endpoint. | Text hits and index tags are new. A supercell prefix hit now ranks above a cell fragment hit; today all supercell hits come after all cell hits (`1574-1584`). Supercells also match on their whole path after `path:`, as the page's area search does (`build_brain_page.py:4524`). |
-| `filterFor` cells, `brain-api.ts:1438-1442`, `1478-1489` | `filterCells`, paging on `labels.ord`. | short pages (decision 13) |
+| `filterFor` cells, `brain-api.ts:1438-1442`, `1478-1489` | `filterCells`, paging on `labels.ord`. | short pages (decision 7) |
 | `filterFor` `under=`, `1443-1476` | `cell_under`, read in ord order. | none |
 | `filterFor` supercells, `1424-1437` | `filterSupercells`, paging on `supercells.ord`. | short pages |
 | `partnerLabels`, `2238-2245` | `labelRows` for at most 12 ids (`2233`). | none |
@@ -528,7 +506,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 
 | Reader | Replacement | Change |
 |---|---|---|
-| `resolveNodeEndpoint`, `POST /api/brain/node`, `brain-edits.ts:264-276`, `1375-1405` | `atomsExist` and `organOwners`, behind the probe. | fails closed |
+| `resolveNodeEndpoint`, `POST /api/brain/node`, `brain-edits.ts:264-276`, `1375-1405` | `atomsExist` and `organOwners`, behind the readiness check. | fails closed |
 | quickstatements, `brain-edits.ts:692-733`, row loop `1169-1178` | One batch resolves every endpoint id (`organPages`, `atomsExist`) before the first write. | Required: row by row, a 100-row submit (`brain-edits.ts:50`) would go over the per-invocation cap. Side effect: an outage no longer leaves earlier rows written. |
 | `getXrefIndex`, `getXrefPagesByNode`, `brain-edits.ts:92-174` | `xrefPages` and `xrefNodes`. | the two isolate caches and their evictor go away |
 
@@ -543,14 +521,15 @@ Unchanged, because they aren't Brain release data: the decl, suffix and premise 
 | `brain-release-public.ts:31-61`, `469-475`; `authority_contracts.py:147-167`, `3575-3579` | Required sets depend on the layout. The "at least one generated cell or trace shard" rule applies only to the static layout. | none |
 | `provenance_coverage.py:183-246`, and its caller `private_replay_gate.py:197-260` | Also walks `cell_pages`, `supercells` and `synapse_traces` in the pinned `serving.sqlite3`, using the manifest's prov pool, instead of skipping the opaque file (`183-187`). | none |
 | `reducer-inputs-v2.json`, `-v3.json`, `-v3-folded.json` (in `brain/authority/`), `compile_offline_pack_v2.py:2279`, `reproducibility_gate.py:209-224` | Learn the D1 layout in step 6 (section 6). | none for static releases |
-| `legacy_sqlite_projection.py:185`, `assemble_legacy_release.py:297-300` | Keep the static required set under a renamed constant, because they assemble static legacy releases. The assembler also freezes through `build_release.build_release` (`:398`) and calls its `_static_closure` (`:297`), so `build_release.py` chooses the layout per workspace: static when the workspace has no `brain/data/serving.sqlite3`, D1 otherwise. The assembler pins the freezer's bytes in its plan (`:44-46`, `:147`), so existing assembly plans are re-pinned in every step that changes `build_release.py`. | none |
+| `legacy_sqlite_projection.py:185`, `assemble_legacy_release.py:297-300` | Keep the static required set under a renamed constant, because they assemble static legacy releases. The assembler also freezes through `build_release.build_release` (`:398`) and calls its `_static_closure` (`:297`), so `build_release.py` takes the layout as an explicit argument (`--layout static` or `d1`, static by default), never from which files the workspace holds: the builder's default output, `brain/data/serving.sqlite3`, is gitignored and survives pulls, so one manual build would otherwise switch the nightly's freeze. The nightly passes `d1` from step 7 on. The assembler pins the freezer's bytes in its plan (`:44-46`, `:147`), so existing assembly plans are re-pinned in every step that changes `build_release.py`. | none |
 | `site/test_frontier_page.py:79`, `100-107` | Rewritten in the cutover's page PR. It asserts `releaseJson("cells/manifest.json")` and tampers with `cells/labels.json`. It is release-affecting by exception (`brain_release_authority.py:59`) and a nightly gate (`brain-nightly.sh:786`). | test |
 | `d1shim.ts:107` | `_batchExec` decides whether a statement returns rows by `stmt.columns().length > 0` (the same call `raw()` uses at `94`), so a CTE inside a batch returns rows. | test |
 | `query.py` (used by `site/search_tools.py`), `bench/analysis/brain_artifact.py` | Read `serving.sqlite3` from the cutover on. `query.py` exits non-zero when the file is missing, instead of printing no hits. | local tools |
 
 ## 3. Client changes
 
-Page endpoints, all `GET /api/brain/r/<hex>/...`:
+Page endpoints, all `GET /api/brain/r/<hex>/...`. In this section, bare line numbers are in
+`build_brain_page.py`.
 
 | Endpoint | Replaces (in `build_brain_page.py`) | Backed by |
 |---|---|---|
@@ -608,7 +587,8 @@ Behavior:
   - Areas whose subtree is empty stay hidden (`4518`); hot prefixes carry `live_sups` for
     this.
   - Area prefix hits still rank above cell fragment hits (`4537-4543`).
-  - New: an exact tier comes first. Lost: substring matches for 2-character queries.
+  - New: an exact tier comes first. Lost: substring matches for 2-character queries (the
+    trigram index can't match fewer than 3 characters).
 - **Frontier views** work from `cells/frontier.json`. The near folders' labels (`2433`,
   `4207-4218`) come from its `near_labels` field.
 - **Boot** fetches the selector, `release.json`, the manifest, then one `level` (the roots, or
@@ -625,7 +605,7 @@ The builder (`build_serving_db.py`, PR #153) writes these tables, without `ds`, 
 `serving.sqlite3`, and the importer adds `ds`. The D1 schema is one migration,
 `wiki/migrations-brain/0001_brain.sql`, applied by hand. It is applied with `--command`
 carrying the file's text, never `--file`: on a remote database, `--file` goes through the
-import API (`cli.js:238241`).
+import API, the one wrangler warns makes the database "unavailable to serve queries".
 
 ```sql
 CREATE TABLE datasets(ds INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -722,8 +702,9 @@ Notes on the tables:
   otherwise produce two identical lowercased rows.
 - **`hot_prefixes`** lists only prefixes of 2 to 200 UTF-16 units, the query lengths the
   Worker accepts.
-- **`text_ids`** holds every node with a docstring or description whose organ id resolves to a
-  cell, or that is a supercell itself. Its owners come in labels order, then supercell order.
+- **`text_ids`** holds every node with a docstring or description whose organ id resolves to an
+  atom (a cell, or a supercell for rule-5 organs, `build_cell_shards.py:981-986`), or that is a
+  supercell itself. Its owners come in labels order, then supercell order.
 - **Explorer per scope** (step 1b).
   - The scopes are each `path:` supercell plus `all` (`build_brain_page.py:5298`). The core is
     the cells whose `p` is in the subtree, and the ripple adds their neighbors (`5310-5316`),
@@ -770,11 +751,12 @@ Notes on the tables:
     at capitals, dots, underscores and slashes, and records `names_mode = 'parts'`. Word-start
     fragments still match (`Semigroup` finds `StronglyContinuousSemigroup`); mid-word fragments
     don't.
-  - The builder builds the same FTS tables locally (as `names` and `texts`, trigram only), for
-    local tools and for the importer's checks. The FTS tables themselves aren't digested, so
-    the trigram-or-parts choice never changes a dataset id. Their inputs are:
-    `name_keys.name` (original case) and `text_ids.body` are columns of digested tables, so
-    the dataset id binds every FTS input, and a change to a node's description changes the id.
+  - The builder builds the same FTS tables locally (`names` with the trigram tokenizer, `texts`
+    with the default word tokenizer; the builder has no parts mode), for local tools and for
+    the importer's checks. The FTS tables themselves aren't digested, so the trigram-or-parts
+    choice never changes a dataset id. Their inputs are: `name_keys.name` (original case) and
+    `text_ids.body` are columns of digested tables, so the dataset id binds every FTS input,
+    and a change to a node's description changes the id.
   - D1 omits those two columns, which are used only to build its FTS tables. The importer
     fills the FTS tables from the local file. Range verification compares the copied columns
     of local and remote rows; the sidecar's digest covers every column of the local table.
@@ -798,9 +780,9 @@ Notes on the tables:
     identical dataset id.
 
 **Schema rule: additive only.**
-- Each dataset records its `schema_version`: the builder's `SCHEMA_VERSION`, passed through
-  the sidecar. The Worker has a fixed set of versions it can read, and the probe fails closed
-  (503) on any other.
+- Each dataset records its `schema_version`: the builder's `SCHEMA_VERSION`, passed through the
+  sidecar. The Worker has a fixed set of versions it can read, and the readiness check fails
+  closed (503) on any other.
 - A migration to `wikilean-brain` may only add tables and add nullable columns.
   `ALTER TABLE ... ADD COLUMN` changes only the schema, so it runs immediately whatever the
   table size. Such a migration runs once and is verified afterwards, as `CLAUDE.md:134-137`
@@ -896,6 +878,14 @@ expected to trip. So:
 - `inventory_tree` and `_scan_regular_tree` hash files in chunks instead of reading each one
   whole (`brain_promote_release.py:439`, `brain_activation_bundle.py:521`).
 
+**The semantic-diff cap.** The first TauCeti release's semantic diff is projected at about
+1 GB, against the activation bundle's 1 GiB `MAX_SEMANTIC_DIFF_BYTES`
+(`brain_activation_bundle.py:96`). Serving from D1 doesn't shrink it: the diff records both
+rows of every changed edge (`91-95`), and TauCeti adds about 500k edges. So step 5 raises the
+cap to 4 GiB. The bundle check parses the diff whole, so the real diff's size and the check's
+peak memory are first known in step 9's dry run. If the check doesn't fit the operator Mac
+there, the diff is streamed instead before that release is promoted.
+
 The intermediate files move out of `site/assets/brain/cells`, because the static file check
 rejects extra files there (`build_release.py:264-283`).
 
@@ -917,16 +907,17 @@ promoter's wrangler environment (`brain_promote_release.py:623-650`):
      `candidate` with a new `seq`, or set a superseded row back to `candidate` with a new
      `seq`. Rows are keyed by `release_id`; `manifest_sha256` is recorded for information
      only.
-   - Refuse if another protected candidate references a different dataset; the operator
-     supersedes it first. So there is at most one candidate dataset (Pruning).
+   - Refuse if another release protected only by the candidate rules (Pruning: registered
+     after the live current, or with its dataset still importing) references a different
+     dataset; the operator supersedes it first. The live current and previous releases don't
+     count, although their rows stay `candidate`. So there is at most one candidate dataset.
    - From this point the release is protected, and with it its dataset. The prune in step 4
      therefore can't delete a dataset this release is about to reuse.
 4. **Prune** (below).
 5. **Skip** if the dataset is already `ready`: there is nothing to import.
 6. **Copy each table in `seq` ranges**, each range's statement text under about 90 KB, a few
    ranges per `wrangler d1 execute wikilean-brain --remote --json --command` call. That
-   command posts to the query API (`cli.js:238337-238342`), not the import API that blocks the
-   database (`cli.js:238241`).
+   command posts to the query API, not the import API that blocks the database.
    - Each range is written as `DELETE FROM t WHERE ds = ? AND seq BETWEEN lo AND hi;` followed
      by one multi-row `INSERT`. Rerunning a range after a failed or ambiguous call therefore
      repairs it, and nothing uses `INSERT OR IGNORE`.
@@ -957,12 +948,12 @@ promoter's wrangler environment (`brain_promote_release.py:623-650`):
    and check that it changed exactly one row. Zero changes means the dataset left `importing`
    under the importer, and the import fails.
 
-Readers see none of this: no selector names the release yet, and the probe hides the dataset
-until it is ready. The import stays out of the promoter's dry run, which must not change
-anything (`brain_promote_release.py:4479`, `brain_activation_bundle.py:1653-1654`). It also
-stays out of `_deploy`'s fenced window (`brain_promote_release.py:3582-3713`), so the deploy
-stays short. If #150 shows that file imports don't block reads, importing whole tables as
-files becomes an option; the batched path stays the default.
+Readers see none of this: no selector names the release yet, and the readiness check hides the
+dataset until it is ready. The import stays out of the promoter's dry run, which must not
+change anything (`brain_promote_release.py:4479`, `brain_activation_bundle.py:1653-1654`). It
+also stays out of `_deploy`'s fenced window (`brain_promote_release.py:3582-3713`), so the
+deploy stays short. If #150 shows that file imports don't block reads, importing whole tables
+as files becomes an option; the batched path stays the default.
 
 **Scratch mode.** `import --scratch <serving.sqlite3> <serving-tables.json>` takes a serving
 file and its sidecar with no frozen release, for the trial import in step 2, before any
@@ -1001,16 +992,16 @@ incomplete. It protects these releases:
   someone runs `supersede` or a newer release goes live;
 - every candidate whose dataset is still `importing`, until it is superseded.
 
-A dataset is protected when any protected release references it. Import step 3 allows only
-one candidate dataset, so at most three datasets are protected at once: the live current's,
-the live previous's and one candidate's, fewer when they share. Step 2's remote import gate
-requires three full footprints to fit under the 10 GB cap with room to spare.
+A dataset is protected when any protected release references it. Import step 3 allows only one
+dataset protected by the last two rules, so at most three datasets are protected at once: the
+live current's, the live previous's and one candidate's, fewer when they share. Step 2's remote
+import gate requires three full footprints to fit under the 10 GB cap with room to spare.
 
 Pruning then:
 1. deletes the release rows that aren't protected;
 2. for each dataset that no release row references, including one whose import was abandoned
    with `supersede`:
-   1. sets `state = 'deleting'`, so the probe hides it;
+   1. sets `state = 'deleting'`, so the readiness check hides it;
    2. deletes its `import_ranges` rows, before any of its data;
    3. drops its two FTS tables;
    4. deletes its rows table by table, in `seq` ranges sized by bytes: each statement deletes
@@ -1048,7 +1039,7 @@ present, which is more likely now that releases share datasets. Otherwise the re
 503 until it is imported again.
 
 **Keep `wikilean-brain` out of the daily backup.** Exports also make a database unavailable
-(`cli.js:90322-90326`), and the rows can be rebuilt. The runbook adds one rule: only the
+(`wrangler d1 export`), and the rows can be rebuilt. The runbook adds one rule: only the
 importer and the pruner write to this database.
 
 **Cost to measure.** Each insert writes the row plus one row per index (unchecked), and FTS
@@ -1058,10 +1049,11 @@ import entirely for releases whose tables are unchanged.
 
 ## 6. Offline replay
 
-Jack's decision (2026-11-08, decision 7): the replay tools learn the D1 layout in step 6,
-before the cutover in step 7. So the first D1 release can be a full offline replay release,
-like the 2026-10-04 release (`docs/BRAIN-ACTIVATION-2026-10-04.md:29`). Both profiles stay
-publishable (`docs/BRAIN-RELEASE-RUNBOOK.md:29-33`).
+Following Jack's replay decision (2026-11-08, quoted in BRAIN-TAUCETI.md), the replay tools
+learn the D1 layout in step 6, before the cutover in step 7. So the first D1 release can be a
+full offline replay release, like the 2026-10-04 release
+(`docs/BRAIN-ACTIVATION-2026-10-04.md:29`). Both profiles stay publishable
+(`docs/BRAIN-RELEASE-RUNBOOK.md:29-33`).
 
 Why before the cutover:
 - After the cutover the D1 layout is the only layout main produces, so there is no window
@@ -1150,7 +1142,8 @@ hand (`check_provenance_coverage.py`).
   - resuming from the journal, from recorded coverage after the range plan changes;
   - the protected set: refusal while an attempt is incomplete, attempt selectors protecting
     only until the attempt's terminal outcome, a candidate newer than the live current,
-    refusal of a second candidate dataset, `supersede`, and a shared dataset kept while it is
+    refusal of a second candidate dataset, importing release N+1 while N is live (N's row is
+    still `candidate` and must not count), `supersede`, and a shared dataset kept while it is
     still referenced;
   - register before prune: superseding a candidate and importing a fix with identical tables
     keeps the dataset and imports nothing;
@@ -1166,8 +1159,9 @@ hand (`check_provenance_coverage.py`).
   against today's `under` test on the fixture; `spath` rows against the page's area-search
   hay; `kids` holding up to 64 children; and the build failing on prov skew. Step 1b adds the
   8 MB cap on every precomputed explorer scope.
-- **End-to-end.** `wiki/e2e/server.ts:151-168` serves `/assets/brain/*` from the fixture. It
-  must also route `/api/brain/r/*` to the app, using an env with `BRAIN_DB`.
+- **End-to-end.** `wiki/e2e/server.ts:161` serves `/assets/brain/*` from the fixture. Requests
+  under `/api/brain/r/*` already fall through to the app (`:168`); the env it passes must gain
+  `BRAIN_DB`.
   `wiki/e2e/brain.spec.ts:28-32` keeps its three static reads and adds a check that the first
   endpoint call returns the release id.
 
@@ -1195,11 +1189,12 @@ The numbering matches issue #152. [affecting] means release-affecting under
 be promoted. [neutral] PRs can land any time.
 
 - **Layout at TauCeti scale** [affecting], PR #137: grid-bucketed repulsion and module
-  bubbles.
+  bubbles. It has no number because it doesn't depend on the D1 work and can merge any time
+  (Jack's call). Step 1b needs it, and step 7 is held until 1b lands.
 0. **Operator, no merge.**
-   - Run #150 on the operator Mac, adding the cases the probe lacks:
-     - reads while a stream of `--command` batches is writing (the probe only tests a file
-       import);
+   - Run #150 on the operator Mac, adding the cases the D1 probe lacks:
+     - reads while a stream of `--command` batches is writing (the D1 probe only tests a
+       file import);
      - `contentless_delete=1` and `_docsize` row counts;
      - how long it takes to drop a 100 MB FTS table;
      - window functions;
@@ -1235,7 +1230,7 @@ be promoted. [neutral] PRs can land any time.
    - Releasable, since nothing uses it yet.
    - Afterwards the operator applies the migration with `--command`, imports a full-size
      serving file and sidecar from step 0's build into the remote `wikilean-brain` in scratch
-     mode, then supersedes and prunes it.
+     mode, then supersedes and prunes it. The copied file stays outside `brain/data`.
    - **Gate before the first D1 release:** this remote import of one full dataset must
      succeed, and it records the dataset's footprint (`size_after` before and after, indexes
      and FTS included), the statement size and timing of every call, the call count and the
@@ -1255,14 +1250,15 @@ be promoted. [neutral] PRs can land any time.
    The layout rule in the validators; serving verification (base tables re-derived, derived
    tables checked by digest and invariants, the Unicode version, the refusal of `traces.prov`,
    the verification receipt); provenance coverage over the serving rows; the legacy tools
-   pinned to the static set; `build_release.py` choosing the layout per workspace; re-pinning
-   the existing assembly plans for the changed `build_release.py`; and the canary checks.
-   Releasable, since the static layout is unchanged.
+   pinned to the static set; `build_release.py` taking the layout as an explicit argument;
+   re-pinning the existing assembly plans for the changed `build_release.py`; and the canary
+   checks. Releasable, since the static layout is unchanged.
 5. **Promoter** [neutral, except the nightly's verify run: `brain-nightly.sh` is
    release-affecting by exception, `brain_release_authority.py:57`]. The prepare and fence
    checks, `verify --sample` called in-process after the canary with a mismatch journaled as
    manual intervention, the nightly's `verify --sample` run, the separate verify timeout,
-   chunked hashing, and the runbook's import, prune, supersede and verify commands.
+   chunked hashing, the semantic-diff cap raised to 4 GiB (section 5), and the runbook's
+   import, prune, supersede and verify commands.
 6. **Replay tools on the D1 layout** [affecting]: section 6. Releasable, since nothing builds
    the D1 layout by default yet.
 7. **Cutover** [affecting, **held**].
@@ -1271,12 +1267,11 @@ be promoted. [neutral] PRs can land any time.
      tree, `cells/frontier.json` and the slim manifest.
    - The nightly runs `build_serving_db.py` and its test after `test_frontier`
      (`brain-nightly.sh:773-779`).
-   - `build_release.py` freezes the D1 layout when the workspace has a serving file, and the
-     existing assembly plans are re-pinned again if its bytes change.
+   - The nightly passes `--layout d1` to `build_release.py`.
    - `query.py` and the other local tools read `serving.sqlite3`.
-   - Held until steps 1 to 6 are merged, #150 has results, and step 2's remote scratch import
-     gate has passed. From then on, every release built from main is a D1 release, either
-     compatibility or offline replay.
+   - Held until steps 1 to 6 and 1b (and so #137) are merged, #150 has results, and step 2's
+     remote scratch import gate has passed. From then on, every release built from main is a D1
+     release, either compatibility or offline replay.
    - It can be two PRs (page, builder) merged back to back, with no release cut between them.
 8. **TauCeti harvest cap and the big files out of Git** [affecting], last. Why last:
    [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md), Plan.
@@ -1287,40 +1282,18 @@ be promoted. [neutral] PRs can land any time.
 
 ## Not verified yet
 
-- Every limit marked "(unchecked)", and the `cli.js` line references.
-- Trigram support and `contentless_delete=1` in D1 and in `node:sqlite` on CI, and counting FTS
-  rows through `_docsize`. Whether D1 accepts the FTS5 `automerge`, `crisismerge` and `merge`
-  statements.
-- Whether reads stall during a file import or during `--command` batches (#150), and whether a
-  multi-statement `--command` runs atomically (the importer doesn't rely on it). Whether the
-  100 KB statement limit applies per statement or per `--command` request, which carries
-  several ranges of about 90 KB.
-- The largest `cell_pages`, `supercells` and explorer rows, and the largest folder by children
-  and by cells.
-- How many explorer scopes get precomputed and how big they are, the total `explorer_scopes`
-  bytes per dataset, and whether every scope fits 8 MB after collapsing; the row counts of
-  `hot_prefixes` and `cell_under`.
-- `rows_written` and wall time per import, the verify time, and how long dropping a large FTS
-  table takes.
-- The remote footprint of one full dataset, indexes and FTS included, and so whether three
-  datasets fit under 10 GB (step 2's gate).
-- Worst-case times for adversarial fragment phrases, long OR text queries and parts-mode
-  prefixes.
+- Every limit marked "(unchecked)", and the wrangler behavior cited: that file imports and
+  exports make the database unavailable, and that `--command` posts to the query API.
+- Everything step 0 measures (its list above), and trigram and `contentless_delete=1` support
+  in `node:sqlite` on CI (step 3b's test).
+- Whether a multi-statement `--command` runs atomically (the importer doesn't rely on it), and
+  whether the 100 KB statement limit applies per statement or per request.
+- The remote footprint of one full dataset, and so whether three fit under 10 GB (step 2's
+  gate).
 - How many folders have more than 64 children, where the grandchild preview can differ under
   filters.
-- D1 latency from distant Cloudflare data centers, and the per-endpoint D1 time behind the
-  limiter numbers and the agent D1-cost budget.
+- D1 latency from distant Cloudflare data centers.
 - Whether two clean-room builds of `serving.sqlite3` agree byte for byte on one SQLite version
   (step 6).
-
-## Review
-
-Two adversarial reviews of this design were resolved before step 1. The first found 7 major
-and 10 minor findings plus 14 readers the first draft missed: among them pruning that could
-delete a resumed import, unbounded reads, rows keyed by release, an importer that could not
-resume, no schema evolution rule, and a bridge cap that changed results. The second, a
-verification of the revised design, found 11 more, all minor: among them immutable caching
-that broke rollback, too many protected datasets for the 10 GB cap, FTS inputs that were not
-digested, and an importer that pruned before it registered. Every finding is resolved in the
-sections above. PR #153 then had three reviews of its own (26 issues, 2 major), all fixed or
-recorded in its description.
+- The first TauCeti release's semantic diff (projected at about 1 GB) and the bundle check's
+  peak memory on it (step 9's dry run).
