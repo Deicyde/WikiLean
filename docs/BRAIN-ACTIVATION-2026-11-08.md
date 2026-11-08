@@ -100,9 +100,8 @@ new Worker nor new public static assets have been deployed.
 The final browser-journal inspection and deliberate restoration of the recorded
 writer state remain pending because the native browser controls cannot read the
 live page reliably. The operator has retained the previous moderation schedule
-and the exact drift
-schedule (`17 6 * * *`). Only the previously active writers may be resumed after
-all remaining checks. The browser's final client journal still needs inspection.
+and the exact drift schedule (`17 6 * * *`). Only the previously active writers
+may be resumed after all remaining checks.
 
 The post-conversion encrypted backup and application projection were copied to
 ffmain and their hashes verified. Full evidence remains private. The source

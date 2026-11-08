@@ -82,18 +82,19 @@ recommendation. Remove an item once its decision is recorded below.
     flags. Options: triage them now, or let them wait.
 15. **Native companion cutover (#64 plus the 2026-11-07 transition work).**
     The release is live and all 778 canonical D1 articles were converted on
-    2026-11-08. The full before/after preservation audit passed. Final derived
+    2026-11-08. The full before/after preservation audit passed. Final
     browser-journal inspection and restoration of the recorded writers remain
-    operator gates; the write brake is still locked. Canonical-derived citations,
-    the private graph source export and runtime autocomplete passed verification. The remaining
-    Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
+    operator gates; the write brake is still locked. Citations from canonical D1,
+    the private graph source export and runtime autocomplete passed verification.
+    The remaining Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
     autocomplete, exports and repair tools now consume native links. Pinned and
     multi-target repairs require explicit per-target review. The schema and
     validator are pinned to Literature Links 1.0.2.
     - docs/COMPANION-NATIVE.md now describes the freeze, copied-snapshot
       rehearsal, admin-session preview/apply path, concurrent-write refusals,
-      post-migration audit and guarded per-article rollback. Prepare and approve
-      the exact frozen release, baseline, fresh P1B and exclusive operator window.
+      post-migration audit and guarded per-article rollback. The exact frozen
+      release, baseline, fresh P1B and exclusive operator window were recorded
+      for this conversion.
     - The 2026-11-07 read-only canonical snapshot and copied application-database
       rehearsal converted all 778 articles without a blocked item. The old cached
       not_applicable report was absent from canonical D1. The rehearsal retained
