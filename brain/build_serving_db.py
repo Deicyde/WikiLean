@@ -20,7 +20,9 @@ Tables (each numbers its rows seq = 1..N in its key order, the order its digest 
                                   supercells.json in file order, plus subtree counts
   name_keys(name_lc, kind, owner, len16, name)
                                   every searchable name, lowercased, once per (name, kind, owner)
-  hot_prefixes(prefix, cells, sups)   every prefix that starts more than 1,000 names
+  hot_prefixes(prefix, cells, sups, live_sups)
+                                  every prefix that starts more than 1,000 names; live_sups
+                                  leaves out the empty folders the page's area search drops
   cell_under(anc, ord)            every `/`-prefix of every folder that lists a cell
   synapse_traces(pair, json)      the trace sidecar's rows
   xrefs(page_ord, node_ord, page, node)   xref_index.json in file order
@@ -32,19 +34,25 @@ Tables (each numbers its rows seq = 1..N in its key order, the order its digest 
 The SQLite bytes depend on the SQLite version; the logical digests (store.digest_rows over every
 column of a table in seq order) do not, and are what the sidecar binds. Numbers live only in
 INTEGER columns and floats stay inside JSON text, so rows read back from D1 digest the same.
+The digests do depend on Python's Unicode database: name_lc is str.lower(), whose case mappings
+follow unicodedata.unidata_version, so the meta table records that version. The FTS tables need
+SQLite 3.43 or newer (contentless_delete).
 """
 from __future__ import annotations
 
 import argparse
+import fcntl
+import hashlib
 import json
 import os
 import sqlite3
 import sys
 import tempfile
+import unicodedata
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from store import canonical_json, digest_file, digest_rows
+from store import canonical_json, digest_file
 
 ROOT = Path(__file__).resolve().parent.parent
 SCHEMA_VERSION = 1
@@ -57,6 +65,7 @@ HOT_PREFIX_OWNERS = 100      # owners listed per hot prefix, for cells and super
 QUERY_UNITS = (2, 200)       # the Worker's shortest and longest search query, UTF-16 units
 KIDS_CAP = 64                # children carried on a supercell row, the largest by n_sub
 DELETE_BOUND_BYTES = 4 * 2**20   # the pruner deletes about this much row data per statement
+MIN_SQLITE = (3, 43, 0)      # contentless_delete=1 on the FTS tables
 
 SCHEMA = """
 CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -77,7 +86,7 @@ CREATE TABLE name_keys(seq INTEGER PRIMARY KEY, name_lc TEXT NOT NULL, kind TEXT
                        owner TEXT NOT NULL, len16 INTEGER NOT NULL, name TEXT NOT NULL,
                        UNIQUE(name_lc, kind, owner));
 CREATE TABLE hot_prefixes(seq INTEGER PRIMARY KEY, prefix TEXT NOT NULL UNIQUE,
-                          cells TEXT NOT NULL, sups TEXT NOT NULL);
+                          cells TEXT NOT NULL, sups TEXT NOT NULL, live_sups TEXT NOT NULL);
 CREATE TABLE cell_under(seq INTEGER PRIMARY KEY, anc TEXT NOT NULL, ord INTEGER NOT NULL,
                         UNIQUE(anc, ord));
 CREATE TABLE synapse_traces(seq INTEGER PRIMARY KEY, pair TEXT NOT NULL UNIQUE,
@@ -135,7 +144,9 @@ def fill(db: sqlite3.Connection, table: str, rows, *, order_by: tuple[str, ...] 
 def node_texts(nodes_path: Path):
     """(line, id, body) for every node with a docstring or description."""
     with nodes_path.open(encoding="utf-8") as handle:
-        next(handle)                                   # the _meta line
+        first = json.loads(next(handle, "null"))
+        if not (isinstance(first, dict) and isinstance(first.get("_meta"), dict)):
+            raise ValueError(f"{nodes_path}: the first line is not the _meta object")
         for line_no, line in enumerate(handle):
             node = json.loads(line)
             if node.get("docstring") or node.get("description"):
@@ -155,7 +166,9 @@ def subtree(labels: list[dict], sup_doc: dict):
     A cell's folders are the supercells whose `cells` list holds it, frontier areas included.
     Its libs are the library roots above those folders (what the page's cellLibs computes,
     build_brain_page.py:buildCellLibs); n_sub counts it once per ancestor, as
-    build_cell_shards' subtree_cells does, and fhist splits that count by "<f>|<libs>"."""
+    build_cell_shards' subtree_cells does, and fhist splits that count by "<f>|<libs>".
+    The page's tree.count instead counts a cell once per folder it sits in, so for a cell in
+    two folders under one ancestor n_sub is 1 where the page shows 2."""
     supercells = sup_doc["supercells"]
     folders: dict[str, list[str]] = defaultdict(list)
     for path, row in supercells.items():
@@ -241,12 +254,29 @@ def name_rows(labels: list[dict], supercells: dict):
                 yield name_lc, kind, owner, utf16_len(name_lc), str(name)
 
 
-def hot_prefix_rows(keys: list[tuple[int, str, str, bool]]):
-    """hot_prefixes rows in prefix order. `keys` is (seq, name_lc, owner, is_supercell) in seq
-    order. A prefix is hot when more than HOT_PREFIX_NAMES names start with it; the Worker
-    reads every other prefix as an index range of at most that many rows. Each hot prefix
-    lists the first name_keys.seq of its first HOT_PREFIX_OWNERS cell owners and, apart, of
-    its first HOT_PREFIX_OWNERS supercell owners."""
+def owner_lists(sub: list[tuple[int, str, str, bool, bool]]) -> tuple[str, str, str]:
+    """The first name_keys.seq of the first HOT_PREFIX_OWNERS cell owners, supercell owners,
+    and supercell owners whose subtree holds a cell, each as a JSON list."""
+    lists: tuple[list[int], list[int], list[int]] = ([], [], [])
+    seen: tuple[set, set, set] = (set(), set(), set())
+    for seq, _, owner, is_sup, live in sub:
+        targets = ((1, 2) if live else (1,)) if is_sup else (0,)
+        for which in targets:
+            if owner not in seen[which] and len(lists[which]) < HOT_PREFIX_OWNERS:
+                seen[which].add(owner)
+                lists[which].append(seq)
+        if all(len(listed) == HOT_PREFIX_OWNERS for listed in lists):
+            break
+    return compact(lists[0]), compact(lists[1]), compact(lists[2])
+
+
+def hot_prefix_rows(keys: list[tuple[int, str, str, bool, bool]]):
+    """hot_prefixes rows in prefix order. `keys` is (seq, name_lc, owner, is_supercell, live)
+    in seq order, where live means a cell, or a supercell whose subtree holds a cell (the
+    page's area search drops empty folders; the agent search keeps them). A prefix is hot
+    when more than HOT_PREFIX_NAMES names start with it; the Worker reads every other prefix
+    as an index range of at most that many rows. Each hot prefix lists its owners as
+    owner_lists does."""
     hot = []
     groups = [("", keys)]
     while groups:
@@ -256,22 +286,16 @@ def hot_prefix_rows(keys: list[tuple[int, str, str, bool]]):
         for key in members:
             if len(key[1]) >= depth:
                 children[key[1][:depth]].append(key)
+        del members
         for child, sub in children.items():
             if len(sub) <= HOT_PREFIX_NAMES:
                 continue
             units = utf16_len(child)
             if QUERY_UNITS[0] <= units <= QUERY_UNITS[1]:
-                hot.append((child, sub))
+                hot.append((child, *owner_lists(sub)))
             if units < QUERY_UNITS[1]:
                 groups.append((child, sub))
-    for prefix, sub in sorted(hot, key=lambda item: item[0]):
-        lists: tuple[list[int], list[int]] = ([], [])
-        seen: tuple[set, set] = (set(), set())
-        for seq, _, owner, is_sup in sub:
-            if owner not in seen[is_sup] and len(lists[is_sup]) < HOT_PREFIX_OWNERS:
-                seen[is_sup].add(owner)
-                lists[is_sup].append(seq)
-        yield prefix, compact(lists[0]), compact(lists[1])
+    yield from sorted(hot, key=lambda item: item[0])
 
 
 def digest_table(db: sqlite3.Connection, table: str) -> dict:
@@ -279,33 +303,35 @@ def digest_table(db: sqlite3.Connection, table: str) -> dict:
     values at which the cumulative row bytes cross each multiple of DELETE_BOUND_BYTES."""
     cursor = db.execute(f"SELECT * FROM {table} ORDER BY seq")
     columns = [c[0] for c in cursor.description]
-    state = {"rows": 0, "bytes": 0, "next": DELETE_BOUND_BYTES}
+    # store.digest_rows' hash, computed here so each row is serialized once for both uses
+    digest = hashlib.sha256()
+    rows = size = 0
+    mark = DELETE_BOUND_BYTES
     bounds: list[int] = []
-
-    def rows():
-        for values in cursor:
-            state["rows"] += 1
-            if values[0] != state["rows"]:
-                raise ValueError(f"{table}: seq {values[0]} where {state['rows']} belongs")
-            if any(isinstance(v, float) for v in values):
-                raise ValueError(f"{table} seq {values[0]} holds a REAL: floats belong in JSON text")
-            row = dict(zip(columns, values))
-            state["bytes"] += len(canonical_json(row).encode("utf-8")) + 1
-            if state["bytes"] >= state["next"]:
-                bounds.append(values[0])
-                state["next"] = (state["bytes"] // DELETE_BOUND_BYTES + 1) * DELETE_BOUND_BYTES
-            yield row
-
-    digest = digest_rows(rows())
-    return {"rows": state["rows"], "digest": digest, "delete_bounds": bounds}
+    for values in cursor:
+        rows += 1
+        if values[0] != rows:
+            raise ValueError(f"{table}: seq {values[0]} where {rows} belongs")
+        if any(isinstance(v, float) for v in values):
+            raise ValueError(f"{table} seq {values[0]} holds a REAL: floats belong in JSON text")
+        line = canonical_json(dict(zip(columns, values))).encode("utf-8") + b"\n"
+        digest.update(line)
+        size += len(line)
+        if size >= mark:
+            bounds.append(values[0])
+            mark = (size // DELETE_BOUND_BYTES + 1) * DELETE_BOUND_BYTES
+    return {"rows": rows, "digest": digest.hexdigest(), "delete_bounds": bounds}
 
 
 def publish_together(pairs: list[tuple[Path, Path]]) -> None:
-    """Rename each finished temp file over its destination, all or none.
+    """Rename each finished temp file over its destination in order, all or none.
 
-    If a rename fails, the destinations already replaced get their old bytes back (from hard
-    links taken first), so a reader never pairs a new serving file with an old sidecar. Only a
-    crash between the renames can leave a mixed pair, and the sidecar's digests expose it."""
+    The database is renamed first, so a new sidecar always sits beside the database it
+    describes; between the two renames a reader can briefly see the new database beside the
+    old sidecar, so a reader cross-checks the sidecar's `tables` against the database's own
+    `tables` rows. If a rename fails, the destinations already replaced get their old bytes
+    back from hard links taken first. A restore that fails is noted on the error, and its
+    hard link stays in place (`<temp>.old`) so the old bytes are not lost."""
     backups: list[tuple[Path, Path | None]] = []
     try:
         for temp, dest in pairs:
@@ -315,12 +341,19 @@ def publish_together(pairs: list[tuple[Path, Path]]) -> None:
                 os.link(dest, backup)
             backups.append((dest, backup))
             os.replace(temp, dest)
-    except BaseException:
+    except BaseException as exc:
+        kept = []
         for dest, backup in reversed(backups):
-            if backup is not None:
-                os.replace(backup, dest)
-            else:
-                dest.unlink(missing_ok=True)
+            try:
+                if backup is not None:
+                    os.replace(backup, dest)
+                else:
+                    dest.unlink(missing_ok=True)
+            except OSError as undo:
+                kept.append(backup)
+                exc.add_note(f"could not restore {dest}: {undo}"
+                             + (f"; its old bytes are in {backup}" if backup else ""))
+        backups = [(dest, backup) for dest, backup in backups if backup not in kept]
         raise
     finally:
         for _, backup in backups:
@@ -328,8 +361,27 @@ def publish_together(pairs: list[tuple[Path, Path]]) -> None:
                 backup.unlink(missing_ok=True)
 
 
+def cell_page_rows(cells_dir: Path, manifest: dict, xy_by_id: dict[str, str | None]):
+    """(id, json) for every shard entry, one shard in memory at a time; fills xy_by_id."""
+    for key in sorted(manifest["shards"]):
+        shard = read_json(cells_dir / f"{key}.json")
+        if len(shard) != manifest["shards"][key]:
+            raise ValueError(f"{cells_dir / key}.json holds {len(shard)} cells; "
+                             f"the manifest says {manifest['shards'][key]}")
+        for cid, entry in shard.items():
+            if cid in xy_by_id:
+                raise ValueError(f"{cid} is in two cell shards, the second {key}.json")
+            value = (entry.get("cell") or {}).get("xy")
+            xy_by_id[cid] = None if value is None else compact(value)
+            yield cid, compact(entry)
+        del shard
+
+
 def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | None = None,
           sidecar_path: Path | None = None) -> dict:
+    if sqlite3.sqlite_version_info < MIN_SQLITE:
+        raise RuntimeError(f"SQLite {sqlite3.sqlite_version} is too old: the FTS tables' "
+                           f"contentless_delete needs {'.'.join(map(str, MIN_SQLITE))} or newer")
     xref_path = xref_path or cells_dir.parent / "xref_index.json"
     sidecar_path = sidecar_path or out.with_name("serving-tables.json")
     manifest = read_json(cells_dir / "manifest.json")
@@ -338,43 +390,60 @@ def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | Non
         # build_cell_shards ships traces.prov only when the synapse and cell prov tables differ
         raise ValueError(f"{cells_dir / 'manifest.json'}: traces carry their own prov table; "
                          "trace prov indexes must resolve against the manifest's")
+    with open(out.with_name(f".{out.name}.lock"), "w") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise RuntimeError(f"another build is writing {out}") from None
+        return _build_locked(cells_dir, nodes_path, out, manifest, traces, xref_path, sidecar_path)
+
+
+def _build_locked(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict, traces: dict,
+                  xref_path: Path, sidecar_path: Path) -> dict:
     temps = []
     for dest in (out, sidecar_path):
         fd, name = tempfile.mkstemp(prefix=f".{dest.name}.", suffix=".tmp", dir=dest.parent)
         os.close(fd)
         temps.append(Path(name))
+    db = None
     try:
         db = sqlite3.connect(temps[0])
+        # a temp file until publish, so a crash loses nothing worth journaling
+        db.executescript("PRAGMA journal_mode=OFF; PRAGMA synchronous=OFF; "
+                         "PRAGMA cache_size=-262144;")
         db.executescript(SCHEMA)
-        pages = {}
-        for key in sorted(manifest["shards"]):
-            pages.update(read_json(cells_dir / f"{key}.json"))
-        fill(db, "cell_pages", ((cid, compact(pages[cid])) for cid in sorted(pages)))
+        xy_by_id: dict[str, str | None] = {}
+        fill(db, "cell_pages", cell_page_rows(cells_dir, manifest, xy_by_id), order_by=("id",))
         aliases = read_json(cells_dir / "aliases.json")
         fill(db, "aliases", ((kind, key, aliases[field][key])
                              for field, kind in sorted(ALIAS_KINDS.items(), key=lambda fk: fk[1])
                              for key in sorted(aliases[field])))
 
         labels = read_json(cells_dir / "labels.json")
+        label_ids = {r["id"] for r in labels}
+        if label_ids != set(xy_by_id):
+            raise ValueError(f"labels.json and the cell shards disagree: "
+                             f"{len(label_ids - set(xy_by_id))} labels have no shard entry, "
+                             f"{len(set(xy_by_id) - label_ids)} shard entries have no label")
+        del label_ids
         sup_doc = read_json(cells_dir / "supercells.json")
         supercells = sup_doc["supercells"]
         libs, n_sub, fhist, folders = subtree(labels, sup_doc)
 
-        def xy(cid):
-            value = ((pages.get(cid) or {}).get("cell") or {}).get("xy")
-            return None if value is None else compact(value)
         fill(db, "labels", ((i, r["id"], r.get("label"),
                              AKA_SEP.join(r["aka"]) if r.get("aka") else None,
-                             r.get("f"), r.get("p"), libs[i], xy(r["id"]))
+                             r.get("f"), r.get("p"), libs[i], xy_by_id[r["id"]])
                             for i, r in enumerate(labels)))
-        del pages
+        del xy_by_id
         fill(db, "supercells", supercell_rows(supercells, n_sub, fhist))
 
         fill(db, "name_keys", name_rows(labels, supercells))
         sup_names_from = 1 + db.execute(
             "SELECT count(*) FROM name_keys WHERE kind IN ('label', 'aka')").fetchone()[0]
-        keys = [(seq, name_lc, owner, seq >= sup_names_from)
-                for seq, name_lc, owner in db.execute("SELECT seq, name_lc, owner FROM name_keys ORDER BY seq")]
+        keys = [(seq, name_lc, owner, seq >= sup_names_from, seq < sup_names_from or n > 0)
+                for seq, name_lc, owner, n in db.execute(
+                    "SELECT k.seq, k.name_lc, k.owner, s.n_sub FROM name_keys k "
+                    "LEFT JOIN supercells s ON s.path = k.owner ORDER BY k.seq")]
         fill(db, "hot_prefixes", hot_prefix_rows(keys))
         del keys
 
@@ -398,9 +467,14 @@ def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | Non
                                     for pair, value in read_json(trace_dir / f"{key}.json").items()),
              order_by=("pair",))
         xref = read_json(xref_path)
-        fill(db, "xrefs", ((page_ord, node_ord, page, node)
-                           for page_ord, (page, nodes) in enumerate(xref.items())
-                           for node_ord, node in enumerate(nodes)))
+
+        def xref_rows():
+            # a node listed twice under one page (a community xref repeating a base one)
+            # keeps its first place, as brain-edits.ts deduplicates it today
+            for page_ord, (page, nodes) in enumerate(xref.items()):
+                for node_ord, node in enumerate(dict.fromkeys(nodes)):
+                    yield page_ord, node_ord, page, node
+        fill(db, "xrefs", xref_rows())
 
         # text hits rank richer atoms first: owners in labels order, then supercells in
         # file order; a node's owner is the atom its organ id resolves to
@@ -428,20 +502,27 @@ def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | Non
             ("schema_version", str(SCHEMA_VERSION)),
             ("cells_generated_at", str(manifest.get("_meta", {}).get("generated_at", ""))),
             ("inputs", canonical_json(inputs)),
+            # name_lc is str.lower(): the digests hold only under this Unicode version
+            ("unicode_version", unicodedata.unidata_version),
         ])
         db.commit()
         db.execute("VACUUM")
         db.close()
         # the dataset's identity: no generation stamp and no release id, so identical tables
-        # always give the identical sidecar
+        # always give the identical sidecar; aliases_counts carries aliases.json's _meta
+        # counts, which the shard tests check and a D1 release no longer ships
         sidecar = {"schema": SIDECAR_SCHEMA, "schema_version": SCHEMA_VERSION, "tables": tables,
-                   "longest_name": longest_name, "sup_names_from": sup_names_from}
+                   "longest_name": longest_name, "sup_names_from": sup_names_from,
+                   "aliases_counts": (aliases.get("_meta") or {}).get("counts") or {}}
         temps[1].write_text(json.dumps(sidecar, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
                             encoding="utf-8")
         publish_together(list(zip(temps, (out, sidecar_path))))
     finally:
+        if db is not None:
+            db.close()
         for temp in temps:
             temp.unlink(missing_ok=True)
+            temp.with_name(temp.name + "-journal").unlink(missing_ok=True)
     return sidecar
 
 

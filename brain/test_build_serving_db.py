@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import bisect
 import contextlib
+import fcntl
 import io
 import json
 import os
 import sqlite3
 import sys
 import tempfile
+import unicodedata
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -29,10 +31,13 @@ def entry(label, xy, syn=()):
 
 
 SHARDS = {
-    "ce": {"cell:Q1": entry("Compact operator", [0.5, 1.0], [{"id": SPECTRUM, "w": 2}]),
+    # neither the shard's ids nor cell:Q1's keys are in sorted order, so a builder that
+    # sorts keys, or numbers rows in file order, shows
+    "ce": {"cell:Q8": entry("Unplaced thing", [3.0, 3.0]),
+           "cell:Q1": {"syn": [{"w": 2, "id": SPECTRUM}], "cell": {"xy": [0.5, 1.0], "label": "Compact operator"},
+                       "organs": []},
            "cell:Q5": entry("Cauchy–Schwarz inequality", [2.0, -1.0]),
-           "cell:Q7": entry("Ångström", [0.0, 0.0]),
-           "cell:Q8": entry("Unplaced thing", [3.0, 3.0])},
+           "cell:Q7": entry("Ångström", [0.0, 0.0])},
     "cell_decl_tauceti": {SPECTRUM: entry("Spectrum.compact", [1.5, -2.25]),
                           SEMIGROUP: entry("StronglyContinuousSemigroup.mk", [4.0, 4.5])},
 }
@@ -48,9 +53,9 @@ LABELS = [
     {"id": "cell:Q7", "label": "Ångström"},
     {"id": "cell:Q8", "label": "Unplaced thing"},
 ]
-ALIASES = {"_meta": {"counts": {}},
+ALIASES = {"_meta": {"counts": {"organs": 6, "decls": 1, "slugs": 1}},
            "organs": {"Q1": "cell:Q1", "decl:TauCeti:Spectrum.compact": SPECTRUM, "Q5": "cell:Q5",
-                      "Q7": "cell:Q7", "Q82571": "path:Mathlib/LinearAlgebra"},
+                      "Q7": "cell:Q7", "Q82571": "path:Mathlib/LinearAlgebra", "Q1b": "cell:Q1"},
            "decls": {"Spectrum.compact": SPECTRUM},
            "slugs": {"compact-operator": "cell:Q1"}}
 SUPERCELLS = {"_meta": {}, "roots": ["frontier:Physics", "path:Mathlib", "path:TauCeti"],
@@ -85,10 +90,19 @@ NODES = [
     {"id": "decl:TauCeti:Spectrum.compact", "label": "Spectrum.compact",
      "docstring": "The spectrum of a compact operator is countable."},
     {"id": "Q404", "label": "Orphan", "description": "no atom owns this node"},
+    # a second organ of cell:Q1, a line before Q1 itself: text_ids keep line order in an owner
+    {"id": "Q1b", "label": "Compact map", "description": "an older name"},
     {"id": "Q1", "label": "Compact operator", "description": "operator mapping bounded sets to relatively compact sets"},
     {"id": "path:Mathlib", "label": "Mathlib", "description": "the Lean mathematical library"},
     {"id": "Q2", "label": "No text here"},
 ]
+
+
+def shards_for(labels):
+    """SHARDS plus an entry for every label that has none, in one extra shard."""
+    known = {cid for shard in SHARDS.values() for cid in shard}
+    extra = {r["id"]: entry(r["label"], [0.0, 0.0]) for r in labels if r["id"] not in known}
+    return {**SHARDS, "extra": extra} if extra else SHARDS
 
 
 def under_today(labels, supercells, prefix):
@@ -112,10 +126,11 @@ class ServingDbTest(unittest.TestCase):
         self.write_tree()
 
     def write_tree(self, *, shards=SHARDS, labels=LABELS, supercells=SUPERCELLS, nodes=NODES,
-                   generated_at="2026-11-07T00:00:00Z", trace_meta=None):
+                   generated_at="2026-11-07T00:00:00Z", trace_meta=None, traces_rows=TRACES,
+                   xref=XREF):
         self.cells.mkdir(exist_ok=True)
         (self.cells / "traces").mkdir(exist_ok=True)
-        traces = {"dir": "traces", "files": {key: len(rows) for key, rows in TRACES.items()},
+        traces = {"dir": "traces", "files": {key: len(rows) for key, rows in traces_rows.items()},
                   **(trace_meta or {})}
         manifest = {"_meta": {"generated_at": generated_at},
                     "shards": {key: len(rows) for key, rows in shards.items()}, "traces": traces}
@@ -125,9 +140,9 @@ class ServingDbTest(unittest.TestCase):
             (self.cells / name).write_text(json.dumps(doc))
         for key, rows in shards.items():
             (self.cells / f"{key}.json").write_text(json.dumps(rows))
-        for key, rows in TRACES.items():
+        for key, rows in traces_rows.items():
             (self.cells / "traces" / f"{key}.json").write_text(json.dumps(rows))
-        (self.tmp / "xref_index.json").write_text(json.dumps(XREF))
+        (self.tmp / "xref_index.json").write_text(json.dumps(xref))
         self.nodes.write_text("".join(json.dumps(n) + "\n" for n in nodes))
 
     def build(self, name="serving.sqlite3"):
@@ -143,12 +158,29 @@ class ServingDbTest(unittest.TestCase):
         self.assertEqual(sorted(rows), sorted(expected))
         for cid, e in expected.items():
             self.assertEqual(rows[cid], json.dumps(e, ensure_ascii=False, separators=(",", ":")))
+        self.assertTrue(rows["cell:Q1"].startswith('{"syn":[{"w":2,'))
+
+    def test_cell_shards_must_agree_with_each_other_and_the_manifest(self):
+        twice = {**SHARDS, "zz": {"cell:Q5": entry("Cauchy–Schwarz again", [9.0, 9.0])}}
+        self.write_tree(shards=twice)
+        with self.assertRaisesRegex(ValueError, "cell:Q5 is in two cell shards"):
+            self.build()
+        self.write_tree()
+        manifest = json.loads((self.cells / "manifest.json").read_text())
+        manifest["shards"]["ce"] += 1
+        (self.cells / "manifest.json").write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, "the manifest says 5"):
+            self.build()
+        self.write_tree(labels=LABELS[:-1])
+        with self.assertRaisesRegex(ValueError, "1 shard entries have no label"):
+            self.build()
+        self.assertFalse((self.tmp / "serving.sqlite3").exists())
 
     def test_aliases_and_labels(self):
         _, db = self.build()
         self.assertEqual(db.execute("SELECT owner FROM aliases WHERE kind = 'decl' AND key = 'Spectrum.compact'").fetchone(),
                          (SPECTRUM,))
-        self.assertEqual(db.execute("SELECT count(*) FROM aliases").fetchone(), (7,))
+        self.assertEqual(db.execute("SELECT count(*) FROM aliases").fetchone(), (8,))
         self.assertEqual([r[0] for r in db.execute("SELECT id FROM labels ORDER BY ord")], [r["id"] for r in LABELS])
         self.assertEqual(db.execute("SELECT aka, f, p, libs, xy FROM labels WHERE ord = 0").fetchone(),
                          ("Compact linear operator\x1fcompact\x1fCompact\x1fcompact operator", 3,
@@ -162,8 +194,14 @@ class ServingDbTest(unittest.TestCase):
     def test_supercell_fields(self):
         _, db = self.build()
         rows = {r[0]: r[1:] for r in db.execute(
-            "SELECT path, ord, parent, n_cells, n_sub, fhist, kids, syn, aka, frontier, json FROM supercells")}
+            "SELECT path, ord, parent, n_cells, n_sub, fhist, kids, syn, aka, frontier, json, label, fa "
+            "FROM supercells")}
         self.assertEqual(sorted(rows, key=lambda p: rows[p][0]), list(SUPERCELLS["supercells"]))
+        for path, r in rows.items():
+            src = SUPERCELLS["supercells"][path]
+            self.assertEqual((r[1], r[10], r[11]), (src.get("parent"), src.get("label"), src.get("fa")), path)
+        self.assertEqual(rows["path:Mathlib/Analysis"][1], "path:Mathlib")
+        self.assertIsNone(rows["path:Mathlib"][1])
         n_sub = {p: r[3] for p, r in rows.items()}
         # Q5 sits in two Mathlib folders and counts once for path:Mathlib
         self.assertEqual(n_sub, {"path:Mathlib": 2, "path:Mathlib/Analysis": 2, "path:Mathlib/LinearAlgebra": 1,
@@ -200,7 +238,7 @@ class ServingDbTest(unittest.TestCase):
         sc["supercells"] = {**{p: big[p] for p in big if p.startswith("path:")}, **rows,
                             "frontier:Physics": big["frontier:Physics"]}
         sc["supercells"] = dict(sorted(sc["supercells"].items(), key=lambda kv: (kv[0].startswith("frontier:"), kv[0])))
-        self.write_tree(labels=labels, supercells=sc)
+        self.write_tree(shards=shards_for(labels), labels=labels, supercells=sc)
         _, db = self.build()
         got = json.loads(db.execute("SELECT kids FROM supercells WHERE path = 'path:Big'").fetchone()[0])
         self.assertEqual(len(got), bsd.KIDS_CAP)
@@ -236,16 +274,32 @@ class ServingDbTest(unittest.TestCase):
         # spath is the page's area-search hay (build_brain_page.py:4524)
         self.assertIn(("spath", "physics"), {(r[2], r[1]) for r in rows if r[3] == "frontier:Physics"})
 
+    def test_longest_name_counts_cell_names_only(self):
+        sc = json.loads(json.dumps(SUPERCELLS))
+        long_path = "path:TauCeti/Analysis/Semigroup/VeryLongModuleNameBeyondThirtyUnits"
+        sc["supercells"][long_path] = {"label": "VeryLongModuleNameBeyondThirtyUnits",
+                                       "parent": "path:TauCeti/Analysis/Semigroup"}
+        sc["supercells"] = dict(sorted(sc["supercells"].items(), key=lambda kv: (kv[0].startswith("frontier:"), kv[0])))
+        self.write_tree(supercells=sc)
+        sidecar, db = self.build()
+        self.assertGreater(db.execute("SELECT max(len16) FROM name_keys").fetchone()[0], 30)
+        self.assertEqual(sidecar["longest_name"], len("StronglyContinuousSemigroup.mk"))
+
     def test_hot_prefixes_are_complete(self):
         labels = list(LABELS) + [{"id": f"cell:T{i}", "label": f"TauCeti.Thm{i:04}"} for i in range(1100)]
         labels += [{"id": f"cell:U{i}", "label": f"Tau{i}"} for i in range(30)]
+        # 199 code points but 200 UTF-16 units, the longest query; one unit more is past it
+        astral = "a" * 198 + "\U0001d53d"
+        labels += [{"id": f"cell:A{i}", "label": f"{astral}x{i:04}"} for i in range(1001)]
         sc = json.loads(json.dumps(SUPERCELLS))
+        # empty folders under a hot prefix: the agent list keeps them, the page's drops them
         for i in range(120):
             sc["supercells"][f"path:TauCeti/M{i:03}"] = {"label": f"M{i:03}", "parent": "path:TauCeti"}
         sc["supercells"] = dict(sorted(sc["supercells"].items(), key=lambda kv: (kv[0].startswith("frontier:"), kv[0])))
-        self.write_tree(labels=labels, supercells=sc)
+        self.write_tree(shards=shards_for(labels), labels=labels, supercells=sc)
         sidecar, db = self.build()
         keys = db.execute("SELECT seq, name_lc, owner FROM name_keys ORDER BY seq").fetchall()
+        n_sub = dict(db.execute("SELECT path, n_sub FROM supercells"))
         names = sorted(k[1] for k in keys)
 
         def starting(prefix):
@@ -253,32 +307,43 @@ class ServingDbTest(unittest.TestCase):
 
         prefixes = {name[:n] for name in names for n in range(1, len(name) + 1)}
         expected = {p for p in prefixes if 2 <= len(p.encode("utf-16-le")) // 2 <= 200 and starting(p) > bsd.HOT_PREFIX_NAMES}
-        got = {r[0]: (json.loads(r[1]), json.loads(r[2]))
-               for r in db.execute("SELECT prefix, cells, sups FROM hot_prefixes ORDER BY seq")}
+        got = {r[0]: (json.loads(r[1]), json.loads(r[2]), json.loads(r[3]))
+               for r in db.execute("SELECT prefix, cells, sups, live_sups FROM hot_prefixes ORDER BY seq")}
         self.assertIn("tauceti.thm", expected)
+        self.assertIn(astral, expected)
+        self.assertNotIn(astral + "x", expected)
         self.assertEqual(set(got), expected)
         self.assertEqual(list(got), sorted(expected))
-        for prefix, (cells, sups) in got.items():
-            for is_sup, listed in ((False, cells), (True, sups)):
+        for prefix, lists in got.items():
+            for which, listed in enumerate(lists):
                 first, want = set(), []
                 for seq, name_lc, owner in keys:
-                    if (seq >= sidecar["sup_names_from"]) == is_sup and name_lc.startswith(prefix) \
+                    is_sup = seq >= sidecar["sup_names_from"]
+                    if is_sup == (which > 0) and (which < 2 or n_sub[owner] > 0) \
+                            and name_lc.startswith(prefix) \
                             and owner not in first and len(want) < bsd.HOT_PREFIX_OWNERS:
                         first.add(owner)
                         want.append(seq)
-                self.assertEqual(listed, want, (prefix, is_sup))
+                self.assertEqual(listed, want, (prefix, which))
         self.assertEqual(len(got["tau"][0]), 100)
         self.assertEqual(len(got["tau"][1]), 100)
+        # TauCeti, TauCeti/Analysis and TauCeti/Analysis/Semigroup hold cells; the M folders don't
+        self.assertEqual([keys[seq - 1][2] for seq in got["tau"][2]],
+                         ["path:TauCeti", "path:TauCeti/Analysis", "path:TauCeti/Analysis/Semigroup"])
 
     def test_cell_under_matches_todays_under_test(self):
+        # a label whose p names a folder that does not list it: cell_under takes both signals
+        labels = LABELS + [{"id": "cell:Q9", "label": "Drifted", "p": "path:Mathlib/LinearAlgebra"}]
+        self.write_tree(shards=shards_for(labels), labels=labels)
         _, db = self.build()
-        paths = list(SUPERCELLS["supercells"]) + [r["p"] for r in LABELS if r.get("p")]
+        paths = list(SUPERCELLS["supercells"]) + [r["p"] for r in labels if r.get("p")]
         candidates = {p for path in paths for p in bsd.slash_prefixes(path)}
         candidates |= {"path:Mathlib/Anal", "path:Mathlib/", "path:", "path:TauCeti/Analysis/Semi",
                        "frontier:Phys", "nowhere"}
         for prefix in sorted(candidates):
             got = [r[0] for r in db.execute("SELECT ord FROM cell_under WHERE anc = ? ORDER BY ord", (prefix,))]
-            self.assertEqual(got, under_today(LABELS, SUPERCELLS["supercells"], prefix), prefix)
+            self.assertEqual(got, under_today(labels, SUPERCELLS["supercells"], prefix), prefix)
+        self.assertIn(6, [r[0] for r in db.execute("SELECT ord FROM cell_under WHERE anc = 'path:Mathlib/LinearAlgebra'")])
         # the multi-folder cell: p names Mathlib/Analysis, membership adds the rest
         self.assertIn(3, [r[0] for r in db.execute("SELECT ord FROM cell_under WHERE anc = 'path:TauCeti'")])
         anc = db.execute("SELECT anc FROM cell_under ORDER BY seq").fetchall()
@@ -293,9 +358,30 @@ class ServingDbTest(unittest.TestCase):
         self.assertEqual(db.execute("SELECT page_ord, node_ord, page, node FROM xrefs ORDER BY seq").fetchall(),
                          [(0, 0, "xref:nlab:compact", "Q1"), (0, 1, "xref:nlab:compact", "decl:TauCeti:Spectrum.compact"),
                           (1, 0, "xref:mw:Ring", "Q1")])
+
+    def test_xrefs_list_a_node_once_per_page(self):
+        # a community xref repeating a base one lists the node twice; it keeps its first place
+        self.write_tree(xref={"xref:nlab:compact": ["Q1", "Q7", "Q1", "Q5", "Q7"], "xref:mw:Ring": ["Q1"]})
+        _, db = self.build()
+        self.assertEqual(db.execute("SELECT page_ord, node_ord, node FROM xrefs ORDER BY seq").fetchall(),
+                         [(0, 0, "Q1"), (0, 1, "Q7"), (0, 2, "Q5"), (1, 0, "Q1")])
+
+    def test_a_trace_pair_in_two_buckets_fails_the_build(self):
+        pair = "cell:Q1|path:Mathlib/LinearAlgebra"
+        self.write_tree(traces_rows={**TRACES, "zz": {pair: {"tt": 2, "traces": []}}})
+        with self.assertRaises(sqlite3.IntegrityError):
+            self.build()
+        self.assertFalse((self.tmp / "serving.sqlite3").exists())
+        self.assertFalse((self.tmp / "serving.sqlite3.tables.json").exists())
+
+    def test_nodes_must_start_with_meta(self):
+        self.write_tree(nodes=NODES[1:])
+        with self.assertRaisesRegex(ValueError, "_meta"):
+            self.build()
         rows = db.execute("SELECT node, owner, body FROM text_ids ORDER BY seq").fetchall()
         # owners' order: cells in labels order, then supercells in file order; Q404 has no owner
         self.assertEqual(rows, [
+            ("Q1b", "cell:Q1", "Compact map an older name"),
             ("Q1", "cell:Q1", "Compact operator operator mapping bounded sets to relatively compact sets"),
             ("decl:TauCeti:Spectrum.compact", SPECTRUM, "Spectrum.compact The spectrum of a compact operator is countable."),
             ("path:Mathlib", "path:Mathlib", "Mathlib the Lean mathematical library"),
@@ -310,12 +396,42 @@ class ServingDbTest(unittest.TestCase):
         texts = db.execute("SELECT t.node FROM texts JOIN text_ids t ON t.seq = texts.rowid "
                            "WHERE texts MATCH ? ORDER BY bm25(texts)", ("spectrum countable",)).fetchall()
         self.assertEqual(texts, [("decl:TauCeti:Spectrum.compact",)])
+        # the pruner deletes FTS rows by rowid, which needs contentless_delete (SQLite 3.43+)
+        version = f"SQLite {sqlite3.sqlite_version}"
+        try:
+            db.execute("DELETE FROM names WHERE rowid = (SELECT seq FROM name_keys WHERE owner = ?)", (SEMIGROUP,))
+            db.execute("DELETE FROM texts WHERE rowid = (SELECT seq FROM text_ids WHERE node = ?)",
+                       ("decl:TauCeti:Spectrum.compact",))
+        except sqlite3.OperationalError as exc:
+            self.fail(f"{version}: {exc}")
+        self.assertEqual(db.execute("SELECT rowid FROM names WHERE names MATCH ? ORDER BY rowid",
+                                    ('"Semigroup"',)).fetchall(),
+                         db.execute("SELECT seq FROM name_keys WHERE owner = 'path:TauCeti/Analysis/Semigroup' "
+                                    "AND name LIKE '%semigroup%' ORDER BY seq").fetchall(), version)
+        self.assertEqual(db.execute("SELECT rowid FROM texts WHERE texts MATCH 'countable'").fetchall(), [], version)
+
+    def test_refuses_an_old_sqlite(self):
+        with mock.patch.object(bsd.sqlite3, "sqlite_version_info", (3, 42, 0)), \
+                self.assertRaisesRegex(RuntimeError, "3.43.0 or newer"):
+            self.build()
 
     def test_every_table_has_seq_and_a_digest_over_every_column(self):
         with mock.patch.object(bsd, "DELETE_BOUND_BYTES", 300):
             sidecar, db = self.build()
-        self.assertEqual(set(sidecar), {"schema", "schema_version", "tables", "longest_name", "sup_names_from"})
+        self.assertEqual(set(sidecar), {"schema", "schema_version", "tables", "longest_name", "sup_names_from",
+                                        "aliases_counts"})
         self.assertEqual(sidecar["schema_version"], bsd.SCHEMA_VERSION)
+        kinds = {"organs": "organ", "decls": "decl", "slugs": "slug"}
+        self.assertEqual(sidecar["aliases_counts"], ALIASES["_meta"]["counts"])
+        self.assertEqual(sidecar["aliases_counts"],
+                         {field: db.execute("SELECT count(*) FROM aliases WHERE kind = ?", (kind,)).fetchone()[0]
+                          for field, kind in kinds.items()})
+        self.assertEqual(dict(db.execute("SELECT key, value FROM meta"))["unicode_version"],
+                         unicodedata.unidata_version)
+        # seq follows each table's key order (name_keys and text_ids are checked on their own)
+        key_order = {"cell_pages": ("id",), "aliases": ("kind", "key"), "labels": ("ord",),
+                     "supercells": ("ord",), "cell_under": ("anc", "ord"), "synapse_traces": ("pair",),
+                     "xrefs": ("page_ord", "node_ord"), "hot_prefixes": ("prefix",)}
         self.assertEqual(set(sidecar["tables"]), {"cell_pages", "aliases", "labels", "supercells", "name_keys",
                                                   "hot_prefixes", "cell_under", "synapse_traces", "xrefs", "text_ids"})
         recorded = {n: {"rows": r, "digest": d, "delete_bounds": json.loads(b)}
@@ -328,6 +444,9 @@ class ServingDbTest(unittest.TestCase):
             self.assertEqual([r["seq"] for r in rows], list(range(1, len(rows) + 1)), table)
             self.assertEqual(meta["rows"], len(rows), table)
             self.assertEqual(meta["digest"], digest_rows(rows), table)
+            if table in key_order:
+                keyed = [tuple(r[k] for k in key_order[table]) for r in rows]
+                self.assertEqual(keyed, sorted(keyed), table)
             bounds, total, mark = [], 0, 300
             for r in rows:
                 total += len(canonical_json(r).encode()) + 1
@@ -338,6 +457,7 @@ class ServingDbTest(unittest.TestCase):
         self.assertIn("name", [c[1] for c in db.execute("PRAGMA table_info(name_keys)")])
         self.assertIn("body", [c[1] for c in db.execute("PRAGMA table_info(text_ids)")])
         self.assertTrue(sidecar["tables"]["cell_pages"]["delete_bounds"])
+        self.assertTrue(sidecar["tables"]["aliases"]["rows"] > 1 and sidecar["tables"]["cell_pages"]["rows"] > 1)
 
     def test_sidecar_is_identical_across_rebuilds_and_binds_fts_inputs(self):
         self.build("a.sqlite3")
@@ -349,7 +469,7 @@ class ServingDbTest(unittest.TestCase):
         self.assertNotIn(b"2026-11-07", first)
         # a changed description changes text_ids' digest, so the dataset id binds FTS input
         nodes = [dict(n) for n in NODES]
-        nodes[4]["description"] = "a different description"
+        next(n for n in nodes if n.get("id") == "Q1")["description"] = "a different description"
         self.write_tree(nodes=nodes)
         third, _ = self.build("c.sqlite3")
         before = json.loads(first)["tables"]
@@ -404,7 +524,8 @@ class ServingDbTest(unittest.TestCase):
         self.assertFalse((self.tmp / "skewed").exists())
 
     def leftovers(self):
-        return sorted(p.name for p in self.tmp.iterdir() if p.name.startswith("."))
+        # the lock file stays by design; anything else starting with a dot is a leftover
+        return sorted(p.name for p in self.tmp.iterdir() if p.name.startswith(".") and not p.name.endswith(".lock"))
 
     def test_publishes_both_files_atomically(self):
         out, side = self.tmp / "serving.sqlite3", self.tmp / "serving-tables.json"
@@ -438,6 +559,41 @@ class ServingDbTest(unittest.TestCase):
         bsd.build(self.cells, self.nodes, out)
         self.assertNotEqual(out.read_bytes(), old[0])
         self.assertNotEqual(side.read_bytes(), old[1])
+
+    def test_a_failed_restore_keeps_the_other_restores_and_its_backup(self):
+        out, side = self.tmp / "serving.sqlite3", self.tmp / "serving-tables.json"
+        bsd.build(self.cells, self.nodes, out)
+        old = (out.read_bytes(), side.read_bytes())
+        labels = [dict(r) for r in LABELS]
+        labels[0]["label"] = "Renamed operator"
+        self.write_tree(labels=labels)
+        real_replace = os.replace
+
+        def replace(src, dst):
+            # the sidecar's forward rename fails, and so does its restore
+            if Path(dst) == side:
+                raise OSError("disk gone")
+            return real_replace(src, dst)
+        with mock.patch.object(bsd.os, "replace", side_effect=replace), self.assertRaises(OSError) as caught:
+            bsd.build(self.cells, self.nodes, out)
+        # the database was still put back, and the sidecar's backup link was not deleted
+        self.assertEqual(out.read_bytes(), old[0])
+        self.assertEqual(side.read_bytes(), old[1])
+        notes = " ".join(getattr(caught.exception, "__notes__", []))
+        self.assertIn(f"could not restore {side}", notes)
+        kept = [name for name in self.leftovers() if name.endswith(".old")]
+        self.assertEqual(len(kept), 1)
+        self.assertEqual((self.tmp / kept[0]).read_bytes(), old[1])
+
+    def test_a_second_build_on_the_same_output_is_refused(self):
+        out = self.tmp / "serving.sqlite3"
+        with open(self.tmp / ".serving.sqlite3.lock", "w") as held:
+            fcntl.flock(held, fcntl.LOCK_EX)
+            with self.assertRaisesRegex(RuntimeError, "another build"):
+                bsd.build(self.cells, self.nodes, out)
+        self.assertFalse(out.exists())
+        bsd.build(self.cells, self.nodes, out)
+        self.assertTrue(out.exists())
 
 
 if __name__ == "__main__":
