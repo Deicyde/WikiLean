@@ -11,6 +11,12 @@ import { atomIdForOrgan } from "./brain-api.js";
 // only control chars and blank/overlong ids are rejected.
 export const BRAIN_ID_RE = /^(?!\s*$)[^\p{C}]{1,400}$/u;
 
+// own-property read — a JSON.parse'd map must never serve inherited names
+// (__proto__/constructor/toString), same gotcha as /api/articles/:key.
+export function own<T>(map: Record<string, T> | undefined, key: string): T | undefined {
+  return map && Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
+}
+
 const RELEASE_ID_RE = /^sha256:([0-9a-f]{64})$/;
 const RELEASE_HEX_RE = /^[0-9a-f]{64}$/;
 const DIGEST_RE = /^[0-9a-f]{64}$/;

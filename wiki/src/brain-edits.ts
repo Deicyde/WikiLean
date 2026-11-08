@@ -18,16 +18,15 @@ import { editLimitKey } from "./agents.js";
 import { writeBrake } from "./site-settings.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import {
-  BrainReleaseUnavailableError,
   brainNodeExists,
   isBrainReleaseUnavailableError,
-  registerBrainReleaseCacheEvictor,
-  requiredBrainAssetJson,
   resolveBrainRelease,
   BRAIN_ID_RE,
   type BrainReleaseContext,
+  type BrainReleaseUnavailableError,
 } from "./brain.js";
 import { atomFor, atomIdForOrgan, type Atom } from "./brain-api.js";
+import { storeFor } from "./brain-store.js";
 import { crossRefSpec } from "./crossref.js";
 import { htmlEscape } from "./engine/html.js";
 import type { QueueBlob, QueueItem } from "./queue.js";
@@ -86,92 +85,13 @@ function safeParse(s: string): unknown {
   }
 }
 
-// Static external-page → nodes reverse index (built by build_shards.py →
-// <release>/xref_index.json). Cached by immutable release within the shared
-// two-release overlap window; community (D1) partners are still queried live.
-const _xrefIndex = new Map<string, Promise<Record<string, string[]>>>();
-// Its inversion, node id → [pages the node statically xrefs]. Both caches are
-// keyed by release because one isolate may overlap two current selectors.
-const _xrefPagesByNode = new Map<string, Promise<Record<string, string[]>>>();
-registerBrainReleaseCacheEvictor((releaseId) => {
-  _xrefIndex.delete(releaseId);
-  _xrefPagesByNode.delete(releaseId);
-});
-/** test-only: clear the isolate-lifetime static-index caches between cases */
-export function _resetBrainEditCaches(): void {
-  _xrefIndex.clear();
-  _xrefPagesByNode.clear();
-}
-/** test-only: expose release keys so the overlap bound can be asserted */
-export function _brainEditCacheReleaseIds(): {
-  xrefIndex: string[];
-  xrefPagesByNode: string[];
-} {
-  return {
-    xrefIndex: [..._xrefIndex.keys()],
-    xrefPagesByNode: [..._xrefPagesByNode.keys()],
-  };
-}
-async function getXrefIndex(
-  c: Context<{ Bindings: Env }>,
-  release: BrainReleaseContext,
-): Promise<Record<string, string[]>> {
-  let hit = _xrefIndex.get(release.releaseId);
-  if (!hit) {
-    let pending: Promise<Record<string, string[]>>;
-    pending = requiredBrainAssetJson<unknown>(c, release, "xref_index.json")
-      .then((value) => {
-        if (typeof value !== "object" || value === null || Array.isArray(value)) {
-          throw new BrainReleaseUnavailableError(
-            release.releaseId,
-            "xref_index.json",
-            "declared asset has an invalid shape",
-          );
-        }
-        for (const nodes of Object.values(value)) {
-          if (!Array.isArray(nodes) || nodes.some((node) => typeof node !== "string")) {
-            throw new BrainReleaseUnavailableError(
-              release.releaseId,
-              "xref_index.json",
-              "declared asset has an invalid shape",
-            );
-          }
-        }
-        return value as Record<string, string[]>;
-      })
-      .catch((error) => {
-        if (_xrefIndex.get(release.releaseId) === pending) _xrefIndex.delete(release.releaseId);
-        throw error;
-      });
-    hit = pending;
-    _xrefIndex.set(release.releaseId, pending);
-  }
-  return hit;
-}
-async function getXrefPagesByNode(
-  c: Context<{ Bindings: Env }>,
-  release: BrainReleaseContext,
-): Promise<Record<string, string[]>> {
-  let hit = _xrefPagesByNode.get(release.releaseId);
-  if (!hit) {
-    let pending: Promise<Record<string, string[]>>;
-    pending = getXrefIndex(c, release).then((idx) => {
-      const inv: Record<string, string[]> = Object.create(null);
-      for (const [page, nodes] of Object.entries(idx)) {
-        for (const n of nodes) (inv[n] ??= []).push(page);
-      }
-      return inv;
-    }).catch((error) => {
-      if (_xrefPagesByNode.get(release.releaseId) === pending) {
-        _xrefPagesByNode.delete(release.releaseId);
-      }
-      throw error;
-    });
-    hit = pending;
-    _xrefPagesByNode.set(release.releaseId, pending);
-  }
-  return hit;
-}
+// The static xref index and its inversion are read through the release's store
+// (StaticStore.xrefPages / xrefNodes), which keeps the isolate caches. Tests
+// import the cache hooks from here, where the caches used to live.
+export {
+  _resetXrefCaches as _resetBrainEditCaches,
+  _xrefCacheReleaseIds as _brainEditCacheReleaseIds,
+} from "./brain-store-static.js";
 
 function unavailableReleaseResponse(
   c: Context<{ Bindings: Env }>,
@@ -1433,21 +1353,19 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
       created_at: r.createdAt,
     }));
 
-    let staticIndex: Record<string, string[]>;
-    let staticPagesByNode: Record<string, string[]>;
+    const store = storeFor(c, release);
+    let staticPages: string[];
     try {
-      [staticIndex, staticPagesByNode] = await Promise.all([
-        getXrefIndex(c, release),
-        getXrefPagesByNode(c, release),
-      ]);
+      staticPages = await store.xrefPages(id);
     } catch (error) {
       if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
       throw error;
     }
 
     // ---- cross-pollination: inferred xref-shared partners --------------------
-    // A's external pages = its community xrefs (src=id) ∪ its STATIC xrefs.
-    // The static side reads the INVERTED xref_index.json (page → nodes becomes
+    // A's external pages = its community xrefs (src=id) ∪ its STATIC xrefs
+    // (the store's first 40 distinct; the union keeps 40 pages at most). The
+    // static side reads the INVERTED xref_index.json (page → nodes becomes
     // node → pages; memoized per isolate) — the same data the retired v2 shard
     // entries carried as edges.{out,in} kind==="xref". For each page, every
     // OTHER node pointing at it — from the static reverse index and from live
@@ -1455,10 +1373,18 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     // xref-shared link nobody drew explicitly).
     const pages = new Set<string>();
     for (const r of rows) if (r.kind === "xref" && r.src === id) pages.add(r.dst);
-    for (const p of staticPagesByNode[id] || []) pages.add(p);
+    for (const p of staticPages) pages.add(p);
     const shared: Array<{ node: string; via: string; db: string; value: string; source: string }> = [];
     if (pages.size) {
       const pageArr = [...pages].slice(0, 40);
+      let staticNodes: Map<string, string[]>;
+      try {
+        staticNodes = await store.xrefNodes(pageArr);
+      } catch (error) {
+        // the index was just loaded, but a concurrent selector rollover can evict it
+        if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+        throw error;
+      }
       const seen = new Set<string>();
       const addPartner = (node: string, page: string, source: string) => {
         if (node === id || shared.length >= 100) return;
@@ -1468,7 +1394,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         const parts = page.split(":");
         shared.push({ node, via: page, db: parts[1] || "", value: parts.slice(2).join(":"), source });
       };
-      for (const p of pageArr) for (const n of staticIndex[p] || []) addPartner(n, p, "static");
+      for (const p of pageArr) for (const n of staticNodes.get(p) || []) addPartner(n, p, "static");
       const comm = await db
         .select({ src: brainEdges.src, dst: brainEdges.dst })
         .from(brainEdges)
