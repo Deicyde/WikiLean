@@ -195,17 +195,19 @@ atomsExist(ids, at most 200)                                        [200 rows]
   SELECT id FROM cell_pages WHERE ds = $DS AND id IN (SELECT value FROM json_each(?2));
   SELECT path FROM supercells WHERE ds = $DS AND path IN (SELECT value FROM json_each(?2))
 labelRows(ids, at most 500)                                         [500 rows]
-  SELECT id, label, aka, f, p, libs FROM labels WHERE ds = $DS AND id IN (SELECT value FROM json_each(?2));
-  SELECT path, label, fa, parent, n_cells, n_sub FROM supercells WHERE ds = $DS
+  SELECT id, label, f, aka, p FROM labels WHERE ds = $DS AND id IN (SELECT value FROM json_each(?2));
+  SELECT path, label, aka, fa, parent, n_cells, n_sub FROM supercells WHERE ds = $DS
     AND path IN (SELECT value FROM json_each(?2))
+  -- a cell row is rebuilt as the labels.json row (id, label, then f, aka, p when present; no libs);
+  -- a supercell's aka is every organ's label ?? id, as the Worker's head reads it
 synapseTraces(pairs, at most 200)                                   [200 rows]
   SELECT pair, json FROM synapse_traces WHERE ds = $DS AND pair IN (SELECT value FROM json_each(?2))
 xrefPages(node) / xrefNodes(pages, at most 40)                      [40 / 4,040 rows]
   SELECT page FROM xrefs WHERE ds = $DS AND node = ?2 ORDER BY page_ord LIMIT 40;
-  SELECT page, node FROM (SELECT page, node, node_ord, row_number() OVER
-      (PARTITION BY page ORDER BY node_ord) AS k FROM xrefs
-      WHERE ds = $DS AND page IN (SELECT value FROM json_each(?2)))
-  WHERE k <= 101 ORDER BY page, node_ord   -- the route keeps 40 pages, 100 partners (brain-edits.ts:1461-1464)
+  SELECT page, node FROM xrefs WHERE ds = $DS AND page IN (SELECT value FROM json_each(?2))
+    AND node_ord <= 100 ORDER BY page, node_ord
+  -- the route keeps 40 pages, 100 partners (brain-edits.ts:1461-1464); node_ord is dense from 0
+  -- per page, so this is a range on xrefs_page reading at most 101 rows a page
 search, bridge, filter, level, explorer: below
 ```
 
