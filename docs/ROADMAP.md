@@ -1417,7 +1417,9 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   an encrypted backup and copied-schema rehearsal; all 19 original table row
   counts were preserved. The reader's tag entry point, overlay reads, auth
   refusals and old URL redirects pass live checks. The Literature Links code
-  is deployed, but the canonical article conversion has not run: it still
+  is deployed. A fresh post-release private rehearsal converted all 778 articles
+  and audited all 4,416 old revision rows, 778 exact archives and 35 human work
+  items successfully. The canonical article conversion has not run: it still
   needs the admin session, writer freeze, fresh backup/rehearsal and full live
   preservation audit. R2–R6 remain outside the signed scope. See the
   [activation record](BRAIN-ACTIVATION-2026-11-08.md).

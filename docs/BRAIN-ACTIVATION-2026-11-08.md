@@ -65,6 +65,21 @@ For a rollback after native data migration, follow
 [the guarded structural rollback procedure](COMPANION-NATIVE.md#history-and-rollback)
 and check reader compatibility first.
 
+A fresh post-release, 23-table export passed an in-memory restore, integrity
+check and foreign-key check. On a private application-data copy, the exact
+converter from the deployed commit migrated all 778 articles and 38,259 work
+items. The preservation audit verified all 4,416 original revision rows exactly,
+778 exact archives, all 35 human work items, pending/rejected proposal strings,
+source pins, statuses and formal target projections. The copy excludes
+authentication and account-lifecycle data. This is a preparatory rehearsal from
+an open site, so it does not replace the final snapshot after writers are frozen.
+
+The previously loaded local moderation schedule was paused while idle; its
+original schedule file is retained. Cloudflare's scheduled writer has not been
+paused. WikiLean admin and Cloudflare browser sign-ins are still needed to
+establish the exclusive migration window. Resume only the previously active
+writers, using the native-aware runtime, after the live preservation audit.
+
 The canonical Literature Links conversion remains a separate operation:
 quiesce the known writers, verify the encrypted backup and fresh copied
 rehearsal, preview/apply through the admin session, then audit every archive,
