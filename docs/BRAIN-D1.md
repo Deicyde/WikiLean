@@ -1,8 +1,8 @@
 # The Brain on D1: the read layer
 
 Design, 2026-11-07, revised 2026-11-08. Part of [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md);
-tracking issue #152. Step 1 (the serving database builder) is PR #153; everything after it is
-design, not code.
+tracking issue #152. Step 1 (the serving database builder) is PR #153 and step 2 (the D1 schema
+and importer) is draft PR #156; everything after them is design, not code.
 
 **References.** `path:line` is at main `596aa7bb92e89c1f7a44f768392c3b895b049c47`. A bare
 number after a reference is a line in the same file. Bare file names:
@@ -10,10 +10,10 @@ number after a reference is a line in the same file. Bare file names:
 | Files | Directory |
 |---|---|
 | `*.ts` | `wiki/src/`, except `brain-release-public.ts` (`wiki/scripts/`) and `d1shim.ts`, `brain-fixture.ts` (`wiki/test/helpers/`) |
-| `authority_contracts.py`, `build_release.py`, `build_replay_release.py`, `verify_release.py`, `provenance_coverage.py`, `check_provenance_coverage.py`, `private_replay_gate.py`, `reproducibility_gate.py`, `compile_offline_pack_v2.py`, `legacy_sqlite_projection.py`, `assemble_legacy_release.py` | `brain/tools/` |
+| `authority_contracts.py`, `build_release.py`, `build_replay_release.py`, `verify_release.py`, `provenance_coverage.py`, `check_provenance_coverage.py`, `private_replay_gate.py`, `reproducibility_gate.py`, `compile_offline_pack_v2.py`, `legacy_sqlite_projection.py`, `assemble_legacy_release.py`, `run_replay_v2.py`, `execution_environment.py`, `package_oci_runtime.py`, `semantic_diff.py` | `brain/tools/` |
 | `brain_promote_release.py`, `brain_activation_bundle.py`, `brain_deploy_journal.py`, `brain-canary.py`, `brain_release_authority.py`, `brain-nightly.sh` | `site/ops/` |
 | `build_brain_page.py` | `site/` |
-| `build_cell_shards.py`, `build_serving_db.py`, `store.py`, `query.py`, `layout.py` | `brain/` |
+| `build_cell_shards.py`, `build_serving_db.py`, `build_shards.py`, `build_common.py`, `build_context.py`, `stage_io.py`, `store.py`, `query.py`, `layout.py` | `brain/` |
 
 `build_serving_db.py` exists only in PR #153 and is cited by name. Wrangler behavior is as of
 wrangler 4.151.3, the version `wiki/package.json:46` pins. Limits marked "(unchecked)" are
@@ -520,9 +520,9 @@ Unchanged, because they aren't Brain release data: the decl, suffix and premise 
 |---|---|---|
 | `_static_closure`, `build_release.py:249-283` | For a D1 release, no shard or trace maps are required, and the expected static set is the D1 public files. | none |
 | `brain-release-public.ts:31-61`, `469-475`; `authority_contracts.py:147-167`, `3575-3579` | Required sets depend on the layout. The "at least one generated cell or trace shard" rule applies only to the static layout. | none |
-| `provenance_coverage.py:183-246`, and its caller `private_replay_gate.py:197-260` | Also walks `cell_pages`, `supercells` and `synapse_traces` in the pinned `serving.sqlite3`, using the manifest's prov pool, instead of skipping the opaque file (`183-187`). | none |
-| `reducer-inputs-v2.json`, `-v3.json`, `-v3-folded.json` (in `brain/authority/`), `compile_offline_pack_v2.py:2279`, `reproducibility_gate.py:209-224` | Learn the D1 layout in step 6 (section 6). | none for static releases |
-| `legacy_sqlite_projection.py:185`, `assemble_legacy_release.py:297-300` | Keep the static required set under a renamed constant, because they assemble static legacy releases. The assembler also freezes through `build_release.build_release` (`:398`) and calls its `_static_closure` (`:297`), so `build_release.py` takes the layout as an explicit argument (`--layout static` or `d1`, static by default), never from which files the workspace holds: the builder's default output, `brain/data/serving.sqlite3`, is gitignored and survives pulls, so one manual build would otherwise switch the nightly's freeze. The nightly passes `d1` from step 7 on. The assembler pins the freezer's bytes in its plan (`:44-46`, `:147`), so existing assembly plans are re-pinned in every step that changes `build_release.py`. | none |
+| `provenance_coverage.py:183-246`, and its caller `private_replay_gate.py:197-260` | Also walks `cell_pages`, `supercells` and `synapse_traces` in the pinned `serving.sqlite3`, using the slim manifest's prov pool, instead of skipping the opaque file (`183-187`). The same reader for both profiles. | none |
+| `reducer-inputs-v2.json`, `-v3.json`, `-v3-folded.json` (in `brain/authority/`), `reproducibility_gate.py:209-224` | The inventories stay. Step 6 adds `reducer-inputs-v3-d1.json` and makes the gate's measurement follow the layout (section 6). | none for static releases |
+| `legacy_sqlite_projection.py:185`, `assemble_legacy_release.py:297-300` | Keep the static required set under a renamed constant, because they assemble static legacy releases. The assembler also freezes through `build_release.build_release` (`:398`) and calls its `_static_closure` (`:297`), so `build_release.py` takes the layout as an explicit argument (`--layout static` or `d1`, static by default), never from which files the workspace holds: the builder's default output, `brain/data/serving.sqlite3`, is gitignored and survives pulls, so one manual build would otherwise switch the nightly's freeze. The nightly passes `d1` from step 7 on. In replay mode the layout follows the inventory instead (section 5). The assembler pins the freezer's bytes in its plan (`:44-46`, `:147`), so existing assembly plans are re-pinned in every step that changes `build_release.py`. | none |
 | `site/test_frontier_page.py:79`, `100-107` | Rewritten in the cutover's page PR. It asserts `releaseJson("cells/manifest.json")` and tampers with `cells/labels.json`. It is release-affecting by exception (`brain_release_authority.py:59`) and a nightly gate (`brain-nightly.sh:786`). | test |
 | `d1shim.ts:107` | `_batchExec` decides whether a statement returns rows by `stmt.columns().length > 0` (the same call `raw()` uses at `94`), so a CTE inside a batch returns rows. | test |
 | `query.py` (used by `site/search_tools.py`), `bench/analysis/brain_artifact.py` | Read `serving.sqlite3` from the cutover on. `query.py` exits non-zero when the file is missing, instead of printing no hits. | local tools |
@@ -743,19 +743,20 @@ Notes on the tables:
   Worker's last whole-file Brain read and the inversion it builds in each isolate
   (`brain-edits.ts:151-174`).
 - **Search.**
-  - `names_<hex>` and `texts_<hex>` are contentless with `contentless_delete=1` (needs SQLite
-    3.43 or newer; the builder refuses older versions, and #150 checks D1). So they store only
-    the index and can be repaired by rowid range. The prototype's name and docstring indexes
-    measured 48 MB and 116 MB.
+  - `names_<hex>` and `texts_<hex>` are contentless with `contentless_delete=1` (SQLite 3.43
+    or newer; #150 checks D1). So they store only the index and can be repaired by rowid range.
+    The prototype's name and docstring indexes measured 48 MB and 116 MB.
   - If D1 has no trigram tokenizer, the importer instead creates `names_<hex>` as
     `fts5(parts, content='', contentless_delete=1, prefix='2 3')`, filled with each name split
     at capitals, dots, underscores and slashes, and records `names_mode = 'parts'`. Word-start
     fragments still match (`Semigroup` finds `StronglyContinuousSemigroup`); mid-word fragments
     don't.
-  - The builder builds the same FTS tables locally (`names` with the trigram tokenizer, `texts`
+  - The builder builds the FTS tables locally too (`names` with the trigram tokenizer, `texts`
     with the default word tokenizer; the builder has no parts mode), for local tools and for
-    the importer's checks. The FTS tables themselves aren't digested, so the trigram-or-parts
-    choice never changes a dataset id. Their inputs are: `name_keys.name` (original case) and
+    the importer's checks. They are contentless but without `contentless_delete`, since only
+    D1's copies are repaired or pruned by rowid. So the builder needs SQLite 3.34 or newer (the
+    trigram tokenizer) and refuses older versions. The FTS tables themselves aren't digested,
+    so the trigram-or-parts choice never changes a dataset id. Their inputs are: `name_keys.name` (original case) and
     `text_ids.body` are columns of digested tables, so the dataset id binds every FTS input,
     and a change to a node's description changes the id.
   - D1 omits those two columns, which are used only to build its FTS tables. The importer
@@ -828,23 +829,51 @@ Static files, not tables:
   `cells/frontier_graph.json`, `sources.json` and `brain.html`. The four whole files, the
   shards, the trace buckets and `xref_index.json` leave the release.
 - The layout rule (a release that lists the sidecar is a D1 release) is applied in:
-  - `authority_contracts.py:147-167` and `3575-3579`;
+  - `authority_contracts.py:147-167`, `3575-3579` and the generation check, `5207-5226`;
   - `brain.ts:42-52` and `383`;
   - `brain-release-public.ts:31-61` and `473-475`;
-  - `build_release.py:249-283`;
+  - `build_release.py:249-283` and `435-447`;
   - the activation bundle's public mapping (`brain_activation_bundle.py:489-496`,
     `1148-1149`);
-  - the canary (`brain-canary.py:219-220`, `440-470`, `563-587`).
+  - the canary (`brain-canary.py:219-220`, `440-470`, `563-587`);
+  - in step 6, the replay gate's measurement (`reproducibility_gate.py:209-210`).
+- Step 4 writes the rule once: one layout function in `authority_contracts.py`, used by every
+  Python caller above for both profiles. A D1 required set sits next to
+  `REQUIRED_RELEASE_PATHS`. It holds no intermediates and includes `cells/frontier.json`.
+- The generation check's cell files follow the layout. For D1 they are `cells/manifest.json`,
+  `cells/frontier.json` and `cells/frontier_graph.json` beside the `brain/data` files, with no
+  aliases, supercells or explorer.
+- **`build_release.py`'s closure** follows the layout in both modes. In compatibility mode the
+  layout is the explicit `--layout` argument (section 2). In replay mode it follows the
+  inventory: D1 exactly when the owned outputs include the sidecar, and the runner allows no
+  undeclared output file. `_static_closure` and the static required set stay callable,
+  because `assemble_legacy_release.py:297-298` calls them directly to assemble static legacy
+  releases, the replay gate's baseline among them (section 6).
 - The static layout's rules stay, for the retained previous release and old baselines
   (`brain_promote_release.py:2713`; `brain_activation_bundle.py:2650-2661`) and for the legacy
   tools.
 
-**Verification when the release is frozen.** `verify_release_files` opens `serving.sqlite3`
-read-only and immutable, the same way it opens `brain.sqlite3`
-(`authority_contracts.py:4916-4942`). Then it:
+**Verification when the release is frozen.** `verify_release_files` runs the serving
+verification where it runs the static closure today (`authority_contracts.py:5139-5140`,
+always on at `5193-5198`), with an inputs-present deferral flag like the replay gate's
+`static_complete` (section 6). The code stays in `authority_contracts.py`, so no new module
+joins the gate's implementation pins (`reproducibility_gate.py:46-54`) or coverage's
+(`provenance_coverage.py:27-30`). It opens `serving.sqlite3` read-only and immutable, the same
+way it opens `brain.sqlite3` (`authority_contracts.py:4916-4942`). Then it:
+- checks the host's SQLite first: 3.34 or newer with FTS5, or it fails with a message that
+  says so. The verifying host's SQLite isn't pinned, and the file's names index needs both;
 - runs SQLite's integrity check and compares the exact schema;
+- compares `meta.unicode_version` with its own `unicodedata.unidata_version` and refuses on a
+  mismatch, naming both. Every Python 3.12 release carries Unicode 15.0 and the repo runs on
+  3.12 (`CLAUDE.md:51`), so a mismatch means the wrong interpreter, not a wrong release.
+  Skipping only the lowercase check instead would leave it unchecked on exactly the hosts
+  that differ;
 - recomputes each table's digest from its rows and compares it with both the `tables` table
-  and the sidecar, and checks `meta`'s Unicode version against the verifier's;
+  and the sidecar. Rows are encoded with `canonical_artifact_json_bytes`
+  (`authority_contracts.py:376-379`), which for strings, integers and nulls gives the bytes
+  `store.canonical_json` gives. Not `canonical_json_bytes` (`418-426`): it requires NFC
+  (`255-256`), and generated artifacts can carry legacy non-NFC text (`296-298`), so it would
+  reject real labels and docstrings. A test digests a non-NFC label;
 - re-derives only the base tables from `brain.sqlite3` (`cell_pages`, `aliases`, `supercells`
   apart from `fhist` and `kids`, `labels` apart from `libs`, `xy` and `bub`, `synapse_traces`
   and `xrefs`), the way it re-derives the static projections today
@@ -869,7 +898,8 @@ read-only and immutable, the same way it opens `brain.sqlite3`
 - writes a verification receipt for the release, keyed by the manifest's sha256 and recording
   the verifier's commit. A later verification of the same manifest by the same verifier (the
   promoter's dry run and execute, the activation bundle's baseline check, the importer) checks
-  the receipt and the pinned file hashes instead of repeating the full pass.
+  the receipt and the pinned file hashes instead of repeating the full pass. The replay gates
+  never use the receipt.
 
 This adds a full pass over a 1-1.6 GB file, where the 900 s per-command timeout is already
 expected to trip. So:
@@ -887,8 +917,9 @@ cap to 4 GiB. The bundle check parses the diff whole, so the real diff's size an
 peak memory are first known in step 9's dry run. If the check doesn't fit the operator Mac
 there, the diff is streamed instead before that release is promoted.
 
-The intermediate files move out of `site/assets/brain/cells`, because the static file check
-rejects extra files there (`build_release.py:264-283`).
+In the nightly's build, the intermediate files move out of `site/assets/brain/cells`, because
+the static file check rejects extra files there (`build_release.py:264-283`). In a replay they
+never leave the serving stage's scratch (section 6).
 
 **Import.** A new script, `site/ops/brain_d1_import.py`, run on the operator Mac with the
 promoter's wrangler environment (`brain_promote_release.py:623-650`):
@@ -1050,39 +1081,208 @@ import entirely for releases whose tables are unchanged.
 
 ## 6. Offline replay
 
-Following Jack's replay decision (2026-11-08, quoted in BRAIN-TAUCETI.md), the replay tools
-learn the D1 layout in step 6, before the cutover in step 7. So the first D1 release can be a
-full offline replay release, like the 2026-10-04 release
-(`docs/BRAIN-ACTIVATION-2026-10-04.md:29`). Both profiles stay publishable
-(`docs/BRAIN-RELEASE-RUNBOOK.md:29-33`).
+Following Jack's replay decision (2026-11-08, quoted in BRAIN-TAUCETI.md, with the reasons),
+the replay tools learn the D1 layout in step 6. So the first D1 release can be a full offline
+replay release, like the 2026-10-04 release (`docs/BRAIN-ACTIVATION-2026-10-04.md:29`). Both
+profiles stay publishable (`docs/BRAIN-RELEASE-RUNBOOK.md:29-33`).
 
-Why before the cutover:
-- After the cutover the D1 layout is the only layout main produces, so there is no window
-  without a replay path.
-- Replay hazards surface before the first D1 release binds them. The raw bytes of
-  `serving.sqlite3` depend on the SQLite version, and its digests on Python's Unicode version.
-- The TauCeti release, the largest data change so far, gets full replay evidence.
+### Where the intermediates go
 
-So `build_release.py` needs no refusal of replay releases in the D1 layout. Its profile switch
-(`build_release.py:528-530`) works in both layouts once step 4 teaches it the D1 closure.
+A replay release is exactly the stages' owned outputs plus the two sealed inputs
+(`build_replay_release.py:109-111`, `141-144`; `reproducibility_gate.py:585-587`). Every file a
+stage writes to the output tree becomes a release artifact. So the shards, the trace buckets,
+the whole cell files and `xref_index.json` stay out of a replay release only if no stage writes
+them there.
 
-Step 6 consists of:
-- a new replay inventory version, after `reducer-inputs-v3-folded.json`, with a `serving-db`
-  stage that outputs `brain/data/serving.sqlite3` and `serving-tables.json`;
-- the `cell-shards` stage's outputs split into the public files and the intermediates. The
-  `build_cell_shards.py` output this needs (intermediates outside the public tree,
-  `cells/frontier.json` with `near_labels`, the slim manifest) lands here as a mode the new
-  inventory selects; step 7 makes it the nightly's default;
-- `compile_offline_pack_v2.py` (`:2279`), `build_replay_release.py`, the reproducibility gate
-  (`reproducibility_gate.py:209-224`, which today requires `REQUIRED_RELEASE_PATHS` and the
-  static closure) and the private replay gate moved onto the D1 layout. The reproducibility
-  gate shows that two clean-room builds agree on the sidecar's logical root and every table
-  digest, and states what it requires of the raw file bytes;
-- the older inventories (`reducer-inputs-v2.json`, `-v3.json`, `-v3-folded.json`) kept, so the
-  static releases they describe stay checkable.
+- **Chosen: one stage builds them in its own scratch and consumes them.** Scratch belongs to
+  one stage (`build_context.py:1439-1443`), is a disk bind rather than the sandbox's `/tmp`
+  (`run_replay_v2.py:766-768`), and must hold no files when the stage ends
+  (`run_replay_v2.py:1380-1385`).
+  - The freezer, the stage schema, the runner, the public path mapping and coverage stay as
+    they are. Step 6 touches no runner file (`run_replay_v2.py:94-106`).
+  - Cost: a failed serving build reruns the shard build, and the intermediates aren't kept
+    as evidence. They aren't needed, because the verifier re-derives the base tables from
+    `brain.sqlite3` (section 5).
+- **Not private artifacts under `brain/data/`.** The verifier, coverage and the public mapping
+  would need prefix rules, and replay and compatibility releases would carry different
+  artifact sets.
+- **Not a new "intermediate" output kind.** That changes the stage validator
+  (`authority_contracts.py:1227-1228`), the build context, the runner's output check, the
+  freezer and the gate's correspondence check, which are all runner or gate files.
 
-Provenance coverage over the serving rows lands earlier, in step 4, because it is also run by
-hand (`check_provenance_coverage.py`).
+### The v3-d1 inventory
+
+`brain/authority/reducer-inputs-v3-d1.json`, schema v3, copied from
+`reducer-inputs-v3-folded.json`:
+- the scope adds `brain/build_serving_db.py`;
+- base-graph, cells, sqlite-with-cells, frontier and brain-page are unchanged;
+- top-level-shards outputs only `site/assets/brain/sources.json`;
+- the serving stage replaces cell-shards. Its contract:
+
+  ```text
+  id: serving   program: brain/build_serving_db.py   argv: []
+  needs: base-graph, cells, frontier
+  outputs (all files): brain/data/serving-tables.json, brain/data/serving.sqlite3,
+    site/assets/brain/cells/frontier.json, site/assets/brain/cells/frontier_graph.json,
+    site/assets/brain/cells/manifest.json
+  ```
+
+  The outputs are in the sorted order the validator requires
+  (`authority_contracts.py:1244-1247`). The stage needs nothing from top-level-shards: it computes xref from base-graph's
+  `edges.jsonl` and the `brain-community-edges` and `source-registry` inputs, which any stage
+  may read (`build_context.py:1371-1388`);
+- the input consumers follow the code: both inputs list `build_serving_db.py`, and
+  `build_shards.py` no longer consumes the community edges;
+- there are still seven stages, so `brain/authority/README.md:289` stays true. The validator,
+  the identity code and the pack's file name need no change (`authority_contracts.py:1203-1247`,
+  `1041-1053`; `compile_offline_pack_v2.py:2277-2281`).
+
+`build_common.py:283` and `518-522` replace the single `FOLDED_REDUCER_INVENTORY_ID` with a set
+holding the v3-folded and v3-d1 ids. Otherwise base-graph applies the curated-Git contract to
+the folded inputs and fails. The scope lists paths, not hashes, so the id and
+`build_common.py` don't depend on each other.
+
+### Stage programs
+
+- **`build_serving_db.py`** gets a context entry shaped like `build_cell_shards.py:1536-1576`:
+  1. `require_stage` with the contract above;
+  2. build the full cell tree into the stage's scratch with 6a's build-to-directory call, which
+     skips the final publish (`build_cell_shards.py:1532`);
+  3. write `xref_index.json` into scratch from `build_shards._render_outputs`
+     (`build_shards.py:156`);
+  4. run `build()` on the scratch tree, which keeps the full manifest, so the builder's reads
+     of the shard and trace maps keep working. The database, the sidecar and the three slim
+     public files go into one owned scratch directory;
+  5. publish all five from it with `stage_io.publish_files_no_replace`, which removes that
+     directory (`stage_io.py:304-327`), and remove the cell tree through its own owned
+     directory.
+
+  Every path comes from the context, none from the repo root. Since PR #153's latest commit
+  the builder sets both outputs to mode 0644 and leaves no lock file, as the runner requires
+  (`run_replay_v2.py:1303-1310`, `1355-1361`). The mode matters because the publish helper
+  copies a file with its source's permission bits when the sandbox's separate scratch and
+  output binds refuse a hard link (`stage_io.py:309-317`, `355-358`). That copy of a 1-1.6 GB
+  file counts in the stage's time and disk.
+- **`build_cell_shards.py`** splits its build so a tree can be written into a directory without
+  being published, and gains the D1 public writer: `cells/frontier.json` with `near_labels`,
+  and the slim `manifest.json` without `scheme`, `shards` and `traces`
+  (`build_cell_shards.py:1343-1345`, `1369`, `1373`). Step 7 makes the nightly use it.
+- **`build_shards.py:246-268`** chooses its contract from the stage's declared outputs: both
+  files for the older inventories, `sources.json` alone for v3-d1. The static `cell-shards`
+  entry keeps its exact contract for v2, v3 and v3-folded until the cutover (PRs, below).
+
+### How `serving.sqlite3` is pinned
+
+Two ways, each with its own job:
+- **Raw bytes, inside one pinned image.** The gate's `output_root` hashes every output file's
+  sha256 and mode (`reproducibility_gate.py:140-169`, `237`), and a passing attestation needs
+  equal `output_root`, `generation_id` and `release_id` from both builds (`739-740`). The
+  file's only build-dependent values, `meta.cells_generated_at` and the input digests, follow
+  the shared `generation_id`. The environment descriptor pins the image's SQLite
+  (`execution_environment.py:838-862`, `1246-1264`). No new comparison code is needed.
+- **The sidecar's logical root, across environments.** `serving-tables.json` gets a logical
+  root under the existing extension rule (`authority_contracts.py:180-189`), and that root is
+  the dataset id. `release_identity` hashes the whole artifact list (`1071-1076`), so the
+  release id, and with it the attestation's `release_id`, binds both. The attestation schema
+  doesn't change (`reproducibility_gate.py:728-730`).
+- **Why both.** The bytes depend on the SQLite build, so a compatibility build on the operator
+  Mac has different bytes for the same dataset id. The raw hash proves that two builds agree;
+  the dataset id is the only key compared across releases and environments. Step 4's verifier
+  ties the two together by recomputing every table digest from the file.
+
+The baseline comparison stays the semantic diff over `brain/data` (`semantic_diff.py:51-61`).
+Serving tables aren't compared with the baseline.
+
+### Gate changes
+
+- **Reproducibility gate.** `measure_output` takes its required set from step 4's layout
+  function instead of `REQUIRED_RELEASE_PATHS` (`reproducibility_gate.py:209-210`). The mode
+  rule stays: 0600 for `brain.sqlite3` only (`161-163`). The projection call (`219-224`)
+  reaches the serving verifier through step 4's dispatch, deferred by the existing
+  `static_complete` flag until the release carries the two sealed inputs: xrefs need
+  `community_edges.jsonl`, and `sources.json` needs `source_registry.json`.
+- **SQLite floor at approval.** `verified_pack` (`357-368`) refuses a descriptor whose SQLite
+  is older than 3.34 or lacks `ENABLE_FTS5` when the inventory has the serving stage, so a
+  wrong image fails at approval instead of in the middle of a replay.
+- **Private replay gate:** no code change. It reuses `measure_output`, `verified_pack_release`
+  and the freezer (`private_replay_gate.py:20-48`), and its implementation pin is the technical
+  gate's plus its own two files (`60-61`).
+- **Provenance coverage** reads the serving rows from step 4 on (section 2). No shards ride in
+  a replay release, so nothing is counted twice against the 20M cap
+  (`provenance_coverage.py:24`).
+- Each build verifies its release in full several times (when frozen, in
+  `verified_pack_release`, and at finalize). The gates never take the receipt shortcut.
+
+### `build_release.py` in replay mode
+
+Step 4 provides everything. In replay mode the source set is the required set, the closure and
+the owned outputs (`build_release.py:435-447`), and the owned outputs are exactly the D1
+files. The profile switch (`528-530`) stays, with no refusal. The check name
+`sqlite-and-static-projection-parity` (`580`) stays too: renaming it would re-pin the assembly
+plans once more.
+
+### PRs
+
+All four are [affecting]. 6c lands last.
+
+| PR | Contents | Its tests prove | Lands |
+|---|---|---|---|
+| 6a | `build_cell_shards` build-to-directory split; the D1 public writer | `frontier.json` has its shape; the slim manifest has only `_meta`, `prov` and `roots`; the static tree's bytes match a golden copy; the existing context tests pass | any time |
+| 6b | `build_serving_db` context entry; `build_shards` contract choice | on a fixture, the stage leaves exactly its five files at 0644 and an empty scratch, and the runner's output and scratch checks accept them; two builds with one `generation_id` give byte-identical `serving.sqlite3`; the older contracts still pass `require_stage` | after 6a |
+| 6d | layout-aware `measure_output`; the SQLite floor at approval | a D1 fixture output measures; one changed byte in `serving.sqlite3` changes `output_root`; a missing sidecar fails; the static fixtures measure as before; freezing a D1 fixture gives artifacts equal to outputs plus inputs and passes `verify_release_files`; the private gate reports coverage over serving rows; a descriptor with SQLite 3.33 or without `ENABLE_FTS5` is refused, and 3.40.1 with it passes | after step 4 |
+| 6c | the v3-d1 inventory; the `build_common` id set | the inventory validates and its id is pinned; it differs from v3-folded only in scope, stages, consumers and id (the pattern of `brain/test_inventory_coherence.py:92-110`); base-graph picks the folded contract | in the cutover PR or after it |
+
+Why 6c waits for the cutover. The inventory picks the data layout, and the reducer commit picks
+the page: every inventory's brain-page stage runs `site/build_brain_page.py` with no needs.
+`brain.html` is opaque, so no verifier looks inside it. A v3-d1 replay at a commit before the
+cutover would pass every gate and serve a broken /brain. Until the inventory exists, nothing
+can produce a D1 replay, so 6a, 6b and 6d can land earlier. In the other direction, the
+cutover makes the static `cell-shards` context entry refuse to run, so v2, v3 and v3-folded
+can't be replayed at a commit whose page reads the endpoints. Their files stay, so the
+releases they describe stay checkable.
+
+### What the operator runs once
+
+After step 4, step 6 and the cutover (with 6c) are merged:
+1. **Pick one commit C after them.** The image carries C's runner files
+   (`package_oci_runtime.py:113-115`), the descriptor must name the reducer commit
+   (`compile_offline_pack_v2.py:2246-2247`), and `authority_contracts.py` is a runner file
+   (`run_replay_v2.py:96`). So image, descriptor and pack all name C, which comes after the
+   last edit to any runner file.
+2. **Package the image from C** on the measured base image. Its SQLite 3.40.1
+   (`docs/archive/BRAIN-SQLITE-CONTINUATION-2026-09-08.md:545-546`) is above the builder's
+   3.34 floor, so SQLite needs no new base. Probe `sqlite_version`, `ENABLE_FTS5` and trigram
+   support, rerun the strict isolation and AppArmor checks, and measure the descriptor.
+3. **Compile the pack:** generate a source plan for the v3-d1 inventory id and compile it with
+   reducer commit C. This gives a new `offline_pack_id` and `source_set_root`.
+4. **Build the baseline:** run the legacy baseline on this pack and assemble it with
+   `assemble_legacy_release.py`, which stays on the static layout, as the 2026-10-04 release
+   did (`docs/archive/BRAIN-SQLITE-HANDOFF-2026-09-23.md:429-431`). The live release won't
+   do: it was built from older sources, and the comparison can waive provenance differences
+   but never content.
+5. **Generate and review the coverage mapping** for C. Step 4 changes coverage's
+   implementation files (`provenance_coverage.py:27-28`), so no older mapping validates
+   (`private_replay_gate.py:244-258`).
+6. **Run the private replay gate** with that baseline. It launches both builds and freezes
+   each one. Set `--memory-bytes` from the measured peak (default 16 GiB,
+   `private_replay_gate.py:546`). Then verify, import and promote (section 5).
+
+### Open risks
+
+- **Byte-identical output is unproven at full scale.** `serving.sqlite3` holds FTS5 segments
+  and is VACUUMed.
+- **Temp files in memory.** The builder's temp-table sorts and the VACUUM copy go to the
+  sandbox's `/tmp`, a tmpfs (`run_replay_v2.py:757-758`; the stage sets no `TMPDIR`), which
+  counts against the container's memory limit. Fallback: `VACUUM INTO` a scratch path.
+- **Stage time.** One stage now builds the shards, xref and the serving file, and copies the
+  file at publication, against a 6 h stage limit (`run_replay_v2.py:93`) and a 12 h run
+  (`reproducibility_gate.py:757`). Each build also verifies a 1-1.6 GB file several times.
+- **Dataset ids across profiles.** The sidecar's digests follow Python's Unicode version. The
+  image runs CPython 3.12. If the operator Mac's Python isn't 3.12, a replay and a
+  compatibility build of the same data get different dataset ids, and the replay costs a
+  re-import. Step 4's verifier refuses the mismatch on its own host (section 5).
+- **The verifying host's SQLite** isn't pinned. Step 4's check fails clearly below 3.34 or
+  without FTS5.
 
 ## 7. Transition, tests and canary
 
@@ -1204,7 +1404,7 @@ be promoted. [neutral] PRs can land any time.
      serving file, import it into a local D1 (`wrangler d1 execute --local`), and record:
      - sizes, the largest rows and the largest folder;
      - `rows_written`, the import's wall time and its call count;
-     - the verify time;
+     - the verify time, which each replay gate build repeats several times (section 6);
      - query times for worst-case prefixes (`ta`, `tau`, `tauceti.`) and fragments,
        adversarial fragment phrases (common trigrams that are never adjacent), long OR text
        queries (8 common words, where bm25 walks each term's whole doclist), parts-mode
@@ -1223,8 +1423,8 @@ be promoted. [neutral] PRs can land any time.
    - Releasable, since nothing runs it yet.
    - **1b. Explorer tables** [affecting], after PR #137, once the layout records `bub` and the
      bubble discs. Includes the 8 MB cap per precomputed scope.
-2. **Migration and importer** [affecting because of `wiki/migrations-brain`; the importer in
-   `site/ops` is neutral].
+2. **Migration and importer**, draft PR #156 [affecting because of `wiki/migrations-brain`; the
+   importer in `site/ops` is neutral].
    - The importer's `import` (with `--scratch`), `prune`, `supersede` and `verify` commands:
      register before prune, finishing an interrupted delete, resume from recorded coverage,
      and a read-only `verify`.
@@ -1248,32 +1448,49 @@ be promoted. [neutral] PRs can land any time.
      - Releasable: it stays dormant until a release lists the sidecar.
      - Needs the database id from #150, and the migration must be applied before deploy.
 4. **Release contract** [affecting, except the canary and bundle parts, which are neutral].
-   The layout rule in the validators; serving verification (base tables re-derived, derived
-   tables checked by digest and invariants, the Unicode version, the refusal of `traces.prov`,
-   the verification receipt); provenance coverage over the serving rows; the legacy tools
-   pinned to the static set; `build_release.py` taking the layout as an explicit argument;
-   re-pinning the existing assembly plans for the changed `build_release.py`; and the canary
-   checks. Releasable, since the static layout is unchanged.
+   Section 5 has the details. Releasable, since the static layout is unchanged.
+   - One layout function in `authority_contracts.py` for both profiles, a D1 required set,
+     and a layout-aware generation check.
+   - Serving verification: the host SQLite check (3.34 or newer, with FTS5) before
+     `integrity_check`; the Unicode-version check; digests recomputed with
+     `canonical_artifact_json_bytes`, with a non-NFC label test; base tables re-derived;
+     derived tables checked by digest and invariants; the refusal of `traces.prov`; the
+     verification receipt; an inputs-present deferral flag for the replay gate.
+   - Provenance coverage over the serving rows, for both profiles.
+   - `build_release.py`: the closure follows the layout in both modes (`--layout` in
+     compatibility mode, the owned outputs in replay mode), and the static closure stays
+     callable for `assemble_legacy_release.py`. The legacy tools stay on the static set, and
+     the existing assembly plans are re-pinned for the changed `build_release.py`.
+   - The canary checks.
 5. **Promoter** [neutral, except the nightly's verify run: `brain-nightly.sh` is
    release-affecting by exception, `brain_release_authority.py:57`]. The prepare and fence
    checks, `verify --sample` called in-process after the canary with a mismatch journaled as
    manual intervention, the nightly's `verify --sample` run, the separate verify timeout,
    chunked hashing, the semantic-diff cap raised to 4 GiB (section 5), and the runbook's
    import, prune, supersede and verify commands.
-6. **Replay tools on the D1 layout** [affecting]: section 6. Releasable, since nothing builds
-   the D1 layout by default yet.
+6. **Replay tools on the D1 layout** [affecting], four PRs (section 6).
+   - 6a: `build_cell_shards` builds a tree without publishing it, and gains the D1 public
+     writer (`cells/frontier.json`, the slim manifest). Any time.
+   - 6b: the serving stage's context entry, and the `build_shards` contract choice. After 6a.
+   - 6d: the gate's layout-aware measurement and its SQLite floor. After step 4.
+   - 6c: the v3-d1 inventory and the `build_common` id set. In the cutover PR or after it, so
+     no replay can pair the D1 data with the static page.
+   - 6a, 6b and 6d are releasable, since nothing builds the D1 layout before 6c.
 7. **Cutover** [affecting, **held**].
    - The page reads the endpoints, and `site/test_frontier_page.py` changes with it.
-   - `build_cell_shards.py` writes the D1 output by default: intermediates outside the public
-     tree, `cells/frontier.json` and the slim manifest.
+   - The nightly switches to 6a's D1 writer: intermediates outside the public tree,
+     `cells/frontier.json` and the slim manifest.
    - The nightly runs `build_serving_db.py` and its test after `test_frontier`
      (`brain-nightly.sh:773-779`).
    - The nightly passes `--layout d1` to `build_release.py`.
    - `query.py` and the other local tools read `serving.sqlite3`.
-   - Held until steps 1 to 6 and 1b (and so #137) are merged, #150 has results, and step 2's
-     remote scratch import gate has passed. From then on, every release built from main is a D1
-     release, either compatibility or offline replay.
+   - 6c, the v3-d1 inventory, lands here or later. The static `cell-shards` context entry
+     refuses to run from here on, so no replay pairs the static data with the D1 page.
+   - Held until steps 1 to 5, 6a, 6b, 6d and 1b (and so #137) are merged, #150 has results, and
+     step 2's remote scratch import gate has passed. From then on, every release built from
+     main is a D1 release, either compatibility or offline replay.
    - It can be two PRs (page, builder) merged back to back, with no release cut between them.
+     6c then goes in whichever merges second.
 8. **TauCeti harvest cap and the big files out of Git** [affecting], last. Why last:
    [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md), Plan.
 9. **The release**: a full offline replay release, built, verified and imported; fresh P1B,
@@ -1294,7 +1511,13 @@ be promoted. [neutral] PRs can land any time.
 - How many folders have more than 64 children, where the grandchild preview can differ under
   filters.
 - D1 latency from distant Cloudflare data centers.
-- Whether two clean-room builds of `serving.sqlite3` agree byte for byte on one SQLite version
-  (step 6).
+- Whether two clean-room builds of `serving.sqlite3` agree byte for byte inside one pinned
+  image at full scale (step 6).
+- Whether the replay image's SQLite 3.40.1 has `ENABLE_FTS5` and the trigram tokenizer (the
+  operator's probe, section 6), and whether `integrity_check` passes on the serving file's FTS
+  tables under the verifying host's SQLite.
+- The serving stage's peak memory, `/tmp` use and wall time in the replay sandbox, and whether
+  `SQLITE_TMPDIR` or `PRAGMA temp_store_directory` moves its temp files out of `/tmp`.
+- Whether `cells/frontier.json` rows carry `prov` references that coverage must resolve.
 - The first TauCeti release's semantic diff (projected at about 1 GB) and the bundle check's
   peak memory on it (step 9's dry run).

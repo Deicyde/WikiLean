@@ -194,16 +194,18 @@ a fresh P1B and Jack's approval. [neutral] PRs can land any time.
 - 0. D1 probe on the operator Mac (#150), then a full-size measurement build.
 - 1. Serving database builder [affecting], PR #153.
 - 1b. Explorer tables, after #137 [affecting].
-- 2. `wikilean-brain` migration and importer [affecting].
+- 2. `wikilean-brain` migration and importer [affecting], draft PR #156.
 - 3a. Worker: a `BrainStore` interface, no behavior change [affecting].
 - 3b. Worker: D1 reads and the page endpoints, dormant until a release binds a serving
   database [affecting].
 - 4. Release contract: freeze, verify, canary [affecting].
 - 5. Promoter: import, readiness checks, verify after the canary, the semantic-diff cap
   [neutral, except the nightly's verify run].
-- 6. Replay tools on the D1 layout [affecting].
+- 6. Replay tools on the D1 layout [affecting]. Its new replay inventory lands with the
+  cutover or after it, so no replay pairs the D1 data with the static page.
 - 7. Cutover: the page reads the endpoints and the nightly builds the serving database
-  [affecting], held until steps 1-6 and 1b land and a remote scratch import is verified.
+  [affecting], held until steps 1-5, 1b and the rest of step 6 land and a remote scratch import
+  is verified.
 - 8. TauCeti harvest cap and the big files out of Git [affecting], last.
 - 9. The release: fresh P1B, Jack's approval, promote.
 - 10. Cleanup: delete the static reader [affecting].
