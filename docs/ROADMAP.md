@@ -80,12 +80,13 @@ recommendation. Remove an item once its decision is recorded below.
     resume it.
 14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
     flags. Options: triage them now, or let them wait.
-15. **Native companion cutover (#64 plus the 2026-11-07 transition work).**
+15. **Native companion cutover completed (#64 plus the 2026-11-07 transition work).**
     The release is live and all 778 canonical D1 articles were converted on
-    2026-11-08. The full before/after preservation audit passed. Final
-    browser-journal inspection and restoration of the recorded writers remain
-    operator gates; the write brake is still locked. Citations from canonical D1,
-    the private graph source export and runtime autocomplete passed verification.
+    2026-11-08. The full before/after preservation audit passed, and the completed
+    browser journal confirms 778 applied with no error. The recorded schedules
+    were restored and contributor editing reopened at 09:26:32Z; the maintenance
+    window is closed and old slug editing remains off. Citations from canonical
+    D1, the private graph source export and runtime autocomplete passed verification.
     The remaining Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
     autocomplete, exports and repair tools now consume native links. Pinned and
     multi-target repairs require explicit per-target review. The schema and
@@ -1428,8 +1429,10 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   revision rows, 778 exact archives and 35 human work items. The canonical mirror,
   reverse citations and autocomplete were refreshed and verified; the citation
   KV readback matches. The private graph source export passed independent
-  verification. Browser-journal inspection and writer restoration remain pending,
-  with the write brake locked; no new public static assets were published.
+  verification. The completed browser journal reports 778 applied with no error.
+  Both recorded schedules were restored and the write brake reopened at 09:26:32Z,
+  closing the maintenance window. Old slug editing remains off; no new public
+  static assets were published.
   R2–R6 remain outside the signed scope. See the
   [activation record](BRAIN-ACTIVATION-2026-11-08.md).
 

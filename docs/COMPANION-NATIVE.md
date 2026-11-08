@@ -358,9 +358,16 @@ products of the new code.
 Close the migration window only after the live audit and remaining schema-3
 count match the approved scope. Restore the recorded brake/cron/job state
 deliberately, including recreating the exact journaled Cron Trigger schedule
-through the dashboard and verifying it; leave slug_editing off. If an article
-fails, leave it unchanged
-and journal it. Report partial progress as partial, with the remaining slugs.
+through the dashboard and verifying it; leave slug_editing off. When dashboard
+controls are unavailable, the official [Worker schedules API](https://developers.cloudflare.com/api/resources/workers/subresources/scripts/subresources/schedules/)
+is a narrow restoration alternative: read the exact account/Worker's schedules,
+refuse unexpected entries, and restore only the journaled schedule if absent.
+Read it back after the update and verify the deployed release is unchanged.
+Use the existing authenticated operator context; never print or retain tokens.
+This does not authorize a Worker/configuration deployment or route/domain changes.
+Record the actual method and completion time in the private window receipt.
+If an article fails, leave it unchanged and journal it. Report partial progress
+as partial, with the remaining slugs.
 
 ## History and rollback
 

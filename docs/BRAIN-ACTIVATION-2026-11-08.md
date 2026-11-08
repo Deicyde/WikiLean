@@ -37,9 +37,9 @@ in the operator's private stores. Live identity is available at
   endpoint. The live structural conversion finished on 2026-11-08: the
   08:15:42Z D1 observation found all 778 articles at schema 4, zero legacy
   articles, 778 exact migration archives and 5,972 revisions. The full
-  preservation audit passed at 08:17Z. The write brake remains locked while
-  final browser-journal inspection and writer restoration are completed;
-  `slug_editing` remains off.
+  preservation audit passed at 08:17Z. The completed browser journal reports
+  778 applied and no error. Contributor editing reopened at 09:26:32Z after
+  the recorded schedules were restored; `slug_editing` remains off.
 - Migrations 0017, 0018 and 0019 applied after a fresh encrypted backup and an
   in-memory schema rehearsal. The existing 0014 schema was verified and left
   in place. All 19 original table row counts stayed unchanged through the DDL.
@@ -97,11 +97,24 @@ control plane was refreshed using those outputs and the retained structural
 edge inputs. The autocomplete asset is also local to that runtime. Neither a
 new Worker nor new public static assets have been deployed.
 
-The final browser-journal inspection and deliberate restoration of the recorded
-writer state remain pending because the native browser controls cannot read the
-live page reliably. The operator has retained the previous moderation schedule
-and the exact drift schedule (`17 6 * * *`). Only the previously active writers
-may be resumed after all remaining checks.
+The owner read the completed browser journal through the existing console:
+`all-applied-awaiting-live-D1-audit`, 778 applied, no error. That client journal
+was left unchanged; the independently completed live D1 audit is separate evidence.
+The original moderation schedule was restored at 09:21:59Z using the dedicated
+native-aware runtime: 03:20 local, `RunAtLoad=false`, loaded but idle with zero
+runs. Brain and newtags remain unloaded. The exact drift schedule (`17 6 * * *`)
+was restored at 09:25:45Z and read back from Cloudflare. Because native dashboard
+controls were unavailable, this used the official schedules-only API with the
+existing Wrangler OAuth sign-in, consumed only in memory by the helper. The helper
+neither printed nor retained credentials, and no Worker, route, domain or
+configuration was deployed.
+
+A guarded D1 update restored the previous `site_write_mode=open` at 09:26:32Z,
+writing exactly one settings row. Readback confirmed all 778 native articles,
+zero legacy articles, 778 archives, 5,972 revisions and `slug_editing=off`.
+The maintenance window closed then, before its recorded 10:00:07Z deadline.
+No migration or model job was restarted. The next expected drift check is
+2026-11-09 at 06:17 UTC; moderation is scheduled for 03:20 America/New_York.
 
 The post-conversion encrypted backup and application projection were copied to
 ffmain and their hashes verified. Full evidence remains private. The source
@@ -111,6 +124,7 @@ restricted, and does not add that node to the static Brain. The original
 curated Git commit remains `d4ed6e42…`; the current normalizer uses fresh D1
 source identities without relabeling historical proof bundles.
 
-Follow [the live migration procedure](COMPANION-NATIVE.md#live-migration-procedure)
-for the remaining restoration and window closure. R2–R6, source-policy approvals
-and the external launch announcement remain outside this activation.
+The [live migration procedure](COMPANION-NATIVE.md#live-migration-procedure)
+is complete for this cohort, including writer restoration and window closure.
+R2–R6, source-policy approvals and the external launch announcement remain
+outside this activation.
