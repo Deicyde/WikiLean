@@ -35,13 +35,13 @@ The SQLite bytes depend on the SQLite version; the logical digests (store.digest
 column of a table in seq order) do not, and are what the sidecar binds. Numbers live only in
 INTEGER columns and floats stay inside JSON text, so rows read back from D1 digest the same.
 The digests do depend on Python's Unicode database: name_lc is str.lower(), whose case mappings
-follow unicodedata.unidata_version, so the meta table records that version. The FTS tables need
-SQLite 3.43 or newer (contentless_delete).
+follow unicodedata.unidata_version, so the meta table records that version. The names index
+needs SQLite 3.34 or newer (the trigram tokenizer). Both outputs are written at mode 0644 and
+nothing else is left beside them, as the replay runner requires of a stage's outputs.
 """
 from __future__ import annotations
 
 import argparse
-import fcntl
 import hashlib
 import json
 import os
@@ -65,7 +65,7 @@ HOT_PREFIX_OWNERS = 100      # owners listed per hot prefix, for cells and super
 QUERY_UNITS = (2, 200)       # the Worker's shortest and longest search query, UTF-16 units
 KIDS_CAP = 64                # children carried on a supercell row, the largest by n_sub
 DELETE_BOUND_BYTES = 4 * 2**20   # the pruner deletes about this much row data per statement
-MIN_SQLITE = (3, 43, 0)      # contentless_delete=1 on the FTS tables
+MIN_SQLITE = (3, 34, 0)      # the trigram tokenizer; the replay image carries 3.40.1
 
 SCHEMA = """
 CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -97,9 +97,11 @@ CREATE INDEX xrefs_node ON xrefs(node, page_ord);
 CREATE INDEX xrefs_page ON xrefs(page, node_ord);
 CREATE TABLE text_ids(seq INTEGER PRIMARY KEY, node TEXT NOT NULL UNIQUE, owner TEXT NOT NULL,
                       body TEXT NOT NULL);
-CREATE VIRTUAL TABLE names USING fts5(name, content='', contentless_delete=1, tokenize='trigram');
-CREATE VIRTUAL TABLE texts USING fts5(body, content='', contentless_delete=1);
+CREATE VIRTUAL TABLE names USING fts5(name, content='', tokenize='trigram');
+CREATE VIRTUAL TABLE texts USING fts5(body, content='');
 """
+# contentless_delete (SQLite 3.43) is left to D1's copies, which the importer creates: only the
+# pruner and the importer's range repair delete FTS rows by rowid.
 # the tables the importer copies, each digested over every column in seq order
 DATA_TABLES = ("cell_pages", "aliases", "labels", "supercells", "name_keys", "hot_prefixes",
                "cell_under", "synapse_traces", "xrefs", "text_ids")
@@ -385,8 +387,8 @@ def cell_page_rows(cells_dir: Path, manifest: dict, xy_by_id: dict[str, str | No
 def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | None = None,
           sidecar_path: Path | None = None) -> dict:
     if sqlite3.sqlite_version_info < MIN_SQLITE:
-        raise RuntimeError(f"SQLite {sqlite3.sqlite_version} is too old: the FTS tables' "
-                           f"contentless_delete needs {'.'.join(map(str, MIN_SQLITE))} or newer")
+        raise RuntimeError(f"SQLite {sqlite3.sqlite_version} is too old: the names index's "
+                           f"trigram tokenizer needs {'.'.join(map(str, MIN_SQLITE))} or newer")
     xref_path = xref_path or cells_dir.parent / "xref_index.json"
     sidecar_path = sidecar_path or out.with_name("serving-tables.json")
     manifest = read_json(cells_dir / "manifest.json")
@@ -395,16 +397,13 @@ def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | Non
         # build_cell_shards ships traces.prov only when the synapse and cell prov tables differ
         raise ValueError(f"{cells_dir / 'manifest.json'}: traces carry their own prov table; "
                          "trace prov indexes must resolve against the manifest's")
-    with open(out.with_name(f".{out.name}.lock"), "w") as lock:
-        try:
-            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except BlockingIOError:
-            raise RuntimeError(f"another build is writing {out}") from None
-        return _build_locked(cells_dir, nodes_path, out, manifest, traces, xref_path, sidecar_path)
+    # no lock of its own: a lock file would sit beside the outputs, where the replay runner
+    # refuses undeclared files; the nightly's Brain lock and the runner serialize builds
+    return _build_outputs(cells_dir, nodes_path, out, manifest, traces, xref_path, sidecar_path)
 
 
-def _build_locked(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict, traces: dict,
-                  xref_path: Path, sidecar_path: Path) -> dict:
+def _build_outputs(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict, traces: dict,
+                   xref_path: Path, sidecar_path: Path) -> dict:
     temps = []
     for dest in (out, sidecar_path):
         fd, name = tempfile.mkstemp(prefix=f".{dest.name}.", suffix=".tmp", dir=dest.parent)
@@ -521,6 +520,8 @@ def _build_locked(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict, 
                    "aliases_counts": (aliases.get("_meta") or {}).get("counts") or {}}
         temps[1].write_text(json.dumps(sidecar, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
                             encoding="utf-8")
+        for temp in temps:
+            os.chmod(temp, 0o644)       # mkstemp made it 0600; outputs are world-readable
         publish_together(list(zip(temps, (out, sidecar_path))))
     finally:
         if db is not None:

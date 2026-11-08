@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import bisect
 import contextlib
-import fcntl
 import io
 import json
 import os
@@ -396,23 +395,15 @@ class ServingDbTest(unittest.TestCase):
         texts = db.execute("SELECT t.node FROM texts JOIN text_ids t ON t.seq = texts.rowid "
                            "WHERE texts MATCH ? ORDER BY bm25(texts)", ("spectrum countable",)).fetchall()
         self.assertEqual(texts, [("decl:TauCeti:Spectrum.compact",)])
-        # the pruner deletes FTS rows by rowid, which needs contentless_delete (SQLite 3.43+)
-        version = f"SQLite {sqlite3.sqlite_version}"
-        try:
-            db.execute("DELETE FROM names WHERE rowid = (SELECT seq FROM name_keys WHERE owner = ?)", (SEMIGROUP,))
-            db.execute("DELETE FROM texts WHERE rowid = (SELECT seq FROM text_ids WHERE node = ?)",
-                       ("decl:TauCeti:Spectrum.compact",))
-        except sqlite3.OperationalError as exc:
-            self.fail(f"{version}: {exc}")
-        self.assertEqual(db.execute("SELECT rowid FROM names WHERE names MATCH ? ORDER BY rowid",
-                                    ('"Semigroup"',)).fetchall(),
-                         db.execute("SELECT seq FROM name_keys WHERE owner = 'path:TauCeti/Analysis/Semigroup' "
-                                    "AND name LIKE '%semigroup%' ORDER BY seq").fetchall(), version)
-        self.assertEqual(db.execute("SELECT rowid FROM texts WHERE texts MATCH 'countable'").fetchall(), [], version)
+        # contentless: the indexes hold no copy of the text, which lives in name_keys and text_ids
+        self.assertEqual(db.execute("SELECT name FROM names WHERE rowid = 1").fetchone(), (None,))
+        self.assertEqual(db.execute("SELECT body FROM texts WHERE rowid = 1").fetchone(), (None,))
 
     def test_refuses_an_old_sqlite(self):
-        with mock.patch.object(bsd.sqlite3, "sqlite_version_info", (3, 42, 0)), \
-                self.assertRaisesRegex(RuntimeError, "3.43.0 or newer"):
+        # trigram arrived in 3.34; the replay image's 3.40.1 must stay above the floor
+        self.assertLessEqual(bsd.MIN_SQLITE, (3, 40, 1))
+        with mock.patch.object(bsd.sqlite3, "sqlite_version_info", (3, 33, 0)), \
+                self.assertRaisesRegex(RuntimeError, "trigram tokenizer needs 3.34.0 or newer"):
             self.build()
 
     def test_every_table_has_seq_and_a_digest_over_every_column(self):
@@ -524,8 +515,7 @@ class ServingDbTest(unittest.TestCase):
         self.assertFalse((self.tmp / "skewed").exists())
 
     def leftovers(self):
-        # the lock file stays by design; anything else starting with a dot is a leftover
-        return sorted(p.name for p in self.tmp.iterdir() if p.name.startswith(".") and not p.name.endswith(".lock"))
+        return sorted(p.name for p in self.tmp.iterdir() if p.name.startswith("."))
 
     def test_publishes_both_files_atomically(self):
         out, side = self.tmp / "serving.sqlite3", self.tmp / "serving-tables.json"
@@ -586,15 +576,17 @@ class ServingDbTest(unittest.TestCase):
         self.assertEqual(len(kept), 1)
         self.assertEqual((self.tmp / kept[0]).read_bytes(), old[0])
 
-    def test_a_second_build_on_the_same_output_is_refused(self):
-        out = self.tmp / "serving.sqlite3"
-        with open(self.tmp / ".serving.sqlite3.lock", "w") as held:
-            fcntl.flock(held, fcntl.LOCK_EX)
-            with self.assertRaisesRegex(RuntimeError, "another build"):
-                bsd.build(self.cells, self.nodes, out)
-        self.assertFalse(out.exists())
-        bsd.build(self.cells, self.nodes, out)
-        self.assertTrue(out.exists())
+    def test_outputs_are_0644_and_alone(self):
+        # the replay runner accepts a stage's outputs only at 0644, with no undeclared file
+        out_dir = self.tmp / "out"
+        out_dir.mkdir()
+        old = os.umask(0o077)
+        try:
+            bsd.build(self.cells, self.nodes, out_dir / "serving.sqlite3")
+        finally:
+            os.umask(old)
+        self.assertEqual({p.name: p.stat().st_mode & 0o777 for p in out_dir.iterdir()},
+                         {"serving.sqlite3": 0o644, "serving-tables.json": 0o644})
 
 
 if __name__ == "__main__":
