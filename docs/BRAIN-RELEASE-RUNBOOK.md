@@ -482,8 +482,10 @@ Do not delete or relocate either root after review.
 
 ## Deploy
 
-> **Production has served release B (`sha256:2fe2d19b…`, manifest `d5f774c2…`) since
-> 2026-11-01.** Its attempt closed with journal outcome `deployed`. Running the promoter
+> **Production serves R1 (`sha256:13c7517b…`, manifest `8f607c42…`) as of
+> 2026-11-08 03:38 UTC.** The [activation record](BRAIN-ACTIVATION-2026-11-08.md)
+> pins its Worker and retained prior release. Its attempt closed with journal outcome
+> `deployed`. Running the promoter
 > with `--execute` changes production and needs Jack's approval for the exact release and
 > window. After any `--execute`, keep `wiki/wrangler.jsonc` and the Node/Wrangler toolchain
 > unchanged until that attempt has a clean `final_state`: reconciliation requires both to match

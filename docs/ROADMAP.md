@@ -183,8 +183,8 @@ this direction does not mark those releases authorised or deployed.
 
 | | What | Migrations | State |
 |---|---|---|---|
-| **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` (operator action) | in progress |
-| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` | **merged (#138); waiting on a release** |
+| **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` applied | in progress |
+| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` applied | **live (2026-11-08 UTC)**; [activation record](BRAIN-ACTIVATION-2026-11-08.md) |
 | **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | `0020`, `0021` | not authorised |
 | **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | `0022`, `0023` | not authorised |
 | **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | `0024` | not authorised |
@@ -214,7 +214,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
 | 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain |
 | 10 | Where the declaration index and search corpus are published | a bucket behind a short-lived signed URL, issued per contributor, with a per-library licence manifest beside it. Not git, under any option |
-| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. R1 implements it; **the wording is Jack's to review** |
+| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`. Each person accepts at their first edit |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
 | 13 | The agent-token work (PR #126) | merge it, then extend it. R1 opens its `agent` role to the two tag routes and keeps every other refusal, the reader's confirm/report included |
 
@@ -1408,6 +1408,19 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-11-08 (UTC): **R1 is live.** Promoted authority commit
+  `596aa7bb` as Brain release `sha256:13c7517b…`, Worker `7b73c447…`.
+  The exact promoter closed with `deployed` and a passing live canary.
+  The sealed evidence contains 1,527 passing Worker tests, the typecheck and
+  131 passing offline Python commands. Migrations 0017–0019 were applied after
+  an encrypted backup and copied-schema rehearsal; all 19 original table row
+  counts were preserved. The reader's tag entry point, overlay reads, auth
+  refusals and old URL redirects pass live checks. The Literature Links code
+  is deployed, but the canonical article conversion has not run: it still
+  needs the admin session, writer freeze, fresh backup/rehearsal and full live
+  preservation audit. R2–R6 remain outside the signed scope. See the
+  [activation record](BRAIN-ACTIVATION-2026-11-08.md).
 
 - 2026-11-07: **R1 public Turnstile configuration prepared.** The formalization
   reader now names the operator-supplied public site key for
