@@ -964,9 +964,11 @@ class PruneTest(Base):
                     with self.assertRaises(Crash):
                         self.do_prune(fake)
                     fake.crash_at = None
-                    state = fake.one("SELECT state FROM datasets")
-                    if state == ("deleting",):
-                        self.assertEqual(fake.one("SELECT count(*) FROM import_ranges"), (0,))
+                    # journal rows go before any data row: while one remains, no row is deleted
+                    if fake.one("SELECT count(*) FROM import_ranges") != (0,):
+                        for table in bdi.DATA_TABLES:
+                            self.assertEqual(fake.one(f"SELECT count(*) FROM {table}"),
+                                             (self.local.rows(table),), table)
                     if finisher == "prune":
                         self.do_prune(fake)
                         self.assertEqual(fake.all("SELECT * FROM datasets"), [])

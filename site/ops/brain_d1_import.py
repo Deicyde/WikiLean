@@ -378,9 +378,10 @@ def validate_sidecar(sidecar: object) -> dict[str, Any]:
 def open_local(serving: Path, sidecar_path: Path, *, full_check: bool) -> LocalDataset:
     """Open a serving file read-only, check it against its sidecar, and name its dataset.
 
-    With full_check every table's digest, row count and delete bounds are recomputed from the
-    file and compared with the sidecar (what release verification does once it knows the D1
-    layout, step 4); without it only the file's own `tables` rows are compared."""
+    With full_check every table's digest and row count are recomputed from the file and compared
+    with the sidecar (what release verification does once it knows the D1 layout, step 4);
+    without it only the file's own `tables` rows are compared. Delete bounds are only checked for
+    shape: they follow the builder's DELETE_BOUND_BYTES, which the sidecar doesn't record."""
     try:
         sidecar = validate_sidecar(json.loads(sidecar_path.read_text(encoding="utf-8")))
         dataset_id = logical_json_root(sidecar_path)
@@ -408,7 +409,8 @@ def open_local(serving: Path, sidecar_path: Path, *, full_check: bool) -> LocalD
                 raise D1ImportError(f"{serving} table {table} has columns {columns}")
         if full_check:
             for table in DATA_TABLES:
-                if bsd.digest_table(db, table) != sidecar["tables"][table]:
+                found, expected = bsd.digest_table(db, table), sidecar["tables"][table]
+                if (found["rows"], found["digest"]) != (expected["rows"], expected["digest"]):
                     raise D1ImportError(f"{serving} table {table} does not match its sidecar digest")
     except (sqlite3.Error, ValueError) as exc:
         local.close()
