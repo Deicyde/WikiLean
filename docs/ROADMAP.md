@@ -80,22 +80,29 @@ recommendation. Remove an item once its decision is recorded below.
     resume it.
 14. **Site queues.** `/stats` (2026-10-13) shows 1 proposal awaiting a human and 2 open reader
     flags. Options: triage them now, or let them wait.
-15. **Native companion cutover (#64 plus the 2026-11-07 transition work).**
-    Native storage, editor and lossless exports exist; live D1 migration and a
-    release containing the transition remain operator gates. The remaining
-    Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
+15. **Native companion cutover completed (#64 plus the 2026-11-07 transition work).**
+    The release is live and all 778 canonical D1 articles were converted on
+    2026-11-08. The full before/after preservation audit passed, and the completed
+    browser journal confirms 778 applied with no error. The recorded schedules
+    were restored and contributor editing reopened at 09:26:32Z; the maintenance
+    window is closed and old slug editing remains off. Citations from canonical
+    D1, the private graph source export and runtime autocomplete passed verification.
+    The remaining Mathlib-only readers, reverse citations, Brain/catalog reductions, benchmark,
     autocomplete, exports and repair tools now consume native links. Pinned and
     multi-target repairs require explicit per-target review. The schema and
     validator are pinned to Literature Links 1.0.2.
     - docs/COMPANION-NATIVE.md now describes the freeze, copied-snapshot
       rehearsal, admin-session preview/apply path, concurrent-write refusals,
-      post-migration audit and guarded per-article rollback. Prepare and approve
-      the exact frozen release, baseline, fresh P1B and exclusive operator window.
+      post-migration audit and guarded per-article rollback. The exact frozen
+      release, baseline, fresh P1B and exclusive operator window were recorded
+      for this conversion.
     - The 2026-11-07 read-only canonical snapshot and copied application-database
       rehearsal converted all 778 articles without a blocked item. The old cached
       not_applicable report was absent from canonical D1. The rehearsal retained
       all prior history, human annotations, source revisions and exact archives;
-      live conversion still requires the frozen window and fresh final checks.
+      that rehearsal was followed by a fresh frozen-window backup, the live
+      conversion and a successful full preservation audit on 2026-11-08. See
+      the [activation record](BRAIN-ACTIVATION-2026-11-08.md).
     - A separate declaration-projection audit found 97 legacy mappings with no
       module (80 formalized, 17 partial). Migration now retains their declaration
       as a native Lean target with an optional module. The repeated copied-cohort
@@ -183,8 +190,8 @@ this direction does not mark those releases authorised or deployed.
 
 | | What | Migrations | State |
 |---|---|---|---|
-| **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` (operator action) | in progress |
-| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` | **merged (#138); waiting on a release** |
+| **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` applied | in progress |
+| **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` applied | **live (2026-11-08 UTC)**; [activation record](BRAIN-ACTIVATION-2026-11-08.md) |
 | **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | `0020`, `0021` | not authorised |
 | **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | `0022`, `0023` | not authorised |
 | **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | `0024` | not authorised |
@@ -214,7 +221,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
 | 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain |
 | 10 | Where the declaration index and search corpus are published | a bucket behind a short-lived signed URL, issued per contributor, with a per-library licence manifest beside it. Not git, under any option |
-| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. R1 implements it; **the wording is Jack's to review** |
+| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`. Each person accepts at their first edit |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
 | 13 | The agent-token work (PR #126) | merge it, then extend it. R1 opens its `agent` role to the two tag routes and keeps every other refusal, the reader's confirm/report included |
 
@@ -1408,6 +1415,26 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-11-08 (UTC): **R1 is live.** Promoted authority commit
+  `596aa7bb` as Brain release `sha256:13c7517b…`, Worker `7b73c447…`.
+  The exact promoter closed with `deployed` and a passing live canary.
+  The sealed evidence contains 1,527 passing Worker tests, the typecheck and
+  131 passing offline Python commands. Migrations 0017–0019 were applied after
+  an encrypted backup and copied-schema rehearsal; all 19 original table row
+  counts were preserved. The reader's tag entry point, overlay reads, auth
+  refusals and old URL redirects pass live checks. The Literature Links code
+  is deployed. The live conversion completed for all 778 articles at 08:15Z;
+  the fresh post-conversion audit preserved all 38,259 work items, 4,416 old
+  revision rows, 778 exact archives and 35 human work items. The canonical mirror,
+  reverse citations and autocomplete were refreshed and verified; the citation
+  KV readback matches. The private graph source export passed independent
+  verification. The completed browser journal reports 778 applied with no error.
+  Both recorded schedules were restored and the write brake reopened at 09:26:32Z,
+  closing the maintenance window. Old slug editing remains off; no new public
+  static assets were published.
+  R2–R6 remain outside the signed scope. See the
+  [activation record](BRAIN-ACTIVATION-2026-11-08.md).
 
 - 2026-11-07: **R1 public Turnstile configuration prepared.** The formalization
   reader now names the operator-supplied public site key for
