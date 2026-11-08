@@ -106,7 +106,7 @@ Where each break is fixed (steps are in Plan, below):
   "By serving dataset", so a release whose Brain tables didn't change imports nothing.
 - **Replay**, 2026-11-08. Asked whether D1 releases should be compatibility-only until the
   replay tools learn the D1 layout, Jack answered "Whatever is better long-term." So the
-  replay tools move onto the D1 layout before the cutover, and D1 releases can be full
+  replay tools move onto the D1 layout before or with the cutover, and D1 releases can be full
   offline replay releases from the first one. Why:
   - after the cutover the D1 layout is the only layout, so there is no window without a
     replay path;
@@ -194,7 +194,7 @@ a fresh P1B and Jack's approval. [neutral] PRs can land any time.
 - 0. D1 probe on the operator Mac (#150), then a full-size measurement build.
 - 1. Serving database builder [affecting], PR #153.
 - 1b. Explorer tables, after #137 [affecting].
-- 2. `wikilean-brain` migration and importer [affecting], draft PR #156.
+- 2. `wikilean-brain` migration and importer [affecting], PR #156.
 - 3a. Worker: a `BrainStore` interface, no behavior change [affecting].
 - 3b. Worker: D1 reads and the page endpoints, dormant until a release binds a serving
   database [affecting].
@@ -202,7 +202,7 @@ a fresh P1B and Jack's approval. [neutral] PRs can land any time.
 - 5. Promoter: import, readiness checks, verify after the canary, the semantic-diff cap
   [neutral, except the nightly's verify run].
 - 6. Replay tools on the D1 layout [affecting]. Its new replay inventory lands with the
-  cutover or after it, so no replay pairs the D1 data with the static page.
+  cutover, so no replay pairs the D1 data with the static page.
 - 7. Cutover: the page reads the endpoints and the nightly builds the serving database
   [affecting], held until steps 1-5, 1b and the rest of step 6 land and a remote scratch import
   is verified.

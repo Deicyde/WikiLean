@@ -2,7 +2,7 @@
 
 Design, 2026-11-07, revised 2026-11-08. Part of [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md);
 tracking issue #152. Step 1 (the serving database builder) is PR #153 and step 2 (the D1 schema
-and importer) is draft PR #156; everything after them is design, not code.
+and importer) is PR #156; everything after them is design, not code.
 
 **References.** `path:line` is at main `596aa7bb92e89c1f7a44f768392c3b895b049c47`. A bare
 number after a reference is a line in the same file. Bare file names:
@@ -60,8 +60,8 @@ bundle" and lines 29-33. Defined here:
   the release in the URL, so the edge can cache the current release's responses for good. The
   only static files left are the selector, the release manifest, the cell manifest, the
   frontier data and the sources.
-- **Replay first.** The replay tools learn the D1 layout before the cutover, so the first D1
-  release can be a full offline replay release.
+- **Replay first.** The replay tools learn the D1 layout before or with the cutover, so the
+  first D1 release can be a full offline replay release.
 
 ## Decisions
 
@@ -756,9 +756,9 @@ Notes on the tables:
     the importer's checks. They are contentless but without `contentless_delete`, since only
     D1's copies are repaired or pruned by rowid. So the builder needs SQLite 3.34 or newer (the
     trigram tokenizer) and refuses older versions. The FTS tables themselves aren't digested,
-    so the trigram-or-parts choice never changes a dataset id. Their inputs are: `name_keys.name` (original case) and
-    `text_ids.body` are columns of digested tables, so the dataset id binds every FTS input,
-    and a change to a node's description changes the id.
+    so the trigram-or-parts choice never changes a dataset id. Their inputs are:
+    `name_keys.name` (original case) and `text_ids.body` are columns of digested tables, so the
+    dataset id binds every FTS input, and a change to a node's description changes the id.
   - D1 omits those two columns, which are used only to build its FTS tables. The importer
     fills the FTS tables from the local file. Range verification compares the copied columns
     of local and remote rows; the sidecar's digest covers every column of the local table.
@@ -837,9 +837,12 @@ Static files, not tables:
     `1148-1149`);
   - the canary (`brain-canary.py:219-220`, `440-470`, `563-587`);
   - in step 6, the replay gate's measurement (`reproducibility_gate.py:209-210`).
-- Step 4 writes the rule once: one layout function in `authority_contracts.py`, used by every
-  Python caller above for both profiles. A D1 required set sits next to
-  `REQUIRED_RELEASE_PATHS`. It holds no intermediates and includes `cells/frontier.json`.
+- Step 4 writes the rule once: one layout function in `authority_contracts.py`, used for both
+  profiles by every caller above that imports it (the validators, `verify_release_files`,
+  `build_release.py`, the activation bundle and, in step 6, `measure_output`). The canary
+  imports only the standard library and its own helpers, so it keeps its own check of the same
+  rule. A D1 required set sits next to `REQUIRED_RELEASE_PATHS`. It holds no intermediates and
+  includes `cells/frontier.json`.
 - The generation check's cell files follow the layout. For D1 they are `cells/manifest.json`,
   `cells/frontier.json` and `cells/frontier_graph.json` beside the `brain/data` files, with no
   aliases, supercells or explorer.
@@ -1128,9 +1131,9 @@ them there.
   ```
 
   The outputs are in the sorted order the validator requires
-  (`authority_contracts.py:1244-1247`). The stage needs nothing from top-level-shards: it computes xref from base-graph's
-  `edges.jsonl` and the `brain-community-edges` and `source-registry` inputs, which any stage
-  may read (`build_context.py:1371-1388`);
+  (`authority_contracts.py:1244-1247`). The stage needs nothing from top-level-shards: it
+  computes xref from base-graph's `edges.jsonl` and the `brain-community-edges` and
+  `source-registry` inputs, which any stage may read (`build_context.py:1371-1388`);
 - the input consumers follow the code: both inputs list `build_serving_db.py`, and
   `build_shards.py` no longer consumes the community edges;
 - there are still seven stages, so `brain/authority/README.md:289` stays true. The validator,
@@ -1230,7 +1233,7 @@ All four are [affecting]. 6c lands last.
 | 6a | `build_cell_shards` build-to-directory split; the D1 public writer | `frontier.json` has its shape; the slim manifest has only `_meta`, `prov` and `roots`; the static tree's bytes match a golden copy; the existing context tests pass | any time |
 | 6b | `build_serving_db` context entry; `build_shards` contract choice | on a fixture, the stage leaves exactly its five files at 0644 and an empty scratch, and the runner's output and scratch checks accept them; two builds with one `generation_id` give byte-identical `serving.sqlite3`; the older contracts still pass `require_stage` | after 6a |
 | 6d | layout-aware `measure_output`; the SQLite floor at approval | a D1 fixture output measures; one changed byte in `serving.sqlite3` changes `output_root`; a missing sidecar fails; the static fixtures measure as before; freezing a D1 fixture gives artifacts equal to outputs plus inputs and passes `verify_release_files`; the private gate reports coverage over serving rows; a descriptor with SQLite 3.33 or without `ENABLE_FTS5` is refused, and 3.40.1 with it passes | after step 4 |
-| 6c | the v3-d1 inventory; the `build_common` id set | the inventory validates and its id is pinned; it differs from v3-folded only in scope, stages, consumers and id (the pattern of `brain/test_inventory_coherence.py:92-110`); base-graph picks the folded contract | in the cutover PR or after it |
+| 6c | the v3-d1 inventory; the `build_common` id set | the inventory validates and its id is pinned; it differs from v3-folded only in scope, stages, consumers and id (the pattern of `brain/test_inventory_coherence.py:92-110`); base-graph picks the folded contract | in the cutover PR |
 
 Why 6c waits for the cutover. The inventory picks the data layout, and the reducer commit picks
 the page: every inventory's brain-page stage runs `site/build_brain_page.py` with no needs.
@@ -1277,10 +1280,11 @@ After step 4, step 6 and the cutover (with 6c) are merged:
 - **Stage time.** One stage now builds the shards, xref and the serving file, and copies the
   file at publication, against a 6 h stage limit (`run_replay_v2.py:93`) and a 12 h run
   (`reproducibility_gate.py:757`). Each build also verifies a 1-1.6 GB file several times.
-- **Dataset ids across profiles.** The sidecar's digests follow Python's Unicode version. The
-  image runs CPython 3.12. If the operator Mac's Python isn't 3.12, a replay and a
-  compatibility build of the same data get different dataset ids, and the replay costs a
-  re-import. Step 4's verifier refuses the mismatch on its own host (section 5).
+- **Dataset ids across profiles.** The sidecar's digests follow Python's Unicode version, and
+  the image runs CPython 3.12. A verifier whose Unicode version differs from the release's
+  refuses it (section 5), so verify, import and promote must run under CPython 3.12. The
+  operator scripts require only 3.12 or newer (`brain-promote-release.sh:50-51`,
+  `brain-nightly.sh:190-192`), so a Mac on 3.13 refuses the replay release outright.
 - **The verifying host's SQLite** isn't pinned. Step 4's check fails clearly below 3.34 or
   without FTS5.
 
@@ -1292,7 +1296,9 @@ After step 4, step 6 and the cutover (with 6c) are merged:
   therefore still works on a Worker that has the D1 code, which keeps every PR releasable.
 - `brain.html` is frozen into each release (the promoter requires the staged page to equal the
   candidate's, `brain_promote_release.py:2449-2451`), and the page switch merges in the same
-  cutover as the builder change. So every release's page matches its own data.
+  cutover as the builder change. So every release's page matches its own data. For replays,
+  the v3-d1 inventory lands with the cutover and the static `cell-shards` entry refuses after
+  it (section 6, PRs).
 - At the first D1 promotion, the selector's previous release is the last static one. The
   deploy still stages its static files, and a rollback lands on the static Worker version.
 - After that promotion, `StaticStore`, the shard routing, the whole-file memos and their tests
@@ -1423,7 +1429,7 @@ be promoted. [neutral] PRs can land any time.
    - Releasable, since nothing runs it yet.
    - **1b. Explorer tables** [affecting], after PR #137, once the layout records `bub` and the
      bubble discs. Includes the 8 MB cap per precomputed scope.
-2. **Migration and importer**, draft PR #156 [affecting because of `wiki/migrations-brain`; the
+2. **Migration and importer**, PR #156 [affecting because of `wiki/migrations-brain`; the
    importer in `site/ops` is neutral].
    - The importer's `import` (with `--scratch`), `prune`, `supersede` and `verify` commands:
      register before prune, finishing an interrupted delete, resume from recorded coverage,
@@ -1473,8 +1479,9 @@ be promoted. [neutral] PRs can land any time.
      writer (`cells/frontier.json`, the slim manifest). Any time.
    - 6b: the serving stage's context entry, and the `build_shards` contract choice. After 6a.
    - 6d: the gate's layout-aware measurement and its SQLite floor. After step 4.
-   - 6c: the v3-d1 inventory and the `build_common` id set. In the cutover PR or after it, so
-     no replay can pair the D1 data with the static page.
+   - 6c: the v3-d1 inventory and the `build_common` id set. In the cutover PR, so no replay
+     can pair the D1 data with the static page, and main never builds a layout no inventory
+     can replay.
    - 6a, 6b and 6d are releasable, since nothing builds the D1 layout before 6c.
 7. **Cutover** [affecting, **held**].
    - The page reads the endpoints, and `site/test_frontier_page.py` changes with it.
@@ -1484,8 +1491,8 @@ be promoted. [neutral] PRs can land any time.
      (`brain-nightly.sh:773-779`).
    - The nightly passes `--layout d1` to `build_release.py`.
    - `query.py` and the other local tools read `serving.sqlite3`.
-   - 6c, the v3-d1 inventory, lands here or later. The static `cell-shards` context entry
-     refuses to run from here on, so no replay pairs the static data with the D1 page.
+   - 6c, the v3-d1 inventory, lands here. The static `cell-shards` context entry refuses to
+     run from here on, so no replay pairs the static data with the D1 page.
    - Held until steps 1 to 5, 6a, 6b, 6d and 1b (and so #137) are merged, #150 has results, and
      step 2's remote scratch import gate has passed. From then on, every release built from
      main is a D1 release, either compatibility or offline replay.
