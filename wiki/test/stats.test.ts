@@ -2,7 +2,7 @@
 // SQL aggregates against seeded fixtures (review states, AI-review freshness
 // split from the bot-save stamp, the recent-runs table, count columns,
 // event_type × actor_type cells, flags, revisions/patrol, pipeline_runs),
-// the RQ labels, the KV cache (page:stats:v7, TTL 300), and the
+// the RQ labels, the KV cache (page:stats:v8, TTL 300), and the
 // zero-means-broken footnote.
 
 import { describe, it, expect } from "vitest";
@@ -328,10 +328,10 @@ describe("GET /stats", () => {
     expect(html).toContain('<span class="muted">—</span>');
   });
 
-  it("is KV-cached under page:stats:v7 for 300s (TTL-only invalidation)", async () => {
+  it("is KV-cached under page:stats:v8 for 300s (TTL-only invalidation)", async () => {
     const h = setup();
     const first = await (await get(h.env, "/stats")).text();
-    expect(h.renderCache.store.has("page:stats:v7")).toBe(true);
+    expect(h.renderCache.store.has("page:stats:v8")).toBe(true);
     expect(h.renderCache.store.has("page:stats:v6")).toBe(false);
     // Mutate the DB; the cached page must still serve unchanged.
     insertArticle(h.db, "After_Cache");

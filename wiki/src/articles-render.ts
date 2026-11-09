@@ -32,6 +32,7 @@
 // line under the header (ARTICLES_NOTICE), never as a badge on a card; what an audit
 // measured, or that nothing has measured it, is in the page's "About" fold.
 
+import { siteNav, SITE_TOOLS } from "./site-nav.js";
 import { htmlEscape } from "./engine/html.js";
 import { passageTextHtml, quoteFragment, quoteSegments, renderQuote } from "./articles-math.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
@@ -819,7 +820,6 @@ function shell(opts: {
 }): string {
   // aria-current="page" only on /articles itself: an article or universe page is
   // inside the plane but is not the page the nav link opens.
-  const current = opts.dashboard ? ` aria-current="page"` : "";
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -841,19 +841,19 @@ ${opts.skip ? `${opts.skip}\n` : ""}<header class="wl-header">
     <a class="wl-article articles-home" href="/articles">Articles</a>
     <span class="wl-nav">
       ${SEARCHBOX_HTML}
-      <a class="wl-navlink" href="/articles"${current}>Articles</a>
-      <a class="wl-navlink" href="/brain">Brain</a>
-      <a class="wl-navlink" href="/recent-changes">Recent changes</a>
-      <a class="wl-navlink" href="/stats">Stats</a>
-      <a class="wl-navlink" href="/about">About</a>
+      ${siteNav(opts.dashboard ? "/articles" : "")}
       <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
     </span>
   </div>
 ${opts.headerRow ? `${opts.headerRow}\n` : ""}</header>
 ${opts.noticeInMain ? "" : `${NOTICE_LINE}\n`}${opts.main}
 ${opts.footer ?? `<footer class="articles-foot">
+  <p>Wikipedia text: ${CC_BY_SA}. WikiLean mappings: CC0. Lean code keeps its library’s licence.</p>
+  <details class="articles-about"><summary>Sources, licences, and data</summary>
   <p>Quoted passages are excerpts of <a href="https://en.wikipedia.org/">Wikipedia</a> articles, available under ${CC_BY_SA}. ${downloadsLine(opts.fullText === true)}</p>
   ${MAPPING_LICENCE}
+  </details>
+  <p>${SITE_TOOLS}</p>
 </footer>`}
 ${SEARCHBOX_SCRIPT}
 ${opts.turnstile ? `<script src="${TURNSTILE_SCRIPT}" async defer></script>\n` : ""}${opts.script === false ? "" : `<script src="${ARTICLES_JS}"></script>\n`}${opts.readerJs ? `<script src="${ARTICLES_READER_JS}"></script>\n` : ""}</body>
@@ -1849,7 +1849,10 @@ ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is ri
 </main>`;
   const footer = `<footer class="articles-foot">
   <p>The passages shown are excerpts of ${articleCredit(article)}, shared under ${textLicence(article)}. ${downloadsLine(nText > 0)}</p>
+  <details class="articles-about"><summary>Sources, licences, and data</summary>
   ${MAPPING_LICENCE}
+  </details>
+  <p>${SITE_TOOLS}</p>
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main, fullText: nText > 0, footer,
@@ -1968,8 +1971,11 @@ ${passages.map((p) => passageBlock(p, article, ctx, true)).join("\n")}
   const images = readerImages(article);
   const footer = `<footer class="articles-foot atlr-foot">
   <p>This page is an adaptation of ${articleCredit(article)}, and is shared under ${textLicence(article, true)}, the revision&#x27;s licence. ${downloadsLine(true)}</p>
+  <details class="articles-about"><summary>Sources, licences, and adaptations</summary>
   <p>What WikiLean changed: it highlights the revision&#x27;s formal passages by their formalization status, adds a panel of Lean cards beside them with links to the Lean declarations and their source, points the revision&#x27;s links to Wikipedia or, for an article this plane covers, to its page here, removes the Wikimedia logos and any image that is not free, and hides the revision&#x27;s navigation boxes (rows of links to other articles) and any section edit links. Its text is otherwise the revision&#x27;s, its formulas are drawn from their MathML and its images load from Wikimedia. ${images ? "Images and media keep their own licences: each is listed below, linked to its file page, with its author where that page names one, and its licence." : "Images and media keep their own licences, which their file pages on Wikimedia give."}</p>
   ${images ? `${images}\n  ` : ""}${MAPPING_LICENCE}
+  </details>
+  <p>${SITE_TOOLS}</p>
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main,
@@ -2117,8 +2123,17 @@ export function articlesDashboardPage(input: DashboardInput): string {
   const libraryNames = JSON.stringify(Object.fromEntries([...libs.values()].map((view) => [view.id, view.info.short])));
   const nRelated = count(counts.related);
   const main = `<main class="wl-articles" id="articles-dashboard">
-<h1 class="articles-h1">Articles</h1>
-<p class="articles-lead">Which statements in WikiProject Mathematics articles are formalized in Lean, and where: each passage is located in a frozen set of Lean libraries at pinned commits, with a link to the exact source lines.</p>
+<h1 class="articles-h1" id="articles-h-list">Articles</h1>
+<p class="articles-lead">Explore mathematical statements and their Lean matches. Choose an article to inspect the evidence, confirm a link, or add a missing declaration. <a href="/contribute">How to contribute</a>.</p>
+<section aria-labelledby="articles-h-list">
+<form class="articles-search" method="get" action="/articles" role="search"><label for="articles-q">Search covered articles</label> <input id="articles-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
+<p class="articles-count" id="articles-count" role="status">${showing}</p>
+${tableWrap("Articles", `<table class="articles-table articles-list" id="articles-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr><th scope="col">Article</th><th scope="col" class="num">Passages</th>${statusHeads()}<th scope="col">Libraries</th><th scope="col">Importance</th></tr></thead><tbody>
+${list}
+</tbody></table>`)}
+</section>
+<details class="articles-about" id="articles-coverage">
+<summary>Coverage and build details</summary>
 <p class="articles-meta">${universe ? `<a href="/articles/universe/${attr(current.universe.sha256)}">Universe ${text(current.universe.id)}</a>` : `Universe ${text(current.universe.id)}`}: ${int(current.universe.libraries)} libraries, frozen ${text(current.universe.frozen)}</p>
 ${detailsFold("articles-about", "About this build", buildLines(current))}
 <section class="articles-strip" aria-labelledby="articles-h-totals">
@@ -2135,14 +2150,7 @@ ${hasImportance ? `<section aria-labelledby="articles-h-imp">
 <h2 class="articles-h2" id="articles-h-imp">By WikiProject importance</h2>
 ${tableWrap("By WikiProject importance", `<table class="articles-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads()}</tr></thead><tbody>${importance}</tbody></table>`)}
 </section>` : ""}
-<section aria-labelledby="articles-h-list">
-<h2 class="articles-h2" id="articles-h-list">Articles</h2>
-<form class="articles-search" method="get" action="/articles" role="search"><label for="articles-q">Search covered articles</label> <input id="articles-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
-<p class="articles-count" id="articles-count" role="status">${showing}</p>
-${tableWrap("Articles", `<table class="articles-table articles-list" id="articles-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr><th scope="col">Article</th><th scope="col" class="num">Passages</th>${statusHeads()}<th scope="col">Libraries</th><th scope="col">Importance</th></tr></thead><tbody>
-${list}
-</tbody></table>`)}
-</section>
+</details>
 <p class="articles-data">Data: <a href="/api/articles/current">current build (JSON)</a></p>
 </main>`;
   return shell({

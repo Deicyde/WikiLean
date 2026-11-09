@@ -1,88 +1,34 @@
 # Contributing to WikiLean
 
-Thanks for considering a contribution. WikiLean is a small, focused project: an annotated mirror of Wikipedia's mathematics articles with each statement linked (where possible) to its formalization in Mathlib4. There are three independent ways to help.
+## Improve the mathematics
 
----
+Use the [article reader](https://wikilean.jackmccarthy.org/articles) to inspect a
+passage and its Lean matches. Sign in to confirm or report a match, or add and
+correct tags after accepting the CC0 contribution agreement.
 
-## Start here: the formalization reader
+The [contributor guide](docs/START-CONTRIBUTING.md) explains the current workflow,
+match relations, agent accounts, and limits. The old `/:slug` annotation editor
+is disabled; new public edits belong in the reader.
 
-**[docs/START-CONTRIBUTING.md](docs/START-CONTRIBUTING.md)** is the one-page guide to helping with the thing this project is actually for — answering, passage by passage, whether a statement is formalized in Lean and where. It covers four paths, in order of effort, and says plainly which are open:
+Check assumptions as well as conclusions. Label partial or related matches
+honestly, cite a declaration that resolves, and add a reason when correcting a
+link. A missing match is useful evidence about a particular search, not proof
+that no formalization exists.
 
-- **Confirm or report a link** at [/articles](https://wikilean.jackmccarthy.org/articles) — one click, **live today**, and worth most on claimed absences and downgraded links, which are the two places the pre-launch audit measured the data as weakest;
-- **tag a passage yourself** — coming in the next release;
-- **run your own agent** against the API — after that one;
-- **run the whole locate pipeline** on your own machine — built, not yet open, please ask first.
+## Contribute from another computer
 
-The rest of this file is the older, separate path: annotating the `/:slug` pages, and contributing code.
+Create your own agent account at [/agents](https://wikilean.jackmccarthy.org/agents)
+for the tag API. For maintenance, article-pipeline work, and Brain proposals,
+follow [START-CONTRIBUTING.md](docs/START-CONTRIBUTING.md) and the linked setup guides.
+Keep model credentials on your own machine and enforce your own spending limits.
+WikiLean never collects your model API key or subscription credentials.
 
-## 1. Annotating on the live site
+Full article results still go through operator intake. There is no general
+self-service submission endpoint. The offline
+[intake checker](docs/INTAKE.md) validates a sealed record set before delivery;
+passing it does not publish the set or approve its mathematical claims.
 
-This is the easiest and highest-impact contribution path. **No setup needed beyond a browser and a GitHub account.**
-
-### Sign in
-1. Visit any article on [wikilean.jackmccarthy.org](https://wikilean.jackmccarthy.org) — e.g. [Prime ideal](https://wikilean.jackmccarthy.org/Prime_ideal).
-2. Click the **✎ Sign in to edit** button bottom-right; auth is via GitHub OAuth.
-3. After auth, the in-context editor loads on every article.
-
-### The annotation model
-Each annotation marks a span of article text with:
-- **`kind`** — `definition` · `proposition` · `theorem` · `example`
-- **`status`** — `formalized` · `partial` · `not_formalized`
-- **`mathlib.decl`** + **`mathlib.module`** — the Mathlib declaration name and its module (when formalized)
-- **`note`** — a one-sentence explanation
-- **`anchor`** — the article span being annotated (managed automatically by the editor)
-
-### What to do
-- **Edit an existing annotation:** click any green/yellow/red highlight, change the fields, hit Save. Your edit is stored as a new revision; the previous state is kept in history.
-- **Add a new annotation:** select text in an article, click **+ Annotate**, fill in the panel, Save. The selection becomes the new annotation's anchor.
-- **Mark something correctly-formalized:** if Mathlib4 has a matching declaration, set the decl (e.g. `Ideal.IsPrime`) and module (`Mathlib.RingTheory.Ideal.Prime`). The editor links out to the Mathlib docs so you can verify.
-- **Flag a wrong AI guess:** the seed annotations are AI-generated. Many are right; some are not. If a `decl` doesn't actually formalize the statement, fix it or change the status.
-
-### Quality bar
-- Citations should resolve: if you write `Mathlib.SetTheory.ZFC` and `IsPrime`, the docs link generated from that should open the right page.
-- Be honest about partial matches: `partial` means "Mathlib has the building blocks but no statement of this exact result." `not_formalized` is a fine answer.
-- One annotation = one statement. Don't merge unrelated claims into a single anchor.
-
-### What happens to your edits
-- Saved instantly to the production D1 database; visible to the next reader immediately.
-- Edits are kept in `revisions` and can be viewed at `https://wikilean.jackmccarthy.org/<slug>/history`.
-- Automated passes (the nightly AI review and the Wikipedia-drift re-pin) write through the same Worker API. A bot save that drops or alters any `provenance: "human"` annotation, tombstones included, is rejected with HTTP 422, so automation never silently overwrites your work.
-- Moderation follows the **Human-at-boundaries** policy (ratified 2026-08-06; see [docs/ROADMAP.md](docs/ROADMAP.md)). An AI reviewer that disagrees with a human annotation files a *proposal* instead of editing it. The nightly's deterministic resolver ([`site/resolve_proposals.py`](site/resolve_proposals.py)) decides only three cases: it rejects a proposal that changes nothing, approves a declaration rename when the proposed name exists in Mathlib and the current one is gone, and approves a downgrade to `partial` when the cited declaration is a `proof_wanted` stub. Every other proposal stays pending for a patroller. An AI-approved change re-labels the annotation `ai-moderated` and is recorded as its own revision kind (`proposal-decided-ai`), so AI decisions are never attributed to a human. Humans remain the gate only where WikiLean pushes into human-edited systems: Mathlib PRs, Wikidata, and Wikipedia.
-- Human edits also enter a patrol queue on the live site, where patrollers can mark them reviewed.
-
----
-
-## 2. Code contributions
-
-The repo is three loosely-coupled pieces. Pick the one matching your interest.
-
-### `site/` — the annotation pipeline (Python)
-- `render.py` — fetches Wikipedia HTML and renders the annotated page.
-- `batch_annotate.py` — orchestrates the 2-agent pipeline (enumeration + Mathlib matching), with a `--moderate` mode that preserves human edits.
-- `export_w3c.py`, `export_wikidata_rdf.py` — exports to standards-aligned formats.
-- `serve_review.py` — the local review server (predecessor of the live wiki editor).
-
-To run locally:
-```sh
-cd site
-python3 -m venv ../catalog/.venv
-source ../catalog/.venv/bin/activate
-pip install -r requirements.txt   # if present; otherwise: requests claude-agent-sdk
-python3 render.py Prime_ideal     # render a single article
-```
-
-### `catalog/` — the article catalog (Python)
-- `fetch_catalog.py` — enumerates WikiProject Math from the MediaWiki API.
-- `tag_with_mathlib.py` — parallel AI agents that grep Mathlib for each concept.
-- `build_concept_layer.py`, `export_wikidata_rdf.py` — the concept (QID-level) layer + RDF.
-
-See [catalog/README.md](catalog/README.md) for full details.
-
-### `wiki/` — the live wiki backend (TypeScript)
-- Cloudflare Worker, Hono framework, Drizzle ORM, D1, KV, R2.
-- See [wiki/README.md](wiki/README.md) for setup and deploy instructions.
-
-### Development setup and checks
+## Develop and test
 
 Use **Node 22** and **Python 3.12**, matching `.github/workflows/ci.yml`. Install the locked JavaScript dependencies from the package directory; use `npm ci`, not `npm install`, when reproducing CI:
 
@@ -145,7 +91,7 @@ Its preflight requires more than 200 cached Wikipedia pages in `site/cache/*.htm
 
 ---
 
-## 3. Upstream contributions
+## Upstream contributions
 
 WikiLean is partly a bet that math-formalization metadata belongs on Wikidata and in Mathlib itself.
 
@@ -153,7 +99,7 @@ WikiLean is partly a bet that math-formalization metadata belongs on Wikidata an
 - Wikidata property **[P14534 (Mathlib Declaration ID)](https://www.wikidata.org/wiki/Property:P14534)**, an external identifier mapping a concept item to its Mathlib4 declaration name, was created on 2026-06-17 from WikiLean's proposal ([docs/wikidata_property_proposal.md](docs/wikidata_property_proposal.md)). It had 115 statements on 2026-10-13. Adding or checking P14534 statements on concept items helps.
 
 ### Mathlib4
-- Mathlib4 has an `@[wikidata]` attribute (defined in `Mathlib/Tactic/CrossRefAttribute.lean`) that tags declarations with their Wikidata QID — the *inverse* of the proposed property. The WikiLean concept layer is being used to propose batch additions of this tag.
+- Mathlib4 has an `@[wikidata]` attribute (defined in `Mathlib/Tactic/CrossRefAttribute.lean`) that tags declarations with their Wikidata QID — the inverse of that property. The WikiLean concept layer is being used to propose batch additions of this tag.
 
 ---
 
@@ -162,34 +108,6 @@ WikiLean is partly a bet that math-formalization metadata belongs on Wikidata an
 WikiLean is, in part, an experiment in **human + AI database moderation**. Like Wikipedia, edits are public and attributed: your GitHub display name, the article you edited, the timestamp, and your edit comment are all public.
 
 Beyond the visible edit, we may analyze edit *metadata* — which fields changed, whether a change was AI- or human-authored (provenance), and timing — and publish findings **in aggregate** to study how humans and AI moderate a shared database together. Research exports use salted-hash pseudonyms by default and never include emails or IP addresses. If you edit, you're contributing to that record; that's the whole point, and we'd rather you know up front.
-
-## Donating compute (token donations)
-
-> **Planned / not yet live.** This describes the intended path, not a current feature. Today the annotation pipeline runs from the maintainer's machine.
-
-WikiLean's annotation and moderation pipeline is AI-driven, and the plan is that **anyone will be able to donate compute by running the pipeline locally** on their own Anthropic API key or Claude subscription. The results (new/updated annotations) get reviewed and seeded into the wiki the same way maintainer-run passes are.
-
-A few commitments on this, stated now so the policy is clear:
-
-- **WikiLean will never collect or store your API keys or subscription credentials.** Not in the database, not in logs, not anywhere.
-- The planned "donate a key" path is a **GitHub Actions template you fork**: the key lives only in *your* fork's repository secrets, and the pipeline runs in *your* Actions, against *your* account.
-- **You cap your own spend** in your own Anthropic console. We can't bill you and can't see your usage.
-
-## Contributing located record sets
-
-> **Planned / not yet live.** There is no submission endpoint and no contributor key. What exists today is the offline checker described below, and the operator path: the maintainer copies a set from the machine that produced it and builds the store by hand.
-
-The formalization reader ([docs/ARTICLES.md](docs/ARTICLES.md)) answers, per passage of a WikiProject Mathematics article, whether it is formalized in Lean and where. Its input is a **sealed record set** produced by the [formal-companion](https://github.com/mathlib-initiative/formal-companion) skill's locate pipeline — a separate project, which you install and run on your own machine. WikiLean vendors no part of it and never will: it is a dependency, and the two sides meet only at the record-set format.
-
-[docs/INTAKE.md](docs/INTAKE.md) is the contract for contributing one: what a machine posts, what WikiLean checks before it accepts it, the scoped per-machine key, and what promotion into the Brain would still need decided. Section 7 is the contributor's own sequence.
-
-One part of it you can run today. Before a set goes anywhere, check it against WikiLean's side of the contract:
-
-```sh
-python3 scripts/articles/verify_submission.py --record-set <set-dir> --machine-id <your-machine>
-```
-
-It exits 0 with the staging rows it would write, or 2 with the refusal's code, HTTP status and the rule it breaks. It runs offline, judges no location, and is the same code the endpoint would run.
 
 ## Code of conduct
 

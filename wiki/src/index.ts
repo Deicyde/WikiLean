@@ -37,7 +37,7 @@ import {
   type StatsEventCell,
   type UserProfileRow,
 } from "./pages.js";
-import { aboutPage, brainLanding, sitemapXml } from "./home.js";
+import { aboutPage, contributePage, landingPage, sitemapXml } from "./home.js";
 import { wikifunctionsPage } from "./wikifunctions.js";
 import { wikifunctionsVerifyPage } from "./wikifunctions-verify.js";
 import { registerReviewRoutes } from "./review.js";
@@ -120,6 +120,7 @@ const RESERVED = new Set([
   "repos",
   "agents",
   "about",
+  "contribute",
   // Static assets in wiki/public/ + the names of the DELETED old-graph-stack
   // routes (/map, /map-v2, /graph, /article-graph, graph_data.json,
   // atlas_data.json — handlers deleted 2026-08-04; they now fall through to
@@ -568,70 +569,24 @@ async function runGuardedArticleBatch(
   }
 }
 
-// ---- dynamic homepage + sitemap (D-C7) ----
-// Both are D1-driven (new articles appear without a redeploy) and KV-cached
-// with TTL-only invalidation. They route here only because build-public.ts no
-// longer copies index.html/sitemap.xml into wiki/public/ — the asset layer
-// runs BEFORE the Worker and would otherwise shadow these paths.
-async function homeRows(c: Context<{ Bindings: Env }>) {
-  const db = drizzle(c.env.DB);
-  return db
-    .select({
-      slug: articles.slug,
-      displayTitle: articles.displayTitle,
-      nFormalized: articles.nFormalized,
-      nPartial: articles.nPartial,
-      nNotFormalized: articles.nNotFormalized,
-      updatedAt: articles.updatedAt,
-    })
-    .from(articles)
-    .orderBy(articles.displayTitle);
-}
-
-// Trust signals (P2): the 8 articles that have gone longest without a human
-// review — never-reviewed first (NULL last_reviewed_at), then oldest review,
-// slug as the deterministic tiebreak. LEFT JOIN: an article with no
-// moderation_state row reads as never reviewed. Parked states
-// ('moved'/'deleted'/'needs_human') are excluded with the same predicate as
-// /api/work (F4/F11) — they need the update flow or a human decision, not a
-// review pass. One query on the small moderation_state table
-// (idx_moderation_state_reviewed).
-async function leastReviewedRows(c: Context<{ Bindings: Env }>) {
-  const db = drizzle(c.env.DB);
-  return db
-    .select({
-      slug: articles.slug,
-      displayTitle: articles.displayTitle,
-      lastReviewedAt: moderationState.lastReviewedAt,
-    })
-    .from(articles)
-    .leftJoin(moderationState, eq(moderationState.slug, articles.slug))
-    .where(sql`(${moderationState.state} IS NULL OR ${moderationState.state} NOT IN ('moved','deleted','needs_human'))`)
-    .orderBy(sql`${moderationState.lastReviewedAt} ASC NULLS FIRST`, articles.slug)
-    .limit(8);
-}
-
-// the landing page IS the Brain (embedded); /articles is the formalization reader
+// ---- public entry pages and sitemap ----
+// build-public.ts excludes the old static entry pages so assets cannot shadow
+// these routes. The sitemap still reads D1; public entry copy does not.
+// Public entry pages do not query a corpus or load the graph on arrival.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v11";  // v11: the navigation links the formalization reader (/articles)
+  const cacheKey = "page:home:v12"; // contributor-focused landing page
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
-  const [rows, leastReviewed] = await Promise.all([homeRows(c), leastReviewedRows(c)]);
-  const html = brainLanding(rows, leastReviewed);
+  const html = landingPage();
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });
 
-// /articles is the formalization reader's own list (registerArticlesRoutes
-// above, src/articles.ts). It replaced the D1 article directory home.ts
-// homePage() served here until 2026-11-05, and its 'page:articles' render-cache
-// key is retired with it: the list is built from the store, not from D1, and is
-// not KV-cached. homePage() itself is still in home.ts, unrouted, with the rest
-// of the old article system (its removal is a later change).
+app.get("/contribute", (c) => c.html(contributePage()));
 
 // ---- /api/articles — compact article index for the header search box -------
-// Same query shape as homeRows minus updated_at, serialized as arrays to keep
-// the payload small ([slug, display_title, n_formalized, n_partial,
+// Serialized as arrays to keep the payload small
+// ([slug, display_title, n_formalized, n_partial,
 // n_not_formalized]; count columns pass through null pre-backfill). KV-cached
 // in RENDER_CACHE, plus browser/CDN Cache-Control so a reader's
 // session fetches it at most once per page view.
@@ -663,25 +618,12 @@ app.get("/api/articles", async (c) => {
   return c.body(body, 200, headers);
 });
 
-// ---- /about — methodology page with live counts (dynamic; replaces the
-// static wiki/public/about.html asset, which used to shadow this path with
-// stats baked at build time). One aggregate over the D-C5 count columns.
+// About describes the current workflow; counts stay with their corpus.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v3";  // v3: the navigation links the formalization reader (/articles)
+  const cacheKey = "page:about:v4";
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
-  const db = drizzle(c.env.DB);
-  const agg = (
-    await db
-      .select({
-        nArticles: sql<number>`COUNT(*)`,
-        nFormalized: sql<number>`COALESCE(SUM(${articles.nFormalized}), 0)`,
-        nPartial: sql<number>`COALESCE(SUM(${articles.nPartial}), 0)`,
-        nNotFormalized: sql<number>`COALESCE(SUM(${articles.nNotFormalized}), 0)`,
-      })
-      .from(articles)
-  )[0];
-  const html = aboutPage(agg);
+  const html = aboutPage();
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });
@@ -755,7 +697,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v7"; // v7: the navigation links the formalization reader (/articles)
+  const cacheKey = "page:stats:v8"; // v8: focused navigation; secondary tools in the footer
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);

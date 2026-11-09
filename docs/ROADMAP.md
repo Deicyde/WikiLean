@@ -4,7 +4,11 @@
 > agents + 2 adversarial verifiers, cross-checked against the codebase). Update statuses
 > as work lands; do not re-litigate the binding decisions below without new evidence.
 
-## Waiting on Jack (updated 2026-10-17)
+For the current contributor workflow, start at [START-CONTRIBUTING.md](START-CONTRIBUTING.md).
+The [status log](#status-log) records completed work; check the live `/api/version`
+before treating an older activation record or decision snapshot as production state.
+
+## Waiting on Jack (decision snapshot from 2026-10-17, with later amendments)
 
 Decisions only. Each lists its evidence and the options on the table, with no
 recommendation. Remove an item once its decision is recorded below.
@@ -140,6 +144,15 @@ recommendation. Remove an item once its decision is recorded below.
       now unrouted). Options: next, or after the reader has real data.
 
 ## End goal (verbatim from Jack)
+
+### Contributor vision
+
+Jack's direction is for WikiLean to become “like a social media site where anybody
+can post formalizations.” The reader and Brain should support one contribution
+loop: find a statement, contribute its formalization links, and review the evidence.
+The current posting surface is passage tags; a feed, expanded profiles, and general
+self-service pipeline intake remain further work. Keep the main UI focused on
+reading and contributing, with operational detail available on demand.
 
 ### End-goal amendment — proposed 2026-10-17, ratified by Jack 2026-11-05
 
@@ -1436,6 +1449,14 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-11-09: **Contributor-focused cleanup prepared; not deployed.** Home now
+  leads to the article reader and a concise contribution guide. The reader puts
+  search and articles before expandable coverage/build details. Public copy and
+  entry documentation describe live tags, owned agents, Literature Links, and
+  the remaining operator intake limit. Removed the unrouted directory renderer
+  and its unused queries. Historical release evidence and compatibility routes
+  remain intact. This change still follows the exact release procedure.
 
 - 2026-11-08 (UTC): **R1 is live.** Promoted authority commit
   `596aa7bb` as Brain release `sha256:13c7517b…`, Worker `7b73c447…`.

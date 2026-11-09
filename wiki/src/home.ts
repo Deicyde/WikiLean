@@ -1,772 +1,121 @@
-// Dynamic homepage + sitemap + about page from D1 (Wave D, contract D-C7).
-// Replaces the static site/out/ pages that build-public.ts used to copy into
-// wiki/public/ — articles created via PUT /api/article/:slug now appear
-// without a static rebuild. index.ts serves brainLanding() cached in
-// RENDER_CACHE ('page:home:v11', TTL 300s), aboutPage() ('page:about:v3',
-// TTL 300s) and sitemapXml() ('page:sitemap:v5', TTL 3600s). homePage() served
-// /articles under 'page:articles' until 2026-11-05, when the formalization
-// reader took that path over (src/articles.ts); it is kept here, unrouted, with
-// the rest of the old article system.
-//
-// Visual language: warm academic-minimalist — paper background, serif display
-// headings (system stacks only, no external fonts), one deep-blue accent, and
-// the three semantic status colors retuned to harmonize (green=formalized,
-// amber=partial, red=not formalized). The directory is a scannable list with
-// inline stacked coverage bars, filtered/sorted client-side.
-// Counts come from articles.n_formalized/n_partial/n_not_formalized (D-C5);
-// null = not yet backfilled and renders as a muted "pending".
-//
-// Self-contained by design: no imports from pages.ts / index.ts / engine.
+// Public entry pages. Reader counts and provenance live with the reader, where
+// their Wikipedia revisions and searched library versions can be understood.
+import { htmlEscape } from "./engine/html.js";
+import { siteNav, SITE_TOOLS } from "./site-nav.js";
 
-export interface HomeRow {
-  slug: string;
-  displayTitle: string;
-  nFormalized: number | null;
-  nPartial: number | null;
-  nNotFormalized: number | null;
-  updatedAt: number;
-}
-
-export interface SitemapRow {
-  slug: string;
-  updatedAt: number;
-}
-
-// Trust signals (P2): one row of the landing page's "Least recently reviewed"
-// strip — articles most in need of human eyes. null lastReviewedAt = never
-// reviewed (sorts first upstream; rendered as "never reviewed").
-export interface LeastReviewedRow {
-  slug: string;
-  displayTitle: string;
-  lastReviewedAt: number | null;
-}
-
+export interface SitemapRow { slug: string; updatedAt: number }
 const SITE_ORIGIN = "https://wikilean.jackmccarthy.org";
+const esc = (s: string) => htmlEscape(s, true);
 
-// Tiny local twin of engine/html.ts htmlEscape (copied to keep this module
-// import-free). Numeric refs are valid in both HTML and XML.
-function esc(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;");
-}
-
-function fmtInt(n: number): string {
-  return n.toLocaleString("en-US");
-}
-
-// Compact relative age for the "Recently updated" strip. The page is KV-cached
-// for 300s, so these can be up to ~5 minutes stale — acceptable at this
-// granularity. Clamped at 0 for clock skew / future timestamps.
-function fmtRel(ms: number): string {
-  const s = Math.max(0, Math.floor((Date.now() - ms) / 1000));
-  if (s < 60) return "just now";
-  if (s < 3600) return Math.floor(s / 60) + "m ago";
-  if (s < 86400) return Math.floor(s / 3600) + "h ago";
-  const d = Math.floor(s / 86400);
-  if (d < 60) return d + "d ago";
-  if (d < 365) return Math.floor(d / 30) + "mo ago";
-  return Math.floor(d / 365) + "y ago";
-}
-
-function hasCounts(r: HomeRow): r is HomeRow & {
-  nFormalized: number;
-  nPartial: number;
-  nNotFormalized: number;
-} {
-  return r.nFormalized !== null && r.nPartial !== null && r.nNotFormalized !== null;
-}
-
-// One directory entry: title | stacked coverage bar | formalized/total.
-// data-* attributes drive the client-side filter + sort (data-title is the
-// lowercased filter key; cov/f/n are sort keys; untagged feeds the hide
-// checkbox — null-count rows behave as untagged with zeroed sort keys).
-function dirRow(r: HomeRow): string {
-  const t = esc(r.displayTitle);
-  let bar: string;
-  let meta: string;
-  let cov = 0;
-  let f = 0;
-  let n = 0;
-  let untagged = true;
-  if (!hasCounts(r)) {
-    // Pre-backfill row: counts are unknown, not zero (D-C5: null = pending).
-    bar = '<span class="bar bar-empty"></span>';
-    meta = '<span class="row-meta pending">pending</span>';
-  } else {
-    f = r.nFormalized;
-    n = r.nFormalized + r.nPartial + r.nNotFormalized;
-    if (n === 0) {
-      bar = '<span class="bar bar-empty"></span>';
-      meta = '<span class="row-meta untagged">untagged</span>';
-    } else {
-      untagged = false;
-      cov = f / n;
-      const wf = (100 * r.nFormalized) / n;
-      const wp = (100 * r.nPartial) / n;
-      const wn = (100 * r.nNotFormalized) / n;
-      bar =
-        `<span class="bar" title="${r.nFormalized} formalized · ${r.nPartial} partial · ${r.nNotFormalized} not formalized">` +
-        `<i class="f" style="width:${wf.toFixed(1)}%"></i>` +
-        `<i class="p" style="width:${wp.toFixed(1)}%"></i>` +
-        `<i class="n" style="width:${wn.toFixed(1)}%"></i></span>`;
-      meta = `<span class="row-meta">${r.nFormalized}<span class="of">/</span>${n}</span>`;
-    }
-  }
-  return (
-    // Slugs are URL-encoded for the href (then HTML-escaped, like every sink) —
-    // raw "?"/"#"/"%" in a slug would otherwise break the link (W3 fix #10).
-    `<a class="row" href="/${esc(encodeURIComponent(r.slug))}" ` +
-    `data-title="${esc(r.displayTitle.toLowerCase())}" data-cov="${cov.toFixed(4)}" ` +
-    `data-f="${f}" data-n="${n}" data-untagged="${untagged ? 1 : 0}">` +
-    `<span class="row-title">${t}</span>${bar}${meta}</a>`
-  );
-}
-
-function recentItem(r: HomeRow): string {
-  return (
-    // URL-encoded + HTML-escaped, same as dirRow (W3 fix #10).
-    `<a class="recent-item" href="/${esc(encodeURIComponent(r.slug))}">` +
-    `<span class="recent-title">${esc(r.displayTitle)}</span>` +
-    `<span class="recent-when">${fmtRel(r.updatedAt)}</span></a>`
-  );
-}
-
-// The landing page IS the Brain: dark shell, headline stats from D1, and the
-// explorer embedded full-bleed (/brain?embed=1 hides its own chrome). The
-// article directory that used to live here moved to /articles.
-// `leastReviewed` (P2 trust signals) renders as a compact strip under the
-// stats: the articles that have gone longest without a human review.
-export function brainLanding(rows: HomeRow[], leastReviewed: LeastReviewedRow[] = []): string {
-  const nF = rows.reduce((s, r) => s + (r.nFormalized ?? 0), 0);
-  const nP = rows.reduce((s, r) => s + (r.nPartial ?? 0), 0);
-  const nN = rows.reduce((s, r) => s + (r.nNotFormalized ?? 0), 0);
-  const grand = nF + nP + nN;
-  const pct = (n: number) => (grand ? ((100 * n) / grand).toFixed(1) : "0.0");
-  // Same sink discipline as dirRow: slug URL-encoded then HTML-escaped in the
-  // href, display title HTML-escaped as text (titles are hostile input).
-  const reviewStrip = leastReviewed.length
-    ? `<div class="strip rv-strip" aria-label="Least recently reviewed articles">
-  <span class="rv-head" title="Articles whose annotations have gone longest without a human review — good places to help">Least recently reviewed:</span>
-${leastReviewed
-  .map(
-    (r) =>
-      `  <a class="rv-item" href="/${esc(encodeURIComponent(r.slug))}">${esc(r.displayTitle)}<em>${
-        r.lastReviewedAt === null ? "never reviewed" : "reviewed " + fmtRel(r.lastReviewedAt)
-      }</em></a>`,
-  )
-  .join("\n")}
-</div>
-`
-    : "";
+// One small shell for home, About and Contribute; no corpus or account data.
+function publicPage(title: string, path: string, description: string, body: string): string {
   return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WikiLean — the Brain</title>
-<meta name="description" content="WikiLean: Wikipedia's mathematics annotated with its Mathlib formalization status — explored through the Brain, a zoomable provenance-carrying map joining concepts, Lean code, cross-database identities, and the literature.">
+<title>WikiLean — ${esc(title)}</title>
+<meta name="description" content="${esc(description)}">
+<link rel="canonical" href="${SITE_ORIGIN}${path}">
+<script>(function(){try{var s=localStorage.getItem("wl-theme");document.documentElement.dataset.theme=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");}catch(e){}})();</script>
 <style>
-* { box-sizing:border-box; } html, body { height:100%; }
-body { margin:0; display:flex; flex-direction:column; background:#0b0e14; color:#e6e4de;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-a { color:#7cb3ff; text-decoration:none; } a:hover { text-decoration:underline; }
-.wl-header { background:#10141d; border-bottom:1px solid #262c3a; padding:10px 20px;
-  display:flex; align-items:baseline; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-.wl-brand { font-weight:700; color:#7cb3ff; font-size:18px; }
-.tag { color:#9aa3b2; font-size:.85rem; }
-.wl-nav { display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:.9rem; }
-.strip { background:#10141d; border-bottom:1px solid #262c3a; padding:6px 20px;
-  display:flex; gap:18px; align-items:center; flex-wrap:wrap; font-size:.85rem; color:#9aa3b2; }
-.strip b { color:#e6e4de; font-size:1rem; }
-.strip .f { color:#22c55e; } .strip .p { color:#eab308; } .strip .n { color:#ef4444; }
-.rv-strip { gap:4px 14px; }
-.rv-head { color:#9aa3b2; }
-.rv-item { color:#e6e4de; white-space:nowrap; }
-.rv-item:hover { color:#7cb3ff; }
-.rv-item em { font-style:normal; color:#9aa3b2; font-size:.78rem; margin-left:5px; }
-iframe { flex:1; border:0; width:100%; min-height:420px; }
+:root { color-scheme:light; --paper:#f7f4ee; --surface:#fffdf9; --ink:#1f1d1a; --muted:#5f594e; --line:#d8d0bd; --accent:#1a4b8c; }
+[data-theme="dark"] { color-scheme:dark; --paper:#1a1816; --surface:#232020; --ink:#ebe5d8; --muted:#b0a798; --line:#4d4742; --accent:#8fb4e8; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+a { color:var(--accent); text-underline-offset:3px; }
+:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+.wl-header { background:var(--surface); border-bottom:1px solid var(--line); padding:16px max(24px,calc((100% - 1080px)/2)); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px 32px; }
+.wl-brand,h1,h2 { font-family:Charter,'Iowan Old Style',Georgia,serif; }
+.wl-brand { font-size:24px; font-weight:700; color:var(--ink); text-decoration:none; }
+.wl-nav { display:flex; flex-wrap:wrap; align-items:center; gap:12px 24px; }
+.wl-navlink { font-size:.95rem; text-decoration:none; }
+.wl-navlink:hover { text-decoration:underline; }
+.wl-navlink[aria-current] { color:var(--ink); font-weight:600; }
+.wl-theme-toggle { border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:50%; min-width:36px; min-height:36px; cursor:pointer; }
+main { max-width:960px; margin:auto; padding:64px 24px 48px; }
+h1 { max-width:760px; font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.13; font-weight:500; margin:0 0 24px; letter-spacing:-.02em; }
+h2 { font-size:1.5rem; line-height:1.3; margin:32px 0 12px; }
+p,ol,ul { max-width:720px; }
+.lead { color:var(--muted); font-size:1.2rem; line-height:1.6; max-width:640px; }
+.actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px 24px; margin:28px 0; }
+.button { display:inline-block; padding:10px 22px; background:var(--accent); color:var(--paper); border-radius:5px; text-decoration:none; font-weight:600; }
+.button:hover { text-decoration:underline; }
+.paths { display:grid; grid-template-columns:1fr 1fr; gap:32px; border-top:1px solid var(--line); margin-top:48px; }
+.paths h2 { margin-top:24px; }
+.note { color:var(--muted); font-size:.92rem; }
+li { margin:10px 0; }
+footer { max-width:960px; margin:auto; border-top:1px solid var(--line); padding:24px 24px 40px; color:var(--muted); font-size:.85rem; }
+footer p { margin:6px 0; }
+.skip { position:absolute; left:16px; top:-100px; padding:8px; background:var(--surface); }
+.skip:focus { top:8px; }
+@media(max-width:600px) { main { padding-top:40px; } .paths { grid-template-columns:1fr; gap:0; } .wl-nav { gap:12px 18px; } }
 </style>
 </head>
 <body>
-<header class="wl-header">
-  <span><span class="wl-brand">WikiLean</span>
-    <span class="tag">— Wikipedia&#x27;s mathematics, annotated with its Mathlib formalization status.
-    This is the <b>Brain</b>: every concept joined to its Lean code, databases, and literature.</span></span>
-  <nav class="wl-nav" aria-label="Site">
-    <a href="/articles">Articles</a>
-    <a href="/recent-changes">Recent changes</a>
-    <a href="/stats">Stats</a>
-    <a href="/concepts">Concepts</a>
-    <a href="/mcp" title="Wikibrain MCP — connect an AI agent to the Brain">MCP</a>
-    <a href="/about">About</a>
-  </nav>
-</header>
-<div class="strip">
-  <span><b>${fmtInt(grand)}</b> annotated results</span>
-  <span class="f"><b>${pct(nF)}%</b> formalized</span>
-  <span class="p"><b>${pct(nP)}%</b> partial</span>
-  <span class="n"><b>${pct(nN)}%</b> not yet</span>
-  <span><a href="/brain">open the Brain full-page ↗</a></span>
-</div>
-${reviewStrip}<iframe src="/brain?embed=1" title="The Brain — a zoomable map of mathematics"></iframe>
+<a class="skip" href="#main">Skip to content</a>
+<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><nav class="wl-nav" aria-label="Site">${siteNav(path)}<button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></nav></header>
+<main id="main">${body}</main>
+<footer>
+<p>${SITE_TOOLS}</p>
+<p><a href="https://github.com/Deicyde/WikiLean">Source on GitHub</a> · A project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
+<p>Wikipedia text: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. WikiLean annotations: <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. Lean code retains its library’s licence.</p>
+</footer>
+<script>(function(){var b=document.getElementById("wl-theme-toggle");b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
 </body>
 </html>`;
 }
 
-export function homePage(rows: HomeRow[]): string {
-  const sorted = [...rows].sort((a, b) =>
-    a.displayTitle.toLowerCase().localeCompare(b.displayTitle.toLowerCase()),
-  );
-  const counted = sorted.filter(hasCounts);
-  const tf = counted.reduce((s, r) => s + r.nFormalized, 0);
-  const tp = counted.reduce((s, r) => s + r.nPartial, 0);
-  const tn = counted.reduce((s, r) => s + r.nNotFormalized, 0);
-  const grand = tf + tp + tn;
-  const pctF = grand ? Math.round((100 * tf) / grand) : 0;
-  const pctP = grand ? Math.round((100 * tp) / grand) : 0;
-  const nUntagged = counted.filter((r) => r.nFormalized + r.nPartial + r.nNotFormalized === 0).length;
-  const nPending = sorted.length - counted.length;
-  const noteParts: string[] = [];
-  if (nUntagged) noteParts.push(`<b>${fmtInt(nUntagged)}</b> not yet tagged`);
-  if (nPending) noteParts.push(`<b>${fmtInt(nPending)}</b> awaiting count backfill`);
-  const statsNote = noteParts.length
-    ? `\n    <p class="stats-note">${noteParts.join(" &middot; ")}</p>`
-    : "";
-  const recent = [...sorted].sort((a, b) => b.updatedAt - a.updatedAt).slice(0, 8);
-  const recentSection = recent.length
-    ? `
-  <section class="recent" aria-labelledby="recent-h">
-    <div class="sect-head"><h2 id="recent-h">Recently updated</h2></div>
-    <div class="recent-grid">
-${recent.map(recentItem).join("\n")}
-    </div>
-  </section>`
-    : "";
-
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WikiLean — Wikipedia&#x27;s mathematics, annotated with its formalization status in Mathlib</title>
-<meta name="description" content="WikiLean is a mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
-<link rel="canonical" href="https://wikilean.jackmccarthy.org/">
-<meta name="robots" content="index, follow, max-image-preview:large">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="WikiLean">
-<meta property="og:title" content="WikiLean — Wikipedia mathematics, mapped to Lean">
-<meta property="og:description" content="WikiLean is a mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
-<meta property="og:url" content="https://wikilean.jackmccarthy.org/">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="WikiLean — Wikipedia mathematics, mapped to Lean">
-<meta name="twitter:description" content="A mirror of WikiProject Mathematics articles annotated with links into Mathlib4, color-coded by formalization coverage in Lean.">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": "https://wikilean.jackmccarthy.org/#website",
-      "url": "https://wikilean.jackmccarthy.org/",
-      "name": "WikiLean",
-      "alternateName": "WikiLean — Wikipedia mathematics, mapped to Lean",
-      "description": "WikiLean is a mirror of WikiProject Mathematics articles annotated inline with links into Mathlib4, color-coded by whether each definition, theorem, and proof has been formalized in Lean.",
-      "inLanguage": "en",
-      "sameAs": ["https://github.com/Deicyde/WikiLean"],
-      "publisher": {"@id": "https://wikilean.jackmccarthy.org/#person"}
-    },
-    {
-      "@type": "Person",
-      "@id": "https://wikilean.jackmccarthy.org/#person",
-      "name": "Jack McCarthy",
-      "url": "https://jackmccarthy.org"
-    }
-  ]
-}
-</script>
-<script>
-/* Set the theme attr BEFORE the stylesheet parses so dark mode applies on first
-   paint (no flash). Priority: localStorage > OS preference > light default. The
-   toggle in the header (script at the bottom of body) flips dark/light. */
-(function(){try{var s=localStorage.getItem("wl-theme");
-var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
-document.documentElement.dataset.theme=t;}catch(e){}})();
-</script>
-<style>
-:root {
-  --paper:#f7f4ee; --surface:#fffdf9; --ink:#1f1d1a; --muted:#5f594e;
-  --line:#e6e0d2; --line-strong:#d8d0bd;
-  --accent:#1a4b8c; --accent-dark:#163e74;
-  --green:#2f7d4f; --yellow:#b08020; --red:#b3372f;
-  --serif:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;
-}
-/* Dark mode — remap the warm-light token palette to the shared dark scheme
-   (matches pages.ts / style.css). One override block recolors everything that
-   uses the vars; the few hardcoded colors below get explicit dark overrides. */
-:root[data-theme="dark"] {
-  --paper:#1a1816; --surface:#232020; --ink:#ebe5d8; --muted:#9a9081;
-  --line:#3a3530; --line-strong:#4d4742; --accent:#6e9adf; --accent-dark:#8fb4e8;
-  --green:#8fd4ad; --yellow:#e2bf78; --red:#f08e85;
-}
-/* Hardcoded-color overrides for dark mode (search placeholder, row-hover tint,
-   coverage-bar track, the "/" separator) — kept legible on the dark surface. */
-[data-theme="dark"] .search::placeholder { color:#8a8278; }
-[data-theme="dark"] .row:hover { background:rgba(110,154,223,.08); }
-[data-theme="dark"] .bar { background:#2e2a2f; }
-[data-theme="dark"] .row-meta .of { color:#6e675a; }
-/* Theme-toggle button (matches the article-page version in style.css). */
-.wl-theme-toggle { background:transparent; border:1px solid var(--line-strong); color:var(--muted);
-  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px; cursor:pointer;
-  display:inline-flex; align-items:center; justify-content:center; }
-.wl-theme-toggle:hover { color:var(--ink); border-color:var(--accent); }
-* { box-sizing:border-box; }
-html { scroll-behavior:smooth; }
-body { margin:0; background:var(--paper); color:var(--ink); line-height:1.55;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
-.sr { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
-  clip:rect(0 0 0 0); white-space:nowrap; border:0; }
-.wl-header { display:flex; align-items:baseline; justify-content:space-between;
-  gap:8px 20px; flex-wrap:wrap; max-width:880px; margin:0 auto; padding:22px 20px 0; }
-.wl-brand { font-family:var(--serif); font-weight:700; font-size:1.15rem;
-  color:var(--ink); text-decoration:none; }
-.wl-brand:hover { color:var(--accent); }
-.wl-nav { display:flex; gap:6px 18px; flex-wrap:wrap; }
-.wl-nav a { color:var(--accent); text-decoration:none; font-size:.88rem; }
-.wl-nav a:hover { text-decoration:underline; }
-.wrap { max-width:880px; margin:0 auto; padding:0 20px 56px; }
-.hero { padding:42px 0 6px; }
-h1 { font-family:var(--serif); font-size:2.5rem; line-height:1.1; letter-spacing:-.01em; margin:0 0 14px; }
-.tagline { font-family:var(--serif); font-size:1.28rem; line-height:1.45; margin:0 0 10px; max-width:34em; }
-.tagline a { color:inherit; text-decoration:underline; text-decoration-color:var(--line-strong); text-underline-offset:3px; }
-.tagline a:hover { color:var(--accent); text-decoration-color:var(--accent); }
-.sub { color:var(--muted); font-size:.95rem; max-width:44em; margin:0; }
-.sub a { color:var(--accent); text-decoration:none; }
-.sub a:hover { text-decoration:underline; }
-.stats { display:flex; gap:16px 40px; flex-wrap:wrap; margin:30px 0 6px; }
-.stat-num { display:block; font-family:var(--serif); font-weight:700; font-size:1.8rem;
-  line-height:1.15; font-variant-numeric:tabular-nums; }
-.stat-label { display:block; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase;
-  color:var(--muted); margin-top:2px; }
-.stats-note { color:var(--muted); font-size:.82rem; margin:4px 0 0; }
-.stats-note b { color:var(--ink); font-weight:600; }
-.ctas { display:flex; gap:10px; flex-wrap:wrap; margin:26px 0 0; }
-.btn { display:inline-block; padding:9px 16px; border-radius:7px; font-size:.92rem;
-  text-decoration:none; border:1px solid var(--line-strong); color:var(--ink); background:var(--surface); }
-.btn:hover { border-color:var(--accent); color:var(--accent); }
-.btn-primary { background:var(--accent); border-color:var(--accent); color:#fff; }
-.btn-primary:hover { background:var(--accent-dark); border-color:var(--accent-dark); color:#fff; }
-.searchbar { margin:34px 0 0; }
-.search { width:100%; padding:13px 16px; font-size:1.05rem; font-family:inherit;
-  color:var(--ink); background:var(--surface); border:1px solid var(--line-strong); border-radius:9px; }
-.search::placeholder { color:#6e675a; }
-.search:focus { outline:2px solid var(--accent); outline-offset:0; border-color:var(--accent); }
-.sect-head { display:flex; align-items:baseline; justify-content:space-between;
-  gap:8px 18px; flex-wrap:wrap; margin:36px 0 12px; }
-h2 { font-family:var(--serif); font-size:1.25rem; margin:0; }
-.recent-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:8px; }
-.recent-item { display:flex; justify-content:space-between; align-items:baseline; gap:10px;
-  min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:7px;
-  padding:9px 12px; text-decoration:none; color:var(--ink); font-size:.9rem; }
-.recent-item:hover { border-color:var(--accent); }
-.recent-item:hover .recent-title { color:var(--accent); }
-.recent-title { font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.recent-when { color:var(--muted); font-size:.78rem; flex:none; }
-.explore ul { list-style:none; margin:0; padding:0; }
-.explore li { color:var(--muted); font-size:.9rem; line-height:1.5; margin:0 0 8px; }
-.explore li a { color:var(--accent); font-weight:600; text-decoration:none; }
-.explore li a:hover { text-decoration:underline; }
-.dir-controls { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-.sort { padding:7px 10px; font-size:.85rem; font-family:inherit; color:var(--ink);
-  background:var(--surface); border:1px solid var(--line-strong); border-radius:6px; }
-.chk { display:flex; gap:6px; align-items:center; font-size:.85rem; color:var(--muted);
-  cursor:pointer; white-space:nowrap; }
-.chk input { accent-color:var(--accent); }
-.legend { display:flex; gap:14px; flex-wrap:wrap; font-size:.78rem; color:var(--muted); margin:0 0 10px; }
-.legend i { display:inline-block; width:10px; height:10px; border-radius:2px;
-  margin-right:5px; vertical-align:-1px; }
-.legend i.f { background:var(--green); }
-.legend i.p { background:var(--yellow); }
-.legend i.n { background:var(--red); }
-.dir { border-top:1px solid var(--line-strong); }
-.row { display:grid; grid-template-columns:minmax(0,1fr) 130px 64px; gap:14px; align-items:center;
-  padding:9px 2px; border-bottom:1px solid var(--line); text-decoration:none; color:var(--ink); }
-.row:hover { background:rgba(26,75,140,.05); }
-.row:hover .row-title { color:var(--accent); }
-.row-title { font-size:.95rem; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.bar { display:flex; height:6px; border-radius:3px; overflow:hidden; background:#e9e3d6; }
-.bar i { display:block; height:100%; }
-.bar i.f { background:var(--green); }
-.bar i.p { background:var(--yellow); }
-.bar i.n { background:var(--red); }
-.row-meta { font-size:.8rem; color:var(--muted); text-align:right;
-  font-variant-numeric:tabular-nums; white-space:nowrap; }
-.row-meta .of { color:#9a917f; padding:0 1px; }
-.row-meta.untagged, .row-meta.pending { font-style:italic; }
-.empty { color:var(--muted); padding:22px 0; font-style:italic; }
-.searching .recent, .searching .explore { display:none; }
-footer { margin-top:56px; padding-top:18px; border-top:1px solid var(--line-strong);
-  color:var(--muted); font-size:.82rem; line-height:1.6; }
-footer p { margin:4px 0; }
-footer a { color:var(--accent); text-decoration:none; }
-footer a:hover { text-decoration:underline; }
-@media (max-width:540px) {
-  h1 { font-size:2rem; }
-  .tagline { font-size:1.1rem; }
-  .stat-num { font-size:1.5rem; }
-  .stats { gap:14px 26px; margin-top:24px; }
-  .hero { padding-top:30px; }
-  .row { grid-template-columns:minmax(0,1fr) 72px 56px; gap:10px; }
-}
-</style>
-</head>
-<body>
-<header class="wl-header">
-  <a class="wl-brand" href="/">WikiLean</a>
-  <nav class="wl-nav" aria-label="Site">
-    <a href="/concepts">Concepts</a>
-    <a href="/wikifunctions">Wikifunctions</a>
-    <a href="/articles">Articles</a>
-    <a href="/brain">Brain</a>
-    <a href="/recent-changes">Recent changes</a>
-    <a href="/stats">Stats</a>
-    <a href="/mcp">MCP</a>
-    <a href="/about">About &amp; method</a>
-    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
-  </nav>
-</header>
-<main class="wrap">
-  <section class="hero">
-    <h1>WikiLean</h1>
-    <p class="tagline">Wikipedia&#x27;s mathematics, annotated with its formalization status in
-      <a href="https://leanprover-community.github.io/mathlib4_docs/">Mathlib</a>.</p>
-    <p class="sub">
-      A mirror of <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">WikiProject
-      Mathematics</a> articles with every definition, theorem, and proof linked to its Lean
-      formalization where one exists. A project by <a href="https://jackmccarthy.org">Jack McCarthy</a>.
-    </p>
-    <div class="stats">
-      <div class="stat"><span class="stat-num">${fmtInt(sorted.length)}</span><span class="stat-label">articles</span></div>
-      <div class="stat"><span class="stat-num">${fmtInt(grand)}</span><span class="stat-label">annotated results</span></div>
-      <div class="stat"><span class="stat-num">${pctF}%</span><span class="stat-label">formalized</span></div>
-      <div class="stat"><span class="stat-num">${pctP}%</span><span class="stat-label">partial</span></div>
-    </div>${statsNote}
-    <div class="ctas">
-      <a class="btn btn-primary" href="#directory">Browse articles</a>
-      <a class="btn" href="/brain">Explore the Brain</a>
-      <a class="btn" href="/about">How to contribute</a>
-      <a class="btn" href="/recent-changes">Recent changes</a>
-    </div>
-  </section>
-  <div class="searchbar">
-    <label class="sr" for="q">Filter articles</label>
-    <input class="search" id="q" type="search" placeholder="Filter ${fmtInt(sorted.length)} articles&hellip;" autocomplete="off">
-  </div>${recentSection}
-  <section class="explore" aria-labelledby="explore-h">
-    <div class="sect-head"><h2 id="explore-h">Datasets &amp; graphs</h2></div>
-    <ul>
-      <li><a href="/brain">The Brain</a> &mdash; a zoomable map of all of mathematics:
-        every concept joined to its Lean formalization, Wikidata identity,
-        cross-database pages, and literature &mdash; with machine-checkable
-        provenance on every edge.</li>
-      <li><a href="/concepts">Wikidata concept links</a> &mdash; every formalized concept keyed
-        to its Wikidata item, as an open RDF dataset (Wikidata&rsquo;s property for these
-        links is <em>&ldquo;Mathlib Declaration ID&rdquo;</em>, P14534).</li>
-      <li><a href="/mcp">Wikibrain MCP</a> &mdash; a remote MCP server any AI agent can
-        connect to mid-proof: jump between informal mathematics and formal
-        Mathlib declarations (full REST reference at <a href="/brain/api">/brain/api</a>).</li>
-    </ul>
-  </section>
-  <section class="directory" id="directory" aria-labelledby="directory-h">
-    <div class="sect-head">
-      <h2 id="directory-h">All articles</h2>
-      <div class="dir-controls">
-        <select class="sort" id="sort" aria-label="Sort articles">
-          <option value="title">Sort: A&ndash;Z</option>
-          <option value="coverage">Sort: coverage</option>
-          <option value="formalized">Sort: most formalized</option>
-          <option value="count">Sort: most annotated</option>
-        </select>
-        <label class="chk"><input type="checkbox" id="hideUntagged"> Hide untagged</label>
-      </div>
-    </div>
-    <div class="legend">
-      <span><i class="f"></i>formalized</span>
-      <span><i class="p"></i>partial</span>
-      <span><i class="n"></i>not formalized</span>
-    </div>
-    <div class="dir" id="dir">
-${sorted.map(dirRow).join("\n")}
-    </div>
-    <p class="empty" id="empty" style="display:none">No articles match.</p>
-  </section>
-  <footer>
-    <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
-      available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
-      WikiLean annotations are released under
-      <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</p>
-    <p><a href="https://github.com/Deicyde/WikiLean">Source on GitHub</a> &middot;
-      a project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
-  </footer>
-</main>
-<script>
-(function(){
-  var q=document.getElementById('q'), dir=document.getElementById('dir'),
-      empty=document.getElementById('empty'), sortSel=document.getElementById('sort'),
-      hideU=document.getElementById('hideUntagged'),
-      rows=[].slice.call(dir.querySelectorAll('.row'));
-  function num(c,a){ return parseFloat(c.getAttribute(a))||0; }
-  function sortRows(){
-    var mode=sortSel.value, arr=rows.slice();
-    arr.sort(function(a,b){
-      if(mode==='coverage') return num(b,'data-cov')-num(a,'data-cov');
-      if(mode==='formalized') return num(b,'data-f')-num(a,'data-f');
-      if(mode==='count') return num(b,'data-n')-num(a,'data-n');
-      return a.getAttribute('data-title').localeCompare(b.getAttribute('data-title'));
-    });
-    arr.forEach(function(c){ dir.appendChild(c); });
-  }
-  function apply(){
-    var t=q.value.trim().toLowerCase(), hu=hideU.checked, shown=0;
-    rows.forEach(function(c){
-      var hit=c.getAttribute('data-title').indexOf(t)!==-1
-              && !(hu && c.getAttribute('data-untagged')==='1');
-      c.style.display=hit?'':'none'; if(hit)shown++;
-    });
-    empty.style.display=shown?'none':'';
-    // While a query is active, collapse the strips so matches sit right
-    // under the search box.
-    document.body.classList.toggle('searching', t.length>0);
-  }
-  q.addEventListener('input',apply);
-  hideU.addEventListener('change',apply);
-  sortSel.addEventListener('change',sortRows);
-})();
-</script>
-<script>
-/* Theme toggle — flips dark/light and persists in localStorage. */
-(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;
-b.addEventListener("click",function(){var r=document.documentElement;
-var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;
-try{localStorage.setItem("wl-theme",n);}catch(e){}});})();
-</script>
-</body>
-</html>
-`;
+export function landingPage(): string {
+  return publicPage("Connect mathematics to Lean", "/", "Find Lean formalizations of Wikipedia mathematics, check the matches, and contribute missing links.", `
+<h1>Connect mathematics<br>to Lean.</h1>
+<p class="lead">Read a mathematical statement. Find its formalization. Help make the connection clearer for the next reader.</p>
+<p>WikiLean links passages in Wikipedia’s mathematics articles to declarations in Lean libraries. Every match is something you can inspect, question, and improve.</p>
+<div class="actions"><a class="button" href="/articles">Browse articles</a><a href="/contribute">Start contributing →</a></div>
+<p class="note">Matches are preliminary. A Lean proof checks the formal statement; people still need to check that it matches the article.</p>
+<div class="paths">
+<section><h2>Improve a link</h2><p>Confirm a match, report a problem, or add a missing declaration. Contributions are public and attributed to your account.</p><a href="/contribute">How to contribute</a></section>
+<section><h2>Explore the connections</h2><p>The Brain connects mathematical concepts, formal code, reference databases, and literature.</p><a href="/brain">Explore the Brain →</a></section>
+</div>`);
 }
 
-// Aggregate for the dynamic /about page — one cheap SQL rollup over the
-// D-C5 count columns (SUM skips NULL pre-backfill rows, same as /stats).
-export interface AboutStats {
-  nArticles: number;
-  nFormalized: number;
-  nPartial: number;
-  nNotFormalized: number;
+export function contributePage(): string {
+  return publicPage("Contribute", "/contribute", "Help connect mathematical statements to Lean: check a match, add a tag, or contribute with your own agent.", `
+<h1>Help connect the next statement.</h1>
+<p class="lead">Start with an article you know. One careful correction is a useful contribution.</p>
+<h2>Check or add a link</h2>
+<ol>
+<li><a href="/articles">Choose an article</a> and select a highlighted passage to see its Lean matches.</li>
+<li><a href="/login">Sign in</a>. Use <b>Confirm</b> for a correct match, or <b>Report</b> if it is wrong or uncertain.</li>
+<li>To add a match, choose <b>Add a tag</b>, select the library and declaration, and explain how closely it matches. Accept the CC0 contribution agreement when prompted.</li>
+</ol>
+<p>A saved tag is public immediately and attributed to your account. You can update it or remove it with a reason. Full tag history, diffs, and revert are still planned.</p>
+<p>Check the statement’s assumptions and conclusion. A related theorem is useful, but should be labelled as related rather than an exact match. “Not found” describes the libraries and versions searched, not all of mathematics.</p>
+<div class="actions"><a class="button" href="/articles">Find an article</a></div>
+<h2>Contribute with an agent</h2>
+<p>Create an agent account at <a href="/agents">Manage agents</a>. Its contributions carry its own identity, linked to you as its owner. Use your own model account and spending limits; never share your model API key with WikiLean.</p>
+<p>For the tag API, Brain contributions, and running the article pipeline on another computer, see the <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/START-CONTRIBUTING.md">contributor guide</a>. Full pipeline results still need operator intake; there is no general self-service upload yet.</p>
+<h2>Know what you are sharing</h2>
+<p>Contributions are public under CC0. WikiLean also studies how people and AI improve a shared database; research exports use pseudonyms. Read the <a href="https://github.com/Deicyde/WikiLean/blob/main/CONTRIBUTING.md#data--research-notice">data and research notice</a> before contributing.</p>`);
 }
 
-// The About & method page, served dynamically from D1 (KV 'page:about:v3',
-// TTL 300s). Replaces the static site/out/about.html asset (retired from
-// build_static_pages.py) whose baked stats went stale the day it was built.
-// Visual shell reproduced from that page: self-contained inline CSS, warm
-// academic-minimalist palette, shared dark-mode pattern.
-export function aboutPage(s: AboutStats): string {
-  const grand = s.nFormalized + s.nPartial + s.nNotFormalized;
-  const pctF = grand ? Math.round((100 * s.nFormalized) / grand) : 0;
-  const pctP = grand ? Math.round((100 * s.nPartial) / grand) : 0;
-  return `<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WikiLean — About &amp; method</title>
-<meta name="description" content="How WikiLean maps Wikipedia mathematics to Lean/Mathlib4 formalizations: methodology, what the formalized / partial / not-formalized statuses mean, how to contribute, and limitations.">
-<link rel="canonical" href="${SITE_ORIGIN}/about">
-<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
-<style>
-* { box-sizing:border-box; }
-body { margin:0; background:#f7f4ee; color:#1f1d1a;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-:focus-visible { outline:2px solid #1a4b8c; outline-offset:2px; }
-.wl-header { background:#fffdf9; border-bottom:1px solid #d8d0bd; padding:14px 28px;
-  display:flex; align-items:center; justify-content:space-between; gap:8px 18px; flex-wrap:wrap; }
-.wl-brand { font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;
-  font-weight:700; color:#1f1d1a; font-size:18px; text-decoration:none; }
-.wl-brand:hover { color:#1a4b8c; }
-.wl-nav { display:flex; gap:8px 18px; flex-wrap:wrap; align-items:center; }
-.wl-navlink { color:#1a4b8c; text-decoration:none; font-size:.9rem; }
-.wl-navlink:hover { text-decoration:underline; }
-.wl-navlink.active { color:#1f1d1a; font-weight:600; }
-.wrap { max-width:760px; margin:0 auto; padding:32px 28px 64px; }
-h1, h2 { font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif; }
-h1 { font-size:1.7rem; margin:0 0 .5rem; }
-h2 { font-size:1.15rem; margin:2rem 0 .6rem; }
-p, li { color:#1f1d1a; font-size:1.0rem; line-height:1.65; }
-a { color:#1a4b8c; text-decoration:none; }
-a:hover { text-decoration:underline; }
-.lead { color:#5f594e; font-size:1.05rem; }
-.swatch { display:inline-block; width:11px; height:11px; border-radius:2px;
-  margin-right:6px; vertical-align:middle; }
-.s-f { background:#2f7d4f; } .s-p { background:#b08020; } .s-n { background:#b3372f; }
-.stats { display:flex; gap:24px; margin:18px 0 8px; flex-wrap:wrap; font-size:.9rem; color:#5f594e; }
-.stats b { color:#1f1d1a; }
-footer { margin-top:48px; padding-top:20px; border-top:1px solid #d8d0bd;
-  font-size:.82rem; color:#5f594e; line-height:1.6; }
-footer p { margin:4px 0; }
-.wl-theme-toggle { background:transparent; border:1px solid #d8d0bd; color:#5f594e;
-  border-radius:50%; width:28px; height:28px; padding:0; line-height:1; font-size:14px;
-  cursor:pointer; display:inline-flex; align-items:center; justify-content:center; margin-left:10px; }
-[data-theme="dark"] .wl-theme-toggle { color:#9a9081; border-color:#4d4742; }
-
-/* Dark mode — shared palette across the site (bg #1a1816, surface #232020,
-   text #ebe5d8, muted #9a9081, accent #6e9adf, borders #4d4742). */
-[data-theme="dark"] body { background:#1a1816; color:#ebe5d8; }
-[data-theme="dark"] :focus-visible { outline-color:#6e9adf; }
-[data-theme="dark"] .wl-header { background:#232020; border-bottom-color:#4d4742; }
-[data-theme="dark"] .wl-brand { color:#ebe5d8; }
-[data-theme="dark"] .wl-brand:hover { color:#8fb4e8; }
-[data-theme="dark"] .wl-navlink { color:#6e9adf; }
-[data-theme="dark"] .wl-navlink.active { color:#ebe5d8; }
-[data-theme="dark"] h1, [data-theme="dark"] h2 { color:#ebe5d8; }
-[data-theme="dark"] p, [data-theme="dark"] li { color:#ebe5d8; }
-[data-theme="dark"] a { color:#6e9adf; }
-[data-theme="dark"] a:hover { color:#8fb4e8; }
-[data-theme="dark"] .lead { color:#9a9081; }
-[data-theme="dark"] .stats { color:#9a9081; }
-[data-theme="dark"] .stats b { color:#ebe5d8; }
-[data-theme="dark"] code { background:#2c2926; color:#ebe5d8; }
-[data-theme="dark"] footer { border-top-color:#4d4742; color:#9a9081; }
-</style>
-</head>
-<body>
-<header class="wl-header">
-  <a class="wl-brand" href="/">WikiLean</a>
-  <nav class="wl-nav" aria-label="Site">
-    <a class="wl-navlink" href="/articles">Articles</a>
-    <a class="wl-navlink" href="/brain">Brain</a>
-    <a class="wl-navlink" href="/recent-changes">Recent changes</a>
-    <a class="wl-navlink" href="/stats">Stats</a>
-    <a class="wl-navlink" href="/concepts">Concepts</a>
-    <a class="wl-navlink" href="/mcp">MCP</a>
-    <a class="wl-navlink active" href="/about">About &amp; method</a>
-    <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
-  </nav>
-</header>
-<div class="wrap">
-  <h1>About &amp; method</h1>
-  <p class="lead">WikiLean is a mirror of <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">WikiProject
-  Mathematics</a> articles, annotated inline with links into
-  <a href="https://leanprover-community.github.io/mathlib4_docs/">Mathlib4</a> and
-  color-coded by whether each definition, theorem, and proof has been formalized in
-  the <a href="https://leanprover-community.github.io/">Lean</a> proof assistant.</p>
-  <div class="stats">
-    <span><b>${fmtInt(s.nArticles)}</b> articles annotated</span>
-    <span><b>${fmtInt(grand)}</b> tagged statements</span>
-    <span><b>${pctF}%</b> formalized · <b>${pctP}%</b> partial</span>
-  </div>
-
-  <h2>How it is built</h2>
-  <p>Three stages. <b>Catalog:</b> enumerate the WikiProject Mathematics article set
-  with its metadata and Wikidata identifiers. <b>Annotate:</b> for each article, work
-  through its definitions, theorems, and proofs and match each one to the Mathlib4
-  declaration that formalizes it, recording a status and the declaration's module path.
-  <b>Host:</b> fetch the article's rendered HTML from the MediaWiki API, wrap each
-  matched statement in place, and serve the result as a standalone page. Hovering (or
-  tapping) a highlighted statement shows its status and a direct link into the Mathlib
-  documentation.</p>
-
-  <h2>What the colors mean</h2>
-  <ul>
-    <li><span class="swatch s-f"></span><b>Formalized.</b> A Mathlib4 declaration
-      captures the statement or definition as stated.</li>
-    <li><span class="swatch s-p"></span><b>Partial.</b> Mathlib has a related, weaker,
-      or special-case form — or only part of the statement is formalized. The tooltip
-      notes where the formalization and the article diverge.</li>
-    <li><span class="swatch s-n"></span><b>Not formalized.</b> No corresponding Mathlib4
-      declaration was found at the time of annotation.</li>
-  </ul>
-
-  <h2>Provenance and pinning</h2>
-  <p>Each article is annotated against a specific Wikipedia revision, and that revision
-  id is recorded alongside the annotations, so a highlight always refers to the exact
-  prose it was made against even after the live article changes. Mathlib links point at
-  the public Mathlib4 documentation.</p>
-
-  <h2>Wikidata concept links</h2>
-  <p>Every concept matched to a <em>formalized</em> declaration is also keyed to its
-  <a href="https://www.wikidata.org/">Wikidata</a> item and published as an open
-  <a href="/concepts">RDF dataset</a>. Wikidata has a property for these links,
-  <a href="https://www.wikidata.org/wiki/Property:P14534"><em>&ldquo;Mathlib Declaration
-  ID&rdquo;</em> (P14534)</a>; the long-term goal is for them to live in Wikidata
-  itself, maintainable by the community and queryable via SPARQL.</p>
-
-  <h2>For AI agents: the Wikibrain MCP</h2>
-  <p>For AI agents, the same graph is queryable as the
-  <a href="/mcp">Wikibrain MCP server</a> and the <a href="/brain/api">Wikibrain REST
-  API</a>: resolve any informal concept to its exact Mathlib declaration (with match
-  quality and docs link), or start from a Lean name and pull the surrounding informal
-  context — the article, the Wikidata identity, and every cross-referenced external
-  database. Each answer carries provenance and confidence.</p>
-
-  <h2>The Brain</h2>
-  <p>The <a href="/brain">Brain</a> is a zoomable map over one shared node set: a
-  containment <em>bubble</em> view (libraries → areas → concepts, nesting by generality)
-  and a dependency <em>web</em>/<em>ego</em> view overlaying independent reference graphs —
-  Mathlib's declaration-level dependency edges (extracted via <code>Expr.getUsedConstants</code>
-  over the built Mathlib environment — the same data that produces hyperlinks in the
-  Mathlib docs), Wikidata's typed item-to-item statements (P279 subclass-of, P361
-  part-of, etc.), cross-database identities, and the literature. Every edge carries its
-  provenance — human / machine / AI — which is filterable, and a <em>sources</em> view
-  documents where every external link comes from, with its Wikidata property and license.</p>
-
-  <h2>Limitations &amp; how to contribute</h2>
-  <p>Annotations are best-effort and cover a sample of WikiProject Mathematics,
-  not the whole corpus. A match reflects a judgment that a Mathlib declaration formalizes
-  a statement; it can be incomplete or wrong, and Mathlib itself evolves, so coverage is
-  a snapshot rather than a guarantee. Corrections happen right on the site:
-  <a href="/login">sign in</a> to edit annotations in-context on any article, or — without
-  an account — report a problem from any annotation's tooltip (the ⚑ link).</p>
-
-  <h2>How edits are moderated</h2>
-  <p>Annotation edits by people take effect immediately and are shown as human-curated.
-  They are not screened first: each one is listed, newest first, in
-  <a href="/recent-changes?kind=edit">Recent changes</a> with an awaiting-patrol marker,
-  and the <a href="/stats">Stats</a> page shows how many have been patrolled. Every change
-  to an article&rsquo;s annotations, by a person or by the AI pipeline, is recorded in the
-  article&rsquo;s history, and patrollers can restore an article&rsquo;s annotations to
-  any earlier version in that history.</p>
-  <p>The AI pipeline cannot silently overwrite a human-curated annotation: a pipeline save
-  that drops or alters one is refused, and the pipeline can file a proposal instead. Under
-  WikiLean&rsquo;s human-at-boundaries policy (adopted August 2026), those proposals no
-  longer need a person&rsquo;s approval. Each night a deterministic resolver, which uses no
-  language model, approves or rejects the proposals that match its fixed rules; the rest
-  stay pending until a patroller or a later nightly run decides them, or lapse when the
-  pipeline next saves the article and finds their target annotation removed or already
-  matching them. When the pipeline approves a change to a human-curated annotation, the
-  annotation is relabeled: it is then shown as &ldquo;AI-generated &middot; not yet
-  reviewed&rdquo; and loses the human-curated protection, so later pipeline saves can
-  change it directly. When a patroller approves a change, the result is shown as
-  human-curated. People remain the gate wherever WikiLean contributes
-  to outside projects: the tagging bot opens pull requests to Mathlib on its own, but they
-  merge only after Mathlib reviewers approve them, and statements are added to Wikidata
-  only for mappings people have reviewed.</p>
-
-  <footer>
-    <p>Article text from <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Mathematics">Wikipedia</a>,
-      available under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.
-      WikiLean annotations are released under
-      <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>.</p>
-    <p>WikiLean &middot; <a href="https://github.com/Deicyde/WikiLean">source on GitHub</a> &middot;
-      a project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
-  </footer>
-</div>
-<script>(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
-</body>
-</html>
-`;
+export function aboutPage(): string {
+  return publicPage("About", "/about", "What WikiLean does, how to read its formalization links, and what remains uncertain.", `
+<h1>Mathematics, with links<br>you can check.</h1>
+<p class="lead">WikiLean is a shared collection of connections between mathematical writing and formal proofs.</p>
+<p>The goal is a place where anyone can contribute formalization links, discuss their accuracy, and build on each other’s work. Today you can read annotated articles, check matches, and add or correct tags.</p>
+<h2>What a link means</h2>
+<p>The <a href="/articles">article reader</a> connects Wikipedia passages to Lean declarations across a pinned set of libraries, including Mathlib. A match can be exact, more general, a special case, partial, or simply related. The reader records that distinction and links to the source.</p>
+<p>A proved declaration is not proof that the prose and the declaration mean the same thing. That connection is a judgment and can be wrong. A “not formalized” result means no match was found in the libraries and versions searched.</p>
+<h2>Keep the evidence with the claim</h2>
+<p>Articles refer to specific Wikipedia revisions and library commits. Build details, source links, and audit information remain available in the reader. Initial matches are AI-assisted and preliminary; community checks help improve them.</p>
+<p>Canonical annotations use the <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/COMPANION-NATIVE.md">Literature Links</a> format to identify sources and targets. The <a href="/brain">Brain</a> brings those connections together with concepts, reference databases, and literature.</p>
+<h2>Contribute and review</h2>
+<p>Human tags appear immediately and show their author. You can confirm or report a match, or add, change, and remove tags. Agent accounts are identified separately and linked to their owners. See <a href="/contribute">how to contribute</a> for the current workflow and its limits.</p>
+<p>Maintainers can moderate contributions and pause editing during maintenance. The older annotation system’s <a href="/proposals">proposal queue</a>, <a href="/flags">reader reports</a>, and <a href="/recent-changes">change log</a> remain available; they are separate from the reader’s community tags.</p>
+<h2>Open data and research</h2>
+<p>WikiLean studies how people and AI moderate a shared mathematical database. Contributions and their attribution are public; research exports use pseudonyms and exclude email addresses and IP addresses. See the <a href="https://github.com/Deicyde/WikiLean/blob/main/CONTRIBUTING.md#data--research-notice">research notice</a>.</p>
+<p>Developers can use the <a href="/brain/api">Brain API</a>, <a href="/mcp">MCP tools</a>, and <a href="/concepts">concept dataset</a>. Project plans and technical details live in the <a href="https://github.com/Deicyde/WikiLean">repository</a>.</p>`);
 }
 
 export function sitemapXml(rows: SitemapRow[]): string {
