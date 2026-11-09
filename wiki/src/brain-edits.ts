@@ -26,7 +26,7 @@ import {
   type BrainReleaseUnavailableError,
 } from "./brain.js";
 import { atomFor, atomIdForOrgan, type Atom } from "./brain-api.js";
-import { batchesOf, checkReadinessEveryBatch, storeFor } from "./brain-store.js";
+import { batchesOf, checkReadinessEveryBatch, PrefetchBudgetError, storeFor } from "./brain-store.js";
 import { crossRefSpec } from "./crossref.js";
 import { htmlEscape } from "./engine/html.js";
 import type { QueueBlob, QueueItem } from "./queue.js";
@@ -1119,7 +1119,9 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
 
     // On a D1 release, resolve every endpoint in a few batches before the
     // first write: row by row, a 100-row submit would pass D1's per-invocation
-    // statement cap (docs/BRAIN-D1.md section 2). An outage here writes nothing.
+    // statement cap (docs/BRAIN-D1.md section 2). The prefetch reads every page
+    // the rows need, so an outage here writes nothing and the row loop sends no
+    // Brain batch; rows whose pages pass the request's budget are refused whole.
     const store = storeFor(c, release);
     checkReadinessEveryBatch(store);
     const batches = batchesOf(store);
@@ -1128,6 +1130,10 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         await batches.prefetchAtoms(quickNodeKeys(rows, specs));
       } catch (error) {
         if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+        if (error instanceof PrefetchBudgetError) {
+          const why = `the rows name more Brain page text than one submit reads (${error.message}); submit fewer rows`;
+          return c.json({ ok: false, error: why, accepted: 0, failed: rows.length, rows: [] }, 413);
+        }
         throw error;
       }
     }

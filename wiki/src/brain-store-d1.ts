@@ -112,11 +112,18 @@ const LABEL_ROWS_CAP = 500;
 const TRACE_ROWS_CAP = 200;
 const XREF_PAGES_CAP = 40;
 const PREFETCH_CHUNK = 50; // keys per prefetch batch
-// The prefetch keeps whole pages for the rest of the request. A page longer
-// than PREFETCH_PAGE_CHARS is not sent (its endpoint reads it alone later), and
-// once a request has kept PREFETCH_KEPT_CHARS no more pages are sent.
+// The prefetch keeps whole pages (cell pages and supercell entries) for the
+// rest of the request, at most PREFETCH_KEPT_CHARS characters (SQLite's
+// length) of them in all, every one read before the first write. A batch of
+// keys asks for pages of at most min(PREFETCH_PAGE_CHARS, what the budget has
+// left / its keys) characters, so no batch passes the budget; a longer page
+// comes back as its length alone and is read afterwards, PREFETCH_ALONE_BATCH
+// pages a batch, at most PREFETCH_ALONE_PAGES of them. A submit whose pages
+// pass either bound gets PrefetchBudgetError, before anything is written.
 const PREFETCH_PAGE_CHARS = 128 * 1024;
 const PREFETCH_KEPT_CHARS = 8 * 1024 * 1024;
+const PREFETCH_ALONE_BATCH = 4;
+const PREFETCH_ALONE_PAGES = 64;
 const TRACES_PER_ROW = 6; // build_cell_shards.SHARD_TRACE_CAP
 
 // Rows a filter call examines at most (decision 7). Tests lower it.
@@ -149,6 +156,17 @@ function rememberConstants(datasetId: string, value: DatasetConstants): void {
     const oldest = _constants.keys().next().value as string | undefined;
     if (oldest === undefined) break;
     _constants.delete(oldest);
+  }
+}
+
+/** prefetchAtoms' refusal: the submit names more page text than one request
+ *  keeps (PREFETCH_KEPT_CHARS) or more pages over the batch caps than it reads
+ *  alone (PREFETCH_ALONE_PAGES). Thrown before the route writes anything;
+ *  quickstatements answers 413. */
+export class PrefetchBudgetError extends Error {
+  constructor(reason: string) {
+    super(reason);
+    this.name = "PrefetchBudgetError";
   }
 }
 
@@ -187,11 +205,12 @@ export function cellPageStmt(id: string): Stmt {
   return { sql: `SELECT json FROM cell_pages WHERE ds = ${DS} AND id = ?2`, params: [id] };
 }
 
-/** [50 rows]: json is null for a page longer than maxChars characters. */
+/** [50 rows]: chars is the page's length; json is null for a page longer
+ *  than maxChars characters. */
 export function cellPagesStmt(list: readonly string[], maxChars = PREFETCH_PAGE_CHARS): Stmt {
   return {
     sql:
-      `SELECT id, CASE WHEN length(json) <= ?3 THEN json END AS json FROM cell_pages ` +
+      `SELECT id, length(json) AS chars, CASE WHEN length(json) <= ?3 THEN json END AS json FROM cell_pages ` +
       `WHERE ds = ${DS} AND id IN (SELECT value FROM json_each(?2))`,
     params: [ids(list, PREFETCH_CHUNK, "cell ids"), maxChars],
   };
@@ -202,11 +221,12 @@ export function supercellStmt(path: string): Stmt {
   return { sql: `SELECT json FROM supercells WHERE ds = ${DS} AND path = ?2`, params: [path] };
 }
 
-/** [50 rows]: json is null for an entry longer than maxChars characters. */
+/** [50 rows]: chars is the entry's length; json is null for an entry longer
+ *  than maxChars characters. */
 export function supercellsStmt(paths: readonly string[], maxChars = PREFETCH_PAGE_CHARS): Stmt {
   return {
     sql:
-      `SELECT path, CASE WHEN length(json) <= ?3 THEN json END AS json FROM supercells ` +
+      `SELECT path, length(json) AS chars, CASE WHEN length(json) <= ?3 THEN json END AS json FROM supercells ` +
       `WHERE ds = ${DS} AND path IN (SELECT value FROM json_each(?2))`,
     params: [ids(paths, PREFETCH_CHUNK, "paths"), maxChars],
   };
@@ -492,12 +512,14 @@ export function xrefNodesStmt(pages: readonly string[]): Stmt {
   };
 }
 
-/** [50 rows]: organ owners, with the owner's cell page when it is a cell of
- *  at most maxChars characters. */
+/** [50 rows]: organ owners, with the length of the owner's cell page (null
+ *  when it has none, as a supercell owner) and the page itself when it is at
+ *  most maxChars characters. */
 export function organPagesStmt(keys: readonly string[], maxChars = PREFETCH_PAGE_CHARS): Stmt {
   return {
     sql:
-      `SELECT a.key AS key, a.owner AS owner, CASE WHEN length(cp.json) <= ?3 THEN cp.json END AS json FROM aliases a ` +
+      `SELECT a.key AS key, a.owner AS owner, length(cp.json) AS chars, ` +
+      `CASE WHEN length(cp.json) <= ?3 THEN cp.json END AS json FROM aliases a ` +
       `LEFT JOIN cell_pages cp ON cp.ds = a.ds AND cp.id = a.owner ` +
       `WHERE a.ds = ${DS} AND a.kind = 'organ' AND a.key IN (SELECT value FROM json_each(?2))`,
     params: [ids(keys, PREFETCH_CHUNK, "organ keys"), maxChars],
@@ -672,6 +694,12 @@ function decodeKeyHits(rows: Row[]): KeyHits {
 
 // ---- the store ------------------------------------------------------------------------
 
+// prefetchAtoms' pages over their batch's cap, read alone at its end
+interface Alone {
+  cells: Map<string, number>; // id -> characters
+  sups: Map<string, { chars: number; breadcrumb: Crumb[] }>;
+}
+
 export class D1Store implements BrainStore, BrainStoreBatches {
   private readonly c: Ctx;
   private readonly release: BrainReleaseContext;
@@ -685,7 +713,7 @@ export class D1Store implements BrainStore, BrainStoreBatches {
   private readonly cellMemo = new Map<string, CellEntry | null>();
   private readonly supercellMemo = new Map<string, { entry: SupercellEntry; breadcrumb: Crumb[] } | null>();
   private readonly organMemo = new Map<string, string | null>();
-  private prefetchedChars = 0; // page text the prefetch kept
+  private prefetchedChars = 0; // characters (SQLite's length) of page text the prefetch kept
 
   constructor(c: Ctx, release: BrainReleaseContext) {
     this.c = c;
@@ -1075,18 +1103,24 @@ export class D1Store implements BrainStore, BrainStoreBatches {
   // resolves its endpoints in a few batches instead of up to three statements
   // per endpoint: organ keys load their owners (and a cell owner's page), cell:
   // ids their pages and path: ids their entries and breadcrumbs, then a second
-  // pass loads the supercells that organ keys named as owners. A page or entry
-  // over the prefetch's size caps is left to cellPage() or supercell().
+  // pass loads the supercells that organ keys named as owners. Each batch's
+  // page cap is its share of what the kept budget has left; a page or entry
+  // over it is read alone at the end, so every page an endpoint reads is in a
+  // memo when this returns. Throws PrefetchBudgetError, after reads only, when
+  // the pages pass the budget or too many go alone.
   async prefetchAtoms(list: string[]): Promise<void> {
     if (this.failure) throw this.failure;
     const organs = [...new Set(list.filter((id) => !id.startsWith("cell:") && !id.startsWith("path:") && !this.organMemo.has(id)))];
     const cells = [...new Set(list.filter((id) => id.startsWith("cell:") && !this.cellMemo.has(id)))];
     const paths = [...new Set(list.filter((id) => id.startsWith("path:") && !this.supercellMemo.has(id)))];
+    // pages over their batch's cap, by id or path, with their lengths
+    const alone: Alone = { cells: new Map(), sups: new Map() };
     for (let i = 0; i < Math.max(organs.length, cells.length, paths.length); i += PREFETCH_CHUNK) {
       const organChunk = organs.slice(i, i + PREFETCH_CHUNK);
-      const cellChunk = cells.slice(i, i + PREFETCH_CHUNK);
+      // a cell an earlier batch's organ key already loaded is not asked for again
+      const cellChunk = cells.slice(i, i + PREFETCH_CHUNK).filter((id) => !this.cellMemo.has(id) && !alone.cells.has(id));
       const pathChunk = paths.slice(i, i + PREFETCH_CHUNK);
-      const cap = this.pageCap();
+      const cap = this.pageCap(organChunk.length + cellChunk.length + pathChunk.length);
       const stmts: Stmt[] = [];
       if (organChunk.length) stmts.push(organPagesStmt(organChunk, cap));
       if (cellChunk.length) stmts.push(cellPagesStmt(cellChunk, cap));
@@ -1099,9 +1133,8 @@ export class D1Store implements BrainStore, BrainStoreBatches {
         for (const key of organChunk) {
           const r = found.get(key);
           this.organMemo.set(key, r ? String(r.owner) : null);
-          if (r && r.json !== null && r.json !== undefined && !this.cellMemo.has(String(r.owner))) {
-            this.cellMemo.set(String(r.owner), this.keptPage(r.json, "cell_pages") as unknown as CellEntry);
-          }
+          // atomFor reads a path: owner as a supercell (the pass below), any other as a cell page
+          if (r && !String(r.owner).startsWith("path:")) this.rememberCell(String(r.owner), r, alone);
         }
       }
       if (cellChunk.length) {
@@ -1109,39 +1142,52 @@ export class D1Store implements BrainStore, BrainStoreBatches {
         for (const r of rows[at++]) found.set(String(r.id), r);
         for (const id of cellChunk) {
           const r = found.get(id);
-          if (!r) this.cellMemo.set(id, null);
-          else if (r.json !== null && r.json !== undefined) {
-            this.cellMemo.set(id, this.keptPage(r.json, "cell_pages") as unknown as CellEntry);
-          }
+          if (r) this.rememberCell(id, r, alone);
+          else if (!this.cellMemo.has(id)) this.cellMemo.set(id, null);
         }
       }
       if (pathChunk.length) {
-        this.rememberSupercells(pathChunk, rows[at], rows[at + 1]);
+        this.rememberSupercells(pathChunk, rows[at], rows[at + 1], alone);
       }
     }
     const owners = [...new Set(organs.map((key) => this.organMemo.get(key)))].filter(
-      (owner): owner is string => typeof owner === "string" && owner.startsWith("path:") && !this.supercellMemo.has(owner),
+      (owner): owner is string =>
+        typeof owner === "string" && owner.startsWith("path:") && !this.supercellMemo.has(owner) && !alone.sups.has(owner),
     );
     for (let i = 0; i < owners.length; i += PREFETCH_CHUNK) {
       const chunk = owners.slice(i, i + PREFETCH_CHUNK);
-      const [entries, crumbs] = await this.run([supercellsStmt(chunk, this.pageCap()), breadcrumbsStmt(chunk)]);
-      this.rememberSupercells(chunk, entries, crumbs);
+      const [entries, crumbs] = await this.run([supercellsStmt(chunk, this.pageCap(chunk.length)), breadcrumbsStmt(chunk)]);
+      this.rememberSupercells(chunk, entries, crumbs, alone);
     }
+    await this.readAlone(alone);
   }
 
-  // The prefetch's page size cap: 0 (send no page) once the request kept enough.
-  private pageCap(): number {
-    return this.prefetchedChars >= PREFETCH_KEPT_CHARS ? 0 : PREFETCH_PAGE_CHARS;
+  // A batch's page cap: an equal share of what the kept budget has left, at
+  // most PREFETCH_PAGE_CHARS, so the batch's pages cannot pass the budget.
+  private pageCap(keys: number): number {
+    const left = PREFETCH_KEPT_CHARS - this.prefetchedChars;
+    return left <= 0 || keys <= 0 ? 0 : Math.min(PREFETCH_PAGE_CHARS, Math.floor(left / keys));
   }
 
-  private keptPage(json: unknown, table: string): Row {
-    if (typeof json === "string") this.prefetchedChars += json.length;
+  // A page the prefetch keeps, counted by its length as SQLite measures it
+  // (the length the caps compare).
+  private keptPage(json: unknown, chars: number, table: string): Row {
+    this.prefetchedChars += chars;
     return this.parse(json, table);
   }
 
+  // A row of cellPagesStmt or organPagesStmt for the cell page `id`: no page
+  // (chars null) is remembered as null, a page over the cap goes alone.
+  private rememberCell(id: string, r: Row, alone: Alone): void {
+    if (this.cellMemo.has(id) || alone.cells.has(id)) return; // an organ key and a cell id in one batch
+    if (r.chars === null || r.chars === undefined) this.cellMemo.set(id, null);
+    else if (r.json === null || r.json === undefined) alone.cells.set(id, Number(r.chars));
+    else this.cellMemo.set(id, this.keptPage(r.json, Number(r.chars), "cell_pages") as unknown as CellEntry);
+  }
+
   // supercellsStmt's and breadcrumbsStmt's rows for `chunk`: an absent path is
-  // remembered as null, an entry over the size cap is not remembered at all.
-  private rememberSupercells(chunk: string[], entries: Row[], crumbs: Row[]): void {
+  // remembered as null, an entry over the cap goes alone with its breadcrumb.
+  private rememberSupercells(chunk: string[], entries: Row[], crumbs: Row[], alone: Alone): void {
     const found = new Map<string, Row>();
     for (const r of entries) found.set(String(r.path), r);
     const walks = new Map<string, Row[]>();
@@ -1157,11 +1203,53 @@ export class D1Store implements BrainStore, BrainStoreBatches {
         this.supercellMemo.set(path, null);
         continue;
       }
-      if (r.json === null || r.json === undefined) continue;
       const walk = (walks.get(path) ?? []).sort((a, b) => Number(b.d) - Number(a.d));
+      const breadcrumb = walk.map((c) => ({ id: String(c.path), label: c.label === null ? null : (c.label as string) }));
+      if (r.json === null || r.json === undefined) {
+        alone.sups.set(path, { chars: Number(r.chars), breadcrumb });
+        continue;
+      }
       this.supercellMemo.set(path, {
-        entry: this.keptPage(r.json, "supercells") as unknown as SupercellEntry,
-        breadcrumb: walk.map((c) => ({ id: String(c.path), label: c.label === null ? null : (c.label as string) })),
+        entry: this.keptPage(r.json, Number(r.chars), "supercells") as unknown as SupercellEntry,
+        breadcrumb,
+      });
+    }
+  }
+
+  // The pages the batch caps left out, PREFETCH_ALONE_BATCH single-row
+  // statements a batch (each row is at most D1's 2 MB), once the budget is
+  // known to hold them. The checks come before any of these reads.
+  private async readAlone(alone: Alone): Promise<void> {
+    const pages = alone.cells.size + alone.sups.size;
+    if (!pages) return;
+    let chars = 0;
+    for (const n of alone.cells.values()) chars += n;
+    for (const s of alone.sups.values()) chars += s.chars;
+    if (pages > PREFETCH_ALONE_PAGES) {
+      throw new PrefetchBudgetError(`${pages} Brain pages over the batch caps, where one request reads at most ${PREFETCH_ALONE_PAGES}`);
+    }
+    if (this.prefetchedChars + chars > PREFETCH_KEPT_CHARS) {
+      throw new PrefetchBudgetError(
+        `${this.prefetchedChars + chars} characters of Brain pages, where one request keeps at most ${PREFETCH_KEPT_CHARS}`,
+      );
+    }
+    const work: Array<{ cell: string; chars: number } | { path: string; chars: number; breadcrumb: Crumb[] }> = [
+      ...[...alone.cells].map(([cell, n]) => ({ cell, chars: n })),
+      ...[...alone.sups].map(([path, s]) => ({ path, ...s })),
+    ];
+    for (let i = 0; i < work.length; i += PREFETCH_ALONE_BATCH) {
+      const batch = work.slice(i, i + PREFETCH_ALONE_BATCH);
+      const rows = await this.run(batch.map((w) => ("cell" in w ? cellPageStmt(w.cell) : supercellStmt(w.path))));
+      batch.forEach((w, j) => {
+        const r = rows[j][0];
+        if ("cell" in w) {
+          this.cellMemo.set(w.cell, r ? (this.keptPage(r.json, w.chars, "cell_pages") as unknown as CellEntry) : null);
+        } else {
+          this.supercellMemo.set(
+            w.path,
+            r ? { entry: this.keptPage(r.json, w.chars, "supercells") as unknown as SupercellEntry, breadcrumb: w.breadcrumb } : null,
+          );
+        }
       });
     }
   }

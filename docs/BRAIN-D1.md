@@ -460,8 +460,8 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
   cell page and supercell rows at TauCeti scale haven't been measured; #150 tests rows from
   90 KB to 1.5 MB.
 - **1,000 queries per Worker invocation on Paid**, counting each statement in a batch
-  (unchecked). The route that came closest, quickstatements, now resolves everything in one
-  batch.
+  (unchecked). The route that came closest, quickstatements, now resolves every endpoint in a
+  few batches before its first write (section 8).
 - **10 GB per database** on Workers Paid.
 - **Billing by rows read and rows written** (unchecked). Index and FTS writes multiply the
   number of rows an import writes.
@@ -516,7 +516,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 | Reader | Replacement | Change |
 |---|---|---|
 | `resolveNodeEndpoint`, `POST /api/brain/node`, `brain-edits.ts:264-276`, `1375-1405` | `atomsExist` and `organOwners`, behind the readiness check. | fails closed |
-| quickstatements, `brain-edits.ts:692-733`, row loop `1169-1178` | One batch resolves every endpoint id (`organPages`, `atomsExist`) before the first write. | Required: row by row, a 100-row submit (`brain-edits.ts:50`) would go over the per-invocation cap. Side effect: an outage no longer leaves earlier rows written. |
+| quickstatements, `brain-edits.ts:692-733`, row loop `1169-1178` | A few batches resolve every endpoint id (`organPages`, `atomsExist`) before the first write. | Required: row by row, a 100-row submit (`brain-edits.ts:50`) would go over the per-invocation cap. Side effect: no Brain read follows the first write, so a D1 outage no longer leaves earlier rows written; a submit whose pages pass the prefetch's budget is refused with a 413 before any write (section 8). |
 | `getXrefIndex`, `getXrefPagesByNode`, `brain-edits.ts:92-174` | `xrefPages` and `xrefNodes`. | the two isolate caches and their evictor go away |
 
 Unchanged, because they aren't Brain release data: the decl, suffix and premise indexes
@@ -1513,10 +1513,18 @@ be promoted. [neutral] PRs can land any time.
          the prefix tier still finds names that start with `nat.s`.
        - Quickstatements loads every endpoint's owner, cell page and supercell (with its
          breadcrumb) in batches of 50 keys before its first write (`prefetchAtoms`), plus one
-         pass for the supercells organ keys name; rows are then written one by one as before, so
-         a D1 outage during the prefetch writes nothing, and one later can still leave earlier
-         rows written. There are no Brain reads later except for a page or supercell over the
-         prefetch's caps (128 K characters each, 8 M kept in all), which its endpoint reads alone.
+         pass for the supercells organ keys name; rows are then written one by one as before.
+         A request keeps at most 8 M characters (SQLite's `length`) of pages in all: each batch
+         asks for pages of at most its keys' equal share of what is left, and at most 128 K
+         characters, so no batch passes the budget. A page over its batch's cap comes back as its
+         length alone and is read afterwards, still before the first write, 4 single-row
+         statements a batch, at most 64 such pages. A submit whose pages would pass 8 M, or that
+         needs more than 64 such reads, is answered 413 before anything is written. So no Brain
+         read follows the first write, and a D1 outage can only fail the request before it
+         writes. Each page row is at most D1's 2 MB, so one batch of the alone reads returns at
+         most 8 MB. The write statements per submit are a separate count: with all 12 databases
+         selected a row can make about 60 of them, which passes 1,000 on its own in a 100-row
+         submit, independent of the Brain reads.
        - The prefix tier runs only for queries of 2 to 200 UTF-16 units and the fragment tier
          only for 3 to 200, so a one-character bridge query gets exact matches only; a prefix
          range that returns a 1,001st row is a builder disagreement and answers 503. The search

@@ -49,6 +49,7 @@ import type { Env } from "./env.js";
 import type { BrainLabelRow, BrainReleaseContext } from "./brain.js";
 import { StaticStore } from "./brain-store-static.js";
 import { D1Store } from "./brain-store-d1.js";
+export { PrefetchBudgetError } from "./brain-store-d1.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -325,7 +326,10 @@ export interface BrainStoreBatches {
   /** Loads the organ owners, cell pages and supercells of node ids (organ
    *  keys, cell: and path: ids, and the supercells organ keys name) for the
    *  rest of the request, so quickstatements resolves every endpoint before
-   *  its first write in a few batches.               [50 keys a batch] */
+   *  its first write in a few batches. Throws PrefetchBudgetError when the
+   *  pages pass the request's budget, before the caller writes anything.
+   *  [50 keys a batch; 8 M characters of pages kept; 64 pages read alone,
+   *  4 a batch] */
   prefetchAtoms(ids: string[]): Promise<void>;
 }
 
