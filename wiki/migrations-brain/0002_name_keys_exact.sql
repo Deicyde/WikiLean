@@ -1,0 +1,24 @@
+-- An index for the exact-name reads of the Worker (the D1 read-layer design, section 1, Search).
+--
+-- Apply by hand, once, after 0001_brain.sql and before any release lists the serving sidecar, with
+-- --command carrying the text of this file, NEVER --file (see 0001_brain.sql for why):
+--
+--   cd wiki && npx wrangler d1 execute wikilean-brain --remote --config <brain config> \
+--     --command "$(cat migrations-brain/0002_name_keys_exact.sql)"
+--
+-- Then verify: SELECT name FROM pragma_index_list(<name_keys, quoted>) lists name_keys_exact.
+-- It is CREATE INDEX IF NOT EXISTS, so a rerun changes nothing.
+--
+-- The exact tier reads the names equal to the query in seq order, and the exact-name lookup the
+-- first cell name equal to a key. With only UNIQUE(ds, name_lc, kind, owner) both sort every row
+-- that shares the name, and nothing caps how many rows do: folder names such as Basic or Defs
+-- repeat across many supercells. With this index SQLite reads those rows in seq order and stops
+-- at the LIMIT, so each read is bounded by its LIMIT. Both statements name the index (INDEXED BY),
+-- so on a database without it they fail and the D1 store answers 503 instead of sorting.
+--
+-- The schema rule of 0001_brain.sql forbids creating an index on a populated table, because the
+-- statement would stall every read of the shared database. This one is allowed only because it
+-- lands while the data tables are empty: before the first dataset import. On a database that
+-- already holds a dataset, prune every dataset first (or wait for an empty database) and apply
+-- it then.
+CREATE INDEX IF NOT EXISTS name_keys_exact ON name_keys(ds, name_lc, seq);
