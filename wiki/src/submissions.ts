@@ -160,7 +160,7 @@ export function registerSubmissionRoutes(app: Hono<{ Bindings: Env }>): void {
       }
       const code = usage[0].today >= SUBMISSION_DAILY_COUNT ? "quota_submissions" :
         usage[0].day_bytes + bytes.length > SUBMISSION_DAILY_BYTES ? "quota_bytes" : "queue_capacity";
-      c.header("Retry-After", String(Math.max(60, Math.ceil((day + 86400000 - now) / 1000))));
+      c.header("Retry-After", code === "queue_capacity" ? "60" : String(Math.max(60, Math.ceil((day + 86400000 - now) / 1000))));
       return refuse(c, code, "submission quota or server capacity reached; retain this sealed set and try again after the indicated delay", 429);
     }
     if (row.body_sha256 !== digest) return refuse(c, "idempotency_conflict", "this seal already has a different upload", 409);

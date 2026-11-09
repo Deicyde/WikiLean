@@ -196,6 +196,7 @@ describe("self-service submission transport", () => {
     const sent = await Promise.all(Array.from({ length: SUBMISSION_PENDING_PER_OWNER + 1 }, (_, i) => send(h, i % 2 ? a.token : b.token, upload(i + 1))));
     expect(sent.filter(r => r.status === 202)).toHaveLength(SUBMISSION_PENDING_PER_OWNER);
     expect(sent.filter(r => r.status === 429)).toHaveLength(1);
+    expect(sent.find(r => r.status === 429)!.headers.get("Retry-After")).toBe("60");
     h.db.prepare("UPDATE pipeline_submissions SET state='accepted'").run();
     for (let i = SUBMISSION_PENDING_PER_OWNER; i < SUBMISSION_DAILY_COUNT; i++) {
       expect((await send(h, a.token, upload(i + 20))).status).toBe(202);
