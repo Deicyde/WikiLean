@@ -329,7 +329,7 @@ export interface BrainStoreBatches {
 /** The store's composites, or null for a store without them (the StaticStore
  *  and every test store built on it), whose routes then run their old reads. */
 export function batchesOf(store: BrainStore): BrainStoreBatches | null {
-  const s = store as Partial<BrainStoreBatches>;
+  const s = store as unknown as Partial<BrainStoreBatches>;
   return typeof s.searchPage === "function" &&
     typeof s.bridgeCandidates === "function" &&
     typeof s.prefetchAtoms === "function"
