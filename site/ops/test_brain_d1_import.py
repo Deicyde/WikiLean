@@ -1115,7 +1115,9 @@ class PruneTest(Base):
         start = len(fake.statements)
         self.do_prune(fake)
         deleted = {s.split()[2] for s in fake.statements[start:] if s.startswith("DELETE FROM ")}
-        self.assertEqual(deleted - {"releases", "import_ranges", "datasets"}, set(bdi.TABLES_BY_VERSION[1]))
+        # every v1 table that holds rows (an empty one has no seq range to delete)
+        self.assertEqual(deleted - {"releases", "import_ranges", "datasets"},
+                         {table for table in bdi.TABLES_BY_VERSION[1] if self.local.rows(table)})
         self.assertEqual(len(bdi.TABLES_BY_VERSION[1]), 10)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
         for table in bdi.TABLES_BY_VERSION[1]:
@@ -1128,7 +1130,10 @@ class PruneTest(Base):
         start = len(fake.statements)
         self.do_prune(fake)
         deleted = {s.split()[2] for s in fake.statements[start:] if s.startswith("DELETE FROM ")}
-        self.assertEqual(deleted - {"releases", "import_ranges", "datasets"}, set(bdi.TABLES_BY_VERSION[2]))
+        # every v2 table that holds rows (an empty one has no seq range to delete)
+        self.assertEqual(deleted - {"releases", "import_ranges", "datasets"},
+                         {table for table in bdi.TABLES_BY_VERSION[2] if self.local.rows(table)})
+        self.assertIn("explorer_scopes", deleted)
         self.assertEqual(len(bdi.TABLES_BY_VERSION[2]), 12)
         for table in bdi.DATA_TABLES:
             self.assertEqual(fake.one(f"SELECT count(*) FROM {table}"), (0,), table)
