@@ -1,8 +1,9 @@
 # The Brain on D1: the read layer
 
-Design, 2026-11-07, revised 2026-11-08. Part of [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md);
-tracking issue #152. Step 1 (the serving database builder) is PR #153 and step 2 (the D1 schema
-and importer) is PR #156; everything after them is design, not code.
+Design, 2026-11-07, revised 2026-11-09. Part of [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md);
+tracking issue #152. Step 1 (the serving database builder, PR #153), step 2 (the D1 schema and
+importer, PR #156) and the layout at TauCeti scale (PR #137) are merged. Step 3b's first PR (#165)
+and step 1b (the explorer tables), stacked on it, are open; everything else is design, not code.
 
 **References.** `path:line` is at main `596aa7bb92e89c1f7a44f768392c3b895b049c47`. A bare
 number after a reference is a line in the same file. Bare file names:
@@ -66,7 +67,8 @@ bundle" and lines 29-33. Defined here:
 ## Decisions
 
 Jack's decisions are quoted in [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md), Decisions. Choice 1
-is his (2026-11-08); the others are the design's own:
+is his (2026-11-08) and choice 6 follows his answer quoted in issue #152; the others are the
+design's own:
 
 1. **Content-addressed serving datasets** (Jack, 2026-11-08). Rows are keyed by serving
    dataset, not by release.
@@ -102,8 +104,13 @@ is his (2026-11-08); the others are the design's own:
 5. **Page endpoints** at `/api/brain/r/<release hex>/...`, cached for good for the current
    release and for 300 s for the previous one, behind their own D1-cost limits (section 1,
    Caching, and Limits and costs).
-6. **Explorer**: unchanged for today's data; a cell in a module bubble shows as its module's
-   dot; large scopes are precomputed, at most 8 MB each (section 4, Explorer per scope).
+6. **Explorer**: it stays as it is. Jack (issue #152): "I like the current explorer, but I'm
+   open to improving it if you have ideas", recorded there as "It stays as it is; a scope too
+   big to draw shows one dot per module." So a scope draws exactly as the static explorer draws
+   it today unless it is too big: more than 25,000 nodes, or more than 8 parts of 1 MB. Only
+   then does the builder collapse modules into one dot each, ripple modules first, until it
+   fits. Scopes small enough to compute live never collapse. Large scopes are precomputed, in at
+   most 8 parts of at most 1 MB (section 4, Explorer per scope).
 7. **`brain_filter` pages can come back short.** A call examines at most 10,000 rows, so it
    can return fewer than `limit` hits along with a non-null cursor. The cursor format doesn't
    change.
@@ -361,22 +368,22 @@ level(path) -> {row, chain, children, cells}; an empty path is the roots level
     JOIN labels l ON l.ds = s.ds AND l.id = j.value
   WHERE s.ds = $DS AND s.path = ?2 LIMIT 5001;                                           [5,001 rows]
   plus the breadcrumb statement from supercell()
-explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomputed part
+explorerScope(scope, part) -> {_meta, libs, nodes, bubbles, edges} or one stored part
   SELECT json FROM explorer_scopes WHERE ds = $DS AND scope = ?2 AND part = ?3;  [1 row, at most 1 MB]
-  -- part 0 carries the scope's part count (at most 8, since a scope is at most 8 MB);
-  -- the page fetches parts 1.. as separate explorer?scope=&part= requests
-  -- no row for part 0: the builder marked this scope live (core plus ripple at most 2,000 cells, at
-  -- most 20,000 edges touching it). Three statements share these CTEs:
+  -- part 0 carries the scope's part count (at most 8); the page fetches parts 1.. as separate
+  -- explorer?scope=&part= requests
+  -- no row for part 0 of a path: scope that exists in supercells: the builder found it small
+  -- enough to compute live (core plus ripple at most 2,000 cells, their degrees summed at most
+  -- 20,000). No part 0 for all, or for a scope that is not a supercell path, answers 503.
+  -- Two statements share these CTEs:
   WITH core AS MATERIALIZED (SELECT id FROM labels
          WHERE ds = $DS AND (p = ?2 OR (p >= ?2 || '/' AND p < ?2 || '0')) LIMIT 2001),
        touch AS MATERIALIZED (SELECT id FROM core
          UNION SELECT b FROM explorer_edges WHERE ds = $DS AND a IN core
          UNION SELECT a FROM explorer_edges WHERE ds = $DS AND b IN core)
-  SELECT id, label, xy, f, p, libs, bub FROM labels WHERE ds = $DS AND id IN touch LIMIT 2001;
+  SELECT id, label, xy, f, p, libs FROM labels WHERE ds = $DS AND id IN touch LIMIT 2001;
   ... SELECT a, b, w FROM explorer_edges WHERE ds = $DS AND a IN touch AND b IN touch
         ORDER BY w DESC, a, b LIMIT 20001;
-  ... SELECT path, disc, n, fa, libs FROM bubbles WHERE ds = $DS AND path IN
-        (SELECT bub FROM labels WHERE ds = $DS AND id IN touch AND bub IS NOT NULL) LIMIT 2001
 ```
 
 - A folder's child heads carry the child's `syn` (its synapse rows, without traces). The
@@ -386,8 +393,13 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
   Libraries panel (`build_brain_page.py:903-905`, `1136-1149`, `2676`, `4021-4022`).
 - A response cut short by a LIMIT says `truncated`. A live explorer result that goes over its
   LIMIT means the builder and the data disagree, and it answers 503.
-- Ripple cells that have `bub` set become their module's dot, in live and precomputed scopes
-  alike (decision 6).
+- A live scope never has dots (decision 6): it is the static explorer's draw of the scope,
+  nodes in id order, edges in (-w, a, b) order and `universe` the touch count.
+  `build_serving_db.explorer_payload`, run on `ExplorerGraph.from_serving` of the same serving
+  file (its `labels` and `explorer_edges` rows only), is the oracle the second 3b PR's live
+  computation is checked against. That PR names `explorer_edges_b` with `INDEXED BY`, as #165
+  does `name_keys_exact`, so a database without it answers 503 instead of scanning; the
+  importer already refuses a version 2 import without it.
 
 ### Caching
 
@@ -606,17 +618,22 @@ Behavior:
   the hash target). The home page embeds /brain (`home.ts:215`), so every landing visit stops
   downloading supercells and labels whole, which would be 84.9 MB at TauCeti scale.
 - **The explorer** keeps its client logic: the visibility predicate, build positions as they
-  are, and relaxation only under 4,000 cells (`4640`, `5388`). What's new:
-  - module dots, kept or hidden by their library and their `fa` facet bits;
+  are, and relaxation only under 4,000 cells (`4640`, `5388`). Each node's libraries arrive as
+  `l`, an index into the payload's `libs`. What's new, only in a stored scope too big to draw
+  cell by cell (decision 6):
+  - module dots, kept or hidden by their `fa` facet bits and their libraries, both taken over
+    the members the dot replaces;
   - summed edges to module dots, which can't be clicked.
 
 ## 4. Serving database
 
 The builder (`build_serving_db.py`, PR #153) writes these tables, without `ds`, into
-`serving.sqlite3`, and the importer adds `ds`. The D1 schema is one migration,
-`wiki/migrations-brain/0001_brain.sql`, applied by hand. It is applied with `--command`
-carrying the file's text, never `--file`: on a remote database, `--file` goes through the
-import API, the one wrangler warns makes the database "unavailable to serve queries".
+`serving.sqlite3`, and the importer adds `ds`. The D1 schema is three migrations in
+`wiki/migrations-brain`, applied by hand in order: `0001_brain.sql`, `0002_name_keys_exact.sql`
+(section 8, step 3b) and `0003_explorer.sql` (the explorer tables, schema_version 2). Each is
+applied with `--command` carrying the file's text, never `--file`: on a remote database,
+`--file` goes through the import API, the one wrangler warns makes the database "unavailable to
+serve queries".
 
 ```sql
 CREATE TABLE datasets(ds INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -646,7 +663,6 @@ CREATE TABLE labels(ds INTEGER NOT NULL, seq INTEGER NOT NULL, ord INTEGER NOT N
   id TEXT NOT NULL, label TEXT, aka TEXT, f INTEGER, p TEXT,
   libs TEXT,   -- library roots of all its folders, U+001F-joined; NULL when homeless
   xy TEXT,     -- build position, JSON text
-  bub TEXT,    -- step 1b: module path when the layout put the cell in a bubble
   UNIQUE(ds, seq), UNIQUE(ds, ord), UNIQUE(ds, id));
 CREATE INDEX labels_p ON labels(ds, p);
 CREATE TABLE supercells(ds INTEGER NOT NULL, seq INTEGER NOT NULL, ord INTEGER NOT NULL,
@@ -684,15 +700,12 @@ CREATE TABLE text_ids(ds INTEGER NOT NULL, seq INTEGER NOT NULL, node TEXT NOT N
   -- serving.sqlite3 also has body TEXT NOT NULL: label, docstring and description from
   -- nodes.jsonl, for the FTS fill; D1 omits it
   UNIQUE(ds, seq), UNIQUE(ds, node));
--- Step 1b, after PR #137:
+-- 0003_explorer.sql (schema_version 2):
 CREATE TABLE explorer_edges(ds INTEGER NOT NULL, seq INTEGER NOT NULL, a TEXT NOT NULL,
   b TEXT NOT NULL, w INTEGER NOT NULL, UNIQUE(ds, seq), UNIQUE(ds, a, b));
 CREATE INDEX explorer_edges_b ON explorer_edges(ds, b);
 CREATE TABLE explorer_scopes(ds INTEGER NOT NULL, seq INTEGER NOT NULL, scope TEXT NOT NULL,
   part INTEGER NOT NULL, json TEXT NOT NULL, UNIQUE(ds, seq), UNIQUE(ds, scope, part));
-CREATE TABLE bubbles(ds INTEGER NOT NULL, seq INTEGER NOT NULL, path TEXT NOT NULL,
-  disc TEXT NOT NULL,  -- [x, y, r], JSON text
-  n INTEGER NOT NULL, fa INTEGER, libs TEXT, UNIQUE(ds, seq), UNIQUE(ds, path));
 -- Per dataset, created and filled by the importer, dropped by the pruner:
 --   CREATE VIRTUAL TABLE names_<hex> USING fts5(name, content='', contentless_delete=1,
 --       tokenize='trigram');                                 rowid = name_keys.seq
@@ -702,7 +715,8 @@ CREATE TABLE bubbles(ds INTEGER NOT NULL, seq INTEGER NOT NULL, path TEXT NOT NU
 
 The local file also has two tables the importer doesn't copy: `tables` (each data table's row
 count, digest and delete bounds, as the sidecar has them) and `meta` (the schema version, the
-digests of the input files, and Python's Unicode version, below).
+digests of the input files, Python's Unicode version, below, and `explorer`, the explorer's caps
+and the size of every stored scope).
 
 Notes on the tables:
 - **`seq`.** Every data table numbers its rows 1..N in its key order, which is the order the
@@ -716,28 +730,61 @@ Notes on the tables:
 - **`text_ids`** holds every node with a docstring or description whose organ id resolves to an
   atom (a cell, or a supercell for rule-5 organs, `build_cell_shards.py:981-986`), or that is a
   supercell itself. Its owners come in labels order, then supercell order.
-- **Explorer per scope** (step 1b).
-  - The scopes are each `path:` supercell plus `all` (`build_brain_page.py:5298`). The core is
-    the cells whose `p` is in the subtree, and the ripple adds their neighbors (`5310-5316`),
-    as today.
-  - The builder records each scope's size. A scope of at most 2,000 cells (core plus ripple)
-    and at most 20,000 edges is computed live. Larger scopes, and `all`, are precomputed into
-    `explorer_scopes`, using today's payload shape plus `bubbles` and `libs`, in parts of at
-    most 1 MB.
-  - Each precomputed scope is at most 8 MB. Above that, the builder collapses more bubbled
-    cells into module dots until the scope fits, and the build fails if it still doesn't.
-    Nested scopes each store their own copy, so step 0 records the total `explorer_scopes`
-    bytes per dataset.
-  - In every scope, ripple cells that have `bub` set collapse into their module's dot. The
-    dot's center and radius come from `bubbles`, and edges to its members are summed per dot.
-  - A precomputed scope of more than 21,000 cells (what the explorer draws today,
-    `build_brain_page.py:4597`) also collapses its own bubbled core cells.
-  - Today's data has no bubbles, so today's views don't change.
+- **Explorer per scope** (step 1b, decision 6).
+  - The scopes are each `path:` supercell plus `all`. A `path:` scope's core is the cells whose
+    `p` is the scope or under it, and the ripple adds their neighbors (`build_brain_page.py:5309-5321`),
+    as today. `all` is every cell, with no ripple (`5307-5308`); every focus that is not a
+    `path:` folder, a focused cell included, draws `all` (`5298`).
+  - `explorer_edges` holds the edges of `cells/explorer.json` by cell id, in the synapse's
+    src -> dst order, `seq` in (a, b) order. The builder reads `explorer.json` and checks it
+    against the labels and shards: the same cells in id order, each with its label row's
+    `label`, `f` and `p` and its shard `xy`, no other field, integer weights in (-w, i, j)
+    order, and `_meta.truncated` false. The shards can't stand in: they keep at most 200
+    synapses per cell (`build_cell_shards.py:93`).
+  - The builder computes each scope's touch (core plus ripple) and scan (the touch cells'
+    degrees summed: the edge rows the live statements walk). A `path:` scope with touch at most
+    2,000 and scan at most 20,000 is computed live and gets no rows. Every other scope, and
+    `all`, is stored in `explorer_scopes` as at most 8 parts of at most 1,000,000 UTF-8 bytes.
+    Part 0 is `{"_meta": {"scope", "parts", "counts": {"nodes", "bubbles", "edges", "universe"},
+    "collapsed"}, "libs", "nodes", "bubbles", "edges"}` and every later part
+    `{"nodes", "bubbles", "edges"}`, filled greedily in that order, so the parts' lists joined
+    in order are the payload; only `_meta` and `libs` must fit in part 0. A node is its
+    `explorer.json` object plus `l`, an index into `libs` (its `labels.libs`), when it has
+    libraries. An edge `[i, j, w]` whose index is past the nodes names `bubbles[index - nodes]`.
+  - A scope draws exactly as today unless it is too big: more than 25,000 nodes (dots counted;
+    today's `all` is 21,071 cells) or more than 8 parts. Only then does the builder collapse
+    modules into dots, in one fixed order until it fits: first the ripple modules (no member in
+    the core), then the core modules, each by members in the scope, most first, then path. It
+    takes the first k that fits, found by doubling then bisecting, and checks the final parts'
+    count and bytes, so k fits but isn't proven minimal. If nothing fits with every module
+    collapsed, the build fails, naming the scope, and publishes nothing. Live scopes never
+    collapse.
+  - A dot stands for the members of one module in the scope's touch. Its `n`, `fa` (the OR of
+    their `f`) and libraries (the union of their `labels.libs`, as an `l` into `libs`) are over
+    those members only; its `disc` [x, y, r] is the layout's. Edges to a dot are summed per pair,
+    edges inside one dot are dropped, and a collapsed scope's edges sort by (-w, i, j).
+  - Module membership is `layout.bubble_module`, numpy-free and shared with the layout: a lone
+    decl cell (at most one organ) of a library outside `SIMULATED_DECL_LIBS` belongs to its
+    deepest supercell, else to `path:<Lib>`. The builder applies it to each shard entry (id,
+    supercells, organ count), so no cell row, shard, `labels.json` or `explorer.json` byte
+    records a module. The discs are the `cells.jsonl` `_meta.bubbles` that `build_cells.py`
+    writes from `layout_cells`' return value (`{module: [x, y, r]}`, rounded to 0.1, only when
+    some cell is bubbled); the builder reads that `_meta` through `--cells` (default: beside
+    `--nodes`). It refuses a `cells.jsonl` whose `generated_at`, `counts.cells` or `prov` differs
+    from the cell manifest's (never `generation_id`, which the manifest doesn't copy), a bubbled
+    cell with more than one supercell or whose `p` isn't its module, a module with no disc, and a
+    disc with no member. So a module's members share their `p`, and collapsing a module never
+    moves a cell across a scope's core.
+  - `meta.explorer` records the caps, the totals (scopes, live, stored, parts, bytes, collapsed
+    scopes) and, per stored scope, its universe, scan, parts, bytes, part 0's head bytes, the
+    modules it collapsed, and its parts and bytes with every module collapsed. Nested scopes each
+    store their own copy, so step 0 records the total `explorer_scopes` bytes per dataset.
+  - On the committed `brain/data/cells.jsonl` (2026-08-28), 7,858 of the 21,071 cells are lone
+    TauCeti decls in 197 modules, each with one supercell. `all` is under the node cap, so it
+    draws as today; the TauCeti harvest is what takes it over. That file's `_meta` predates the
+    discs, so the serving build needs a fresh cells build.
   - Limiting the ripple to cells without `p` instead would drop the neighbors from other
     folders that today's views show.
-  - `bub` and `bubbles` need the layout to record each bubbled cell's module and the discs
-    that `place_bubbles` returns. The layout in PR #137 knows each cell's module but records
-    neither, and it drops the discs.
 - **Traces.**
   - `synapse_traces` holds exactly the sidecar's per-pair values
     (`build_cell_shards.py:1231-1248`), keyed `src|dst` with `src < dst`.
@@ -888,12 +935,13 @@ way it opens `brain.sqlite3` (`authority_contracts.py:4916-4942`). Then it:
   (`255-256`), and generated artifacts can carry legacy non-NFC text (`296-298`), so it would
   reject real labels and docstrings. A test digests a non-NFC label;
 - re-derives only the base tables from `brain.sqlite3` (`cell_pages`, `aliases`, `supercells`
-  apart from `fhist` and `kids`, `labels` apart from `libs`, `xy` and `bub`, `synapse_traces`
-  and `xrefs`), the way it re-derives the static projections today
+  apart from `fhist` and `kids`, `labels` apart from `libs` and `xy`, `synapse_traces`, `xrefs`
+  and `explorer_edges`, the edges of the `explorer.json` projection it already re-derives), the
+  way it re-derives the static projections today
   (`authority_contracts.py:4284-4412`), streaming with the serving file attached instead of
   holding every node in memory (`4157-4181`);
 - checks the derived tables (`name_keys`, `hot_prefixes`, `cell_under`, `fhist`, `kids`,
-  `text_ids` and the explorer tables) by digest plus these invariants, so it doesn't carry a
+  `text_ids` and `explorer_scopes`) by digest plus these invariants, so it doesn't carry a
   second copy of the builder's newest logic:
   - `name_keys`: every owner is a label id or a supercell path, `name_lc` is the lowercase of
     `name`, `len16` is the length of `name_lc` in UTF-16 units, and every label, aka and
@@ -905,8 +953,9 @@ way it opens `brain.sqlite3` (`authority_contracts.py:4916-4942`). Then it:
     entry is one of its children, with that child's `n_sub` and `fhist`, at most 64 of them;
   - `text_ids`: every node exists in `brain.sqlite3` and every owner in `cell_pages` or
     `supercells`;
-  - explorer tables: every edge endpoint and scope node is a label id, every `bub` is a
-    `bubbles` path, and every part parses, is at most 1 MB, and its scope is at most 8 MB.
+  - `explorer_scopes`: every node id is a label id and every dot path a supercell path, every
+    part parses and is at most 1 MB, each scope's parts run from 0 to its part count, at most 8,
+    and `all` has part 0.
 - refuses a manifest whose traces carry their own `prov`;
 - writes a verification receipt for the release, keyed by the manifest's sha256 and recording
   the verifier's commit. A later verification of the same manifest by the same verifier (the
@@ -1164,8 +1213,11 @@ the folded inputs and fails. The scope lists paths, not hashes, so the id and
   3. write `xref_index.json` into scratch from `build_shards._render_outputs`
      (`build_shards.py:156`);
   4. run `build()` on the scratch tree, which keeps the full manifest, so the builder's reads
-     of the shard and trace maps keep working. The database, the sidecar and the three slim
-     public files go into one owned scratch directory;
+     of the shard and trace maps keep working, with `cells_path` set to the cells stage's
+     `cells.jsonl` (`context.dependency_output_for(STAGE_ID, "cells", "brain/data/cells.jsonl")`),
+     whose `_meta` holds the bubble discs: its default, beside `nodes.jsonl`, is base-graph's
+     directory in a replay. The database, the sidecar and the three slim public files go into
+     one owned scratch directory;
   5. publish all five from it with `stage_io.publish_files_no_replace`, which removes that
      directory (`stage_io.py:304-327`), and remove the cell tree through its own owned
      directory.
@@ -1375,7 +1427,15 @@ After step 4, step 6 and the cutover (with 6c) are merged:
   id staying the same across rebuilds of the same tables; hot-prefix completeness; `cell_under`
   against today's `under` test on the fixture; `spath` rows against the page's area-search
   hay; `kids` holding up to 64 children; and the build failing on prov skew. Step 1b adds the
-  8 MB cap on every precomputed explorer scope.
+  explorer: every stored payload equal to a transcription of the static explorer's scope loops
+  (`build_brain_page.py:5298-5340`, filters off) for `all` and every `path:` scope, with a drift
+  guard on those lines, and equal to `explorer_payload` on the rows read back; the live split;
+  parts at the byte cap, dots spilling past part 0; the collapse order, dots covering exactly
+  the touch, the summed edges, and the failure when nothing fits; the `cells.jsonl` and
+  `explorer.json` cross-checks; nested scopes of a synthetic tree; and the membership rule
+  without numpy. `brain/test_cells.py` and `brain/test_cell_shards.py` don't run in CI
+  (`scripts/check_ci_python_tests.py:25-26`), so every check of the rule and of the builder is
+  in this file.
 - **End-to-end.** `wiki/e2e/server.ts:161` serves `/assets/brain/*` from the fixture. Requests
   under `/api/brain/r/*` already fall through to the app (`:168`); the env it passes must gain
   `BRAIN_DB`.
@@ -1397,7 +1457,7 @@ After step 4, step 6 and the cutover (with 6c) are merged:
 - The promoter then calls `verify --sample` in-process; a mismatch is journaled like a failed
   canary.
 - The 32 MiB response cap stays (`brain-canary.py:54`). A D1 explorer response is one part of
-  at most 1 MB, and a whole scope is at most 8 MB.
+  at most 1 MB, and a whole scope is at most 8 parts.
 
 ## 8. Steps
 
@@ -1405,9 +1465,9 @@ The numbering matches issue #152. [affecting] means release-affecting under
 `brain_release_authority.py:28-91`. Such a PR merges only when no built release is waiting to
 be promoted. [neutral] PRs can land any time.
 
-- **Layout at TauCeti scale** [affecting], PR #137: grid-bucketed repulsion and module
-  bubbles. It has no number because it doesn't depend on the D1 work and can merge any time
-  (Jack's call). Step 1b needs it, and step 7 is held until 1b lands.
+- **Layout at TauCeti scale** [affecting], PR #137, merged: grid-bucketed repulsion and module
+  bubbles. It has no number because it doesn't depend on the D1 work. Step 1b builds on it, and
+  step 7 is held until 1b lands.
 0. **Operator, no merge.**
    - Run #150 on the operator Mac, adding the cases the D1 probe lacks:
      - reads while a stream of `--command` batches is writing (the D1 probe only tests a
@@ -1427,6 +1487,8 @@ be promoted. [neutral] PRs can land any time.
        prefixes of 4 or more characters, and under concurrent page load;
      - the number and bytes of precomputed explorer scopes at the live cap, and the total
        `explorer_scopes` bytes per dataset;
+     - the largest stored explorer scope with every module collapsed, and its margin to 8 parts
+       and to part 0's 1 MB (`meta.explorer`): a scope that doesn't fit fails every build;
      - per-route D1 time for the agent API and MCP, which sets the agent D1-cost budget;
      - the row counts of `hot_prefixes` and `cell_under`.
    - Go ahead if trigram works or the fallback is chosen, the rows fit, reads stay unaffected,
@@ -1437,21 +1499,30 @@ be promoted. [neutral] PRs can land any time.
      the sidecar with `delete_bounds`, the digest rule and the prov-skew failure.
    - `build_serving_db.py` joins the reducer scope (`brain/authority/reducer-inputs-v1.json`).
    - Releasable, since nothing runs it yet.
-   - **1b. Explorer tables** [affecting], after PR #137, once the layout records `bub` and the
-     bubble discs. Includes the 8 MB cap per precomputed scope.
+   - **1b. Explorer tables** [affecting], stacked on #165, which it needs for migration 0002
+     and the Worker's row port. The layout returns its discs and `build_cells.py` records them
+     in the `cells.jsonl` `_meta` as `bubbles`; `layout.bubble_module` is the membership rule
+     both share. `build_serving_db.py` reads `explorer.json` and that `_meta`, and writes
+     `explorer_edges` and `explorer_scopes` (schema_version 2, at most 8 parts of 1 MB per stored
+     scope); migration `0003_explorer.sql`; the importer's version 2 (`REQUIRED_COLUMNS[2]`,
+     `REQUIRED_INDEXES[2]`, the natural keys of both tables), and it accepts only version 2.
+     No cell row, shard, `labels.json`, `explorer.json` or other served byte changes, so a
+     layout baseline taken before 1b merges sees only the `cells.jsonl` `_meta` gain `bubbles`.
 2. **Migration and importer**, PR #156 [affecting because of `wiki/migrations-brain`; the
    importer in `site/ops` is neutral].
    - The importer's `import` (with `--scratch`), `prune`, `supersede` and `verify` commands:
      register before prune, finishing an interrupted delete, resume from recorded coverage,
      and a read-only `verify`.
    - Releasable, since nothing uses it yet.
-   - Afterwards the operator applies the migration with `--command`, imports a full-size
-     serving file and sidecar from step 0's build into the remote `wikilean-brain` in scratch
-     mode, then supersedes and prunes it. The copied file stays outside `brain/data`.
+   - Afterwards the operator applies the migrations (`0001` to `0003`) with `--command`,
+     imports a full-size schema_version 2 serving file and sidecar from step 0's build into the
+     remote `wikilean-brain` in scratch mode, then supersedes and prunes it. The copied file
+     stays outside `brain/data`.
    - **Gate before the first D1 release:** this remote import of one full dataset must
      succeed, and it records the dataset's footprint (`size_after` before and after, indexes
      and FTS included), the statement size and timing of every call, the call count and the
-     wall time. Three such footprints must fit under the 10 GB cap with room to spare.
+     wall time. Three such footprints must fit under the 10 GB cap with room to spare. The
+     dataset is version 2, so the footprint includes `explorer_scopes`.
 3. **Worker**, in two PRs.
    - **3a. `BrainStore` interface** [affecting]. Readers call the interface; only the static
      implementation exists; no behavior change. Releasable.
@@ -1471,8 +1542,16 @@ be promoted. [neutral] PRs can land any time.
        the agent D1-cost limiter, the Cache API rules, the layout rule, the reference text, text
        hits and index tags on search, `level` and `explorerScope`, and the `wrangler.jsonc`
        binding. The binding and the remote migrations (`0001_brain.sql`, then
-       `0002_name_keys_exact.sql`) come before the first import, so before any release that
-       lists the sidecar.
+       `0002_name_keys_exact.sql`, then `0003_explorer.sql`) come before the first import, so
+       before any release that lists the sidecar.
+     - **Schema versions.** The first PR's Worker reads only schema_version 1
+       (`SUPPORTED_SCHEMA_VERSIONS`, `brain-store-d1.ts:84`), while since 1b the builder writes
+       only 2 and the importer accepts only 2. The second PR moves the Worker to exactly `{2}`
+       together with `explorerScope`, the explorer row port and its fixture (0003, version 2
+       rows). The order is safe: the D1 store serves only a release that lists the sidecar, none
+       does before step 7, the readiness check answers 503 on any other version, a version 1
+       dataset (a step 2 scratch import made before 1b) is bound by no release, and the first D1
+       release's previous release is static, so no Worker has to read version 1.
      - **Where the first PR departs from this plan:**
        - The composites (`searchPage`, `bridgeCandidates`, and `prefetchAtoms` for
          quickstatements) are a separate interface, `BrainStoreBatches`, that only the D1Store
@@ -1570,7 +1649,8 @@ be promoted. [neutral] PRs can land any time.
 6. **Replay tools on the D1 layout** [affecting], four PRs (section 6).
    - 6a: `build_cell_shards` builds a tree without publishing it, and gains the D1 public
      writer (`cells/frontier.json`, the slim manifest). Any time.
-   - 6b: the serving stage's context entry, and the `build_shards` contract choice. After 6a.
+   - 6b: the serving stage's context entry, which passes the cells stage's `cells.jsonl` as
+     `cells_path`, and the `build_shards` contract choice. After 6a.
    - 6d: the gate's layout-aware measurement and its SQLite floor. After step 4.
    - 6c: the v3-d1 inventory and the `build_common` id set. In the cutover PR, so no replay
      can pair the D1 data with the static page, and main never builds a layout no inventory
@@ -1586,7 +1666,7 @@ be promoted. [neutral] PRs can land any time.
    - `query.py` and the other local tools read `serving.sqlite3`.
    - 6c, the v3-d1 inventory, lands here. The static `cell-shards` context entry refuses to
      run from here on, so no replay pairs the static data with the D1 page.
-   - Held until steps 1 to 5, 6a, 6b, 6d and 1b (and so #137) are merged, #150 has results, and
+   - Held until steps 1 to 5, 6a, 6b, 6d and 1b are merged, #150 has results, and
      step 2's remote scratch import gate has passed. From then on, every release built from
      main is a D1 release, either compatibility or offline replay.
    - It can be two PRs (page, builder) merged back to back, with no release cut between them.
