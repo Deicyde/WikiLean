@@ -318,11 +318,13 @@ export function exactTierStmt(qlc: string, lo: number, hi: number): Stmt {
 }
 
 /** [100 + 100 rows]: a hot prefix's listed owners (each owner's first name
- *  seq). The agent search reads `sups`; the page's `live_sups` is PR 2's. */
+ *  seq). The agent search reads `sups`; the page's `live_sups` is PR 2's.
+ *  CROSS JOIN keeps the listed seqs outer, so each one probes name_keys by
+ *  (ds, seq); a plain join let the planner walk the dataset's names instead. */
 export function hotTierStmt(qlc: string, cells: boolean, sups: boolean): Stmt {
   const branch = (list: string) =>
-    `SELECT k.seq AS seq, k.owner AS owner FROM hot_prefixes h, json_each(h.${list}) j ` +
-    `JOIN name_keys k ON k.ds = h.ds AND k.seq = j.value WHERE h.ds = ${DS} AND h.prefix = ?2`;
+    `SELECT k.seq AS seq, k.owner AS owner FROM hot_prefixes h CROSS JOIN json_each(h.${list}) j ` +
+    `CROSS JOIN name_keys k WHERE h.ds = ${DS} AND h.prefix = ?2 AND k.ds = h.ds AND k.seq = j.value`;
   const lists = [...(cells ? ["cells"] : []), ...(sups ? ["sups"] : [])];
   return { sql: lists.map(branch).join(" UNION ALL "), params: [qlc] };
 }
@@ -344,13 +346,14 @@ export function rangeTierStmt(qlc: string): Stmt {
 }
 
 /** [k rows]: names containing the fragment, in seq order, from the dataset's
- *  names_<hex> FTS table (rowid = name_keys.seq). */
+ *  names_<hex> FTS table (rowid = name_keys.seq). CROSS JOIN keeps the k
+ *  matches outer, so each probes name_keys by (ds, seq). */
 export function fragmentTierStmt(hex: string, match: string, lo: number, hi: number, k: number): Stmt {
   const table = namesTable(hex);
   return {
     sql:
       `SELECT k.seq AS seq, k.owner AS owner FROM (SELECT rowid AS seq FROM ${table} WHERE ${table} MATCH ?2 ` +
-      `AND rowid >= ?3 AND rowid < ?4 ORDER BY rowid LIMIT ?5) f JOIN name_keys k ON k.ds = ${DS} AND k.seq = f.seq`,
+      `AND rowid >= ?3 AND rowid < ?4 ORDER BY rowid LIMIT ?5) f CROSS JOIN name_keys k WHERE k.ds = ${DS} AND k.seq = f.seq`,
     params: [match, lo, hi, k],
   };
 }
