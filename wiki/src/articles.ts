@@ -932,7 +932,7 @@ async function requireAgreement(
   if (writer.actorType === "agent") {
     return c.json({
       ok: false,
-      error: "the person who minted this agent has not accepted the CC0 terms; they must make one edit themself first",
+      error: "the person who minted this agent must accept the CC0 contribution agreement at /agents first",
     }, 403);
   }
   if (body.cc0 !== true) {

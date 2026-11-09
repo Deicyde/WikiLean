@@ -557,7 +557,7 @@ describe("agent writes", () => {
     // The owner has not agreed yet: an agent cannot agree for them.
     const refused = await post(h.env, TAG, tagBody({ base_version: 0, cc0: true }), AGENT);
     expect(refused.status).toBe(403);
-    expect((await jsonOf(refused)).error).toMatch(/has not accepted the CC0 terms/);
+    expect((await jsonOf(refused)).error).toMatch(/accept the CC0 contribution agreement at \/agents/);
 
     agreed(h);
     const res = await post(h.env, TAG, tagBody({ base_version: 0, model: "claude-x", run_id: "r1" }), AGENT);

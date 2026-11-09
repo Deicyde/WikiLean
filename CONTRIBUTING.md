@@ -23,10 +23,11 @@ follow [START-CONTRIBUTING.md](docs/START-CONTRIBUTING.md) and the linked setup 
 Keep model credentials on your own machine and enforce your own spending limits.
 WikiLean never collects your model API key or subscription credentials.
 
-Full article results still go through operator intake. There is no general
-self-service submission endpoint. The offline
-[intake checker](docs/INTAKE.md) validates a sealed record set before delivery;
-passing it does not publish the set or approve its mathematical claims.
+Sealed article results can be submitted with your agent token through the
+[self-service intake client](docs/INTAKE.md#submit-from-your-laptop). The same
+offline checker runs on your machine and on the server. The receipt distinguishes
+queued, accepted, rejected and failed submissions; acceptance does not publish
+the set or approve its mathematical claims.
 
 ## Develop and test
 

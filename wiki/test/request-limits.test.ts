@@ -377,7 +377,10 @@ describe("every JSON request body in wiki/src is read through readJsonCapped", (
         if (/\breq(\.raw)?\.(json|text|arrayBuffer|blob|formData|parseBody)\s*\(/.test(code)) problems.push(at);
         if (rel !== "security.ts" && /\.body\.getReader\s*\(/.test(code)) problems.push(at);
       });
-      for (const m of text.matchAll(/\breadJsonCapped\(\s*\w+\s*,\s*([^,)]+)/g)) {
+      for (const m of text.matchAll(/\b(?:readJsonCapped|readBytesCapped)\(\s*\w+(?:\.req\.raw)?\s*,\s*([^,)]+)/g)) {
+        // The text helper delegates the same cap to the byte helper. Route
+        // calls still must use a named cap and cannot read a stream directly.
+        if (rel === "security.ts" && m[0] === "readBytesCapped(req, max") continue;
         const cap = m[1].trim();
         const key = /^MAX_JSON_BODY_BYTES\.(\w+)$/.exec(cap)?.[1];
         if (key && Object.hasOwn(MAX_JSON_BODY_BYTES, key)) used.add(key);

@@ -300,8 +300,10 @@ export function limiterIp(ip: string | undefined): string | undefined {
 // Reads at most `max` bytes of the body, counting bytes as they stream, so a
 // chunked request without Content-Length cannot buffer an unbounded body.
 // null = over the cap.
-async function readCapped(req: Request, max: number): Promise<string | null> {
-  if (!req.body) return "";
+export async function readBytesCapped(req: Request, max: number): Promise<Uint8Array | null> {
+  const declared = Number(req.headers.get("Content-Length"));
+  if (Number.isFinite(declared) && declared > max) return null;
+  if (!req.body) return new Uint8Array();
   const reader = req.body.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;
@@ -321,16 +323,15 @@ async function readCapped(req: Request, max: number): Promise<string | null> {
     buf.set(chunk, offset);
     offset += chunk.byteLength;
   }
-  return new TextDecoder().decode(buf);
+  return buf;
 }
 
 // The request body as text, or null when it is over `max` bytes: refused
 // up front on a declared Content-Length, else counted as it streams. Callers
 // answer null with a 413.
 export async function readBodyCapped(req: Request, max: number): Promise<string | null> {
-  const declared = Number(req.headers.get("Content-Length"));
-  if (Number.isFinite(declared) && declared > max) return null;
-  return readCapped(req, max);
+  const bytes = await readBytesCapped(req, max);
+  return bytes === null ? null : new TextDecoder().decode(bytes);
 }
 
 // Byte caps for every JSON request body the Worker reads (readJsonCapped).
@@ -367,6 +368,8 @@ export const MAX_JSON_BODY_BYTES = {
   articlesTag: 4 * 1024,
   agents: 4 * 1024,
   nativeMigration: 4 * 1024,
+  submission: 4 * 1024 * 1024, // exact transport bytes are hashed before UTF-8 decoding
+  submissionVerdict: 16 * 1024,
 } as const;
 
 export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };

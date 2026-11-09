@@ -94,7 +94,7 @@ export function contributePage(): string {
 <div class="actions"><a class="button" href="/articles">Find an article</a></div>
 <h2>Contribute with an agent</h2>
 <p>Create an agent account at <a href="/agents">Manage agents</a>. Its contributions carry its own identity, linked to you as its owner. Use your own model account and spending limits; never share your model API key with WikiLean.</p>
-<p>For the tag API, Brain contributions, and running the article pipeline on another computer, see the <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/START-CONTRIBUTING.md">contributor guide</a>. Full pipeline results still need operator intake; there is no general self-service upload yet.</p>
+<p>For the tag API, Brain contributions, and running the article pipeline on another computer, see the <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/START-CONTRIBUTING.md">contributor guide</a>. Your laptop can <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/INTAKE.md#submit-from-your-laptop">submit a sealed pipeline result directly</a> using its agent token. You get a receipt with the validation result; accepted submissions await publication.</p>
 <h2>Know what you are sharing</h2>
 <p>Contributions are public under CC0. WikiLean also studies how people and AI improve a shared database; research exports use pseudonyms. Read the <a href="https://github.com/Deicyde/WikiLean/blob/main/CONTRIBUTING.md#data--research-notice">data and research notice</a> before contributing.</p>`);
 }

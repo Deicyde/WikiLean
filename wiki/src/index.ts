@@ -59,6 +59,7 @@ import {
 import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, registerSecurityHeaders, researchExportSalt } from "./security.js";
 import { slugEditingAllowed } from "./site-settings.js";
 import { registerVersionRoutes } from "./version.js";
+import { registerSubmissionRoutes } from "./submissions.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -143,6 +144,7 @@ const RESERVED = new Set([
 const app = new Hono<{ Bindings: Env }>();
 registerSecurityHeaders(app); // first: middleware must wrap every route below
 registerAuthRoutes(app);
+registerSubmissionRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
 registerBrainEditRoutes(app);

@@ -441,6 +441,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--record-set", type=Path,
                         help="a sealed record set to send back; it is checked against the "
                              "intake contract here before anything is pushed")
+    parser.add_argument("--submit", action="store_true",
+                        help="with --stage results: submit the sealed set directly to WikiLean "
+                             "instead of pushing results to the work repo; needs --execute to upload")
     parser.add_argument("--max-cost", type=float, default=None,
                         help="recorded and printed, not enforced: no watchdog runs here")
     parser.add_argument("--execute", action="store_true",
@@ -448,6 +451,10 @@ def main(argv: list[str] | None = None) -> int:
                              "every step that would prints what it would do")
     args = parser.parse_args(argv)
     stages = (args.stage,) if args.stage else DEFAULT_STAGES
+    if args.submit and args.stage != "results":
+        parser.error("--submit requires --stage results and --record-set")
+    if args.submit and args.record_set is None:
+        parser.error("--submit requires --record-set")
     try:
         repo = workrepo.check_clone(args.repo)
         machine = workrepo.machine_id(args.machine_id)
@@ -505,6 +512,17 @@ def main(argv: list[str] | None = None) -> int:
             if record_set is None:
                 record_set = Path(sealed["set_dir"])
         if "results" in stages:
+            if args.submit:
+                from submit import submit as submit_set
+                import submission_transport
+                try:
+                    receipt = submit_set(args.record_set, execute=args.execute)
+                except (submission_transport.TransportError, submission_transport.intake.build_store.ArticlesError) as exc:
+                    raise RunProblem(str(exc)) from exc
+                args.workdir.mkdir(parents=True, exist_ok=True)
+                (args.workdir / "SUBMISSION.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
+                print(json.dumps(receipt, indent=2))
+                return 2 if receipt.get("submission", {}).get("state") in ("rejected", "failed") else 0
             package = package or held(args.workdir).get("package")
             if not package:
                 raise RunProblem("no package: claim one first, or pass --package")

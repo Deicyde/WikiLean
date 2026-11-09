@@ -2926,6 +2926,13 @@ class D1RequiredColumnsTests(unittest.TestCase):
         gate_table, _ = promote.D1_REQUIRED_COLUMNS["wiki/migrations/0019_article_tags.sql"]
         self.assertEqual(gate_table, "article_tags")
 
+    def test_intake_migration_creates_metadata_before_its_gate_table(self) -> None:
+        migration = "wiki/migrations/0020_pipeline_submissions.sql"
+        sql = (self.REPO / migration).read_text(encoding="utf-8")
+        self.assertLess(sql.index("CREATE TABLE IF NOT EXISTS pipeline_submissions"),
+                        sql.index("CREATE TABLE IF NOT EXISTS pipeline_submission_chunks"))
+        self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "pipeline_submission_chunks")
+
 
 if __name__ == "__main__":
     unittest.main()

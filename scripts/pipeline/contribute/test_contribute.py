@@ -950,6 +950,20 @@ class SealTests(MiddleTests):
                        received_at=RECEIVED_AT)
         self.assertEqual(result["submission"]["set_id"], "contrib-1")
 
+    def test_direct_submission_preview_uses_the_real_checker_without_pushing_results(self):
+        clone, workdir = self.finished_run()
+        done = self.challenged(clone, workdir)
+        import submission_transport
+        with patch.object(submission_transport, "request", side_effect=AssertionError("preview made a request")), \
+             patch.object(run_package, "send_results", side_effect=AssertionError("used the old results transport")):
+            code = quiet(run_package.main, ["--repo", str(clone), "--workdir", str(workdir),
+                         "--machine-id", "mac-one", "--stage", "results", "--submit",
+                         "--record-set", done["set_dir"]])
+        self.assertEqual(code, 0)
+        receipt = json.loads((workdir / "SUBMISSION.json").read_text())
+        self.assertTrue(receipt["dry_run"])
+        self.assertGreater(receipt["bytes"], 0)
+
     def test_a_bad_producer_commit_is_refused_before_anything_is_written(self):
         clone, workdir = self.finished_run()
         with self.assertRaises(seal_mod.SealProblem) as caught:

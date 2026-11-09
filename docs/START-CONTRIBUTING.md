@@ -142,7 +142,8 @@ limit, not a money limit.
 | Python dependencies | install the pinned dependencies listed in [PIPELINE.md](PIPELINE.md) | the runner uses the Claude Agent SDK; no separate `tend` installation is needed |
 | The declaration index **and** the search corpus | about **0.5 GB per universe**, one download; signed bucket access is not available yet | stage 9c's retrieval joins the index; the worker greps the search corpus |
 | Disk | about 2 GB per universe | the index, the search corpus and the fetched sources |
-| **Not** needed | an Anthropic key held by WikiLean, any WikiLean credential beyond the work-repo access, a Lean or Mathlib checkout | — |
+| Submission credential | your own WikiLean agent token, created at `/agents` | direct sealed-result uploads; never your model credential |
+| **Not** needed | an Anthropic key held by WikiLean, production operator credentials, a Lean or Mathlib checkout | — |
 
 ### What is outstanding
 
@@ -155,10 +156,9 @@ limit, not a money limit.
 2. **Publishing the index.** The signed destination is a bucket behind short-lived
    signed URLs, with a per-library licence manifest. The offline packager is built;
    uploading the bundle and issuing access are still operator steps.
-3. **The submission endpoint and the claims API.** They are specified
-   ([docs/INTAKE.md](INTAKE.md)) and the verifier half is built and runs offline today;
-   the HTTP half is a later release. Until it exists, a set comes back through the work
-   repo and the maintainer promotes it by hand.
+3. **The claims API.** Work assignment still uses the work repository. Returning a
+   sealed result now has a [direct submission path](INTAKE.md#submit-from-your-laptop)
+   with automatic validation and a receipt. Publication remains separate.
 
 The paid three-article proof is complete: all 51 tasks passed the gate, and derived
 status agreed on 172 of 203 unchanged passages (84.7%, against the signed 80% bar).
@@ -207,11 +207,9 @@ python3 scripts/pipeline/contribute/run_package.py \
         --producer-commit "$(git rev-parse HEAD)" \
         --created "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-# 6. Send it.
-python3 scripts/pipeline/contribute/run_package.py \
-        --repo <work-repo clone> --workdir <dir> --stage results \
-        --documents <dir>/corpus/<run-id> --host <dir>/root --record-set <dir>/set \
-        --execute
+# 6. Submit it directly (WIKILEAN_AGENT_TOKEN is set locally; see INTAKE.md).
+python3 scripts/articles/submit.py --record-set <dir>/set --execute \
+        --wait 60 --out <dir>/SUBMISSION.json
 ```
 
 **Step 3 and step 5 are the two to run early and often, because both are free.**
@@ -221,7 +219,7 @@ python3 scripts/pipeline/contribute/run_package.py \
   names a file nothing staged is what stops a paid run halfway through. Finding it
   costs nothing; finding it later costs a task.
 - Step 5 ends by running `scripts/articles/verify_submission.py` over the set it just
-  wrote. That is the **same code** the server will run, so a refusal here is a refusal
+  wrote. That is the **same code** the server runs, so a refusal here is a refusal
   there, with the same code, the same HTTP status and the name of the rule you broke.
   Exit 0 means it would be accepted. You can also run it on its own:
 
@@ -237,10 +235,10 @@ python3 scripts/pipeline/contribute/run_package.py \
   sealed records do contain the passage quotations needed to identify their claims.
   The result copier refuses the named source-layer files; it is not a general filter
   for arbitrary text placed in other files.
-- **We never see your model credentials.** WikiLean collects and stores no API key and
-  no subscription credential, anywhere. The only credential WikiLean would ever *issue*
-  you is a submit-only machine key, bound to your machine, quota'd and revocable on its
-  own.
+- **We never see your model credentials.** WikiLean receives no model API key or
+  subscription credential. Direct uploads use the WikiLean agent token you mint
+  yourself; it also carries the existing agent edit permissions and is revocable
+  from `/agents`. Submission quotas are shared by all of one owner's agents.
 
 ---
 
