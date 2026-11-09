@@ -99,8 +99,9 @@ def check_layout() -> None:
                  for i in range(2, 40)]  # a hub
 
     cells = fixture()
-    layout_cells(cells, synapses, iterations=60)
+    no_discs = layout_cells(cells, synapses, iterations=60)
     first = {k: tuple(v["xy"]) for k, v in cells.items()}
+    check("L1 a layout without bubbles returns no discs", no_discs == {}, f"got {no_discs}")
 
     check("L1 supercell-anchored isolated cells are placed",
           all(f"cell:iso{i}" in first for i in range(20)))
@@ -358,7 +359,7 @@ def check_bubbles() -> None:
         return cells, synapses, module
 
     cells, synapses, module = fixture()
-    layout.layout_cells(cells, synapses, iterations=60)
+    drawn = layout.layout_cells(cells, synapses, iterations=60)
     full = {cid: c["xy"] for cid, c in cells.items()}
     members = sorted(module)
 
@@ -393,6 +394,15 @@ def check_bubbles() -> None:
                                  {c: tuple(full[c]) for c in core})
     check("B3 one bubble per module: the deepest supercell, else the library root",
           sorted(discs) == sorted(set(module.values())), f"got {sorted(discs)}")
+    check("B3 layout_cells returns those discs, rounded to 0.1 like xy",
+          drawn == {m: [round(x, 1), round(y, 1), round(r, 1)] for m, (x, y, r) in discs.items()}
+          and list(drawn) == sorted(drawn),
+          f"returned {sorted(drawn)[:3]}, drew {sorted(discs)[:3]}")
+    wrong = [c for c in cells
+             if layout.bubble_module(c, cells[c].get("supercells"), len(cells[c].get("organs") or ()))
+             != module.get(c)]
+    check("B3 bubble_module (build_serving_db's copy of the rule) names exactly the members' modules",
+          not wrong, f"{len(wrong)} cells differ, e.g. {wrong[:3]}")
     sizes = {m: sum(v == m for v in module.values()) for m in discs}
     check("B3 a bubble's radius is SPAN/2 * sqrt(members)",
           all(discs[m][2] == SPAN / 2.0 * math.sqrt(sizes[m]) for m in discs),
@@ -445,6 +455,8 @@ def main() -> int:
     cells_list, synapses, meta, review = build(do_layout=False)
     cells = {c["id"]: c for c in cells_list}
     print(f"\n{len(cells)} cells / {len(synapses)} synapses\n")
+    check("a build without the layout records no bubble discs in _meta", "bubbles" not in meta,
+          f"_meta.bubbles = {str(meta.get('bubbles'))[:80]}")
 
     rules = Counter(r["rule"] for r in review)
     check("cell_review emits both rule2 absorption and rule1 exact-weld diagnostics",
