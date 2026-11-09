@@ -26,7 +26,7 @@ import {
   type BrainReleaseUnavailableError,
 } from "./brain.js";
 import { atomFor, atomIdForOrgan, type Atom } from "./brain-api.js";
-import { storeFor } from "./brain-store.js";
+import { batchesOf, storeFor } from "./brain-store.js";
 import { crossRefSpec } from "./crossref.js";
 import { htmlEscape } from "./engine/html.js";
 import type { QueueBlob, QueueItem } from "./queue.js";
@@ -652,6 +652,32 @@ async function endpointForDb(
   return { db: sp.key, label: sp.label, value, xrefDb, xrefId, displayLabel: value };
 }
 
+// The Brain node ids a submit's rows name, normalized as endpointForDb
+// normalizes them, so a store with batches (the D1 store) can load every
+// endpoint's owner and cell page before the first write. A key normalized
+// differently here only costs that endpoint its own lookup later.
+function quickNodeKeys(rows: QuickInputRow[], specs: QuickDbSpec[]): string[] {
+  const keys = new Set<string>();
+  for (const row of rows) {
+    for (const sp of specs) {
+      if (sp.endpoint !== "node") continue;
+      const raw = firstText(row, sp.aliases, sp.key === "mathlib" ? MAX_DECL : 240);
+      if (!raw) continue;
+      let id = "";
+      if (sp.key === "mathlib") {
+        const decl = normalizeDecl(raw);
+        id = decl ? `decl:Mathlib:${decl}` : "";
+      } else if (sp.key === "wikidata") {
+        id = normalizeQid(raw);
+      } else {
+        id = normalizeEndpointId(raw.trim());
+      }
+      if (id && BRAIN_ID_RE.test(id)) keys.add(id);
+    }
+  }
+  return [...keys];
+}
+
 function idsForEndpoints(endpoints: QuickEndpoint[]): Record<string, string> {
   return Object.fromEntries(endpoints.map((e) => [e.db, e.value]));
 }
@@ -1082,6 +1108,19 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!rows.length) return c.json({ ok: false, error: "no rows supplied", accepted: 0, failed: 0, rows: [] }, 400);
     if (rows.length > MAX_QUICK_ROWS) {
       return c.json({ ok: false, error: `too many rows (max ${MAX_QUICK_ROWS})`, accepted: 0, failed: rows.length, rows: [] }, 400);
+    }
+
+    // On a D1 release, resolve every endpoint in a few batches before the
+    // first write: row by row, a 100-row submit would pass D1's per-invocation
+    // statement cap (docs/BRAIN-D1.md section 2). An outage here writes nothing.
+    const batches = batchesOf(storeFor(c, release));
+    if (batches) {
+      try {
+        await batches.prefetchAtoms(quickNodeKeys(rows, specs));
+      } catch (error) {
+        if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
+        throw error;
+      }
     }
 
     const results: QuickRowResult[] = [];

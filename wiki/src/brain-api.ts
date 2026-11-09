@@ -58,8 +58,11 @@ import {
   type BrainReleaseContext,
 } from "./brain.js";
 import {
+  batchesOf,
   storeFor,
   type AtomHead,
+  type AtomKeyQuery,
+  type KeyHits,
   type CellHead,
   type Crumb,
   type Organ,
@@ -337,35 +340,52 @@ export interface ResolvedKey {
 // v2 fallbacks (shard in-edges, ext-node `qid`) have no v3 analogue — organs
 // carry no inbound edges, they ARE the atom's content.
 export async function resolveAtomKey(c: Ctx, release: BrainReleaseContext, keyRaw: string): Promise<ResolvedKey | null> {
-  const key = keyRaw.trim();
-  if (!key || !BRAIN_ID_RE.test(key)) return null;
+  const query = atomKeyQuery(keyRaw);
+  if (!query) return null;
 
-  if (isAtomId(key)) {
-    const atom = await atomFor(c, release, key);
+  if ("atomId" in query) {
+    const atom = await atomFor(c, release, query.atomId);
     if (atom) return { id: atom.id, resolved_from: atom.kind, atom };
     return null; // an explicit atom id must not fall through to label search
   }
+  return resolvedFromHits(await storeFor(c, release).keyHits(query.lookup), query.isDeclId);
+}
 
-  // Every organ id — QID, decl:<Lib>:<Name>, xref:<db>:<id>, slug, lit:… —
-  // lands in `organs`. The value may be a supercell path (rule-5 field
-  // concepts). Then the bare fully-qualified decl name ("CommGroup"), which
-  // also catches a decl:<Lib>:<Name> whose library differs from the alias
-  // table's; an explicit decl id stops there and never falls through to slugs
-  // or labels. Then the slug index, and finally an exact label or `aka`
-  // (case-insensitive), then a supercell organ label (also with the slug's
-  // underscores read as spaces: a rule-5 field concept's own article slug).
-  //
-  // NOTE for future editors: the exact-name lookup is FUZZY resolution. The
-  // community-edit endpoint oracle must never reach it — that is why
-  // atomIdForOrgan exists as a separate function rather than a flag on this one.
+// What resolveAtomKey looks up for a key, shared with the D1 composites
+// (BrainStoreBatches) so they cannot drift from it. null: no key.
+//
+// Every organ id — QID, decl:<Lib>:<Name>, xref:<db>:<id>, slug, lit:… —
+// lands in `organs`. The value may be a supercell path (rule-5 field
+// concepts). Then the bare fully-qualified decl name ("CommGroup"), which
+// also catches a decl:<Lib>:<Name> whose library differs from the alias
+// table's; an explicit decl id stops there and never falls through to slugs
+// or labels. Then the slug index, and finally an exact label or `aka`
+// (case-insensitive), then a supercell organ label (also with the slug's
+// underscores read as spaces: a rule-5 field concept's own article slug).
+//
+// NOTE for future editors: the exact-name lookup is FUZZY resolution. The
+// community-edit endpoint oracle must never reach it — that is why
+// atomIdForOrgan exists as a separate function rather than a flag on this one.
+export function atomKeyQuery(keyRaw: string): AtomKeyQuery | null {
+  const key = keyRaw.trim();
+  if (!key || !BRAIN_ID_RE.test(key)) return null;
+  if (isAtomId(key)) return { atomId: key };
   const isDeclId = key.startsWith("decl:");
   const bareName = isDeclId ? key.split(":").slice(2).join(":") : key;
   const kl = key.toLowerCase();
-  const hits = await storeFor(c, release).keyHits({
-    organ: key,
-    decl: bareName,
-    ...(isDeclId ? {} : { slug: key, name: { keyLc: kl, slugLc: kl.replace(/_/g, " ") } }),
-  });
+  return {
+    lookup: {
+      organ: key,
+      decl: bareName,
+      ...(isDeclId ? {} : { slug: key, name: { keyLc: kl, slugLc: kl.replace(/_/g, " ") } }),
+    },
+    isDeclId,
+  };
+}
+
+// keyHits' answer under resolveAtomKey's precedence: organ > decl > slug >
+// exact name, and an explicit decl id never falls through to slugs or labels.
+export function resolvedFromHits(hits: KeyHits, isDeclId: boolean): ResolvedKey | null {
   if (hits.organ) return { id: hits.organ, resolved_from: "organ" };
   if (hits.decl) return { id: hits.decl, resolved_from: "decl" };
   if (isDeclId) return null; // an explicit decl id must not fall through to labels
@@ -1183,9 +1203,32 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
     };
   }
   const store = storeFor(c, release);
-  // Name hits first: the static store loads labels.json and supercells.json
-  // here, before the key resolution below, as this route always has.
-  const named = await store.searchNames(q, kind as "" | "cell" | "supercell", limit);
+  const batches = batchesOf(store);
+  let named: AtomHead[];
+  let exact: ResolvedKey | null;
+  let exactHead: AtomHead | undefined;
+  const wantsHead = (r: ResolvedKey | null) =>
+    (r?.id.startsWith("cell:") && kind !== "supercell") || (r?.id.startsWith("path:") && kind !== "cell");
+  if (batches) {
+    // The D1 store answers the same three reads in two batches.
+    const query = atomKeyQuery(q);
+    const page = await batches.searchPage(q, kind as "" | "cell" | "supercell", limit, query);
+    named = page.named;
+    exact = !query
+      ? null
+      : "atomId" in query
+        ? page.heads.has(query.atomId)
+          ? { id: query.atomId, resolved_from: query.atomId.startsWith("path:") ? "supercell" : "cell" }
+          : null
+        : resolvedFromHits(page.hits, query.isDeclId);
+    exactHead = exact && wantsHead(exact) ? page.heads.get(exact.id) : undefined;
+  } else {
+    // Name hits first: the static store loads labels.json and supercells.json
+    // here, before the key resolution below, as this route always has.
+    named = await store.searchNames(q, kind as "" | "cell" | "supercell", limit);
+    exact = await resolveAtomKey(c, release, q);
+    exactHead = wantsHead(exact) ? (await store.labelRows([exact!.id])).get(exact!.id) : undefined;
+  }
 
   const hits: Record<string, unknown>[] = [];
   const seen = new Set<string>();
@@ -1208,13 +1251,10 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
   // This is how a bare QID still "matches by id" now that atom ids are
   // cell:<anchor> — and it is the ONLY way q=Q82571 (or its exact label "Linear
   // algebra") finds its folder, since labels.json indexes cells alone.
-  const exact = await resolveAtomKey(c, release, q);
   if (exact?.id.startsWith("cell:") && kind !== "supercell") {
-    const head = (await store.labelRows([exact.id])).get(exact.id);
-    if (head?.kind === "cell") push({ ...pickSuggestion(head.row), matched: exact.resolved_from });
+    if (exactHead?.kind === "cell") push({ ...pickSuggestion(exactHead.row), matched: exact.resolved_from });
   } else if (exact?.id.startsWith("path:") && kind !== "cell") {
-    const head = (await store.labelRows([exact.id])).get(exact.id);
-    if (head?.kind === "supercell") push(superRow(head.head, { matched: exact.resolved_from }));
+    if (exactHead?.kind === "supercell") push(superRow(exactHead.head, { matched: exact.resolved_from }));
   }
 
   // 2. cells by label + aka, then supercells by their label and organ labels
@@ -1926,26 +1966,41 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
   // 1. candidate atoms — an exact id/label first (identity), then label+aka search
   const considered: Array<{ id: string; resolved_from: string }> = [];
   const seen = new Set<string>();
-  const exact = await resolveAtomKey(c, release, q);
-  if (exact) {
-    considered.push({ id: exact.id, resolved_from: exact.resolved_from });
-    seen.add(exact.id);
-  }
+  const consider = (id: string, resolvedFrom: string) => {
+    if (!seen.has(id)) {
+      considered.push({ id, resolved_from: resolvedFrom });
+      seen.add(id);
+    }
+  };
   const store = storeFor(c, release);
-  // labels CONTAINING the query (short concept queries)…
-  for (const r of await store.searchCellNames(q, 5)) {
-    if (!seen.has(r.id)) {
-      considered.push({ id: r.id, resolved_from: "search" });
-      seen.add(r.id);
-    }
+  const batches = batchesOf(store);
+  // Set only by the D1 store's bounded statement pass, when it stopped at one
+  // of its bounds (docs/BRAIN-D1.md section 1, Bridge candidates).
+  let statementTruncated = false;
+  if (batches) {
+    // The same candidates in one batch (more only for a long statement).
+    const query = atomKeyQuery(q);
+    const cand = await batches.bridgeCandidates(q, query);
+    const exact: ResolvedKey | null = !query
+      ? null
+      : "atomId" in query
+        ? cand.atomExists
+          ? { id: query.atomId, resolved_from: query.atomId.startsWith("path:") ? "supercell" : "cell" }
+          : null
+        : resolvedFromHits(cand.hits, query.isDeclId);
+    if (exact) consider(exact.id, exact.resolved_from);
+    for (const id of cand.names) consider(id, "search");
+    for (const s of cand.statement) consider(s.id, "statement");
+    statementTruncated = cand.statementTruncated;
+  } else {
+    const exact = await resolveAtomKey(c, release, q);
+    if (exact) consider(exact.id, exact.resolved_from);
+    // labels CONTAINING the query (short concept queries)…
+    for (const r of await store.searchCellNames(q, 5)) consider(r.id, "search");
+    // …then atoms whose label appears IN the query (statement queries)
+    for (const s of await store.statementAtoms(q, 5)) consider(s.id, "statement");
   }
-  // …then atoms whose label appears IN the query (statement queries)
-  for (const s of await store.statementAtoms(q, 5)) {
-    if (!seen.has(s.id)) {
-      considered.push({ id: s.id, resolved_from: "statement" });
-      seen.add(s.id);
-    }
-  }
+  const statementScan = statementTruncated ? { statement_scan: "truncated" } : {};
   if (!considered.length) {
     return {
       status: 404,
@@ -1954,6 +2009,7 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
         error: "no atom matched q",
         q,
         match: "none",
+        ...statementScan,
         suggestions: await suggestionsFor(c, release, q),
         hint: "try /api/brain/search?q= for fuzzy lookup, then /api/brain/cell",
       },
@@ -2048,6 +2104,7 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
     match,
     confidence_floor: CONFIDENCE_FLOOR,
     atoms: atomsOut,
+    ...statementScan,
     depends,
     next_tools: NEXT_TOOLS,
   };
