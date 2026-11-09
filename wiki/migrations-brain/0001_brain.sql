@@ -36,8 +36,8 @@
 -- (ALTER TABLE ... ADD COLUMN, which runs once and is verified after). It never creates an index
 -- on a populated table, changes or drops a column in use, or backfills data: each of those is
 -- one long statement on a shared database. A change that needs one adds a new table and a new
--- schema_version instead. The explorer tables of step 1b (explorer_edges, explorer_scopes, bubbles)
--- and labels.bub arrive that way, with the builder change that writes them.
+-- schema_version instead. The explorer tables of step 1b (explorer_edges, explorer_scopes) arrive
+-- that way, in 0003_explorer.sql with schema_version 2 and the builder change that writes them.
 
 CREATE TABLE IF NOT EXISTS datasets(
   ds INTEGER PRIMARY KEY AUTOINCREMENT,

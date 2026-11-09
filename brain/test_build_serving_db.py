@@ -8,8 +8,10 @@ import io
 import json
 import os
 import sqlite3
+import subprocess
 import sys
 import tempfile
+import time
 import unicodedata
 import unittest
 from pathlib import Path
@@ -18,15 +20,16 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_cell_shards  # noqa: E402
 import build_serving_db as bsd  # noqa: E402
-from store import canonical_json, digest_rows  # noqa: E402
+from store import canonical_json, digest_rows, read_metadata  # noqa: E402
 from test_store import PROV, make_fixture, write_jsonl  # noqa: E402
 
 SPECTRUM = "cell:decl:TauCeti:Spectrum.compact"
 SEMIGROUP = "cell:decl:TauCeti:StronglyContinuousSemigroup.mk"
 
 
-def entry(label, xy, syn=()):
-    return {"cell": {"label": label, "xy": xy}, "organs": [], "syn": list(syn)}
+def entry(label, xy, syn=(), sups=None):
+    return {"cell": {"label": label, "xy": xy, **({"supercells": sups} if sups else {})},
+            "organs": [], "syn": list(syn)}
 
 
 SHARDS = {
@@ -37,8 +40,10 @@ SHARDS = {
                        "organs": []},
            "cell:Q5": entry("Cauchy–Schwarz inequality", [2.0, -1.0]),
            "cell:Q7": entry("Ångström", [0.0, 0.0])},
-    "cell_decl_tauceti": {SPECTRUM: entry("Spectrum.compact", [1.5, -2.25]),
-                          SEMIGROUP: entry("StronglyContinuousSemigroup.mk", [4.0, 4.5])},
+    # lone TauCeti decls: the layout puts each in its module's bubble
+    "cell_decl_tauceti": {SPECTRUM: entry("Spectrum.compact", [1.5, -2.25], sups=["path:TauCeti/Analysis"]),
+                          SEMIGROUP: entry("StronglyContinuousSemigroup.mk", [4.0, 4.5],
+                                           sups=["path:TauCeti/Analysis/Semigroup"])},
 }
 LABELS = [
     {"id": "cell:Q1", "label": "Compact operator", "f": 3,
@@ -83,6 +88,13 @@ TRACES = {
     "path_": {"path:Mathlib/Analysis|path:TauCeti/Analysis": {"tt": 30, "traces": []}},
 }
 XREF = {"xref:nlab:compact": ["Q1", "decl:TauCeti:Spectrum.compact"], "xref:mw:Ring": ["Q1"]}
+# the discs the layout drew for those two cells' modules (cells.jsonl _meta.bubbles)
+BUBBLES = {"path:TauCeti/Analysis": [120.0, -40.5, 50.0],
+           "path:TauCeti/Analysis/Semigroup": [180.0, 60.0, 50.0]}
+# explorer.json's edges by id; SPECTRUM - SEMIGROUP crosses two TauCeti modules, so SPECTRUM
+# sits in the ripple of path:TauCeti/Analysis/Semigroup; Q8 has no p and no edge
+EDGES = [("cell:Q1", SPECTRUM, 2), (SPECTRUM, SEMIGROUP, 3), ("cell:Q1", "cell:Q5", 1),
+         ("cell:Q5", "cell:Q7", 1)]
 NODES = [
     {"_meta": {"schema": "brain/SCHEMA.md"}},
     {"id": "Q82571", "label": "Linear algebra", "description": "branch of mathematics"},
@@ -95,6 +107,77 @@ NODES = [
     {"id": "path:Mathlib", "label": "Mathlib", "description": "the Lean mathematical library"},
     {"id": "Q2", "label": "No text here"},
 ]
+
+
+def explorer_doc(labels, shards, edges=EDGES):
+    """explorer.json as build_cell_shards writes it for these labels and shards (1182-1211)."""
+    xy = {cid: e["cell"].get("xy") for shard in shards.values() for cid, e in shard.items()}
+    order = sorted(labels, key=lambda r: r["id"])
+    index = {r["id"]: i for i, r in enumerate(order)}
+    nodes = [{"id": r["id"], "label": r["label"], "xy": xy.get(r["id"]),
+              **({"f": r["f"]} if r.get("f") else {}), **({"p": r["p"]} if r.get("p") else {})}
+             for r in order]
+    rows = sorted(([index[a], index[b], w] for a, b, w in edges if a in index and b in index),
+                  key=lambda e: (-e[2], e[0], e[1]))
+    return {"_meta": {"schema": "brain/SCHEMA.md#v3", "truncated": False,
+                      "counts": {"nodes": len(nodes), "edges": len(rows)}},
+            "nodes": nodes, "edges": rows}
+
+
+def static_explorer(doc, focus):
+    """build_brain_page.py renderExplorer's scope, keep and edge loops (5298-5340) with no
+    filter on, ported line by line: the drawn node ids, the edges as (id, id, w), universeN."""
+    nodes, edges = doc["nodes"], doc["edges"]
+    total = len(nodes)
+    scope = focus if focus.startswith("path:") else None
+
+    def in_sub(pp):
+        return pp == scope or (pp or "").startswith(scope + "/")
+    keep = [0] * total
+    universe = total
+    if not scope:
+        keep = [1] * total
+    else:
+        core = [1 if nodes[i].get("p") and in_sub(nodes[i]["p"]) else 0 for i in range(total)]
+        touch = list(core)
+        for i, k2, _ in edges:
+            if core[i]:
+                touch[k2] = 1
+            if core[k2]:
+                touch[i] = 1
+        universe = sum(touch)
+        keep = touch
+    return ([nodes[i]["id"] for i in range(total) if keep[i]],
+            [(nodes[i]["id"], nodes[k2]["id"], w) for i, k2, w in edges if keep[i] and keep[k2]],
+            universe)
+
+
+def load_graph(cells_dir, cells_path):
+    """The ExplorerGraph a build of this tree draws its scopes from."""
+    manifest = json.loads((cells_dir / "manifest.json").read_text())
+    xy_by_id, bubbled = {}, {}
+    for _ in bsd.cell_page_rows(cells_dir, manifest, xy_by_id, bubbled):
+        pass
+    labels = json.loads((cells_dir / "labels.json").read_text())
+    libs = bsd.subtree(labels, json.loads((cells_dir / "supercells.json").read_text()))[0]
+    return bsd.read_explorer(cells_dir, labels, libs, xy_by_id, bubbled,
+                             read_metadata(cells_path).get("bubbles", {}))
+
+
+def stored_scopes(db):
+    """{scope: [part json, ...]} from explorer_scopes, checking the parts run 0.. in seq order."""
+    parts = {}
+    for scope, part, text in db.execute("SELECT scope, part, json FROM explorer_scopes ORDER BY seq"):
+        parts.setdefault(scope, []).append((part, text))
+    for scope, rows in parts.items():
+        assert [p for p, _ in rows] == list(range(len(rows))), scope
+    return {scope: [t for _, t in rows] for scope, rows in parts.items()}
+
+
+def payload_edges(payload):
+    """A payload's edges as (id or dot path, id or dot path, w)."""
+    names = [n["id"] for n in payload["nodes"]] + [b["path"] for b in payload["bubbles"]]
+    return [(names[i], names[j], w) for i, j, w in payload["edges"]]
 
 
 def shards_for(labels):
@@ -126,17 +209,22 @@ class ServingDbTest(unittest.TestCase):
 
     def write_tree(self, *, shards=SHARDS, labels=LABELS, supercells=SUPERCELLS, nodes=NODES,
                    generated_at="2026-11-07T00:00:00Z", trace_meta=None, traces_rows=TRACES,
-                   xref=XREF):
+                   xref=XREF, edges=EDGES, explorer=None, bubbles=BUBBLES, cells_meta=None):
         self.cells.mkdir(exist_ok=True)
         (self.cells / "traces").mkdir(exist_ok=True)
         traces = {"dir": "traces", "files": {key: len(rows) for key, rows in traces_rows.items()},
                   **(trace_meta or {})}
-        manifest = {"_meta": {"generated_at": generated_at},
+        n_cells = sum(len(rows) for rows in shards.values())
+        manifest = {"_meta": {"generated_at": generated_at, "counts": {"cells": n_cells}},
                     "shards": {key: len(rows) for key, rows in shards.items()}, "traces": traces}
         for name, doc in (("manifest.json", manifest), ("labels.json", labels),
                           ("aliases.json", ALIASES), ("supercells.json", supercells),
-                          ("explorer.json", {"nodes": []})):
+                          ("explorer.json", explorer or explorer_doc(labels, shards, edges))):
             (self.cells / name).write_text(json.dumps(doc))
+        # cells.jsonl beside nodes.jsonl, where the builder looks for it; its _meta is all it reads
+        meta = cells_meta or {"schema": "brain/SCHEMA.md#v3", "generated_at": generated_at,
+                              "counts": {"cells": n_cells}, **({"bubbles": bubbles} if bubbles else {})}
+        (self.tmp / "cells.jsonl").write_text(json.dumps({"_meta": meta}) + "\n")
         for key, rows in shards.items():
             (self.cells / f"{key}.json").write_text(json.dumps(rows))
         for key, rows in traces_rows.items():
@@ -432,9 +520,11 @@ class ServingDbTest(unittest.TestCase):
         # seq follows each table's key order (name_keys and text_ids are checked on their own)
         key_order = {"cell_pages": ("id",), "aliases": ("kind", "key"), "labels": ("ord",),
                      "supercells": ("ord",), "cell_under": ("anc", "ord"), "synapse_traces": ("pair",),
-                     "xrefs": ("page_ord", "node_ord"), "hot_prefixes": ("prefix",)}
+                     "xrefs": ("page_ord", "node_ord"), "hot_prefixes": ("prefix",),
+                     "explorer_edges": ("a", "b"), "explorer_scopes": ("scope", "part")}
         self.assertEqual(set(sidecar["tables"]), {"cell_pages", "aliases", "labels", "supercells", "name_keys",
-                                                  "hot_prefixes", "cell_under", "synapse_traces", "xrefs", "text_ids"})
+                                                  "hot_prefixes", "cell_under", "synapse_traces", "xrefs", "text_ids",
+                                                  "explorer_edges", "explorer_scopes"})
         recorded = {n: {"rows": r, "digest": d, "delete_bounds": json.loads(b)}
                     for n, r, d, b in db.execute("SELECT name, rows, digest, delete_bounds FROM tables")}
         self.assertEqual(recorded, sidecar["tables"])
@@ -597,6 +687,394 @@ class ServingDbTest(unittest.TestCase):
             os.umask(old)
         self.assertEqual({p.name: p.stat().st_mode & 0o777 for p in out_dir.iterdir()},
                          {"serving.sqlite3": 0o644, "serving-tables.json": 0o644})
+
+
+    # ---- the explorer tables -------------------------------------------------------------
+
+    def build_db(self, name="serving.sqlite3"):
+        """Build, and return the database with its built graph and its stored scopes."""
+        _, db = self.build(name)
+        return db, load_graph(self.cells, self.tmp / "cells.jsonl"), stored_scopes(db)
+
+    def write_module_tree(self, **kwargs):
+        """The fixture plus three more members of the path:TauCeti/Analysis module and two of
+        path:TauCeti/Analysis/Semigroup. SEMIGROUP bonds with A1 too, so the Semigroup scope's
+        ripple holds two Analysis members (SPECTRUM and A1) and its core three cells."""
+        extra = [{"id": f"cell:decl:TauCeti:Spectrum.a{i}", "label": f"Spectrum.a{i}", "f": 2,
+                  "p": "path:TauCeti/Analysis"} for i in (1, 2, 3)]
+        extra += [{"id": f"cell:decl:TauCeti:StronglyContinuousSemigroup.s{i}", "label": f"Semigroup.s{i}",
+                   "p": "path:TauCeti/Analysis/Semigroup"} for i in (1, 2)]
+        shards = {**SHARDS, "more": {r["id"]: entry(r["label"], [10.0 + i, 5.0], sups=[r["p"]])
+                                     for i, r in enumerate(extra)}}
+        sc = json.loads(json.dumps(SUPERCELLS))
+        for r in extra:
+            sc["supercells"][r["p"]]["cells"].append(r["id"])
+        edges = EDGES + [(SEMIGROUP, "cell:decl:TauCeti:Spectrum.a1", 1)]
+        self.write_tree(shards=shards, labels=LABELS + extra, supercells=sc, edges=edges, **kwargs)
+        return explorer_doc(LABELS + extra, shards, edges)
+
+    def test_the_membership_rule_is_the_layout_s_and_needs_no_numpy(self):
+        rule = bsd.bubble_module
+        self.assertIsNone(rule("cell:decl:Mathlib:Finset.sum_comm", ["path:Mathlib/Algebra"], 1))
+        self.assertIsNone(rule("cell:Q1", ["path:TauCeti/Analysis"], 1))
+        self.assertIsNone(rule(SPECTRUM, ["path:TauCeti/Analysis"], 2))      # not lone: simulated
+        self.assertEqual(rule(SPECTRUM, ["path:TauCeti/Analysis"], 1), "path:TauCeti/Analysis")
+        self.assertEqual(rule(SPECTRUM, None, 0), "path:TauCeti")
+        self.assertEqual(rule(SPECTRUM, ["path:TauCeti/B", "path:TauCeti/A/Deep", "path:TauCeti/A/Dee"], 1),
+                         "path:TauCeti/A/Dee")                                # the deepest, then path order
+        self.assertEqual(rule("cell:decl:Fake:odd:name", [], 1), "path:Fake")
+        # requirements-ci.txt does not pin numpy: the rule imports without it, the layout refuses
+        code = (f"import sys; sys.path.insert(0, {str(Path(__file__).resolve().parent)!r}); "
+                "sys.modules['numpy'] = None; import layout; "
+                "print(layout.bubble_module('cell:decl:TauCeti:x', None, 1))\n"
+                "try:\n    layout.layout_cells({}, [])\nexcept ModuleNotFoundError as exc:\n    print(exc)")
+        done = subprocess.run([sys.executable, "-c", code], cwd=Path(__file__).resolve().parent,
+                              capture_output=True, text=True, check=False)
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertEqual(done.stdout.splitlines(), ["path:TauCeti", "the layout needs numpy"])
+
+    def test_explorer_edges_keep_every_edge_as_ids(self):
+        _, db = self.build()
+        rows = db.execute("SELECT seq, a, b, w FROM explorer_edges ORDER BY seq").fetchall()
+        self.assertEqual([r[1:] for r in rows], sorted(EDGES, key=lambda e: (e[0], e[1])))
+        self.assertEqual([r[0] for r in rows], list(range(1, len(EDGES) + 1)))
+        self.assertIn(("index", "explorer_edges_b"),
+                      db.execute("SELECT type, name FROM sqlite_master WHERE tbl_name = 'explorer_edges'").fetchall())
+
+    def test_page_drift_guard(self):
+        # the transcription below is of these lines; if the page changes them, port it again
+        page = (Path(__file__).resolve().parent.parent / "site" / "build_brain_page.py").read_text()
+        for line in ('const scope = isPathId(focusId) ? focusId : null;',
+                     'const inSub = pp => pp === scope || (pp || "").startsWith(scope + "/");',
+                     'for (let i = 0; i < totalN; i++) if (nodes[i].p && inSub(nodes[i].p)) core[i] = 1;',
+                     'for (const [i, k2] of j.edges) {   // one ripple: homeless atoms hanging off the core',
+                     'if (touch[i]) universeN++;',
+                     'for (const [i, k2, w] of j.edges) {',
+                     'if (!keep[i] || !keep[k2]) continue;'):
+            self.assertIn(line, page)
+
+    def test_every_scope_draws_as_the_static_explorer(self):
+        with mock.patch.object(bsd, "LIVE_TOUCH", -1):       # store every scope
+            db, graph, stored = self.build_db()
+        doc = json.loads((self.cells / "explorer.json").read_text())
+        scopes = ["all"] + [p for p in SUPERCELLS["supercells"] if p.startswith("path:")]
+        self.assertEqual(sorted(stored), sorted(scopes))
+        served = bsd.ExplorerGraph.from_serving(db)
+        for scope in scopes:
+            payload = bsd.join_parts(stored[scope])
+            ids, edges, universe = static_explorer(doc, scope)
+            self.assertEqual([n["id"] for n in payload["nodes"]], ids, scope)
+            self.assertEqual(payload_edges(payload), edges, scope)
+            self.assertEqual(payload["_meta"]["counts"]["universe"], universe, scope)
+            self.assertEqual(payload["bubbles"], [], scope)       # nothing too big: no dots
+            self.assertEqual(payload["_meta"]["collapsed"], 0, scope)
+            # the nodes are explorer.json's, plus their libs
+            by_id = {n["id"]: n for n in doc["nodes"]}
+            for node in payload["nodes"]:
+                bare = {k: v for k, v in node.items() if k != "l"}
+                self.assertEqual(bare, by_id[node["id"]])
+            # the oracle the Worker's live computation is checked against reads only D1 rows
+            self.assertEqual(bsd.explorer_payload(served, scope), payload, scope)
+            self.assertEqual(bsd.explorer_payload(graph, scope), payload, scope)
+        everything = bsd.join_parts(stored["all"])
+        libs = {n["id"]: everything["libs"][n["l"]] for n in everything["nodes"] if "l" in n}
+        self.assertEqual(libs["cell:Q5"], "Mathlib\x1fTauCeti")
+        self.assertNotIn("cell:Q7", libs)
+        # the homeless, edgeless cell is drawn in `all` only
+        self.assertIn("cell:Q8", [n["id"] for n in everything["nodes"]])
+        # the cross-module edge: the Semigroup scope's ripple holds SPECTRUM, drawn as a cell
+        semigroup = bsd.join_parts(stored["path:TauCeti/Analysis/Semigroup"])
+        self.assertEqual([n["id"] for n in semigroup["nodes"]], [SPECTRUM, SEMIGROUP])
+
+    def test_live_scopes_get_no_rows_and_the_rest_do(self):
+        doc = explorer_doc(LABELS, SHARDS)
+        deg = {n["id"]: 0 for n in doc["nodes"]}
+        for i, j, _ in doc["edges"]:
+            deg[doc["nodes"][i]["id"]] += 1
+            deg[doc["nodes"][j]["id"]] += 1
+        sizes = {}
+        for scope in ["all"] + [p for p in SUPERCELLS["supercells"] if p.startswith("path:")]:
+            ids, _, universe = static_explorer(doc, scope)
+            sizes[scope] = (universe, sum(deg[c] for c in ids))
+        for touch, scan in ((bsd.LIVE_TOUCH, bsd.LIVE_SCAN), (2, bsd.LIVE_SCAN), (100, 5)):
+            with self.subTest(touch=touch, scan=scan), mock.patch.object(bsd, "LIVE_TOUCH", touch), \
+                    mock.patch.object(bsd, "LIVE_SCAN", scan):
+                _, _, stored = self.build_db(f"live-{touch}-{scan}.sqlite3")
+            want = {s for s, (u, d) in sizes.items() if s == "all" or u > touch or d > scan}
+            self.assertEqual(set(stored), want)
+            self.assertIn("all", stored)
+        self.assertEqual(sizes["path:Mathlib"], (4, 7))
+        self.assertEqual(sizes["path:TauCeti/Analysis/Semigroup"], (2, 3))
+
+    def test_parts_split_at_part_bytes_and_join_back(self):
+        with mock.patch.object(bsd, "PART_BYTES", 400), mock.patch.object(bsd, "SCOPE_PARTS", 50):
+            _, graph, stored = self.build_db()
+            whole = bsd.explorer_payload(graph, "all")
+        texts = stored["all"]
+        self.assertGreater(len(texts), 1)
+        for i, text in enumerate(texts):
+            self.assertLessEqual(len(text.encode()), 400)
+            part = json.loads(text)
+            self.assertEqual(set(part), {"_meta", "libs", "nodes", "bubbles", "edges"} if i == 0
+                             else {"nodes", "bubbles", "edges"})
+        self.assertEqual(json.loads(texts[0])["_meta"]["parts"], len(texts))
+        self.assertEqual(bsd.join_parts(texts), whole)
+        # dots spill past part 0 like nodes and edges; only _meta and libs must fit in it
+        meta = {"scope": "path:X", "parts": 0, "counts": {}, "collapsed": 0}
+        dots = [bsd.compact({"path": f"path:X/M{i:02}", "disc": [1.5, 2.5, 3.0], "n": 1}) for i in range(20)]
+        with mock.patch.object(bsd, "PART_BYTES", 300):
+            texts, head = bsd.pack_parts(dict(meta), ["Lib"], [], dots, ["[0,1,1]"])
+            self.assertTrue(any(json.loads(t)["bubbles"] for t in texts[1:]))
+            self.assertTrue(all(len(t.encode()) <= 300 for t in texts))
+            joined = bsd.join_parts(texts)
+            self.assertEqual([b["path"] for b in joined["bubbles"]], [json.loads(d)["path"] for d in dots])
+            self.assertEqual(joined["edges"], [[0, 1, 1]])
+            self.assertEqual(head, len(f'"_meta":{bsd.compact(joined["_meta"])},"libs":["Lib"]'.encode()))
+            self.assertEqual(joined["_meta"]["parts"], len(texts))
+            with self.assertRaisesRegex(ValueError, "_meta and libs alone"):
+                bsd.pack_parts(dict(meta), ["L" * 400], [], [], [])
+
+    def test_a_scope_too_big_collapses_ripple_modules_first(self):
+        doc = self.write_module_tree()
+        graph = load_graph(self.cells, self.tmp / "cells.jsonl")
+        scope = graph.scope("path:TauCeti/Analysis/Semigroup")
+        self.assertEqual(graph.collapse_order(scope), ["path:TauCeti/Analysis", "path:TauCeti/Analysis/Semigroup"])
+        a1 = "cell:decl:TauCeti:Spectrum.a1"
+        s1, s2 = (f"cell:decl:TauCeti:StronglyContinuousSemigroup.s{i}" for i in (1, 2))
+        self.assertEqual(static_explorer(doc, scope.name)[0], [a1, SPECTRUM, SEMIGROUP, s1, s2])
+        with mock.patch.object(bsd, "DRAW_CAP", 4):          # 5 cells: the ripple module goes
+            texts, stats = bsd.stored_parts(graph, scope)
+        payload = bsd.join_parts(texts)
+        self.assertEqual(stats["modules"], 1)
+        self.assertEqual([n["id"] for n in payload["nodes"]], [SEMIGROUP, s1, s2])
+        self.assertEqual(payload["bubbles"], [{"path": "path:TauCeti/Analysis", "disc": BUBBLES["path:TauCeti/Analysis"],
+                                               "n": 2, "fa": 3, "l": payload["libs"].index("TauCeti")}])
+        self.assertEqual(payload["edges"], [[0, 3, 4]])      # SPECTRUM's 3 and A1's 1, summed
+        self.assertEqual(payload["_meta"]["collapsed"], 2)
+        with mock.patch.object(bsd, "DRAW_CAP", 3):          # then the core module
+            texts, stats = bsd.stored_parts(graph, scope)
+        payload = bsd.join_parts(texts)
+        self.assertEqual(stats["modules"], 2)
+        self.assertEqual(payload["nodes"], [])
+        self.assertEqual([(b["path"], b["n"]) for b in payload["bubbles"]],
+                         [("path:TauCeti/Analysis", 2), ("path:TauCeti/Analysis/Semigroup", 3)])
+        self.assertEqual(payload["edges"], [[0, 1, 4]])
+        with mock.patch.object(bsd, "DRAW_CAP", 1), self.assertRaisesRegex(
+                ValueError, "path:TauCeti/Analysis/Semigroup does not fit with all 2 of its modules"):
+            bsd.stored_parts(graph, scope)
+
+    def test_parts_alone_can_force_a_collapse(self):
+        self.write_module_tree()
+        graph = load_graph(self.cells, self.tmp / "cells.jsonl")
+        scope = graph.scope("path:TauCeti/Analysis/Semigroup")
+        order = graph.collapse_order(scope)
+        size = [len(bsd.pack_parts(*graph.draw(scope, order[:k]))[0][0].encode()) for k in (0, 1)]
+        self.assertGreater(size[0], size[1])
+        with mock.patch.object(bsd, "PART_BYTES", size[1]), mock.patch.object(bsd, "SCOPE_PARTS", 1):
+            texts, stats = bsd.stored_parts(graph, scope)
+        self.assertEqual((stats["modules"], len(texts)), (1, 1))
+        self.assertLessEqual(len(texts[0].encode()), size[1])
+
+    def test_collapsed_scopes_cover_touch_and_sum_the_static_edges(self):
+        doc = self.write_module_tree()
+        graph = load_graph(self.cells, self.tmp / "cells.jsonl")
+        module_of = dict(zip(graph.ids, graph.module))
+        f = {n["id"]: n.get("f") or 0 for n in doc["nodes"]}
+        for name in ["all"] + [p for p in SUPERCELLS["supercells"] if p.startswith("path:")]:
+            ids, static_edges, universe = static_explorer(doc, name)
+            order = graph.collapse_order(graph.scope(name))
+            for k in range(len(order) + 1):
+                with self.subTest(scope=name, collapse=k):
+                    payload = bsd.explorer_payload(graph, name, k)
+                    gone = set(order[:k])
+                    self.assertEqual([n["id"] for n in payload["nodes"]],
+                                     [c for c in ids if module_of[c] not in gone])
+                    for dot in payload["bubbles"]:
+                        members = [c for c in ids if module_of[c] == dot["path"]]
+                        self.assertEqual(dot["n"], len(members))
+                        fa = 0
+                        for c in members:
+                            fa |= f[c]
+                        self.assertEqual(dot.get("fa", 0), fa)
+                        self.assertEqual(dot["disc"], BUBBLES[dot["path"]])
+                    self.assertEqual(len(payload["nodes"]) + sum(d["n"] for d in payload["bubbles"]), universe)
+
+                    def rep(c):
+                        return module_of[c] if module_of[c] in gone else c
+                    want, got = {}, {}
+                    for a, b, w in static_edges:
+                        ra, rb = rep(a), rep(b)
+                        if ra in gone or rb in gone:
+                            if ra != rb:
+                                want[frozenset((ra, rb))] = want.get(frozenset((ra, rb)), 0) + w
+                        else:
+                            want[(ra, rb)] = want.get((ra, rb), 0) + w
+                    for a, b, w in payload_edges(payload):
+                        key = frozenset((a, b)) if a in gone or b in gone else (a, b)
+                        self.assertNotIn(key, got)
+                        got[key] = w
+                    self.assertEqual(got, want)
+                    if gone:
+                        keyed = [(-w, i, j) for i, j, w in payload["edges"]]
+                        self.assertEqual(keyed, sorted(keyed))
+
+    def test_a_build_collapses_only_what_does_not_fit_and_records_it(self):
+        self.write_module_tree()
+        with mock.patch.object(bsd, "LIVE_TOUCH", -1), mock.patch.object(bsd, "DRAW_CAP", 6):
+            db, graph, stored = self.build_db()
+        explorer = json.loads(dict(db.execute("SELECT key, value FROM meta"))["explorer"])
+        sizes = explorer["stored_scopes"]
+        self.assertEqual(sizes["all"]["modules"], 2)          # 11 cells: 4 + 2 dots
+        self.assertEqual(sizes["path:TauCeti"]["modules"], 1)             # 8 cells: 4 + 1 dot
+        self.assertEqual(sizes["path:TauCeti/Analysis"]["modules"], 1)
+        self.assertEqual(sizes["path:TauCeti/Analysis/Semigroup"]["modules"], 0)   # 5 fit
+        self.assertEqual(sizes["path:Mathlib"]["modules"], 0)
+        self.assertEqual(explorer["collapsed"], 3)
+        self.assertEqual(explorer["caps"]["draw"], 6)
+        for scope, texts in stored.items():
+            self.assertEqual(sizes[scope]["parts"], len(texts))
+            self.assertEqual(sizes[scope]["bytes"], sum(len(t.encode()) for t in texts))
+            payload = bsd.join_parts(texts)
+            self.assertEqual(sizes[scope]["nodes"], len(payload["nodes"]) + len(payload["bubbles"]))
+            self.assertLessEqual(sizes[scope]["nodes"], 6)
+            head = len(f'"_meta":{bsd.compact(payload["_meta"])},"libs":{bsd.compact(payload["libs"])}'.encode())
+            self.assertEqual(sizes[scope]["header_bytes"], head)
+        sc = graph.scope("all")
+        full = bsd.pack_parts(*graph.draw(sc, graph.collapse_order(sc)))[0]
+        self.assertEqual(sizes["all"]["full_collapse"], {"parts": len(full), "bytes": sum(len(t.encode()) for t in full)})
+        self.assertEqual((explorer["scopes"], explorer["live"], explorer["stored"]), (7, 0, 7))
+        # nothing fits: the build fails, naming the scope, and publishes nothing
+        with mock.patch.object(bsd, "DRAW_CAP", 1), \
+                self.assertRaisesRegex(ValueError, "explorer scope all does not fit"):
+            self.build("nofit.sqlite3")
+        self.assertFalse((self.tmp / "nofit.sqlite3").exists())
+
+    def test_meta_records_the_default_split(self):
+        db, graph, stored = self.build_db()
+        explorer = json.loads(dict(db.execute("SELECT key, value FROM meta"))["explorer"])
+        self.assertEqual(set(stored), {"all"})
+        self.assertEqual((explorer["scopes"], explorer["live"], explorer["stored"], explorer["collapsed"]), (7, 6, 1, 0))
+        self.assertEqual(explorer["caps"], {"live_touch": 2000, "live_scan": 20000, "draw": 25000,
+                                            "part_bytes": 1000000, "scope_parts": 8})
+        self.assertNotEqual(explorer["stored_scopes"]["all"]["full_collapse"]["bytes"],
+                            explorer["stored_scopes"]["all"]["bytes"])
+        inputs = json.loads(dict(db.execute("SELECT key, value FROM meta"))["inputs"])
+        self.assertIn("explorer.json", inputs)
+        self.assertIn("cells.jsonl", inputs)
+
+    def test_cells_jsonl_must_come_from_the_tree_s_cell_build(self):
+        good = {"schema": "brain/SCHEMA.md#v3", "generated_at": "2026-11-07T00:00:00Z",
+                "counts": {"cells": 6}, "bubbles": BUBBLES}
+        for field, bad in (("generated_at", {**good, "generated_at": "2026-11-08T00:00:00Z"}),
+                           ("counts.cells", {**good, "counts": {"cells": 7}}),
+                           ("prov", {**good, "prov": [{"source": "other"}]})):
+            with self.subTest(field=field):
+                self.write_tree(cells_meta=bad)
+                with self.assertRaisesRegex(ValueError, f"its {field} differs from the manifest's"):
+                    self.build()
+                self.assertFalse((self.tmp / "serving.sqlite3").exists())
+        # a replay build stamps generation_id too, which the manifest does not copy
+        self.write_tree(cells_meta={**good, "generation_id": "2026-11-07T00:00:00Z"})
+        self.build()
+
+    def test_bubbles_must_match_the_layout_s_discs(self):
+        self.write_tree(bubbles={"path:TauCeti/Analysis": BUBBLES["path:TauCeti/Analysis"]})
+        with self.assertRaisesRegex(ValueError, f"{SEMIGROUP}: its module path:TauCeti/Analysis/Semigroup has no disc"):
+            self.build()
+        self.write_tree(bubbles={**BUBBLES, "path:TauCeti/Empty": [1.0, 2.0, 3.0]})
+        with self.assertRaisesRegex(ValueError, "1 discs .* have no member, e.g. path:TauCeti/Empty"):
+            self.build()
+        self.write_tree(bubbles={**BUBBLES, "path:TauCeti/Analysis": [1.0, 2.0]})
+        with self.assertRaisesRegex(ValueError, "is not \\[x, y, r\\]"):
+            self.build()
+        for sups in (["path:TauCeti", "path:TauCeti/Analysis"], ["path:TauCeti/Analysis/Semigroup"]):
+            with self.subTest(sups=sups):
+                shards = json.loads(json.dumps(SHARDS))
+                shards["cell_decl_tauceti"][SPECTRUM]["cell"]["supercells"] = sups
+                self.write_tree(shards=shards)
+                with self.assertRaisesRegex(ValueError, f"{SPECTRUM}: a bubbled cell must have one supercell"):
+                    self.build()
+        self.assertFalse((self.tmp / "serving.sqlite3").exists())
+
+    def test_a_tree_without_bubbles_builds_without_discs(self):
+        shards = json.loads(json.dumps(SHARDS))
+        for e in shards["cell_decl_tauceti"].values():       # not lone: the layout simulates them
+            e["organs"] = [{"kind": "decl"}, {"kind": "statement"}]
+        self.write_tree(shards=shards, bubbles=None)
+        self.assertNotIn("bubbles", read_metadata(self.tmp / "cells.jsonl"))
+        db, graph, stored = self.build_db()
+        self.assertEqual(graph.module, [None] * len(LABELS))
+        self.assertEqual(graph.collapse_order(graph.scope("all")), [])
+        self.assertEqual(bsd.join_parts(stored["all"])["bubbles"], [])
+
+    def test_explorer_json_must_agree_with_the_labels_and_shards(self):
+        doc = explorer_doc(LABELS, SHARDS)
+        cases = []
+        bad = json.loads(json.dumps(doc))
+        bad["_meta"]["truncated"] = True
+        cases.append((bad, "_meta.truncated is not false"))
+        bad = json.loads(json.dumps(doc))
+        bad["nodes"][0]["label"] = "Something else"
+        cases.append((bad, "disagrees with its label row or shard entry"))
+        bad = json.loads(json.dumps(doc))
+        bad["nodes"][0]["xy"] = [9.0, 9.0]
+        cases.append((bad, "disagrees with its label row or shard entry"))
+        bad = json.loads(json.dumps(doc))
+        bad["nodes"][0]["p"] = "path:Elsewhere"
+        cases.append((bad, "disagrees with its label row or shard entry"))
+        bad = json.loads(json.dumps(doc))
+        del bad["nodes"][-1]
+        cases.append((bad, "lists 5 cells; labels.json has 6"))
+        bad = json.loads(json.dumps(doc))
+        bad["nodes"].reverse()
+        cases.append((bad, "not in id order"))
+        bad = json.loads(json.dumps(doc))
+        bad["edges"].reverse()
+        cases.append((bad, "not in \\(-w, i, j\\) order"))
+        bad = json.loads(json.dumps(doc))
+        bad["edges"][0][2] = 2.5
+        cases.append((bad, "is not \\[node, node, integer weight\\]"))
+        bad = json.loads(json.dumps(doc))
+        bad["nodes"][0]["extra"] = 1
+        cases.append((bad, "fields the serving tables do not carry"))
+        for explorer, message in cases:
+            with self.subTest(message=message):
+                self.write_tree(explorer=explorer)
+                with self.assertRaisesRegex(ValueError, message):
+                    self.build()
+        self.assertFalse((self.tmp / "serving.sqlite3").exists())
+
+    def test_scopes_of_a_large_nested_tree_match_the_page_and_stay_fast(self):
+        # 3,000 cells over 156 nested folders and about 9,000 edges: every scope comes from
+        # p ranges and the adjacency, with no pass over every cell per scope
+        n = 3000
+        ids = [f"cell:{i:05}" for i in range(n)]
+        p = [f"path:L/{i % 5}/{i % 25}/{i % 125}" if i % 7 else None for i in range(n)]
+        pairs = {}
+        for i in range(n):
+            for k in range(3):
+                j = (i * 7919 + k * 104729) % n
+                if j != i and (j, i) not in pairs:
+                    pairs.setdefault((i, j), 1 + (i + k) % 5)
+        edges = sorted(((i, j, w) for (i, j), w in pairs.items()), key=lambda e: (-e[2], e[0], e[1]))
+        graph = bsd.ExplorerGraph(ids, [bsd.explorer_node(c, c, [0.0, 0.0], 0, q) for c, q in zip(ids, p)],
+                                  p, [0] * n, [None] * n, edges)
+        folders = sorted({q for x in p if x for q in bsd.slash_prefixes(x)})
+        self.assertEqual(len(folders), 156)
+        start = time.monotonic()
+        scopes = {name: graph.scope(name) for name in folders}
+        self.assertLess(time.monotonic() - start, 10.0)
+        doc = {"nodes": [{"id": c, **({"p": q} if q else {})} for c, q in zip(ids, p)],
+               "edges": [list(e) for e in edges]}
+        for name in folders[::6]:                            # 26 of them against the page's loops
+            touch, static_edges, universe = static_explorer(doc, name)
+            sc = scopes[name]
+            self.assertEqual([ids[u] for u in sc.touch], touch, name)
+            self.assertEqual(len(sc.touch), universe, name)
+            self.assertEqual([(ids[graph.ea[e]], ids[graph.eb[e]], graph.ew[e]) for e in sc.edges],
+                             static_edges, name)
+            inside = set(touch)
+            self.assertEqual(sc.scan, sum((ids[a] in inside) + (ids[b] in inside) for a, b, _ in edges), name)
 
 
 if __name__ == "__main__":

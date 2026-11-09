@@ -95,7 +95,7 @@ from store import canonical_json  # noqa: E402
 
 DATABASE = "wikilean-brain"
 RESULT_SCHEMA = "wikilean.brain-d1-import-result/v1"
-SUPPORTED_SCHEMA_VERSIONS = (1,)
+SUPPORTED_SCHEMA_VERSIONS = (2,)
 SERVING_PATH = "brain/data/serving.sqlite3"
 SIDECAR_PATH = "brain/data/serving-tables.json"
 HASH_RE = re.compile(r"^sha256:([0-9a-f]{64})$")
@@ -132,6 +132,8 @@ D1_COLUMNS: dict[str, tuple[str, ...]] = {
     "synapse_traces": ("seq", "pair", "json"),
     "xrefs": ("seq", "page_ord", "node_ord", "page", "node"),
     "text_ids": ("seq", "node", "owner"),
+    "explorer_edges": ("seq", "a", "b", "w"),
+    "explorer_scopes": ("seq", "scope", "part", "json"),
 }
 LOCAL_ONLY: dict[str, tuple[str, ...]] = {"name_keys": ("name",), "text_ids": ("body",)}
 DATA_TABLES = tuple(D1_COLUMNS)
@@ -166,19 +168,34 @@ REQUIRED_COLUMNS: dict[int, dict[str, tuple[str, ...]]] = {
         "text_ids": ("ds", "seq", "node", "owner"),
     },
 }
+# 2: the explorer tables (0003_explorer.sql)
+REQUIRED_COLUMNS[2] = {**REQUIRED_COLUMNS[1],
+                       "explorer_edges": ("ds", "seq", "a", "b", "w"),
+                       "explorer_scopes": ("ds", "seq", "scope", "part", "json")}
 TABLES_BY_VERSION: dict[int, tuple[str, ...]] = {
     version: tuple(t for t in columns if t not in CONTROL_COLUMNS)
     for version, columns in REQUIRED_COLUMNS.items()}
 # the UNIQUE keys each table needs on D1: every range DELETE, readback and ON CONFLICT uses one
-REQUIRED_KEYS: dict[int, dict[str, tuple[str, ...]]] = {
-    version: {"datasets": ("dataset_id",), "releases": ("release_id",),
-              "import_ranges": ("ds", "tbl", "lo"), **{t: ("ds", "seq") for t in tables}}
+# (ds, seq), and the explorer reads of version 2 rely on the natural keys of its two tables
+REQUIRED_KEYS: dict[int, dict[str, tuple[tuple[str, ...], ...]]] = {
+    version: {"datasets": (("dataset_id",),), "releases": (("release_id",),),
+              "import_ranges": (("ds", "tbl", "lo"),), **{t: (("ds", "seq"),) for t in tables}}
     for version, tables in TABLES_BY_VERSION.items()}
-# the non-unique indexes the Worker's statements name with INDEXED BY (migration 0002): without
-# one they fail to prepare and every D1 search and key lookup answers 503, and the index can be
-# created only while the data tables are empty, so the importer refuses before the first dataset
+REQUIRED_KEYS[2]["explorer_edges"] += (("ds", "a", "b"),)
+REQUIRED_KEYS[2]["explorer_scopes"] += (("ds", "scope", "part"),)
+# the non-unique indexes the Worker's statements need (migrations 0002 and 0003): name_keys_exact
+# is named with INDEXED BY, so without it every D1 search and key lookup answers 503, and the live
+# explorer walks explorer_edges_b. Each can be created only while its table is empty, so the
+# importer refuses before the first dataset that needs it
 REQUIRED_INDEXES: dict[int, dict[str, dict[str, tuple[str, ...]]]] = {
     1: {"name_keys": {"name_keys_exact": ("ds", "name_lc", "seq")}},
+    2: {"name_keys": {"name_keys_exact": ("ds", "name_lc", "seq")},
+        "explorer_edges": {"explorer_edges_b": ("ds", "b")}},
+}
+# the migrations that give each schema_version its tables and indexes, in order
+MIGRATIONS: dict[int, tuple[str, ...]] = {
+    1: ("0001_brain.sql", "0002_name_keys_exact.sql"),
+    2: ("0001_brain.sql", "0002_name_keys_exact.sql", "0003_explorer.sql"),
 }
 assert DATA_TABLES == bsd.DATA_TABLES, "the importer and the builder disagree on the tables"
 assert REQUIRED_COLUMNS[SUPPORTED_SCHEMA_VERSIONS[-1]] == {
@@ -944,8 +961,8 @@ class Importer:
         column, a UNIQUE index on exactly each key the importer's statements rely on (a
         table that predates the migration keeps its old shape under CREATE TABLE IF NOT EXISTS,
         and without its (ds, seq) key every range statement would scan the whole table), and
-        each index the Worker names (0002_name_keys_exact.sql), which can only be created while
-        the data tables are empty."""
+        each index the Worker needs (0002_name_keys_exact.sql, 0003_explorer.sql), which can
+        only be created while its table is empty."""
         required = REQUIRED_COLUMNS.get(schema_version)
         if required is None:
             raise D1ImportError(f"schema_version {schema_version} is not one this importer supports")
@@ -970,15 +987,15 @@ class Importer:
             indexes: dict[str, list[str]] = {}
             for row in result.get("results") or []:
                 indexes.setdefault(str(row.get("idx")), []).append(str(row.get("col")))
-            if list(keys[table]) not in indexes.values():
-                missing.append(f"{table} UNIQUE({', '.join(keys[table])})")
+            missing.extend(f"{table} UNIQUE({', '.join(key)})" for key in keys[table]
+                           if list(key) not in indexes.values())
         for (table, name, columns), result in zip(named, results[len(tables) + len(keys):]):
             if [str(row.get("col")) for row in result.get("results") or []] != list(columns):
                 missing.append(f"{table} INDEX {name}({', '.join(columns)})")
         if missing:
-            raise D1ImportError("the migrations in wiki/migrations-brain (0001_brain.sql, then "
-                                "0002_name_keys_exact.sql) are not applied to the Brain "
-                                f"database: missing {', '.join(missing[:8])}"
+            raise D1ImportError(f"the migrations in wiki/migrations-brain for schema_version "
+                                f"{schema_version} ({', then '.join(MIGRATIONS[schema_version])}) "
+                                f"are not applied to the Brain database: missing {', '.join(missing[:8])}"
                                 + (" ..." if len(missing) > 8 else ""))
 
     def remote_state(self) -> RemoteState:
