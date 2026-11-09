@@ -45,7 +45,7 @@ secrets — a Turnstile **site** key is public by design (it is in the page's HT
 
 | Name | Holder | Scope / power | Consumers | Rotation | Expiry |
 |---|---|---|---|---|---|
-| `PIPELINE_TOKEN` | Jack (Cloudflare account); copies below | Full `bot` role: PUT/POST articles, decide proposals, `/api/work`, `/api/runs`, `/api/admin/revert-run`, `/api/research/export.jsonl`, `/api/articles/feedback/export`, `/api/queue` | nightly host (`wiki/.dev.vars`), Actions secret `PIPELINE_TOKEN` (backup job, poller as `WIKILEAN_API_TOKEN`) | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter), then update every copy (step 5 there). Emergency: the kill switch below | none (static); last set 2026-06-10/11 (ROADMAP) |
+| `PIPELINE_TOKEN` | Jack (Cloudflare account); copies below | Full `bot` role: PUT/POST articles, decide proposals, `/api/work`, `/api/runs`, `/api/admin/revert-run`, `/api/research/export.jsonl`, `/api/articles/feedback/export`, `/api/queue`, the private submission validator claim/download/verdict routes | supervised intake validator on ffmain (private environment), nightly host (`wiki/.dev.vars`), Actions secret `PIPELINE_TOKEN` (backup job, poller as `WIKILEAN_API_TOKEN`) | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter), then update every copy (step 5 there). Emergency: the kill switch below | none (static); last set 2026-06-10/11 (ROADMAP) |
 | `RESEARCH_EXPORT_SALT` | Jack | Salt for the pseudonyms of the research export and the formalization feedback export (`security.ts researchExportSalt`; the feedback ones are domain-separated) | Worker only | Setting or changing it re-keys every pseudonym once. Unset, the salt falls back to `PIPELINE_TOKEN` | not set yet |
 | `BETTER_AUTH_SECRET` | Jack | Signs every better-auth session cookie | Worker only | Rotation signs everyone out | unknown; rotation pending (P0 3) |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth app owner (wiki login) | Identity only (`read:user`, `user:email`, `auth.ts`) | Worker login | Generate a new client secret in the OAuth app, put it, then delete the old one in GitHub | GitHub OAuth client secrets do not expire |
@@ -55,7 +55,7 @@ secrets — a Turnstile **site** key is public by design (it is in the page's HT
 | `REVIEW_GITHUB_APP_SLUG` | same | Not secret (builds the install URL) | `/review` | — | — |
 | `REVIEW_TOKEN_KEY` | Jack | Seals stored review GitHub tokens at rest (`review.ts`: HKDF → AES-256-GCM, cookie id as additional data, KV key = SHA-256 of the cookie id). At least 32 characters | Worker only | [Rotation](#rotating-a-worker-secret-without-bypassing-the-promoter) signs reviewers out of `/review` posting (they reconnect). Unset, tokens are stored as plaintext JSON | not set yet ([P1](#p1-seal-review-tokens-and-give-them-their-own-kv-namespace)) |
 | `REVIEW_POSTING_PAT` | Deicyde | **Classic `public_repo`**: write to every public repo of its owner | `/review` POST when the connectee is the PAT owner | Prefer retiring it for the GitHub App. Else: new classic PAT with an explicit expiry, put, revoke old, record the expiry here | unknown |
-| `TURNSTILE_SECRET` | Jack (Cloudflare account) | Verifies a Cloudflare Turnstile token against `challenges.cloudflare.com`, for the challenge on a **new account's first community tag** on the formalization reader (`wiki/src/articles-overlay.ts verifyTurnstile`; docs/ARTICLES.md section 10a). It authorises nothing else and reads nothing | Worker only | Create a second Turnstile widget in the Cloudflare dashboard, put its secret, then delete the old widget. Rotation only re-challenges accounts making a first edit | staged 2026-11-07 on an undeployed version; live from the next reviewed promotion ([setup](#turnstile-keys-for-the-first-community-edit)) |
+| `TURNSTILE_SECRET` | Jack (Cloudflare account) | Verifies a Cloudflare Turnstile token against `challenges.cloudflare.com`, for the challenge on a **new account's first contribution agreement or community tag** on the formalization reader (`wiki/src/articles-overlay.ts verifyTurnstile`; docs/ARTICLES.md section 10a). It authorises nothing else and reads nothing | Worker only | Create a second Turnstile widget in the Cloudflare dashboard, put its secret, then delete the old widget. Rotation only re-challenges accounts making a first edit | staged 2026-11-07 on an undeployed version; live from the next reviewed promotion ([setup](#turnstile-keys-for-the-first-community-edit)) |
 | `IP_HASH_SECRET` | — | Nothing reads it (removed in `783e55c8`) | — | If `wrangler secret list` shows it, delete it with the next promotion (`wrangler versions secret delete IP_HASH_SECRET`) | orphan if present |
 
 Kill switch for `PIPELINE_TOKEN` (no deploy, no rotation): the bearer resolves to the
@@ -303,3 +303,13 @@ credential that can write `RENDER_CACHE` can also read a `REVIEW_TOKENS` namespa
    moved to `REVIEW_TOKENS` sealed (and its `RENDER_CACHE` copies deleted) on its next
    read, and logout deletes it from both; the rest expire within 12 h. Nobody is signed
    out. New and refreshed tokens go only to `REVIEW_TOKENS`.
+
+### Contributor submission credential
+
+`WIKILEAN_AGENT_TOKEN` is a local environment name for an existing owned-agent
+token, not a new Worker secret. The contributor holds it on their own machine;
+`submit.py` reads it at upload/status time and never stores it in a receipt. It
+can submit sealed sets, read its own receipts, and use the existing agent edit
+permissions. Revoke it at `/agents`; create a new agent to rotate it. It has no
+fixed expiry. The server stores only the token hash in `agent_tokens`. Do not
+replace it with the operator `PIPELINE_TOKEN`.

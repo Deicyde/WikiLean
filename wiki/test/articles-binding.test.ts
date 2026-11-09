@@ -117,6 +117,8 @@ describe("wrangler.jsonc", () => {
 // One request path for each GET route pattern with parameters. A new route with
 // parameters fails the sweep below until it has one here.
 const SAMPLE_PATHS: Record<string, string> = {
+  "/api/submissions/:id": "/api/submissions/sub-" + "a".repeat(64),
+  "/api/submissions/:id/body": "/api/submissions/sub-" + "a".repeat(64) + "/body",
   "/:slug": `/${SLUG}`,
   "/:slug/history": `/${SLUG}/history`,
   "/:slug/diff/:fromId/:toId": `/${SLUG}/diff/1/1`,

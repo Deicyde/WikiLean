@@ -119,6 +119,11 @@ D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
             "removed_reason",
         ),
     ),
+    # 0020 creates metadata first and chunks last, in the same migration.
+    "wiki/migrations/0020_pipeline_submissions.sql": (
+        "pipeline_submission_chunks",
+        ("submission_id", "ordinal", "bytes"),
+    ),
 }
 
 

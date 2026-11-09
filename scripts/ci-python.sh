@@ -11,7 +11,7 @@ export PYTHONDONTWRITEBYTECODE=1
 export TZ=UTC
 
 # CI must never inherit credentials that could turn an offline test into a live call.
-unset ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN PIPELINE_TOKEN CLOUDFLARE_API_TOKEN \
+unset ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN PIPELINE_TOKEN WIKILEAN_AGENT_TOKEN CLOUDFLARE_API_TOKEN \
   WIKILEAN_ARTICLES_R2_ACCESS_KEY_ID WIKILEAN_ARTICLES_R2_SECRET_ACCESS_KEY
 
 run_check() {
@@ -84,6 +84,7 @@ run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
 run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
+run_check "Self-service submission client and real loopback intake" "$PYTHON_BIN" scripts/articles/test_submission_transport.py
 run_check "Contributed set promoted to reviewable overlay rows" "$PYTHON_BIN" scripts/articles/test_promote_submission.py
 run_check "Pipeline Literature Links pin" "$PYTHON_BIN" scripts/pipeline/test_links.py
 run_check "Pipeline revision-free key tests" "$PYTHON_BIN" scripts/pipeline/test_keys.py

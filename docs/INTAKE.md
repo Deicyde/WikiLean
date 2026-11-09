@@ -1,296 +1,178 @@
-# Contributed record sets: the submission endpoint
+# Self-service pipeline submissions
 
-**Status: design only, with its checks built.** No endpoint exists, no table exists, no key
-has been issued, and nothing here is deployed. What *is* built is
-`scripts/articles/verify_submission.py`, the offline statement of section 3's checks, so the
-contract can be tested from this side before anything is written on either.
+**Implementation status: built for this release; deployment is recorded in the
+[roadmap status log](ROADMAP.md#status-log).** Uploading and deterministic validation
+replace the operator's copy-and-check step. Acceptance is not publication or a
+mathematical endorsement.
 
-The formalization reader ([ARTICLES.md](ARTICLES.md)) takes sealed locate record sets,
-including sets produced by WikiLean's own pipeline. Today an **operator copies** a set
-from the producing machine, verifies it and reviews an import or builds a static store
-(ARTICLES.md section 2). That becomes a bottleneck when several contributor machines
-produce accepted sets. WikiLean's contribute mode supplies that transport today; the
-endpoint below would replace its manual return and review queue.
+## Submit from your laptop
 
-This document specifies the **contract** for taking such a set over the wire: what a
-contributor machine posts, what WikiLean must check before it accepts it, where an accepted
-set goes, and what a promotion step would need from Jack before any of it reaches the Brain.
-The two sides can then be built independently, and either can be tested against the contract
-alone.
+1. Sign in at [Manage agents](https://wikilean.jackmccarthy.org/agents). Read and
+   accept the contribution terms yourself, then create an agent for your laptop.
+   Existing agents work too. Keep the token on that laptop; never send it in chat.
+2. Finish the pipeline's `seal` stage. The directory must contain `SEAL.json`,
+   `universe.json`, `sources.jsonl`, records, and the receipts named by the seal.
+3. Use Python 3.12 and the dependencies in [PIPELINE.md](PIPELINE.md). Set
+   `WIKILEAN_AGENT_TOKEN` locally. On macOS's default zsh, this reads it without
+   putting its value in shell history or displaying it:
 
-The producer implementation lives in `scripts/pipeline/`: the planner, work repo,
-sandbox, gate, challenge and export. [START-CONTRIBUTING.md](START-CONTRIBUTING.md)
-describes that path. The shared Literature Links format remains compatible with
-formal-companion exports; installing formal-companion is not a prerequisite.
+   ```sh
+   read -s "WIKILEAN_AGENT_TOKEN?WikiLean agent token: "
+   export WIKILEAN_AGENT_TOKEN
+   ```
 
-## 1. What a machine posts
+4. Preview, then submit:
 
-**One sealed record set, whole, in one request** — exactly what the producer's
-`cf export literature-links` writes, and exactly what `scripts/articles/build_store.py` already
-reads (ARTICLES.md section 3):
+   ```sh
+   python3 scripts/articles/submit.py --record-set <dir>/set
+   python3 scripts/articles/submit.py --record-set <dir>/set --execute \
+       --wait 60 --out <dir>/SUBMISSION.json
+   ```
 
-```
-SEAL.json                     cf-locate-recordset/2: the pins and every file's sha256
-universe.json                 the universe: libraries, repos, commits
-sources.jsonl                 one row per source: identity, revision and shas
-records/<source-id>.jsonl     Literature Links 2.0 records
-receipts/<sha256>.json        the search receipts absence records name
-```
+   The preview validates locally and makes no network request. Execution sends
+   only the sealed record set, never your model credentials or work directory.
+   A timeout while waiting does not lose the submission. Check the receipt later:
 
-- **`cf-locate-recordset/2`, either status rule.** `/2` is the record shape (`passage_key`,
-  `pair_key`, a coverage claim as a bundle); the seal's `status_rule` (2 or 3) says which
-  derivation its statuses came from. Intake accepts either rule it knows and **records it per
-  set**: a status is only meaningful beside the rule that derived it, and a staging row that
-  forgets the rule cannot be promoted later. A `/1` set is **refused** — it carries no
-  `passage_key`, so nothing downstream can key a vote on it. (The store builder still takes
-  `/1`; the operator path is unchanged.)
-- **One set, one transaction.** Not a record at a time: a seal is a statement about a *set*,
-  and a partial set is a set whose seal is false. A set too large for one request is a set
-  that should have been exported per shard — the seal's `campaign` token already names shards
-  (`run:<run>[+<challenge run>]`).
-- **No article text beyond the cap.** The export holds every quote to the cap and quotes
-  nothing from a closed licence class. Intake re-checks it rather than trusting it (section 3).
+   ```sh
+   python3 scripts/articles/submit.py --status sub-<receipt-id> --wait 60
+   ```
 
-### 1.1 The envelope
+The contribution runner also supports `--stage results --submit --record-set
+<dir>/set --execute`. It saves `SUBMISSION.json` in the work directory and does not
+push a results branch. Omitting `--submit` preserves the existing work-repository
+transport. No submission command calls a model or spends a model budget.
 
-One `POST` of a `multipart/form-data` or `application/zip` body (open question 1), plus these
-headers, which are the only things outside the set:
+## What a receipt means
 
-| header | meaning |
+| State | Meaning |
 |---|---|
-| `Authorization` | the machine's scoped key (section 5) |
-| `Idempotency-Key` | the seal's own sha256, so a retry is the same submission |
-| `Content-Digest` | the sha256 of the body, checked before it is unpacked |
+| `queued` | The complete upload is durably stored and awaits validation. |
+| `validating` | The trusted checker holds a temporary lease on it. |
+| `accepted` | The original offline intake checker passed every check. |
+| `rejected` | The receipt names the failed format, seal, identity, licence or quote-cap check. Fix the set; do not retry unchanged bytes. |
+| `failed` | Validation stopped unexpectedly. This is an operational failure, not a mathematical rejection. |
 
-The idempotency key being the seal's sha is what makes a retried upload harmless: the set is
-content-addressed, so "the same submission" is a decidable question and not a guess about
-timing.
+Every receipt says `published: false`. Community tags, the article store and Brain
+releases remain separate publication paths. Accepted sets are retained intact for
+review and promotion; human rows and tombstones are never changed by intake.
 
-## 2. The verifier
+## Transport contract
 
-`scripts/articles/verify_submission.py` is this document's section 3 as code, offline, with no
-network, no D1 and no Worker binding. It is the normative statement of the checks: an endpoint
-written in TypeScript re-implements them and is tested against this module's answers.
+`POST /api/submissions` takes an **owned agent token** and one JSON envelope:
 
-Every check that is about the **record set** rather than about the **submission** is delegated
-to `scripts/articles/build_store.py`, so the two cannot drift — a set the store builder refuses
-is a set intake refuses, by construction. What the verifier adds is the envelope, the `/1`
-refusal and the key's scope.
+```json
+{"schema":"wikilean.submission-upload/1","files":{"SEAL.json":"exact UTF-8 file contents","universe.json":"…","sources.jsonl":"…","records/enwiki-1001-2002.jsonl":"…"}}
+```
 
-It is also the command an operator or a contributor runs by hand until an endpoint exists:
+The values are strings, not parsed/re-encoded records. Files survive transport
+byte-for-byte. There is no ZIP extraction, executable payload, source URL fetch,
+or filesystem path supplied by the contributor. Only the record-set paths are
+admitted, at most 512 files and 4 MiB of encoded request body. Export smaller
+sealed shards when necessary.
+
+Headers:
+
+- `Authorization: Bearer <agent-token>`; the owner must have accepted the current
+  CC0 agreement. Blocked owners, blocked agents and revoked tokens are refused.
+- `Content-Type: application/json`.
+- `Content-Digest`: lowercase SHA-256 hex of the **exact request body**.
+- `Idempotency-Key`: lowercase SHA-256 hex of the **exact SEAL.json bytes**.
+
+A new upload returns HTTP 202 and a receipt URL. This acknowledges transport only.
+Retrying identical bytes returns the existing receipt without using quota again.
+The same agent and seal with different body bytes returns 409. The Python client
+uses deterministic encoding and never automatically retries uploads or follows
+redirects with credentials. After a network interruption, rerun the same command
+and sealed set.
+
+`GET /api/submissions/:id` is private to the submitting agent and its owner. It
+returns the current receipt, not arbitrary uploaded content. All responses are
+uncached. A receipt from a different owner is a 404.
+
+## Validation and storage
+
+The Worker checks authentication, the write brake, agreement, transport size,
+digests and allowed paths. It stores metadata and bounded binary chunks together
+in one D1 transaction. A partial upload never becomes visible. Migration
+`0020_pipeline_submissions.sql` creates `pipeline_submissions` and
+`pipeline_submission_chunks`; these are staging tables only.
+
+The existing normative checker is `scripts/articles/verify_submission.py`.
+`scripts/articles/intake_worker.py` downloads one leased upload, verifies its
+stored digest, creates a temporary directory from the allowlisted files, and runs
+that checker. It delegates the complete record-set checks to `build_store.py` and
+the vendored Literature Links validator, exactly as local verification does:
+
+- exact seal keys and file inventory, no unlisted files or hash mismatches;
+- record-set `/2` only, known status rules 2 and 3, a pinned producer commit;
+- valid Literature Links records and consistent universe/source/passage identities;
+- licence restrictions, quotation caps, receipts and coverage semantics.
+
+This avoids a second validator in another language. The full original suite is
+retained, and the transport tests run the actual Python client, Hono Worker,
+SQLite migrations and Python validator over loopback HTTP.
+
+The submitted machine identity is the authenticated agent account, never a
+client-supplied owner or machine name. Existing agent tokens also carry their
+existing community-edit permissions; this release does not create a separate
+maintainer-issued machine-key system. All agents of one owner share the existing
+30-write/minute burst budget and these durable intake quotas:
+
+- 20 new submissions and 32 MiB per UTC day per owner;
+- 10 pending submissions per owner and 100 pending site-wide;
+- 128 MiB retained per owner and 1 GiB site-wide, until an operator archives
+  accepted evidence; reaching a storage cap never deletes earlier submissions;
+- duplicate retries do not create extra rows or consume daily quota.
+
+Daily and queue quota refusals return 429 and `Retry-After`; a retained-storage
+cap returns 503 and needs operator archiving. Malformed bodies return 413/415/422;
+a conflicting idempotency key returns 409; unauthorized access returns 401/403.
+The site write brake pauses new uploads, claims and verdicts without a deployment.
+Previously accepted evidence remains available and receipts remain readable.
+
+## Validator operations
+
+The validator is a trusted operator service running the release's clean checkout
+on ffmain, under Python 3.12 with the pinned dependencies. Its system scheduler
+runs `--once` every minute with a process lock; it survives logout and reboot
+without a long-lived shell. It is not a contributor
+agent and must never run through an LLM or an agent tool shell. It reads the
+existing `PIPELINE_TOKEN` from a private operator environment; that token is never
+issued to contributor laptops.
 
 ```sh
-python3 scripts/articles/verify_submission.py --record-set <dir> --machine-id <id>
+python3 scripts/articles/intake_worker.py --once   # one queued job, or idle
+python3 scripts/articles/intake_worker.py          # supervised polling service
 ```
 
-Exit 0 and the staging rows on stdout, or exit 2 and the refusal's code, HTTP status and
-reason on stderr. `--out <file>` writes the rows; `--campaign`, `--universe`,
-`--max-submissions-per-day`, `--max-bytes-per-day` and `--max-body-bytes` give it a key's
-scope; `--body`, `--content-digest` and `--idempotency-key` give it the envelope. Tests:
-`scripts/articles/test_verify_submission.py`, in `scripts/ci-python.sh`.
+The pipeline bearer and its live `pipeline` account are required for these routes:
 
-## 3. What intake verifies before it accepts
+- `POST /api/submissions/claim`: atomically lease one queued job for five minutes.
+- `GET /api/submissions/:id/body`: download exact bytes with `X-Intake-Lease` while
+  validating; accepted bodies can also be retrieved for downstream review.
+- `POST /api/submissions/:id/verdict`: commit a verdict bound to both stored hashes
+  and the current, unexpired `X-Intake-Lease`.
 
-Every check below is a **refusal with a reason**, never a warning, and none of them trusts the
-producer. The code in brackets is the verifier's own, stable, and what an endpoint should
-return in the body.
+An expired lease can be reclaimed. A late worker cannot overwrite a newer lease
+or a final verdict. Three abandoned leases produce a visible `failed` receipt;
+invalid record sets are rejected once. Monitor failed receipts and service logs.
+Do not relabel failures as acceptance or reset rejected sets to queued.
 
-1. **The body's digest** matches `Content-Digest`, and the body is within the endpoint's
-   maximum size. `[body_digest, 422]`, `[body_too_large, 413]`
-2. **The seal is a seal.** `SEAL.json` parses, its `schema` is a record set WikiLean knows,
-   and its keys are **exactly** the agreed set and no other. `[seal, 422]`
-3. **Every file the seal names is there with its sha256, and nothing else is.** A file the
-   seal does not name is a refusal, not an extra; so is a symlink. `[seal, 422]`
-4. **The schema is `/2`**, and `Idempotency-Key` is the seal's own sha256.
-   `[schema_not_accepted, 422]`, `[idempotency_key, 422]`
-5. **The key's scope admits this set** (section 5): its campaign, its universe, and the
-   machine's own quota. `[scope_campaign, 403]`, `[scope_universe, 403]`,
-   `[quota_submissions, 429]`, `[quota_bytes, 429]`
-6. **Every record passes the vendored Literature Links checker**
-   (`wiki/src/vendor/literature-links/`, version 1.0.1), and its version is recorded per set.
-   `[record_set, 422]`
-7. **The identity pins resolve**: `universe.json`'s `universe_sha256`, the sourceset's
-   `manifest_sha256`, and each source row's `revision` and `layer_sha256`. Intake stores them;
-   it does **not** refetch the page. `[record_set, 422]`
-8. **The licence and the quote cap.** Every quote is within the cap, carries its citation, and
-   comes from a source whose licence class admits quoting. A set that quotes a closed source
-   is refused whole — it is the one defect that cannot be repaired after acceptance.
-   `[record_set, 422]`
-9. **The skill commit is a commit**, 40 hex. It is not checked against a release: intake
-   records what produced the set and lets promotion decide what it will accept. `[seal, 422]`
+Apply the new migration explicitly after an encrypted D1 backup and rehearsal;
+remote migration tracking is out of sync, so do not use `migrations apply
+--remote`. The exact release promoter checks the new table before activation.
+Start the supervised validator after the new routes are deployed. Restart it
+against the release's checkout after future checker changes. Stopping it pauses
+validation without losing queued uploads.
 
-Checks 6, 7 and 8 are the store builder's, verbatim, which is also why its *whole* contract
-applies: a record whose `span_sha256` disagrees with its passage's, a receipt no absence record
-names, a universe whose libraries are not keyed by id — each is refused under `record_set`
-with the builder's own message, which names the rule it breaks.
+## Publication remains separate
 
-**Back-pressure.** A refusal for quota is a 429 and may be retried after the quota resets; a
-refusal for a defect in the submission is a 422 or a 413 and **must never** be retried; a key
-that may not post this set is a 403. The distinction belongs in the contract, because a
-producer-side `submit` command would otherwise retry on the wrong one.
+`promote_submission.py` still creates a reviewable article-overlay artifact from
+an accepted sealed set. Its trusted SQL preserves human rows, web/API edits and
+every tombstone; it may replace only a live agent row from earlier intake. Checked
+absences have no declaration pair and stay in the report. Intake itself performs
+none of those writes.
 
-### What intake does not check
-
-**Whether a location is right.** That is the challenge's job and the Brain's gate's, and an
-intake that re-judged records would be a second judgment nobody reviewed. The verifier returns
-no verdict field, and a staging record row carries five indexed columns and the payload — no
-score, no decision.
-
-## 4. Staging, never the live tables
-
-An accepted set is written to a **staging table** and nowhere else:
-
-```
-submission(id, seal_sha256, set_id, campaign, universe_sha256, sourceset,
-           status_rule, skill_commit, machine_id, received_at, state,
-           checker_version, byte_budget, bytes)
-submission_record(submission_id, source_id, passage_key, pair_key, relation,
-                  status, payload)        -- the record as posted, verbatim
-submission_file(submission_id, path, sha256, bytes)
-```
-
-`verify_submission.verify()` returns exactly these rows, minus the ids the database mints.
-
-- **`state`** is `accepted` (section 3 passed), `rejected` (with the reason) or `promoted`.
-  Nothing else writes it.
-- **The payload is kept verbatim.** A staging row that re-encoded a record could not be shown
-  to be the bytes the seal signed.
-- **The live tables are untouched.** No annotation write, no item identity matching, no
-  interaction with the nightly moderation pipeline — the same boundary the atlas plane already
-  draws (ARTICLES.md section 1), and for the same reason: `articles.revid` advances only
-  atomically with a re-anchored annotations payload, and `findLostHuman` 422 is the floor
-  (CLAUDE.md, "Hard invariants"). An intake that wrote into the annotation schema would be a
-  migration nobody asked for.
-- **A superseding submission does not delete its predecessor.** Two sets of one passage from
-  two machines are two rows, and which one a promotion takes is promotion's decision
-  (section 6), recorded.
-
-Whether these are D1 tables or something else is open (question 4). They are new tables, so
-their migration would be a new numbered file in `wiki/migrations/`, idempotent
-(`CREATE TABLE IF NOT EXISTS`), applied as an operator action after a backup, like 0015.
-Nothing here proposes writing it yet.
-
-## 5. One scoped key per machine
-
-Each contributor machine gets **its own** key, scoped to this endpoint and nothing else:
-
-- **Scope**: submit only. Not read of the live tables, not the atlas store, not the moderation
-  API, not the Brain agent API.
-- **Bound to** a machine id, and optionally a campaign token and a universe. A key that may
-  submit only `run:loc-7*` sets for universe `u-2026-10` cannot be used to post anything else,
-  so a leaked laptop key is a bounded loss.
-- **Quota**: submissions per day and bytes per day, per key. The refusal names the quota; it
-  does not silently drop.
-- **Rotation**: issued by the maintainer, listed with its last use, revocable alone. Revoking
-  a key leaves its accepted sets in staging — the sets are content-addressed, so revocation is
-  a statement about the machine and not about the bytes.
-- **Never in this repository, never in a package, never in a receipt.** A row goes in
-  [SECRETS.md](SECRETS.md)'s register with the name, holder, scope, rotation and expiry, and
-  **never a value** — that file's standing rule. The key lives in the contributor's own
-  keychain and is read from their environment at the moment of the post.
-
-This is the same promise CONTRIBUTING.md already makes about donated compute: WikiLean never
-collects or stores a contributor's credentials, and the key WikiLean *issues* is scoped so
-narrowly that losing it costs a quota and nothing else.
-
-## 6. Promotion into the Brain, and what it needs from Jack
-
-A set in staging is not in the Brain. **Promotion** would move accepted sets into the Brain
-*through the nightly build and its reproducibility gate* — never around it:
-
-1. A promotion run selects accepted submissions by (universe, campaign, status rule),
-   deduplicates them by `pair_key` and `passage_key`, and writes `brain/proposals/*.jsonl` —
-   the one path ARTICLES.md section 13 already admits without a gate-mode decision.
-2. The nightly build folds those proposals offline (`brain/fold_proposals.py`, offline-only).
-3. The reproducibility gate re-derives the fold's output and refuses a build that does not
-   reproduce.
-
-**Step 1 is where this stops, because the rest is Jack's open "Brain v4 release path"
-decision** (ROADMAP.md, "Waiting on Jack"). What it needs from him, specifically:
-
-- **Which gate mode admits a content change.** ARTICLES.md section 13 records that the release
-  gate accepts only *provenance* changes today. A locate location is a content edge, not a
-  provenance one.
-- **Whether a contributed set may be a first-class input at all**, or only ever a proposal a
-  human promotes. The difference decides whether promotion is a scheduled job or a review
-  queue.
-- **The reproducibility gate's input set.** If the gate re-derives from the staged bytes, the
-  staging table is part of the build's reproducible input and must be snapshotted per build;
-  if it re-derives from the record sets as files, the sets must be archived immutably. One of
-  the two, named.
-- **What supersedes what.** Two universes, two revisions of one page, and a re-cut of one
-  passage all produce sets about the same mathematics. ARTICLES.md section 12's import rule
-  ("supersede older-universe locate links on AI items only; never set legacy items
-  `rejected`") is written for the D1 importer; promotion needs the same rule stated for the
-  Brain, or a statement that it is the same.
-- **Who is accountable for an accepted set.** A machine's key names a machine, not a person.
-  If a promoted edge is wrong, the seal names the campaign, the universe and the skill commit,
-  and the submission names the machine — but not an owner. Either that is enough, or a key
-  must be bound to a person.
-- **The acceptance bar.** Whether promotion requires a challenge run (`run:<run>+<challenge
-  run>` in the campaign token). A set exported from an unchallenged run is a legitimate `/2`
-  set, and whether it may be promoted is a policy question, not a format one.
-
-Until those are answered, promotion stops at `brain/proposals/` and the offline fold, which
-needs no decision, and that is the shape this document assumes.
-
-### 6.1 Promotion into the articles overlay, which needs none of the above
-
-**None of those six questions is a question for the articles overlay**, and that is the
-one useful thing to say here. The overlay is not the Brain: it is mutable D1 under a
-reader, it has history and revert, and it never enters a frozen release. So an accepted
-set can become ordinary community edits without touching the Brain's release path, and
-without pre-empting any of Jack's six answers.
-
-`scripts/articles/promote_submission.py` is that step, and it is **offline and
-release-neutral**. It verifies the set again and writes a review artifact. Nothing
-is applied to D1; application stays a separate operator action after a backup.
-
-R1's migration has no pending-row table. By default the artifact is **pending JSON**.
-It cannot be turned into import SQL until the operator explicitly approves it:
-
-```sh
-python3 scripts/articles/verify_submission.py --record-set <dir> --machine-id <id>
-# Review only; this is the default.
-python3 scripts/articles/promote_submission.py --record-set <dir> \
-        --added-by <account-id> --created-at <ISO-Z> --json pending.json
-# After review and explicit approval, generate the file the operator may apply.
-python3 scripts/articles/promote_submission.py --record-set <dir> \
-        --added-by <account-id> --created-at <ISO-Z> --trusted \
-        --sql rows.sql --json rows.json
-```
-
-The emitted rows match the shipped `wiki/migrations/0019_article_tags.sql`:
-`origin='community'`, `via='intake'`, the accepted article's `revision`, and integer
-epoch-millisecond timestamps. Attribution names the actual account that wrote the
-mapping, with `actor_type` describing that account.
-
-The SQL may replace only a **live agent row from an earlier intake**, and increments
-its version. It preserves human rows (including human rows imported earlier), web/API
-edits and every tombstone. Pipeline locations stay in the sealed store; there is no
-`origin='pipeline'` row in this table. Tests execute the generated SQL against the
-actual migration, including its constraints and foreign keys.
-
-Each pair appears once. Conflicting judgements within one set are refused; later sets
-in one invocation supersede earlier sets at the same pair. Checked absences have no
-declaration and therefore no pair key, so the report names them instead of making
-overlay rows. `base_relation` stays NULL because this offline command does not read
-the published store; removal columns stay NULL because an import removes nothing.
-
-## 7. The contributor's side
-
-A contributor runs WikiLean's own pipeline; see `docs/START-CONTRIBUTING.md` and
-`docs/PIPELINE.md` section 10. WikiLean and formal-companion share Literature Links,
-but formal-companion is not a dependency of WikiLean's contribution runner.
-
-The coordinator supplies a planned package. The contributor claims it, refetches and
-checks its pinned sources, previews the staged tasks with the default dry run, and
-executes only after explicitly opting in. The runner stages the inputs, keeps the
-worker inside its assigned folder, runs the gate outside that folder, and harvests
-only accepted documents. The `seal` stage creates the contribution's checked record
-set; the `results` stage verifies it before it comes back to the coordinator.
-
-The submission endpoint and its D1 staging queue are future work. Until then, the
-operator copies a sealed set, runs the intake checker and reviews the import artifact
-as section 6 describes. Pending JSON is not a row published on the site. The seven
-Mac checks remain a prerequisite before promising the subscription-backed Mac path.
+Brain promotion still goes through proposals, the offline fold and the exact
+release gate. Accepting a submission does not change the release's source policy,
+mathematical acceptance bar, or publication authority.

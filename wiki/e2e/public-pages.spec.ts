@@ -45,3 +45,15 @@ test("a new visitor can reach an article and find the contribution instructions"
   await expect(page.getByRole("link", { name: "Sign in", exact: true })).toHaveAttribute("href", "/login");
   expect(graphRequests).toEqual([]);
 });
+
+test("an owner can enable laptop contributions without editing an article", async ({ page, context, baseURL }) => {
+  await context.addCookies([{ name: "wl_dev_user", value: "u-patroller", url: baseURL! }]);
+  await page.goto("/agents");
+  await expect(page.getByRole("heading", { name: "Enable contributions" })).toBeVisible();
+  await page.getByRole("button", { name: "Accept contribution terms" }).click();
+  await expect(page.getByRole("status")).toHaveText("Read and check the agreement first.");
+  await page.locator("#cc0-agreement").check();
+  await page.getByRole("button", { name: "Accept contribution terms" }).click();
+  await expect(page.getByText("You have accepted the CC0 contribution agreement.", { exact: false })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Submit pipeline results from your laptop" })).toBeVisible();
+});

@@ -17,7 +17,9 @@
 // and every agent of a person by blocking the person (auth.ts agentUser).
 
 import type { Context, Hono } from "hono";
-import { MAX_JSON_BODY_BYTES, readJsonCapped } from "./security.js";
+import { MAX_JSON_BODY_BYTES, readJsonCapped, TURNSTILE_ORIGIN } from "./security.js";
+import { CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, recordAgreement, verifyTurnstile, TURNSTILE_SCRIPT_URL } from "./articles-overlay.js";
+import { writeBrake } from "./site-settings.js";
 import type { Env } from "./env.js";
 import { agentTokenHash, getUser, mintAgentToken, type AuthUser } from "./auth.js";
 import { htmlEscape } from "./engine/html.js";
@@ -81,6 +83,29 @@ async function listMine(c: Ctx, ownerId: string): Promise<AgentItem[]> {
 }
 
 export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
+  // A person can authorize their agents without first making an unrelated edit.
+  // The agent itself can never accept the owner's contribution agreement.
+  app.post("/api/agents/agreement", async c => {
+    const bad = checkOrigin(c); if (bad) return bad;
+    const user = await sessionUser(c); if (user instanceof Response) return user;
+    const brake = await writeBrake(c); if (brake) return brake;
+    if (!(await c.env.EDIT_LIMITER.limit({ key: `agreement:${user.id}` })).success) {
+      return c.json({ ok: false, error: "rate limited" }, 429);
+    }
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.agents, "bad JSON body");
+    if (!read.ok) return read.response;
+    const body = read.value;
+    if (!body || typeof body !== "object" || !("cc0" in body) || body.cc0 !== true) {
+      return c.json({ ok: false, error: "read and accept the CC0 contribution agreement first" }, 403);
+    }
+    const prior = await loadAgreement(c.env, user.id);
+    if (prior?.cc0_version === CC0_AGREEMENT_VERSION) return c.json({ ok: true });
+    const token = "turnstile_token" in body && typeof body.turnstile_token === "string" ? body.turnstile_token : null;
+    const verified = await verifyTurnstile(c.env, token);
+    if (verified === "failed") return c.json({ ok: false, error: "complete the verification check first" }, 403);
+    await recordAgreement(c.env, user.id, Date.now(), verified === "ok" ? Date.now() : null);
+    return c.json({ ok: true }, 200, { "Cache-Control": "no-store" });
+  });
   // ---- GET /api/agents: the caller's agents, newest first -------------------
   app.get("/api/agents", async (c) => {
     const user = await sessionUser(c);
@@ -176,13 +201,20 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!user) return c.redirect("/login?returnTo=%2Fagents");
     if (user.role === "bot" || user.role === "agent") return c.text("session required (no bots)", 403);
     c.header("Cache-Control", "no-store"); // per-user page; never cache
-    return c.html(agentsPageHtml(user.name));
+    const agreed = (await loadAgreement(c.env, user.id))?.cc0_version === CC0_AGREEMENT_VERSION;
+    const siteKey = agreed ? "" : c.env.TURNSTILE_SITE_KEY ?? "";
+    const nonce = crypto.randomUUID().replace(/-/g, "");
+    const challenge = siteKey ? ` ${TURNSTILE_ORIGIN}` : "";
+    c.header("Content-Security-Policy", `default-src 'none'; script-src 'nonce-${nonce}' https://static.cloudflareinsights.com${challenge}; ` +
+      `style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com${challenge}; ` +
+      `frame-src ${siteKey ? TURNSTILE_ORIGIN : "'none'"}; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'`);
+    return c.html(agentsPageHtml(user.name, agreed, siteKey, nonce));
   });
 }
 
 // Same look as /repos (repos.ts). Data loads client-side from /api/agents and
 // renders through textContent only, so agent names cannot inject markup.
-function agentsPageHtml(userName: string): string {
+function agentsPageHtml(userName: string, agreed: boolean, siteKey: string, nonce: string): string {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -190,7 +222,7 @@ function agentsPageHtml(userName: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · AI agents</title>
 <meta name="robots" content="noindex">
-<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<script nonce="${nonce}">(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f7f4ee;color:#1f1d1a;line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
@@ -234,14 +266,24 @@ input[type=text]{font:inherit;font-size:.9rem;padding:7px 10px;border:1px solid 
 <header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/brain/api">Agent API</a></span></header>
 <div class="wrap">
 <h1>AI agents</h1>
-<p class="lead">Signed in as <b>${htmlEscape(userName)}</b>. Mint an API token for an AI agent you run.
-The agent edits as its own account, named after it with "(agent)" added. Its annotations and Brain
-edges go live labelled AI, and patrollers review and revert them like any edit. It cannot change a
-human annotation (it files a proposal instead, decided by a patroller or the nightly resolver),
-decide proposals, endorse, or create articles.</p>
+<p class="lead">Signed in as <b>${htmlEscape(userName)}</b>. Create a token for an agent you run.
+It contributes under its own name, with "(agent)" added. It can add community passage tags and
+Brain links, labelled as AI contributions, and submit pipeline results for validation.
+It cannot change a person's passage tags, edit the Wikipedia article copies, endorse contributions,
+or create articles. Patrollers can review and revert its edits.</p>
 <p class="lead">You are accountable for your agents: if your account is blocked, they stop working.
 Up to ${AGENT_CAP} live agents; together they get 30 writes a minute. How an agent contributes:
 <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/AGENT-CONTRIBUTIONS.md" target="_blank" rel="noopener">AGENT-CONTRIBUTIONS.md</a>.</p>
+
+<section aria-label="Contribution agreement">
+<h2>Enable contributions</h2>
+${agreed ? '<p>You have accepted the CC0 contribution agreement. Your agents can submit pipeline results and add community tags.</p>' : `
+<p>Before your agents contribute, read and accept the terms yourself.</p>
+<label><input type="checkbox" id="cc0-agreement"> ${htmlEscape(CC0_AGREEMENT_TEXT)}</label>
+${siteKey ? `<div class="cf-turnstile" data-sitekey="${htmlEscape(siteKey, true)}"></div><script src="${TURNSTILE_SCRIPT_URL}" async defer></script>` : ""}
+<p><button id="accept-agreement" class="wl-btn" type="button">Accept contribution terms</button> <span id="agreement-status" role="status"></span></p>`}
+<p><a href="https://github.com/Deicyde/WikiLean/blob/main/docs/INTAKE.md#submit-from-your-laptop">Submit pipeline results from your laptop</a>. A submission receipt records validation; publication is a separate step.</p>
+</section>
 
 <h2>New agent</h2>
 <p><input id="name" type="text" maxlength="${AGENT_NAME_MAX}" placeholder="Agent name, e.g. Claude" aria-label="Agent name"><button id="mint" class="wl-btn" type="button">Mint token</button><span id="status" class="wl-status"></span></p>
@@ -251,7 +293,7 @@ Give it to your agent as <code>Authorization: Bearer &lt;token&gt;</code>.<p><co
 <h2>Your agents</h2>
 <div id="list"><p class="muted">Loading…</p></div>
 </div>
-<script>
+<script nonce="${nonce}">
 (function(){
 "use strict";
 var statusEl = document.getElementById("status");
@@ -324,6 +366,16 @@ document.getElementById("mint").addEventListener("click", function(){
     .then(function(){ btn.disabled = false; });
 });
 load();
+var accept = document.getElementById("accept-agreement");
+if (accept) accept.addEventListener("click", function(){
+  var status = document.getElementById("agreement-status");
+  if (!document.getElementById("cc0-agreement").checked) { status.textContent = "Read and check the agreement first."; return; }
+  accept.disabled = true;
+  var challenge = document.querySelector('[name="cf-turnstile-response"]');
+  post("/api/agents/agreement", { cc0: true, turnstile_token: challenge ? challenge.value : null })
+    .then(function(){ location.reload(); })
+    .catch(function(e){ status.textContent = String(e.message || e); accept.disabled = false; });
+});
 })();
 </script>
 </body>

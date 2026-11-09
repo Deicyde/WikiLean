@@ -150,8 +150,8 @@ recommendation. Remove an item once its decision is recorded below.
 Jack's direction is for WikiLean to become “like a social media site where anybody
 can post formalizations.” The reader and Brain should support one contribution
 loop: find a statement, contribute its formalization links, and review the evidence.
-The current posting surface is passage tags; a feed, expanded profiles, and general
-self-service pipeline intake remain further work. Keep the main UI focused on
+The current posting surface is passage tags. Self-service pipeline intake is in
+implementation (status log below); a feed and expanded profiles remain further work. Keep the main UI focused on
 reading and contributing, with operational detail available on demand.
 
 ### End-goal amendment — proposed 2026-10-17, ratified by Jack 2026-11-05
@@ -1449,6 +1449,15 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   python3 site/eval_moderation.py --offline` and `cd wiki && npm test`.
 
 ## Status log
+
+- 2026-11-09: **Self-service pipeline intake implemented; not deployed.** An owned
+  agent uploads a sealed set and gets a private receipt. The trusted background
+  service runs the existing Python intake checker, with durable quotas, atomic
+  upload storage and expiring validation leases. Migration 0020 adds staging
+  tables only. The owner can accept CC0 at `/agents` without a throwaway edit.
+  Acceptance is separate from publication; intake never changes human rows,
+  live annotations, article tags or the Brain. Deployment and the supervised
+  validator service remain required before the other laptop can use it live.
 
 - 2026-11-09: **Contributor-focused cleanup is live.** Home now
   leads to the article reader and a concise contribution guide. The reader puts

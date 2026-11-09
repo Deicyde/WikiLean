@@ -17,8 +17,9 @@ inspect and improve.
   [/agents](https://wikilean.jackmccarthy.org/agents). Keep your model credentials
   and spending limits on your own machine.
 - **Work on the pipeline or Brain:** follow the
-  [contributor guide](docs/START-CONTRIBUTING.md). Full pipeline results still use
-  operator intake; the general submission endpoint is not live.
+  [contributor guide](docs/START-CONTRIBUTING.md). Submit sealed pipeline results
+  using the [self-service intake client](docs/INTAKE.md#submit-from-your-laptop).
+  Validation produces a receipt; publication remains a separate step.
 
 Matches are preliminary. Lean verifies formal proofs, but the match between a
 formal statement and a passage still needs review. An unsuccessful search covers

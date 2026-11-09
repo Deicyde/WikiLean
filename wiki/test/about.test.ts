@@ -34,11 +34,12 @@ describe("public entry pages", () => {
     }
   });
 
-  it("points contributors at live tags and agents without promising self-service intake", async () => {
+  it("distinguishes direct submission and validation from publication", async () => {
     const html = await (await get(setup().env, "/contribute")).text();
     for (const href of ["/login", "/agents", "/articles"]) expect(html).toContain(`href="${href}"`);
     expect(html).toContain("CC0 contribution agreement");
-    expect(html).toContain("operator intake");
+    expect(html).toContain("submit a sealed pipeline result directly");
+    expect(html).toContain("accepted submissions await publication");
     expect(html).toContain("Full tag history, diffs, and revert are still planned");
     expect(html).toContain("CONTRIBUTING.md#data--research-notice");
   });
