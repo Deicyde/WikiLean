@@ -16,7 +16,9 @@ import json
 import os
 import random
 import secrets
+import shutil
 import sqlite3
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -35,6 +37,9 @@ import test_build_serving_db as fixture  # noqa: E402
 from brain_promote_release import RunResult  # noqa: E402
 
 MIGRATION = REPO / "wiki" / "migrations-brain" / "0001_brain.sql"
+EXACT_INDEX_MIGRATION = REPO / "wiki" / "migrations-brain" / "0002_name_keys_exact.sql"
+# The Worker tests' port of the builder's row logic (and of name_parts), checked here
+ROWS_PORT = REPO / "wiki" / "test" / "helpers" / "brain-d1-rows.ts"
 TARGET = "https://example.test"
 BUDGET = 2000
 LIVE_A = "sha256:" + "a" * 64
@@ -1247,6 +1252,79 @@ class WranglerBoundaryTest(unittest.TestCase):
         self.assertEqual(seen[0]["CLOUDFLARE_API_TOKEN"], "test-token")
         self.assertTrue(seen[0]["PATH"].startswith(str(node.parent)))
         self.assertNotIn("UNRELATED_SETTING", seen[0])
+
+
+def run_rows_port(*args: str, stdin: str | None = None):
+    """wiki/test/helpers/brain-d1-rows.ts under node (CI's python job has Node 22)."""
+    node = shutil.which("node")
+    if node is None:
+        raise AssertionError("node is required: the Worker tests' serving-row port is checked against the builder here")
+    done = subprocess.run([node, "--experimental-strip-types", "--no-warnings", str(ROWS_PORT), *args],
+                          input=stdin, capture_output=True, text=True, encoding="utf-8",
+                          cwd=REPO, check=False)
+    if done.returncode != 0:
+        raise AssertionError(f"brain-d1-rows.ts {args[0]} failed: {done.stderr}")
+    return json.loads(done.stdout)
+
+
+def ordered_json(text):
+    """A JSON value with every object kept as its (key, value) pairs in order: the Worker serves
+    the parsed rows, so the key order matters and the number spelling (12.0 or 12) does not."""
+    return None if text is None else json.loads(text, object_pairs_hook=list)
+
+
+class WorkerRowsPortTest(unittest.TestCase):
+    """The Worker tests build their D1 fixture with a TypeScript port of the builder's row logic
+    (wiki/test/helpers/brain-d1-rows.ts), so it is compared with the builder here, on the
+    importer's fixture tree, column by column for every column the D1 store reads."""
+
+    def test_the_port_builds_the_rows_the_builder_builds(self):
+        for hot in (bsd.HOT_PREFIX_NAMES, 2):      # 2 reaches the hot-prefix rows on a small tree
+            with self.subTest(hot_prefix_names=hot), tempfile.TemporaryDirectory() as tmp:
+                tmp = Path(tmp)
+                with mock.patch.object(bsd, "HOT_PREFIX_NAMES", hot):
+                    serving, sidecar = build_fixture(tmp)
+                port = run_rows_port("rows", str(tmp / "cells"), str(tmp / "xref_index.json"), str(hot))
+                tables = json.loads(sidecar.read_text())
+                self.assertEqual(port["longest_name"], tables["longest_name"])
+                self.assertEqual(port["sup_names_from"], tables["sup_names_from"])
+                db = sqlite3.connect(serving)
+                self.addCleanup(db.close)
+                json_columns = {"json", "syn", "cells", "sups"}
+                for table, spec in port["tables"].items():
+                    columns = spec["columns"]
+                    self.assertLessEqual(set(columns), set(bdi.D1_COLUMNS[table]) | set(bdi.LOCAL_ONLY.get(table, ())))
+                    want = db.execute(f"SELECT {', '.join(columns)} FROM {table} ORDER BY seq").fetchall()
+                    self.assertEqual(len(spec["rows"]), len(want), table)
+                    for got_row, want_row in zip(spec["rows"], want):
+                        for column, got, wanted in zip(columns, got_row, want_row):
+                            if column in json_columns:
+                                got, wanted = ordered_json(got), ordered_json(wanted)
+                            self.assertEqual(got, wanted, f"{table}.{column} seq {want_row[0]}")
+                if hot == 2:
+                    self.assertTrue(port["tables"]["hot_prefixes"]["rows"], "the small threshold made no prefix hot")
+
+    def test_the_port_splits_names_as_the_importer_does(self):
+        cases = ["TauCeti.StronglyContinuousSemigroup.mk", "Mathlib/Analysis/inner_product",
+                 "AddCircle.fourierCoeff", "fourierCoeff", "...", "", "  lead  trail ", "HTTPServer",
+                 "ÅngströmUnit", "\U0001d53dieldInner", "ℝPlus", "l2Space", "½A", "\u00e9B", "e\u0301B",
+                 "x\x1fY", "a\x85B", "a\ufeffB", "a\u00a0B", "a\u3000B", "Cauchy–Schwarz", "snake_Case"]
+        self.assertEqual(run_rows_port("parts", stdin=json.dumps(cases)), [bdi.name_parts(c) for c in cases])
+
+    def test_the_exact_name_index_migration_is_one_idempotent_index(self):
+        text = EXACT_INDEX_MIGRATION.read_text()
+        self.assertIn("--command", text)
+        self.assertIn("NEVER --file", text)
+        for line in text.splitlines():
+            comment = line.split("--", 1)[1] if "--" in line else ""
+            self.assertNotIn("'", comment, line)
+            self.assertNotIn(";", comment, line)
+        self.assertEqual(split_sql(text), ["CREATE INDEX IF NOT EXISTS name_keys_exact ON name_keys(ds, name_lc, seq)"])
+        fake = FakeD1()
+        fake.db.executescript(MIGRATION.read_text())
+        fake.db.executescript(text)
+        fake.db.executescript(text)                  # a rerun changes nothing
+        self.assertEqual([r[2] for r in fake.all("PRAGMA index_info(name_keys_exact)")], ["ds", "name_lc", "seq"])
 
 
 if __name__ == "__main__":

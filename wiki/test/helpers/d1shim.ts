@@ -68,12 +68,19 @@ export interface D1ShimStatement {
   _batchExec: () => Promise<D1ShimResult>;
 }
 
-function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]): D1ShimStatement {
+// Called with each statement's SQL as it executes (fault injection and
+// statement counting in tests); a throw fails the statement.
+export type OnStatement = (sql: string) => void;
+
+function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[], onStatement?: OnStatement): D1ShimStatement {
   // Prepare lazily so a bad-SQL error surfaces at execution time (as it would
   // on real D1), not at .prepare() — drizzle prepares eagerly per query.
-  const prep = (): StatementSync => db.prepare(sql);
+  const prep = (): StatementSync => {
+    onStatement?.(sql);
+    return db.prepare(sql);
+  };
   return {
-    bind: (...args: unknown[]) => makeStatement(db, sql, args.map(toSqliteParam)),
+    bind: (...args: unknown[]) => makeStatement(db, sql, args.map(toSqliteParam), onStatement),
     run: async () => {
       const r = prep().run(...params);
       return {
@@ -103,12 +110,15 @@ function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]): D1
     },
     // Batch execution: D1's batch() returns a D1Result per statement —
     // SELECTs carry rows in `results`, writes carry meta.changes/last_row_id.
+    // A statement returns rows when it has result columns (the same call raw()
+    // uses), so a WITH ... SELECT inside a batch returns its rows too.
     _batchExec: async () => {
-      if (/^\s*select/i.test(sql)) {
-        const results = prep().all(...params) as Record<string, unknown>[];
+      const stmt = prep();
+      if (stmt.columns().length > 0) {
+        const results = stmt.all(...params) as Record<string, unknown>[];
         return { success: true as const, results, meta: metaFor(0, 0) };
       }
-      const r = prep().run(...params);
+      const r = stmt.run(...params);
       return {
         success: true as const,
         results: [],
@@ -118,9 +128,9 @@ function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[]): D1
   };
 }
 
-export function makeD1(db: DatabaseSync) {
+export function makeD1(db: DatabaseSync, opts: { onStatement?: OnStatement } = {}) {
   return {
-    prepare: (sql: string) => makeStatement(db, sql, []),
+    prepare: (sql: string) => makeStatement(db, sql, [], opts.onStatement),
     batch: async (stmts: D1ShimStatement[]) => {
       const out: D1ShimResult[] = [];
       db.exec("BEGIN IMMEDIATE");

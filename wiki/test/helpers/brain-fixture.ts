@@ -12,7 +12,12 @@
 
 import { declShardKey } from "../../src/decl.js";
 import type { Env } from "../../src/env.js";
+import { nameParts } from "../../src/brain-name-parts.js";
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { DatabaseSync } from "node:sqlite";
+import { makeD1, type OnStatement } from "./d1shim.js";
+import { servingRows, type Cell, type ServingRows, type ServingTree } from "./brain-d1-rows.ts";
 
 // atoms
 export const ABELIAN_CELL = "cell:Q181296"; // concept ∘ decl ∘ pages ∘ article
@@ -601,6 +606,12 @@ export interface BrainFixtureOpts {
   // Return 404 for a declared release-relative asset (for example cells/mo____.json).
   missingAssets?: string[];
   onAssetPath?: (path: string) => void;
+  // The parity variant (PARITY_* below): a tree build_serving_db accepts, so
+  // one release can be served through both stores. Off, nothing changes.
+  parity?: boolean;
+  // List brain/data/serving-tables.json with this body, which makes the
+  // release a D1 release; its logical root (the body's digest) is the dataset id.
+  servingSidecar?: Record<string, unknown>;
 }
 
 interface FixtureRelease {
@@ -609,6 +620,108 @@ interface FixtureRelease {
   releaseId: string;
   releaseHex: string;
   manifestSha256: string;
+  datasetId: string | null;
+}
+
+// ---- the parity variant ------------------------------------------------------
+//
+// The default fixture ships shards for three cells labels.json leaves out
+// (BASIS_CELL, HUB_CELL, FOURIER_DEAD_CELL), which build_serving_db refuses.
+// The parity variant adds their label rows (one with non-ASCII and astral
+// names), a trace sidecar for LINALG_SUPER's and ALGEBRA_SUPER's synapses, two
+// more hydratable synapses (one with at most 6 traces and no `tt`, one trimmed
+// from 8 to 6) and an xref index that repeats a node under one page.
+
+const PARITY_EXTRA_LABELS = [
+  { id: BASIS_CELL, label: "Basis (linear algebra)", f: 20, p: "path:Mathlib/LinearAlgebra/Basis/Defs" },
+  { id: HUB_CELL, label: "Widget hub", aka: ["Größe der Gruppe", "\u{1D53D}-widget"] },
+  { id: FOURIER_DEAD_CELL, label: "AddCircle.fourierCoeff", p: "path:Mathlib/Analysis/Fourier/AddCircle" },
+];
+
+const trace = (kind: string, src: string, dst: string, n: number) => ({
+  kind, src, dst, prov: 0, evidence: { weight: n },
+});
+// ABELIAN_CELL <-> ALGEBRA_SUPER: 8 traces, the shard keeps pick_traces' first 6
+const ABELIAN_ALGEBRA_TRACES = Array.from({ length: 8 }, (_, i) => trace("depends", COMM_DECL, `decl:Mathlib:Algebra.t${i}`, i));
+const EMPTY_LINALG_TRACE = trace("links", EMPTY_Q, FIELD_Q, 1);
+
+// The trace sidecar (build_cell_shards' traces/<key>.json rows): every
+// supercell-involving pair, src < dst, with its true total.
+export const PARITY_TRACES: Record<string, { tt: number; traces: unknown[] }> = {
+  [`${ABELIAN_CELL}|${ALGEBRA_SUPER}`]: { tt: 8, traces: ABELIAN_ALGEBRA_TRACES },
+  [`${MODULE_CELL}|${LINALG_SUPER}`]: {
+    tt: 9,
+    traces: [
+      { kind: "depends", src: MODULE_DECL, dst: FIELD_Q, prov: 2, evidence: { weight: 4 } },
+      { kind: "invocation", src: MODULE_Q, dst: FIELD_Q, prov: 0, evidence: { property: "P361" } },
+    ],
+  },
+  [`${EMPTY_CELL}|${LINALG_SUPER}`]: { tt: 1, traces: [EMPTY_LINALG_TRACE] },
+  // the two pairs the static store cannot hydrate (traces_unavailable there)
+  [`${DECL_CELL}|${LINALG_SUPER}`]: { tt: 1, traces: [trace("links", "decl:Mathlib:Finset.sum_comm", FIELD_Q, 1)] },
+  [`${ALGEBRA_SUPER}|${LINALG_SUPER}`]: {
+    tt: 2,
+    traces: [trace("relates", ABELIAN, FIELD_Q, 1), trace("relates", COMM_DECL, FIELD_Q, 1)],
+  },
+};
+
+export const PARITY_XREF_INDEX: Record<string, string[]> = {
+  [LMFDB_PAGE]: [ABELIAN, "Q11650", ABELIAN],
+  "xref:nlab:module": [MODULE_Q, ABELIAN],
+};
+
+function paritySupercells(): typeof SUPERCELLS {
+  const doc = structuredClone(SUPERCELLS);
+  const map = doc.supercells as unknown as Record<string, { syn?: Array<Record<string, unknown>> }>;
+  map[ALGEBRA_SUPER].syn = [{ id: ABELIAN_CELL, w: 8, kinds: { depends: 8 } }];
+  map[LINALG_SUPER].syn!.push({ id: EMPTY_CELL, w: 1, kinds: { links: 1 } });
+  return doc;
+}
+
+function parityCells(cells: Record<string, CellSpec>): void {
+  cells[ABELIAN_CELL].syn!.push({
+    id: ALGEBRA_SUPER, w: 8, kinds: { depends: 8 }, traces: ABELIAN_ALGEBRA_TRACES.slice(0, 6), tt: 8,
+  });
+  cells[EMPTY_CELL].syn = [{ id: LINALG_SUPER, w: 1, kinds: { links: 1 }, traces: [EMPTY_LINALG_TRACE] }];
+}
+
+interface FixtureData {
+  cells: Record<string, CellSpec>;
+  labels: Array<Record<string, unknown>>;
+  supercells: typeof SUPERCELLS;
+}
+
+function fixtureData(opts: BrainFixtureOpts): FixtureData {
+  const cells = fixtureCells();
+  if (!opts.parity) return { cells, labels: LABELS, supercells: SUPERCELLS };
+  parityCells(cells);
+  return { cells, labels: [...LABELS, ...PARITY_EXTRA_LABELS], supercells: paritySupercells() };
+}
+
+function shardEntry(spec: CellSpec): Record<string, unknown> {
+  const syn = spec.syn ?? [];
+  return {
+    cell: spec.cell,
+    organs: spec.organs,
+    syn,
+    counts: { syn: spec.synTotal ?? syn.length, organs: spec.organs.length },
+    ...(spec.truncated ? { truncated: spec.truncated } : {}),
+    ...(spec.breadcrumb ? { breadcrumb: spec.breadcrumb } : {}),
+  };
+}
+
+/** The tree build_serving_db would read for this fixture, from the same values
+ *  the static release serves. */
+export function servingTreeFor(opts: BrainFixtureOpts): ServingTree {
+  const { cells, labels, supercells } = fixtureData(opts);
+  return {
+    cells: Object.fromEntries(Object.entries(cells).map(([id, spec]) => [id, shardEntry(spec)])),
+    aliases: (opts.aliases ?? DEFAULT_ALIASES) as Record<string, unknown>,
+    labels,
+    supercells: supercells as unknown as Record<string, unknown>,
+    traces: opts.parity ? PARITY_TRACES : {},
+    xrefIndex: opts.xrefIndex ?? (opts.parity ? PARITY_XREF_INDEX : {}),
+  };
 }
 
 function fixtureDigest(value: string): string {
@@ -633,21 +746,13 @@ function fixtureReleaseIdentity(manifest: Record<string, unknown>): string {
 }
 
 function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
-  const cells = fixtureCells();
+  const { cells, labels, supercells } = fixtureData(opts);
   const shards: Record<string, number> = {};
   const data: Record<string, Record<string, unknown>> = {};
   for (const [id, spec] of Object.entries(cells)) {
     const key = declShardKey(id, KEY_LEN);
     shards[key] = (shards[key] ?? 0) + 1;
-    const syn = spec.syn ?? [];
-    (data[key] ??= {})[id] = {
-      cell: spec.cell,
-      organs: spec.organs,
-      syn,
-      counts: { syn: spec.synTotal ?? syn.length, organs: spec.organs.length },
-      ...(spec.truncated ? { truncated: spec.truncated } : {}),
-      ...(spec.breadcrumb ? { breadcrumb: spec.breadcrumb } : {}),
-    };
+    (data[key] ??= {})[id] = shardEntry(spec);
   }
   const replay = opts.replaySnapshot;
   const cellsManifest = {
@@ -678,14 +783,14 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
     },
   };
   const aliases = opts.aliases === undefined ? DEFAULT_ALIASES : opts.aliases;
-  const xrefIndex = opts.xrefIndex ?? {};
+  const xrefIndex = opts.xrefIndex ?? (opts.parity ? PARITY_XREF_INDEX : {});
   const assetValues = new Map<string, unknown>([
     ["sources.json", {}],
     ["xref_index.json", xrefIndex],
     ["cells/manifest.json", cellsManifest],
     ["cells/aliases.json", aliases ?? DEFAULT_ALIASES],
-    ["cells/labels.json", LABELS],
-    ["cells/supercells.json", SUPERCELLS],
+    ["cells/labels.json", labels],
+    ["cells/supercells.json", supercells],
     ["cells/explorer.json", {}],
     ["cells/frontier_graph.json", {}],
   ]);
@@ -697,6 +802,7 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
     [...assetBodies].map(([path, bytes]) => [`site/assets/brain/${path}`, bytes]),
   );
   artifactBodies.set("site/out/brain.html", "<!doctype html><title>Fixture Brain</title>");
+  if (opts.servingSidecar) artifactBodies.set("brain/data/serving-tables.json", JSON.stringify(opts.servingSidecar));
   const omitted = new Set(opts.omitReleaseArtifacts ?? []);
   const artifacts = [...artifactBodies]
     .filter(([path]) => !omitted.has(path))
@@ -741,12 +847,16 @@ function buildFixtureRelease(opts: BrainFixtureOpts): FixtureRelease {
   releaseManifest.release_id = opts.manifestReleaseId ?? releaseId;
   opts.mutateReleaseManifest?.(releaseManifest);
   const manifestSha256 = fixtureDigest(JSON.stringify(releaseManifest));
+  const sidecarBody = artifactBodies.get("brain/data/serving-tables.json");
   return {
     assetBodies,
     manifest: releaseManifest,
     releaseId,
     releaseHex: releaseId.slice("sha256:".length),
     manifestSha256,
+    datasetId: sidecarBody !== undefined && !omitted.has("brain/data/serving-tables.json")
+      ? `sha256:${fixtureDigest(sidecarBody)}`
+      : null,
   };
 }
 
@@ -757,7 +867,7 @@ export const FIXTURE_RELEASE_HEX = DEFAULT_FIXTURE_RELEASE.releaseHex;
 export function installBrainFixture(
   env: Env,
   opts: BrainFixtureOpts = {},
-): { releaseId: string; releaseHex: string; manifestSha256: string } {
+): { releaseId: string; releaseHex: string; manifestSha256: string; datasetId: string | null } {
   const fixture = buildFixtureRelease(opts);
   const { releaseId, releaseHex } = fixture;
   const manifestSha256 = opts.selectorManifestSha256 ?? fixture.manifestSha256;
@@ -833,5 +943,153 @@ export function installBrainFixture(
       return new Response("not found", { status: 404 });
     },
   };
-  return { releaseId, releaseHex, manifestSha256 };
+  return { releaseId, releaseHex, manifestSha256, datasetId: fixture.datasetId };
+}
+
+// ---- the D1 fixture ---------------------------------------------------------
+//
+// installBrainD1Fixture serves the parity variant as a D1 release: the release
+// lists the serving sidecar (so storeFor picks the D1 store) and still carries
+// every static file (so the static store can serve the same release), and
+// env.BRAIN_DB is an in-memory wikilean-brain created from
+// wiki/migrations-brain and filled with the rows brain-d1-rows.ts builds from
+// the same values, plus the dataset's names_<hex> table as the importer
+// creates it.
+
+const MIGRATIONS_BRAIN = ["0001_brain.sql", "0002_name_keys_exact.sql"].map(
+  (name) => new URL(`../../migrations-brain/${name}`, import.meta.url),
+);
+
+// Every D1 column after ds, per table (site/ops/brain_d1_import.py D1_COLUMNS),
+// with what the fixture writes into the columns the port leaves out.
+const D1_TABLE_COLUMNS: Record<string, string[]> = {
+  cell_pages: ["seq", "id", "json"],
+  aliases: ["seq", "kind", "key", "owner"],
+  labels: ["seq", "ord", "id", "label", "aka", "f", "p", "libs", "xy"],
+  supercells: ["seq", "ord", "path", "label", "aka", "parent", "fa", "frontier", "n_cells", "n_sub", "fhist", "kids", "syn", "json"],
+  name_keys: ["seq", "name_lc", "kind", "owner", "len16"],
+  hot_prefixes: ["seq", "prefix", "cells", "sups", "live_sups"],
+  cell_under: ["seq", "anc", "ord"],
+  synapse_traces: ["seq", "pair", "json"],
+  xrefs: ["seq", "page_ord", "node_ord", "page", "node"],
+};
+const PLACEHOLDERS: Record<string, Cell> = { libs: null, xy: null, n_sub: 0, fhist: "{}", kids: null };
+
+export const DECOY_DATASET_ID = `sha256:${"d".repeat(64)}`;
+
+export interface BrainD1FixtureOpts extends Omit<BrainFixtureOpts, "parity" | "servingSidecar"> {
+  // build_serving_db.HOT_PREFIX_NAMES for the rows (default 1,000; 2 reaches the hot path)
+  hotPrefixNames?: number;
+  namesMode?: "trigram" | "parts";
+  datasetState?: "importing" | "ready" | "deleting";
+  schemaVersion?: number;
+  // false: the release names a dataset the database does not hold
+  registerDataset?: boolean;
+  // a copy of every row under another ready dataset, with altered text, seeded
+  // before (lower ds) or after (higher ds) the release's own
+  decoy?: "before" | "after";
+  // a distinct sidecar body, so a second fixture gets its own dataset id
+  datasetVariant?: string;
+  onStatement?: OnStatement;
+  // install into this database instead of a new one (two releases, one database)
+  db?: DatabaseSync;
+}
+
+function decoyRow(table: string, columns: string[], row: Cell[]): Cell[] {
+  return row.map((value, i) => {
+    const column = columns[i];
+    if (typeof value !== "string") return value;
+    if (column === "owner" || column === "node" || column === "label") return `DECOY ${value}`;
+    if (column === "json" && table === "cell_pages") {
+      const entry = JSON.parse(value) as { cell?: Record<string, unknown> };
+      if (entry.cell) entry.cell = { ...entry.cell, label: "DECOY" };
+      return JSON.stringify(entry);
+    }
+    if (column === "json" && table === "supercells") return JSON.stringify({ ...JSON.parse(value), label: "DECOY" });
+    if (column === "json" && table === "synapse_traces") {
+      return JSON.stringify({ tt: 1, traces: [{ kind: "DECOY", src: "DECOY", dst: "DECOY" }] });
+    }
+    return value;
+  });
+}
+
+function seedDataset(
+  db: DatabaseSync,
+  datasetId: string,
+  rows: ServingRows,
+  opts: { state: string; schemaVersion: number; namesMode: "trigram" | "parts"; decoy: boolean },
+): void {
+  db.prepare(
+    "INSERT INTO datasets (dataset_id, schema_version, tables_json, longest_name, sup_names_from, names_mode, state, imported_at) " +
+    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+  ).run(datasetId, opts.schemaVersion, "{}", rows.longest_name, rows.sup_names_from, opts.namesMode, opts.state,
+    "2026-11-09T00:00:00Z");
+  const ds = Number((db.prepare("SELECT ds FROM datasets WHERE dataset_id = ?").get(datasetId) as { ds: number }).ds);
+  for (const [table, columns] of Object.entries(D1_TABLE_COLUMNS)) {
+    const spec = rows.tables[table];
+    const insert = db.prepare(
+      `INSERT INTO ${table} (ds, ${columns.join(", ")}) VALUES (${["?", ...columns.map(() => "?")].join(", ")})`,
+    );
+    for (const raw of spec.rows) {
+      const row = opts.decoy ? decoyRow(table, spec.columns, raw) : raw;
+      const values = columns.map((column) => {
+        if (table === "hot_prefixes" && column === "live_sups") return row[spec.columns.indexOf("sups")];
+        const at = spec.columns.indexOf(column);
+        return at >= 0 ? row[at] : PLACEHOLDERS[column];
+      });
+      insert.run(ds, ...values);
+    }
+  }
+  if (opts.decoy) return;
+  // the importer's statements (brain_d1_import.fts_create / fts_content)
+  const hex = datasetId.slice("sha256:".length);
+  const names = rows.tables.name_keys;
+  if (opts.namesMode === "trigram") {
+    db.exec(`CREATE VIRTUAL TABLE IF NOT EXISTS names_${hex} USING fts5(name, content='', contentless_delete=1, tokenize='trigram')`);
+  } else {
+    db.exec(`CREATE VIRTUAL TABLE IF NOT EXISTS names_${hex} USING fts5(parts, content='', contentless_delete=1, prefix='2 3')`);
+  }
+  const fill = db.prepare(`INSERT INTO names_${hex} (rowid, ${opts.namesMode === "trigram" ? "name" : "parts"}) VALUES (?, ?)`);
+  const seqAt = names.columns.indexOf("seq");
+  const nameAt = names.columns.indexOf("name");
+  for (const row of names.rows) {
+    const name = String(row[nameAt]);
+    fill.run(row[seqAt], opts.namesMode === "trigram" ? name : nameParts(name));
+  }
+}
+
+/** A fresh wikilean-brain stand-in: both migrations applied, no dataset. */
+export function brainDatabase(): DatabaseSync {
+  const db = new DatabaseSync(":memory:");
+  for (const url of MIGRATIONS_BRAIN) db.exec(readFileSync(url, "utf8"));
+  return db;
+}
+
+export function installBrainD1Fixture(
+  env: Env,
+  opts: BrainD1FixtureOpts = {},
+): { releaseId: string; releaseHex: string; manifestSha256: string; datasetId: string; db: DatabaseSync; rows: ServingRows } {
+  const fixtureOpts: BrainFixtureOpts = {
+    ...opts,
+    parity: true,
+    servingSidecar: { schema: "wikilean.brain-serving-tables/v1", fixture: opts.datasetVariant ?? "parity" },
+  };
+  const installed = installBrainFixture(env, fixtureOpts);
+  const datasetId = installed.datasetId!;
+  const rows = servingRows(servingTreeFor(fixtureOpts), { hotPrefixNames: opts.hotPrefixNames });
+  const db = opts.db ?? brainDatabase();
+  const base = { state: "ready", schemaVersion: 1, namesMode: opts.namesMode ?? "trigram" as const, decoy: false };
+  const decoyed = db.prepare("SELECT 1 FROM datasets WHERE dataset_id = ?").get(DECOY_DATASET_ID) !== undefined;
+  if (opts.decoy === "before" && !decoyed) seedDataset(db, DECOY_DATASET_ID, rows, { ...base, decoy: true });
+  const known = db.prepare("SELECT 1 FROM datasets WHERE dataset_id = ?").get(datasetId) !== undefined;
+  if (opts.registerDataset !== false && !known) {
+    seedDataset(db, datasetId, rows, {
+      ...base,
+      state: opts.datasetState ?? "ready",
+      schemaVersion: opts.schemaVersion ?? 1,
+    });
+  }
+  if (opts.decoy === "after" && !decoyed) seedDataset(db, DECOY_DATASET_ID, rows, { ...base, decoy: true });
+  (env as unknown as { BRAIN_DB: unknown }).BRAIN_DB = makeD1(db, { onStatement: opts.onStatement });
+  return { ...installed, datasetId, db, rows };
 }
