@@ -122,6 +122,7 @@ class CellsContextTest(unittest.TestCase):
         *,
         present: set[str] = frozenset(),
         stage_changes: dict | None = None,
+        layout: bool = False,
     ) -> build_context.BuildContext:
         document = copy.deepcopy(_document(self.base))
         document["bindings"] = [
@@ -131,7 +132,7 @@ class CellsContextTest(unittest.TestCase):
         document["configuration"] = {
             "cell_attach_kinds": ["invocation", "related"],
             "external_node_cap": 123,
-            "layout": {"enabled": False, "iterations": 37},
+            "layout": {"enabled": layout, "iterations": 37},
             "schema": "wikilean.brain-reducer-config/v1",
         }
         document["replay"]["reducer"]["configuration_sha256"] = hashlib.sha256(
@@ -264,6 +265,27 @@ class CellsContextTest(unittest.TestCase):
                 getattr(paths, field),
                 self.input_root.joinpath(*logical_path.split("/")),
             )
+
+    def _cells_meta_with_layout(self, discs: dict) -> dict:
+        # layout_cells needs numpy, which CI lacks: a stub stands in for it, and build_cells
+        # (which imports it at call time) records what it returns
+        import layout
+
+        with self._patch_host_paths(), mock.patch.object(
+            layout, "layout_cells", return_value=discs
+        ) as stub:
+            build_cells.build_cells_from_context(self.context(layout=True))
+        stub.assert_called_once()
+        self.assertEqual(stub.call_args.kwargs, {"iterations": 37})
+        path = self.output_root / "brain/data/cells.jsonl"
+        return json.loads(path.read_text(encoding="utf-8").splitlines()[0])["_meta"]
+
+    def test_the_layout_s_discs_reach_the_cells_jsonl_meta(self) -> None:
+        discs = {"path:TauCeti/A": [1.0, 2.0, 3.0], "path:TauCeti/B": [-4.5, 0.0, 9.9]}
+        self.assertEqual(self._cells_meta_with_layout(discs)["bubbles"], discs)
+
+    def test_a_layout_without_discs_records_no_bubbles(self) -> None:
+        self.assertNotIn("bubbles", self._cells_meta_with_layout({}))
 
     def test_context_refuses_existing_output_before_reduction(self) -> None:
         context = self.context()

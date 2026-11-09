@@ -626,23 +626,36 @@ def fits(texts: list[str], meta: dict) -> bool:
 def stored_parts(graph: ExplorerGraph, scope: Scope) -> tuple[list[str], dict]:
     """A stored scope's parts: drawn as the static explorer draws it if that fits (at most
     DRAW_CAP nodes, at most SCOPE_PARTS parts), else with the first k modules of its collapse
-    order as dots, for a k that fits, found by doubling then bisecting. Fails the build, naming
-    the scope, when nothing fits with every module collapsed."""
+    order as dots, for a k that fits, found by doubling then bisecting from the least k the
+    node cap allows. Fails the build, naming the scope, when nothing fits with every module
+    collapsed."""
     order = graph.collapse_order(scope)
+    members = Counter(graph.module[u] for u in scope.touch if graph.module[u])
 
     def attempt(k: int):
         meta, *rest = graph.draw(scope, order[:k])
         texts, head = pack_parts(meta, *rest)
         return texts, meta, head
-    best, lo, hi = attempt(0), 0, 0
+
+    def nothing_fits(nodes: int, parts: str = "") -> ValueError:
+        return ValueError(f"explorer scope {scope.name} does not fit with all {len(order)} of its "
+                          f"modules collapsed: {nodes} nodes{parts} (at most {DRAW_CAP} nodes and "
+                          f"{SCOPE_PARTS} parts of {PART_BYTES} bytes)")
+    # collapsing a module of m members draws m - 1 fewer nodes, so no k below k_lo meets
+    # DRAW_CAP and the search starts there without drawing them
+    nodes, k_lo = len(scope.touch), 0
+    while nodes > DRAW_CAP and k_lo < len(order):
+        nodes -= members[order[k_lo]] - 1
+        k_lo += 1
+    if nodes > DRAW_CAP:
+        raise nothing_fits(nodes)
+    best, lo, hi = attempt(k_lo), k_lo - 1, k_lo
     while not fits(best[0], best[1]):
         if hi == len(order):
             meta = best[1]
-            raise ValueError(f"explorer scope {scope.name} does not fit with all {len(order)} of its "
-                             f"modules collapsed: {meta['counts']['nodes'] + meta['counts']['bubbles']} "
-                             f"nodes in {len(best[0])} parts (at most {DRAW_CAP} nodes and "
-                             f"{SCOPE_PARTS} parts of {PART_BYTES} bytes)")
-        lo, hi = hi, min(len(order), max(1, 2 * hi))
+            raise nothing_fits(meta["counts"]["nodes"] + meta["counts"]["bubbles"],
+                               f" in {len(best[0])} parts")
+        lo, hi = hi, min(len(order), max(hi + 1, 2 * hi))
         best = attempt(hi)
     while hi - lo > 1:              # a k that fits, not a proven minimum: fits is checked on bytes
         mid = (lo + hi) // 2
@@ -662,15 +675,18 @@ def stored_parts(graph: ExplorerGraph, scope: Scope) -> tuple[list[str], dict]:
 
 def explorer_payload(graph: ExplorerGraph, scope: str, collapse: int = 0) -> dict:
     """The explorer payload of `scope` with the first `collapse` modules of its collapse order
-    as dots, as its explorer_scopes parts hold it joined. With collapse 0 it is the static
-    explorer's draw of the scope (filters off), node for node and edge for edge: the answer the
-    Worker's live computation must give for a scope with no part 0."""
+    as dots, unpacked: one part, so `_meta.parts` is 1 (a stored scope's joined parts differ
+    only in that count). With collapse 0 it is the static explorer's draw of the scope (filters
+    off), node for node and edge for edge, with `collapsed` 0: the answer the Worker's live
+    computation must give for a scope with no part 0."""
     sc = graph.scope(scope)
     order = graph.collapse_order(sc)
     if collapse > len(order):
         raise ValueError(f"explorer scope {scope} has {len(order)} modules to collapse, not {collapse}")
-    meta, *rest = graph.draw(sc, order[:collapse])
-    return join_parts(pack_parts(meta, *rest)[0])
+    meta, libs, nodes, bubbles, edges = graph.draw(sc, order[:collapse])
+    meta["parts"] = 1
+    return {"_meta": meta, "libs": libs, "nodes": json.loads(f"[{','.join(nodes)}]"),
+            "bubbles": json.loads(f"[{','.join(bubbles)}]"), "edges": json.loads(f"[{','.join(edges)}]")}
 
 
 def explorer_scope_rows(graph: ExplorerGraph, scopes: list[str], stats: dict):
@@ -740,8 +756,8 @@ def read_explorer(cells_dir: Path, labels: list[dict], libs: list[str | None],
         edges.append((edge[0], edge[1], edge[2]))
     del explorer
 
-    # every bubbled cell's module is its p (its one supercell) or path:<Lib> (no supercell),
-    # so collapsing a module never moves a cell across a scope's core
+    # every bubbled cell's module is its p (its one supercell), or it has no p and its module
+    # is path:<Lib>; so only a path:<Lib> module can mix members with and without a p
     for cid, (mod, n_sups) in sorted(bubbled.items()):
         if n_sups > 1 or rows[cid][0].get("p") != (mod if n_sups else None):
             raise ValueError(f"{cid}: a bubbled cell must have one supercell (its module) or none; "
@@ -858,6 +874,11 @@ def _build_outputs(cells_dir: Path, nodes_path: Path, cells_path: Path, out: Pat
                             for i, r in enumerate(labels)))
         graph = read_explorer(cells_dir, labels, libs, xy_by_id, bubbled, discs)
         del xy_by_id, bubbled
+        # a dot names a folder the page can open: every disc's module is a supercell path
+        stray = sorted(set(discs) - {path for path in supercells if path.startswith("path:")})
+        if stray:
+            raise ValueError(f"cells.jsonl _meta.bubbles: module {stray[0]} is not a path: supercell "
+                             f"in supercells.json ({len(stray)} such modules)")
         fill(db, "explorer_edges", graph.edge_rows())
         explorer: dict = {}
         fill(db, "explorer_scopes", explorer_scope_rows(

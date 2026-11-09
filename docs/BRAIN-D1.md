@@ -397,8 +397,10 @@ explorerScope(scope, part) -> {_meta, libs, nodes, bubbles, edges} or one stored
   nodes in id order, edges in (-w, a, b) order and `universe` the touch count.
   `build_serving_db.explorer_payload`, run on `ExplorerGraph.from_serving` of the same serving
   file (its `labels` and `explorer_edges` rows only), is the oracle the second 3b PR's live
-  computation is checked against. That PR names `explorer_edges_b` with `INDEXED BY`, as #165
-  does `name_keys_exact`, so a database without it answers 503 instead of scanning; the
+  computation is checked against. The oracle builds the payload unpacked, as one part, so it
+  depends on no part packing: a live answer has `_meta.parts` 1 and `collapsed` 0, and a stored
+  scope's joined parts differ from it only in `parts`. That PR names `explorer_edges_b` with
+  `INDEXED BY`, as #165 does `name_keys_exact`, so a database without it answers 503 instead of scanning; the
   importer already refuses a version 2 import without it.
 
 ### Caching
@@ -748,15 +750,18 @@ Notes on the tables:
     Part 0 is `{"_meta": {"scope", "parts", "counts": {"nodes", "bubbles", "edges", "universe"},
     "collapsed"}, "libs", "nodes", "bubbles", "edges"}` and every later part
     `{"nodes", "bubbles", "edges"}`, filled greedily in that order, so the parts' lists joined
-    in order are the payload; only `_meta` and `libs` must fit in part 0. A node is its
+    in order are the payload; only `_meta` and `libs` must fit in part 0. `collapsed` counts the
+    cells drawn inside dots (0 when nothing collapsed). A node is its
     `explorer.json` object plus `l`, an index into `libs` (its `labels.libs`), when it has
     libraries. An edge `[i, j, w]` whose index is past the nodes names `bubbles[index - nodes]`.
   - A scope draws exactly as today unless it is too big: more than 25,000 nodes (dots counted;
     today's `all` is 21,071 cells) or more than 8 parts. Only then does the builder collapse
     modules into dots, in one fixed order until it fits: first the ripple modules (no member in
     the core), then the core modules, each by members in the scope, most first, then path. It
-    takes the first k that fits, found by doubling then bisecting, and checks the final parts'
-    count and bytes, so k fits but isn't proven minimal. If nothing fits with every module
+    takes a k that fits, found by doubling then bisecting, and checks the final parts' count and
+    bytes, so k fits but isn't proven minimal. Collapsing a module of m members draws m - 1
+    fewer nodes, so the search starts at the least k that meets the node cap and draws no
+    smaller k. If nothing fits with every module
     collapsed, the build fails, naming the scope, and publishes nothing. Live scopes never
     collapse.
   - A dot stands for the members of one module in the scope's touch. Its `n`, `fa` (the OR of
@@ -773,11 +778,15 @@ Notes on the tables:
     `--nodes`). It refuses a `cells.jsonl` whose `generated_at`, `counts.cells` or `prov` differs
     from the cell manifest's (never `generation_id`, which the manifest doesn't copy), a bubbled
     cell with more than one supercell or whose `p` isn't its module, a module with no disc, and a
-    disc with no member. So a module's members share their `p`, and collapsing a module never
-    moves a cell across a scope's core.
+    disc with no member, and then a disc whose module isn't a `path:` supercell.
+    So a bubbled cell's `p` is its module, or it has no `p` and its module is `path:<Lib>`, and
+    a cell's module never depends on the scope. Only a `path:<Lib>` module can mix the two kinds,
+    and a `p`-less member is never in a scope's core, so in `path:<Lib>` that module's dot can
+    stand for core and ripple members at once; it counts as a core module in the collapse order.
   - `meta.explorer` records the caps, the totals (scopes, live, stored, parts, bytes, collapsed
     scopes) and, per stored scope, its universe, scan, parts, bytes, part 0's head bytes, the
-    modules it collapsed, and its parts and bytes with every module collapsed. Nested scopes each
+    number of modules it collapsed (`modules`), the nodes it draws (`nodes`), and its parts and
+    bytes with every module collapsed (`full_collapse`). Nested scopes each
     store their own copy, so step 0 records the total `explorer_scopes` bytes per dataset.
   - On the committed `brain/data/cells.jsonl` (2026-08-28), 7,858 of the 21,071 cells are lone
     TauCeti decls in 197 modules, each with one supercell. `all` is under the node cap, so it
@@ -953,9 +962,15 @@ way it opens `brain.sqlite3` (`authority_contracts.py:4916-4942`). Then it:
     entry is one of its children, with that child's `n_sub` and `fhist`, at most 64 of them;
   - `text_ids`: every node exists in `brain.sqlite3` and every owner in `cell_pages` or
     `supercells`;
-  - `explorer_scopes`: every node id is a label id and every dot path a supercell path, every
-    part parses and is at most 1 MB, each scope's parts run from 0 to its part count, at most 8,
-    and `all` has part 0.
+  - `explorer_scopes`: every node id is a label id and every dot path a supercell path (the
+    builder refuses a disc that isn't one), every dot's `disc` equals `bubbles[path]` in the
+    `cells.jsonl` `_meta` of the release's cell build, every part parses and is at most 1 MB,
+    each scope's parts run from 0 to its part count, at most 8, and `all` has part 0;
+  - the live split: on `ExplorerGraph.from_serving` (the re-derived `labels` and
+    `explorer_edges`), a scope has rows exactly when it is `all` or a `path:` supercell whose
+    touch is over 2,000 or whose scan is over 20,000. Until this exists only the builder checks
+    the split (a stored scope missing its rows would import and then answer 503), so step 2's
+    scratch import leans on the builder's tests.
 - refuses a manifest whose traces carry their own `prov`;
 - writes a verification receipt for the release, keyed by the manifest's sha256 and recording
   the verifier's commit. A later verification of the same manifest by the same verifier (the
@@ -1342,6 +1357,8 @@ After step 4, step 6 and the cutover (with 6c) are merged:
 - **Stage time.** One stage now builds the shards, xref and the serving file, and copies the
   file at publication, against a 6 h stage limit (`run_replay_v2.py:93`) and a 12 h run
   (`reproducibility_gate.py:757`). Each build also verifies a 1-1.6 GB file several times.
+  The explorer draws every stored scope once more with every module collapsed, for
+  `meta.explorer`'s `full_collapse`, which about doubles its draw work; step 0 times it.
 - **Dataset ids across profiles.** The sidecar's digests follow Python's Unicode version, and
   the image runs CPython 3.12. A verifier whose Unicode version differs from the release's
   refuses it (section 5), so verify, import and promote must run under CPython 3.12. The
@@ -1434,8 +1451,11 @@ After step 4, step 6 and the cutover (with 6c) are merged:
   the touch, the summed edges, and the failure when nothing fits; the `cells.jsonl` and
   `explorer.json` cross-checks; nested scopes of a synthetic tree; and the membership rule
   without numpy. `brain/test_cells.py` and `brain/test_cell_shards.py` don't run in CI
-  (`scripts/check_ci_python_tests.py:25-26`), so every check of the rule and of the builder is
-  in this file.
+  (`scripts/check_ci_python_tests.py:25-26`), so every check of the rule and of the builder
+  that runs without numpy is in this file, and `brain/test_build_cells_context.py` checks, with
+  `layout_cells` stubbed, that `build_cells.py` records its discs in the `cells.jsonl` `_meta`.
+  That `layout_cells` returns the discs `place_bubbles` drew, and that `bubble_module` names the
+  members `place_bubbles` grouped, need numpy and stay in `brain/test_cells.py`.
 - **End-to-end.** `wiki/e2e/server.ts:161` serves `/assets/brain/*` from the fixture. Requests
   under `/api/brain/r/*` already fall through to the app (`:168`); the env it passes must gain
   `BRAIN_DB`.
@@ -1548,7 +1568,10 @@ be promoted. [neutral] PRs can land any time.
        (`SUPPORTED_SCHEMA_VERSIONS`, `brain-store-d1.ts:84`), while since 1b the builder writes
        only 2 and the importer accepts only 2. The second PR moves the Worker to exactly `{2}`
        together with `explorerScope`, the explorer row port and its fixture (0003, version 2
-       rows). The order is safe: the D1 store serves only a release that lists the sidecar, none
+       rows), and fixes two comments #165 left that the move makes stale: `MIGRATIONS_BRAIN`
+       (`wiki/test/helpers/brain-fixture.ts`), which until then lists only what a schema_version 1
+       Worker needs, and `SUPPORTED_SCHEMA_VERSIONS`' citation of `build_serving_db`'s
+       `SCHEMA_VERSION` (`brain-store-d1.ts:83`), which is 2 since 1b. The order is safe: the D1 store serves only a release that lists the sidecar, none
        does before step 7, the readiness check answers 503 on any other version, a version 1
        dataset (a step 2 scratch import made before 1b) is bound by no release, and the first D1
        release's previous release is static, so no Worker has to read version 1.
