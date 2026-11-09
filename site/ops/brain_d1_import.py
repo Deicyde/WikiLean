@@ -1698,11 +1698,13 @@ def local_fts(local: LocalDataset, names_mode: str) -> Iterator[sqlite3.Connecti
     with tempfile.TemporaryDirectory(prefix="brain-d1-parts-") as scratch:
         db = sqlite3.connect(Path(scratch) / "parts.sqlite3")
         try:
-            db.execute("CREATE VIRTUAL TABLE names USING fts5(parts, content='', contentless_delete=1, prefix='2 3')")
+            # Reference rows are only inserted and queried: keep the builder's SQLite 3.34 floor.
+            # Only D1's repairable indexes need the newer contentless-delete option.
+            db.execute("CREATE VIRTUAL TABLE names USING fts5(parts, content='', prefix='2 3')")
             db.executemany("INSERT INTO names(rowid, parts) VALUES (?, ?)",
                            ((seq, name_parts(name)) for seq, name in
                             local.db.execute("SELECT seq, name FROM name_keys ORDER BY seq")))
-            db.execute("CREATE VIRTUAL TABLE texts USING fts5(body, content='', contentless_delete=1)")
+            db.execute("CREATE VIRTUAL TABLE texts USING fts5(body, content='')")
             db.executemany("INSERT INTO texts(rowid, body) VALUES (?, ?)",
                            local.db.execute("SELECT seq, body FROM text_ids ORDER BY seq"))
             yield db

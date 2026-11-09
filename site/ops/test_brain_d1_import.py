@@ -554,6 +554,38 @@ class ImportTest(Base):
         with importer.locked(), self.assertRaisesRegex(bdi.D1ImportError, "names_mode parts.*supersede"):
             importer.import_dataset(self.local, "scratch:" + self.local.dataset_id, "f" * 64, "trigram")
 
+    def test_parts_import_and_verify_with_pre_343_local_fts(self):
+        # Only the local reference lacks the newer FTS option; FakeD1 still
+        # supports contentless deletes for range repair and pruning.
+        connect = sqlite3.connect
+
+        class LegacyFTSConnection(sqlite3.Connection):
+            def execute(self, sql, parameters=()):
+                if "contentless_delete" in sql.lower():
+                    raise sqlite3.OperationalError('unrecognized option: "contentless_delete"')
+                return super().execute(sql, parameters)
+
+        def legacy_connect(*args, **kwargs):
+            return connect(*args, **kwargs, factory=LegacyFTSConnection)
+
+        for mode in ("parts", None):
+            with self.subTest(names_mode=mode):
+                fake = FakeD1()
+                self.addCleanup(fake.db.close)
+                if mode is None:
+                    fake.reject = lambda s: ("D1_ERROR: no such tokenizer: trigram"
+                                             if "tokenize='trigram'" in s else None)
+                importer = self.importer(fake)
+                with mock.patch.object(bdi.sqlite3, "connect", side_effect=legacy_connect):
+                    with importer.locked():
+                        result = importer.import_dataset(
+                            self.local, "scratch:" + self.local.dataset_id, "f" * 64, mode)
+                    self.assertTrue(result["imported"])
+                    self.assertEqual(fake.one("SELECT names_mode FROM datasets"), ("parts",))
+                    self.assert_imported(fake)
+                    report = importer.verify([self.local], 1000, random.Random(1))
+                    self.assertTrue(report["ok"], report["mismatches"])
+
     def test_an_fts_mismatch_empties_that_index_for_the_rerun(self):
         fake = FakeD1()
 
