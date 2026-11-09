@@ -394,6 +394,27 @@ never independent semantic writers.
   JSONL/SQLite/shards as immutable release artifacts while retaining reproducible
   compatibility-export commands.
 
+### All of TauCeti, served from D1 (plan 2026-11-08)
+
+Every TauCeti declaration (about 311k; the live Brain has 7,860) gets its own cell, which
+outgrows static files, so the Brain moves to a D1 database read by bounded queries. Rows are
+keyed by serving dataset, so a release with unchanged Brain tables imports nothing.
+Plan: [`docs/BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md); read layer:
+[`docs/BRAIN-D1.md`](BRAIN-D1.md); tracking: #152. Jack's decisions:
+- Storage (2026-11-06): "Sure take them out of git. The data should really live on our
+  CloudFlare SQLite database."
+- Search and explorer (2026-11-06): "Whatever you think would be most useful for humans and
+  agents." / "I like the current explorer, but I'm open to improving it if you have ideas."
+- Layout (2026-11-06): "Yes this bubble idea sounds very cool to me I love it."
+- Database (2026-11-06): Workers Paid (#135), and "I think one shared database is best".
+- Row keying (2026-11-08): Jack chose rows keyed by serving dataset over rows keyed by release.
+- Replay (2026-11-08): asked whether D1 releases should be compatibility-only until the replay
+  tools learn the D1 layout, Jack answered "Whatever is better long-term." So the replay tools
+  learn the D1 layout before the cutover.
+
+State (2026-11-08): step 1 (the serving database builder) is open as #153 and the layout PR
+#137 is open. Next: the D1 probe #150 runs on the operator Mac; merging #137 is Jack's call.
+
 ### Current Brain execution queue (updated 2026-10-13)
 
 **Production state (2026-10-13).** Since 2026-10-04 the selector has named release
