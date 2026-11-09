@@ -132,10 +132,11 @@ describe("security headers", () => {
     expect(SECURITY_HEADERS["Content-Security-Policy"]).toBe("frame-ancestors 'none'");
   });
 
-  it("frame-src 'self' covers the landing page's same-origin /brain iframe", async () => {
+  it("the landing page links to the Brain without embedding it or widening frame access", async () => {
     const h = setup();
     const html = await (await get(h.env, "/")).text();
-    expect(html).toContain('src="/brain?embed=1"');
+    expect(html).toContain('href="/brain"');
+    expect(html).not.toContain("<iframe");
     expect(directive("frame-src")).toEqual(["'self'"]);
   });
 

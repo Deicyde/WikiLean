@@ -2199,7 +2199,7 @@ export function registerBrainApiRoutes(app: Hono<{ Bindings: Env }>): void {
 }
 
 // ---- /brain/api reference page (self-contained; style matches the dark /brain
-// shell in home.ts brainLanding — no build step, no external assets) -----------
+// public pages in home.ts — no build step, no external assets) -----------
 
 const API_REFERENCE_HTML = `<!doctype html>
 <html lang="en">

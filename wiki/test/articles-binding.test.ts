@@ -99,7 +99,7 @@ describe("wrangler.jsonc", () => {
 
     const dashboard = await get(h.env, "/articles");
     expect(dashboard.status).toBe(200);
-    expect(await dashboard.text()).toContain('<h1 class="articles-h1">Articles</h1>');
+    expect(await dashboard.text()).toMatch(/<h1\b[^>]*>Articles<\/h1>/);
     const current = await get(h.env, "/api/articles/current");
     expect(current.status).toBe(200);
     // The API serves the object as the bucket holds it.

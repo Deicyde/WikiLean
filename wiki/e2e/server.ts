@@ -40,7 +40,7 @@ const GENERATED_ASSET_FIXTURES = new Map<string, { body: string; contentType: st
 // through /assets/brain/current.json. The harness serves those page bytes with
 // one change, d3 from a loopback stand-in instead of the CDN (the harness never
 // leaves loopback; drawing is not under test), plus the Worker tests' fixture
-// release. The home page embeds /brain, so every spec that opens / loads it too.
+// release. Public entry pages do not load this graph until the reader opens /brain.
 const D3_CDN_TAG = '<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>';
 const INERT_D3_PATH = "/__e2e/inert-d3.js";
 const generatedBrainPage = execFileSync(

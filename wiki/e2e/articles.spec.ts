@@ -163,6 +163,7 @@ test("the central statements are counted under the bar over all passages and its
     expect(await gapBelow(page, "#articles-central", '[aria-labelledby="articles-h-where"]')).toBeGreaterThanOrEqual(0);
     await expectPlainCommaGaps(page);
     await page.goto("/articles");
+    await page.getByText("Coverage and build details", { exact: true }).click();
     await expect(page.locator(".articles-strip .articles-bar")).toHaveCount(1);
     await expect(page.locator("#articles-central")).toHaveText(
       "Central statements: 4 of the 6 passages, across 2 articles, state an article's subject or a named result or definition; " +
@@ -175,6 +176,7 @@ test("the central statements are counted under the bar over all passages and its
 test("the by-library table leads with the libraries that hold passages and lists the empty ones apart", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/articles");
+  await page.getByText("Coverage and build details", { exact: true }).click();
   const rows = page.getByRole("region", { name: "Table: By library" }).locator("tbody th");
   await expect(rows).toHaveText(["Mathlib", "FormalFrontier · WidgetTheory", "TauCeti", "Batteries"]);
   const more = page.locator("#articles-libs-empty");

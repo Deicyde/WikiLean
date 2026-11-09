@@ -15,7 +15,8 @@ blockNetwork();
 // /articles is not here: it is the reader's own shell (test/articles.test.ts).
 const PAGES: Array<{ path: string; user?: string }> = [
   { path: `/${SLUG}` }, // engine/page.ts
-  { path: "/" }, // home.ts brainLanding
+  { path: "/" }, // home.ts landingPage
+  { path: "/contribute" },
   { path: "/about" }, // home.ts aboutPage
   { path: "/stats" }, // pages.ts shell, and the pages below
   { path: "/recent-changes" },
@@ -62,9 +63,9 @@ describe("the cached pages", () => {
     const h = setup();
     const moved: Array<[path: string, key: string, before: string[]]> = [
       [`/${SLUG}`, `render:v20:${SLUG}:1`, ["render:v18:", "render:v19:"]],
-      ["/", "page:home:v11", ["page:home:v10"]],
-      ["/about", "page:about:v3", ["page:about:v2"]],
-      ["/stats", "page:stats:v7", ["page:stats:v6"]],
+      ["/", "page:home:v12", ["page:home:v11"]],
+      ["/about", "page:about:v4", ["page:about:v3"]],
+      ["/stats", "page:stats:v8", ["page:stats:v7"]],
       ["/wikifunctions", "page:wikifunctions:v4", ["page:wikifunctions:v3"]],
       ["/wikifunctions/verify", "page:wikifunctions-verify:v4", ["page:wikifunctions-verify:v3"]],
     ];

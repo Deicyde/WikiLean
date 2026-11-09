@@ -104,8 +104,8 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   them `ai-moderated` — **AI-changed bytes are never left marked `human`, and bots never
   mint `human`** (endorse stays session-only; 403). Humans gate only cross-site pushes.
 - **Render-cache keys are manually versioned + load-bearing** (currently `render:v20:`,
-  `page:home:v11`, `page:articles-index:v1`, `page:about:v3`,
-  `page:sitemap:v5`, `page:stats:v7`, `page:wikifunctions:v4`,
+  `page:home:v12`, `page:articles-index:v1`, `page:about:v4`,
+  `page:sitemap:v5`, `page:stats:v8`, `page:wikifunctions:v4`,
   `page:wikifunctions-verify:v4` — all in `index.ts`; `page:articles` is retired with the
   D1 article directory the formalization reader replaced at `/articles`) — bump the
   prefix whenever output bytes change, or readers get stale HTML for up to 30 days. Asset

@@ -1,10 +1,4 @@
-// Trust signals (P2): the N/M human-reviewed header badge + the "?" legend
-// popover on article pages (engine/page.ts, render:v20), and the landing
-// page's "Least recently reviewed" strip (home.ts brainLanding via GET /,
-// page:home:v11). Badge/legend math is unit-tested on renderArticlePage
-// directly; the strip's query (NULLS FIRST ordering, parked-state exclusion,
-// XSS at the title sink) is exercised end-to-end through the app.
-
+// Review badge and legend on canonical article pages.
 import { describe, it, expect } from "vitest";
 import { renderArticlePage } from "../src/engine/page.js";
 import type { Annotation } from "../src/engine/types.js";
@@ -13,8 +7,6 @@ import {
   get,
   SLUG,
   blockNetwork,
-  insertArticle,
-  insertModState,
 } from "./helpers/harness.js";
 
 function page(annotations: Annotation[]): string {
@@ -126,70 +118,4 @@ describe("trust signals through the app", () => {
     expect(keys.some((k) => k.startsWith("render:v18:") || k.startsWith("render:v19:"))).toBe(false);
   });
 
-  it("landing strip orders NULLS FIRST, excludes parked states, caches under page:home:v11", async () => {
-    const h = setup();
-    const now = Date.now();
-    // Seed Test_Article has no moderation row → never reviewed.
-    insertArticle(h.db, "Old_Review");
-    insertModState(h.db, "Old_Review", { lastReviewedAt: now - 10 * 86400_000 });
-    insertArticle(h.db, "Fresh_Review");
-    insertModState(h.db, "Fresh_Review", { lastReviewedAt: now - 3600_000 });
-    // Parked states are excluded even though they'd sort first (never reviewed).
-    const parkIns = h.db.prepare(
-      "INSERT INTO moderation_state (slug, state, updated_at) VALUES (?,?,?)",
-    );
-    for (const [slug, state] of [
-      ["Parked_Moved", "moved"],
-      ["Parked_Deleted", "deleted"],
-      ["Parked_Needs", "needs_human"],
-    ] as const) {
-      insertArticle(h.db, slug);
-      parkIns.run(slug, state, now);
-    }
-
-    const res = await get(h.env, "/");
-    expect(res.status).toBe(200);
-    const html = await res.text();
-    expect(h.renderCache.store.has("page:home:v11")).toBe(true);
-    expect(h.renderCache.store.has("page:home:v10")).toBe(false);
-
-    // Never-reviewed rows (slug-ordered) precede reviewed rows, oldest review
-    // first; parked slugs never appear.
-    const iSeed = html.indexOf('class="rv-item" href="/Test_Article"');
-    const iOld = html.indexOf('class="rv-item" href="/Old_Review"');
-    const iFresh = html.indexOf('class="rv-item" href="/Fresh_Review"');
-    expect(iSeed).toBeGreaterThan(-1);
-    expect(iOld).toBeGreaterThan(iSeed);
-    expect(iFresh).toBeGreaterThan(iOld);
-    expect(html).not.toContain('href="/Parked_Moved"');
-    expect(html).not.toContain('href="/Parked_Deleted"');
-    expect(html).not.toContain('href="/Parked_Needs"');
-    // Row labels: never reviewed vs relative review age.
-    expect(html).toContain("<em>never reviewed</em>");
-    expect(html).toContain("<em>reviewed 10d ago</em>");
-    expect(html).toContain("<em>reviewed 1h ago</em>");
-  });
-
-  it("caps the strip at 8 rows", async () => {
-    const h = setup();
-    for (let i = 0; i < 10; i++) insertArticle(h.db, `Never_${i}`); // + seed = 11 never-reviewed
-    const html = await (await get(h.env, "/")).text();
-    expect(html.match(/class="rv-item"/g)).toHaveLength(8);
-  });
-
-  it("escapes a hostile display_title in the strip (renders as text)", async () => {
-    const h = setup();
-    const now = Date.now();
-    h.db
-      .prepare(
-        "INSERT INTO articles (slug, wikipedia_title, display_title, annotations, version, created_at, updated_at) VALUES (?,?,?,?,1,?,?)",
-      )
-      .run("Hostile", "Hostile", '<img src=x onerror=alert(1)>"><script>alert(2)</script>', "[]", now, now);
-    const html = await (await get(h.env, "/")).text();
-    expect(html).not.toContain("<img src=x");
-    expect(html).not.toContain("<script>alert(2)</script>");
-    expect(html).toContain(
-      "&lt;img src=x onerror=alert(1)&gt;&quot;&gt;&lt;script&gt;alert(2)&lt;/script&gt;",
-    );
-  });
 });
