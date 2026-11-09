@@ -220,7 +220,8 @@ Round trips per route:
 - a card by atom id: 1; by organ key: 2;
 - search: 2; filter: 1; neighborhood: 2;
 - bridge: 2 or 3, and at most 6 when the statement pass needs all of its chunks;
-- quickstatements: 1 before its first write;
+- quickstatements: ceil(n / 50), n the largest of its organ key, cell id and path counts, plus
+  ceil(supercell owners / 50), plus 1 for pages over the batch caps, all before its first write;
 - every page endpoint: 1 or 2.
 
 ### Search
@@ -1514,26 +1515,27 @@ be promoted. [neutral] PRs can land any time.
        - `filterCells` under a folder joins `labels` with `CROSS JOIN` and orders by
          `cell_under.ord`, so it stops once `limit + 1` rows match instead of reading and sorting
          the whole examination window.
-       - In parts mode a fragment's last token is a prefix only when it is at least 2 UTF-16
-         units long, which the `prefix='2 3'` indexes serve (4 or more stays on step 0's
-         measurement list). A 1-unit last token matches as a whole token: a 1-unit prefix has no
-         prefix index, and FTS5 would merge the doclist of every term that starts with it before
-         the LIMIT. So `Nat.s` finds the parts `nat s` but not `Nat.succ` in the fragment tier;
-         the prefix tier still finds names that start with `nat.s`.
+       - In parts mode a fragment's last token is a prefix only when it is at least 2 characters
+         (code points, which the prefix indexes count) long, which the `prefix='2 3'` indexes
+         serve (4 or more stays on step 0's measurement list). A 1-character last token, an
+         astral letter such as U+1D55C included, matches as a whole token: a 1-character prefix
+         has no prefix index, and FTS5 would merge the doclist of every term that starts with it
+         before the LIMIT. So `Nat.s` finds the parts `nat s` but not `Nat.succ` in the fragment
+         tier; the prefix tier still finds names that start with `nat.s`.
        - Quickstatements loads every endpoint's owner, cell page and supercell (with its
          breadcrumb) in batches of 50 keys before its first write (`prefetchAtoms`), plus one
          pass for the supercells organ keys name; rows are then written one by one as before.
          A request keeps at most 8 M characters (SQLite's `length`) of pages in all: each batch
          asks for pages of at most its keys' equal share of what is left, and at most 128 K
          characters, so no batch passes the budget. A page over its batch's cap comes back as its
-         length alone and is read afterwards, still before the first write, 4 single-row
-         statements a batch, at most 64 such pages. A submit whose pages would pass 8 M, or that
-         needs more than 64 such reads, is answered 413 before anything is written. So no Brain
-         read follows the first write, and a D1 outage can only fail the request before it
-         writes. Each page row is at most D1's 2 MB, so one batch of the alone reads returns at
-         most 8 MB. The write statements per submit are a separate count: with all 12 databases
-         selected a row can make about 60 of them, which passes 1,000 on its own in a 100-row
-         submit, independent of the Brain reads.
+         length alone; once those lengths fit what the budget has left, all such pages are read
+         in one more batch, still before the first write, each statement asking only for pages of
+         at most the longest length it knows, so that batch returns at most what was counted. A
+         submit is refused only on its total: one whose distinct pages pass 8 M is answered 413
+         before anything is written. So no Brain read follows the first write, and a D1 outage
+         can only fail the request before it writes. The write statements per submit are a
+         separate count: with all 12 databases selected a row can make about 60 of them, which
+         passes 1,000 on its own in a 100-row submit, independent of the Brain reads.
        - The prefix tier runs only for queries of 2 to 200 UTF-16 units and the fragment tier
          only for 3 to 200, so a one-character bridge query gets exact matches only; a prefix
          range that returns a 1,001st row is a builder disagreement and answers 503. The search

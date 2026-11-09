@@ -18,7 +18,7 @@
 
 import { DatabaseSync, type StatementSync } from "node:sqlite";
 
-type SqliteParam = null | number | bigint | string | Uint8Array;
+export type SqliteParam = null | number | bigint | string | Uint8Array;
 
 // D1 accepts JS booleans/undefined; node:sqlite does not. Normalize the few
 // shapes drizzle can emit. (Dates never reach here — drizzle's column mappers
@@ -68,15 +68,15 @@ export interface D1ShimStatement {
   _batchExec: () => Promise<D1ShimResult>;
 }
 
-// Called with each statement's SQL as it executes (fault injection and
-// statement counting in tests); a throw fails the statement.
-export type OnStatement = (sql: string) => void;
+// Called with each statement's SQL and bound parameters as it executes (fault
+// injection and statement counting in tests); a throw fails the statement.
+export type OnStatement = (sql: string, params: readonly SqliteParam[]) => void;
 
 function makeStatement(db: DatabaseSync, sql: string, params: SqliteParam[], onStatement?: OnStatement): D1ShimStatement {
   // Prepare lazily so a bad-SQL error surfaces at execution time (as it would
   // on real D1), not at .prepare() — drizzle prepares eagerly per query.
   const prep = (): StatementSync => {
-    onStatement?.(sql);
+    onStatement?.(sql, params);
     return db.prepare(sql);
   };
   return {

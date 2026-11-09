@@ -331,8 +331,8 @@ export interface BrainStoreBatches {
    *  rest of the request, so quickstatements resolves every endpoint before
    *  its first write in a few batches. Throws PrefetchBudgetError when the
    *  pages pass the request's budget, before the caller writes anything.
-   *  [50 keys a batch; 8 M characters of pages kept; 64 pages read alone,
-   *  4 a batch] */
+   *  [50 keys a batch; 8 M characters of pages kept; pages over the batch
+   *  caps read in one more batch] */
   prefetchAtoms(ids: string[]): Promise<void>;
 }
 

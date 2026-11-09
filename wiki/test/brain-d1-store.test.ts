@@ -739,15 +739,33 @@ describe("the D1 store's own methods", () => {
     expect(batches()).toBe(2);
   });
 
-  // 70 cell pages of their own, cell:pad00 to cell:pad69, of the given lengths
+  // `count` (70) cell pages of their own, cell:pad00 up, of the given lengths
   // in characters (each page's JSON is 37 characters longer than its padding).
-  function padPages(db: DatabaseSync, datasetId: string, pad: (i: number) => number): string[] {
+  function padPages(db: DatabaseSync, datasetId: string, pad: (i: number) => number, count = 70): string[] {
     const { ds } = db.prepare("SELECT ds FROM datasets WHERE dataset_id = ?").get(datasetId) as { ds: number };
     const insert = db.prepare("INSERT INTO cell_pages (ds, seq, id, json) VALUES (?, ?, ?, ?)");
-    const list = Array.from({ length: 70 }, (_, i) => `cell:pad${String(i).padStart(2, "0")}`);
+    const list = Array.from({ length: count }, (_, i) => `cell:pad${String(i).padStart(2, "0")}`);
     list.forEach((id, i) => insert.run(ds, 900_000 + i, id, JSON.stringify({ cell: { id }, pad: "x".repeat(pad(i)) })));
     return list;
   }
+
+  // `count` organ keys of their own, Pad.organ00 up, each owning a cell page
+  // cell:org00 up of the given length in characters (37 plus the padding).
+  function padOrgans(db: DatabaseSync, datasetId: string, pad: (i: number) => number, count: number): string[] {
+    const { ds } = db.prepare("SELECT ds FROM datasets WHERE dataset_id = ?").get(datasetId) as { ds: number };
+    const page = db.prepare("INSERT INTO cell_pages (ds, seq, id, json) VALUES (?, ?, ?, ?)");
+    const alias = db.prepare("INSERT INTO aliases (ds, seq, kind, key, owner) VALUES (?, ?, 'organ', ?, ?)");
+    return Array.from({ length: count }, (_, i) => {
+      const n = String(i).padStart(2, "0");
+      page.run(ds, 800_000 + i, `cell:org${n}`, JSON.stringify({ cell: { id: `cell:org${n}` }, pad: "x".repeat(pad(i)) }));
+      alias.run(ds, 800_000 + i, `Pad.organ${n}`, `cell:org${n}`);
+      return `Pad.organ${n}`;
+    });
+  }
+
+  const pageChars = (db: DatabaseSync, datasetId: string, id: string): number =>
+    (db.prepare("SELECT length(json) AS n FROM cell_pages WHERE id = ? AND ds = (SELECT ds FROM datasets WHERE dataset_id = ?)")
+      .get(id, datasetId) as { n: number }).n;
 
   it("caps each prefetch batch at its share of the 8 M kept characters, and reads the rest alone", async () => {
     const { store, batches, db, h, release } = await storeOn();
@@ -759,7 +777,8 @@ describe("the D1 store's own methods", () => {
     await store.prefetchAtoms(list);
     expect(batches()).toBe(3);
     expect(sent.length).toBe(3);
-    expect(Math.max(...sent)).toBeLessThanOrEqual(8 * 1024 * 1024);
+    // every page once: 50 x 120,037 + 19 x 47 + 120,037, under the 8 M in all
+    expect(sent.reduce((a, b) => a + b, 0)).toBe(6_122_780);
     for (const id of list) expect((await store.cellPage(id))?.cell.id).toBe(id);
     expect(batches()).toBe(3);
   });
@@ -771,7 +790,46 @@ describe("the D1 store's own methods", () => {
     const sent = jsonChars(h);
     await expect(store.prefetchAtoms(list)).rejects.toBeInstanceOf(PrefetchBudgetError);
     expect(batches()).toBe(2);
-    expect(Math.max(...sent)).toBeLessThanOrEqual(8 * 1024 * 1024);
+    // only the first batch's 50 pages came back with their text
+    expect(sent.reduce((a, b) => a + b, 0)).toBe(6_001_850);
+  });
+
+  it("reads more than 64 pages over their batches' caps in one batch when they fit 8 M", async () => {
+    const { store, batches, db, h, release } = await storeOn();
+    // two batches of 50 organ keys and 50 cell ids: 100 keys share the budget,
+    // a cap of 83,886 then 83,854, so the 33 organ pages of 90,037 in each go
+    // alone, 66 in all (5,942,442 characters); the other 134 pages are kept
+    const organs = padOrgans(db, release.datasetId!, (i) => (i % 50 < 33 ? 90_000 : 10), 100);
+    const cells = padPages(db, release.datasetId!, () => 10, 100);
+    const sent = jsonChars(h);
+    await store.prefetchAtoms([...organs, ...cells]);
+    expect(batches()).toBe(3);
+    expect(sent.reduce((a, b) => a + b, 0)).toBe(66 * 90_037 + 134 * 47);
+    expect(await store.keyHits({ organ: organs[0] })).toEqual({ organ: "cell:org00" });
+    for (let i = 0; i < 100; i++) {
+      const n = String(i).padStart(2, "0");
+      expect((await store.cellPage(`cell:org${n}`))?.cell.id).toBe(`cell:org${n}`);
+      expect((await store.cellPage(`cell:pad${n}`))?.cell.id).toBe(`cell:pad${n}`);
+    }
+    expect(batches()).toBe(3);
+  });
+
+  it("counts a page an organ key and a cell id in one batch both name once", async () => {
+    const { store, batches, db, release } = await storeOn();
+    // the organ key's owner row and the cell id's row carry the same page
+    await store.prefetchAtoms([MODULE_Q, MODULE_CELL]);
+    expect(batches()).toBe(1);
+    expect(store._prefetchedCharsForTests()).toBe(pageChars(db, release.datasetId!, MODULE_CELL));
+  });
+
+  it("does not ask a later batch for a page an earlier batch's organ key loaded", async () => {
+    const { store, batches, db, release } = await storeOn();
+    // MODULE_Q loads MODULE_CELL in the first batch; the second would hold
+    // only MODULE_CELL, so it is not sent
+    const pads = padPages(db, release.datasetId!, () => 10).slice(0, 50);
+    await store.prefetchAtoms([MODULE_Q, ...pads, MODULE_CELL]);
+    expect(batches()).toBe(1);
+    expect(store._prefetchedCharsForTests()).toBe(pageChars(db, release.datasetId!, MODULE_CELL) + 50 * 47);
   });
 
   it("cuts a statement chunk at 2,000 candidates or 512 KB of JSON", () => {
@@ -788,11 +846,14 @@ describe("the D1 store's own methods", () => {
     expect(statementChunkEnd(long, end)).toBeGreaterThan(end);
   });
 
-  it("asks parts mode for a prefix only of a last token of at least 2 units", () => {
+  it("asks parts mode for a prefix only of a last token of at least 2 characters", () => {
     expect(fragmentMatch("Nat.su", "parts")).toBe('"Nat su"*');
     expect(fragmentMatch("fourierCoeff", "parts")).toBe('"fourier Coeff"*');
-    // a 1-unit last token has no prefix index (prefix='2 3'): it matches whole
+    // a 1-character last token has no prefix index (prefix='2 3'): it matches whole
     expect(fragmentMatch("Nat.s", "parts")).toBe('"Nat s"');
+    // the prefix indexes count code points: U+1D55C is 2 UTF-16 units but 1 character
+    expect(fragmentMatch("Nat.\u{1D55C}", "parts")).toBe('"Nat \u{1D55C}"');
+    expect(fragmentMatch("Nat.\u{1D55C}a", "parts")).toBe('"Nat \u{1D55C}a"*');
     expect(fragmentMatch("isS", "parts")).toBe('"is S"');
     expect(fragmentMatch("Nat.s?", "parts")).toBe('"Nat s?"');
     expect(fragmentMatch("...", "parts")).toBeNull();
@@ -908,20 +969,35 @@ describe("round trips", () => {
 
 describe("quickstatements reads before it writes", () => {
   // pages over 128 K characters, as #150's hub pages can be
-  function padded(pad: string, cells: string[], sups: string[]): { h: Harness; statements: string[] } {
+  type Read = { sql: string; params: readonly unknown[] };
+  function padded(pad: string, cells: string[], sups: string[]): { h: Harness; statements: string[]; reads: Read[] } {
     resetMemos();
     const h = setup();
     const statements: string[] = [];
-    const { db } = installBrainD1Fixture(h.env, { onStatement: (sql) => { statements.push(sql); } });
+    const reads: Read[] = [];
+    const { db } = installBrainD1Fixture(h.env, {
+      onStatement: (sql, params) => {
+        statements.push(sql);
+        reads.push({ sql, params });
+      },
+    });
     for (const id of cells) db.prepare("UPDATE cell_pages SET json = json_set(json, '$.cell.padding', ?) WHERE id = ?").run(pad, id);
     for (const path of sups) db.prepare("UPDATE supercells SET json = json_set(json, '$.padding', ?) WHERE path = ?").run(pad, path);
-    return { h, statements };
+    return { h, statements, reads };
   }
+  // The ids the over-cap reads list: the multi-row statement `stmt` with a
+  // maxChars (after the dataset id and the list) past the batches' 128 K cap,
+  // which only readAlone asks for.
+  const aloneIds = (reads: Read[], stmt: Stmt): string[] =>
+    reads
+      .filter((r) => r.sql === stmt.sql && Number(r.params[2]) > 128 * 1024)
+      .flatMap((r) => JSON.parse(String(r.params[1])) as string[])
+      .sort();
   const submit = (h: Harness, items: Array<Record<string, string>>) =>
     post(h.env, "/api/brain/quickstatements", { databases: ["wikidata", "mathlib", "lmfdb"], items }, { user: "u-human" });
 
   it("reads every page, over-cap ones included, before the first write", async () => {
-    const { h, statements } = padded("x".repeat(200_000), [MODULE_CELL, ABELIAN_CELL], [LINALG_SUPER]);
+    const { h, statements, reads } = padded("x".repeat(200_000), [MODULE_CELL, ABELIAN_CELL], [LINALG_SUPER]);
     const counter = instrument(h);
     const events = eventLog(h);
     // MODULE_Q is MODULE_CELL's, CommGroup ABELIAN_CELL's, FIELD_Q the supercell LINALG_SUPER's
@@ -933,14 +1009,14 @@ describe("quickstatements reads before it writes", () => {
     expect(((await res.json()) as { accepted: number }).accepted).toBe(2);
     expect(events).toContain("write");
     expect(events.lastIndexOf("brain")).toBeLessThan(events.indexOf("write"));
-    // the three pages were read alone, each once
-    expect(statements.filter((sql) => sql === cellPageStmt(MODULE_CELL).sql).length).toBe(2);
-    expect(statements.filter((sql) => sql === supercellStmt(LINALG_SUPER).sql).length).toBe(1);
+    // the three pages were read after their batches, each once
+    expect(aloneIds(reads, cellPagesStmt([]))).toEqual([MODULE_CELL, ABELIAN_CELL].sort());
+    expect(aloneIds(reads, supercellsStmt([]))).toEqual([LINALG_SUPER]);
     expect(statements.filter((sql) => sql === READINESS_SQL).length).toBe(counter.count());
   });
 
   it("answers 413 and writes nothing when the pages pass the 8 M characters one submit keeps", async () => {
-    const { h, statements } = padded("x".repeat(4_500_000), [MODULE_CELL, ABELIAN_CELL], []);
+    const { h, reads } = padded("x".repeat(4_500_000), [MODULE_CELL, ABELIAN_CELL], []);
     const events = eventLog(h);
     const res = await submit(h, [{ wikidata: MODULE_Q, mathlib: "CommGroup", lmfdb: "group.abelian.p1" }]);
     expect(res.status).toBe(413);
@@ -949,7 +1025,7 @@ describe("quickstatements reads before it writes", () => {
     expect(events).not.toContain("write");
     expect(h.db.prepare("SELECT count(*) AS n FROM brain_edges").get()).toEqual({ n: 0 });
     // neither page was sent: each came back as its length alone
-    expect(statements.filter((sql) => sql === cellPageStmt(MODULE_CELL).sql)).toEqual([]);
+    expect(aloneIds(reads, cellPagesStmt([]))).toEqual([]);
   });
 });
 

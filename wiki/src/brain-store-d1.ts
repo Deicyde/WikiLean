@@ -117,13 +117,11 @@ const PREFETCH_CHUNK = 50; // keys per prefetch batch
 // length) of them in all, every one read before the first write. A batch of
 // keys asks for pages of at most min(PREFETCH_PAGE_CHARS, what the budget has
 // left / its keys) characters, so no batch passes the budget; a longer page
-// comes back as its length alone and is read afterwards, PREFETCH_ALONE_BATCH
-// pages a batch, at most PREFETCH_ALONE_PAGES of them. A submit whose pages
-// pass either bound gets PrefetchBudgetError, before anything is written.
+// comes back as its length alone, and all of them are read afterwards in one
+// batch once their lengths fit what is left. A submit whose pages pass the
+// budget gets PrefetchBudgetError, before anything is written.
 const PREFETCH_PAGE_CHARS = 128 * 1024;
 const PREFETCH_KEPT_CHARS = 8 * 1024 * 1024;
-const PREFETCH_ALONE_BATCH = 4;
-const PREFETCH_ALONE_PAGES = 64;
 const TRACES_PER_ROW = 6; // build_cell_shards.SHARD_TRACE_CAP
 
 // Rows a filter call examines at most (decision 7). Tests lower it.
@@ -162,8 +160,7 @@ function rememberConstants(datasetId: string, value: DatasetConstants): void {
 }
 
 /** prefetchAtoms' refusal: the submit names more page text than one request
- *  keeps (PREFETCH_KEPT_CHARS) or more pages over the batch caps than it reads
- *  alone (PREFETCH_ALONE_PAGES). Thrown before the route writes anything;
+ *  keeps (PREFETCH_KEPT_CHARS). Thrown before the route writes anything;
  *  quickstatements answers 413. */
 export class PrefetchBudgetError extends Error {
   constructor(reason: string) {
@@ -374,11 +371,11 @@ export function rangeTierStmt(qlc: string): Stmt {
 /** [k rows]: names containing the fragment, in seq order, from the dataset's
  *  names_<hex> FTS table (rowid = name_keys.seq). CROSS JOIN keeps the k
  *  matches outer, so each probes name_keys by (ds, seq). In parts mode
- *  fragmentMatch never asks for a 1-unit prefix, which the table's
+ *  fragmentMatch never asks for a 1-character prefix, which the table's
  *  prefix='2 3' indexes do not serve: FTS5 would merge the doclist of every
  *  term that starts with it before the rowid range and the LIMIT apply.
- *  (A prefix of 4 or more units merges only the terms that start with it; it
- *  is on step 0's measurement list.) */
+ *  (A prefix of 4 or more characters merges only the terms that start with
+ *  it; it is on step 0's measurement list.) */
 export function fragmentTierStmt(hex: string, match: string, lo: number, hi: number, k: number): Stmt {
   const table = namesTable(hex);
   return {
@@ -392,17 +389,18 @@ export function fragmentTierStmt(hex: string, match: string, lo: number, hi: num
 /** The MATCH string for a fragment: one quoted phrase. In parts mode the query
  *  is split as the importer split the names (nameParts), and its last token
  *  (the last run of letters and digits, which is what the tokenizer makes of
- *  the end of the phrase) is a prefix when it is at least 2 UTF-16 units long.
- *  A 1-unit last token matches only as a whole token, so "Nat.s" finds the
- *  names with the parts "nat s", not "Nat.succ" (the prefix tier still finds
- *  the names that start with "nat.s"). A query with no letter or digit in it
- *  has no parts mode match. */
+ *  the end of the phrase) is a prefix when it is at least 2 characters long,
+ *  counted in code points as the prefix indexes count them. A 1-character last
+ *  token (such as "s", or U+1D55C, 2 UTF-16 units) matches only as a whole
+ *  token, so "Nat.s" finds the names with the parts "nat s", not "Nat.succ"
+ *  (the prefix tier still finds the names that start with "nat.s"). A query
+ *  with no letter or digit in it has no parts mode match. */
 export function fragmentMatch(q: string, namesMode: "trigram" | "parts"): string | null {
   if (namesMode === "trigram") return `"${q.replace(/"/g, '""')}"`;
   const parts = nameParts(q);
   const last = /[\p{L}\p{N}]+(?=[^\p{L}\p{N}]*$)/u.exec(parts);
   if (!last) return null;
-  return `"${parts.replace(/"/g, '""')}"${last[0].length >= 2 ? "*" : ""}`;
+  return `"${parts.replace(/"/g, '""')}"${[...last[0]].length >= 2 ? "*" : ""}`;
 }
 
 const utf8 = new TextEncoder();
@@ -1106,10 +1104,10 @@ export class D1Store implements BrainStore, BrainStoreBatches {
   // per endpoint: organ keys load their owners (and a cell owner's page), cell:
   // ids their pages and path: ids their entries and breadcrumbs, then a second
   // pass loads the supercells that organ keys named as owners. Each batch's
-  // page cap is its share of what the kept budget has left; a page or entry
-  // over it is read alone at the end, so every page an endpoint reads is in a
-  // memo when this returns. Throws PrefetchBudgetError, after reads only, when
-  // the pages pass the budget or too many go alone.
+  // page cap is its share of what the kept budget has left; the pages and
+  // entries over it are read in one batch at the end, so every page an
+  // endpoint reads is in a memo when this returns. Throws PrefetchBudgetError, after reads only, when
+  // the pages pass the budget.
   async prefetchAtoms(list: string[]): Promise<void> {
     if (this.failure) throw this.failure;
     const organs = [...new Set(list.filter((id) => !id.startsWith("cell:") && !id.startsWith("path:") && !this.organMemo.has(id)))];
@@ -1171,6 +1169,11 @@ export class D1Store implements BrainStore, BrainStoreBatches {
     return left <= 0 || keys <= 0 ? 0 : Math.min(PREFETCH_PAGE_CHARS, Math.floor(left / keys));
   }
 
+  /** test-only: the characters of page text the prefetch kept */
+  _prefetchedCharsForTests(): number {
+    return this.prefetchedChars;
+  }
+
   // A page the prefetch keeps, counted by its length as SQLite measures it
   // (the length the caps compare).
   private keptPage(json: unknown, chars: number, table: string): Row {
@@ -1218,41 +1221,52 @@ export class D1Store implements BrainStore, BrainStoreBatches {
     }
   }
 
-  // The pages the batch caps left out, PREFETCH_ALONE_BATCH single-row
-  // statements a batch (each row is at most D1's 2 MB), once the budget is
-  // known to hold them. The checks come before any of these reads.
+  // The pages the batch caps left out, once the budget is known to hold them:
+  // one batch of multi-row reads, each asking only for pages of at most the
+  // longest length it already knows, so the batch returns at most what the
+  // check counted. The check comes before any of these reads.
   private async readAlone(alone: Alone): Promise<void> {
-    const pages = alone.cells.size + alone.sups.size;
-    if (!pages) return;
+    if (!alone.cells.size && !alone.sups.size) return;
     let chars = 0;
     for (const n of alone.cells.values()) chars += n;
     for (const s of alone.sups.values()) chars += s.chars;
-    if (pages > PREFETCH_ALONE_PAGES) {
-      throw new PrefetchBudgetError(`${pages} Brain pages over the batch caps, where one request reads at most ${PREFETCH_ALONE_PAGES}`);
-    }
     if (this.prefetchedChars + chars > PREFETCH_KEPT_CHARS) {
       throw new PrefetchBudgetError(
         `${this.prefetchedChars + chars} characters of Brain pages, where one request keeps at most ${PREFETCH_KEPT_CHARS}`,
       );
     }
-    const work: Array<{ cell: string; chars: number } | { path: string; chars: number; breadcrumb: Crumb[] }> = [
-      ...[...alone.cells].map(([cell, n]) => ({ cell, chars: n })),
-      ...[...alone.sups].map(([path, s]) => ({ path, ...s })),
-    ];
-    for (let i = 0; i < work.length; i += PREFETCH_ALONE_BATCH) {
-      const batch = work.slice(i, i + PREFETCH_ALONE_BATCH);
-      const rows = await this.run(batch.map((w) => ("cell" in w ? cellPageStmt(w.cell) : supercellStmt(w.path))));
-      batch.forEach((w, j) => {
-        const r = rows[j][0];
-        if ("cell" in w) {
-          this.cellMemo.set(w.cell, r ? (this.keptPage(r.json, w.chars, "cell_pages") as unknown as CellEntry) : null);
-        } else {
-          this.supercellMemo.set(
-            w.path,
-            r ? { entry: this.keptPage(r.json, w.chars, "supercells") as unknown as SupercellEntry, breadcrumb: w.breadcrumb } : null,
-          );
-        }
-      });
+    const chunks = (list: string[]): string[][] =>
+      Array.from({ length: Math.ceil(list.length / PREFETCH_CHUNK) }, (_, i) =>
+        list.slice(i * PREFETCH_CHUNK, (i + 1) * PREFETCH_CHUNK),
+      );
+    const cellChunks = chunks([...alone.cells.keys()]);
+    const pathChunks = chunks([...alone.sups.keys()]);
+    const rows = await this.run([
+      ...cellChunks.map((list) => cellPagesStmt(list, Math.max(...list.map((id) => alone.cells.get(id)!)))),
+      ...pathChunks.map((list) => supercellsStmt(list, Math.max(...list.map((path) => alone.sups.get(path)!.chars)))),
+    ]);
+    // A page that comes back without its text (longer than the length it had
+    // in its batch) fails parse, so the request fails closed.
+    let at = 0;
+    for (const list of cellChunks) {
+      const found = new Map<string, Row>();
+      for (const r of rows[at++]) found.set(String(r.id), r);
+      for (const id of list) {
+        const r = found.get(id);
+        this.cellMemo.set(id, r ? (this.keptPage(r.json, Number(r.chars), "cell_pages") as unknown as CellEntry) : null);
+      }
+    }
+    for (const list of pathChunks) {
+      const found = new Map<string, Row>();
+      for (const r of rows[at++]) found.set(String(r.path), r);
+      for (const path of list) {
+        const r = found.get(path);
+        const { breadcrumb } = alone.sups.get(path)!;
+        this.supercellMemo.set(
+          path,
+          r ? { entry: this.keptPage(r.json, Number(r.chars), "supercells") as unknown as SupercellEntry, breadcrumb } : null,
+        );
+      }
     }
   }
 }

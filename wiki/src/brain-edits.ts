@@ -1121,7 +1121,8 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     // first write: row by row, a 100-row submit would pass D1's per-invocation
     // statement cap (docs/BRAIN-D1.md section 2). The prefetch reads every page
     // the rows need, so an outage here writes nothing and the row loop sends no
-    // Brain batch; rows whose pages pass the request's budget are refused whole.
+    // Brain batch; a submit whose pages pass the request's budget is refused
+    // whole (413) before any write.
     const store = storeFor(c, release);
     checkReadinessEveryBatch(store);
     const batches = batchesOf(store);
