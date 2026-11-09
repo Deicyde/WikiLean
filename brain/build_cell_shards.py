@@ -840,6 +840,13 @@ def build_cell_shards(
     t0 = time.monotonic()
     cell_meta, cell_rows = load_jsonl(cells_path)
     syn_meta, synapses = load_jsonl(synapses_path)
+    # Trace `prov` fields index synapses.jsonl's prov table, and every reader resolves
+    # them against the manifest's (cells.jsonl's): the agent API and the page's
+    # evidence drawer. A skewed pair of tables would point traces at the wrong source.
+    if syn_meta.get("prov", []) != cell_meta.get("prov", []):
+        raise SystemExit("synapses.jsonl prov table differs from cells.jsonl — trace prov "
+                         "indexes would not resolve against the manifest's; rerun "
+                         "python3 brain/build_cells.py")
     cells = {c["id"]: c for c in cell_rows}
     print(f"{len(cells)} cells / {len(synapses)} synapses", file=sys.stderr)
     frontier_rows, frontier_stats = load_frontier(
@@ -1273,15 +1280,6 @@ def build_cell_shards(
             else:
                 trace_leaves[key] = sorted(arr)
 
-    # sidecar trace `prov` indexes come from synapses.jsonl; the drawer resolves
-    # them against the manifest `prov` table (cells.jsonl's). Identical today —
-    # if they ever diverge, ship the synapse table so indexes stay resolvable.
-    syn_prov = syn_meta.get("prov", [])
-    prov_skew = syn_prov != cell_meta.get("prov", [])
-    if prov_skew:
-        print("  ! synapses.jsonl prov table differs from cells.jsonl — shipping "
-              "it as manifest.traces.prov so sidecar indexes stay resolvable",
-              file=sys.stderr)
     sidecar_meta = {
         "caps": {"traces_per_synapse": SIDECAR_TRACE_CAP,
                  "synapses_trimmed": sidecar_trimmed,
@@ -1302,7 +1300,6 @@ def build_cell_shards(
                    "max_len": max((len(k) for k in trace_leaves),
                                   default=MIN_KEY_LEN),
                    "max_bytes": MAX_SHARD_BYTES, "pad": PAD},
-        **({"prov": syn_prov} if prov_skew else {}),
         "files": {k: len(trace_leaves[k]) for k in sorted(trace_leaves)},
     }
 
