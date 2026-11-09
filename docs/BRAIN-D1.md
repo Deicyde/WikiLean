@@ -108,7 +108,9 @@ is his (2026-11-08); the others are the design's own:
    can return fewer than `limit` hits along with a non-null cursor. The cursor format doesn't
    change.
 8. **Supercell evidence gets filled in** from a trace table. On the agent API it is trimmed
-   to 6 traces per row, the same cap cell rows have. Those rows also gain `traces_total`.
+   to 6 traces per row, the same cap cell rows have, and carries `traces_total` under the
+   cell rows' rule: only when the trim drops traces (step 3b, so a row the static store
+   already hydrates reads the same).
 9. **Integrity checking moves.** Today every Brain byte is hashed against the signed
    inventory when it loads (`brain.ts:533-540`, `build_brain_page.py:596-597`). With D1,
    integrity rests on three things: the importer's per-range digests, the readiness check on
@@ -488,7 +490,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 | `atomIdForOrgan`, `brainNodeExists`, `brain-api.ts:638-646`, `brain.ts:716-719` | `organOwners` and `atomsExist`, behind the readiness check. | fails closed when rows are missing |
 | `resolveAtomKey` alias passes, `brain-api.ts:568-584` | `aliasHits`. | none |
 | `resolveAtomKey` label and supercell organ-label passes, `586-594`, `611-622` | `exactName`. | names are lowercased at build time in Python and the key per request in JS: identical for ASCII, rare differences elsewhere |
-| `cellEntries`, `hydrateSupercellTraces`, `411-433`, `1037-1054` | `synapseTraces` for supercell rows. | Rows that say `traces_unavailable` today get traces: 1,413 whose partner's list was capped and 292 that join two supercells (`1032-1036`). They are trimmed to 6 per row (`build_cell_shards.py:94`). The sidecar always carries `tt` (`build_cell_shards.py:1244-1247`), while cell rows carry it only when trimmed (`896-897`), so these rows also gain `traces_total` (`brain-api.ts:1217`). |
+| `cellEntries`, `hydrateSupercellTraces`, `411-433`, `1037-1054` | `synapseTraces` for supercell rows. | Rows that say `traces_unavailable` today get traces: 1,413 whose partner's list was capped and 292 that join two supercells (`1032-1036`). They are trimmed to 6 per row (`build_cell_shards.py:94`). The sidecar always carries `tt` (`build_cell_shards.py:1244-1247`), while cell rows carry it only when trimmed (`896-897`), so the D1 store keeps `tt` only when it exceeds the 6 kept: `traces_total` follows the cell rows' rule (`brain-api.ts:1217`). |
 | `suggestRename`, `brain-api.ts:1786-1804` | `aliasHits` for decls plus `cellPages`, batched across a call's dead names. | none |
 | `cellFor`, `transferFor`, `neighborhoodFor`, `snippetsFor`, `brain-api.ts:731-1346` | No reads of their own. | release-bound cursors keep working (`1081`, `1351`); field names stay, including `withheld_by_shard` |
 | Reference text: `brain-api.ts:2769-2771` and `mcp.ts:201-203` (traces "hydrated from the partner cells' shards"), `mcp.ts:14` ("no tool touches D1"), `mcp.ts:129-145` (label search only) | Rewritten in step 3b. | text |
@@ -1455,6 +1457,40 @@ be promoted. [neutral] PRs can land any time.
      new tests.
      - Releasable: it stays dormant until a release lists the sidecar.
      - Needs the database id from #150, and the migration must be applied before deploy.
+     - **Two PRs.** The first is the store: `wiki/src/brain-store-d1.ts` (the module this doc
+       calls `brain-db.ts`), the release detection in `brain.ts` (`backend`, `datasetId`,
+       `datasetHex`; a malformed sidecar artifact rejects the manifest), `storeFor`'s switch,
+       the shim fix and the parity tests. The second is everything the page needs: the page
+       endpoints and `resolveBrainReleaseByHex`, their limiter bindings, the concurrency gate,
+       the agent D1-cost limiter, the Cache API rules, the layout rule, the reference text, text
+       hits and index tags on search, `level` and `explorerScope`, and the `wrangler.jsonc`
+       binding. The binding and the remote migrations (`0001_brain.sql`, then
+       `0002_name_keys_exact.sql`) come before any release that lists the sidecar.
+     - **Where the first PR departs from this plan:**
+       - The composites (`searchPage`, `bridgeCandidates`, and `prefetchAtoms` for
+         quickstatements) are a separate interface, `BrainStoreBatches`, that only the D1Store
+         implements; routes ask `batchesOf(store)` and run their old reads otherwise. The
+         StaticStore gains no method, so static releases answer byte for byte as before.
+       - The readiness check starts a store's first batch and is left out of its later batches
+         once it passed, instead of starting every batch. Every data statement still matches
+         only a `ready` dataset through `$DS`, and the pruner keeps the live releases' datasets.
+       - An unbound `BRAIN_DB` serves a D1 release from its static files, which it still
+         carries until the layout rule; after the layout rule the same path answers 503.
+       - `traces_total` on hydrated supercell rows follows the cell rows' rule (decision 8).
+       - Migration `0002_name_keys_exact.sql` adds `name_keys(ds, name_lc, seq)`, which the
+         exact tier and the exact-name lookup name with `INDEXED BY`, so both stop at their
+         LIMIT; without it they would sort every row that shares a name. It must land while the
+         tables are empty.
+       - Quickstatements loads every endpoint's owner and cell page in batches of 50 keys before
+         its first write (`prefetchAtoms`); rows are then written one by one as before, so a
+         D1 outage during the prefetch writes nothing, and one later (there are no Brain reads
+         later, unless an endpoint is a supercell) can still leave earlier rows written.
+       - The prefix tier runs only for queries of 2 to 200 UTF-16 units and the fragment tier
+         only for 3 to 200, so a one-character bridge query gets exact matches only; a prefix
+         range that returns a 1,001st row is a builder disagreement and answers 503.
+       - The Worker tests build the D1 rows with a TypeScript port of the builder's row logic
+         (`wiki/test/helpers/brain-d1-rows.ts`), which `site/ops/test_brain_d1_import.py`
+         compares with `build_serving_db.build` column by column on every CI run.
 4. **Release contract** [affecting, except the canary and bundle parts, which are neutral].
    Section 5 has the details. Releasable, since the static layout is unchanged.
    - One layout function in `authority_contracts.py` for both profiles, a D1 required set,
