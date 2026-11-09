@@ -1450,13 +1450,19 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
-- 2026-11-09: **Contributor-focused cleanup prepared; not deployed.** Home now
+- 2026-11-09: **Contributor-focused cleanup is live.** Home now
   leads to the article reader and a concise contribution guide. The reader puts
   search and articles before expandable coverage/build details. Public copy and
   entry documentation describe live tags, owned agents, Literature Links, and
   the remaining operator intake limit. Removed the unrouted directory renderer
   and its unused queries. Historical release evidence and compatibility routes
-  remain intact. This change still follows the exact release procedure.
+  remain intact. PR #164 deployed at 12:21 UTC from `0667e5cb`, release
+  `sha256:a5993b3a…`, Worker `634119b8…`. The exact promoter closed with
+  `deployed`; its live canary and browser checks of Home, Contribute, article
+  search and passage evidence, About, and the Brain passed. Validation:
+  1,567 Worker tests plus typecheck, 50 browser checks, and 133 offline Python
+  commands. An encrypted backup and restore rehearsal passed before release;
+  no database migrations were applied.
 
 - 2026-11-08 (UTC): **R1 is live.** Promoted authority commit
   `596aa7bb` as Brain release `sha256:13c7517b…`, Worker `7b73c447…`.
