@@ -193,6 +193,21 @@ Synapse-less cells never enter the sim (they would either halo or pile on the
 origin — both read as the clump bug). They are parked deterministically around their
 supercell's centre of mass, or in a tidy outer band if they have no supercell.
 
+Repulsion is computed on a grid one cutoff wide (`_repulsion`), so each cell is compared
+only with cells in its own and the 8 neighbouring buckets: the same nonzero terms as
+comparing every pair, summed in a different order, and linear in the cells while their
+density stays bounded.
+
+**Module bubbles.** Density does not stay bounded with all of TauCeti: measured on
+2026-11-06 with 152,922 connected cells, attraction to Mathlib hubs piled the cells
+together (candidate pairs 28M to 872M over 50 steps). So lone decl cells of libraries
+outside `SIMULATED_DECL_LIBS` (Mathlib, Init, Batteries, FormalConjectures) never enter
+the sim. The core is laid out exactly as if they did not exist; then each of their
+modules (the decl's deepest supercell) becomes a disc of radius k/2·√members, placed as
+near as it can get to the core cells its members bond with, with no disc overlapping
+another or covering a core cell, and the members spiral inside it (`place_bubbles`).
+With all of TauCeti: 13k core cells, 4,116 discs, 300 s for the whole cells stage.
+
 ### v3 acceptance datapoints (brain/test_cells.py)
 
 C1. `cell:Q18848` contains organs Q18848, Q125977 **and** `decl:Mathlib:Module`
@@ -214,8 +229,16 @@ L2. No halo — guarded at MECHANISM and symptom, because the symptom alone coul
     reaches ~3.1× and slips under any stable threshold. Mutation-proven: restoring
     the bug turns the suite RED while the old ratio checks stay green.
 L3. The layout is deterministic across rebuilds.
+L4. Grid repulsion matches the all-pairs terms (cutoff-exact pairs, one ulp either side,
+    coincident points, one bucket); L5: byte-identical across runs and pass sizes.
+B1. With bubbles, the core's positions are byte-identical to laying out the core alone.
+B2. Simulated libraries, and decl cells that hold more than their decl, stay in the sim.
+B3. One disc per module, radius k/2·√members; no two discs overlap; no disc enters the
+    core radius or covers a core cell. B4: every member lies inside its disc.
+B5. Byte-identical across runs. B6: the exact no-overlap pass alone, from stacked and
+    crowded starts.
 
-Status: **36/36 green** (`python3 brain/test_cells.py`; the nightly aborts on red).
+Status: green (`python3 brain/test_cells.py`; the nightly aborts on red).
 
 ### The FRONTIER layer — a partition of the homeless cells (brain/build_frontier.py)
 

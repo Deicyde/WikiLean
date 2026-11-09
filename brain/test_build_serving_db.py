@@ -224,6 +224,16 @@ class ServingDbTest(unittest.TestCase):
         self.assertEqual(json.loads(rows["path:TauCeti/Analysis"][9]),
                          SUPERCELLS["supercells"]["path:TauCeti/Analysis"])
 
+    def test_supercell_aka_reads_labels_like_the_worker(self):
+        # `label ?? id` per organ: an empty label stays empty, only a missing one gives the id
+        sc = json.loads(json.dumps(SUPERCELLS))
+        sc["supercells"]["path:Mathlib"]["organs"] = [{"kind": "concept", "id": "Q9", "label": ""},
+                                                      {"kind": "concept", "id": "Q10"}]
+        self.write_tree(supercells=sc)
+        _, db = self.build()
+        self.assertEqual(db.execute("SELECT aka FROM supercells WHERE path = 'path:Mathlib'").fetchone(),
+                         ("\x1fQ10",))
+
     def test_kids_keep_the_64_largest_children(self):
         sc = json.loads(json.dumps(SUPERCELLS))
         big = sc["supercells"]

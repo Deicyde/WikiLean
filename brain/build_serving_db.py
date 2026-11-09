@@ -215,7 +215,9 @@ def supercell_rows(supercells: dict, n_sub: Counter, fhist: dict):
         organs = row.get("organs") or []
         kids = sorted(row.get("children") or [], key=lambda child: (-n_sub[child], child))
         yield (ord_, path, row.get("label"),
-               AKA_SEP.join(str(o.get("label") or o.get("id")) for o in organs) or None,
+               # the Worker's supercell head takes `label ?? id`: an empty label stays empty
+               AKA_SEP.join(str(o["label"] if o.get("label") is not None else o.get("id"))
+                            for o in organs) if organs else None,
                row.get("parent"), row.get("fa"), 1 if row.get("frontier") else None,
                len(row.get("cells") or []) or None, n_sub[path],
                canonical_json(dict(fhist.get(path, {}))),

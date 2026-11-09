@@ -40,7 +40,7 @@ def toolchain(generation: int = 0) -> dict:
     }
 
 
-def rows(*, edge: bool = False, node: bool = False, annotations: str | None = None) -> list[dict]:
+def rows(*, edge: bool = False, node: bool = False, node_status: str = "live", annotations: str | None = None) -> list[dict]:
     def record(kind: str, key: str, value: dict) -> dict:
         return {"record_type": kind, "record_key": key,
                 "payload": json.dumps(value, ensure_ascii=False, separators=(",", ":"))}
@@ -63,8 +63,9 @@ def rows(*, edge: bool = False, node: bool = False, annotations: str | None = No
     if node:
         result.append(record("brain_node", "Q5530428", {
             "id": "Q5530428", "label": "GNS construction", "description": None,
-            "node_type": "concept", "added_by": "pipeline", "actor_type": "ai", "status": "live",
-            "created_at": 1700000000003, "deleted_by": None, "deleted_at": None, "version": 1,
+            "node_type": "concept", "added_by": "pipeline", "actor_type": "ai", "status": node_status,
+            "created_at": 1700000000003, "deleted_by": "jack" if node_status == "deleted" else None,
+            "deleted_at": 1700000000010 if node_status == "deleted" else None, "version": 1,
         }))
     result.append(record("control", "counts", {
         "schema": snapshots.CONTROL_SCHEMA, "articles": 1, "brain_edges": int(edge), "brain_nodes": int(node),
@@ -143,7 +144,7 @@ class D1SourceDerivationTests(unittest.TestCase):
             profile_path = Path(temporary) / "profiles.json"
             profile_path.write_bytes(contracts.canonical_json_bytes({
                 "schema": "wikilean.d1-source-export-profiles/v1",
-                "profiles": profiles or [fixture_profile(PROGRAMS, 1), fixture_profile(PROGRAMS, 2)],
+                "profiles": profiles or [fixture_profile(PROGRAMS, 1), fixture_profile(PROGRAMS, 2), fixture_profile(PROGRAMS, 3)],
             }))
             with mock.patch.object(exporter, "PROFILE_PATH", profile_path):
                 return exporter.verify_export_files(files)
@@ -172,7 +173,7 @@ class D1SourceDerivationTests(unittest.TestCase):
         lineage = document(output, "evidence/source-lineage.json")
         self.assertEqual(lineage["acquisition_receipt_ids"], [receipt["acquisition_receipt_id"]])
         self.assertEqual([{k: v for k, v in row.items() if k != "origin"} for row in lineage["inputs"]], receipt["outputs"])
-        self.assertEqual(lineage["tool"]["version"], "2")
+        self.assertEqual(lineage["tool"]["version"], "3")
         self.assertNotEqual(lineage["normalization_lineage_id"], document(original, "normalization-lineage.json")["normalization_lineage_id"])
         self.assertTrue(all(output["acquisition/" + name] == data for name, data in original.items()))
         for row in lineage["outputs"]:
@@ -189,7 +190,7 @@ class D1SourceDerivationTests(unittest.TestCase):
         mixed = {**PROGRAMS, exporter.IMPLEMENTATION_PATHS[0]: other[exporter.IMPLEMENTATION_PATHS[0]]}
         output = exporter.build_export(path, original, normalized_at=AUDIT, implementation=mixed, registry_bytes=REGISTRY)
         with self.assertRaisesRegex(exporter.ExportError, "reviewed complete"):
-            self.verify(output, [fixture_profile(PROGRAMS, 2), fixture_profile(other, 2)])
+            self.verify(output, [fixture_profile(PROGRAMS, 3), fixture_profile(other, 3)])
 
     def test_rehashed_unreplayed_output_and_historical_schema_downgrade_are_rejected(self):
         path, original = fixture()
@@ -205,7 +206,7 @@ class D1SourceDerivationTests(unittest.TestCase):
                 if attack == "schema":
                     manifest["schema"] = "wikilean.d1-source-export/v1"
                 manifest.pop("export_id")
-                manifest["export_id"] = contracts.domain_hash("wikilean.d1-source-export.v" + ("1" if attack == "schema" else "2"), manifest)
+                manifest["export_id"] = contracts.domain_hash("wikilean.d1-source-export.v" + ("1" if attack == "schema" else "3"), manifest)
                 output["export.json"] = contracts.canonical_json_bytes(manifest)
                 with self.assertRaisesRegex(exporter.ExportError, "exactly replay"):
                     self.verify(output)
@@ -237,7 +238,7 @@ class D1SourceDerivationTests(unittest.TestCase):
         self.assertEqual(lineage["acquisition_receipt_ids"], [])
         self.assertTrue(all(row["origin"]["id"] == parent["source_manifest_id"] for row in lineage["inputs"]))
         self.assertEqual(child["source_kind"], "sealed_snapshot")
-        self.assertEqual(len([row for row in child["objects"] if row["bytes"] == 0]), 3)
+        self.assertEqual(len([row for row in child["objects"] if row["bytes"] == 0]), 4)
         fragment = document(output, "source-fragment.json")
         self.assertFalse(fragment["source_publishable"])
         self.assertEqual(fragment["redistribution"], "restricted")
@@ -261,13 +262,66 @@ class D1SourceDerivationTests(unittest.TestCase):
         path, files = fixture()
         self.assertEqual(build(path, files), build(Path("/different") / path.name, files))
 
-    def test_nonempty_edges_or_nodes_cannot_be_exported_as_verified_absence(self) -> None:
-        for options in ({"edge": True}, {"node": True}, {"edge": True, "node": True}):
-            with self.subTest(options=options):
-                path, files = fixture(**options)
-                snapshots.verify_snapshot_bundle_files(path, files)
+    def test_node_only_snapshot_preserves_all_rows_and_never_claims_empty_nodes(self):
+        path, original = fixture(node=True)
+        output = build(path, original)
+        self.assertEqual(self.verify(output)["schema"], exporter.EXPORT_SCHEMA)
+        manifest = document(output, "export.json")
+        self.assertEqual(manifest["brain_nodes"], 1)
+        self.assertEqual(manifest["brain_edges"], 0)
+        self.assertEqual(output["normalized/brain/data/community_nodes.jsonl"], original["normalized/brain_nodes.jsonl"])
+        self.assertTrue(all(output["acquisition/" + name] == data for name, data in original.items()))
+        child = document(output, "source-manifests/derived.json")
+        node = next(row for row in child["objects"] if row["name"] == "community_nodes")
+        self.assertEqual(node["sha256"], exporter.digest(original["normalized/brain_nodes.jsonl"]))
+        self.assertIn("community_nodes", child["normalization"]["outputs"])
+        self.assertEqual(output["normalized/brain/data/community_edges.jsonl"], b"")
+        # No invented static-node input or community-edge graduation.
+        bindings = document(output, "source-fragment.json")["input_bindings"]
+        self.assertEqual([row["input_id"] for row in bindings], ["annotations", "brain-community-edges"])
+
+    def test_deleted_node_and_attribution_are_preserved(self):
+        path, original = fixture(node=True, node_status="deleted")
+        output = build(path, original)
+        self.verify(output)
+        self.assertEqual(output["normalized/brain/data/community_nodes.jsonl"], original["normalized/brain_nodes.jsonl"])
+        self.assertIn(b'"deleted_by":"jack"', output["normalized/brain/data/community_nodes.jsonl"])
+        self.assertEqual(document(output, "export.json")["brain_nodes"], 1)
+
+    def test_forged_zero_node_count_is_rejected_after_rehash(self):
+        path, original = fixture(node=True)
+        output = build(path, original)
+        manifest = document(output, "export.json")
+        manifest["brain_nodes"] = 0
+        manifest.pop("export_id")
+        manifest["export_id"] = contracts.domain_hash("wikilean.d1-source-export.v3", manifest)
+        output["export.json"] = contracts.canonical_json_bytes(manifest)
+        with self.assertRaisesRegex(exporter.ExportError, "exactly replay"):
+            self.verify(output)
+
+    def test_historical_generations_still_refuse_nonempty_nodes(self):
+        path, original = fixture(node=True)
+        for generation in (1, 2):
+            with self.subTest(generation=generation):
                 with self.assertRaisesRegex(exporter.ExportError, "nonempty community"):
-                    build(path, files)
+                    exporter.build_export(path, original, normalized_at=AUDIT, implementation=PROGRAMS,
+                                          registry_bytes=REGISTRY, _generation=generation)
+
+    def test_nonempty_edges_still_require_a_sealed_node_universe(self):
+        for nodes in (False, True):
+            path, original = fixture(edge=True, node=nodes)
+            with self.assertRaisesRegex(exporter.ExportError, "nonempty community"):
+                build(path, original)
+
+    def test_generation_two_fixture_is_byte_identical(self):
+        import hashlib
+        path, original = fixture()
+        output = exporter.build_export(path, original, normalized_at=AUDIT, implementation=PROGRAMS,
+                                       registry_bytes=REGISTRY, _generation=2)
+        fingerprints = {name: hashlib.sha256(raw).hexdigest() for name, raw in output.items()}
+        self.assertEqual(hashlib.sha256(contracts.canonical_json_bytes(fingerprints)).hexdigest(),
+                         "561d2620256e689c2e1e49b05c9f97a9076337c741ceaa5a6c4f5e20ae0eeb3f")
+        self.assertEqual(self.verify(output)["schema"], "wikilean.d1-source-export/v2")
 
     def test_tampered_raw_normalized_or_evidence_is_rejected_before_export(self) -> None:
         path, files = fixture()
@@ -328,7 +382,7 @@ class D1SourceDerivationTests(unittest.TestCase):
         compiler.inventory_path.write_bytes(contracts.canonical_json_bytes(compiler.inventory))
         compiler.plan["inventory_id"] = compiler.inventory["inventory_id"]
         path, original = fixture()
-        for generation in (1, 2):
+        for generation in (1, 2, 3):
             with self.subTest(generation=generation):
                 files = exporter.build_export(path, original, normalized_at=AUDIT, implementation=PROGRAMS,
                                               registry_bytes=REGISTRY, _generation=generation)

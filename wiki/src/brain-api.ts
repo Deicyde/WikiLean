@@ -49,16 +49,24 @@ import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import {
   assetJson,
-  BrainReleaseUnavailableError,
   isBrainReleaseUnavailableError,
   memoAssetJson,
-  requiredBrainAssetJson,
+  own,
   resolveBrainRelease,
-  searchLabels,
   BRAIN_ID_RE,
   type BrainLabelRow,
   type BrainReleaseContext,
 } from "./brain.js";
+import {
+  storeFor,
+  type AtomHead,
+  type CellHead,
+  type Crumb,
+  type Organ,
+  type SupercellHead,
+  type Synapse,
+  type Trace,
+} from "./brain-store.js";
 import {
   bucketEntries,
   bucketTotal,
@@ -97,116 +105,8 @@ const MATHLIB_LICENSE = "Apache-2.0 (Mathlib)";
 
 // ---- shipped shapes (brain/build_cell_shards.py output, brain/SCHEMA.md#v3) ----
 
-// An organ is a PARTICLE, never a node: it exists only inside a cell (or, for
-// rule-5 field concepts and area pages, inside a supercell). Payloads are
-// EMBEDDED by the builder — one shard fetch renders the whole card, so no route
-// below fans out to fetch an organ's content.
-export interface Organ {
-  kind: string; // concept | decl | page | article | statement
-  id: string;
-  label?: string;
-  bond?: string; // exact | generalization | special_case | xref | field | … (absent on an anchor organ)
-  prov?: number; // index into the manifest `prov` table
-  // decl
-  module?: string;
-  decl_kind?: string;
-  docstring?: string;
-  code?: string;
-  library?: string;
-  renamed_to?: string; // the verified current FQ name when the cited name is dead (decl_renames.jsonl, baked in)
-  // concept
-  description?: string;
-  slug?: string;
-  article_annotations?: unknown;
-  status?: string;
-  // page
-  db?: string;
-  url?: string;
-  kind_hint?: string;
-  qid?: string;
-  snippet?: string;
-  snippet_license?: string;
-  // article
-  annotations?: unknown;
-  // statement
-  arxiv_id?: string;
-  ref?: string;
-  license_open?: boolean;
-  [k: string]: unknown;
-}
-
-// One constituent bond of a synapse; keeps its OWN direction (a synapse is an
-// undirected aggregate — SCHEMA v3 "src/dst are ordered lexicographically").
-// `src`/`dst` are ORGAN ids, not cell ids: the trace names the actual particles.
-export interface Trace {
-  kind: string;
-  src: string;
-  dst: string;
-  prov?: number;
-  evidence?: Record<string, unknown>;
-}
-
-export interface Synapse {
-  id: string; // the OTHER atom (cell:… or path:…)
-  w: number; // weight = every constituent bond, capped or not
-  kinds: Record<string, number>;
-  traces?: Trace[]; // trimmed to `caps.traces_per_synapse`; `tt` = the true total
-  tt?: number;
-}
-
-export interface CellHead {
-  id: string;
-  anchor: string;
-  label?: string;
-  supercells?: string[];
-  f?: number;
-  xy?: [number, number];
-}
-
-export interface CellEntry {
-  cell: CellHead;
-  organs?: Organ[];
-  syn?: Synapse[];
-  counts?: { syn?: number; organs?: number };
-  truncated?: { syn?: number };
-  breadcrumb?: Array<{ id: string; label?: string | null }>;
-}
-
-// supercells.json rows. Only 156 of ~9k carry organs and 37 carry synapses —
-// most are pure containment. `fa` is the subtree-AGGREGATE facet mask.
-export interface SupercellEntry {
-  label?: string;
-  fa?: number;
-  parent?: string;
-  children?: string[];
-  cells?: string[];
-  organs?: Organ[];
-  syn?: Synapse[];
-  counts?: { syn?: number };
-}
-
-interface SupercellsFile {
-  roots?: string[];
-  supercells?: Record<string, SupercellEntry>;
-}
-
-interface CellsManifest {
-  scheme: { min_len: number; max_len: number; pad: string };
-  shards: Record<string, number>;
-  prov: Array<Record<string, string>>;
-  roots?: string[];
-  _meta?: Record<string, unknown>;
-}
-
-// aliases.json — THE compat layer. `organs` maps every organ id (QID, decl id,
-// xref page id, article slug, lit statement) to the atom that owns it, which is
-// a cell id or — for rule-5 field concepts — a supercell path. `decls`/`slugs`
-// are convenience indexes (bare FQ decl name / slug → atom).
-interface CellAliases {
-  organs?: Record<string, string>;
-  decls?: Record<string, string>;
-  slugs?: Record<string, string>;
-}
+// Organ, Trace, Synapse, CellHead, CellEntry and SupercellEntry live in
+// brain-store.ts, beside the interface that returns them.
 
 // The normalized atom every route works with: a cell or a supercell.
 export interface Atom {
@@ -218,18 +118,12 @@ export interface Atom {
   syn: Synapse[];
   counts: { syn: number; organs: number };
   truncated?: { syn?: number };
-  breadcrumb?: Array<{ id: string; label?: string | null }>;
+  breadcrumb?: Crumb[];
   cell?: CellHead; // kind==="cell"
   supercell?: { path: string; parent?: string; children?: string[]; cells?: string[]; fa?: number }; // kind==="supercell"
 }
 
 // ---- small utilities ---------------------------------------------------------
-
-// own-property read — a JSON.parse'd map must never serve inherited names
-// (__proto__/constructor/toString), same gotcha as /api/articles/:key.
-function own<T>(map: Record<string, T> | undefined, key: string): T | undefined {
-  return map && Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
-}
 
 function intOr(v: unknown, dflt: number): number {
   const n = typeof v === "number" ? v : typeof v === "string" && v.trim() !== "" ? Number(v) : NaN;
@@ -289,58 +183,6 @@ function noteForBond(bond: string | null, declName: string, cellLabel: string | 
   return `no exact formalization; nearest is ${kind} (${declName}${cellLabel ? ` on ${cellLabel}` : ""})`;
 }
 
-// ---- asset loaders (all memoized — see brain.ts memoAssetJson) ----------------
-
-function dataRecord(value: unknown): Record<string, unknown> | null {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
-    ? value as Record<string, unknown>
-    : null;
-}
-
-function badReleaseData(release: BrainReleaseContext, path: string): never {
-  throw new BrainReleaseUnavailableError(release.releaseId, path, "declared asset has an invalid shape");
-}
-
-async function cellsManifest(c: Ctx, release: BrainReleaseContext): Promise<CellsManifest> {
-  const path = "cells/manifest.json";
-  const value = await requiredBrainAssetJson<unknown>(c, release, path);
-  const manifest = dataRecord(value);
-  const scheme = dataRecord(manifest?.scheme);
-  const shards = dataRecord(manifest?.shards);
-  if (
-    !manifest || !scheme || !shards || !Array.isArray(manifest.prov) ||
-    !Number.isSafeInteger(scheme.min_len) || !Number.isSafeInteger(scheme.max_len) ||
-    typeof scheme.pad !== "string" ||
-    Object.values(shards).some((count) => !Number.isSafeInteger(count) || (count as number) < 0)
-  ) badReleaseData(release, path);
-  return value as CellsManifest;
-}
-
-async function cellAliases(c: Ctx, release: BrainReleaseContext): Promise<CellAliases> {
-  const path = "cells/aliases.json";
-  const value = await requiredBrainAssetJson<unknown>(c, release, path);
-  const aliases = dataRecord(value);
-  if (!aliases || !dataRecord(aliases.organs) || !dataRecord(aliases.decls) || !dataRecord(aliases.slugs)) {
-    badReleaseData(release, path);
-  }
-  return value as CellAliases;
-}
-
-async function cellLabels(c: Ctx, release: BrainReleaseContext): Promise<BrainLabelRow[]> {
-  const path = "cells/labels.json";
-  const value = await requiredBrainAssetJson<unknown>(c, release, path);
-  if (!Array.isArray(value)) badReleaseData(release, path);
-  return value as BrainLabelRow[];
-}
-
-async function supercellsFile(c: Ctx, release: BrainReleaseContext): Promise<SupercellsFile> {
-  const path = "cells/supercells.json";
-  const value = await requiredBrainAssetJson<unknown>(c, release, path);
-  const file = dataRecord(value);
-  if (!file || !dataRecord(file.supercells)) badReleaseData(release, path);
-  return value as SupercellsFile;
-}
-
 // ---- snapshot echo (SCHEMA v3; opaque provenance, not a build time or a Mathlib rev) ----
 
 // The provenance pin echoed as snapshot.pin. Organs carry a `prov` index; the
@@ -384,52 +226,9 @@ export interface Snapshot {
 // second memo the tests would have to reset separately. A missing manifest is a
 // release outage (503), never a response with an ambiguous null snapshot.
 export async function snapshotFor(c: Ctx, release: BrainReleaseContext): Promise<Snapshot> {
-  const manifest = await cellsManifest(c, release);
+  const manifest = await storeFor(c, release).snapshotSource();
   const generatedAt = (manifest._meta?.generated_at as string | undefined) ?? null;
   return { generated_at: generatedAt, pin: mathlibPin(manifest.prov) };
-}
-
-// One cell shard entry, via the manifest's documented prefix scheme (identical
-// to the decl-index scheme, so declShardFor resolves it verbatim).
-async function cellEntry(c: Ctx, release: BrainReleaseContext, id: string): Promise<CellEntry | null> {
-  const manifest = await cellsManifest(c, release);
-  const key = declShardFor(
-    { scheme: manifest.scheme, shards: manifest.shards },
-    id,
-  );
-  const shard = key
-    ? await requiredBrainAssetJson<Record<string, unknown>>(c, release, `cells/${key}.json`)
-    : null;
-  if (shard && !dataRecord(shard)) badReleaseData(release, `cells/${key}.json`);
-  const entry = shard ? own(shard, id) : undefined;
-  return entry ? (entry as CellEntry) : null;
-}
-
-// Many cell entries at once, grouped by shard so N partners living in ONE shard
-// cost ONE fetch (the supercell-trace hydration below is the only caller, and
-// its fan-out is what has to stay bounded).
-async function cellEntries(c: Ctx, release: BrainReleaseContext, ids: string[]): Promise<Map<string, CellEntry>> {
-  const out = new Map<string, CellEntry>();
-  const manifest = await cellsManifest(c, release);
-  const byShard = new Map<string, string[]>();
-  for (const id of ids) {
-    const key = declShardFor({ scheme: manifest.scheme, shards: manifest.shards }, id);
-    if (!key) continue;
-    const want = byShard.get(key);
-    if (want) want.push(id);
-    else byShard.set(key, [id]);
-  }
-  await Promise.all(
-    [...byShard].map(async ([key, want]) => {
-      const shard = await requiredBrainAssetJson<Record<string, unknown>>(c, release, `cells/${key}.json`);
-      if (!dataRecord(shard)) badReleaseData(release, `cells/${key}.json`);
-      for (const id of want) {
-        const e = own(shard, id);
-        if (e) out.set(id, e as CellEntry);
-      }
-    }),
-  );
-  return out;
 }
 
 // A licensed snippet must NEVER ship without its licence (SCHEMA S6). The
@@ -462,33 +261,15 @@ function synTruncation(
   return withheld > 0 ? { syn: withheld } : undefined;
 }
 
-// Walk `parent` to the root — supercells.json is a tree, so the breadcrumb is
-// derived rather than stored (cells ship theirs prebuilt).
-function supercellBreadcrumb(
-  map: Record<string, SupercellEntry>,
-  path: string,
-): Array<{ id: string; label?: string | null }> {
-  const crumbs: Array<{ id: string; label?: string | null }> = [];
-  const seen = new Set<string>();
-  let cur: string | undefined = own(map, path)?.parent;
-  while (cur && !seen.has(cur)) {
-    seen.add(cur);
-    const e: SupercellEntry | undefined = own(map, cur);
-    crumbs.push({ id: cur, label: e?.label ?? null });
-    cur = e?.parent;
-  }
-  return crumbs.reverse();
-}
-
 // Fetch an atom by its OWN id (cell:… | path:…). Callers that hold an organ id
 // must go through resolveAtomKey first.
 export async function atomFor(c: Ctx, release: BrainReleaseContext, id: string): Promise<Atom | null> {
   if (!BRAIN_ID_RE.test(id)) return null;
+  const store = storeFor(c, release);
   if (id.startsWith("path:")) {
-    const file = await supercellsFile(c, release);
-    const map = file?.supercells;
-    const e = map ? own(map, id) : undefined;
-    if (!e || !map) return null;
+    const found = await store.supercell(id);
+    if (!found) return null;
+    const e = found.entry;
     const organs = (e.organs ?? []).map(safeOrgan);
     const syn = e.syn ?? [];
     const counts = { syn: e.counts?.syn ?? syn.length, organs: organs.length };
@@ -505,7 +286,7 @@ export async function atomFor(c: Ctx, release: BrainReleaseContext, id: string):
       counts,
       // supercells.json carries no `truncated` — derive it (see synTruncation)
       ...(truncated ? { truncated } : {}),
-      breadcrumb: supercellBreadcrumb(map, id),
+      breadcrumb: found.breadcrumb,
       supercell: {
         path: id,
         ...(e.parent ? { parent: e.parent } : {}),
@@ -515,7 +296,7 @@ export async function atomFor(c: Ctx, release: BrainReleaseContext, id: string):
       },
     };
   }
-  const e = await cellEntry(c, release, id);
+  const e = await store.cellPage(id);
   if (!e?.cell) return null;
   const organs = (e.organs ?? []).map(safeOrgan);
   const syn = e.syn ?? [];
@@ -565,61 +346,31 @@ export async function resolveAtomKey(c: Ctx, release: BrainReleaseContext, keyRa
     return null; // an explicit atom id must not fall through to label search
   }
 
-  const aliases = await cellAliases(c, release);
-
   // Every organ id — QID, decl:<Lib>:<Name>, xref:<db>:<id>, slug, lit:… —
-  // lands here. The value may be a supercell path (rule-5 field concepts).
-  const viaOrgan = own(aliases?.organs, key);
-  if (viaOrgan) return { id: viaOrgan, resolved_from: "organ" };
-
-  // bare fully-qualified decl name ("CommGroup"), and decl:<Lib>:<Name> whose
-  // library differs from the alias table's
+  // lands in `organs`. The value may be a supercell path (rule-5 field
+  // concepts). Then the bare fully-qualified decl name ("CommGroup"), which
+  // also catches a decl:<Lib>:<Name> whose library differs from the alias
+  // table's; an explicit decl id stops there and never falls through to slugs
+  // or labels. Then the slug index, and finally an exact label or `aka`
+  // (case-insensitive), then a supercell organ label (also with the slug's
+  // underscores read as spaces: a rule-5 field concept's own article slug).
+  //
+  // NOTE for future editors: the exact-name lookup is FUZZY resolution. The
+  // community-edit endpoint oracle must never reach it — that is why
+  // atomIdForOrgan exists as a separate function rather than a flag on this one.
   const isDeclId = key.startsWith("decl:");
   const bareName = isDeclId ? key.split(":").slice(2).join(":") : key;
-  const viaDecl = own(aliases?.decls, bareName);
-  if (viaDecl) return { id: viaDecl, resolved_from: "decl" };
-  if (isDeclId) return null; // an explicit decl id must not fall through to labels
-
-  const viaSlug = own(aliases?.slugs, key);
-  if (viaSlug) return { id: viaSlug, resolved_from: "slug" };
-
-  // exact label / aka, case-insensitive, over the atom label index
-  const labels = await cellLabels(c, release);
   const kl = key.toLowerCase();
-  const byLabel = labels?.find(
-    (r) =>
-      (r.label || "").toLowerCase() === kl ||
-      (r.aka || []).some((a) => a.toLowerCase() === kl),
-  );
-  if (byLabel) return { id: byLabel.id, resolved_from: "label" };
-
-  // supercell labels are not in labels.json (it indexes cells) — match a
-  // field concept's own label through the supercell's organs.
-  //
-  // NOTE for future editors: everything below this point (and the label/aka
-  // match above) is FUZZY resolution. The community-edit endpoint oracle must
-  // never reach it — that is why atomIdForOrgan exists as a separate function
-  // rather than a flag on this one.
-  //
-  // `aliases.json.slugs` indexes CELL slugs only and supercell organs ship no
-  // `slug` at all, so a rule-5 field concept's own article slug missed every
-  // index above and 404'd — 61 of them, including `Linear_algebra`, the very
-  // example the docs give for a slug resolving. An enwiki slug IS the title with
-  // spaces underscored (SCHEMA: "an article is the `enwiki` sitelink of its
-  // concept QID"), so undo that and the organ label matches. Cells are matched
-  // first, above, and so still win any collision.
-  const kSlug = kl.replace(/_/g, " ");
-  const file = await supercellsFile(c, release);
-  for (const [path, e] of Object.entries(file?.supercells ?? {})) {
-    if (
-      (e.organs ?? []).some((o) => {
-        const ol = (o.label || "").toLowerCase();
-        return ol === kl || ol === kSlug;
-      })
-    ) {
-      return { id: path, resolved_from: "label" };
-    }
-  }
+  const hits = await storeFor(c, release).keyHits({
+    organ: key,
+    decl: bareName,
+    ...(isDeclId ? {} : { slug: key, name: { keyLc: kl, slugLc: kl.replace(/_/g, " ") } }),
+  });
+  if (hits.organ) return { id: hits.organ, resolved_from: "organ" };
+  if (hits.decl) return { id: hits.decl, resolved_from: "decl" };
+  if (isDeclId) return null; // an explicit decl id must not fall through to labels
+  if (hits.slug) return { id: hits.slug, resolved_from: "slug" };
+  if (hits.name !== undefined) return { id: hits.name, resolved_from: "label" };
   return null;
 }
 
@@ -641,8 +392,7 @@ export async function atomIdForOrgan(c: Ctx, release: BrainReleaseContext, id: s
     const atom = await atomFor(c, release, id);
     return atom ? atom.id : null;
   }
-  const aliases = await cellAliases(c, release);
-  return own(aliases?.organs, id) ?? null;
+  return (await storeFor(c, release).keyHits({ organ: id })).organ ?? null;
 }
 
 // v3 drops two whole v2 populations (docs/BRAIN-V3.md "Dropped in v3"), so their
@@ -681,10 +431,9 @@ function pickSuggestion(r: BrainLabelRow): Record<string, unknown> {
 }
 
 async function suggestionsFor(c: Ctx, release: BrainReleaseContext, text: string): Promise<Record<string, unknown>[]> {
-  const q = text.trim().toLowerCase();
-  if (q.length < 2) return [];
-  const labels = await cellLabels(c, release);
-  return labels ? searchLabels(labels, q, "", 5).map(pickSuggestion) : [];
+  const q = text.trim();
+  if (q.toLowerCase().length < 2) return []; // the store lowercases q itself
+  return (await storeFor(c, release).searchCellNames(q, 5)).map(pickSuggestion);
 }
 
 // ---- the atom card (v3's addressable unit, served) ----------------------------
@@ -845,8 +594,7 @@ async function informalToFormal(c: Ctx, release: BrainReleaseContext, q: string,
   let resolvedFrom: string | null = resolved?.resolved_from ?? null;
   if (!resolved && q.length >= 2) {
     // free text: best label/aka search hit
-    const labels = await cellLabels(c, release);
-    const hits = labels ? searchLabels(labels, q.toLowerCase(), "", 5) : [];
+    const hits = await storeFor(c, release).searchCellNames(q, 5);
     if (hits.length) {
       resolved = { id: hits[0].id, resolved_from: "label" };
       resolvedFrom = "search";
@@ -1012,46 +760,12 @@ export const SYNAPSE_KINDS_CSV = SYNAPSE_KINDS.join(",");
 // the individual `traces`. There is no `dir`: a synapse is an UNDIRECTED
 // aggregate of bonds that may run either way, and direction lives on each trace.
 
-// Rows hydrated from partner shards per request (below). Each row costs at most
-// one shard fetch, so this bounds the fan-out; it equals the default `limit`, so
-// an unmodified call is fully hydrated. Whatever it drops is DECLARED per row
-// (`traces_unavailable`) and counted in `traces_hydrated` — never silent.
-const TRACE_HYDRATION_MAX = 50;
-
 const TRACES_ELSEWHERE = "brain/query.py --full serves the untruncated set";
 
-// Supercell `syn` rows ship traceless: supercells.json is fetched eagerly and
-// carrying them would treble it. That file's own `_meta.traces` names THIS
-// endpoint as the remedy — and it was a dead pointer, because the Worker reads
-// only static shards and no shard carries supercell traces.
-//
-// It does not need one. A synapse is SYMMETRIC and ships on BOTH endpoints, so
-// the partner CELL's shard already holds the mirror row WITH its traces. We read
-// them from there, which is what makes the shipped artifact's promise true.
-//
-// Reach is partial and the caller is told exactly where it ends: of 5,215
-// supercell rows, 3,510 (67.3%) mirror a cell row that carries traces; 1,413
-// have a cell partner whose OWN syn list was shard-capped past this supercell,
-// and 292 join two supercells, traceless on both ends. Those get NO `traces`
-// key plus a reason — never `traces: []`, which reads as "no evidence exists".
-async function hydrateSupercellTraces(
-  c: Ctx,
-  release: BrainReleaseContext,
-  atomId: string,
-  rows: Synapse[],
-): Promise<Map<string, Synapse>> {
-  const want = rows
-    .filter((s) => !s.id.startsWith("path:") && !s.traces?.length)
-    .slice(0, TRACE_HYDRATION_MAX)
-    .map((s) => s.id);
-  const entries = await cellEntries(c, release, want);
-  const out = new Map<string, Synapse>();
-  for (const id of want) {
-    const mirror = entries.get(id)?.syn?.find((s) => s.id === atomId);
-    if (mirror?.traces?.length) out.set(id, mirror);
-  }
-  return out;
-}
+// Supercell `syn` rows ship traceless; the store supplies what traces it can
+// (StaticStore.supercellTraces: the mirror rows in the partner cells' shards,
+// for at most 50 rows). Whatever it cannot reach is DECLARED per row
+// (`traces_unavailable`) and counted in `traces_hydrated` — never silent.
 
 // Stable (-w, id) ordering + an OPAQUE cursor over it (BRIDGE item 5): a
 // 60-minute agent walks a chain across turns without a truncation surprise. A
@@ -1123,6 +837,8 @@ export async function neighborhoodFor(
   minConfRaw?: unknown,
 ): Promise<ApiResult> {
   if (!BRAIN_ID_RE.test(id || "")) return { status: 400, body: { ok: false, error: "bad atom id" } };
+  // 50 is also the static store's TRACE_HYDRATION_MAX (brain-store-static.ts),
+  // so an unmodified call is fully hydrated: change the two together.
   const limit = clampLimit(limitRaw, 50, 200);
   const minW = Math.max(intOr(minWRaw, 0), 0);
   // min_conf floors trace-level confidence WHERE a trace carries one; shipped
@@ -1188,7 +904,7 @@ export async function neighborhoodFor(
   // A supercell's rows arrive traceless; fetch them from the partner cells.
   const hydrated =
     wantTraces && atom.kind === "supercell"
-      ? await hydrateSupercellTraces(c, release, atom.id, picked)
+      ? await storeFor(c, release).supercellTraces(atom.id, picked)
       : null;
 
   let confFiltered = 0;
@@ -1420,73 +1136,15 @@ export async function filterFor(
   if (decodedCursor.value === null) return { status: 400, body: { ok: false, error: "bad cursor" } };
   const cursor = decodedCursor.value;
 
-  let pool: Array<{ id: string; f?: number; row: Record<string, unknown> }>;
-  if (kind === "supercell") {
-    const file = await supercellsFile(c, release);
-    if (!file?.supercells) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
-    pool = Object.entries(file.supercells).map(([path, e]) => ({
-      id: path,
-      f: e.fa,
-      row: {
-        id: path,
-        label: e.label ?? null,
-        ...(e.fa !== undefined ? { fa: e.fa } : {}),
-        ...(e.parent ? { parent: e.parent } : {}),
-        ...(e.cells?.length ? { n_cells: e.cells.length } : {}),
-      },
-    }));
-  } else {
-    const labels = await cellLabels(c, release);
-    if (!labels) return { status: 503, body: { ok: false, error: "brain data unavailable" } };
-    pool = labels.map((r) => ({ id: r.id, f: r.f, row: r as unknown as Record<string, unknown> }));
-  }
-  // `under` restricts to a containment subtree. A supercell matches on its own
-  // path prefix.
-  //
-  // A CELL cannot: labels.json's `p` is its DEEPEST supercell only, but SCHEMA
-  // v3 says `supercells` may hold >1 entry and such a cell "renders inside each"
-  // — so testing `p` alone drops every cell that spans two folders from the
-  // subtree of all but one of them (31 cells; e.g. Cauchy-Schwarz is under
-  // Analysis/InnerProductSpace AND LinearAlgebra/SesquilinearForm, but `p` names
-  // only the first, so under=path:Mathlib/LinearAlgebra never returned it while
-  // that folder's own card listed it and its `fa` mask advertised the match).
-  // So take the UNION of both containment signals: `p`, and membership of the
-  // `cells` list of any supercell in the subtree — the same field
-  // /api/brain/cell serves, so the two surfaces now agree. Either signal alone
-  // is sufficient evidence of containment, so a union cannot over-match, and it
-  // keeps the enumeration whole if either index drifts (today they agree
-  // exactly: 7,398 cells carry `p`, the same 7,398 are listed).
-  const inPrefix = (p: string) => p === prefix || p.startsWith(prefix + "/");
-  const underSet =
-    prefix && kind === "cell"
-      ? await (async () => {
-          const file = await supercellsFile(c, release);
-          const ids = new Set<string>();
-          for (const [path, e] of Object.entries(file?.supercells ?? {})) {
-            if (!inPrefix(path)) continue;
-            for (const cid of e.cells ?? []) ids.add(cid);
-          }
-          return ids;
-        })()
-      : null;
-  const inSubtree = (e: { id: string; row: Record<string, unknown> }): boolean => {
-    if (!prefix) return true;
-    if (kind === "supercell") return inPrefix(e.id);
-    return inPrefix((e.row.p as string | undefined) ?? "") || (underSet?.has(e.id) ?? false);
-  };
-
-  const hits: unknown[] = [];
-  let nextCursor: number | null = null;
-  for (let i = cursor; i < pool.length; i++) {
-    const e = pool[i];
-    if (((e.f ?? 0) & mask) !== mask) continue;
-    if (!inSubtree(e)) continue;
-    if (hits.length >= limit) {
-      nextCursor = i; // index of the first matching row NOT returned — stable
-      break;
-    }
-    hits.push(e.row);
-  }
+  // `under` restricts to a containment subtree: a supercell by its own path
+  // prefix, a cell by its `p` or by membership of a subtree folder's `cells`
+  // (see StaticStore.filterCells for why both).
+  const store = storeFor(c, release);
+  const page = kind === "supercell"
+    ? await store.filterSupercells(mask, prefix, cursor, limit)
+    : await store.filterCells(mask, prefix, cursor, limit);
+  const hits: unknown[] = page.rows;
+  const nextCursor = page.next;
   return {
     status: 200,
     body: {
@@ -1524,15 +1182,10 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
       },
     };
   }
-  const ql = q.toLowerCase();
-  const labels = await cellLabels(c, release);
-  if (!labels && kind !== "supercell") {
-    return { status: 503, body: { ok: false, error: "brain data unavailable" } };
-  }
-  const file = await supercellsFile(c, release);
-  if (!file?.supercells && kind === "supercell") {
-    return { status: 503, body: { ok: false, error: "brain data unavailable" } };
-  }
+  const store = storeFor(c, release);
+  // Name hits first: the static store loads labels.json and supercells.json
+  // here, before the key resolution below, as this route always has.
+  const named = await store.searchNames(q, kind as "" | "cell" | "supercell", limit);
 
   const hits: Record<string, unknown>[] = [];
   const seen = new Set<string>();
@@ -1542,12 +1195,12 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
     seen.add(id);
     hits.push(r);
   };
-  const superRow = (path: string, e: SupercellEntry, extra?: Record<string, unknown>) => ({
-    id: path,
+  const superRow = (h: SupercellHead, extra?: Record<string, unknown>) => ({
+    id: h.id,
     kind: "supercell",
-    label: e.label ?? null,
-    ...(e.organs?.length ? { aka: e.organs.map((o) => o.label ?? o.id) } : {}),
-    ...(e.cells?.length ? { n_cells: e.cells.length } : {}),
+    label: h.label ?? null,
+    ...(h.aka?.length ? { aka: h.aka } : {}),
+    ...(h.n_cells ? { n_cells: h.n_cells } : {}),
     ...extra,
   });
 
@@ -1557,31 +1210,17 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
   // algebra") finds its folder, since labels.json indexes cells alone.
   const exact = await resolveAtomKey(c, release, q);
   if (exact?.id.startsWith("cell:") && kind !== "supercell") {
-    const row = labels?.find((r) => r.id === exact.id);
-    if (row) push({ ...pickSuggestion(row), matched: exact.resolved_from });
+    const head = (await store.labelRows([exact.id])).get(exact.id);
+    if (head?.kind === "cell") push({ ...pickSuggestion(head.row), matched: exact.resolved_from });
   } else if (exact?.id.startsWith("path:") && kind !== "cell") {
-    const e = own(file?.supercells, exact.id);
-    if (e) push(superRow(exact.id, e, { matched: exact.resolved_from }));
+    const head = (await store.labelRows([exact.id])).get(exact.id);
+    if (head?.kind === "supercell") push(superRow(head.head, { matched: exact.resolved_from }));
   }
 
-  // 2. cells by label + aka (searchLabels already ranks prefix before substring)
-  if (kind !== "supercell" && labels) {
-    for (const r of searchLabels(labels, ql, "", limit)) push(pickSuggestion(r));
-  }
-
-  // 3. supercells, matched on the folder label AND its organ labels — a folder's
-  // human name lives on its field concept ("Linear algebra", not "LinearAlgebra")
-  if (kind !== "cell" && hits.length < limit) {
-    const starts: Record<string, unknown>[] = [], contains: Record<string, unknown>[] = [];
-    for (const [path, e] of Object.entries(file?.supercells ?? {})) {
-      const names = [e.label ?? "", ...(e.organs ?? []).map((o) => o.label ?? "")]
-        .map((n) => n.toLowerCase())
-        .filter(Boolean);
-      if (names.some((n) => n.startsWith(ql))) starts.push(superRow(path, e));
-      else if (names.some((n) => n.includes(ql))) contains.push(superRow(path, e));
-    }
-    for (const r of [...starts, ...contains]) push(r);
-  }
+  // 2. cells by label + aka, then supercells by their label and organ labels
+  // (a folder's human name lives on its field concept: "Linear algebra", not
+  // "LinearAlgebra"), in the store's rank order
+  for (const h of named) push(h.kind === "cell" ? pickSuggestion(h.row) : superRow(h.head));
   return { status: 200, body: { ok: true, q, ...(kind ? { type: kind } : {}), hits } };
 }
 
@@ -1665,7 +1304,7 @@ async function declLookup(
 //
 // /assets/suffix-index/ shards the doc-gen4 universe (411k names) by NORMALIZED
 // final segment, with the same longest-prefix scheme as the decl index (so
-// declShardFor resolves its manifest verbatim, precedent: cellEntry). Shard
+// declShardFor resolves its manifest verbatim, precedent: the cell shards). Shard
 // values are buckets keyed by the normalized final segment:
 //   { "total_count": <uncapped n>, "entries": [[fq, module], …] }   (≤64 stored)
 // (a bare [[fq, module], …] array is accepted as an uncapped bucket). It
@@ -1785,8 +1424,7 @@ async function suggestRename(
   const bare = bareDeclName(name);
   // (a) verified rename via the owning cell's organ. aliases.json (4.6MB) is
   // loaded only on this miss path — the all-exists hot path never pays it.
-  const aliases = await cellAliases(c, release);
-  const cellId = own(aliases?.decls, bare);
+  const cellId = (await storeFor(c, release).keyHits({ decl: bare })).decl;
   if (cellId) {
     const atom = await atomFor(c, release, cellId);
     const organ = atom?.organs.find(
@@ -2232,31 +1870,31 @@ const NEXT_TOOLS = [
 ];
 const BRIDGE_DEPENDS_CAP = 12; // one-hop depends partners inlined; the rest counted
 
-// Build an id→label map for depends partners (cells from labels.json, supercells
-// from supercells.json — both memoized). Labels only; the bridge never inlines a
-// partner's whole neighborhood.
-async function partnerLabels(c: Ctx, release: BrainReleaseContext): Promise<Map<string, string | null>> {
-  const map = new Map<string, string | null>();
-  const labels = await cellLabels(c, release);
-  for (const r of labels ?? []) map.set(r.id, r.label ?? null);
-  const file = await supercellsFile(c, release);
-  for (const [p, e] of Object.entries(file?.supercells ?? {})) map.set(p, e.label ?? null);
-  return map;
-}
-
-function oneHopDepends(
-  atom: Atom,
-  labelMap: Map<string, string | null>,
-): Record<string, unknown> {
-  const partners: Array<Record<string, unknown>> = [];
+// An atom's depends synapses in synapse order: the first BRIDGE_DEPENDS_CAP,
+// which the bridge inlines (labels only, never a partner's whole
+// neighborhood), and how many there are.
+function dependsPicked(atom: Atom): { picked: Synapse[]; total: number } {
+  const picked: Synapse[] = [];
   let total = 0;
   for (const s of [...atom.syn].sort(synCmp)) {
     if (!s.kinds?.depends) continue;
     total += 1;
-    if (partners.length < BRIDGE_DEPENDS_CAP) {
-      partners.push({ id: s.id, label: labelMap.get(s.id) ?? null, w: s.w });
-    }
+    if (picked.length < BRIDGE_DEPENDS_CAP) picked.push(s);
   }
+  return { picked, total };
+}
+
+function headLabel(h: AtomHead | undefined): string | null {
+  if (!h) return null;
+  return (h.kind === "cell" ? h.row.label : h.head.label) ?? null;
+}
+
+function oneHopDepends(
+  atom: Atom,
+  { picked, total }: { picked: Synapse[]; total: number },
+  heads: Map<string, AtomHead>,
+): Record<string, unknown> {
+  const partners = picked.map((s) => ({ id: s.id, label: headLabel(heads.get(s.id)), w: s.w }));
   const withheldByShard = atom.truncated?.syn ?? 0;
   return {
     partners,
@@ -2270,34 +1908,9 @@ function oneHopDepends(
 // A statement query ("every finitely generated vector space has a basis")
 // matches no single label, so label search (labels CONTAINING the query) finds
 // nothing. The bridge also resolves the other direction: atoms whose label/aka
-// appears IN the statement ("vector space", "basis"), word-bounded and length-
-// floored to keep short English words out, ranked longest-first (more specific).
-// This is still "resolve to atoms by label/alias" — statement-level EMBEDDING
-// transfer stays deferred (BRIDGE, "hypotheses get lost").
-const MIN_STMT_LABEL = 4;
-function containsWord(hay: string, needle: string): boolean {
-  let i = hay.indexOf(needle);
-  while (i >= 0) {
-    const before = i === 0 ? "" : hay[i - 1];
-    const after = i + needle.length >= hay.length ? "" : hay[i + needle.length];
-    if (!/[a-z0-9]/.test(before) && !/[a-z0-9]/.test(after)) return true;
-    i = hay.indexOf(needle, i + 1);
-  }
-  return false;
-}
-function atomsInStatement(labels: BrainLabelRow[], ql: string): Array<{ id: string; len: number }> {
-  const hits: Array<{ id: string; len: number }> = [];
-  for (const r of labels) {
-    let best = 0;
-    for (const name of [r.label, ...(r.aka ?? [])]) {
-      const n = (name || "").toLowerCase();
-      if (n.length >= MIN_STMT_LABEL && n.length > best && containsWord(ql, n)) best = n.length;
-    }
-    if (best) hits.push({ id: r.id, len: best });
-  }
-  hits.sort((a, b) => b.len - a.len || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-  return hits;
-}
+// appears IN the statement (StaticStore.statementAtoms). This is still "resolve
+// to atoms by label/alias" — statement-level EMBEDDING transfer stays deferred
+// (BRIDGE, "hypotheses get lost").
 
 // GET /api/brain/bridge?q=<informal statement> — search + resolve to atoms + rank
 // decl organs across the top atoms + verify existence + attach signature / import
@@ -2318,22 +1931,19 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
     considered.push({ id: exact.id, resolved_from: exact.resolved_from });
     seen.add(exact.id);
   }
-  const labels = await cellLabels(c, release);
-  const ql = q.toLowerCase();
-  if (labels) {
-    // labels CONTAINING the query (short concept queries)…
-    for (const r of searchLabels(labels, ql, "", 5)) {
-      if (!seen.has(r.id)) {
-        considered.push({ id: r.id, resolved_from: "search" });
-        seen.add(r.id);
-      }
+  const store = storeFor(c, release);
+  // labels CONTAINING the query (short concept queries)…
+  for (const r of await store.searchCellNames(q, 5)) {
+    if (!seen.has(r.id)) {
+      considered.push({ id: r.id, resolved_from: "search" });
+      seen.add(r.id);
     }
-    // …then atoms whose label appears IN the query (statement queries)
-    for (const s of atomsInStatement(labels, ql).slice(0, 5)) {
-      if (!seen.has(s.id)) {
-        considered.push({ id: s.id, resolved_from: "statement" });
-        seen.add(s.id);
-      }
+  }
+  // …then atoms whose label appears IN the query (statement queries)
+  for (const s of await store.statementAtoms(q, 5)) {
+    if (!seen.has(s.id)) {
+      considered.push({ id: s.id, resolved_from: "statement" });
+      seen.add(s.id);
     }
   }
   if (!considered.length) {
@@ -2420,8 +2030,13 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
 
   // 4. one-hop depends from the PRIMARY atom + honest abstention
   const primary = fetched[0];
-  const labelMap = await partnerLabels(c, release);
-  const depends = primary ? oneHopDepends(primary, labelMap) : { partners: [], returned: 0, total: 0, truncated: false };
+  // Read even without a primary: the static store then still loads labels.json
+  // and supercells.json, as this route always has.
+  const picked = primary ? dependsPicked(primary) : null;
+  const partnerHeads = await store.labelRows(picked ? picked.picked.map((s) => s.id) : []);
+  const depends = primary && picked
+    ? oneHopDepends(primary, picked, partnerHeads)
+    : { partners: [], returned: 0, total: 0, truncated: false };
 
   const bestBond = (chosen[0]?.o.bond as string | null) ?? null;
   // "search"/"statement" are fuzzy resolutions — not identity

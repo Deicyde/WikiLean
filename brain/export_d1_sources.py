@@ -4,7 +4,9 @@
 The export never reads existing annotation sidecars or acquires production data.
 It preserves the original receipt and lineage, then records a separate derived
 lineage for fresh annotation sidecars and an explicitly verified empty community
-edge file. Nonempty community snapshots require a sealed node universe and are
+edge file. Generation 3 also retains every community node in a separate,
+lossless evidence file; those nodes remain the D1 overlay, not static Brain
+nodes. Nonempty edge snapshots still require a sealed node universe and are
 deliberately unsupported here. Source fragments require review and integration
 with a complete v3 plan; this command does not claim a publishable offline pack.
 """
@@ -29,10 +31,10 @@ import compile_offline_pack_v2 as publisher  # noqa: E402
 import source_plan_contracts  # noqa: E402
 import d1_snapshot_bundle as snapshots  # noqa: E402
 
-EXPORT_SCHEMA = "wikilean.d1-source-export/v2"
-EXPORT_DOMAIN = "wikilean.d1-source-export.v2"
+EXPORT_SCHEMA = "wikilean.d1-source-export/v3"
+EXPORT_DOMAIN = "wikilean.d1-source-export.v3"
 FRAGMENT_SCHEMA = "wikilean.d1-source-plan-fragment/v1"
-NORMALIZATION_SCHEMA = "wikilean.d1-brain-sidecars/v2"
+NORMALIZATION_SCHEMA = "wikilean.d1-brain-sidecars/v3"
 SOURCE_NORMALIZATION_SCHEMA = "wikilean.d1-source-normalization/v2"
 PROFILE_PATH = ROOT / "brain/d1_source_export_profiles.json"
 PHYSICAL_ROOT = "d1_export"
@@ -59,7 +61,7 @@ def _verify_implementation() -> dict[str, bytes]:
     current = {path: (ROOT / path).read_bytes() for path in IMPLEMENTATION_PATHS}
     if current != LOADED_IMPLEMENTATION:
         raise ExportError("export implementation changed after this process loaded")
-    _reviewed_tool(current, generation=2)
+    _reviewed_tool(current, generation=3)
     return dict(LOADED_IMPLEMENTATION)
 
 
@@ -89,7 +91,7 @@ def _reviewed_tool(implementation: Mapping[str, bytes], *, generation: int) -> N
     seen = set()
     for profile in registry["profiles"]:
         if not isinstance(profile, dict) or set(profile) != {"generation", "files"} \
-                or type(profile["generation"]) is not int or profile["generation"] not in (1, 2) \
+                or type(profile["generation"]) is not int or profile["generation"] not in (1, 2, 3) \
                 or not isinstance(profile["files"], list) \
                 or [item.get("path") for item in profile["files"] if isinstance(item, dict)] != sorted(IMPLEMENTATION_PATHS):
             raise ExportError("invalid D1 exporter whole-generation profile")
@@ -116,18 +118,18 @@ def build_export(
     normalized_at: str,
     implementation: Mapping[str, bytes],
     registry_bytes: bytes,
-    _generation: int = 2,
+    _generation: int = 3,
 ) -> dict[str, bytes]:
     """Derive a complete export from one captured immutable byte generation."""
-    # The v1 branch only reproduces retained, allowlisted exports for verification.
+    # The v1/v2 branches only reproduce retained, allowlisted exports for verification.
     # export_bundle always creates the current generation.
-    if _generation not in (1, 2):
+    if _generation not in (1, 2, 3):
         raise ExportError("unsupported D1 export generation")
     normalization_schema = f"wikilean.d1-brain-sidecars/v{_generation}"
     captured = dict(captured)
     bundle = snapshots.verify_snapshot_bundle_files(bundle_path, captured)
-    if bundle.edges or bundle.nodes:
-        raise ExportError("nonempty community snapshots require an explicit sealed node universe; unsupported")
+    if bundle.edges or (_generation < 3 and bundle.nodes):
+        raise ExportError("nonempty community edges (or nodes in historical generations) require an explicit sealed node universe; unsupported")
     registry = contracts.parse_json_bytes(registry_bytes, location="source registry")
     annotation_license = registry.get("our_data_license", {}).get("annotations")
     if annotation_license != "CC0-1.0":
@@ -139,7 +141,7 @@ def build_export(
     receipt = contracts.parse_json_bytes(captured["acquisition-receipt.json"], location="acquisition receipt")
     original_lineage = contracts.parse_json_bytes(captured["normalization-lineage.json"], location="original lineage")
     bundle_manifest = contracts.parse_json_bytes(captured["bundle.json"], location="acquisition bundle")
-    if _generation == 2:
+    if _generation >= 2:
         # Replay the transformation independently of every retained normalized
         # descriptor. The original bundle remains byte-for-byte historical evidence.
         replayed, _ = snapshots._raw_normalized_outputs(captured["acquired.jsonl"])
@@ -156,7 +158,7 @@ def build_export(
         "redistribution": "restricted",
         "reason": "private captured database and lineage; no public export policy approved",
     }
-    if _generation == 2:
+    if _generation >= 2:
         configuration.update({
             "source_normalization_schema": SOURCE_NORMALIZATION_SCHEMA,
             "source_transform": {
@@ -168,6 +170,10 @@ def build_export(
             },
             "empty_object_media_type": "application/octet-stream iff actual bytes are empty; otherwise retain the original type",
         })
+    if _generation >= 3:
+        configuration["community"] = (
+            "only verified zero brain_edges; preserve every live and deleted community node "
+            "byte-for-byte as normalized evidence, without adding it to the static Brain")
     configuration_bytes = contracts.canonical_json_bytes(configuration)
     files["implementation/configuration.json"] = configuration_bytes
     files["implementation/source-registry.json"] = registry_bytes
@@ -183,7 +189,7 @@ def build_export(
 
     def planned_object(name: str, path: str, roles: list[str], media_type: str) -> dict[str, Any]:
         data = files[path]
-        if _generation == 2 and not data:
+        if _generation >= 2 and not data:
             media_type = "application/octet-stream"
         ref = {"name": name, "roles": sorted(roles), "root": PHYSICAL_ROOT,
                **_ref(path, data, media_type), "redistribution": "restricted"}
@@ -212,7 +218,7 @@ def build_export(
                                               ["receipt"], "text/x-python"))
     source_lineage = original_lineage
     source_lineage_path = "acquisition/normalization-lineage.json"
-    if _generation == 2:
+    if _generation >= 2:
         raw = next(item for item in parent_objects if item["name"] == "d1_raw")
         source_lineage = {
             "schema": contracts.NORMALIZATION_LINEAGE_SCHEMA_V1,
@@ -267,6 +273,10 @@ def build_export(
     community_path = "normalized/brain/data/community_edges.jsonl"
     files[community_path] = b""
     normalized_objects.append(planned_object("community_edges", community_path, ["normalized"], "application/x-ndjson"))
+    if _generation >= 3:
+        nodes_path = "normalized/brain/data/community_nodes.jsonl"
+        files[nodes_path] = captured["normalized/brain_nodes.jsonl"]
+        normalized_objects.append(planned_object("community_nodes", nodes_path, ["normalized"], "application/x-ndjson"))
     inputs = [{**_object_ref(item), "origin": {"kind": "source_manifest", "id": parent_manifest["source_manifest_id"]}}
               for item in sorted(raw_objects, key=lambda item: item["name"])]
     lineage = {
@@ -324,7 +334,7 @@ def build_export(
         "schema": f"wikilean.d1-source-export/v{_generation}", "bundle_id": bundle_manifest["bundle_id"],
         "parent_source_manifest_id": parent_manifest["source_manifest_id"],
         "derived_source_manifest_id": child_manifest["source_manifest_id"],
-        "articles": len(bundle.articles), "brain_edges": 0, "brain_nodes": 0,
+        "articles": len(bundle.articles), "brain_edges": 0, "brain_nodes": len(bundle.nodes),
         "files": [_ref(path, files[path], "application/octet-stream") for path in sorted(files)],
     }
     manifest["export_id"] = contracts.domain_hash(f"wikilean.d1-source-export.v{_generation}", manifest)
@@ -349,7 +359,7 @@ def verify_export_files(files: Mapping[str, bytes]) -> dict[str, Any]:
     if any(type(data) is not bytes for data in files.values()):
         raise ExportError("export verification requires immutable captured bytes")
     manifest = contracts.parse_json_bytes(files["export.json"], location="export manifest")
-    schemas = {f"wikilean.d1-source-export/v{generation}": generation for generation in (1, 2)}
+    schemas = {f"wikilean.d1-source-export/v{generation}": generation for generation in (1, 2, 3)}
     generation = schemas.get(manifest.get("schema"))
     if generation is None:
         raise ExportError("unsupported D1 export schema")
