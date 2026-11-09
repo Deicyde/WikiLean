@@ -165,9 +165,9 @@ async function serve(
   const h = setup();
   const fixture = installBrainD1Fixture(h.env, {
     ...opts,
-    onStatement: (sql) => {
+    onStatement: (sql, params) => {
       statements.push(sql);
-      opts.onStatement?.(sql);
+      opts.onStatement?.(sql, params);
     },
   });
   const counter = instrument(h);
