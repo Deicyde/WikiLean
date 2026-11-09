@@ -26,7 +26,7 @@ import {
   type BrainReleaseUnavailableError,
 } from "./brain.js";
 import { atomFor, atomIdForOrgan, type Atom } from "./brain-api.js";
-import { batchesOf, storeFor } from "./brain-store.js";
+import { batchesOf, checkReadinessEveryBatch, storeFor } from "./brain-store.js";
 import { crossRefSpec } from "./crossref.js";
 import { htmlEscape } from "./engine/html.js";
 import type { QueueBlob, QueueItem } from "./queue.js";
@@ -609,6 +609,23 @@ function externalValue(raw: string, sp: QuickDbSpec): string | { error: string }
   return value;
 }
 
+// The Brain node id a node database's raw value names (a decl id, a QID, or a
+// Brain id), normalized as the row stores it, or null when it is malformed.
+// endpointForDb and quickNodeKeys both use it, so the prefetch loads exactly
+// the keys the rows resolve.
+function nodeIdForDb(raw: string, sp: QuickDbSpec): string | null {
+  if (sp.key === "mathlib") {
+    const decl = normalizeDecl(raw);
+    return decl ? `decl:Mathlib:${decl}` : null;
+  }
+  if (sp.key === "wikidata") {
+    const qid = normalizeQid(raw);
+    return qid && QID_RE.test(qid) ? qid : null;
+  }
+  const id = normalizeEndpointId(raw.trim());
+  return BRAIN_ID_RE.test(id) ? id : null;
+}
+
 async function endpointForDb(
   c: Context<{ Bindings: Env }>,
   release: BrainReleaseContext,
@@ -618,9 +635,9 @@ async function endpointForDb(
   const raw = firstText(row, sp.aliases, sp.key === "mathlib" ? MAX_DECL : 240);
   if (!raw) return null;
   if (sp.key === "mathlib") {
-    const decl = normalizeDecl(raw);
-    if (!decl) return { error: "bad Mathlib declaration name" };
-    const nodeId = `decl:Mathlib:${decl}`;
+    const nodeId = nodeIdForDb(raw, sp);
+    if (!nodeId) return { error: "bad Mathlib declaration name" };
+    const decl = nodeId.slice("decl:Mathlib:".length);
     const atom = await atomForNode(c, release, nodeId);
     if (!atom) return { error: "Mathlib declaration is not in the Brain" };
     const file = normalizeFile(row) || fileForDeclOrgan(atom, nodeId);
@@ -628,16 +645,16 @@ async function endpointForDb(
     return { db: sp.key, label: sp.label, value: decl, nodeId, decl, file, displayLabel: labelForNode(atom, nodeId, decl) };
   }
   if (sp.key === "wikidata") {
-    const qid = normalizeQid(raw);
-    if (!qid || !QID_RE.test(qid)) return { error: "bad Wikidata QID" };
+    const qid = nodeIdForDb(raw, sp);
+    if (!qid) return { error: "bad Wikidata QID" };
     const res = await resolveNodeEndpoint(c, release, qid);
     if ("error" in res) return { error: "qid: " + res.error };
     const displayLabel = res.node ? labelForNode(await atomForNode(c, release, qid), qid, qid) : res.mint.label;
     return { db: sp.key, label: sp.label, value: qid, nodeId: qid, qid, displayLabel, mint: res.node ? undefined : res.mint };
   }
   if (sp.key === "brain") {
-    const nodeId = normalizeEndpointId(raw.trim());
-    if (!BRAIN_ID_RE.test(nodeId)) return { error: "bad Brain node id" };
+    const nodeId = nodeIdForDb(raw, sp);
+    if (!nodeId) return { error: "bad Brain node id" };
     const res = await resolveNodeEndpoint(c, release, nodeId);
     if ("error" in res) return { error: "brain node: " + res.error };
     const displayLabel = res.node ? labelForNode(await atomForNode(c, release, nodeId), nodeId, nodeId) : res.mint.label;
@@ -652,26 +669,16 @@ async function endpointForDb(
   return { db: sp.key, label: sp.label, value, xrefDb, xrefId, displayLabel: value };
 }
 
-// The Brain node ids a submit's rows name, normalized as endpointForDb
-// normalizes them, so a store with batches (the D1 store) can load every
-// endpoint's owner and cell page before the first write. A key normalized
-// differently here only costs that endpoint its own lookup later.
+// The Brain node ids a submit's rows name, normalized by nodeIdForDb as
+// endpointForDb normalizes them, so a store with batches (the D1 store) can
+// load every endpoint's owner, cell page or supercell before the first write.
 function quickNodeKeys(rows: QuickInputRow[], specs: QuickDbSpec[]): string[] {
   const keys = new Set<string>();
   for (const row of rows) {
     for (const sp of specs) {
       if (sp.endpoint !== "node") continue;
       const raw = firstText(row, sp.aliases, sp.key === "mathlib" ? MAX_DECL : 240);
-      if (!raw) continue;
-      let id = "";
-      if (sp.key === "mathlib") {
-        const decl = normalizeDecl(raw);
-        id = decl ? `decl:Mathlib:${decl}` : "";
-      } else if (sp.key === "wikidata") {
-        id = normalizeQid(raw);
-      } else {
-        id = normalizeEndpointId(raw.trim());
-      }
+      const id = raw ? nodeIdForDb(raw, sp) : null;
       if (id && BRAIN_ID_RE.test(id)) keys.add(id);
     }
   }
@@ -1113,7 +1120,9 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     // On a D1 release, resolve every endpoint in a few batches before the
     // first write: row by row, a 100-row submit would pass D1's per-invocation
     // statement cap (docs/BRAIN-D1.md section 2). An outage here writes nothing.
-    const batches = batchesOf(storeFor(c, release));
+    const store = storeFor(c, release);
+    checkReadinessEveryBatch(store);
+    const batches = batchesOf(store);
     if (batches) {
       try {
         await batches.prefetchAtoms(quickNodeKeys(rows, specs));
@@ -1189,6 +1198,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
 
     const release = await resolveBrainRelease(c);
     if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
+    checkReadinessEveryBatch(storeFor(c, release));
 
     if (!COMMUNITY_KINDS.has(kind)) {
       return c.json({ ok: false, error: `kind must be one of: ${[...COMMUNITY_KINDS].join(", ")}` }, 400);
@@ -1333,6 +1343,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!QID_RE.test(qid)) return c.json({ ok: false, error: "node must be a Wikidata Q-id" }, 400);
     const release = await resolveBrainRelease(c);
     if (!release) return c.json({ ok: false, error: "brain release unavailable", release_id: null }, 503);
+    checkReadinessEveryBatch(storeFor(c, release));
     // already a static node → nothing to add
     let staticNode: boolean;
     try {

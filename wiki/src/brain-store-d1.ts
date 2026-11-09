@@ -13,19 +13,25 @@
 // result bound.
 //
 // Readiness: the first batch a store sends starts with the readiness check;
-// once it has passed, the store's later batches omit it (a request's dataset
-// can leave `ready` only through two promotions and a finished prune, doc
-// section 5), and a failure is kept, so later calls rethrow it with no query.
+// once it has passed, a read route's later batches omit it (a request's
+// dataset can leave `ready` only through two promotions and a finished prune,
+// doc section 5), and a failure is kept, so later calls rethrow it with no
+// query. A write route (POST node, POST edge, quickstatements) asks for the
+// check in every batch (checkEveryBatch), because there an empty result that
+// should have been a 503 reads as "not a node" and mints a community node.
 // Batches that start together before any has passed each carry the check. A
 // missing row, a schema_version this Worker cannot read, an unknown
 // names_mode or a D1 exception throws BrainReleaseUnavailableError(release,
 // "BRAIN_DB", reason), which every route answers with a 503. A real miss after
 // a passing check is null, an absent key or an empty list.
 //
-// The per-dataset constants (names_mode, longest_name, sup_names_from) never
-// change for a dataset id, so they are memoized per isolate. Rows are kept for
-// the rest of the request only (cell pages, supercells and organ owners), so
-// the routes' repeated reads of one atom cost one statement.
+// The per-dataset constants (names_mode, longest_name, sup_names_from) are
+// memoized per isolate by dataset id. names_mode is the importer's choice, so
+// a dataset pruned and imported again can come back with another one: every
+// check compares the row with the constants its batch was built from, and a
+// difference refreshes the memo and answers 503 for that request. Rows are
+// kept for the rest of the request only (cell pages, supercells and organ
+// owners), so the routes' repeated reads of one atom cost one statement.
 //
 // Keep this module's top level free of brain.ts value uses, as
 // brain-store-static.ts does: brain.ts imports brain-api.ts, which imports
@@ -94,6 +100,9 @@ const FRAGMENT_ROWS_CAP = 2000;
 // The bounded statement pass (doc section 1, Bridge candidates).
 const STMT_SCAN_UNITS = 2000;
 const STMT_CHUNK = 2000;
+// and at most this many bytes of JSON in a chunk's one bound value (D1 takes at
+// most 2 MB per value; 2,000 long non-ASCII candidates come close)
+const STMT_CHUNK_BYTES = 512 * 1024;
 const STMT_CHUNKS = 4;
 const STMT_MIN_LABEL = 4; // the static pass's MIN_STMT_LABEL
 const STMT_HITS = 5;
@@ -102,7 +111,12 @@ const STMT_HITS = 5;
 const LABEL_ROWS_CAP = 500;
 const TRACE_ROWS_CAP = 200;
 const XREF_PAGES_CAP = 40;
-const PREFETCH_CHUNK = 50; // keys per prefetch batch, which reads whole cell pages
+const PREFETCH_CHUNK = 50; // keys per prefetch batch
+// The prefetch keeps whole pages for the rest of the request. A page longer
+// than PREFETCH_PAGE_CHARS is not sent (its endpoint reads it alone later), and
+// once a request has kept PREFETCH_KEPT_CHARS no more pages are sent.
+const PREFETCH_PAGE_CHARS = 128 * 1024;
+const PREFETCH_KEPT_CHARS = 8 * 1024 * 1024;
 const TRACES_PER_ROW = 6; // build_cell_shards.SHARD_TRACE_CAP
 
 // Rows a filter call examines at most (decision 7). Tests lower it.
@@ -173,17 +187,36 @@ export function cellPageStmt(id: string): Stmt {
   return { sql: `SELECT json FROM cell_pages WHERE ds = ${DS} AND id = ?2`, params: [id] };
 }
 
-/** [ids rows] */
-export function cellPagesStmt(list: readonly string[]): Stmt {
+/** [50 rows]: json is null for a page longer than maxChars characters. */
+export function cellPagesStmt(list: readonly string[], maxChars = PREFETCH_PAGE_CHARS): Stmt {
   return {
-    sql: `SELECT id, json FROM cell_pages WHERE ds = ${DS} AND id IN (SELECT value FROM json_each(?2))`,
-    params: [ids(list, PREFETCH_CHUNK, "cell ids")],
+    sql:
+      `SELECT id, CASE WHEN length(json) <= ?3 THEN json END AS json FROM cell_pages ` +
+      `WHERE ds = ${DS} AND id IN (SELECT value FROM json_each(?2))`,
+    params: [ids(list, PREFETCH_CHUNK, "cell ids"), maxChars],
   };
 }
 
 /** [1 row] */
 export function supercellStmt(path: string): Stmt {
   return { sql: `SELECT json FROM supercells WHERE ds = ${DS} AND path = ?2`, params: [path] };
+}
+
+/** [50 rows]: json is null for an entry longer than maxChars characters. */
+export function supercellsStmt(paths: readonly string[], maxChars = PREFETCH_PAGE_CHARS): Stmt {
+  return {
+    sql:
+      `SELECT path, CASE WHEN length(json) <= ?3 THEN json END AS json FROM supercells ` +
+      `WHERE ds = ${DS} AND path IN (SELECT value FROM json_each(?2))`,
+    params: [ids(paths, PREFETCH_CHUNK, "paths"), maxChars],
+  };
+}
+
+/** [1 row]: whether an atom id exists, a supercell path or a cell page. */
+export function atomExistsStmt(atomId: string): Stmt {
+  return atomId.startsWith("path:")
+    ? { sql: `SELECT path FROM supercells WHERE ds = ${DS} AND path = ?2`, params: [atomId] }
+    : { sql: `SELECT id FROM cell_pages WHERE ds = ${DS} AND id = ?2`, params: [atomId] };
 }
 
 /** [64 rows]: the ancestors of `path`, root first. A depth cap replaces the
@@ -201,13 +234,32 @@ export function breadcrumbStmt(path: string): Stmt {
   };
 }
 
-/** [3 + 2 rows]: the alias lookups (organ, decl, slug) and the exact-name
- *  lookup in one statement. The name lookup takes the first cell name in seq
- *  order (cells come before every supercell name, in labels order, which is
- *  the static walk's order; name_keys_exact bounds it by its LIMIT) and the
- *  first supercell organ label (one row per organ-owning supercell that shares
- *  the name, read on the UNIQUE (ds, name_lc, kind, owner) key). null when no
- *  lookup is asked. */
+/** [50 x 64 rows]: breadcrumbStmt for each of `paths` in one statement, each
+ *  row tagged with its start path and depth; the caller orders each walk. */
+export function breadcrumbsStmt(paths: readonly string[]): Stmt {
+  return {
+    sql:
+      `WITH RECURSIVE up(start, path, d) AS (` +
+      `SELECT path, parent, 1 FROM supercells WHERE ds = ${DS} AND path IN (SELECT value FROM json_each(?2)) ` +
+      `UNION ALL SELECT up.start, s.parent, up.d + 1 FROM up JOIN supercells s ON s.ds = ${DS} AND s.path = up.path ` +
+      `WHERE up.d < 64) ` +
+      `SELECT up.start AS start, up.path AS path, s.label AS label, up.d AS d FROM up ` +
+      `LEFT JOIN supercells s ON s.ds = ${DS} AND s.path = up.path WHERE up.path IS NOT NULL AND up.path <> ''`,
+    params: [ids(paths, PREFETCH_CHUNK, "paths")],
+  };
+}
+
+/** [3 + 2 rows returned]: the alias lookups (organ, decl, slug) and the
+ *  exact-name lookup in one statement. The name lookup takes the first cell
+ *  name in seq order (cells come before every supercell name, in labels order,
+ *  which is the static walk's order; name_keys_exact bounds the read by its
+ *  LIMIT) and the first supercell organ label. That branch reads every sorgan
+ *  row of the two names on the UNIQUE (ds, name_lc, kind, owner) key, one per
+ *  supercell with an organ of that label: a data bound, not a LIMIT. Reading
+ *  name_keys_exact in seq order from sup_names_from instead would stop at the
+ *  first sorgan row, but would pass every slabel and spath row of the name
+ *  first (folder names such as Basic repeat across many supercells), which is
+ *  the larger set. null when no lookup is asked. */
 export function keyHitsStmt(k: KeyLookup): Stmt | null {
   const parts: string[] = [];
   const params: unknown[] = [];
@@ -313,6 +365,22 @@ export function fragmentMatch(q: string, namesMode: "trigram" | "parts"): string
   return `"${parts.replace(/"/g, '""')}"*`;
 }
 
+const utf8 = new TextEncoder();
+
+/** Where the statement chunk that starts at `from` ends: after at most 2,000
+ *  candidates, and before its JSON (the one bound value) passes 512 KB. */
+export function statementChunkEnd(candidates: readonly string[], from: number): number {
+  let bytes = 2; // the brackets
+  let end = from;
+  while (end < candidates.length && end - from < STMT_CHUNK) {
+    const add = utf8.encode(JSON.stringify(candidates[end])).length + (end > from ? 1 : 0);
+    if (end > from && bytes + add > STMT_CHUNK_BYTES) break;
+    bytes += add;
+    end += 1;
+  }
+  return end;
+}
+
 /** [5 rows]: the atoms one chunk of statement candidates names, each with its
  *  longest matching name. The GROUP BY and ORDER BY read only the rows that
  *  match the chunk's at most 2,000 candidates. */
@@ -395,14 +463,15 @@ export function xrefNodesStmt(pages: readonly string[]): Stmt {
   };
 }
 
-/** [50 rows]: organ owners, with the owner's cell page when it is a cell. */
-export function organPagesStmt(keys: readonly string[]): Stmt {
+/** [50 rows]: organ owners, with the owner's cell page when it is a cell of
+ *  at most maxChars characters. */
+export function organPagesStmt(keys: readonly string[], maxChars = PREFETCH_PAGE_CHARS): Stmt {
   return {
     sql:
-      `SELECT a.key AS key, a.owner AS owner, cp.json AS json FROM aliases a ` +
+      `SELECT a.key AS key, a.owner AS owner, CASE WHEN length(cp.json) <= ?3 THEN cp.json END AS json FROM aliases a ` +
       `LEFT JOIN cell_pages cp ON cp.ds = a.ds AND cp.id = a.owner ` +
       `WHERE a.ds = ${DS} AND a.kind = 'organ' AND a.key IN (SELECT value FROM json_each(?2))`,
-    params: [ids(keys, PREFETCH_CHUNK, "organ keys")],
+    params: [ids(keys, PREFETCH_CHUNK, "organ keys"), maxChars],
   };
 }
 
@@ -580,12 +649,14 @@ export class D1Store implements BrainStore, BrainStoreBatches {
   private readonly datasetId: string;
   private readonly hex: string;
   private checked = false;
+  private everyBatch = false;
   private failure: BrainReleaseUnavailableError | null = null;
   private consts: DatasetConstants | null = null;
   // what this request already read
   private readonly cellMemo = new Map<string, CellEntry | null>();
   private readonly supercellMemo = new Map<string, { entry: SupercellEntry; breadcrumb: Crumb[] } | null>();
   private readonly organMemo = new Map<string, string | null>();
+  private prefetchedChars = 0; // page text the prefetch kept
 
   constructor(c: Ctx, release: BrainReleaseContext) {
     this.c = c;
@@ -595,6 +666,11 @@ export class D1Store implements BrainStore, BrainStoreBatches {
     if (!release.datasetId || !HEX_RE.test(this.hex) || release.datasetId !== `sha256:${this.hex}`) {
       this.failure = this.unavailable("the release names no well-formed serving dataset");
     }
+  }
+
+  /** For a write route: every later batch starts with the readiness check. */
+  checkEveryBatch(): void {
+    this.everyBatch = true;
   }
 
   private unavailable(reason: string): BrainReleaseUnavailableError {
@@ -620,13 +696,14 @@ export class D1Store implements BrainStore, BrainStoreBatches {
     return row;
   }
 
-  // One BRAIN_DB.batch: the readiness check first while none has passed, then
-  // `stmts`. An empty `stmts` sends the check alone, or nothing once it passed.
+  // One BRAIN_DB.batch: the readiness check first while none has passed (or
+  // always, after checkEveryBatch), then `stmts`. An empty `stmts` sends the
+  // check alone, or nothing once it passed.
   private async run(stmts: Stmt[]): Promise<Row[][]> {
     if (this.failure) throw this.failure;
     const db = this.c.env.BRAIN_DB;
     if (!db) throw this.fail("BRAIN_DB is not bound");
-    const withCheck = !this.checked;
+    const withCheck = !this.checked || (this.everyBatch && stmts.length > 0);
     if (!withCheck && !stmts.length) return [];
     const prepared = stmts.map((s) => db.prepare(s.sql).bind(this.datasetId, ...s.params));
     if (withCheck) prepared.unshift(db.prepare(READINESS_SQL).bind(this.datasetId));
@@ -658,8 +735,17 @@ export class D1Store implements BrainStore, BrainStoreBatches {
     if (!Number.isSafeInteger(longestName) || !Number.isSafeInteger(supNamesFrom) || supNamesFrom < 1) {
       throw this.fail("the datasets row has an invalid shape");
     }
-    this.consts = { namesMode, longestName, supNamesFrom };
-    rememberConstants(this.datasetId, this.consts);
+    // the constants this batch was built from (this store's, or the isolate's memo)
+    const used = this.consts;
+    const fresh: DatasetConstants = { namesMode, longestName, supNamesFrom };
+    rememberConstants(this.datasetId, fresh);
+    if (
+      used &&
+      (used.namesMode !== namesMode || used.longestName !== longestName || used.supNamesFrom !== supNamesFrom)
+    ) {
+      throw this.fail("the dataset's constants differ from the memoized ones (imported again)");
+    }
+    this.consts = fresh;
     this.checked = true;
   }
 
@@ -778,7 +864,7 @@ export class D1Store implements BrainStore, BrainStoreBatches {
         truncated = true;
         break;
       }
-      const chunk = candidates.slice(sent, sent + STMT_CHUNK);
+      const chunk = candidates.slice(sent, statementChunkEnd(candidates, sent));
       if (chunks === 0 && firstSent) merge(first);
       else merge((await this.run([statementChunkStmt(chunk)]))[0]);
       sent += chunk.length;
@@ -930,17 +1016,15 @@ export class D1Store implements BrainStore, BrainStoreBatches {
       const stmt = keyHitsStmt(query.lookup);
       if (stmt) keyAt = stmts.push(stmt) - 1;
     } else if (query && "atomId" in query) {
-      existsAt = stmts.push(
-        query.atomId.startsWith("path:")
-          ? { sql: `SELECT path FROM supercells WHERE ds = ${DS} AND path = ?2`, params: [query.atomId] }
-          : { sql: `SELECT id FROM cell_pages WHERE ds = ${DS} AND id = ?2`, params: [query.atomId] },
-      ) - 1;
+      existsAt = stmts.push(atomExistsStmt(query.atomId)) - 1;
     }
     const tiers = this.tiers(q, "cell", STMT_HITS, consts);
     const tiersAt = stmts.length;
     if (tiers) stmts.push(...tiers.stmts);
     const { candidates } = statementCandidates(q, consts.longestName);
-    const chunkAt = candidates.length ? stmts.push(statementChunkStmt(candidates.slice(0, STMT_CHUNK))) - 1 : -1;
+    const chunkAt = candidates.length
+      ? stmts.push(statementChunkStmt(candidates.slice(0, statementChunkEnd(candidates, 0)))) - 1
+      : -1;
     const rows = await this.run(stmts);
     const hits = keyAt >= 0 ? decodeKeyHits(rows[keyAt]) : {};
     if (keyAt >= 0 && query && "lookup" in query && query.lookup.organ !== undefined) {
@@ -957,21 +1041,27 @@ export class D1Store implements BrainStore, BrainStoreBatches {
     };
   }
 
-  // Loads the owners and cell pages of many node ids into this request's
-  // memos, in batches of 50 keys, so a quickstatements submit resolves its
-  // endpoints in a few batches instead of three statements per endpoint.
-  // Atom ids (cell:) load their pages; supercell owners and path: ids are
-  // left to supercell(), one batch each, memoized.
+  // Loads the owners, cell pages and supercells of many node ids into this
+  // request's memos, in batches of 50 keys, so a quickstatements submit
+  // resolves its endpoints in a few batches instead of up to three statements
+  // per endpoint: organ keys load their owners (and a cell owner's page), cell:
+  // ids their pages and path: ids their entries and breadcrumbs, then a second
+  // pass loads the supercells that organ keys named as owners. A page or entry
+  // over the prefetch's size caps is left to cellPage() or supercell().
   async prefetchAtoms(list: string[]): Promise<void> {
     if (this.failure) throw this.failure;
     const organs = [...new Set(list.filter((id) => !id.startsWith("cell:") && !id.startsWith("path:") && !this.organMemo.has(id)))];
     const cells = [...new Set(list.filter((id) => id.startsWith("cell:") && !this.cellMemo.has(id)))];
-    for (let i = 0; i < Math.max(organs.length, cells.length); i += PREFETCH_CHUNK) {
+    const paths = [...new Set(list.filter((id) => id.startsWith("path:") && !this.supercellMemo.has(id)))];
+    for (let i = 0; i < Math.max(organs.length, cells.length, paths.length); i += PREFETCH_CHUNK) {
       const organChunk = organs.slice(i, i + PREFETCH_CHUNK);
       const cellChunk = cells.slice(i, i + PREFETCH_CHUNK);
+      const pathChunk = paths.slice(i, i + PREFETCH_CHUNK);
+      const cap = this.pageCap();
       const stmts: Stmt[] = [];
-      if (organChunk.length) stmts.push(organPagesStmt(organChunk));
-      if (cellChunk.length) stmts.push(cellPagesStmt(cellChunk));
+      if (organChunk.length) stmts.push(organPagesStmt(organChunk, cap));
+      if (cellChunk.length) stmts.push(cellPagesStmt(cellChunk, cap));
+      if (pathChunk.length) stmts.push(supercellsStmt(pathChunk, cap), breadcrumbsStmt(pathChunk));
       const rows = await this.run(stmts);
       let at = 0;
       if (organChunk.length) {
@@ -981,7 +1071,7 @@ export class D1Store implements BrainStore, BrainStoreBatches {
           const r = found.get(key);
           this.organMemo.set(key, r ? String(r.owner) : null);
           if (r && r.json !== null && r.json !== undefined && !this.cellMemo.has(String(r.owner))) {
-            this.cellMemo.set(String(r.owner), this.parse(r.json, "cell_pages") as unknown as CellEntry);
+            this.cellMemo.set(String(r.owner), this.keptPage(r.json, "cell_pages") as unknown as CellEntry);
           }
         }
       }
@@ -990,9 +1080,60 @@ export class D1Store implements BrainStore, BrainStoreBatches {
         for (const r of rows[at++]) found.set(String(r.id), r);
         for (const id of cellChunk) {
           const r = found.get(id);
-          this.cellMemo.set(id, r ? (this.parse(r.json, "cell_pages") as unknown as CellEntry) : null);
+          if (!r) this.cellMemo.set(id, null);
+          else if (r.json !== null && r.json !== undefined) {
+            this.cellMemo.set(id, this.keptPage(r.json, "cell_pages") as unknown as CellEntry);
+          }
         }
       }
+      if (pathChunk.length) {
+        this.rememberSupercells(pathChunk, rows[at], rows[at + 1]);
+      }
+    }
+    const owners = [...new Set(organs.map((key) => this.organMemo.get(key)))].filter(
+      (owner): owner is string => typeof owner === "string" && owner.startsWith("path:") && !this.supercellMemo.has(owner),
+    );
+    for (let i = 0; i < owners.length; i += PREFETCH_CHUNK) {
+      const chunk = owners.slice(i, i + PREFETCH_CHUNK);
+      const [entries, crumbs] = await this.run([supercellsStmt(chunk, this.pageCap()), breadcrumbsStmt(chunk)]);
+      this.rememberSupercells(chunk, entries, crumbs);
+    }
+  }
+
+  // The prefetch's page size cap: 0 (send no page) once the request kept enough.
+  private pageCap(): number {
+    return this.prefetchedChars >= PREFETCH_KEPT_CHARS ? 0 : PREFETCH_PAGE_CHARS;
+  }
+
+  private keptPage(json: unknown, table: string): Row {
+    if (typeof json === "string") this.prefetchedChars += json.length;
+    return this.parse(json, table);
+  }
+
+  // supercellsStmt's and breadcrumbsStmt's rows for `chunk`: an absent path is
+  // remembered as null, an entry over the size cap is not remembered at all.
+  private rememberSupercells(chunk: string[], entries: Row[], crumbs: Row[]): void {
+    const found = new Map<string, Row>();
+    for (const r of entries) found.set(String(r.path), r);
+    const walks = new Map<string, Row[]>();
+    for (const r of crumbs) {
+      const start = String(r.start);
+      const walk = walks.get(start) ?? [];
+      walk.push(r);
+      walks.set(start, walk);
+    }
+    for (const path of chunk) {
+      const r = found.get(path);
+      if (!r) {
+        this.supercellMemo.set(path, null);
+        continue;
+      }
+      if (r.json === null || r.json === undefined) continue;
+      const walk = (walks.get(path) ?? []).sort((a, b) => Number(b.d) - Number(a.d));
+      this.supercellMemo.set(path, {
+        entry: this.keptPage(r.json, "supercells") as unknown as SupercellEntry,
+        breadcrumb: walk.map((c) => ({ id: String(c.path), label: c.label === null ? null : (c.label as string) })),
+      });
     }
   }
 }

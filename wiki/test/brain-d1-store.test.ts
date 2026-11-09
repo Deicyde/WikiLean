@@ -8,17 +8,18 @@
 // bounded statement pass, supercell traces, parts mode); those are pinned here
 // one by one.
 
-import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { Context } from "hono";
 import type { Env } from "../src/env.js";
-import { _resetBrainAssetMemo, resolveBrainRelease } from "../src/brain.js";
+import { _resetBrainAssetMemo, resolveBrainRelease, type BrainReleaseContext } from "../src/brain.js";
 import { _resetXrefCaches, _setBrainStoreForTests, batchesOf, storeFor } from "../src/brain-store.js";
 import { StaticStore } from "../src/brain-store-static.js";
 import {
   _resetD1StoreMemo,
   _setFilterExaminedForTests,
+  atomExistsStmt,
+  breadcrumbsStmt,
   breadcrumbStmt,
   cellPageStmt,
   cellPagesStmt,
@@ -31,10 +32,13 @@ import {
   hotTierStmt,
   keyHitsStmt,
   labelRowsStmts,
+  nameTiers,
   organPagesStmt,
   rangeTierStmt,
   READINESS_SQL,
+  statementChunkEnd,
   statementChunkStmt,
+  supercellsStmt,
   supercellStmt,
   tracesStmt,
   xrefNodesStmt,
@@ -42,21 +46,31 @@ import {
   type Stmt,
 } from "../src/brain-store-d1.js";
 import { blockNetwork, get, post, setup, type Harness } from "./helpers/harness.js";
+import { namesFtsCreate } from "./helpers/brain-d1-rows.ts";
 import {
   ABELIAN,
   ABELIAN_CELL,
   ALGEBRA_SUPER,
   BASIS_CELL,
+  brainDatabase,
+  brainMigration,
   COMM_DECL,
   DECL_CELL,
   EMPTY_CELL,
+  EMPTY_Q,
+  FIELD_Q,
   FOURIER_DEAD_CELL,
   HUB_CELL,
   installBrainD1Fixture,
+  installBrainFixture,
   LINALG_SUPER,
   LMFDB_PAGE,
+  MIGRATIONS_BRAIN,
   MODULE_CELL,
   MODULE_Q,
+  ORDER_SUPER,
+  TOPOLOGY_SUPER,
+  VSPACE_Q,
   type BrainD1FixtureOpts,
 } from "./helpers/brain-fixture.js";
 
@@ -159,6 +173,7 @@ const secondPage = (first: string) => async (h: Harness) => {
 const PARITY: Array<[string, (h: Harness) => Promise<Response>]> = [
   ["cell by cell id", getPath(`/api/brain/cell?key=${enc(MODULE_CELL)}`)],
   ["cell by path", getPath(`/api/brain/cell?key=${enc(LINALG_SUPER)}`)],
+  ["cell by a depth-2 path, whose breadcrumb has two crumbs", getPath(`/api/brain/cell?key=${enc(ORDER_SUPER)}`)],
   ["cell by QID", getPath(`/api/brain/cell?key=${MODULE_Q}`)],
   ["cell by decl id", getPath(`/api/brain/cell?key=${enc(COMM_DECL)}`)],
   ["cell by bare decl", getPath("/api/brain/cell?key=CommGroup")],
@@ -176,6 +191,7 @@ const PARITY: Array<[string, (h: Harness) => Promise<Response>]> = [
   ["neighborhood cursor", secondPage(`/api/brain/neighborhood?id=${enc(MODULE_CELL)}&limit=1`)],
   ["neighborhood of a supercell without traces", getPath(`/api/brain/neighborhood?id=${enc(LINALG_SUPER)}&traces=0`)],
   ["neighborhood with a trimmed hydrated row", getPath(`/api/brain/neighborhood?id=${enc(ALGEBRA_SUPER)}`)],
+  ["neighborhood of a depth-2 supercell", getPath(`/api/brain/neighborhood?id=${enc(ORDER_SUPER)}`)],
   ["snippets", getPath(`/api/brain/snippets?id=${enc(ABELIAN_CELL)}`)],
   ["filter cells", getPath("/api/brain/filter?f=1")],
   ["filter cells under", getPath(`/api/brain/filter?f=1&under=${enc("path:Mathlib/Algebra")}`)],
@@ -219,13 +235,19 @@ describe("D1 parity: one release, two stores, identical responses", () => {
     const [s, d] = await both(call, { hotPrefixNames: 2, datasetVariant: "hot" });
     expect(d.status).toBe(s.status);
     expect(d.text).toBe(s.text);
+    // a shared failure or a fallback to the static files is not parity
+    expect(s.status).toBeLessThan(500);
+    if (_label !== "MCP brain_premises") expect(d.batches).toBeGreaterThan(0);
   });
 
   it.each([["before"], ["after"]] as const)("holds with a decoy dataset seeded %s, which no response shows", async (decoy) => {
-    for (const [, call] of PARITY) {
+    for (const [label, call] of PARITY) {
       const [s, d] = await both(call, { decoy });
+      expect([label, d.status]).toEqual([label, s.status]);
       expect(d.text).toBe(s.text);
       expect(d.text).not.toContain("DECOY");
+      expect([label, s.status < 500]).toEqual([label, true]);
+      if (label !== "MCP brain_premises") expect([label, d.batches > 0]).toEqual([label, true]);
     }
   });
 
@@ -360,6 +382,17 @@ describe("D1 differences the design makes on purpose", () => {
     expect(rest(db)).toEqual(rest(sb));
   });
 
+  it("rejects a search q over 200 UTF-16 units on D1 (request bounds), where static still answers", async () => {
+    const q = "vector ".repeat(29) + "spa";
+    expect(q.length).toBe(206);
+    const [s, d] = await both(getPath(`/api/brain/search?q=${enc(q)}`));
+    expect(s.status).toBe(200);
+    expect(d.status).toBe(400);
+    expect(JSON.parse(d.text)).toMatchObject({ ok: false, error: "query too long (max 200 chars)" });
+    expect(d.batches).toBe(0);
+    expect((await serve("d1", getPath(`/api/brain/search?q=${"v".repeat(200)}`))).status).toBe(200);
+  });
+
   it("matches word-start fragments only in parts mode", async () => {
     const search = async (q: string, namesMode: "trigram" | "parts") =>
       ids((await serve("d1", getPath(`/api/brain/search?q=${enc(q)}`), { namesMode, datasetVariant: namesMode })).text);
@@ -461,6 +494,61 @@ describe("readiness and faults", () => {
     expect(r.statements.filter((sql) => sql === READINESS_SQL).length).toBe(1);
   });
 
+  it("starts every batch of a write route with the readiness check", async () => {
+    const r = await serve("d1", (h) =>
+      post(h.env, "/api/brain/edge", { src: ABELIAN, dst: COMM_DECL, kind: "formalizes", evidence: { note: "x" } }, { user: "u-human" }));
+    expect(r.status).toBeLessThan(300);
+    expect(r.batches).toBeGreaterThan(1);
+    expect(r.statements.filter((sql) => sql === READINESS_SQL).length).toBe(r.batches);
+  });
+
+  it("answers 503 when the dataset's constants changed since the isolate memoized them, then serves", async () => {
+    // names_mode is the realistic case (a dataset pruned and imported again);
+    // longest_name keeps the third request's FTS query valid
+    resetMemos();
+    const h = setup();
+    const fixture = installBrainD1Fixture(h.env);
+    expect((await get(h.env, "/api/brain/search?q=vector")).status).toBe(200);
+    fixture.db.prepare("UPDATE datasets SET longest_name = longest_name + 1 WHERE dataset_id = ?").run(fixture.datasetId);
+    expect((await get(h.env, "/api/brain/search?q=vector")).status).toBe(503);
+    expect((await get(h.env, "/api/brain/search?q=vector")).status).toBe(200);
+  });
+
+  it("answers 503 on every label lookup of a database without migration 0002", async () => {
+    const only: BrainD1FixtureOpts = { migrations: ["0001_brain.sql"] };
+    expect((await serve("d1", getPath("/api/brain/search?q=vector"), only)).status).toBe(503);
+    expect((await serve("d1", getPath(`/api/brain/cell?key=${enc("abelian GROUP")}`), only)).status).toBe(503);
+    expect((await serve("d1", getPath(`/api/brain/cell?key=${enc(MODULE_CELL)}`), only)).status).toBe(200);
+  });
+
+  // The sidecar is changed before the release identity is computed, so only
+  // the sidecar artifact check can refuse the release.
+  it.each([
+    ["media_type", "text/plain"],
+    ["logical_format", "opaque"],
+    ["logical_root", null],
+  ] as const)("refuses a release whose serving sidecar artifact has %s %s", async (field, value) => {
+    const r = await serve("d1", getPath(`/api/brain/cell?key=${enc(MODULE_CELL)}`), {
+      mutateArtifacts: (artifacts) => {
+        const sidecar = artifacts.find((a) => a.path === "brain/data/serving-tables.json");
+        expect(sidecar).toBeDefined();
+        sidecar![field] = value;
+      },
+    });
+    expect(r.status).toBe(503);
+    expect(r.batches).toBe(0);
+  });
+
+  it("resolves a release without the sidecar as static, with no dataset", async () => {
+    resetMemos();
+    const h = setup();
+    installBrainFixture(h.env);
+    const c = { env: h.env, req: { url: "https://wikilean.test/api/brain/cell" } } as unknown as Ctx;
+    const release = (await resolveBrainRelease(c))!;
+    expect({ backend: release.backend, datasetId: release.datasetId, datasetHex: release.datasetHex })
+      .toEqual({ backend: "static", datasetId: null, datasetHex: null });
+  });
+
   it("serves two releases that share one dataset", async () => {
     resetMemos();
     const h1 = setup();
@@ -489,10 +577,12 @@ describe("readiness and faults", () => {
 });
 
 describe("the D1 store's own methods", () => {
-  async function storeOn(opts: BrainD1FixtureOpts = {}): Promise<{ store: D1Store; batches: () => number; h: Harness }> {
+  async function storeOn(
+    opts: BrainD1FixtureOpts = {},
+  ): Promise<{ store: D1Store; batches: () => number; h: Harness; release: BrainReleaseContext; db: DatabaseSync }> {
     resetMemos();
     const h = setup();
-    installBrainD1Fixture(h.env, opts);
+    const { db } = installBrainD1Fixture(h.env, opts);
     const counter = instrument(h);
     const c = { env: h.env, req: { url: "https://wikilean.test/api/brain/cell" } } as unknown as Ctx;
     const release = (await resolveBrainRelease(c))!;
@@ -500,7 +590,7 @@ describe("the D1 store's own methods", () => {
     const store = storeFor(c, release);
     expect(store).toBeInstanceOf(D1Store);
     expect(batchesOf(store)).not.toBeNull();
-    return { store: store as D1Store, batches: counter.count, h };
+    return { store: store as D1Store, batches: counter.count, h, release, db };
   }
 
   it("answers empty input without a batch", async () => {
@@ -563,6 +653,75 @@ describe("the D1 store's own methods", () => {
     expect(await store.cellPage("cell:Q999")).toBeNull();
     expect(batches()).toBe(1);
   });
+
+  it("prefetches 120 organ keys and 10 cell ids in 3 batches and remembers every one", async () => {
+    const { store, batches } = await storeOn();
+    const organs = Array.from({ length: 120 }, (_, i) => `decl:Mathlib:None.n${i}`);
+    const cells = Array.from({ length: 10 }, (_, i) => `cell:none${i}`);
+    await store.prefetchAtoms([...organs, ...cells, COMM_DECL]);
+    expect(batches()).toBe(3);
+    for (const key of organs) expect(await store.keyHits({ organ: key })).toEqual({});
+    for (const id of cells) expect(await store.cellPage(id)).toBeNull();
+    expect(await store.keyHits({ organ: COMM_DECL })).toEqual({ organ: ABELIAN_CELL });
+    expect((await store.cellPage(ABELIAN_CELL))?.cell.id).toBe(ABELIAN_CELL);
+    expect(batches()).toBe(3);
+  });
+
+  it("prefetches supercells, by path and as organ owners, with the breadcrumbs supercell() reads", async () => {
+    const { store, batches, h, release } = await storeOn();
+    await store.prefetchAtoms([FIELD_Q, ORDER_SUPER, "path:Mathlib/Nowhere"]);
+    // the keys and paths in one batch, then the owner FIELD_Q named
+    expect(batches()).toBe(2);
+    expect(await store.keyHits({ organ: FIELD_Q })).toEqual({ organ: LINALG_SUPER });
+    const order = await store.supercell(ORDER_SUPER);
+    const linalg = await store.supercell(LINALG_SUPER);
+    expect(await store.supercell("path:Mathlib/Nowhere")).toBeNull();
+    expect(batches()).toBe(2);
+    expect(order?.breadcrumb).toEqual([{ id: "path:Mathlib", label: "Mathlib" }, { id: TOPOLOGY_SUPER, label: "Topology" }]);
+    expect(linalg?.breadcrumb).toEqual([{ id: "path:Mathlib", label: "Mathlib" }]);
+    const fresh = new D1Store({ env: h.env, req: { url: "https://wikilean.test/api/brain/cell" } } as unknown as Ctx, release);
+    expect(order).toEqual(await fresh.supercell(ORDER_SUPER));
+    expect(linalg).toEqual(await fresh.supercell(LINALG_SUPER));
+  });
+
+  it("leaves a page over the prefetch's size cap to cellPage", async () => {
+    const { store, batches, db } = await storeOn();
+    // a page over 128 K characters, as #150's hub pages can be
+    db.prepare("UPDATE cell_pages SET json = json_set(json, '$.cell.padding', ?) WHERE id = ?").run("x".repeat(200_000), MODULE_CELL);
+    await store.prefetchAtoms([MODULE_Q]);
+    expect(batches()).toBe(1);
+    expect(await store.keyHits({ organ: MODULE_Q })).toEqual({ organ: MODULE_CELL });
+    expect(batches()).toBe(1);
+    expect((await store.cellPage(MODULE_CELL))?.cell.id).toBe(MODULE_CELL);
+    expect(batches()).toBe(2);
+  });
+
+  it("cuts a statement chunk at 2,000 candidates or 512 KB of JSON", () => {
+    const short = Array.from({ length: 2500 }, (_, i) => `cand ${i}`);
+    expect(statementChunkEnd(short, 0)).toBe(2000);
+    expect(statementChunkEnd(short, 2000)).toBe(2500);
+    const long = Array.from({ length: 2000 }, (_, i) => `${"é".repeat(300)} ${i}`);
+    const end = statementChunkEnd(long, 0);
+    expect(end).toBeLessThan(2000);
+    expect(end).toBeGreaterThan(0);
+    const bytes = (list: string[]) => new TextEncoder().encode(JSON.stringify(list)).length;
+    expect(bytes(long.slice(0, end))).toBeLessThanOrEqual(512 * 1024);
+    expect(bytes(long.slice(0, end + 1))).toBeGreaterThan(512 * 1024);
+    expect(statementChunkEnd(long, end)).toBeGreaterThan(end);
+  });
+
+  it("refuses an input past each statement's cap", () => {
+    const many = (n: number, prefix: string) => Array.from({ length: n }, (_, i) => `${prefix}${i}`);
+    expect(() => labelRowsStmts(many(501, "cell:x"))).toThrow(/at most 500/);
+    expect(labelRowsStmts(many(500, "cell:x"))).toHaveLength(2);
+    expect(() => tracesStmt(many(201, "p"))).toThrow(/at most 200/);
+    expect(() => xrefNodesStmt(many(41, "xref:a:"))).toThrow(/at most 40/);
+    expect(() => cellPagesStmt(many(51, "cell:x"))).toThrow(/at most 50/);
+    expect(() => organPagesStmt(many(51, "Q"))).toThrow(/at most 50/);
+    expect(() => supercellsStmt(many(51, "path:x"))).toThrow(/at most 50/);
+    expect(() => breadcrumbsStmt(many(51, "path:x"))).toThrow(/at most 50/);
+    expect(() => statementChunkStmt(many(2001, "c"))).toThrow(/at most 2000/);
+  });
 });
 
 describe("round trips", () => {
@@ -613,6 +772,96 @@ describe("round trips", () => {
     expect(brain).toBeLessThanOrEqual(10);
     expect(brain + wikilean).toBeLessThan(1000);
   });
+
+  it("resolves 100 rows of distinct endpoints in the prefetch's batches alone", async () => {
+    // Every row names CommGroup and a Brain endpoint: an unknown path, an
+    // unknown decl or xref organ key, or a known one (QIDs owned by a cell or a
+    // supercell, supercell paths). None of these needs Wikidata.
+    const known = [FIELD_Q, ORDER_SUPER, ALGEBRA_SUPER, VSPACE_Q, EMPTY_Q];
+    const items = Array.from({ length: 100 }, (_, i) => ({
+      mathlib: "CommGroup",
+      brain: [`path:Mathlib/Nowhere${i}`, `decl:Mathlib:Unknown.b${i}`, `xref:nlab:none${i}`, known[i % known.length]][i % 4],
+    }));
+    const keys = new Set(["decl:Mathlib:CommGroup", ...items.map((r) => r.brain)]);
+    const paths = [...keys].filter((k) => k.startsWith("path:")).length;
+    const organs = keys.size - paths;
+    resetMemos();
+    const h = setup();
+    const statements: string[] = [];
+    installBrainD1Fixture(h.env, { onStatement: (sql) => { statements.push(sql); } });
+    const counter = instrument(h);
+    const res = await post(h.env, "/api/brain/quickstatements", { databases: ["mathlib", "brain"], items }, { user: "u-human" });
+    const body = (await res.json()) as { accepted: number; failed: number };
+    expect(body.accepted).toBeGreaterThan(0);
+    expect(body.accepted + body.failed).toBe(100);
+    // ceil(keys / 50) batches, plus one for the supercell FIELD_Q's alias names
+    expect(organs).toBeGreaterThan(50);
+    expect(counter.count()).toBe(Math.ceil(Math.max(organs, paths) / 50) + 1);
+    // no endpoint read its owner, page or supercell on its own
+    expect(statements.filter((sql) => /FROM (aliases|cell_pages|supercells)\b/.test(sql) && !sql.includes("json_each"))).toEqual([]);
+  });
+});
+
+describe("result bounds", () => {
+  // A synthetic dataset far past the parity fixture's sizes.
+  const HEX = "e".repeat(64);
+  const ID = `sha256:${HEX}`;
+  const CONSTS = { namesMode: "trigram" as const, longestName: 10, supNamesFrom: 1_000_000 };
+  const MAX = Number.MAX_SAFE_INTEGER;
+
+  function bigDataset(): DatabaseSync {
+    const db = brainDatabase();
+    db.prepare(
+      "INSERT INTO datasets (dataset_id, schema_version, tables_json, longest_name, sup_names_from, names_mode, state, imported_at) " +
+      "VALUES (?, 1, '{}', ?, ?, 'trigram', 'ready', '2026-11-09T00:00:00Z')",
+    ).run(ID, CONSTS.longestName, CONSTS.supNamesFrom);
+    const ds = (db.prepare("SELECT ds FROM datasets WHERE dataset_id = ?").get(ID) as { ds: number }).ds;
+    const name = db.prepare("INSERT INTO name_keys (ds, seq, name_lc, kind, owner, len16) VALUES (?, ?, ?, 'label', ?, ?)");
+    let seq = 0;
+    for (let i = 0; i < 250; i++) name.run(ds, ++seq, "basic", `cell:basic${i}`, 5);
+    for (let i = 0; i < 1001; i++) name.run(ds, ++seq, `ab${String(i).padStart(4, "0")}`, `cell:ab${i}`, 6);
+    db.exec(namesFtsCreate("trigram", HEX));
+    const fts = db.prepare(`INSERT INTO names_${HEX} (rowid, name) VALUES (?, ?)`);
+    for (let i = 0; i < 50; i++) {
+      name.run(ds, ++seq, `zeta${i}`, `cell:zeta${i}`, 6);
+      fts.run(seq, `zeta${i}`);
+    }
+    const xref = db.prepare("INSERT INTO xrefs (ds, seq, page_ord, node_ord, page, node) VALUES (?, ?, ?, ?, ?, ?)");
+    let x = 0;
+    for (let i = 0; i < 45; i++) xref.run(ds, ++x, i, 0, `xref:a:p${i}`, "Q1");
+    for (let i = 0; i < 120; i++) xref.run(ds, ++x, 100, i, "xref:a:hub", `Q${1000 + i}`);
+    return db;
+  }
+
+  const tiers = (q: string, limit: number) => nameTiers(q, 1, MAX, limit, CONSTS, HEX, (reason) => new Error(reason));
+
+  it("reads at most 200 names in the exact tier, in seq order", () => {
+    const rows = run(bigDataset(), ID, exactTierStmt("basic", 1, MAX));
+    expect(rows.length).toBe(200);
+    expect(rows.map((r) => Number(r.seq))).toEqual(Array.from({ length: 200 }, (_, i) => i + 1));
+  });
+
+  it("refuses a prefix range past 1,000 names (no hot row lists the prefix)", () => {
+    const db = bigDataset();
+    const t = tiers("ab", 25);
+    const rows = t.stmts.map((stmt) => run(db, ID, stmt));
+    expect(rows[2].length).toBe(1001);
+    expect(() => t.decode(rows)).toThrow("a prefix range holds more names than the builder allows");
+  });
+
+  it("reads at most 20 fragment rows per hit asked for", () => {
+    const db = bigDataset();
+    const t = tiers("zeta", 2);
+    const fragment = t.stmts[t.stmts.length - 1];
+    expect(fragment.sql).toContain(`names_${HEX}`);
+    expect(run(db, ID, fragment).length).toBe(40);
+  });
+
+  it("reads at most 40 pages of a node and 101 nodes of a page", () => {
+    const db = bigDataset();
+    expect(run(db, ID, xrefPagesStmt("Q1")).length).toBe(40);
+    expect(run(db, ID, xrefNodesStmt(["xref:a:hub"])).length).toBe(101);
+  });
 });
 
 describe("statement plans", () => {
@@ -648,14 +897,16 @@ describe("statement plans", () => {
     ["xrefPages", xrefPagesStmt(ABELIAN), [], null],
     ["xrefNodes", xrefNodesStmt([LMFDB_PAGE]), ["json_each"], null],
     ["organPages", organPagesStmt([ABELIAN]), ["json_each"], null],
+    ["supercells", supercellsStmt([LINALG_SUPER, ALGEBRA_SUPER]), ["json_each"], null],
+    ["breadcrumbs", breadcrumbsStmt([LINALG_SUPER, ALGEBRA_SUPER]), ["up", "json_each"], "50 walks that stop at depth 64"],
+    ["atom exists (path)", atomExistsStmt(LINALG_SUPER), [], null],
+    ["atom exists (cell)", atomExistsStmt(MODULE_CELL), [], null],
   ];
 
   it.each(CASES)("%s reads a bounded set", (_name, stmt, scans, tempReason) => {
     const db = new DatabaseSync(":memory:");
-    for (const url of ["0001_brain.sql", "0002_name_keys_exact.sql"]) {
-      db.exec(readMigration(url));
-    }
-    db.exec(`CREATE VIRTUAL TABLE names_${hex} USING fts5(name, content='', contentless_delete=1, tokenize='trigram')`);
+    for (const name of MIGRATIONS_BRAIN) db.exec(brainMigration(name));
+    db.exec(namesFtsCreate("trigram", hex));
     const plan = db.prepare(`EXPLAIN QUERY PLAN ${stmt.sql}`).all(`sha256:${hex}`, ...(stmt.params as Array<string | number>)) as Array<{ detail: string }>;
     const bad: string[] = [];
     for (const { detail } of plan) {
@@ -670,18 +921,15 @@ describe("statement plans", () => {
   });
 });
 
-function readMigration(name: string): string {
-  return readFileSync(new URL(`../migrations-brain/${name}`, import.meta.url), "utf8");
-}
-
 describe("the shim", () => {
   it("has FTS5 with the trigram tokenizer, contentless_delete and json_each", () => {
     const db = new DatabaseSync(":memory:");
-    db.exec("CREATE VIRTUAL TABLE t USING fts5(name, content='', contentless_delete=1, tokenize='trigram')");
-    db.prepare("INSERT INTO t (rowid, name) VALUES (?, ?)").run(1, "StronglyContinuousSemigroup");
-    expect(db.prepare("SELECT rowid AS id FROM t WHERE t MATCH ?").all('"semigroup"')).toEqual([{ id: 1 }]);
-    db.prepare("DELETE FROM t WHERE rowid = ?").run(1);
-    expect(db.prepare("SELECT rowid AS id FROM t WHERE t MATCH ?").all('"semigroup"')).toEqual([]);
+    const t = `names_${"0".repeat(64)}`;
+    db.exec(namesFtsCreate("trigram", "0".repeat(64)));
+    db.prepare(`INSERT INTO ${t} (rowid, name) VALUES (?, ?)`).run(1, "StronglyContinuousSemigroup");
+    expect(db.prepare(`SELECT rowid AS id FROM ${t} WHERE ${t} MATCH ?`).all('"semigroup"')).toEqual([{ id: 1 }]);
+    db.prepare(`DELETE FROM ${t} WHERE rowid = ?`).run(1);
+    expect(db.prepare(`SELECT rowid AS id FROM ${t} WHERE ${t} MATCH ?`).all('"semigroup"')).toEqual([]);
     expect(db.prepare("SELECT value FROM json_each(?)").all('["a","b"]')).toEqual([{ value: "a" }, { value: "b" }]);
   });
 

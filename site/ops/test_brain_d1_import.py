@@ -83,13 +83,14 @@ def split_sql(sql: str) -> list[str]:
 
 
 class FakeD1:
-    """Executes each --command against a local database created from the migration."""
+    """Executes each --command against a local database created from the migrations."""
 
     def __init__(self, *, migrate: bool = True) -> None:
         self.db = sqlite3.connect(":memory:", isolation_level=None)
         self.db.execute("PRAGMA foreign_keys = ON")
         if migrate:
             self.db.executescript(MIGRATION.read_text())
+            self.db.executescript(EXACT_INDEX_MIGRATION.read_text())
         self.calls = 0
         self.commands: list[list[str]] = []
         self.statements: list[str] = []
@@ -769,9 +770,26 @@ class SchemaTest(Base):
     def test_refuses_when_the_migration_is_not_applied(self):
         fake = FakeD1(migrate=False)
         fake.db.executescript(MIGRATION.read_text().replace("live_sups TEXT NOT NULL,", ""))
+        fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
         with self.assertRaisesRegex(bdi.D1ImportError, "hot_prefixes.live_sups"):
             self.do_import(fake)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+
+    def test_refuses_before_the_first_dataset_without_the_exact_name_index(self):
+        # 0002 can only land while the tables are empty, so its absence must stop the first import
+        fake = FakeD1(migrate=False)
+        fake.db.executescript(MIGRATION.read_text())
+        with self.assertRaisesRegex(bdi.D1ImportError,
+                                    r"0002_name_keys_exact\.sql.*missing name_keys INDEX name_keys_exact\(ds, name_lc, seq\)$"):
+            self.do_import(fake)
+        self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+        fake.db.execute("CREATE INDEX name_keys_exact ON name_keys(ds, seq, name_lc)")     # wrong columns
+        with self.assertRaisesRegex(bdi.D1ImportError, "missing name_keys INDEX name_keys_exact"):
+            self.do_import(fake)
+        fake.db.execute("DROP INDEX name_keys_exact")
+        fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
+        self.do_import(fake)
+        self.assert_imported(fake)
 
     def test_refuses_a_table_without_its_seq_key(self):
         fake = FakeD1(migrate=False)
@@ -780,6 +798,7 @@ class SchemaTest(Base):
         self.assertIn(keyed, text)
         fake.db.executescript(text.replace(keyed, "  UNIQUE(ds, ord), UNIQUE(ds, id));\n"
                                                   "CREATE INDEX IF NOT EXISTS labels_p"))
+        fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
         with self.assertRaisesRegex(bdi.D1ImportError, r"missing labels UNIQUE\(ds, seq\)$"):
             self.do_import(fake)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
@@ -1275,8 +1294,32 @@ def ordered_json(text):
 
 class WorkerRowsPortTest(unittest.TestCase):
     """The Worker tests build their D1 fixture with a TypeScript port of the builder's row logic
-    (wiki/test/helpers/brain-d1-rows.ts), so it is compared with the builder here, on the
-    importer's fixture tree, column by column for every column the D1 store reads."""
+    (wiki/test/helpers/brain-d1-rows.ts), so it is compared with the builder here, column by
+    column for every column the D1 store reads, on two trees: the importer's fixture tree, and
+    the parity tree the Worker tests serve (wiki/test/helpers/brain-fixture-data.ts), which the
+    port writes out and the real builder then builds."""
+
+    def assert_port_matches(self, cells: Path, xref: Path, serving: Path, sidecar: Path, hot: int):
+        port = run_rows_port("rows", str(cells), str(xref), str(hot))
+        tables = json.loads(sidecar.read_text())
+        self.assertEqual(port["longest_name"], tables["longest_name"])
+        self.assertEqual(port["sup_names_from"], tables["sup_names_from"])
+        db = sqlite3.connect(serving)
+        self.addCleanup(db.close)
+        json_columns = {"json", "syn", "cells", "sups"}
+        for table, spec in port["tables"].items():
+            columns = spec["columns"]
+            self.assertLessEqual(set(columns), set(bdi.D1_COLUMNS[table]) | set(bdi.LOCAL_ONLY.get(table, ())))
+            want = db.execute(f"SELECT {', '.join(columns)} FROM {table} ORDER BY seq").fetchall()
+            self.assertEqual(len(spec["rows"]), len(want), table)
+            for got_row, want_row in zip(spec["rows"], want):
+                for column, got, wanted in zip(columns, got_row, want_row):
+                    if column in json_columns:
+                        got, wanted = ordered_json(got), ordered_json(wanted)
+                    self.assertEqual(got, wanted, f"{table}.{column} seq {want_row[0]}")
+        if hot == 2:
+            self.assertTrue(port["tables"]["hot_prefixes"]["rows"], "the small threshold made no prefix hot")
+        return port
 
     def test_the_port_builds_the_rows_the_builder_builds(self):
         for hot in (bsd.HOT_PREFIX_NAMES, 2):      # 2 reaches the hot-prefix rows on a small tree
@@ -1284,25 +1327,35 @@ class WorkerRowsPortTest(unittest.TestCase):
                 tmp = Path(tmp)
                 with mock.patch.object(bsd, "HOT_PREFIX_NAMES", hot):
                     serving, sidecar = build_fixture(tmp)
-                port = run_rows_port("rows", str(tmp / "cells"), str(tmp / "xref_index.json"), str(hot))
-                tables = json.loads(sidecar.read_text())
-                self.assertEqual(port["longest_name"], tables["longest_name"])
-                self.assertEqual(port["sup_names_from"], tables["sup_names_from"])
+                self.assert_port_matches(tmp / "cells", tmp / "xref_index.json", serving, sidecar, hot)
+
+    def test_the_builder_builds_the_worker_parity_rows_from_the_parity_tree(self):
+        # the rows the Worker's parity tests serve come from the port; here the real builder
+        # builds the same tree, so a row the builder would not make (or a tree it refuses) fails
+        for hot in (bsd.HOT_PREFIX_NAMES, 2):
+            with self.subTest(hot_prefix_names=hot), tempfile.TemporaryDirectory() as tmp:
+                tmp = Path(tmp)
+                run_rows_port("parity-tree", str(tmp))
+                nodes = tmp / "nodes.jsonl"
+                nodes.write_text(json.dumps({"_meta": {}}) + "\n"
+                                 + json.dumps({"id": "Q181296", "label": "Abelian group",
+                                               "description": "group whose operation is commutative"}) + "\n")
+                serving, sidecar = tmp / "serving.sqlite3", tmp / "serving-tables.json"
+                with mock.patch.object(bsd, "HOT_PREFIX_NAMES", hot):
+                    bsd.build(tmp / "cells", nodes, serving, sidecar_path=sidecar)
+                port = self.assert_port_matches(tmp / "cells", tmp / "xref_index.json", serving, sidecar, hot)
+                # the inputs the builder's own fixture lacks are in this tree
+                self.assertTrue(port["tables"]["synapse_traces"]["rows"])
                 db = sqlite3.connect(serving)
                 self.addCleanup(db.close)
-                json_columns = {"json", "syn", "cells", "sups"}
-                for table, spec in port["tables"].items():
-                    columns = spec["columns"]
-                    self.assertLessEqual(set(columns), set(bdi.D1_COLUMNS[table]) | set(bdi.LOCAL_ONLY.get(table, ())))
-                    want = db.execute(f"SELECT {', '.join(columns)} FROM {table} ORDER BY seq").fetchall()
-                    self.assertEqual(len(spec["rows"]), len(want), table)
-                    for got_row, want_row in zip(spec["rows"], want):
-                        for column, got, wanted in zip(columns, got_row, want_row):
-                            if column in json_columns:
-                                got, wanted = ordered_json(got), ordered_json(wanted)
-                            self.assertEqual(got, wanted, f"{table}.{column} seq {want_row[0]}")
-                if hot == 2:
-                    self.assertTrue(port["tables"]["hot_prefixes"]["rows"], "the small threshold made no prefix hot")
+                self.assertTrue(db.execute("SELECT count(*) FROM xrefs").fetchone()[0])
+                self.assertEqual(db.execute("SELECT parent FROM supercells WHERE path = 'path:Mathlib/Topology/Order'")
+                                 .fetchone(), ("path:Mathlib/Topology",))
+
+    def test_the_fixture_creates_the_names_table_as_the_importer_does(self):
+        hex_id = "0123456789abcdef" * 4
+        for mode in bdi.NAMES_MODES:
+            self.assertEqual(run_rows_port("fts", mode, hex_id), bdi.fts_create("names", hex_id, mode))
 
     def test_the_port_splits_names_as_the_importer_does(self):
         cases = ["TauCeti.StronglyContinuousSemigroup.mk", "Mathlib/Analysis/inner_product",

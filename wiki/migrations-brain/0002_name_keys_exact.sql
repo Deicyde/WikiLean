@@ -1,6 +1,7 @@
 -- An index for the exact-name reads of the Worker (the D1 read-layer design, section 1, Search).
 --
--- Apply by hand, once, after 0001_brain.sql and before any release lists the serving sidecar, with
+-- Apply by hand, once, after 0001_brain.sql and before the first dataset import (the importer,
+-- site/ops/brain_d1_import.py, refuses to import while this index is missing), with
 -- --command carrying the text of this file, NEVER --file (see 0001_brain.sql for why):
 --
 --   cd wiki && npx wrangler d1 execute wikilean-brain --remote --config <brain config> \

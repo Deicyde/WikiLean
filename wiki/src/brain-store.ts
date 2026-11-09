@@ -28,7 +28,9 @@
 // neighborhood's 200 rows). They are preconditions, not checks: a longer input
 // is a caller bug, and the D1Store throws a plain Error (500) on one. The
 // D1Store answers an empty input (ids = [], pages = []) without sending a
-// batch.
+// batch. On a D1 release the search route rejects a q over 200 UTF-16 units
+// with a 400 (docs/BRAIN-D1.md section 1, Request bounds), so searchPage never
+// sees a longer q.
 //
 // Round trips: the routes await these methods one after another, so a store
 // cannot coalesce two calls into one batch behind the routes' backs. keyHits
@@ -320,9 +322,10 @@ export interface BrainStoreBatches {
    *  and statementAtoms(q, 5), the first chunk of the statement pass in the
    *  same batch.                            [1 + 5 + 5, up to 4 chunks] */
   bridgeCandidates(q: string, query: AtomKeyQuery | null): Promise<BridgeCandidatesResult>;
-  /** Loads the organ owners and cell pages of node ids (organ keys and cell:
-   *  ids) for the rest of the request, so quickstatements resolves every
-   *  endpoint before its first write in a few batches.  [50 keys a batch] */
+  /** Loads the organ owners, cell pages and supercells of node ids (organ
+   *  keys, cell: and path: ids, and the supercells organ keys name) for the
+   *  rest of the request, so quickstatements resolves every endpoint before
+   *  its first write in a few batches.               [50 keys a batch] */
   prefetchAtoms(ids: string[]): Promise<void>;
 }
 
@@ -335,6 +338,14 @@ export function batchesOf(store: BrainStore): BrainStoreBatches | null {
     typeof s.prefetchAtoms === "function"
     ? (store as unknown as BrainStoreBatches)
     : null;
+}
+
+/** For a write route (POST node, POST edge, quickstatements): the D1 store
+ *  starts every later batch with the readiness check, so a dataset that
+ *  leaves `ready` mid-request answers 503 instead of "not a node", which would
+ *  mint a community node (docs/BRAIN-D1.md section 1). Other stores ignore it. */
+export function checkReadinessEveryBatch(store: BrainStore): void {
+  if (store instanceof D1Store) store.checkEveryBatch();
 }
 
 // Still deferred, until a caller needs them: atomsExist (POST /api/brain/node

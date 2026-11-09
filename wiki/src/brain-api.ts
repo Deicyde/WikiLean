@@ -394,6 +394,16 @@ export function resolvedFromHits(hits: KeyHits, isDeclId: boolean): ResolvedKey 
   return null;
 }
 
+// resolveAtomKey's answer from a composite's reads (BrainStoreBatches): an
+// atom id resolves to itself when it exists, a lookup by resolvedFromHits.
+export function resolvedFromQuery(query: AtomKeyQuery | null, hits: KeyHits, atomExists: boolean): ResolvedKey | null {
+  if (!query) return null;
+  if ("atomId" in query) {
+    return atomExists ? { id: query.atomId, resolved_from: query.atomId.startsWith("path:") ? "supercell" : "cell" } : null;
+  }
+  return resolvedFromHits(hits, query.isDeclId);
+}
+
 // STRICT organ → atom resolver: the node-existence oracle the community-edit
 // write path (src/brain-edits.ts) validates edge endpoints against, replacing
 // the retired v2 per-node shard set. Deliberately NOT resolveAtomKey: that
@@ -1182,6 +1192,9 @@ export async function filterFor(
 
 // ---- search over the atom label index -----------------------------------------
 
+// The longest q a D1 release's search takes (docs/BRAIN-D1.md section 1).
+const D1_SEARCH_MAX_UNITS = 200;
+
 // Matches an atom's own label AND its `aka` list — every organ's label — so
 // "Vector space" finds the Module atom (they are one atom; the anchor names it).
 // A key that resolves exactly (QID, decl name, slug, xref id) is promoted to the
@@ -1210,17 +1223,16 @@ export async function searchFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
   const wantsHead = (r: ResolvedKey | null) =>
     (r?.id.startsWith("cell:") && kind !== "supercell") || (r?.id.startsWith("path:") && kind !== "cell");
   if (batches) {
+    // docs/BRAIN-D1.md section 1, Request bounds: q is at most 200 UTF-16
+    // units on D1, where no name tier but the exact one reads a longer q.
+    if (q.length > D1_SEARCH_MAX_UNITS) {
+      return { status: 400, body: { ok: false, error: `query too long (max ${D1_SEARCH_MAX_UNITS} chars)` } };
+    }
     // The D1 store answers the same three reads in two batches.
     const query = atomKeyQuery(q);
     const page = await batches.searchPage(q, kind as "" | "cell" | "supercell", limit, query);
     named = page.named;
-    exact = !query
-      ? null
-      : "atomId" in query
-        ? page.heads.has(query.atomId)
-          ? { id: query.atomId, resolved_from: query.atomId.startsWith("path:") ? "supercell" : "cell" }
-          : null
-        : resolvedFromHits(page.hits, query.isDeclId);
+    exact = resolvedFromQuery(query, page.hits, query !== null && "atomId" in query && page.heads.has(query.atomId));
     exactHead = exact && wantsHead(exact) ? page.heads.get(exact.id) : undefined;
   } else {
     // Name hits first: the static store loads labels.json and supercells.json
@@ -1981,13 +1993,7 @@ export async function bridgeFor(c: Ctx, release: BrainReleaseContext, qRaw: stri
     // The same candidates in one batch (more only for a long statement).
     const query = atomKeyQuery(q);
     const cand = await batches.bridgeCandidates(q, query);
-    const exact: ResolvedKey | null = !query
-      ? null
-      : "atomId" in query
-        ? cand.atomExists
-          ? { id: query.atomId, resolved_from: query.atomId.startsWith("path:") ? "supercell" : "cell" }
-          : null
-        : resolvedFromHits(cand.hits, query.isDeclId);
+    const exact = resolvedFromQuery(query, cand.hits, cand.atomExists);
     if (exact) consider(exact.id, exact.resolved_from);
     for (const id of cand.names) consider(id, "search");
     for (const s of cand.statement) consider(s.id, "statement");

@@ -3,25 +3,29 @@
 // fixture through both stores (brain-fixture.ts installBrainD1Fixture).
 //
 // This is a port, and a port can drift, so CI checks it against the real
-// builder on every run: site/ops/test_brain_d1_import.py builds the builder's
-// own test fixture with build_serving_db.build, runs this file on the same
-// tree under `node --experimental-strip-types`, and compares every column
-// listed in READ_COLUMNS, row by row (JSON columns as parsed values with their
-// key order). Columns the Worker does not read yet (labels.libs and xy,
-// supercells.n_sub, fhist and kids, hot_prefixes.live_sups, text_ids) are left
-// out of the port and filled with placeholders by the fixture.
+// builder on every run: site/ops/test_brain_d1_import.py runs
+// build_serving_db.build on two trees, the builder's own test fixture and the
+// parity tree the Worker tests serve (written out by `parity-tree` below),
+// runs this file on the same tree under `node --experimental-strip-types`, and
+// compares every column listed in READ_COLUMNS, row by row (JSON columns as
+// parsed values with their key order). Columns the Worker does not read yet
+// (labels.libs and xy, supercells.n_sub, fhist and kids,
+// hot_prefixes.live_sups, text_ids) are left out of the port and filled with
+// placeholders by the fixture.
 //
 // Why a checked port rather than a committed SQL fixture the Python job
 // regenerates: the rows then come from the same in-memory fixture the static
 // store serves, with no generated file to keep in step, and the comparison
 // still runs the builder's real code in CI.
 //
-// Erasable TypeScript only and no imports but node: built-ins and the
-// standalone brain-name-parts.ts, so node can run it without npm ci.
-import { readFileSync } from "node:fs";
+// Erasable TypeScript only and no imports but node: built-ins, the standalone
+// brain-name-parts.ts and the fixture's data (brain-fixture-data.ts), so node
+// can run it without npm ci.
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { nameParts } from "../../src/brain-name-parts.ts";
+import { servingTreeFor } from "./brain-fixture-data.ts";
 
 type Json = unknown;
 type Obj = Record<string, Json>;
@@ -289,19 +293,54 @@ export function readTree(cellsDir: string, xrefPath: string): ServingTree {
   };
 }
 
+/** `tree` on disk as build_serving_db reads it, the inverse of readTree:
+ *  <dir>/cells (one shard, one trace file) and <dir>/xref_index.json. */
+export function writeTree(tree: ServingTree, dir: string): void {
+  const cells = join(dir, "cells");
+  mkdirSync(join(cells, "traces"), { recursive: true });
+  const write = (path: string, value: Json) => writeFileSync(path, JSON.stringify(value));
+  write(join(cells, "manifest.json"), {
+    _meta: { generated_at: "fixture" },
+    shards: { all: Object.keys(tree.cells).length },
+    traces: { dir: "traces", files: { all: Object.keys(tree.traces).length } },
+  });
+  write(join(cells, "all.json"), tree.cells);
+  write(join(cells, "traces", "all.json"), tree.traces);
+  write(join(cells, "labels.json"), tree.labels);
+  write(join(cells, "aliases.json"), tree.aliases);
+  write(join(cells, "supercells.json"), tree.supercells);
+  write(join(dir, "xref_index.json"), tree.xrefIndex);
+}
+
+/** The FTS table the importer creates for a dataset's names
+ *  (site/ops/brain_d1_import.py fts_create, which the Python test compares). */
+export function namesFtsCreate(mode: "trigram" | "parts", hex: string): string {
+  if (!/^[0-9a-f]{64}$/.test(hex)) throw new Error("namesFtsCreate: malformed dataset hex");
+  return mode === "trigram"
+    ? `CREATE VIRTUAL TABLE IF NOT EXISTS names_${hex} USING fts5(name, content='', contentless_delete=1, tokenize='trigram')`
+    : `CREATE VIRTUAL TABLE IF NOT EXISTS names_${hex} USING fts5(parts, content='', contentless_delete=1, prefix='2 3')`;
+}
+
 // CLI, for site/ops/test_brain_d1_import.py:
 //   rows <cells dir> <xref_index.json> <hot prefix names>   the rows, as JSON
+//   parity-tree <dir>                                       write the Worker tests' parity tree (writeTree)
+//   fts <trigram | parts> <hex>                             namesFtsCreate's statement
 //   parts                                                   nameParts of each string of a JSON list on stdin
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const [command, ...args] = process.argv.slice(2);
   if (command === "rows") {
     const rows = servingRows(readTree(args[0], args[1]), { hotPrefixNames: Number(args[2]) });
     process.stdout.write(JSON.stringify(rows));
+  } else if (command === "parity-tree") {
+    writeTree(servingTreeFor({ parity: true }), args[0]);
+    process.stdout.write("null");
+  } else if (command === "fts") {
+    process.stdout.write(JSON.stringify(namesFtsCreate(args[0] === "parts" ? "parts" : "trigram", args[1])));
   } else if (command === "parts") {
     const input = JSON.parse(readFileSync(0, "utf8")) as string[];
     process.stdout.write(JSON.stringify(input.map(nameParts)));
   } else {
-    process.stderr.write("usage: brain-d1-rows.ts rows <cells dir> <xref_index.json> <hot prefix names> | parts\n");
+    process.stderr.write("usage: brain-d1-rows.ts rows <cells dir> <xref_index.json> <hot prefix names> | parity-tree <dir> | fts <mode> <hex> | parts\n");
     process.exit(2);
   }
 }
