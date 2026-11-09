@@ -15,7 +15,8 @@ coarse DLMF pages, produces a 212-organ blob. `merge()` is where that is enforce
 `test_cells.py` (C1-C3) is where it is proven.
 
 Outputs:
-  brain/data/cells.jsonl     {id, anchor, label, organs[], supercells[], f, xy}
+  brain/data/cells.jsonl     {id, anchor, label, organs[], supercells[], f, xy}; its _meta
+                             carries the layout's module bubble discs as `bubbles`
   brain/data/synapses.jsonl  {src, dst, weight, kinds{}, traces[]}
 
 Usage:
@@ -1200,10 +1201,11 @@ def build(
     review = cell_review(cells, nodes, stats)
     print(f"  {len(review)} cells flagged for tagger review", file=sys.stderr)
 
+    bubbles: dict[str, list[float]] = {}
     if do_layout:
         from layout import layout_cells  # local import: numpy only needed for layout
         print("laying out (build-time force sim)…", file=sys.stderr)
-        layout_cells(cells, synapses, iterations=layout_iterations)
+        bubbles = layout_cells(cells, synapses, iterations=layout_iterations)
 
     rows = [cells[k] for k in sorted(cells)]
     base_meta = _jsonl_meta(paths.nodes)
@@ -1220,6 +1222,8 @@ def build(
            if base_meta.get("snapshot_id") else {}),
         "prov": prov.table,
         "supercell_organs": {k: v for k, v in sorted(supercell_organs.items())},
+        # the module bubbles' discs, {module: [x, y, r]}; absent when no cell is bubbled
+        **({"bubbles": bubbles} if bubbles else {}),
         "counts": {
             "cells": len(rows),
             "synapses": len(synapses),

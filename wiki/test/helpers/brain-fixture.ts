@@ -500,7 +500,8 @@ export function installBrainFixture(
 // the same values, plus the dataset's names_<hex> table as the importer
 // creates it.
 
-/** Every wikilean-brain migration, in order. */
+/** The wikilean-brain migrations a schema_version 1 Worker needs, in order; the second 3b PR
+ * adds 0003_explorer.sql with the move to schema_version 2. */
 export const MIGRATIONS_BRAIN: readonly string[] = ["0001_brain.sql", "0002_name_keys_exact.sql"];
 
 export function brainMigration(name: string): string {

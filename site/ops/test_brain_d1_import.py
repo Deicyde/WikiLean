@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """brain_d1_import against a local SQLite database standing in for D1.
 
-The stand-in is created from wiki/migrations-brain/0001_brain.sql, with foreign keys on as D1
+The stand-in is created from the migrations in wiki/migrations-brain, with foreign keys on as D1
 has them. A fake runner takes each `wrangler d1 execute --command` the importer builds, splits
 it into statements the way Wrangler does, executes them, and answers Wrangler's --json shape.
 It can apply a call and still report failure, fail a call before applying it, crash the
@@ -38,6 +38,7 @@ from brain_promote_release import RunResult  # noqa: E402
 
 MIGRATION = REPO / "wiki" / "migrations-brain" / "0001_brain.sql"
 EXACT_INDEX_MIGRATION = REPO / "wiki" / "migrations-brain" / "0002_name_keys_exact.sql"
+EXPLORER_MIGRATION = REPO / "wiki" / "migrations-brain" / "0003_explorer.sql"
 # The Worker tests' port of the builder's row logic (and of name_parts), checked here
 ROWS_PORT = REPO / "wiki" / "test" / "helpers" / "brain-d1-rows.ts"
 TARGET = "https://example.test"
@@ -89,8 +90,8 @@ class FakeD1:
         self.db = sqlite3.connect(":memory:", isolation_level=None)
         self.db.execute("PRAGMA foreign_keys = ON")
         if migrate:
-            self.db.executescript(MIGRATION.read_text())
-            self.db.executescript(EXACT_INDEX_MIGRATION.read_text())
+            for name in bdi.MIGRATIONS[bdi.SUPPORTED_SCHEMA_VERSIONS[-1]]:
+                self.db.executescript((MIGRATION.parent / name).read_text())
         self.calls = 0
         self.commands: list[list[str]] = []
         self.statements: list[str] = []
@@ -347,9 +348,15 @@ class EscapingTest(unittest.TestCase):
 
 
 class MigrationTest(Base):
+    def test_the_migration_list_is_the_directory(self):
+        self.assertEqual(sorted(p.name for p in MIGRATION.parent.glob("*.sql")), list(bdi.MIGRATIONS[2]))
+        self.assertEqual(bdi.MIGRATIONS[1], bdi.MIGRATIONS[2][:2])
+        self.assertEqual(sorted(bdi.MIGRATIONS), sorted(bdi.REQUIRED_COLUMNS))
+
     def test_migration_matches_the_builder_minus_two_columns(self):
         fake = FakeD1()
-        fake.db.executescript(MIGRATION.read_text())        # idempotent: a rerun changes nothing
+        for path in (MIGRATION, EXPLORER_MIGRATION):         # idempotent: a rerun changes nothing
+            fake.db.executescript(path.read_text())
         for table, columns in bdi.D1_COLUMNS.items():
             d1 = [r[1] for r in fake.all(f"PRAGMA table_info({table})")]
             self.assertEqual(d1, ["ds", *columns], table)
@@ -357,26 +364,38 @@ class MigrationTest(Base):
             self.assertEqual(local, [*columns, *bdi.LOCAL_ONLY.get(table, ())], table)
             self.assertIn((table,), fake.all("SELECT tbl_name FROM sqlite_master WHERE type = 'index' "
                                              "AND sql IS NULL AND tbl_name = ?", table))   # UNIQUE(ds, seq)
-        for table, columns in bdi.REQUIRED_COLUMNS[1].items():
-            self.assertEqual({r[1] for r in fake.all(f"PRAGMA table_info({table})")}, set(columns), table)
+        for version in (1, 2):
+            for table, columns in bdi.REQUIRED_COLUMNS[version].items():
+                self.assertEqual({r[1] for r in fake.all(f"PRAGMA table_info({table})")}, set(columns), table)
+        self.assertEqual(set(bdi.REQUIRED_COLUMNS[2]) - set(bdi.REQUIRED_COLUMNS[1]),
+                         {"explorer_edges", "explorer_scopes"})
         indexes = {r[0]: r[1] for r in fake.all("SELECT name, sql FROM sqlite_master WHERE type = 'index' "
                                                 "AND sql IS NOT NULL")}
         self.assertIn("xrefs(ds, node, page_ord)", indexes["xrefs_node"])
         self.assertIn("supercells(ds, parent, ord)", indexes["supercells_parent"])
+        self.assertIn("explorer_edges(ds, b)", indexes["explorer_edges_b"])
+        # the builder's local copy has the same index, without ds
+        self.assertEqual([r[2] for r in self.local.db.execute("PRAGMA index_info(explorer_edges_b)")], ["b"])
 
     def test_migration_text_survives_command_and_statement_splitting(self):
-        text = MIGRATION.read_text()
-        self.assertIn("--command", text.split("\n\n")[0])
-        self.assertIn("NEVER --file", text)
-        # comments carry no quote or semicolon, so even a splitter blind to comments agrees
-        for line in text.splitlines():
-            comment = line.split("--", 1)[1] if "--" in line else ""
-            self.assertNotIn("'", comment, line)
-            self.assertNotIn(";", comment, line)
-        statements = split_sql(text)
-        self.assertEqual(len(statements), text.count(";"))
-        self.assertTrue(all(s.startswith(("CREATE TABLE IF NOT EXISTS", "CREATE INDEX IF NOT EXISTS"))
-                            for s in statements), statements)
+        for path in (MIGRATION, EXPLORER_MIGRATION):
+            text = path.read_text()
+            self.assertIn("--command", text.split("\n\n")[0])
+            self.assertIn("NEVER --file", text)
+            # comments carry no quote or semicolon, so even a splitter blind to comments agrees
+            for line in text.splitlines():
+                comment = line.split("--", 1)[1] if "--" in line else ""
+                self.assertNotIn("'", comment, line)
+                self.assertNotIn(";", comment, line)
+            statements = split_sql(text)
+            self.assertEqual(len(statements), text.count(";"))
+            self.assertTrue(all(s.startswith(("CREATE TABLE IF NOT EXISTS", "CREATE INDEX IF NOT EXISTS"))
+                                for s in statements), statements)
+        # 0003 adds the two explorer tables and one index on a table it creates, and nothing else
+        statements = split_sql(EXPLORER_MIGRATION.read_text())
+        self.assertEqual([" ".join(s.split()[:6]) for s in statements],
+                         ["CREATE TABLE IF NOT EXISTS explorer_edges(", "CREATE INDEX IF NOT EXISTS explorer_edges_b",
+                          "CREATE TABLE IF NOT EXISTS explorer_scopes("])
 
 
 class ImportTest(Base):
@@ -758,12 +777,14 @@ class ImportTest(Base):
 
 class SchemaTest(Base):
     def test_refuses_an_unsupported_schema_version(self):
+        self.assertEqual(self.local.sidecar["schema_version"], 2)
         sidecar = json.loads(self.sidecar.read_text())
-        sidecar["schema_version"] = 2
-        path = self.work / "v2.json"
-        path.write_text(json.dumps(sidecar))
-        with self.assertRaisesRegex(bdi.D1ImportError, "schema_version 2"):
-            bdi.open_local(self.serving, path, full_check=False)
+        for version in (1, 3):
+            sidecar["schema_version"] = version
+            path = self.work / f"v{version}.json"
+            path.write_text(json.dumps(sidecar))
+            with self.assertRaisesRegex(bdi.D1ImportError, f"schema_version {version} is not one"):
+                bdi.open_local(self.serving, path, full_check=False)
         with self.assertRaisesRegex(bdi.D1ImportError, "schema_version 3"):
             self.importer(FakeD1()).require_schema(3)
 
@@ -771,14 +792,47 @@ class SchemaTest(Base):
         fake = FakeD1(migrate=False)
         fake.db.executescript(MIGRATION.read_text().replace("live_sups TEXT NOT NULL,", ""))
         fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
+        fake.db.executescript(EXPLORER_MIGRATION.read_text())
         with self.assertRaisesRegex(bdi.D1ImportError, "hot_prefixes.live_sups"):
             self.do_import(fake)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+
+    def test_refuses_without_the_explorer_migration(self):
+        fake = FakeD1(migrate=False)
+        fake.db.executescript(MIGRATION.read_text())
+        fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
+        with self.assertRaisesRegex(bdi.D1ImportError, r"schema_version 2 \(0001_brain\.sql, then "
+                                    r"0002_name_keys_exact\.sql, then 0003_explorer\.sql\).*"
+                                    r"missing explorer_edges\.ds, explorer_edges\.seq, "):
+            self.do_import(fake)
+        self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+
+    def test_refuses_before_the_first_dataset_without_the_explorer_index_or_keys(self):
+        # explorer_edges_b can only land while explorer_edges is empty, like 0002's index
+        text = EXPLORER_MIGRATION.read_text()
+        index = "CREATE INDEX IF NOT EXISTS explorer_edges_b ON explorer_edges(ds, b);"
+        self.assertIn(index, text)
+        for broken, message in (
+                (text.replace(index, ""), r"missing explorer_edges INDEX explorer_edges_b\(ds, b\)$"),
+                (text.replace("UNIQUE(ds, seq), UNIQUE(ds, a, b));", "UNIQUE(ds, seq));"),
+                 r"missing explorer_edges UNIQUE\(ds, a, b\)$"),
+                (text.replace("UNIQUE(ds, seq), UNIQUE(ds, scope, part));", "UNIQUE(ds, seq));"),
+                 r"missing explorer_scopes UNIQUE\(ds, scope, part\)$")):
+            with self.subTest(message=message):
+                self.assertNotEqual(broken, text)
+                fake = FakeD1(migrate=False)
+                fake.db.executescript(MIGRATION.read_text())
+                fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
+                fake.db.executescript(broken)
+                with self.assertRaisesRegex(bdi.D1ImportError, message):
+                    self.do_import(fake)
+                self.assertEqual(fake.all("SELECT * FROM datasets"), [])
 
     def test_refuses_before_the_first_dataset_without_the_exact_name_index(self):
         # 0002 can only land while the tables are empty, so its absence must stop the first import
         fake = FakeD1(migrate=False)
         fake.db.executescript(MIGRATION.read_text())
+        fake.db.executescript(EXPLORER_MIGRATION.read_text())
         with self.assertRaisesRegex(bdi.D1ImportError,
                                     r"0002_name_keys_exact\.sql.*missing name_keys INDEX name_keys_exact\(ds, name_lc, seq\)$"):
             self.do_import(fake)
@@ -799,6 +853,7 @@ class SchemaTest(Base):
         fake.db.executescript(text.replace(keyed, "  UNIQUE(ds, ord), UNIQUE(ds, id));\n"
                                                   "CREATE INDEX IF NOT EXISTS labels_p"))
         fake.db.executescript(EXACT_INDEX_MIGRATION.read_text())
+        fake.db.executescript(EXPLORER_MIGRATION.read_text())
         with self.assertRaisesRegex(bdi.D1ImportError, r"missing labels UNIQUE\(ds, seq\)$"):
             self.do_import(fake)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
@@ -1048,16 +1103,38 @@ class PruneTest(Base):
         with self.assertRaisesRegex(bdi.D1ImportError, "schema_version this importer does not know"):
             self.do_prune(fake)
         self.assertEqual(self.control(fake), before)
-        fake.db.execute("UPDATE datasets SET schema_version = 1, tables_json = json_remove(tables_json, '$.xrefs')")
+        # a v2 dataset's tables under schema_version 1 are not v1's tables
+        fake.db.execute("UPDATE datasets SET schema_version = 1")
         before = self.control(fake)
         with self.assertRaisesRegex(bdi.D1ImportError, "malformed tables_json.*schema_version 1"):
             self.do_prune(fake)
         self.assertEqual(self.control(fake), before)
-        fake.db.execute("UPDATE datasets SET tables_json = ?", (self.local.tables_json,))
-        # an importer that knows more tables still deletes a v1 dataset by v1's tables
-        with mock.patch.object(bdi, "DATA_TABLES", (*bdi.DATA_TABLES, "explorer_edges")):
-            self.do_prune(fake)
+        # a v1 dataset (its tables_json has v1's ten tables) is deleted by those ten alone
+        fake.db.execute("UPDATE datasets SET tables_json = json_remove(tables_json, '$.explorer_edges', "
+                        "'$.explorer_scopes')")
+        start = len(fake.statements)
+        self.do_prune(fake)
+        deleted = {s.split()[2] for s in fake.statements[start:] if s.startswith("DELETE FROM ")}
+        # every v1 table that holds rows (an empty one has no seq range to delete)
+        self.assertEqual(deleted - {"releases", "import_ranges", "datasets"},
+                         {table for table in bdi.TABLES_BY_VERSION[1] if self.local.rows(table)})
+        self.assertEqual(len(bdi.TABLES_BY_VERSION[1]), 10)
         self.assertEqual(fake.all("SELECT * FROM datasets"), [])
+        for table in bdi.TABLES_BY_VERSION[1]:
+            self.assertEqual(fake.one(f"SELECT count(*) FROM {table}"), (0,), table)
+        # the stand-in's v2 rows stay: a real v1 dataset never had any
+        self.assertTrue(fake.one("SELECT count(*) FROM explorer_scopes")[0])
+
+    def test_prune_deletes_a_v2_dataset_by_its_twelve_tables(self):
+        fake = self.imported_then_abandoned()
+        start = len(fake.statements)
+        self.do_prune(fake)
+        deleted = {s.split()[2] for s in fake.statements[start:] if s.startswith("DELETE FROM ")}
+        # every v2 table that holds rows (an empty one has no seq range to delete)
+        self.assertEqual(deleted - {"releases", "import_ranges", "datasets"},
+                         {table for table in bdi.TABLES_BY_VERSION[2] if self.local.rows(table)})
+        self.assertIn("explorer_scopes", deleted)
+        self.assertEqual(len(bdi.TABLES_BY_VERSION[2]), 12)
         for table in bdi.DATA_TABLES:
             self.assertEqual(fake.one(f"SELECT count(*) FROM {table}"), (0,), table)
 
@@ -1080,6 +1157,19 @@ class VerifyTest(Base):
         self.assertTrue(any(" xrefs " in m for m in report["mismatches"]))
         self.assertTrue(any(" texts " in m for m in report["mismatches"]))
         self.assertTrue(all(s.startswith("SELECT") for s in fake.statements[-20:]))
+
+    def test_verify_finds_damaged_explorer_rows(self):
+        fake = FakeD1()
+        self.do_import(fake)
+        importer = self.importer(fake, root=None)
+        self.assertTrue(importer.verify([self.local], 1000, random.Random(1))["ok"])
+        self.assertTrue(fake.one("SELECT count(*) FROM explorer_edges")[0])
+        fake.db.execute("UPDATE explorer_scopes SET json = json || ' ' WHERE seq = 1")
+        fake.db.execute("UPDATE explorer_edges SET w = w + 1 WHERE seq = 1")
+        report = importer.verify([self.local], 1000, random.Random(2))
+        self.assertFalse(report["ok"])
+        self.assertTrue(any(" explorer_scopes " in m for m in report["mismatches"]), report["mismatches"])
+        self.assertTrue(any(" explorer_edges " in m for m in report["mismatches"]), report["mismatches"])
 
     def test_verify_runs_the_fts_sample_queries(self):
         fake = FakeD1()
@@ -1342,7 +1432,9 @@ class WorkerRowsPortTest(unittest.TestCase):
                                                "description": "group whose operation is commutative"}) + "\n")
                 serving, sidecar = tmp / "serving.sqlite3", tmp / "serving-tables.json"
                 with mock.patch.object(bsd, "HOT_PREFIX_NAMES", hot):
-                    bsd.build(tmp / "cells", nodes, serving, sidecar_path=sidecar)
+                    # writeTree writes explorer.json and the cells.jsonl _meta the builder reads
+                    bsd.build(tmp / "cells", nodes, serving, sidecar_path=sidecar,
+                              cells_path=tmp / "cells.jsonl")
                 port = self.assert_port_matches(tmp / "cells", tmp / "xref_index.json", serving, sidecar, hot)
                 # the inputs the builder's own fixture lacks are in this tree
                 self.assertTrue(port["tables"]["synapse_traces"]["rows"])

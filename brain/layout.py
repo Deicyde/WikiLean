@@ -43,14 +43,20 @@ BUBBLE_ROUNDS rounds (overlap push, pull toward the anchor, pushed back out of t
 core), and then an exact pass moves each disc, largest first, outward along its ray
 from the origin until it clears every disc placed before it. So no two discs
 overlap and none enters the core, with 5% of a disc's radius to spare (BUBBLE_GAP).
-Members spiral inside their disc, ordered by id. See place_bubbles().
+Members spiral inside their disc, ordered by id. See place_bubbles(). layout_cells
+returns the discs, which build_cells records in the cells.jsonl `_meta` as `bubbles`;
+bubble_module is the membership rule, shared with build_serving_db, which draws a module
+as one dot in an explorer scope too big to draw cell by cell.
 """
 from __future__ import annotations
 
 import math
 from collections import defaultdict
 
-import numpy as np
+try:
+    import numpy as np
+except ModuleNotFoundError:     # bubble_module needs none, and build_serving_db imports it on
+    np = None                   # hosts without numpy (CI does not pin it); layout_cells refuses
 
 PAIR_BUDGET = 1 << 19     # candidate pairs per repulsion pass — caps peak memory near 70MB
 EPS = 1e-9
@@ -252,6 +258,20 @@ def _bubble_library(cid: str) -> str | None:
     return None
 
 
+def bubble_module(cid: str, supercells: list[str] | None, organs: int) -> str | None:
+    """The module whose disc holds cell `cid`, or None when the core simulates it.
+
+    Only a lone decl (at most `organs` = 1: a decl cell that also holds a statement or
+    concept stays simulated) of a library outside SIMULATED_DECL_LIBS is bubbled; its
+    module is its deepest supercell, else `path:<Lib>`. Needs no numpy: build_serving_db
+    applies the same rule to the shard entries (id, supercells, organ count).
+    """
+    lib = _bubble_library(cid)
+    if lib is None or organs > 1:
+        return None
+    return min(supercells or [f"path:{lib}"], key=lambda s: (-s.count("/"), s))  # the deepest
+
+
 def _unit(v: np.ndarray) -> np.ndarray:
     """Row-wise unit vectors; the origin has no direction, so it gets +x."""
     length = np.hypot(v[:, 0], v[:, 1])
@@ -330,8 +350,8 @@ def place_bubbles(cells: dict[str, dict], bubbled: list[str], synapses: list[dic
     groups: dict[str, list[str]] = defaultdict(list)
     module_of: dict[str, str] = {}
     for cid in sorted(bubbled):
-        sups = cells[cid].get("supercells") or [f"path:{_bubble_library(cid)}"]
-        module_of[cid] = min(sups, key=lambda s: (-s.count("/"), s))  # the deepest
+        module_of[cid] = bubble_module(cid, cells[cid].get("supercells"),
+                                       len(cells[cid].get("organs") or ()))
         groups[module_of[cid]].append(cid)
     modules = sorted(groups)
     index = {m: i for i, m in enumerate(modules)}
@@ -394,12 +414,15 @@ def place_bubbles(cells: dict[str, dict], bubbled: list[str], synapses: list[dic
 
 
 def layout_cells(cells: dict[str, dict], synapses: list[dict], *,
-                 iterations: int = 200) -> None:
-    """Compute `xy` for every cell (mutates `cells`)."""
+                 iterations: int = 200) -> dict[str, list[float]]:
+    """Compute `xy` for every cell (mutates `cells`). Returns each module bubble's disc as
+    {module: [x, y, radius]}, rounded to 0.1 like `xy`; {} when no cell is bubbled."""
+    if np is None:
+        raise ModuleNotFoundError("the layout needs numpy")
     ids = sorted(cells)
-    # only a lone decl: a decl cell that also holds a statement or concept stays simulated
-    bubbled = [c for c in ids
-               if _bubble_library(c) is not None and len(cells[c].get("organs") or ()) <= 1]
+    bubbled = [c for c in ids if bubble_module(c, cells[c].get("supercells"),
+                                               len(cells[c].get("organs") or ())) is not None]
+    discs: dict[str, tuple[float, float, float]] = {}
     if not bubbled:
         rounded = _layout_core(cells, ids, synapses, iterations)
     else:
@@ -408,12 +431,13 @@ def layout_cells(cells: dict[str, dict], synapses: list[dict], *,
         core_syn = [s for s in synapses if s["src"] not in members and s["dst"] not in members]
         rounded = _layout_core(cells, core, core_syn, iterations)
         pos_by_id = {cid: (round(x, 1), round(y, 1)) for cid, (x, y) in rounded.items()}
-        place_bubbles(cells, bubbled, synapses, pos_by_id)
+        discs = place_bubbles(cells, bubbled, synapses, pos_by_id)
         for cid in bubbled:
             rounded[cid] = (round(pos_by_id[cid][0], 1), round(pos_by_id[cid][1], 1))
         _resolve_collisions(rounded, fixed=set(core))
     for cid in ids:
         cells[cid]["xy"] = [round(rounded[cid][0], 1), round(rounded[cid][1], 1)]
+    return {mod: [round(x, 1), round(y, 1), round(r, 1)] for mod, (x, y, r) in sorted(discs.items())}
 
 
 def _layout_core(cells: dict[str, dict], ids: list[str], synapses: list[dict],

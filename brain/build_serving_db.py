@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Build the Brain's serving database: what the Worker reads from D1, as one SQLite file.
 
-    python3 brain/build_serving_db.py [--cells-dir DIR] [--nodes PATH] [--xref PATH]
-                                      [--out PATH] [--sidecar PATH]
+    python3 brain/build_serving_db.py [--cells-dir DIR] [--nodes PATH] [--cells PATH]
+                                      [--xref PATH] [--out PATH] [--sidecar PATH]
 
 Reads a built cell-asset tree (build_cell_shards.py's output: the shards and trace buckets its
-manifest lists, plus aliases.json, labels.json and supercells.json), site/assets/brain/
-xref_index.json and brain/data/nodes.jsonl. Writes brain/data/serving.sqlite3 and its sidecar
+manifest lists, plus aliases.json, labels.json, supercells.json and explorer.json), site/assets/
+brain/xref_index.json, brain/data/nodes.jsonl and the `_meta` of brain/data/cells.jsonl (the
+layout's module bubble discs). Writes brain/data/serving.sqlite3 and its sidecar
 brain/data/serving-tables.json, published together. Neither carries a release id or a generation
 stamp: the importer adds `ds` when it loads the rows into the shared `wikilean-brain` database,
 and the sidecar's logical root names the dataset (docs: the D1 read-layer design, section 4).
@@ -27,9 +28,14 @@ Tables (each numbers its rows seq = 1..N in its key order, the order its digest 
   synapse_traces(pair, json)      the trace sidecar's rows
   xrefs(page_ord, node_ord, page, node)   xref_index.json in file order
   text_ids(node, owner, body)     node label, docstring and description, in owner order
+  explorer_edges(a, b, w)         explorer.json's edges as cell ids, keeping the synapse's
+                                  src -> dst; seq follows (a, b)
+  explorer_scopes(scope, part, json)
+                                  the explorer payload of every scope too big for the Worker to
+                                  compute live (`all` always), in parts of at most 1 MB
   names, texts                    FTS5 over name_keys.name (trigram) and text_ids.body
   tables(name, rows, digest, delete_bounds)   what the sidecar says about each table
-  meta(key, value)                schema version and the inputs' digests
+  meta(key, value)                schema version, the inputs' digests and the explorer's sizes
 
 The SQLite bytes depend on the SQLite version; the logical digests (store.digest_rows over every
 column of a table in seq order) do not, and are what the sidecar binds. Numbers live only in
@@ -42,6 +48,7 @@ nothing else is left beside them, as the replay runner requires of a stage's out
 from __future__ import annotations
 
 import argparse
+import bisect
 import hashlib
 import json
 import os
@@ -49,16 +56,19 @@ import sqlite3
 import sys
 import tempfile
 import unicodedata
+from array import array
 from collections import Counter, defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 
-from store import canonical_json, digest_file
+from layout import bubble_module
+from store import canonical_json, digest_file, read_metadata
 
 ROOT = Path(__file__).resolve().parent.parent
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 SIDECAR_SCHEMA = "wikilean.brain-serving-tables/v1"
 AKA_SEP = "\x1f"
-WHOLE_FILES = ("aliases.json", "labels.json", "supercells.json", "manifest.json")
+WHOLE_FILES = ("aliases.json", "labels.json", "supercells.json", "manifest.json", "explorer.json")
 ALIAS_KINDS = {"organs": "organ", "decls": "decl", "slugs": "slug"}
 HOT_PREFIX_NAMES = 1000      # a prefix starting more names than this is listed in hot_prefixes
 HOT_PREFIX_OWNERS = 100      # owners listed per hot prefix, for cells and supercells each
@@ -66,6 +76,12 @@ QUERY_UNITS = (2, 200)       # the Worker's shortest and longest search query, U
 KIDS_CAP = 64                # children carried on a supercell row, the largest by n_sub
 DELETE_BOUND_BYTES = 4 * 2**20   # the pruner deletes about this much row data per statement
 MIN_SQLITE = (3, 34, 0)      # the trigram tokenizer; the replay image carries 3.40.1
+ALL_SCOPE = "all"            # the explorer scope of every focus that is not a `path:` folder
+LIVE_TOUCH = 2000            # a scope of at most this many cells (core plus ripple) ...
+LIVE_SCAN = 20_000           # ... whose degrees sum to at most this is computed live, no rows
+DRAW_CAP = 25_000            # a stored scope drawing more nodes than this collapses modules
+PART_BYTES = 1_000_000       # one explorer_scopes row, UTF-8 bytes
+SCOPE_PARTS = 8              # rows per stored scope; more than this collapses modules too
 
 SCHEMA = """
 CREATE TABLE meta(key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -97,6 +113,11 @@ CREATE INDEX xrefs_node ON xrefs(node, page_ord);
 CREATE INDEX xrefs_page ON xrefs(page, node_ord);
 CREATE TABLE text_ids(seq INTEGER PRIMARY KEY, node TEXT NOT NULL UNIQUE, owner TEXT NOT NULL,
                       body TEXT NOT NULL);
+CREATE TABLE explorer_edges(seq INTEGER PRIMARY KEY, a TEXT NOT NULL, b TEXT NOT NULL,
+                            w INTEGER NOT NULL, UNIQUE(a, b));
+CREATE INDEX explorer_edges_b ON explorer_edges(b);
+CREATE TABLE explorer_scopes(seq INTEGER PRIMARY KEY, scope TEXT NOT NULL, part INTEGER NOT NULL,
+                             json TEXT NOT NULL, UNIQUE(scope, part));
 CREATE VIRTUAL TABLE names USING fts5(name, content='', tokenize='trigram');
 CREATE VIRTUAL TABLE texts USING fts5(body, content='');
 """
@@ -104,7 +125,8 @@ CREATE VIRTUAL TABLE texts USING fts5(body, content='');
 # pruner and the importer's range repair delete FTS rows by rowid.
 # the tables the importer copies, each digested over every column in seq order
 DATA_TABLES = ("cell_pages", "aliases", "labels", "supercells", "name_keys", "hot_prefixes",
-               "cell_under", "synapse_traces", "xrefs", "text_ids")
+               "cell_under", "synapse_traces", "xrefs", "text_ids", "explorer_edges",
+               "explorer_scopes")
 
 
 def compact(value) -> str:
@@ -370,8 +392,394 @@ def publish_together(pairs: list[tuple[Path, Path]]) -> None:
                 backup.unlink(missing_ok=True)
 
 
-def cell_page_rows(cells_dir: Path, manifest: dict, xy_by_id: dict[str, str | None]):
-    """(id, json) for every shard entry, one shard in memory at a time; fills xy_by_id."""
+def explorer_node(cid: str, label, xy, f, p) -> str:
+    """A cell as explorer.json lists it: id, label, xy, then f and p when set."""
+    return compact({"id": cid, "label": label, "xy": xy, **({"f": f} if f else {}),
+                    **({"p": p} if p else {})})
+
+
+@dataclass
+class Scope:
+    """One explorer scope: its core and touch (core plus one ripple) in id order, the positions
+    of the edges with both ends in touch in the graph's edge order, and scan, the degrees summed
+    over touch (the edge rows the Worker's live statements walk)."""
+    name: str
+    core: list[int]
+    touch: list[int]
+    edges: list[int]
+    scan: int
+
+
+class ExplorerGraph:
+    """The explorer's flat cell graph as arrays, to draw any scope as the static explorer does
+    (build_brain_page.py renderExplorer): a `path:` scope is its core, the cells whose `p` is the
+    scope or under it, plus one ripple of their neighbors; `all` is every cell, with no ripple.
+    Node i is the i-th cell in id order and edges keep explorer.json's order, (-w, i, j).
+
+    `module` names each cell's module bubble (None for a simulated cell) and `discs` each
+    module's [x, y, r]; a stored scope too big to draw cell by cell draws a module's touched
+    members as one dot. A graph read back from a serving file has neither, and draws as the
+    Worker's live computation must."""
+
+    def __init__(self, ids: list[str], nodes: list[str], p: list[str | None], f: list[int],
+                 libs: list[str | None], edges: list[tuple[int, int, int]],
+                 module: list[str | None] | None = None, discs: dict | None = None):
+        n = len(ids)
+        self.ids, self.nodes, self.p, self.f, self.libs = ids, nodes, p, f, libs
+        self.module = module or [None] * n
+        self.discs = discs or {}
+        self.ea = array("q", (e[0] for e in edges))
+        self.eb = array("q", (e[1] for e in edges))
+        self.ew = array("q", (e[2] for e in edges))
+        # CSR adjacency over both directions (a self-loop once): node u's entries are
+        # off[u] .. off[u + 1] - 1, each a neighbor and the edge's position
+        deg = array("q", bytes(8 * n))
+        for a, b in zip(self.ea, self.eb):
+            deg[a] += 1
+            if a != b:
+                deg[b] += 1
+        off = array("q", bytes(8 * (n + 1)))
+        for u in range(n):
+            off[u + 1] = off[u] + deg[u]
+        at = array("q", off[:n])
+        self.adj = array("q", bytes(8 * off[n]))
+        self.adj_edge = array("q", bytes(8 * off[n]))
+        for e, (a, b) in enumerate(zip(self.ea, self.eb)):
+            for u, v in ((a, b), (b, a)) if a != b else ((a, b),):
+                self.adj[at[u]], self.adj_edge[at[u]] = v, e
+                at[u] += 1
+        self.deg, self.off = deg, off
+        # the core of a scope is two ranges of the cells sorted by p
+        by_p = sorted((value, i) for i, value in enumerate(p) if value)
+        self._p_keys = [value for value, _ in by_p]
+        self._p_nodes = [i for _, i in by_p]
+        self._mark = array("q", bytes(8 * n))
+        self._stamp = 0
+
+    @classmethod
+    def from_serving(cls, db: sqlite3.Connection) -> "ExplorerGraph":
+        """The graph a serving file's labels and explorer_edges rows hold: what the Worker's live
+        computation reads, so explorer_payload on it is the oracle for that computation."""
+        rows = sorted(db.execute("SELECT id, label, xy, f, p, libs FROM labels"))
+        index = {row[0]: i for i, row in enumerate(rows)}
+        edges = sorted(((index[a], index[b], w) for a, b, w in
+                        db.execute("SELECT a, b, w FROM explorer_edges")),
+                       key=lambda e: (-e[2], e[0], e[1]))
+        return cls([r[0] for r in rows],
+                   [explorer_node(r[0], r[1], None if r[2] is None else json.loads(r[2]), r[3], r[4])
+                    for r in rows],
+                   [r[4] for r in rows], [r[3] or 0 for r in rows], [r[5] for r in rows], edges)
+
+    def scope(self, name: str) -> Scope:
+        if name == ALL_SCOPE:
+            everything = list(range(len(self.ids)))
+            return Scope(name, everything, everything, list(range(len(self.ea))), sum(self.deg))
+        if not name.startswith("path:"):
+            raise ValueError(f"{name!r} is not an explorer scope: `all` or a path: folder")
+        keys, nodes = self._p_keys, self._p_nodes
+        core = sorted(nodes[bisect.bisect_left(keys, name):bisect.bisect_right(keys, name)]
+                      + nodes[bisect.bisect_left(keys, name + "/"):bisect.bisect_left(keys, name + "0")])
+        self._stamp += 1
+        stamp, mark, adj, off = self._stamp, self._mark, self.adj, self.off
+        touch = list(core)
+        for u in core:
+            mark[u] = stamp
+        for u in core:
+            for k in range(off[u], off[u + 1]):
+                if mark[adj[k]] != stamp:
+                    mark[adj[k]] = stamp
+                    touch.append(adj[k])
+        touch.sort()
+        edges = []
+        for u in touch:             # each edge once, from its first end
+            for k in range(off[u], off[u + 1]):
+                e = self.adj_edge[k]
+                if self.ea[e] == u and mark[adj[k]] == stamp:
+                    edges.append(e)
+        edges.sort()
+        return Scope(name, core, touch, edges, sum(self.deg[u] for u in touch))
+
+    def collapse_order(self, scope: Scope) -> list[str]:
+        """The modules with members in the scope's touch, in the order they collapse into dots:
+        ripple modules (no member in the core) first, then core modules, each by members in the
+        scope, most first, then path."""
+        members: Counter = Counter(self.module[u] for u in scope.touch if self.module[u])
+        in_core = {self.module[u] for u in scope.core if self.module[u]}
+
+        def order(modules):
+            return sorted(modules, key=lambda m: (-members[m], m))
+        return order(m for m in members if m not in in_core) + order(in_core)
+
+    def draw(self, scope: Scope, collapsed: list[str]):
+        """The scope's payload with the modules in `collapsed` drawn as dots: (_meta without its
+        part count, libs, node, dot and edge texts). Cells and dots keep id and path order; an
+        edge to a dot is summed per pair, an edge inside one dot is dropped, and with any dot
+        the edges sort by (-w, i, j). Without one, this is exactly the static explorer's draw
+        of the scope with no filter on."""
+        gone = set(collapsed)
+        cells = [u for u in scope.touch if self.module[u] not in gone]
+        local = {u: i for i, u in enumerate(cells)}
+        groups: dict[str, list[int]] = defaultdict(list)
+        for u in scope.touch:
+            if self.module[u] in gone:
+                groups[self.module[u]].append(u)
+        dots = sorted(groups)
+        dot_libs = {}
+        for j, m in enumerate(dots):
+            for u in groups[m]:
+                local[u] = len(cells) + j
+            dot_libs[m] = AKA_SEP.join(sorted({lib for u in groups[m] if self.libs[u]
+                                               for lib in self.libs[u].split(AKA_SEP)})) or None
+        libs = sorted({self.libs[u] for u in cells if self.libs[u]}
+                      | {v for v in dot_libs.values() if v})
+        lib_index = {lib: i for i, lib in enumerate(libs)}
+
+        def with_l(text: str, lib: str | None) -> str:
+            return text if lib is None else f'{text[:-1]},"l":{lib_index[lib]}}}'
+        nodes = [with_l(self.nodes[u], self.libs[u]) for u in cells]
+        bubbles = []
+        for m in dots:
+            fa = 0
+            for u in groups[m]:
+                fa |= self.f[u]
+            bubbles.append(with_l(compact({"path": m, "disc": self.discs[m], "n": len(groups[m]),
+                                           **({"fa": fa} if fa else {})}), dot_libs[m]))
+        ea, eb, ew = self.ea, self.eb, self.ew
+        if not gone:
+            edges = [f"[{local[ea[e]]},{local[eb[e]]},{ew[e]}]" for e in scope.edges]
+        else:
+            kept, summed = [], Counter()
+            for e in scope.edges:
+                i, j = local[ea[e]], local[eb[e]]
+                if i < len(cells) and j < len(cells):
+                    kept.append((ew[e], i, j))
+                elif i != j:
+                    summed[min(i, j), max(i, j)] += ew[e]
+            rows = sorted(kept + [(w, i, j) for (i, j), w in summed.items()],
+                          key=lambda r: (-r[0], r[1], r[2]))
+            edges = [f"[{i},{j},{w}]" for w, i, j in rows]
+        meta = {"scope": scope.name, "parts": 0,
+                "counts": {"nodes": len(cells), "bubbles": len(dots), "edges": len(edges),
+                           "universe": len(scope.touch)},
+                "collapsed": len(scope.touch) - len(cells)}
+        return meta, libs, nodes, bubbles, edges
+
+    def edge_rows(self):
+        """explorer_edges rows (a, b, w) in (a, b) order, which is index order."""
+        for e in sorted(range(len(self.ea)), key=lambda e: (self.ea[e], self.eb[e])):
+            yield self.ids[self.ea[e]], self.ids[self.eb[e]], self.ew[e]
+
+
+def pack_parts(meta: dict, libs: list[str], nodes: list[str], bubbles: list[str],
+               edges: list[str]) -> tuple[list[str], int]:
+    """A payload as explorer_scopes parts of at most PART_BYTES UTF-8 bytes, and the bytes of
+    part 0's head. Part 0 is {"_meta", "libs", "nodes", "bubbles", "edges"} and each later part
+    {"nodes", "bubbles", "edges"}, filled greedily with the nodes, then the dots, then the
+    edges, so the parts' lists joined in order are the whole payload (join_parts)."""
+    def head() -> str:
+        return f'"_meta":{compact(meta)},"libs":{compact(libs)}'
+    skeleton = len('{"nodes":[],"bubbles":[],"edges":[]}')
+    head_bytes = len(head().encode())       # one digit of parts: a scope over 9 never fits
+    if skeleton + 1 + head_bytes > PART_BYTES:
+        raise ValueError(f"explorer scope {meta['scope']}: _meta and libs alone are {head_bytes} "
+                         f"bytes, over a {PART_BYTES}-byte part")
+    parts: list[list[list[str]]] = []
+    current: list[list[str]] = [[], [], []]
+    size = skeleton + 1 + head_bytes
+    for section, items in enumerate((nodes, bubbles, edges)):
+        for item in items:
+            cost = len(item.encode()) + (1 if current[section] else 0)
+            if size + cost > PART_BYTES:
+                parts.append(current)
+                current, size = [[], [], []], skeleton
+                cost = len(item.encode())
+                if size + cost > PART_BYTES:
+                    raise ValueError(f"explorer scope {meta['scope']}: one item of {cost} bytes "
+                                     f"does not fit a {PART_BYTES}-byte part")
+            current[section].append(item)
+            size += cost
+    parts.append(current)
+    meta["parts"] = len(parts)
+    texts = [("{" + (head() + "," if i == 0 else "")
+              + ",".join(f'"{name}":[{",".join(part[k])}]'
+                         for k, name in enumerate(("nodes", "bubbles", "edges"))) + "}")
+             for i, part in enumerate(parts)]
+    return texts, len(head().encode())
+
+
+def join_parts(texts: list[str]) -> dict:
+    """The payload explorer_scopes parts hold, their lists joined in part order."""
+    first = json.loads(texts[0])
+    whole = {"_meta": first["_meta"], "libs": first["libs"], "nodes": [], "bubbles": [], "edges": []}
+    for text in texts:
+        part = json.loads(text)
+        for key in ("nodes", "bubbles", "edges"):
+            whole[key] += part[key]
+    return whole
+
+
+def fits(texts: list[str], meta: dict) -> bool:
+    return (meta["counts"]["nodes"] + meta["counts"]["bubbles"] <= DRAW_CAP
+            and len(texts) <= SCOPE_PARTS and all(len(t.encode()) <= PART_BYTES for t in texts))
+
+
+def stored_parts(graph: ExplorerGraph, scope: Scope) -> tuple[list[str], dict]:
+    """A stored scope's parts: drawn as the static explorer draws it if that fits (at most
+    DRAW_CAP nodes, at most SCOPE_PARTS parts), else with the first k modules of its collapse
+    order as dots, for a k that fits, found by doubling then bisecting from the least k the
+    node cap allows. Fails the build, naming the scope, when nothing fits with every module
+    collapsed."""
+    order = graph.collapse_order(scope)
+    members = Counter(graph.module[u] for u in scope.touch if graph.module[u])
+
+    def attempt(k: int):
+        meta, *rest = graph.draw(scope, order[:k])
+        texts, head = pack_parts(meta, *rest)
+        return texts, meta, head
+
+    def nothing_fits(nodes: int, parts: str = "") -> ValueError:
+        return ValueError(f"explorer scope {scope.name} does not fit with all {len(order)} of its "
+                          f"modules collapsed: {nodes} nodes{parts} (at most {DRAW_CAP} nodes and "
+                          f"{SCOPE_PARTS} parts of {PART_BYTES} bytes)")
+    # collapsing a module of m members draws m - 1 fewer nodes, so no k below k_lo meets
+    # DRAW_CAP and the search starts there without drawing them
+    nodes, k_lo = len(scope.touch), 0
+    while nodes > DRAW_CAP and k_lo < len(order):
+        nodes -= members[order[k_lo]] - 1
+        k_lo += 1
+    if nodes > DRAW_CAP:
+        raise nothing_fits(nodes)
+    best, lo, hi = attempt(k_lo), k_lo - 1, k_lo
+    while not fits(best[0], best[1]):
+        if hi == len(order):
+            meta = best[1]
+            raise nothing_fits(meta["counts"]["nodes"] + meta["counts"]["bubbles"],
+                               f" in {len(best[0])} parts")
+        lo, hi = hi, min(len(order), max(hi + 1, 2 * hi))
+        best = attempt(hi)
+    while hi - lo > 1:              # a k that fits, not a proven minimum: fits is checked on bytes
+        mid = (lo + hi) // 2
+        tried = attempt(mid)
+        if fits(tried[0], tried[1]):
+            best, hi = tried, mid
+        else:
+            lo = mid
+    texts, meta, head = best
+    stats = {"universe": len(scope.touch), "scan": scope.scan, "parts": len(texts),
+             "bytes": sum(len(t.encode()) for t in texts), "header_bytes": head,
+             "nodes": meta["counts"]["nodes"] + meta["counts"]["bubbles"], "modules": hi}
+    full = attempt(len(order))[0] if order and hi < len(order) else texts
+    stats["full_collapse"] = {"parts": len(full), "bytes": sum(len(t.encode()) for t in full)}
+    return texts, stats
+
+
+def explorer_payload(graph: ExplorerGraph, scope: str, collapse: int = 0) -> dict:
+    """The explorer payload of `scope` with the first `collapse` modules of its collapse order
+    as dots, unpacked: one part, so `_meta.parts` is 1 (a stored scope's joined parts differ
+    only in that count). With collapse 0 it is the static explorer's draw of the scope (filters
+    off), node for node and edge for edge, with `collapsed` 0: the answer the Worker's live
+    computation must give for a scope with no part 0."""
+    sc = graph.scope(scope)
+    order = graph.collapse_order(sc)
+    if collapse > len(order):
+        raise ValueError(f"explorer scope {scope} has {len(order)} modules to collapse, not {collapse}")
+    meta, libs, nodes, bubbles, edges = graph.draw(sc, order[:collapse])
+    meta["parts"] = 1
+    return {"_meta": meta, "libs": libs, "nodes": json.loads(f"[{','.join(nodes)}]"),
+            "bubbles": json.loads(f"[{','.join(bubbles)}]"), "edges": json.loads(f"[{','.join(edges)}]")}
+
+
+def explorer_scope_rows(graph: ExplorerGraph, scopes: list[str], stats: dict):
+    """explorer_scopes rows (scope, part, json) in (scope, part) order, for `all` and every scope
+    over the live caps; fills stats with each stored scope's numbers and the totals."""
+    stored: dict[str, dict] = {}
+    live = 0
+    for name in scopes:
+        scope = graph.scope(name)
+        if name != ALL_SCOPE and len(scope.touch) <= LIVE_TOUCH and scope.scan <= LIVE_SCAN:
+            live += 1
+            continue
+        texts, stored[name] = stored_parts(graph, scope)
+        for part, text in enumerate(texts):
+            yield name, part, text
+    stats.update({
+        "caps": {"live_touch": LIVE_TOUCH, "live_scan": LIVE_SCAN, "draw": DRAW_CAP,
+                 "part_bytes": PART_BYTES, "scope_parts": SCOPE_PARTS},
+        "scopes": len(scopes), "live": live, "stored": len(stored),
+        "parts": sum(s["parts"] for s in stored.values()),
+        "bytes": sum(s["bytes"] for s in stored.values()),
+        "collapsed": sum(1 for s in stored.values() if s["modules"]),
+        "stored_scopes": stored})
+
+
+def read_explorer(cells_dir: Path, labels: list[dict], libs: list[str | None],
+                  xy_by_id: dict[str, str | None], bubbled: dict[str, tuple[str, int]],
+                  discs: dict) -> ExplorerGraph:
+    """explorer.json as an ExplorerGraph, checked against the labels and shards it was built
+    with, and the module bubbles checked against the discs the layout recorded."""
+    path = cells_dir / "explorer.json"
+    explorer = read_json(path)
+    if not isinstance(explorer.get("_meta"), dict) or explorer["_meta"].get("truncated") is not False:
+        raise ValueError(f"{path}: _meta.truncated is not false, so the graph may be partial")
+    rows = {r["id"]: (r, lib) for r, lib in zip(labels, libs)}
+    ids, nodes, p, f, node_libs, module = [], [], [], [], [], []
+    for node in explorer["nodes"]:
+        cid = node.get("id")
+        if cid not in rows or (ids and not ids[-1] < cid):
+            raise ValueError(f"{path}: node {cid!r} is not a label, or the nodes are not in id order")
+        if set(node) - {"id", "label", "xy", "f", "p"}:
+            raise ValueError(f"{path}: node {cid} has fields the serving tables do not carry: "
+                             f"{sorted(set(node) - {'id', 'label', 'xy', 'f', 'p'})}")
+        row, lib = rows[cid]
+        if ((node.get("label"), node.get("f") or None, node.get("p"))
+                != (row.get("label"), row.get("f") or None, row.get("p"))
+                or (None if node.get("xy") is None else compact(node["xy"])) != xy_by_id[cid]):
+            raise ValueError(f"{path}: node {cid} disagrees with its label row or shard entry")
+        ids.append(cid)
+        nodes.append(explorer_node(cid, node.get("label"), node.get("xy"), node.get("f"), node.get("p")))
+        p.append(node.get("p"))
+        f.append(node.get("f") or 0)
+        node_libs.append(lib)
+        module.append(bubbled[cid][0] if cid in bubbled else None)
+    if len(ids) != len(rows):
+        raise ValueError(f"{path} lists {len(ids)} cells; labels.json has {len(rows)}")
+    edges, last = [], None
+    for edge in explorer["edges"]:
+        if (not isinstance(edge, list) or len(edge) != 3
+                or any(not isinstance(v, int) or isinstance(v, bool) for v in edge)
+                or not (0 <= edge[0] < len(ids) and 0 <= edge[1] < len(ids))):
+            raise ValueError(f"{path}: edge {edge!r} is not [node, node, integer weight]")
+        key = (-edge[2], edge[0], edge[1])
+        if last is not None and not last < key:
+            raise ValueError(f"{path}: edges are not in (-w, i, j) order at {edge!r}")
+        last = key
+        edges.append((edge[0], edge[1], edge[2]))
+    del explorer
+
+    # every bubbled cell's module is its p (its one supercell), or it has no p and its module
+    # is path:<Lib>; so only a path:<Lib> module can mix members with and without a p
+    for cid, (mod, n_sups) in sorted(bubbled.items()):
+        if n_sups > 1 or rows[cid][0].get("p") != (mod if n_sups else None):
+            raise ValueError(f"{cid}: a bubbled cell must have one supercell (its module) or none; "
+                             f"it has {n_sups}, module {mod}, p {rows[cid][0].get('p')}")
+        if mod not in discs:
+            raise ValueError(f"{cid}: its module {mod} has no disc in the cells.jsonl _meta.bubbles")
+    for mod, disc in discs.items():
+        if (not isinstance(disc, list) or len(disc) != 3
+                or any(not isinstance(v, (int, float)) or isinstance(v, bool) for v in disc)):
+            raise ValueError(f"cells.jsonl _meta.bubbles[{mod!r}] is not [x, y, r]")
+    empty = sorted(set(discs) - {mod for mod, _ in bubbled.values()})
+    if empty:
+        raise ValueError(f"{len(empty)} discs in the cells.jsonl _meta.bubbles have no member, "
+                         f"e.g. {empty[0]}")
+    return ExplorerGraph(ids, nodes, p, f, node_libs, edges, module, discs)
+
+
+def cell_page_rows(cells_dir: Path, manifest: dict, xy_by_id: dict[str, str | None],
+                   bubbled: dict[str, tuple[str, int]]):
+    """(id, json) for every shard entry, one shard in memory at a time; fills xy_by_id, and
+    bubbled with the module (layout.bubble_module) and supercell count of each cell the layout
+    put in a module bubble."""
     for key in sorted(manifest["shards"]):
         shard = read_json(cells_dir / f"{key}.json")
         if len(shard) != manifest["shards"][key]:
@@ -380,32 +788,54 @@ def cell_page_rows(cells_dir: Path, manifest: dict, xy_by_id: dict[str, str | No
         for cid, entry in shard.items():
             if cid in xy_by_id:
                 raise ValueError(f"{cid} is in two cell shards, the second {key}.json")
-            value = (entry.get("cell") or {}).get("xy")
+            cell = entry.get("cell") or {}
+            value = cell.get("xy")
             xy_by_id[cid] = None if value is None else compact(value)
+            mod = bubble_module(cid, cell.get("supercells"), len(entry.get("organs") or ()))
+            if mod is not None:
+                bubbled[cid] = (mod, len(cell.get("supercells") or ()))
             yield cid, compact(entry)
         del shard
 
 
 def build(cells_dir: Path, nodes_path: Path, out: Path, *, xref_path: Path | None = None,
-          sidecar_path: Path | None = None) -> dict:
+          sidecar_path: Path | None = None, cells_path: Path | None = None) -> dict:
     if sqlite3.sqlite_version_info < MIN_SQLITE:
         raise RuntimeError(f"SQLite {sqlite3.sqlite_version} is too old: the names index's "
                            f"trigram tokenizer needs {'.'.join(map(str, MIN_SQLITE))} or newer")
     xref_path = xref_path or cells_dir.parent / "xref_index.json"
     sidecar_path = sidecar_path or out.with_name("serving-tables.json")
+    cells_path = cells_path or nodes_path.with_name("cells.jsonl")
     manifest = read_json(cells_dir / "manifest.json")
     traces = manifest.get("traces") or {}
     if "prov" in traces:
         # build_cell_shards ships traces.prov only when the synapse and cell prov tables differ
         raise ValueError(f"{cells_dir / 'manifest.json'}: traces carry their own prov table; "
                          "trace prov indexes must resolve against the manifest's")
+    # the discs must come from the cell build the tree was made from; the manifest copies its
+    # generated_at, cell count and prov (a replay build's generation_id is not copied, but its
+    # generated_at equals it)
+    cells_meta = read_metadata(cells_path)
+    manifest_meta = manifest.get("_meta") or {}
+    for name, ours, theirs in (
+            ("generated_at", cells_meta.get("generated_at"), manifest_meta.get("generated_at")),
+            ("counts.cells", (cells_meta.get("counts") or {}).get("cells"),
+             (manifest_meta.get("counts") or {}).get("cells")),
+            ("prov", cells_meta.get("prov", []), manifest.get("prov", []))):
+        if ours != theirs:
+            raise ValueError(f"{cells_path} is not the cell build {cells_dir} was made from: "
+                             f"its {name} differs from the manifest's")
+    discs = cells_meta.get("bubbles", {})
+    if not isinstance(discs, dict):
+        raise ValueError(f"{cells_path}: _meta.bubbles is not an object")
     # no lock of its own: a lock file would sit beside the outputs, where the replay runner
     # refuses undeclared files; the nightly's Brain lock and the runner serialize builds
-    return _build_outputs(cells_dir, nodes_path, out, manifest, traces, xref_path, sidecar_path)
+    return _build_outputs(cells_dir, nodes_path, cells_path, out, manifest, traces, discs,
+                          xref_path, sidecar_path)
 
 
-def _build_outputs(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict, traces: dict,
-                   xref_path: Path, sidecar_path: Path) -> dict:
+def _build_outputs(cells_dir: Path, nodes_path: Path, cells_path: Path, out: Path, manifest: dict,
+                   traces: dict, discs: dict, xref_path: Path, sidecar_path: Path) -> dict:
     temps = []
     for dest in (out, sidecar_path):
         fd, name = tempfile.mkstemp(prefix=f".{dest.name}.", suffix=".tmp", dir=dest.parent)
@@ -419,7 +849,9 @@ def _build_outputs(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict,
                          "PRAGMA cache_size=-262144;")
         db.executescript(SCHEMA)
         xy_by_id: dict[str, str | None] = {}
-        fill(db, "cell_pages", cell_page_rows(cells_dir, manifest, xy_by_id), order_by=("id",))
+        bubbled: dict[str, tuple[str, int]] = {}
+        fill(db, "cell_pages", cell_page_rows(cells_dir, manifest, xy_by_id, bubbled),
+             order_by=("id",))
         aliases = read_json(cells_dir / "aliases.json")
         fill(db, "aliases", ((kind, key, aliases[field][key])
                              for field, kind in sorted(ALIAS_KINDS.items(), key=lambda fk: fk[1])
@@ -440,7 +872,19 @@ def _build_outputs(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict,
                              AKA_SEP.join(r["aka"]) if r.get("aka") else None,
                              r.get("f"), r.get("p"), libs[i], xy_by_id[r["id"]])
                             for i, r in enumerate(labels)))
-        del xy_by_id
+        graph = read_explorer(cells_dir, labels, libs, xy_by_id, bubbled, discs)
+        del xy_by_id, bubbled
+        # a dot names a folder the page can open: every disc's module is a supercell path
+        stray = sorted(set(discs) - {path for path in supercells if path.startswith("path:")})
+        if stray:
+            raise ValueError(f"cells.jsonl _meta.bubbles: module {stray[0]} is not a path: supercell "
+                             f"in supercells.json ({len(stray)} such modules)")
+        fill(db, "explorer_edges", graph.edge_rows())
+        explorer: dict = {}
+        fill(db, "explorer_scopes", explorer_scope_rows(
+            graph, sorted([ALL_SCOPE, *(path for path in supercells if path.startswith("path:"))]),
+            explorer))
+        del graph
         fill(db, "supercells", supercell_rows(supercells, n_sub, fhist))
 
         fill(db, "name_keys", name_rows(labels, supercells))
@@ -503,6 +947,7 @@ def _build_outputs(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict,
                                   "WHERE kind IN ('label', 'aka')").fetchone()[0]
         inputs = {name: digest_file(cells_dir / name) for name in WHOLE_FILES}
         inputs["nodes.jsonl"] = digest_file(nodes_path)
+        inputs["cells.jsonl"] = digest_file(cells_path)
         inputs["xref_index.json"] = digest_file(xref_path)
         db.executemany("INSERT INTO meta VALUES (?, ?)", [
             ("schema_version", str(SCHEMA_VERSION)),
@@ -510,6 +955,8 @@ def _build_outputs(cells_dir: Path, nodes_path: Path, out: Path, manifest: dict,
             ("inputs", canonical_json(inputs)),
             # name_lc is str.lower(): the digests hold only under this Unicode version
             ("unicode_version", unicodedata.unidata_version),
+            # the explorer's caps and each stored scope's size, for step 0; not digested
+            ("explorer", canonical_json(explorer)),
         ])
         db.commit()
         db.execute("VACUUM")
@@ -538,6 +985,8 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     parser.add_argument("--cells-dir", type=Path, default=ROOT / "site" / "assets" / "brain" / "cells")
     parser.add_argument("--nodes", type=Path, default=ROOT / "brain" / "data" / "nodes.jsonl")
+    parser.add_argument("--cells", type=Path, default=None,
+                        help="cells.jsonl, for its _meta (default: next to --nodes)")
     parser.add_argument("--xref", type=Path, default=None,
                         help="xref_index.json (default: next to the cells directory)")
     parser.add_argument("--out", type=Path, default=ROOT / "brain" / "data" / "serving.sqlite3")
@@ -545,9 +994,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="serving-tables.json (default: next to --out)")
     args = parser.parse_args(argv)
     sidecar = build(args.cells_dir, args.nodes, args.out, xref_path=args.xref,
-                    sidecar_path=args.sidecar)
+                    sidecar_path=args.sidecar, cells_path=args.cells)
     for name, table in sidecar["tables"].items():
-        print(f"{name:14} {table['rows']:>10,} rows  {table['digest'][:12]}")
+        print(f"{name:15} {table['rows']:>10,} rows  {table['digest'][:12]}")
     print(f"wrote {args.out} ({args.out.stat().st_size / 1e6:.1f} MB) and its sidecar")
     return 0
 

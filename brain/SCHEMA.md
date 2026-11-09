@@ -207,6 +207,10 @@ modules (the decl's deepest supercell) becomes a disc of radius k/2·√members,
 near as it can get to the core cells its members bond with, with no disc overlapping
 another or covering a core cell, and the members spiral inside it (`place_bubbles`).
 With all of TauCeti: 13k core cells, 4,116 discs, 300 s for the whole cells stage.
+The discs are recorded in `cells.jsonl`'s `_meta.bubbles` as `{module: [x, y, r]}`, rounded
+to 0.1 like `xy`, and only when some cell is bubbled; no cell row records its module. The
+membership rule is `layout.bubble_module`, which `brain/build_serving_db.py` applies to the
+shard entries to draw a module as one dot in an explorer scope too big to draw cell by cell.
 
 ### v3 acceptance datapoints (brain/test_cells.py)
 

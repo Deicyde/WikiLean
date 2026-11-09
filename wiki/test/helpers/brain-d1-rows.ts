@@ -11,7 +11,9 @@
 // parsed values with their key order). Columns the Worker does not read yet
 // (labels.libs and xy, supercells.n_sub, fhist and kids,
 // hot_prefixes.live_sups, text_ids) are left out of the port and filled with
-// placeholders by the fixture.
+// placeholders by the fixture. Neither are the explorer tables (explorer_edges,
+// explorer_scopes): the Worker reads none of them yet, and writeTree writes only
+// the inputs the builder needs to build them.
 //
 // Why a checked port rather than a committed SQL fixture the Python job
 // regenerates: the rows then come from the same in-memory fixture the static
@@ -294,13 +296,16 @@ export function readTree(cellsDir: string, xrefPath: string): ServingTree {
 }
 
 /** `tree` on disk as build_serving_db reads it, the inverse of readTree:
- *  <dir>/cells (one shard, one trace file) and <dir>/xref_index.json. */
+ *  <dir>/cells (one shard, one trace file, explorer.json), <dir>/xref_index.json
+ *  and <dir>/cells.jsonl, which holds only the _meta line the builder reads.
+ *  explorer.json lists the labels in id order with their shard xy, and no edges. */
 export function writeTree(tree: ServingTree, dir: string): void {
   const cells = join(dir, "cells");
   mkdirSync(join(cells, "traces"), { recursive: true });
   const write = (path: string, value: Json) => writeFileSync(path, JSON.stringify(value));
+  const meta = { generated_at: "fixture", counts: { cells: Object.keys(tree.cells).length } };
   write(join(cells, "manifest.json"), {
-    _meta: { generated_at: "fixture" },
+    _meta: meta,
     shards: { all: Object.keys(tree.cells).length },
     traces: { dir: "traces", files: { all: Object.keys(tree.traces).length } },
   });
@@ -310,6 +315,17 @@ export function writeTree(tree: ServingTree, dir: string): void {
   write(join(cells, "aliases.json"), tree.aliases);
   write(join(cells, "supercells.json"), tree.supercells);
   write(join(dir, "xref_index.json"), tree.xrefIndex);
+  const nodes = [...tree.labels]
+    .sort((a, b) => codePointCompare(String(a.id), String(b.id)))
+    .map((r) => ({
+      id: r.id,
+      label: r.label,
+      xy: obj(tree.cells[String(r.id)]?.cell).xy ?? null,
+      ...(r.f ? { f: r.f } : {}),
+      ...(r.p ? { p: r.p } : {}),
+    }));
+  write(join(cells, "explorer.json"), { _meta: { truncated: false }, nodes, edges: [] });
+  writeFileSync(join(dir, "cells.jsonl"), `${JSON.stringify({ _meta: meta })}\n`);
 }
 
 /** The FTS table the importer creates for a dataset's names
