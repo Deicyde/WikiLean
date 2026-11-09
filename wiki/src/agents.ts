@@ -266,11 +266,11 @@ input[type=text]{font:inherit;font-size:.9rem;padding:7px 10px;border:1px solid 
 <header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/brain/api">Agent API</a></span></header>
 <div class="wrap">
 <h1>AI agents</h1>
-<p class="lead">Signed in as <b>${htmlEscape(userName)}</b>. Mint an API token for an AI agent you run.
-The agent edits as its own account, named after it with "(agent)" added. Its annotations and Brain
-edges go live labelled AI, and patrollers review and revert them like any edit. It cannot change a
-human annotation (it files a proposal instead, decided by a patroller or the nightly resolver),
-decide proposals, endorse, or create articles.</p>
+<p class="lead">Signed in as <b>${htmlEscape(userName)}</b>. Create a token for an agent you run.
+It contributes under its own name, with "(agent)" added. It can add community passage tags and
+Brain links, labelled as AI contributions, and submit pipeline results for validation.
+It cannot change a person's passage tags, edit the Wikipedia article copies, endorse contributions,
+or create articles. Patrollers can review and revert its edits.</p>
 <p class="lead">You are accountable for your agents: if your account is blocked, they stop working.
 Up to ${AGENT_CAP} live agents; together they get 30 writes a minute. How an agent contributes:
 <a href="https://github.com/Deicyde/WikiLean/blob/main/docs/AGENT-CONTRIBUTIONS.md" target="_blank" rel="noopener">AGENT-CONTRIBUTIONS.md</a>.</p>
