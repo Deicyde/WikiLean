@@ -227,11 +227,13 @@ disagree.
 come from its own workspace.
 
 **What changes.** It is new code, and it is not only a test harness. It is what a promotion
-into `brain/proposals/*.jsonl` will read (INTAKE.md section 6 step 1), what lets an operator
+into `brain/proposals/*.jsonl` will read, what lets an operator
 diff two sets of one page, and what makes the re-export of stage 6 possible without the
 producer's workspace. It is also the honest boundary of the batch-1 proof: a layer-derived
 value (the capped quote and `span_sha256`) cannot be recomputed from a record, so readback
 carries it through as the **cut** the record already states (stage 5).
+The [intake receipt](INTAKE.md#what-a-receipt-means) records validation;
+promotion into the Brain remains a separate operation.
 
 **Cost.** None; deterministic, offline.
 
