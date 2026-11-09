@@ -11,6 +11,12 @@ import { atomIdForOrgan } from "./brain-api.js";
 // only control chars and blank/overlong ids are rejected.
 export const BRAIN_ID_RE = /^(?!\s*$)[^\p{C}]{1,400}$/u;
 
+// own-property read — a JSON.parse'd map must never serve inherited names
+// (__proto__/constructor/toString), same gotcha as /api/articles/:key.
+export function own<T>(map: Record<string, T> | undefined, key: string): T | undefined {
+  return map && Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
+}
+
 const RELEASE_ID_RE = /^sha256:([0-9a-f]{64})$/;
 const RELEASE_HEX_RE = /^[0-9a-f]{64}$/;
 const DIGEST_RE = /^[0-9a-f]{64}$/;
@@ -440,8 +446,9 @@ function evictBrainRelease(cacheIdentity: string, releaseId: string): void {
   for (const evict of _brainReleaseEvictors) evict(releaseId);
 }
 
-// brain-edits registers its release-keyed derived indexes here so every Brain
-// cache observes one overlap window rather than retaining a different pair.
+// brain-store-static registers its release-keyed xref caches here (on first
+// use, see its header) so every Brain cache observes one overlap window rather
+// than retaining a different pair.
 export function registerBrainReleaseCacheEvictor(evict: (releaseId: string) => void): void {
   _brainReleaseEvictors.add(evict);
 }
