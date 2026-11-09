@@ -28,9 +28,12 @@
 // neighborhood's 200 rows). They are preconditions, not checks: a longer input
 // is a caller bug, and the D1Store throws a plain Error (500) on one. The
 // D1Store answers an empty input (ids = [], pages = []) without sending a
-// batch. On a D1 release the search route rejects a q over 200 UTF-16 units
-// with a 400 (docs/BRAIN-D1.md section 1, Request bounds), so searchPage never
-// sees a longer q.
+// batch. On a D1 release searchFor rejects a q over 200 UTF-16 units with a
+// 400 (docs/BRAIN-D1.md section 1, Request bounds). Other callers of
+// searchNames and searchCellNames (suggestionsFor, informalToFormal) may pass a
+// longer q: for that q, nameTiers runs only the exact tier (and D1Store.tiers
+// runs no tier for a cell q longer than longestName), so the bound is enforced
+// in nameTiers, not by the callers.
 //
 // Round trips: the routes await these methods one after another, so a store
 // cannot coalesce two calls into one batch behind the routes' backs. keyHits

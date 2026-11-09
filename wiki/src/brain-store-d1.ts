@@ -140,8 +140,10 @@ export interface DatasetConstants {
   supNamesFrom: number;
 }
 
-// Per isolate, by dataset id; a dataset's constants never change. FIFO of 4:
-// a Worker serves at most a current and a previous release.
+// Per isolate, by dataset id. names_mode can change when a dataset is pruned
+// and imported again, so every check compares the row with the memo and
+// refreshes it (see the header). FIFO of 4: a Worker serves at most a current
+// and a previous release.
 const _constants = new Map<string, DatasetConstants>();
 const MAX_MEMOIZED_DATASETS = 4;
 /** test-only */

@@ -145,10 +145,11 @@ is his (2026-11-08); the others are the design's own:
 
   It throws `BrainReleaseUnavailableError(release_id, "BRAIN_DB", reason)`
   (`brain.ts:558-568`) in three cases: no row comes back, `schema_version` isn't one this
-  Worker can read, or D1 raises an exception. The last three columns never change for a given
-  dataset, so the Worker memoizes them by dataset id. (Step 3b's first PR sends the check in a
-  store's first batch and in every batch of a write route, and memoizes the constants with a
-  comparison on every check; section 8 has why.)
+  Worker can read, or D1 raises an exception. The last three columns are memoized by dataset
+  id. `names_mode` is the importer's choice and can differ after a re-import, so the Worker
+  compares the memo with every readiness row; a difference refreshes the memo and answers 503
+  (section 8). (Step 3b's first PR sends the check in a store's first batch and in every batch
+  of a write route; section 8 has why.)
 - **Error handling stays as it is.** `withRelease` and MCP already turn that error into a 503
   carrying `release_id` (`brain-api.ts:2485-2491`, `mcp.ts:476-486`). Any other exception
   would become a 500, or "internal error" in MCP (`mcp.ts:487-497`).
@@ -1481,12 +1482,20 @@ be promoted. [neutral] PRs can land any time.
          503 would read as "not a node" and mint a community node. A read route's later batches
          leave it out once it passed: every data statement still matches only a `ready` dataset
          through `$DS`, and the pruner keeps the live releases' datasets, so a dataset that
-         leaves `ready` between two of them can only turn a read into a 404.
+         leaves `ready` between two of them can only turn a read into a 404 or a 200 with rows
+         missing (search hits, hydrated traces, later statement chunks), never into a write. If
+         PR 2 caches responses, a composite's last batch must carry the check before its
+         response may be cached.
        - The per-dataset constants are memoized per isolate, but `names_mode` is the importer's
          choice: a check whose row differs from the constants its batch was built from refreshes
          the memo and answers 503 for that request.
        - An unbound `BRAIN_DB` serves a D1 release from its static files, which it still
-         carries until the layout rule; after the layout rule the same path answers 503.
+         carries until the layout rule; after the layout rule the same path answers 503. For the
+         second PR: `storeFor` must then fail closed for `backend === "d1"` without `BRAIN_DB`
+         (throw `BrainReleaseUnavailableError(release_id, "BRAIN_DB", "not bound")`, or always
+         build a D1Store and let its first batch throw), not rely on missing asset files, which
+         `REQUIRED_RUNTIME_ARTIFACTS` would refuse first; update the `env.ts` and `storeFor`
+         comments with it, and test that an unbound `BRAIN_DB` answers 503 for a D1 release.
        - `traces_total` on hydrated supercell rows follows the cell rows' rule (decision 8).
        - Migration `0002_name_keys_exact.sql` adds `name_keys(ds, name_lc, seq)`, which the
          exact tier and the exact-name lookup name with `INDEXED BY`, so both stop at their

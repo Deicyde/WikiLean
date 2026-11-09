@@ -538,6 +538,14 @@ describe("readiness and faults", () => {
     expect(r.statements.filter((sql) => sql === READINESS_SQL).length).toBe(r.batches);
   });
 
+  it("makes one batch for POST node, so its readiness check covers every read", async () => {
+    // a second batch would need checkReadinessEveryBatch to carry the check: pin the count
+    const r = await serve("d1", (h) => post(h.env, "/api/brain/node", { qid: ABELIAN }, { user: "u-human" }));
+    expect(r.status).toBe(200);
+    expect(r.batches).toBe(1);
+    expect(r.statements.filter((sql) => sql === READINESS_SQL).length).toBe(1);
+  });
+
   it("answers 503 when the dataset's constants changed since the isolate memoized them, then serves", async () => {
     // names_mode is the realistic case (a dataset pruned and imported again);
     // longest_name keeps the third request's FTS query valid
@@ -962,7 +970,8 @@ describe("result bounds", () => {
     const name = db.prepare("INSERT INTO name_keys (ds, seq, name_lc, kind, owner, len16) VALUES (?, ?, ?, 'label', ?, ?)");
     let seq = 0;
     for (let i = 0; i < 250; i++) name.run(ds, ++seq, "basic", `cell:basic${i}`, 5);
-    for (let i = 0; i < 1001; i++) name.run(ds, ++seq, `ab${String(i).padStart(4, "0")}`, `cell:ab${i}`, 6);
+    // more than the range tier's LIMIT 1001, so the test below sees the LIMIT
+    for (let i = 0; i < 1500; i++) name.run(ds, ++seq, `ab${String(i).padStart(4, "0")}`, `cell:ab${i}`, 6);
     db.exec(namesFtsCreate("trigram", HEX));
     const fts = db.prepare(`INSERT INTO names_${HEX} (rowid, name) VALUES (?, ?)`);
     for (let i = 0; i < 50; i++) {
@@ -984,10 +993,11 @@ describe("result bounds", () => {
     expect(rows.map((r) => Number(r.seq))).toEqual(Array.from({ length: 200 }, (_, i) => i + 1));
   });
 
-  it("refuses a prefix range past 1,000 names (no hot row lists the prefix)", () => {
+  it("reads at most 1,001 names of a prefix range, and refuses the 1,001st (no hot row lists the prefix)", () => {
     const db = bigDataset();
     const t = tiers("ab", 25);
     const rows = t.stmts.map((stmt) => run(db, ID, stmt));
+    // 1,500 names start with "ab": only the LIMIT stops the read at 1,001
     expect(rows[2].length).toBe(1001);
     expect(() => t.decode(rows)).toThrow("a prefix range holds more names than the builder allows");
   });
