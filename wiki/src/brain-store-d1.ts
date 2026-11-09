@@ -255,11 +255,15 @@ export function breadcrumbsStmt(paths: readonly string[]): Stmt {
  *  which is the static walk's order; name_keys_exact bounds the read by its
  *  LIMIT) and the first supercell organ label. That branch reads every sorgan
  *  row of the two names on the UNIQUE (ds, name_lc, kind, owner) key, one per
- *  supercell with an organ of that label: a data bound, not a LIMIT. Reading
- *  name_keys_exact in seq order from sup_names_from instead would stop at the
- *  first sorgan row, but would pass every slabel and spath row of the name
- *  first (folder names such as Basic repeat across many supercells), which is
- *  the larger set. null when no lookup is asked. */
+ *  supercell with an organ of that label: a data bound, not a LIMIT. It names
+ *  that key's index (sqlite_autoindex_name_keys_2: SQLite numbers a table's
+ *  UNIQUE constraints in order, and (ds, seq) is the first), because for
+ *  min(seq) the planner prefers name_keys_exact, which would read the name's
+ *  rows of every kind. Reading name_keys_exact in seq order from
+ *  sup_names_from instead would stop at the first sorgan row, but would pass
+ *  every slabel and spath row of the name first (folder names such as Basic
+ *  repeat across many supercells), which is the larger set. null when no
+ *  lookup is asked. */
 export function keyHitsStmt(k: KeyLookup): Stmt | null {
   const parts: string[] = [];
   const params: unknown[] = [];
@@ -282,8 +286,8 @@ export function keyHitsStmt(k: KeyLookup): Stmt | null {
       `AND name_lc = ${keyLc} AND seq < ${SUP_NAMES_FROM} ORDER BY seq LIMIT 1)`,
     );
     parts.push(
-      `SELECT 'sorgan' AS hit, owner, seq FROM (SELECT owner, min(seq) AS seq FROM name_keys WHERE ds = ${DS} ` +
-      `AND kind = 'sorgan' AND name_lc IN (${keyLc}, ${slugLc}))`,
+      `SELECT 'sorgan' AS hit, owner, seq FROM (SELECT owner, min(seq) AS seq FROM name_keys ` +
+      `INDEXED BY sqlite_autoindex_name_keys_2 WHERE ds = ${DS} AND kind = 'sorgan' AND name_lc IN (${keyLc}, ${slugLc}))`,
     );
   }
   return parts.length ? { sql: parts.join(" UNION ALL "), params } : null;
@@ -347,7 +351,12 @@ export function rangeTierStmt(qlc: string): Stmt {
 
 /** [k rows]: names containing the fragment, in seq order, from the dataset's
  *  names_<hex> FTS table (rowid = name_keys.seq). CROSS JOIN keeps the k
- *  matches outer, so each probes name_keys by (ds, seq). */
+ *  matches outer, so each probes name_keys by (ds, seq). In parts mode
+ *  fragmentMatch never asks for a 1-unit prefix, which the table's
+ *  prefix='2 3' indexes do not serve: FTS5 would merge the doclist of every
+ *  term that starts with it before the rowid range and the LIMIT apply.
+ *  (A prefix of 4 or more units merges only the terms that start with it; it
+ *  is on step 0's measurement list.) */
 export function fragmentTierStmt(hex: string, match: string, lo: number, hi: number, k: number): Stmt {
   const table = namesTable(hex);
   return {
@@ -359,13 +368,19 @@ export function fragmentTierStmt(hex: string, match: string, lo: number, hi: num
 }
 
 /** The MATCH string for a fragment: one quoted phrase. In parts mode the query
- *  is split as the importer split the names (nameParts) and its last part is
- *  a prefix; a query with no letter or digit in it has no parts mode match. */
+ *  is split as the importer split the names (nameParts), and its last token
+ *  (the last run of letters and digits, which is what the tokenizer makes of
+ *  the end of the phrase) is a prefix when it is at least 2 UTF-16 units long.
+ *  A 1-unit last token matches only as a whole token, so "Nat.s" finds the
+ *  names with the parts "nat s", not "Nat.succ" (the prefix tier still finds
+ *  the names that start with "nat.s"). A query with no letter or digit in it
+ *  has no parts mode match. */
 export function fragmentMatch(q: string, namesMode: "trigram" | "parts"): string | null {
   if (namesMode === "trigram") return `"${q.replace(/"/g, '""')}"`;
   const parts = nameParts(q);
-  if (!/[\p{L}\p{N}]/u.test(parts)) return null;
-  return `"${parts.replace(/"/g, '""')}"*`;
+  const last = /[\p{L}\p{N}]+(?=[^\p{L}\p{N}]*$)/u.exec(parts);
+  if (!last) return null;
+  return `"${parts.replace(/"/g, '""')}"${last[0].length >= 2 ? "*" : ""}`;
 }
 
 const utf8 = new TextEncoder();
@@ -385,13 +400,21 @@ export function statementChunkEnd(candidates: readonly string[], from: number): 
 }
 
 /** [5 rows]: the atoms one chunk of statement candidates names, each with its
- *  longest matching name. The GROUP BY and ORDER BY read only the rows that
- *  match the chunk's at most 2,000 candidates. */
+ *  longest matching name. CROSS JOIN fixes the order: each of the at most
+ *  2,000 candidates, then each of the two cell kinds, probes the UNIQUE
+ *  (ds, name_lc, kind, owner) key (named, as in keyHitsStmt) on all three
+ *  columns, so the GROUP BY and ORDER BY read only the label and aka rows that
+ *  match a candidate. Left to the planner, sqlite_stat1 rows (ANALYZE or
+ *  PRAGMA optimize) switch an IN form to name_keys_exact, which reads every
+ *  kind's rows of each candidate. */
 export function statementChunkStmt(candidates: readonly string[]): Stmt {
   return {
     sql:
-      `SELECT owner, max(len16) AS len FROM name_keys WHERE ds = ${DS} AND kind IN ('label', 'aka') ` +
-      `AND name_lc IN (SELECT value FROM json_each(?2)) GROUP BY owner ORDER BY len DESC, owner LIMIT ${STMT_HITS}`,
+      `SELECT owner, max(len16) AS len FROM json_each(?2) j ` +
+      `CROSS JOIN (SELECT 'label' AS kind UNION ALL SELECT 'aka') t ` +
+      `CROSS JOIN name_keys k INDEXED BY sqlite_autoindex_name_keys_2 ` +
+      `WHERE k.ds = ${DS} AND k.name_lc = j.value AND k.kind = t.kind ` +
+      `GROUP BY owner ORDER BY len DESC, owner LIMIT ${STMT_HITS}`,
     params: [ids(candidates, STMT_CHUNK, "candidates")],
   };
 }
@@ -405,7 +428,9 @@ export function tracesStmt(pairs: readonly string[]): Stmt {
 }
 
 /** [examined rows; limit + 1 returned] plus the probe that says whether the
- *  pool goes on past the examined window. */
+ *  pool goes on past the examined window. Under a folder, CROSS JOIN keeps
+ *  cell_under's ord order outer, so the outer LIMIT stops the read once
+ *  limit + 1 rows match, with no sort; at most `examined` rows otherwise. */
 export function filterCellsStmts(mask: number, under: string, from: number, limit: number, examined: number): [Stmt, Stmt] {
   if (!under) {
     return [
@@ -423,7 +448,8 @@ export function filterCellsStmts(mask: number, under: string, from: number, limi
       sql:
         `SELECT l.ord AS ord, l.id AS id, l.label AS label, l.aka AS aka, l.f AS f, l.p AS p ` +
         `FROM (SELECT ord FROM cell_under WHERE ds = ${DS} AND anc = ?4 AND ord >= ?2 ORDER BY ord LIMIT ?5) u ` +
-        `JOIN labels l ON l.ds = ${DS} AND l.ord = u.ord WHERE (coalesce(l.f, 0) & ?3) = ?3 ORDER BY l.ord LIMIT ?6 + 1`,
+        `CROSS JOIN labels l WHERE l.ds = ${DS} AND l.ord = u.ord AND (coalesce(l.f, 0) & ?3) = ?3 ` +
+        `ORDER BY u.ord LIMIT ?6 + 1`,
       params: [from, mask, under, examined, limit],
     },
     {

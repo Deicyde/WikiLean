@@ -710,6 +710,27 @@ describe("the D1 store's own methods", () => {
     expect(statementChunkEnd(long, end)).toBeGreaterThan(end);
   });
 
+  it("asks parts mode for a prefix only of a last token of at least 2 units", () => {
+    expect(fragmentMatch("Nat.su", "parts")).toBe('"Nat su"*');
+    expect(fragmentMatch("fourierCoeff", "parts")).toBe('"fourier Coeff"*');
+    // a 1-unit last token has no prefix index (prefix='2 3'): it matches whole
+    expect(fragmentMatch("Nat.s", "parts")).toBe('"Nat s"');
+    expect(fragmentMatch("isS", "parts")).toBe('"is S"');
+    expect(fragmentMatch("Nat.s?", "parts")).toBe('"Nat s?"');
+    expect(fragmentMatch("...", "parts")).toBeNull();
+    expect(fragmentMatch("Nat.s", "trigram")).toBe('"Nat.s"');
+    const db = new DatabaseSync(":memory:");
+    const hex = "1".repeat(64);
+    db.exec(namesFtsCreate("parts", hex));
+    const insert = db.prepare(`INSERT INTO names_${hex} (rowid, parts) VALUES (?, ?)`);
+    for (const [rowid, parts] of [[1, "Nat succ"], [2, "Nat s"], [3, "Nat add"]] as const) insert.run(rowid, parts);
+    const hits = (q: string) =>
+      db.prepare(`SELECT rowid AS id FROM names_${hex} WHERE names_${hex} MATCH ? ORDER BY rowid`).all(fragmentMatch(q, "parts")!)
+        .map((r) => Number((r as { id: number }).id));
+    expect(hits("Nat.su")).toEqual([1]);
+    expect(hits("Nat.s")).toEqual([2]);
+  });
+
   it("refuses an input past each statement's cap", () => {
     const many = (n: number, prefix: string) => Array.from({ length: n }, (_, i) => `${prefix}${i}`);
     expect(() => labelRowsStmts(many(501, "cell:x"))).toThrow(/at most 500/);
@@ -886,11 +907,11 @@ describe("statement plans", () => {
     ["hot tier", hotTierStmt("ab", true, true), ["j", "json_each"], null],
     ["range tier", rangeTierStmt("ab"), ["g"], null],
     ["fragment tier", fragmentTierStmt(hex, fragmentMatch("algebra", "trigram")!, 1, 2 ** 52, 100), ["f"], null],
-    ["statement chunk", statementChunkStmt(["vector space", "basis"]), ["json_each"], "GROUP BY and ORDER BY read only the rows matching at most 2,000 candidates"],
+    ["statement chunk", statementChunkStmt(["vector space", "basis"]), ["j", "t"], "GROUP BY and ORDER BY read only the rows matching at most 2,000 candidates"],
     ["traces", tracesStmt([`${MODULE_CELL}|${LINALG_SUPER}`]), ["json_each"], null],
     ["filter cells", filterCellsStmts(1, "", 0, 100, 10000)[0], [], null],
     ["filter cells probe", filterCellsStmts(1, "", 0, 100, 10000)[1], [], null],
-    ["filter cells under", filterCellsStmts(1, "path:Mathlib", 0, 100, 10000)[0], ["u"], "at most the examination cap of rows"],
+    ["filter cells under", filterCellsStmts(1, "path:Mathlib", 0, 100, 10000)[0], ["u"], null],
     ["filter cells under probe", filterCellsStmts(1, "path:Mathlib", 0, 100, 10000)[1], [], null],
     ["filter supercells", filterSupercellsStmts(1, "path:Mathlib", 0, 100, 10000)[0], [], null],
     ["filter supercells probe", filterSupercellsStmts(1, "", 0, 100, 10000)[1], [], null],
@@ -903,21 +924,63 @@ describe("statement plans", () => {
     ["atom exists (cell)", atomExistsStmt(MODULE_CELL), [], null],
   ];
 
-  it.each(CASES)("%s reads a bounded set", (_name, stmt, scans, tempReason) => {
-    const db = new DatabaseSync(":memory:");
-    for (const name of MIGRATIONS_BRAIN) db.exec(brainMigration(name));
-    db.exec(namesFtsCreate("trigram", hex));
-    const plan = db.prepare(`EXPLAIN QUERY PLAN ${stmt.sql}`).all(`sha256:${hex}`, ...(stmt.params as Array<string | number>)) as Array<{ detail: string }>;
-    const bad: string[] = [];
-    for (const { detail } of plan) {
-      const scan = /^SCAN (\S+)/.exec(detail);
-      const free = scan && (scan[1] === "CONSTANT" || scan[1].startsWith("(subquery") || detail.includes("VIRTUAL TABLE"));
-      if (scan && !free && !scans.includes(scan[1])) bad.push(detail);
-      if (scan && SHARED.has(scan[1])) bad.push(detail);
-      if (/\(ds=\?\)/.test(detail)) bad.push(detail);
-      if (detail.includes("USE TEMP B-TREE") && tempReason === null) bad.push(detail);
-    }
-    expect(bad).toEqual([]);
+  // The name_keys index and probe columns of each case that reads name_keys
+  // (every other case reads none). A search on the wrong index passes the
+  // checks above, so it is pinned here: the sorgan branch on name_keys_exact
+  // reads the name's rows of every kind.
+  const NAME_KEYS: Record<string, string[]> = {
+    keyHits: ["name_keys_exact (ds=? AND name_lc=? AND seq<?)", "sqlite_autoindex_name_keys_2 (ds=? AND name_lc=? AND kind=?)"],
+    "exact tier": ["name_keys_exact (ds=? AND name_lc=? AND seq>? AND seq<?)"],
+    "hot tier": ["sqlite_autoindex_name_keys_1 (ds=? AND seq=?)", "sqlite_autoindex_name_keys_1 (ds=? AND seq=?)"],
+    "range tier": ["name_keys_exact (ds=? AND name_lc>? AND name_lc<?)"],
+    "fragment tier": ["sqlite_autoindex_name_keys_1 (ds=? AND seq=?)"],
+    "statement chunk": ["sqlite_autoindex_name_keys_2 (ds=? AND name_lc=? AND kind=?)"],
+  };
+  // No statistics (D1's state until someone runs ANALYZE or PRAGMA optimize),
+  // then hand-written sqlite_stat1 rows for name_keys, under which an unpinned
+  // IN form of the statement chunk moved to name_keys_exact (ds, name_lc).
+  const STATS: Array<[string, Array<[string, string]>]> = [
+    ["with no sqlite_stat1", []],
+    ["under sqlite_stat1 rows of one dataset, 3 rows a name", [
+      ["sqlite_autoindex_name_keys_1", "3000000 3000000 1"],
+      ["sqlite_autoindex_name_keys_2", "3000000 3000000 3 2 1"],
+      ["name_keys_exact", "3000000 3000000 3 1"],
+    ]],
+    ["under sqlite_stat1 rows of two datasets, 20 rows a name", [
+      ["sqlite_autoindex_name_keys_1", "6000000 3000000 1"],
+      ["sqlite_autoindex_name_keys_2", "6000000 3000000 20 10 1"],
+      ["name_keys_exact", "6000000 3000000 20 1"],
+    ]],
+  ];
+
+  describe.each(STATS)("%s", (_label, stats) => {
+    it.each(CASES)("%s reads a bounded set", (name, stmt, scans, tempReason) => {
+      const db = new DatabaseSync(":memory:");
+      for (const migration of MIGRATIONS_BRAIN) db.exec(brainMigration(migration));
+      db.exec(namesFtsCreate("trigram", hex));
+      if (stats.length) {
+        db.exec("ANALYZE");
+        db.exec("DELETE FROM sqlite_stat1");
+        const stat = db.prepare("INSERT INTO sqlite_stat1 (tbl, idx, stat) VALUES ('name_keys', ?, ?)");
+        for (const [idx, value] of stats) stat.run(idx, value);
+        db.exec("ANALYZE sqlite_schema"); // reload the statistics
+      }
+      const plan = db.prepare(`EXPLAIN QUERY PLAN ${stmt.sql}`).all(`sha256:${hex}`, ...(stmt.params as Array<string | number>)) as Array<{ detail: string }>;
+      const bad: string[] = [];
+      const nameKeys: string[] = [];
+      for (const { detail } of plan) {
+        const scan = /^SCAN (\S+)/.exec(detail);
+        const free = scan && (scan[1] === "CONSTANT" || scan[1].startsWith("(subquery") || detail.includes("VIRTUAL TABLE"));
+        if (scan && !free && !scans.includes(scan[1])) bad.push(detail);
+        if (scan && SHARED.has(scan[1])) bad.push(detail);
+        if (/\(ds=\?\)/.test(detail)) bad.push(detail);
+        if (detail.includes("USE TEMP B-TREE") && tempReason === null) bad.push(detail);
+        const index = /USING (?:COVERING )?INDEX (name_keys_exact|sqlite_autoindex_name_keys_\d+) (\([^)]*\))/.exec(detail);
+        if (index) nameKeys.push(`${index[1]} ${index[2]}`);
+      }
+      expect(bad).toEqual([]);
+      expect(nameKeys.sort()).toEqual([...(NAME_KEYS[name] ?? [])].sort());
+    });
   });
 });
 

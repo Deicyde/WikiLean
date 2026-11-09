@@ -1493,7 +1493,24 @@ be promoted. [neutral] PRs can land any time.
          LIMIT; without it they would sort every row that shares a name. It must land while the
          tables are empty, so `brain_d1_import.py` refuses to import until it is on D1. The
          supercell organ-label branch of the exact-name lookup is bounded by the data (one row per
-         supercell with an organ of that label), not by a LIMIT.
+         supercell with an organ of that label), not by a LIMIT; it names the UNIQUE
+         (ds, name_lc, kind, owner) key's index, `sqlite_autoindex_name_keys_2`, because for its
+         `min(seq)` the planner picks `name_keys_exact` and reads the name's rows of every kind.
+       - The statement pass's chunk statement fixes its join order with `CROSS JOIN` (each
+         candidate, then `label` and `aka`) and names the same index, so it probes
+         (ds, name_lc, kind) whatever statistics D1 holds: with `sqlite_stat1` rows (`ANALYZE`,
+         `PRAGMA optimize`) the plan's `IN` form moved to `name_keys_exact` and read every kind's
+         rows of each candidate. The plan test pins each statement's `name_keys` index and probe
+         columns, with no statistics and under hand-written `sqlite_stat1` rows.
+       - `filterCells` under a folder joins `labels` with `CROSS JOIN` and orders by
+         `cell_under.ord`, so it stops once `limit + 1` rows match instead of reading and sorting
+         the whole examination window.
+       - In parts mode a fragment's last token is a prefix only when it is at least 2 UTF-16
+         units long, which the `prefix='2 3'` indexes serve (4 or more stays on step 0's
+         measurement list). A 1-unit last token matches as a whole token: a 1-unit prefix has no
+         prefix index, and FTS5 would merge the doclist of every term that starts with it before
+         the LIMIT. So `Nat.s` finds the parts `nat s` but not `Nat.succ` in the fragment tier;
+         the prefix tier still finds names that start with `nat.s`.
        - Quickstatements loads every endpoint's owner, cell page and supercell (with its
          breadcrumb) in batches of 50 keys before its first write (`prefetchAtoms`), plus one
          pass for the supercells organ keys name; rows are then written one by one as before, so
