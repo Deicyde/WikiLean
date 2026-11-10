@@ -250,9 +250,8 @@ changes and general revert belong to R2; the trust ladder belongs to R3.
 
 A contributed record set follows the [self-service intake path](INTAKE.md): your
 agent uploads the sealed set, and the trusted service runs the existing checker
-and returns a private receipt. See the [deployment status](ROADMAP.md#status-log)
-before submitting. Acceptance completes intake; review and publication follow
-separately. The importer writes pending JSON by default and generates live SQL
+and returns a private receipt. Acceptance completes intake; review and publication
+follow separately. The importer writes pending JSON by default and generates live SQL
 only with explicit approval (`--trusted`). Applying that SQL remains an operator
 action after a backup. Accepted sets do not publish themselves.
 

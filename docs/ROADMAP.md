@@ -209,7 +209,7 @@ does not mark the other releases authorised or deployed.
 | **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | assign at merge | not authorised |
 | **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | assign at merge | not authorised |
 | **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | assign at merge | not authorised |
-| **R5** | Intake and claims: submitted record sets verified on the server, the claims API, promotion into overlay rows | `0020` for intake; remaining numbers assigned at merge | intake separately authorised and implemented on 2026-11-09; deployment status below. Claims and promotion remain not authorised |
+| **R5** | Intake and claims: submitted record sets verified on the server, the claims API, promotion into overlay rows | `0020` applied for intake; remaining numbers assigned at merge | intake separately authorised on 2026-11-09 and **live (2026-11-10 UTC)**; deployment record below. Claims and promotion remain not authorised |
 | **R6** | The long tail, not scheduled: an anonymous suggestion queue, challenge packaging, the overlay research export, folding mature rows back into a published store | — | not scheduled |
 
 The original signing authorised **R0, R1 and the decisions below**. R2–R6 were **not** authorised and
@@ -1458,6 +1458,21 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-10 (UTC): **Self-service pipeline intake is live.** [PR #168](https://github.com/Deicyde/WikiLean/pull/168)
+  deployed at 03:22 UTC from `3b32c8cb`, release `sha256:47e3b307…`,
+  Worker `89e1f1a4…`, deployment `8fcc8d11…`. The exact promoter closed with
+  `deployed` and a passing live canary. Migration `0020` adds only the two private
+  staging tables; an encrypted backup and two in-memory migration rehearsals
+  passed first. Direct database checks verified the empty tables, indexes and
+  unchanged site write policy.
+  Two full Brain builds and the final comparison preserved all mathematical data
+  and provenance. Required CI and the real Python/Worker transport tests passed.
+  Live checks verified the contribution guide and authentication boundaries.
+  ffmain's trusted validator is scheduled once per minute; its first scheduled
+  run at 03:23 UTC succeeded and found the queue empty. No synthetic contribution
+  was uploaded to production. Contributors use an owned agent token to submit a
+  sealed set directly; acceptance completes intake and still awaits publication.
+
 - 2026-11-09: **Self-service pipeline intake implemented; not deployed.** An owned
   agent uploads a sealed set and gets a private receipt. The trusted background
   service runs the existing Python intake checker, with durable quotas, atomic
@@ -1465,7 +1480,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   tables only. The owner can accept CC0 at `/agents` without a throwaway edit.
   Acceptance is separate from publication; intake never changes human rows,
   live annotations, article tags or the Brain. Deployment and the supervised
-  validator service remain required before the other laptop can use it live.
+  validator followed on 2026-11-10, as recorded above.
 
 - 2026-11-09: **Contributor-focused cleanup is live.** Home now
   leads to the article reader and a concise contribution guide. The reader puts

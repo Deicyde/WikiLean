@@ -1,6 +1,6 @@
 # Self-service pipeline submissions
 
-**Implementation status: built for this release; deployment is recorded in the
+**Live since 2026-11-10 (UTC); deployment is recorded in the
 [roadmap status log](ROADMAP.md#status-log).** Uploading and deterministic validation
 replace the operator's copy-and-check step. Acceptance is not publication or a
 mathematical endorsement.
