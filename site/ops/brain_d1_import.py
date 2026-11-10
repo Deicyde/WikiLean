@@ -174,6 +174,12 @@ REQUIRED_KEYS: dict[int, dict[str, tuple[str, ...]]] = {
     version: {"datasets": ("dataset_id",), "releases": ("release_id",),
               "import_ranges": ("ds", "tbl", "lo"), **{t: ("ds", "seq") for t in tables}}
     for version, tables in TABLES_BY_VERSION.items()}
+# the non-unique indexes the Worker's statements name with INDEXED BY (migration 0002): without
+# one they fail to prepare and every D1 search and key lookup answers 503, and the index can be
+# created only while the data tables are empty, so the importer refuses before the first dataset
+REQUIRED_INDEXES: dict[int, dict[str, dict[str, tuple[str, ...]]]] = {
+    1: {"name_keys": {"name_keys_exact": ("ds", "name_lc", "seq")}},
+}
 assert DATA_TABLES == bsd.DATA_TABLES, "the importer and the builder disagree on the tables"
 assert REQUIRED_COLUMNS[SUPPORTED_SCHEMA_VERSIONS[-1]] == {
     **CONTROL_COLUMNS, **{t: ("ds", *c) for t, c in D1_COLUMNS.items()}}, \
@@ -934,32 +940,44 @@ class Importer:
                 raise D1ImportError(f"{table} seq {row[0]} holds {row[1]} bytes, over D1's {ROW_BYTES}-byte row limit")
 
     def require_schema(self, schema_version: int) -> None:
-        """Refuse unless the migration for schema_version is on D1 (read-only): every
-        column, and a UNIQUE index on exactly each key the importer's statements rely on (a
+        """Refuse unless the migrations for schema_version are on D1 (read-only): every
+        column, a UNIQUE index on exactly each key the importer's statements rely on (a
         table that predates the migration keeps its old shape under CREATE TABLE IF NOT EXISTS,
-        and without its (ds, seq) key every range statement would scan the whole table)."""
+        and without its (ds, seq) key every range statement would scan the whole table), and
+        each index the Worker names (0002_name_keys_exact.sql), which can only be created while
+        the data tables are empty."""
         required = REQUIRED_COLUMNS.get(schema_version)
         if required is None:
             raise D1ImportError(f"schema_version {schema_version} is not one this importer supports")
         keys = REQUIRED_KEYS[schema_version]
+        named = [(table, name, columns)
+                 for table, indexes in REQUIRED_INDEXES.get(schema_version, {}).items()
+                 for name, columns in indexes.items()]
         tables = list(required)
         results = self.d1.calls(
             [f"SELECT name FROM pragma_table_info({sql_literal(checked_table(table))})" for table in tables]
             + [f"SELECT il.name AS idx, ii.name AS col FROM pragma_index_list({sql_literal(checked_table(table))}) "
                "AS il, pragma_index_info(il.name) AS ii WHERE il.\"unique\" = 1 ORDER BY il.name, ii.seqno"
-               for table in keys], expect_results=True)
+               for table in keys]
+            + [f"SELECT ii.name AS col FROM pragma_index_list({sql_literal(checked_table(table))}) AS il, "
+               f"pragma_index_info(il.name) AS ii WHERE il.name = {sql_literal(name)} ORDER BY ii.seqno"
+               for table, name, _ in named], expect_results=True)
         present = {table: {str(row.get("name")) for row in result.get("results") or []}
                    for table, result in zip(tables, results)}
         missing = [f"{table}.{column}" for table, columns in required.items()
                    for column in columns if column not in present.get(table, set())]
-        for table, result in zip(keys, results[len(tables):]):
+        for table, result in zip(keys, results[len(tables):len(tables) + len(keys)]):
             indexes: dict[str, list[str]] = {}
             for row in result.get("results") or []:
                 indexes.setdefault(str(row.get("idx")), []).append(str(row.get("col")))
             if list(keys[table]) not in indexes.values():
                 missing.append(f"{table} UNIQUE({', '.join(keys[table])})")
+        for (table, name, columns), result in zip(named, results[len(tables) + len(keys):]):
+            if [str(row.get("col")) for row in result.get("results") or []] != list(columns):
+                missing.append(f"{table} INDEX {name}({', '.join(columns)})")
         if missing:
-            raise D1ImportError("wiki/migrations-brain/0001_brain.sql is not applied to the Brain "
+            raise D1ImportError("the migrations in wiki/migrations-brain (0001_brain.sql, then "
+                                "0002_name_keys_exact.sql) are not applied to the Brain "
                                 f"database: missing {', '.join(missing[:8])}"
                                 + (" ..." if len(missing) > 8 else ""))
 

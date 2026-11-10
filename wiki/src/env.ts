@@ -1,5 +1,11 @@
 export interface Env {
   DB: D1Database;
+  // The shared Brain serving database `wikilean-brain` (docs/BRAIN-D1.md
+  // section 1), read only by the D1 store (brain-store-d1.ts). Optional and not
+  // in wrangler.jsonc yet: its database id comes from issue #150. Unbound, a
+  // release that lists the serving sidecar is served by the static store from
+  // the static files it still carries.
+  BRAIN_DB?: D1Database;
   RENDER_CACHE: KVNamespace;
   WP_HTML: KVNamespace;
   // Optional dedicated namespace for /review GitHub user tokens (review.ts

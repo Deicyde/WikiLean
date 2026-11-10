@@ -108,7 +108,9 @@ is his (2026-11-08); the others are the design's own:
    can return fewer than `limit` hits along with a non-null cursor. The cursor format doesn't
    change.
 8. **Supercell evidence gets filled in** from a trace table. On the agent API it is trimmed
-   to 6 traces per row, the same cap cell rows have. Those rows also gain `traces_total`.
+   to 6 traces per row, the same cap cell rows have, and carries `traces_total` under the
+   cell rows' rule: only when the trim drops traces (step 3b, so a row the static store
+   already hydrates reads the same).
 9. **Integrity checking moves.** Today every Brain byte is hashed against the signed
    inventory when it loads (`brain.ts:533-540`, `build_brain_page.py:596-597`). With D1,
    integrity rests on three things: the importer's per-range digests, the readiness check on
@@ -143,8 +145,11 @@ is his (2026-11-08); the others are the design's own:
 
   It throws `BrainReleaseUnavailableError(release_id, "BRAIN_DB", reason)`
   (`brain.ts:558-568`) in three cases: no row comes back, `schema_version` isn't one this
-  Worker can read, or D1 raises an exception. The last three columns never change for a given
-  dataset, so the Worker memoizes them by dataset id.
+  Worker can read, or D1 raises an exception. The last three columns are memoized by dataset
+  id. `names_mode` is the importer's choice and can differ after a re-import, so the Worker
+  compares the memo with every readiness row; a difference refreshes the memo and answers 503
+  (section 8). (Step 3b's first PR sends the check in a store's first batch and in every batch
+  of a write route; section 8 has why.)
 - **Error handling stays as it is.** `withRelease` and MCP already turn that error into a 503
   carrying `release_id` (`brain-api.ts:2485-2491`, `mcp.ts:476-486`). Any other exception
   would become a 500, or "internal error" in MCP (`mcp.ts:487-497`).
@@ -215,7 +220,8 @@ Round trips per route:
 - a card by atom id: 1; by organ key: 2;
 - search: 2; filter: 1; neighborhood: 2;
 - bridge: 2 or 3, and at most 6 when the statement pass needs all of its chunks;
-- quickstatements: 1 before its first write;
+- quickstatements: ceil(n / 50), n the largest of its organ key, cell id and path counts, plus
+  ceil(supercell owners / 50), plus 1 for pages over the batch caps, all before its first write;
 - every page endpoint: 1 or 2.
 
 ### Search
@@ -456,14 +462,16 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
   cell page and supercell rows at TauCeti scale haven't been measured; #150 tests rows from
   90 KB to 1.5 MB.
 - **1,000 queries per Worker invocation on Paid**, counting each statement in a batch
-  (unchecked). The route that came closest, quickstatements, now resolves everything in one
-  batch.
+  (unchecked). The route that came closest, quickstatements, now resolves every endpoint in a
+  few batches before its first write (section 8).
 - **10 GB per database** on Workers Paid.
 - **Billing by rows read and rows written** (unchecked). Index and FTS writes multiply the
   number of rows an import writes.
 - **Latency.** Every request makes round trips to the database's region, which hasn't been
-  measured (step 0). Read replicas (unchecked) would fail closed on lag, because every batch
-  starts with the readiness check.
+  measured (step 0). Read replicas (unchecked) would fail closed on lag for every batch that
+  starts with the readiness check: a store's first batch and every batch of a write route
+  (section 8). A read route's later batches rely on `$DS` alone, which on a lagging replica
+  could answer an empty result rather than a 503.
 
 ## 2. Readers and their replacements
 
@@ -488,7 +496,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 | `atomIdForOrgan`, `brainNodeExists`, `brain-api.ts:638-646`, `brain.ts:716-719` | `organOwners` and `atomsExist`, behind the readiness check. | fails closed when rows are missing |
 | `resolveAtomKey` alias passes, `brain-api.ts:568-584` | `aliasHits`. | none |
 | `resolveAtomKey` label and supercell organ-label passes, `586-594`, `611-622` | `exactName`. | names are lowercased at build time in Python and the key per request in JS: identical for ASCII, rare differences elsewhere |
-| `cellEntries`, `hydrateSupercellTraces`, `411-433`, `1037-1054` | `synapseTraces` for supercell rows. | Rows that say `traces_unavailable` today get traces: 1,413 whose partner's list was capped and 292 that join two supercells (`1032-1036`). They are trimmed to 6 per row (`build_cell_shards.py:94`). The sidecar always carries `tt` (`build_cell_shards.py:1244-1247`), while cell rows carry it only when trimmed (`896-897`), so these rows also gain `traces_total` (`brain-api.ts:1217`). |
+| `cellEntries`, `hydrateSupercellTraces`, `411-433`, `1037-1054` | `synapseTraces` for supercell rows. | Rows that say `traces_unavailable` today get traces: 1,413 whose partner's list was capped and 292 that join two supercells (`1032-1036`). They are trimmed to 6 per row (`build_cell_shards.py:94`). The sidecar always carries `tt` (`build_cell_shards.py:1244-1247`), while cell rows carry it only when trimmed (`896-897`), so the D1 store keeps `tt` only when it exceeds the 6 kept: `traces_total` follows the cell rows' rule (`brain-api.ts:1217`). |
 | `suggestRename`, `brain-api.ts:1786-1804` | `aliasHits` for decls plus `cellPages`, batched across a call's dead names. | none |
 | `cellFor`, `transferFor`, `neighborhoodFor`, `snippetsFor`, `brain-api.ts:731-1346` | No reads of their own. | release-bound cursors keep working (`1081`, `1351`); field names stay, including `withheld_by_shard` |
 | Reference text: `brain-api.ts:2769-2771` and `mcp.ts:201-203` (traces "hydrated from the partner cells' shards"), `mcp.ts:14` ("no tool touches D1"), `mcp.ts:129-145` (label search only) | Rewritten in step 3b. | text |
@@ -510,7 +518,7 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 | Reader | Replacement | Change |
 |---|---|---|
 | `resolveNodeEndpoint`, `POST /api/brain/node`, `brain-edits.ts:264-276`, `1375-1405` | `atomsExist` and `organOwners`, behind the readiness check. | fails closed |
-| quickstatements, `brain-edits.ts:692-733`, row loop `1169-1178` | One batch resolves every endpoint id (`organPages`, `atomsExist`) before the first write. | Required: row by row, a 100-row submit (`brain-edits.ts:50`) would go over the per-invocation cap. Side effect: an outage no longer leaves earlier rows written. |
+| quickstatements, `brain-edits.ts:692-733`, row loop `1169-1178` | A few batches resolve every endpoint id (`organPages`, `atomsExist`) before the first write. | Required: row by row, a 100-row submit (`brain-edits.ts:50`) would go over the per-invocation cap. Side effect: no Brain read follows the first write, so a D1 outage no longer leaves earlier rows written; a submit whose pages pass the prefetch's budget is refused with a 413 before any write (section 8). |
 | `getXrefIndex`, `getXrefPagesByNode`, `brain-edits.ts:92-174` | `xrefPages` and `xrefNodes`. | the two isolate caches and their evictor go away |
 
 Unchanged, because they aren't Brain release data: the decl, suffix and premise indexes
@@ -1455,6 +1463,89 @@ be promoted. [neutral] PRs can land any time.
      new tests.
      - Releasable: it stays dormant until a release lists the sidecar.
      - Needs the database id from #150, and the migration must be applied before deploy.
+     - **Two PRs.** The first is the store: `wiki/src/brain-store-d1.ts` (the module this doc
+       calls `brain-db.ts`), the release detection in `brain.ts` (`backend`, `datasetId`,
+       `datasetHex`; a malformed sidecar artifact rejects the manifest), `storeFor`'s switch,
+       the shim fix and the parity tests. The second is everything the page needs: the page
+       endpoints and `resolveBrainReleaseByHex`, their limiter bindings, the concurrency gate,
+       the agent D1-cost limiter, the Cache API rules, the layout rule, the reference text, text
+       hits and index tags on search, `level` and `explorerScope`, and the `wrangler.jsonc`
+       binding. The binding and the remote migrations (`0001_brain.sql`, then
+       `0002_name_keys_exact.sql`) come before the first import, so before any release that
+       lists the sidecar.
+     - **Where the first PR departs from this plan:**
+       - The composites (`searchPage`, `bridgeCandidates`, and `prefetchAtoms` for
+         quickstatements) are a separate interface, `BrainStoreBatches`, that only the D1Store
+         implements; routes ask `batchesOf(store)` and run their old reads otherwise. The
+         StaticStore gains no method, so static releases answer byte for byte as before.
+       - The readiness check starts a store's first batch and every batch of a write route
+         (POST node, POST edge, quickstatements), where an empty result that should have been a
+         503 would read as "not a node" and mint a community node. A read route's later batches
+         leave it out once it passed: every data statement still matches only a `ready` dataset
+         through `$DS`, and the pruner keeps the live releases' datasets, so a dataset that
+         leaves `ready` between two of them can only turn a read into a 404 or a 200 with rows
+         missing (search hits, hydrated traces, later statement chunks), never into a write. If
+         PR 2 caches responses, a composite's last batch must carry the check before its
+         response may be cached.
+       - The per-dataset constants are memoized per isolate, but `names_mode` is the importer's
+         choice: a check whose row differs from the constants its batch was built from refreshes
+         the memo and answers 503 for that request.
+       - An unbound `BRAIN_DB` serves a D1 release from its static files, which it still
+         carries until the layout rule; after the layout rule the same path answers 503. For the
+         second PR: `storeFor` must then fail closed for `backend === "d1"` without `BRAIN_DB`
+         (throw `BrainReleaseUnavailableError(release_id, "BRAIN_DB", "not bound")`, or always
+         build a D1Store and let its first batch throw), not rely on missing asset files, which
+         `REQUIRED_RUNTIME_ARTIFACTS` would refuse first; update the `env.ts` and `storeFor`
+         comments with it, and test that an unbound `BRAIN_DB` answers 503 for a D1 release.
+       - `traces_total` on hydrated supercell rows follows the cell rows' rule (decision 8).
+       - Migration `0002_name_keys_exact.sql` adds `name_keys(ds, name_lc, seq)`, which the
+         exact tier and the exact-name lookup name with `INDEXED BY`, so both stop at their
+         LIMIT; without it they would sort every row that shares a name. It must land while the
+         tables are empty, so `brain_d1_import.py` refuses to import until it is on D1. The
+         supercell organ-label branch of the exact-name lookup is bounded by the data (one row per
+         supercell with an organ of that label), not by a LIMIT; it names the UNIQUE
+         (ds, name_lc, kind, owner) key's index, `sqlite_autoindex_name_keys_2`, because for its
+         `min(seq)` the planner picks `name_keys_exact` and reads the name's rows of every kind.
+       - The statement pass's chunk statement fixes its join order with `CROSS JOIN` (each
+         candidate, then `label` and `aka`) and names the same index, so it probes
+         (ds, name_lc, kind) whatever statistics D1 holds: with `sqlite_stat1` rows (`ANALYZE`,
+         `PRAGMA optimize`) the plan's `IN` form moved to `name_keys_exact` and read every kind's
+         rows of each candidate. The plan test pins each statement's `name_keys` index and probe
+         columns, with no statistics and under hand-written `sqlite_stat1` rows.
+       - `filterCells` under a folder joins `labels` with `CROSS JOIN` and orders by
+         `cell_under.ord`, so it stops once `limit + 1` rows match instead of reading and sorting
+         the whole examination window.
+       - In parts mode a fragment's last token is a prefix only when it is at least 2 characters
+         (code points, which the prefix indexes count) long, which the `prefix='2 3'` indexes
+         serve (4 or more stays on step 0's measurement list). A 1-character last token, an
+         astral letter such as U+1D55C included, matches as a whole token: a 1-character prefix
+         has no prefix index, and FTS5 would merge the doclist of every term that starts with it
+         before the LIMIT. So `Nat.s` finds the parts `nat s` but not `Nat.succ` in the fragment
+         tier; the prefix tier still finds names that start with `nat.s`.
+       - Quickstatements loads every endpoint's owner, cell page and supercell (with its
+         breadcrumb) in batches of 50 keys before its first write (`prefetchAtoms`), plus one
+         pass for the supercells organ keys name; rows are then written one by one as before.
+         A request keeps at most 8 M characters (SQLite's `length`) of pages in all: each batch
+         asks for pages of at most its keys' equal share of what is left, and at most 128 K
+         characters, so no batch passes the budget. A page over its batch's cap comes back as its
+         length alone; once those lengths fit what the budget has left, all such pages are read
+         in one more batch, still before the first write, each statement asking only for pages of
+         at most the longest length it knows, so that batch returns at most what was counted. A
+         submit is refused only on its total: one whose distinct pages pass 8 M is answered 413
+         before anything is written. So no Brain read follows the first write, and a D1 outage
+         can only fail the request before it writes. The write statements per submit are a
+         separate count: with all 12 databases selected a row can make about 60 of them, which
+         passes 1,000 on its own in a 100-row submit, independent of the Brain reads.
+       - The prefix tier runs only for queries of 2 to 200 UTF-16 units and the fragment tier
+         only for 3 to 200, so a one-character bridge query gets exact matches only; a prefix
+         range that returns a 1,001st row is a builder disagreement and answers 503. The search
+         route answers 400 for a q over 200 units on a D1 release (Request bounds).
+       - A statement chunk of the bridge's statement pass also ends before its one JSON value
+         passes 512 KB, under D1's 2 MB per value; such a chunk counts against the 4 as any other.
+       - The Worker tests build the D1 rows with a TypeScript port of the builder's row logic
+         (`wiki/test/helpers/brain-d1-rows.ts`), which `site/ops/test_brain_d1_import.py`
+         compares with `build_serving_db.build` column by column on every CI run, on the
+         builder's own fixture and on the parity tree the Worker tests serve.
 4. **Release contract** [affecting, except the canary and bundle parts, which are neutral].
    Section 5 has the details. Releasable, since the static layout is unchanged.
    - One layout function in `authority_contracts.py` for both profiles, a D1 required set,

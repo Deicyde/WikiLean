@@ -1,13 +1,15 @@
-// The Brain data interface (docs/BRAIN-D1.md section 8, step 3a).
+// The Brain data interface (docs/BRAIN-D1.md section 8, steps 3a and 3b).
 //
 // Every read of a release's Brain data goes through a BrainStore: the routes in
 // brain-api.ts, brain-edits.ts and (through them) mcp.ts keep validation,
 // precedence, ranking, paging, cursors and response bodies, and the store only
-// answers "what does this release hold". Today the only implementation is the
-// StaticStore (brain-store-static.ts), which reads the release's static JSON
-// files exactly as the routes used to. A D1Store (step 3b) implements the same
+// answers "what does this release hold". The StaticStore
+// (brain-store-static.ts) reads the release's static JSON files exactly as the
+// routes used to. The D1Store (brain-store-d1.ts, step 3b) implements the same
 // methods with the bounded statements of docs/BRAIN-D1.md section 1; the
-// bracket after each method below is its result bound there.
+// bracket after each method below is its result bound there. storeFor picks
+// the D1Store for a release whose release.json lists the serving-tables
+// sidecar when BRAIN_DB is bound, and the StaticStore otherwise.
 //
 // Where the two stores deliberately answer differently (search tiers, short
 // filter pages, the bounded statement pass), the method sits at the level where
@@ -24,32 +26,33 @@
 // Input bounds: each bracketed bound holds only because the callers cap their
 // inputs (the bridge's 12 depends partners, /edges' 40 pages, the
 // neighborhood's 200 rows). They are preconditions, not checks: a longer input
-// is a caller bug, and a D1Store may throw a plain Error (500) on one. A
+// is a caller bug, and the D1Store throws a plain Error (500) on one. The
 // D1Store answers an empty input (ids = [], pages = []) without sending a
-// batch. In 3b the search route rejects a q over 200 characters with a 400, so
-// no store sees a longer q.
+// batch. On a D1 release searchFor rejects a q over 200 UTF-16 units with a
+// 400 (docs/BRAIN-D1.md section 1, Request bounds). Other callers of
+// searchNames and searchCellNames (suggestionsFor, informalToFormal) may pass a
+// longer q: for that q, nameTiers runs only the exact tier (and D1Store.tiers
+// runs no tier for a cell q longer than longestName), so the bound is enforced
+// in nameTiers, not by the callers.
 //
-// Round trips (for 3b): the routes await these methods one after another, so a
-// D1Store cannot coalesce two calls into one batch behind the routes' backs.
-// keyHits already merges the alias and exact-name lookups for that reason.
-// Section 1's per-route counts are not reachable through these methods alone:
-// searchFor runs searchNames, then keyHits (inside resolveAtomKey), then
-// labelRows, 4 sequential batches on D1 against the plan's 2; bridgeFor runs 6
-// to 9 against "2 or 3, at most 6". 3b adds per-route composite methods with
-// their callers, along the lines of
-//   searchPage(q, kind, limit, lookup: KeyLookup)
-//     -> { named, keyHits, promoted?: AtomHead }
-//   bridgeCandidates(q, lookup, nameLimit, stmtLimit)
-//     -> { keyHits, names, statement }
-// with resolveAtomKey's explicit-atom-id branch folded in as an existence
-// check. Each one's static implementation runs today's loads in today's order,
-// which the fetch-count tests pin. storeFor hands out one store per request and
-// release, so a D1Store can keep one readiness result, and rows it already
-// read, for the rest of the request.
+// Round trips: the routes await these methods one after another, so a store
+// cannot coalesce two calls into one batch behind the routes' backs. keyHits
+// merges the alias and exact-name lookups for that reason, and the composite
+// methods of BrainStoreBatches below carry the two routes whose method-by-
+// method reads would cost more round trips than section 1 allows (search,
+// bridge), plus the quickstatements prefetch. They are a separate interface,
+// not BrainStore methods with a static version: the StaticStore keeps today's
+// loads in today's order (the fetch-count tests pin that), so a route asks
+// batchesOf(store) and, for a store without them, runs its old code
+// unchanged. storeFor hands out one store per request and release, so the
+// D1Store keeps its readiness result, and the rows it already read, for the
+// rest of the request.
 import type { Context } from "hono";
 import type { Env } from "./env.js";
 import type { BrainLabelRow, BrainReleaseContext } from "./brain.js";
 import { StaticStore } from "./brain-store-static.js";
+import { D1Store } from "./brain-store-d1.js";
+export { PrefetchBudgetError } from "./brain-store-d1.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -290,24 +293,73 @@ export interface BrainStore {
   xrefNodes(pages: string[]): Promise<Map<string, string[]>>;
 }
 
-// Added in 3b together with their callers, so 3a ships no uncalled methods:
-//   organOwners / organPages (keys <= 100)  quickstatements' one batch
-//   atomsExist (ids <= 200)                 quickstatements, POST /api/brain/node,
-//                                           brainNodeExists and atomIdForOrgan's
-//                                           atom-id branch (through atomFor, each is
-//                                           a whole cellPage read, for a boolean)
-//   declOwners (names <= 30)                suggestRename: resolve every dead name of
-//                                           a decl_exists batch, the premise seeds or
-//                                           the bridge's organs in one call (keyHits
-//                                           per name is N+1, up to 32 batches)
-//   cellPages (ids <= 200)                  suggestRename batching, the page's `cells`
-//   level(path), explorerScope(scope, part) the page endpoints
-//   searchPage, bridgeCandidates            see "Round trips" in the header
-// Moving quickstatements and POST /api/brain/node onto organOwners and
-// atomsExist changes behavior: rows resolve one by one today, so an outage
-// partway through a quickstatements submit leaves the earlier rows written,
-// while resolving every endpoint first makes it all-or-nothing. 3b makes that
-// change on purpose and says so; it is not part of the store swap.
+// What resolveAtomKey looks up for a key (brain-api.ts atomKeyQuery): an atom
+// id it reads directly, or the alias and exact-name lookups. A composite takes
+// it so it can run those lookups in its own batch; the caller applies
+// precedence (brain-api.ts resolvedFromHits), as it does for keyHits.
+export type AtomKeyQuery =
+  | { atomId: string }
+  | { lookup: KeyLookup; isDeclId: boolean };
+
+export interface SearchPageResult {
+  named: AtomHead[]; // what searchNames returns
+  hits: KeyHits; // every key lookup that found its key (none for an atom id)
+  heads: Map<string, AtomHead>; // the heads of every hit id, or of the atom id when it exists
+}
+
+export interface BridgeCandidatesResult {
+  hits: KeyHits; // as above
+  atomExists: boolean; // for an atom-id query: whether the atom exists
+  names: string[]; // searchCellNames(q, 5)'s ids
+  statement: Array<{ id: string; len: number }>; // statementAtoms(q, 5)
+  statementTruncated: boolean; // the bounded pass stopped at one of its bounds
+}
+
+/** Per-route composites, for a store whose method-by-method reads would cost
+ *  a round trip each (the D1Store). Each answers what its route's sequence of
+ *  BrainStore calls would, in fewer batches. */
+export interface BrainStoreBatches {
+  /** searchFor's reads: searchNames(q, kind, limit), the key resolution of q,
+   *  and the heads of both, in 2 batches.           [limit + 4 heads] */
+  searchPage(q: string, kind: "" | "cell" | "supercell", limit: number, query: AtomKeyQuery | null): Promise<SearchPageResult>;
+  /** bridgeFor's candidates: the key resolution of q, searchCellNames(q, 5)
+   *  and statementAtoms(q, 5), the first chunk of the statement pass in the
+   *  same batch.                            [1 + 5 + 5, up to 4 chunks] */
+  bridgeCandidates(q: string, query: AtomKeyQuery | null): Promise<BridgeCandidatesResult>;
+  /** Loads the organ owners, cell pages and supercells of node ids (organ
+   *  keys, cell: and path: ids, and the supercells organ keys name) for the
+   *  rest of the request, so quickstatements resolves every endpoint before
+   *  its first write in a few batches. Throws PrefetchBudgetError when the
+   *  pages pass the request's budget, before the caller writes anything.
+   *  [50 keys a batch; 8 M characters of pages kept; pages over the batch
+   *  caps read in one more batch] */
+  prefetchAtoms(ids: string[]): Promise<void>;
+}
+
+/** The store's composites, or null for a store without them (the StaticStore
+ *  and every test store built on it), whose routes then run their old reads. */
+export function batchesOf(store: BrainStore): BrainStoreBatches | null {
+  const s = store as unknown as Partial<BrainStoreBatches>;
+  return typeof s.searchPage === "function" &&
+    typeof s.bridgeCandidates === "function" &&
+    typeof s.prefetchAtoms === "function"
+    ? (store as unknown as BrainStoreBatches)
+    : null;
+}
+
+/** For a write route (POST node, POST edge, quickstatements): the D1 store
+ *  starts every later batch with the readiness check, so a dataset that
+ *  leaves `ready` mid-request answers 503 instead of "not a node", which would
+ *  mint a community node (docs/BRAIN-D1.md section 1). Other stores ignore it. */
+export function checkReadinessEveryBatch(store: BrainStore): void {
+  if (store instanceof D1Store) store.checkEveryBatch();
+}
+
+// Still deferred, until a caller needs them: atomsExist (POST /api/brain/node
+// and brainNodeExists read a whole cell page for a boolean; the D1Store keeps
+// it for the request), declOwners (suggestRename resolves dead names one
+// keyHits call each), cellPages, and level(path) / explorerScope(scope, part)
+// for the page endpoints of step 3b's second PR.
 
 let _storeOverride: ((c: Ctx, release: BrainReleaseContext) => BrainStore) | null = null;
 
@@ -324,7 +376,10 @@ export function _setBrainStoreForTests(
 // context, so nothing outlives the request.
 const _requestStores = new WeakMap<Ctx, Map<string, BrainStore>>();
 
-// The store for one release. 3b switches on the release's backend here.
+// The store for one release: the D1Store for a release that lists the serving
+// sidecar when BRAIN_DB is bound, else the StaticStore. A D1 release still
+// carries every static file until the layout rule (step 3b's second PR), so
+// an unbound BRAIN_DB serves it from those files.
 export function storeFor(c: Ctx, release: BrainReleaseContext): BrainStore {
   let stores = _requestStores.get(c);
   if (!stores) {
@@ -333,7 +388,11 @@ export function storeFor(c: Ctx, release: BrainReleaseContext): BrainStore {
   }
   let store = stores.get(release.releaseId);
   if (!store) {
-    store = _storeOverride ? _storeOverride(c, release) : new StaticStore(c, release);
+    store = _storeOverride
+      ? _storeOverride(c, release)
+      : release.backend === "d1" && c.env.BRAIN_DB
+        ? new D1Store(c, release)
+        : new StaticStore(c, release);
     stores.set(release.releaseId, store);
   }
   return store;

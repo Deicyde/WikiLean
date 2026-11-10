@@ -45,6 +45,9 @@ const ARTIFACT_KEYS = new Set([
   "logical_format",
   "logical_root",
 ]);
+// The serving-tables sidecar (brain/build_serving_db.py). A release that lists
+// it is a D1 release; its logical_root names the serving dataset.
+const SERVING_SIDECAR_PATH = "brain/data/serving-tables.json";
 const REQUIRED_RUNTIME_ARTIFACTS = new Set([
   "site/assets/brain/sources.json",
   "site/assets/brain/xref_index.json",
@@ -139,6 +142,14 @@ export interface BrainReleaseContext {
   manifest: BrainReleaseManifest;
   artifactPaths: ReadonlySet<string>;
   artifactsByPath: ReadonlyMap<string, BrainReleaseArtifact>;
+  // "d1" when release.json lists the serving-tables sidecar (docs/BRAIN-D1.md,
+  // decision 4); every other release is "static" and reads its JSON files.
+  backend: "static" | "d1";
+  // The sidecar's logical_root (the serving dataset id) and its 64 hex
+  // digits, the only text the D1 store pastes into SQL (names_<hex>). Both
+  // null on a static release.
+  datasetId: string | null;
+  datasetHex: string | null;
 }
 
 type Ctx = Context<{ Bindings: Env }>;
@@ -334,6 +345,7 @@ async function parseReleaseManifest(
   manifest: BrainReleaseManifest;
   artifactPaths: ReadonlySet<string>;
   artifactsByPath: ReadonlyMap<string, BrainReleaseArtifact>;
+  datasetId: string | null;
 } | null> {
   const o = record(raw);
   if (
@@ -384,13 +396,20 @@ async function parseReleaseManifest(
       artifact.path === "site/out/brain.html" &&
       (artifact.media_type !== "text/html" || artifact.logical_format !== "opaque" || artifact.logical_root !== null)
     ) return null;
+    // The sidecar's logical root is the dataset id, so it must be present.
+    if (
+      artifact.path === SERVING_SIDECAR_PATH &&
+      (artifact.media_type !== "application/json" || artifact.logical_format !== "json" || !validHash(artifact.logical_root))
+    ) return null;
     artifacts.push(artifact as unknown as BrainReleaseArtifact);
   }
   if ([...REQUIRED_RUNTIME_ARTIFACTS].some((path) => !artifactPaths.has(path))) return null;
+  const sidecar = artifacts.find((artifact) => artifact.path === SERVING_SIDECAR_PATH);
   return {
     manifest: { ...o, artifacts } as unknown as BrainReleaseManifest,
     artifactPaths,
     artifactsByPath: new Map(artifacts.map((artifact) => [artifact.path, artifact])),
+    datasetId: sidecar?.logical_root ?? null,
   };
 }
 
@@ -608,6 +627,23 @@ export async function requiredBrainAssetJson<T>(
   }
 }
 
+// prov and _meta of the release's cell manifest, for the D1 store's
+// snapshotSource (docs/BRAIN-D1.md section 2: for a D1 release only these two
+// are validated). It shares the static store's memo key, so a release whose
+// manifest the static store already parsed costs no second fetch.
+export async function brainManifestMeta(
+  c: Ctx,
+  release: BrainReleaseContext,
+): Promise<{ prov: Array<Record<string, string>>; _meta?: Record<string, unknown> }> {
+  const path = "cells/manifest.json";
+  const value = await requiredBrainAssetJson<unknown>(c, release, path);
+  const manifest = record(value);
+  if (!manifest || !Array.isArray(manifest.prov) || (manifest._meta !== undefined && !record(manifest._meta))) {
+    throw new BrainReleaseUnavailableError(release.releaseId, path, "declared asset has an invalid shape");
+  }
+  return manifest as { prov: Array<Record<string, string>>; _meta?: Record<string, unknown> };
+}
+
 // Resolve current once at each HTTP entry point. The selector is fetched fresh;
 // its immutable manifest is memoized only under the selector's exact byte
 // identity. Logical release IDs intentionally exclude attestations and time.
@@ -657,6 +693,9 @@ export async function resolveBrainRelease(c: Ctx): Promise<BrainReleaseContext |
           manifest: parsed.manifest,
           artifactPaths: parsed.artifactPaths,
           artifactsByPath: parsed.artifactsByPath,
+          backend: parsed.datasetId === null ? "static" as const : "d1" as const,
+          datasetId: parsed.datasetId,
+          datasetHex: parsed.datasetId === null ? null : RELEASE_ID_RE.exec(parsed.datasetId)![1],
         };
       })();
       _releaseMemo.set(cacheIdentity, hit);
