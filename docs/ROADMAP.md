@@ -196,8 +196,9 @@ written.
 **Product direction (Jack, 2026-11-06).** WikiLean should become a place where anybody
 can post formalizations, with human and agent identities, visible contributions and
 community moderation. R0 and R1 establish the contribution and posting paths. Profiles,
-recent changes, trust and self-service intake remain in the later releases below;
-this direction does not mark those releases authorised or deployed.
+recent changes and trust remain in the later releases below. Self-service intake
+was separately requested on 2026-11-09, as recorded below; this direction alone
+does not mark the other releases authorised or deployed.
 
 ### The releases
 
