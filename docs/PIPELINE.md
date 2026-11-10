@@ -227,11 +227,13 @@ disagree.
 come from its own workspace.
 
 **What changes.** It is new code, and it is not only a test harness. It is what a promotion
-into `brain/proposals/*.jsonl` will read (INTAKE.md section 6 step 1), what lets an operator
+into `brain/proposals/*.jsonl` will read, what lets an operator
 diff two sets of one page, and what makes the re-export of stage 6 possible without the
 producer's workspace. It is also the honest boundary of the batch-1 proof: a layer-derived
 value (the capped quote and `span_sha256`) cannot be recomputed from a record, so readback
 carries it through as the **cut** the record already states (stage 5).
+The [intake receipt](INTAKE.md#what-a-receipt-means) records validation;
+promotion into the Brain remains a separate operation.
 
 **Cost.** None; deterministic, offline.
 
@@ -554,22 +556,23 @@ and the thing that comes back is a WikiLean record set.
 | `scripts/run/bridge-claude-p.sh` | Current execution calls `run/agent.py` directly; the bridge remains a compatibility fixture |
 | the whole of `cf contribute run` | claim, staged run, harvest, local seal/verification and results are implemented |
 | a result is the gated documents and the run's records | **and**, new: the contributor may seal and verify its own set |
-| the results leg's "designed replacement" is WikiLean's endpoint | the verifier is already here: `scripts/articles/verify_submission.py` is wired in as the contributor's last step and the coordinator's first |
+| the results leg's "designed replacement" is WikiLean's endpoint | `--submit` sends the sealed set directly; the contributor and trusted intake service both run `scripts/articles/verify_submission.py` |
 
 **The wiring to `verify_submission.py`** is the piece that makes this WikiLean's rather than a
-copy. INTAKE.md section 7 step 4 already says a contributor should run the verifier against a
-checkout before posting; in formal-companion's version that is prose, because the producer
-cannot run WikiLean's code. Here it is a step of the command:
+copy. The [submission guide](INTAKE.md#submit-from-your-laptop) starts with local
+verification before posting. Here verification is a step of the command:
 
 - `run_package.py --stage results`, when the contributor has sealed a set, runs
   `verify_submission.verify()` over it **before anything is pushed** and puts the verdict in
   `RESULT.json`; a refusal stops the push and names the code, the HTTP status and the retry
   rule;
-- `collect_results.py` runs `verify_submission.verify()` again on the coordinator's side,
-  because a result is untrusted input whoever pushed it. The refusal codes and statuses are
-  INTAKE.md section 3's, so the work-repo leg and the endpoint that will replace it refuse
-  the same sets for the same reasons — and a refusal on the coordinator's side is a
-  surprise, because the contributor ran the same function, so it says so.
+- Adding `--submit --record-set <dir>/set --execute` sends the verified set to
+  WikiLean and saves a private `SUBMISSION.json` receipt instead of pushing a
+  results branch. The trusted intake service runs the same checker independently.
+  See [INTAKE.md](INTAKE.md) for deployment status and receipt meanings.
+- `collect_results.py` still runs `verify_submission.verify()` on the coordinator's
+  side for the work-repository transport. Both transports use the same checker;
+  a coordinator refusal after local acceptance is reported as an unexpected result.
 
 **Three invariants that must not be lost in the move**, each with its reason:
 
@@ -801,8 +804,9 @@ check report for article/revision counts and the retained-body control.
   model call. One article's subscription allowance consumption remains unmeasured.
 - The declaration-index/search bundle is built and coverage-tested, but controlled
   publication and access still require the operator's licence review and upload.
-- The submission verifier, local seal and pending importer are implemented.
-  The submission endpoint and claims API remain a later, separately scoped release.
+- The submission endpoint and automatic validation are implemented; see
+  [INTAKE.md](INTAKE.md) for deployment status. Work assignment still uses the work
+  repository. A claims API and automatic publication remain separately scoped work.
 - The optional biography flag (wikinet) remains unported. flags.biography stays
   null; an undetermined flag causes planning rather than skipping.
 - Four gate checks remain listed in verify_locate.TODO_CHECKS and printed by

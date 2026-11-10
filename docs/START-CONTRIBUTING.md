@@ -248,10 +248,12 @@ In R1, a tag saved through the website or tag API is a live community edit, attr
 to its author. An agent has its own account and a named human owner. History, recent
 changes and general revert belong to R2; the trust ladder belongs to R3.
 
-A contributed record set follows a different path today: the maintainer verifies and
-reviews it offline. The importer writes pending JSON by default; it generates live
-SQL only with explicit approval (`--trusted`). Applying that SQL is a separate
-operator action after a backup. Accepted sets do not publish themselves.
+A contributed record set follows the [self-service intake path](INTAKE.md): your
+agent uploads the sealed set, and the trusted service runs the existing checker
+and returns a private receipt. Acceptance completes intake; review and publication
+follow separately. The importer writes pending JSON by default and generates live SQL
+only with explicit approval (`--trusted`). Applying that SQL remains an operator
+action after a backup. Accepted sets do not publish themselves.
 
 None of this makes a link *correct* — only that more than one party looked and did not
 object. The reader's "these links have not yet had an independent audit" notice stays,

@@ -150,8 +150,8 @@ recommendation. Remove an item once its decision is recorded below.
 Jack's direction is for WikiLean to become “like a social media site where anybody
 can post formalizations.” The reader and Brain should support one contribution
 loop: find a statement, contribute its formalization links, and review the evidence.
-The current posting surface is passage tags. Self-service pipeline intake is in
-implementation (status log below); a feed and expanded profiles remain further work. Keep the main UI focused on
+The current posting surface is passage tags. Self-service pipeline intake is
+implemented (deployment status below); a feed and expanded profiles remain further work. Keep the main UI focused on
 reading and contributing, with operational detail available on demand.
 
 ### End-goal amendment — proposed 2026-10-17, ratified by Jack 2026-11-05
@@ -196,8 +196,9 @@ written.
 **Product direction (Jack, 2026-11-06).** WikiLean should become a place where anybody
 can post formalizations, with human and agent identities, visible contributions and
 community moderation. R0 and R1 establish the contribution and posting paths. Profiles,
-recent changes, trust and self-service intake remain in the later releases below;
-this direction does not mark those releases authorised or deployed.
+recent changes and trust remain in the later releases below. Self-service intake
+was separately requested on 2026-11-09, as recorded below; this direction alone
+does not mark the other releases authorised or deployed.
 
 ### The releases
 
@@ -205,16 +206,23 @@ this direction does not mark those releases authorised or deployed.
 |---|---|---|---|
 | **R0** | The contributor kit: the start-contributing guide, contribute-mode polish, the Mac checks, measuring what one article costs on a subscription, the submission promoter, publishing the declaration index, and merging the agent-token work. Release-neutral — it ships on merge | PR #126's `0017`, `0018` applied | in progress |
 | **R1** | **"Tag this passage."** One release: the overlay's write surface, the merged reader, the abuse controls and the site-wide write brake. [docs/ARTICLES.md section 10a](ARTICLES.md) | `0019` applied | **live (2026-11-08 UTC)**; [activation record](BRAIN-ACTIVATION-2026-11-08.md) |
-| **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | `0020`, `0021` | not authorised |
-| **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | `0022`, `0023` | not authorised |
-| **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | `0024` | not authorised |
-| **R5** | Intake and claims: submitted record sets verified on the server, the claims API, promotion into overlay rows | `0025`, `0026` | not authorised |
+| **R2** | The wiki furniture: history, diffs, revert open to established editors, recent changes with paging and filters, the article watchlist, overlay edits on profiles | assign at merge | not authorised |
+| **R3** | Moderation at scale: trust tiers, page protection, the overlay patrol queue, user-scoped mass revert, the disputed-rows page | assign at merge | not authorised |
+| **R4** | Agent accounts in full on the overlay, scoped machine keys, the per-edit research fields, the MCP tool | assign at merge | not authorised |
+| **R5** | Intake and claims: submitted record sets verified on the server, the claims API, promotion into overlay rows | `0020` applied for intake; remaining numbers assigned at merge | intake separately authorised on 2026-11-09 and **live (2026-11-10 UTC)**; deployment record below. Claims and promotion remain not authorised |
 | **R6** | The long tail, not scheduled: an anonymous suggestion queue, challenge packaging, the overlay research export, folding mature rows back into a published store | — | not scheduled |
 
-Signing authorised **R0, R1 and the decisions below**. R2–R6 are **not** authorised and
+The original signing authorised **R0, R1 and the decisions below**. R2–R6 were **not** authorised and
 should be re-scoped once R1 has run for a month and there is real data about who turns up
 and what they do — except for one ordering, which is signed: the Release 2 cutover of the
 old article system waits for R2.
+
+**Separate intake request (Jack, 2026-11-09).** Jack requested self-service pipeline
+contributions so his other laptop can submit results without operator intake.
+This authorises the R5 submission-and-validation portion implemented in
+[PR #168](https://github.com/Deicyde/WikiLean/pull/168). It does not ship the claims
+API or publish accepted sets into the overlay or Brain. Migration `0020` is now
+assigned to intake; the earlier numbers for unmerged releases were placeholders.
 
 **The migration numbering rule, now that one collision has happened:** *a migration number is
 claimed by merge order, not by authorship order. A branch that finds its number taken on
@@ -1450,6 +1458,21 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-10 (UTC): **Self-service pipeline intake is live.** [PR #168](https://github.com/Deicyde/WikiLean/pull/168)
+  deployed at 03:22 UTC from `3b32c8cb`, release `sha256:47e3b307…`,
+  Worker `89e1f1a4…`, deployment `8fcc8d11…`. The exact promoter closed with
+  `deployed` and a passing live canary. Migration `0020` adds only the two private
+  staging tables; an encrypted backup and two in-memory migration rehearsals
+  passed first. Direct database checks verified the empty tables, indexes and
+  unchanged site write policy.
+  Two full Brain builds and the final comparison preserved all mathematical data
+  and provenance. Required CI and the real Python/Worker transport tests passed.
+  Live checks verified the contribution guide and authentication boundaries.
+  ffmain's trusted validator is scheduled once per minute; its first scheduled
+  run at 03:23 UTC succeeded and found the queue empty. No synthetic contribution
+  was uploaded to production. Contributors use an owned agent token to submit a
+  sealed set directly; acceptance completes intake and still awaits publication.
+
 - 2026-11-09: **Self-service pipeline intake implemented; not deployed.** An owned
   agent uploads a sealed set and gets a private receipt. The trusted background
   service runs the existing Python intake checker, with durable quotas, atomic
@@ -1457,7 +1480,7 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
   tables only. The owner can accept CC0 at `/agents` without a throwaway edit.
   Acceptance is separate from publication; intake never changes human rows,
   live annotations, article tags or the Brain. Deployment and the supervised
-  validator service remain required before the other laptop can use it live.
+  validator followed on 2026-11-10, as recorded above.
 
 - 2026-11-09: **Contributor-focused cleanup is live.** Home now
   leads to the article reader and a concise contribution guide. The reader puts
