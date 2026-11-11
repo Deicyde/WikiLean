@@ -97,7 +97,8 @@ class RealChildTest(unittest.TestCase):
         self.assertNotIn("ANTHROPIC_API_KEY", seen["env"])
         self.assertNotIn(TOKEN, json.dumps(seen))
         self.assertEqual(seen["prompt"], "judge this")
-        self.assertEqual(set(seen["env"]) - set(model.CLAUDE_ENV_KEYS), set())
+        # macOS adds __CF_USER_TEXT_ENCODING to every process's environment itself; it is not ours.
+        self.assertEqual(set(seen["env"]) - set(model.CLAUDE_ENV_KEYS) - {"__CF_USER_TEXT_ENCODING"}, set())
 
     def test_a_prompt_built_from_a_candidate_carries_no_token(self):
         located, absence = candidates()

@@ -32,6 +32,11 @@ class LocateGateTest(unittest.TestCase):
         self.env.start()
         self.addCleanup(self.env.stop)
         os.environ.pop(secrets.ENV_TOKEN, None)
+        # On macOS the token lookup asks the login Keychain through `security`, a subprocess the
+        # dry-run test forbids; these tests read the token file only, as on Linux.
+        keychain = mock.patch.object(secrets, "_security", return_value=None)
+        keychain.start()
+        self.addCleanup(keychain.stop)
 
     def ready_config(self) -> Config:
         """A config in which every precondition but the token is satisfied."""
