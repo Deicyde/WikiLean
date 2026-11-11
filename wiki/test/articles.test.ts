@@ -310,7 +310,7 @@ describe("articles pages with the fixture store", () => {
     // and the record set are under "About this build", never in the open meta line.
     expect(html).toContain('<p class="articles-meta"><a href="/articles/universe/');
     expect(html).toContain(`<details class="articles-about"><summary>About this build</summary><ul class="articles-prov-list"><li>${UNMEASURED}</li><li>Campaign fixture-2026-10, from record sets exported 17 Oct 2026.</li><li>Campaign <code>fixture-2026-10</code>.</li>` +
-      '<li>Record set <code>fixture-set</code>, exported 17 Oct 2026 by formal-companion at commit <code title="3bceabcee0724ffdf50ce65dde3ab10048c72cba">3bceabc</code>.</li><li>Seal sha256 <code>');
+      '<li>Record set <code>fixture-set</code>, exported 17 Oct 2026 at producer commit <code title="3bceabcee0724ffdf50ce65dde3ab10048c72cba">3bceabc</code>.</li><li>Seal sha256 <code>');
     expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
     expect(html).not.toContain("<details class=\"articles-about\" open");
     // The bar's legend: each totals chip carries its fill's swatch, for the four statuses a passage can be given.
@@ -1682,13 +1682,15 @@ describe("a store built from a cf-locate-recordset/2 set", () => {
   const SKILL = "d85385aa4eb2818373e9b6b8b41b765ffaf53750";
   const RUN = "run:loc-tierA-x+chal-tierA-x";
 
-  function v2Store(): Map<string, string> {
+  // `producer`: the name the build gave the set (build_store --producer), if any.
+  function v2Store(producer?: string): Map<string, string> {
     const files = articlesFixtureFiles();
     for (const [key, value] of files) {
       if (!key.startsWith("articles/v1/articles/")) continue;
       const doc = JSON.parse(value);
       doc.campaign = RUN;
-      doc.seal = { set_id: "tierA-x", schema: "cf-locate-recordset/2", status_rule: 3, created: "2026-11-01T14:25:17Z", skill_commit: SKILL };
+      doc.seal = { set_id: "tierA-x", schema: "cf-locate-recordset/2", status_rule: 3, created: "2026-11-01T14:25:17Z", skill_commit: SKILL,
+        ...(producer === undefined ? {} : { producer }) };
       for (const passage of doc.passages) {
         for (const loc of passage.locations) loc.pair_key = "a".repeat(63) + "b";
         if (passage.coverage) {
@@ -1706,14 +1708,43 @@ describe("a store built from a cf-locate-recordset/2 set", () => {
     bindArticles(h.env, v2Store());
     const page = await (await get(h.env, `/articles/${GADGET_PAGEID}`)).text();
     expect(page).toContain("<li>Locate run <code>loc-tierA-x</code>, re-checked by challenge run <code>chal-tierA-x</code>.</li>" +
-      "<li>Record set <code>tierA-x</code> (cf-locate-recordset/2, statuses by status rule 3), exported 1 Nov 2026 by formal-companion " +
-      `at commit <code title="${SKILL}">d85385a</code>.</li>`);
-    expect(page).toContain(`<li>Record set <code>tierA-x</code>, exported 1 Nov 2026 by formal-companion <code title="${SKILL}">d85385a</code>.</li>`);
+      "<li>Record set <code>tierA-x</code> (cf-locate-recordset/2, statuses by status rule 3), exported 1 Nov 2026 " +
+      `at producer commit <code title="${SKILL}">d85385a</code>.</li>`);
+    expect(page).toContain(`<li>Record set <code>tierA-x</code>, exported 1 Nov 2026 at producer commit <code title="${SKILL}">d85385a</code>.</li>`);
+    // The seal records a commit, not a producer: a store that names none credits none.
+    expect(page).not.toContain("formal-companion");
     expect(page).toContain(` · pair key <code title="${"a".repeat(63)}b">aaaaaaaaaaaa</code>.</li>`);
     expect(page).toContain("Formalized by 2 parts together (more general):");
     expect(page).toContain('<ul class="articles-conjuncts" aria-label="Clauses this part states"><li>clause &lt;1&gt;</li></ul>');
     expect(page).toContain("<li>clause &lt;2&gt;</li>");
     expect(page).not.toMatch(/\bAI\b|pipeline|challenger/);
+  });
+
+  it("names each record set's producer as the build names it, on the article and on the dashboard", async () => {
+    const h = setup();
+    bindArticles(h.env, v2Store("formal-companion"));
+    const page = await (await get(h.env, `/articles/${GADGET_PAGEID}`)).text();
+    expect(page).toContain("<li>Record set <code>tierA-x</code> (cf-locate-recordset/2, statuses by status rule 3), exported 1 Nov 2026 " +
+      `by formal-companion at commit <code title="${SKILL}">d85385a</code>.</li>`);
+    expect(page).toContain(`<li>Record set <code>tierA-x</code>, exported 1 Nov 2026 by formal-companion at commit <code title="${SKILL}">d85385a</code>.</li>`);
+    expect(page).not.toContain("producer commit");
+    // A later batch from another producer built beside the first (build_store --producer): each
+    // set under its own name, and the build dated by the days its sets were exported on.
+    const files = articlesFixtureFiles();
+    const current = JSON.parse(files.get("articles/v1/current.json")!);
+    const other = "f".repeat(40);
+    current.record_sets = [{ ...current.record_set, campaign: current.campaign, producer: "formal-companion" },
+      { ...current.record_set, set_id: "wl-b2", seal_sha256: "e".repeat(64), skill_commit: other, created: "2026-11-10T12:00:00Z",
+        campaign: current.campaign, producer: "WikiLean" }];
+    current.built_at = "2026-11-10T12:00:00Z";
+    files.set("articles/v1/current.json", JSON.stringify(current));
+    const h2 = setup();
+    bindArticles(h2.env, files);
+    const dashboard = await (await get(h2.env, "/articles")).text();
+    expect(dashboard).toContain("<li>Campaign fixture-2026-10, from record sets exported 17 Oct–10 Nov 2026.</li>");
+    expect(dashboard).toContain("<li>Record set <code>fixture-set</code>, exported 17 Oct 2026 by formal-companion at commit " +
+      '<code title="3bceabcee0724ffdf50ce65dde3ab10048c72cba">3bceabc</code>.</li>');
+    expect(dashboard).toContain(`<li>Record set <code>wl-b2</code>, exported 10 Nov 2026 by WikiLean at commit <code title="${other}">fffffff</code>.</li>`);
   });
 
   it("derives a store without a basis by the seal's status rule (R-BROAD under rule 3)", () => {

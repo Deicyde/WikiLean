@@ -343,8 +343,8 @@ exactly them; a `/1` set builds byte for byte as before.
 The view model stays `wikilean.articles.article/1`, with optional fields: each location's
 `pair_key` (which the feedback route copies into its row), each passage's `passage_key`, the
 bundle's `relation`, `conjuncts` and `bundle_key` in `coverage`, and the article's `seal`
-(`set_id`, `schema`, `status_rule`, `created`, `skill_commit`). `current.json`'s `record_set`
-gains `schema` and `status_rule`.
+(`set_id`, `schema`, `status_rule`, `created`, `skill_commit`, and `producer` when the build
+names one with `--producer`). `current.json`'s `record_set` gains `schema` and `status_rule`.
 
 ### What the builder checks
 
@@ -921,18 +921,33 @@ build time (pass the same value to `--check`). `scripts/` is release-neutral, so
 builder can change without a release.
 
 Several sealed sets build into one store when one batch arrives as several exports (two locate
-runs need two tallies and two exports):
+runs need two tallies and two exports), or when later batches join earlier ones:
 
 ```bash
 python3 scripts/articles/build_store.py --record-set <set-a> --record-set <set-b> --campaign <id> --out <store>
 ```
 
-The sets must share `universe.json` byte for byte, the sourceset, `skill_commit`, the schema
-and the status rule, and no page id or title key. `--campaign` (a campaign id, never a
-`run:` token) names the combined build in `current.json`; `record_set` there keeps its shape
-and is the first set's by `set_id`, and an optional `record_sets` lists every set (its seal
-sha, set id, campaign, created, skill commit, byte budget). Each article keeps its own seal's
-`campaign` and `record_set`, which the feedback route checks against.
+The sets must share `universe.json` byte for byte, the schema and the status rule, and no page
+id or title key. Their sourcesets and producer commits may differ, so sets from different
+batches and different producers (formal-companion's export, WikiLean's own `export_records.py`)
+build together. `--campaign` (a campaign id, never a `run:` token) names the combined build in
+`current.json`; `record_set` there keeps its shape and is the first set's by `set_id`, and an
+optional `record_sets` lists every set (its seal sha, set id, campaign, created, skill commit,
+byte budget, sourceset). Each article keeps its own seal's `campaign` and `record_set`, which
+the feedback route checks against.
+
+`SEAL.json` records the producer's commit (`skill_commit`) but not which producer made the
+set, so the reader names a producer only when the build says it: `--producer <set-id>=<name>`
+(a letter, then letters, digits and `._-`, at most 64), once for every set of the build or for
+none, adds `producer` to that set's entry in `current.json` and to each of its articles' `seal`
+(a `/1` set's articles carry no `seal`, so its producer is named only in `current.json`).
+A build without `--producer` is byte for byte the build it always was, and the reader then
+cites the set's commit as its "producer commit" without naming a producer.
+
+```bash
+python3 scripts/articles/build_store.py --record-set <batch-1> --record-set <batch-2> --campaign <id> \
+    --producer <batch-1-set-id>=formal-companion --producer <batch-2-set-id>=WikiLean --out <store>
+```
 
 ### Supplements: five optional side files
 
@@ -1460,11 +1475,14 @@ and the live list filter.
   name the locate run that found it (from the campaign token `run:<locate>+<challenge>`)
   with its rank and confidence there, the challenge run that re-checked it and its verdict
   ("Re-checked in challenge run chal-…: it survived"), the record set and its export date and
-  producer commit (a `/2` store's `seal`), and its location and pair keys. The page's "About
+  producer commit (a `/2` store's `seal`), with the producer's name only when the build gave
+  it (`--producer`), and its location and pair keys. The page's "About
   this data" fold (the dashboard's "About this build") holds the runs, the record set, its
   status rule and its seal sha, and the dashboard's dates the build: "built <day>" when the
   builder was given `--built-at`, else, since `built_at` is then the latest seal's `created`,
-  "from record sets exported <day>". The seal records no model and no operator; a store built with
+  "from record sets exported <day>" (or the days from the first set's export to the last's, such
+  as "17 Oct–10 Nov 2026", when a later batch joined an earlier one). The seal records no model
+  and no operator; a store built with
   `--provenance` names them, so a card's Details read "Found by Model X (model-x) on 31 Oct–1 Nov
   2026 (UTC), locate run loc-… by jack: candidate 1 …" and "Re-checked by … on 1 Nov 2026 (UTC),
   challenge run chal-… by jack: it survived" (or "Not re-checked: sampled out of challenge run

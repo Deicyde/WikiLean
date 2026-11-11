@@ -28,15 +28,17 @@ rely on that html.parser):
         --campaign <campaign-id> --out <store-dir>
     python3 scripts/articles/build_store.py --record-set <set-dir> --out <store-dir> \
         [--passage-text <file>] [--signatures <file>] [--provenance <file>] [--reader-html <file>] \
-        [--audit-summary <file>]
+        [--audit-summary <file>] [--producer <set-id>=<name> ...]
 
 A set is cf-locate-recordset/1, or cf-locate-recordset/2 (formal-companion
 references/locate-documents.md §6, "The record set of status rule 2"): /1 plus SEAL.json's
 status_rule (2 or 3), the revision-free passage_key and pair_key on its records and the
 coverage claim as a bundle, each recomputed here, with every status derived by the seal's
-rule. A /1 set builds byte for byte as before. Several sets that share a universe,
-sourceset, producer commit, schema and status rule, and no page, build into one store
-(combined_sets): each article keeps its own seal's campaign and record set.
+rule. A /1 set builds byte for byte as before. Several sets that share a universe, schema
+and status rule, and no page, build into one store (combined_sets), whatever their
+sourcesets and producer commits: each article keeps its own seal's campaign and record set.
+SEAL.json records the producer's commit but not the producer, so --producer names each
+set's (checked_producers), and the reader credits a set only by the name given there.
 
 Five optional side files (apply_supplements) add what a record set does not hold, each checked
 against the records it describes: a passage's full text (its span's layer slice, by its
@@ -1948,7 +1950,9 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
 
 
 def seal_summary(seal: dict) -> dict:
-    """A /2 seal's provenance fields, as a view model and current.json's record_sets carry them."""
+    """A /2 seal's provenance fields, as a view model and current.json's record_sets carry them.
+
+    build() adds the set's `producer` when the build names one (--producer)."""
     return {"set_id": seal["set_id"], "schema": seal["schema"], "status_rule": seal["status_rule"],
             "created": seal["created"], "skill_commit": seal["skill_commit"]}
 
@@ -2043,19 +2047,24 @@ def build_set(set_dir: Path, validate: Any, schema_error: Any) -> BuiltSet:
 
 
 # What several record sets built into one store share (combined_sets), as SEAL.json names it.
-SHARED_SEAL_FIELDS = ("schema", "universe", "sourceset", "skill_commit")
-COMBINED_RULE = ("record sets built into one store share their universe (universe.json byte for byte), sourceset, "
-                 "skill_commit, schema and status_rule, and no page id or title key")
+SHARED_SEAL_FIELDS = ("schema", "universe")
+COMBINED_RULE = ("record sets built into one store share their universe (universe.json byte for byte), schema and "
+                 "status_rule, and no page id or title key")
+# A record set's producer as --producer names it ("formal-companion", "WikiLean"): the seal records
+# only the producer's commit (skill_commit), never which repository that commit is in.
+PRODUCER_RE = re.compile(r"[A-Za-z][A-Za-z0-9._-]{0,63}\Z")
 
 
 def combined_sets(sets: list[BuiltSet]) -> list[BuiltSet]:
     """Several record sets as one store's sets, in set_id order; ArticlesError unless they agree.
 
     Two locate runs need two tallies and two exports, so a batch can arrive as several sealed
-    sets. They build into one store only when nothing about the Lean side differs (one universe,
-    one sourceset, one producer commit, one schema and status rule) and their pages are disjoint
-    by page id and by title key, so every index entry and article has exactly one set. Each
-    article keeps its own seal's campaign and record_set, which the feedback route checks.
+    sets, and later batches add theirs. They build into one store only when the Lean side and
+    the status rules agree (one universe, one schema and status rule) and their pages are
+    disjoint by page id and by title key, so every index entry and article has exactly one set.
+    Their sourcesets and producer commits may differ: each article keeps its own seal's
+    campaign and record_set, which the feedback route checks, and current.json's record_sets
+    lists each set's sourceset and commit.
     """
     problems = Problems()
     ordered = sorted(sets, key=lambda built: built.seal["set_id"])
@@ -2090,14 +2099,57 @@ def combined_sets(sets: list[BuiltSet]) -> list[BuiltSet]:
     return ordered
 
 
-def record_set_entry(seal: dict, seal_sha: str) -> dict:
-    """current.json's record_set: one seal's identity (and, under /2, the rule its statuses came by)."""
+def record_set_entry(seal: dict, seal_sha: str, producer: str | None = None) -> dict:
+    """current.json's record_set: one seal's identity (and, under /2, the rule its statuses came by).
+
+    `producer` is the build's --producer for this set; without one the entry is what it always was.
+    """
     entry = {"seal_sha256": seal_sha, "set_id": seal["set_id"], "created": seal["created"],
              "skill_commit": seal["skill_commit"], "byte_budget": seal["byte_budget"],
              "sourceset": {"id": seal["sourceset"]["id"], "manifest_sha256": seal["sourceset"]["manifest_sha256"]}}
     if seal.get("schema") == SEAL_SCHEMA_BUNDLE:
         entry.update(schema=seal["schema"], status_rule=seal["status_rule"])
+    if producer is not None:
+        entry["producer"] = producer
     return entry
+
+
+def checked_producers(sets: list[BuiltSet], producers: dict[str, str] | None) -> dict[str, str]:
+    """The build's --producer names by set_id: none at all, or one valid name for every set.
+
+    A build that names some producers and not others would credit some sets and leave the rest
+    unnamed beside them, so it is refused, as is a name for a set the build does not hold.
+    """
+    if not producers:
+        return {}
+    ids = [built.seal["set_id"] for built in sets]
+    problems = Problems()
+    for set_id in sorted(set(producers) - set(ids)):
+        problems.add(f"--producer {set_id}", "names no record set of this build")
+    for set_id in ids:
+        if set_id not in producers:
+            problems.add(f"record set {set_id}", "has no --producer: name every set's producer, or none")
+    for set_id, name in sorted(producers.items()):
+        if not isinstance(name, str) or not PRODUCER_RE.match(name):
+            problems.add(f"--producer {set_id}", f"{name!r} is not a producer name (a letter, then letters, digits "
+                                                 f"and ._-, at most 64)")
+    problems.raise_if_any()
+    return dict(producers)
+
+
+def producer_flags(values: list[str] | None) -> dict[str, str] | None:
+    """--producer SET_ID=NAME flags as {set_id: name}; build() checks the names against the sets."""
+    if not values:
+        return None
+    producers: dict[str, str] = {}
+    for value in values:
+        set_id, sep, name = value.partition("=")
+        if not sep or not set_id:
+            raise ArticlesError(f"--producer {value!r}: give SET_ID=NAME")
+        if set_id in producers:
+            raise ArticlesError(f"--producer names record set {set_id} twice")
+        producers[set_id] = name
+    return producers
 
 
 # ---- supplements: optional side files merged into the view (docs/ARTICLES.md, "Supplements") -----
@@ -3766,7 +3818,7 @@ def apply_supplements(sets: list[BuiltSet], universe: dict, supplements: Supplem
 
 
 def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str | None = None,
-          supplements: Supplements | None = None) -> dict[str, bytes]:
+          supplements: Supplements | None = None, producers: dict[str, str] | None = None) -> dict[str, bytes]:
     """Return the store tree, {relative path: bytes}, for one sealed record set or several.
 
     One set builds exactly as it always has, under its seal's campaign. Several (a list of
@@ -3775,6 +3827,9 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
     by set_id and its record_sets lists every set, and each article keeps its own seal's campaign
     and record_set. built_at defaults to the latest seal's created. ``supplements`` merges the side
     files given (apply_supplements); without them the tree is exactly what it was before they existed.
+    ``producers`` names each set's producer by set_id (checked_producers): current.json's entry for
+    the set and, under /2, each of its articles' seal summaries carry it as ``producer``. Without
+    it the tree is exactly what it was before producers were named.
     """
     dirs = [set_dir] if isinstance(set_dir, (str, Path)) else list(set_dir)
     if not dirs:
@@ -3799,6 +3854,11 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
             raise ArticlesError(f"record set {directory}:\n{exc}") from exc
     if len(sets) > 1:
         sets = combined_sets(sets)
+    named = checked_producers(sets, producers)
+    for built in sets:
+        for view, _ in built.articles:
+            if built.seal["set_id"] in named and "seal" in view:
+                view["seal"]["producer"] = named[built.seal["set_id"]]
     first = sets[0]
     seal, seal_sha, universe = first.seal, first.seal_sha, first.universe
     if built_at is None:
@@ -3861,7 +3921,7 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
         "built_at": built_at, "builder": BUILDER,
         "universe": {"id": universe["id"], "sha256": universe["sha256"], "frozen": universe["frozen"],
                      "libraries": len(universe["libraries"])},
-        "record_set": record_set_entry(seal, seal_sha),
+        "record_set": record_set_entry(seal, seal_sha, named.get(seal["set_id"])),
         "literature_links": {"version": provenance["version"], "commit": provenance["commit"],
                              "schema_sha256": provenance["sha256"]},
         "counts": totals,
@@ -3870,8 +3930,8 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
     manifest = {"schema": MANIFEST_SCHEMA, "record_set": seal_sha}
     if len(sets) > 1:
         # Optional within v1: readers look fields up by name, and record_set keeps its shape.
-        current["record_sets"] = [{**record_set_entry(built.seal, built.seal_sha), "campaign": built.seal["campaign"]}
-                                  for built in sets]
+        current["record_sets"] = [{**record_set_entry(built.seal, built.seal_sha, named.get(built.seal["set_id"])),
+                                   "campaign": built.seal["campaign"]} for built in sets]
         manifest["record_sets"] = [built.seal_sha for built in sets]
     current.update(extra)
     tree[f"{prefix}current.json"] = canonical(current)
@@ -3949,6 +4009,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--built-at", help="ISO 8601 UTC build time for current.json (default: SEAL created)")
     parser.add_argument("--campaign", help="the campaign id naming a build of several record sets "
                                            "(current.json's campaign; each article keeps its own seal's)")
+    parser.add_argument("--producer", action="append", metavar="SET_ID=NAME",
+                        help="the producer that exported a record set (e.g. formal-companion), which the reader "
+                             "names beside the seal's commit; give one for every set, or none")
     parser.add_argument("--passage-text", type=Path, metavar="FILE",
                         help=f"optional side file ({PASSAGE_TEXT_SCHEMA}): each passage's full text, checked against "
                              "its record's span_sha256")
@@ -3973,7 +4036,8 @@ def main(argv: list[str] | None = None) -> int:
         sets = args.record_set
         supplements = Supplements.read(args.passage_text, args.signatures, args.provenance, args.reader_html,
                                        args.audit_summary)
-        tree = build(sets[0] if len(sets) == 1 else sets, args.built_at, args.campaign, supplements=supplements)
+        tree = build(sets[0] if len(sets) == 1 else sets, args.built_at, args.campaign, supplements=supplements,
+                     producers=producer_flags(args.producer))
         if args.check:
             differences = check_tree(args.out, tree)
             for line in differences:

@@ -2348,6 +2348,34 @@ class RecordSetTwoTests(SetCopyTest):
         # A /1 set's current.json names no schema or status rule: the golden store's bytes.
         self.assertNotIn("status_rule", json.loads(v1["articles/v1/current.json"])["record_set"])
 
+    def test_a_named_producer_rides_the_seal_summary(self):
+        self.to_v2(3)
+        plain = build_store.build(self.set)
+        named = build_store.build(self.set, producers={"fixture-set": "WikiLean"})
+        self.assertEqual(sorted(plain), sorted(named))
+        for pageid in (1001, 1003):
+            article = json.loads(named[f"articles/v1/articles/{pageid}.json"])
+            self.assertEqual(article["seal"]["producer"], "WikiLean")
+            del article["seal"]["producer"]
+            self.assertEqual(article, json.loads(plain[f"articles/v1/articles/{pageid}.json"]))
+        self.assertNotIn(b'"producer"', plain["articles/v1/articles/1001.json"])
+        self.assertEqual(json.loads(named["articles/v1/current.json"])["record_set"]["producer"], "WikiLean")
+        self.assertNotIn("producer", json.loads(plain["articles/v1/current.json"])["record_set"])
+        self.assertEqual([path for path in sorted(plain) if named[path] != plain[path]],
+                         ["articles/v1/articles/1001.json", "articles/v1/articles/1003.json",
+                          "articles/v1/current.json", "articles/v1/manifest.json"])
+
+    def test_sets_under_two_status_rules_do_not_combine(self):
+        self.to_v2(3)
+        a, b = self.tmp / "a", self.tmp / "b"
+        CombinedSetTests.split(self.set, a, "enwiki-1001-2002", set_id="fixture-a")
+        CombinedSetTests.split(self.set, b, "enwiki-1003-2004", set_id="fixture-b")
+        build_store.build([a, b], campaign="fixture-batch")  # one status rule: they combine
+        CombinedSetTests.reseal(b, status_rule=2)
+        with self.assertRaises(build_store.ArticlesError) as caught:
+            build_store.build([a, b], campaign="fixture-batch")
+        self.assertIn("record set fixture-b: SEAL.json status_rule differs from fixture-a's", str(caught.exception))
+
     def test_the_seal_names_its_status_rule(self):
         self.to_v2(seal=False)
         self.edit_seal(lambda seal: seal.update(schema="cf-locate-recordset/2"))
@@ -2496,18 +2524,23 @@ class CombinedSetTests(unittest.TestCase):
         self.a, self.b = self.tmp / "a", self.tmp / "b"
         for target, keep, set_id, campaign in ((self.a, "enwiki-1001-2002", "fixture-a", "run:loc-a+chal-1"),
                                                (self.b, "enwiki-1003-2004", "fixture-b", "run:loc-b+chal-1")):
-            shutil.copytree(RECORDSET, target)
-            for path in (target / "records").glob("*.jsonl"):
-                if path.stem != keep:
-                    path.unlink()
-            if keep != "enwiki-1001-2002":  # the receipt belongs to the Widget absence
-                shutil.rmtree(target / "receipts")
-            sources = [line for line in (target / "sources.jsonl").read_text().splitlines() if keep in line]
-            (target / "sources.jsonl").write_text("\n".join(sources) + "\n")
-            self.reseal(target, set_id=set_id, campaign=campaign)
+            self.split(RECORDSET, target, keep, set_id=set_id, campaign=campaign)
 
     def tearDown(self):
         shutil.rmtree(self.tmp)
+
+    @classmethod
+    def split(cls, source: Path, target: Path, keep: str, **fields) -> None:
+        """A copy of the set at `source` that holds only the source `keep`, resealed with `fields`."""
+        shutil.copytree(source, target)
+        for path in (target / "records").glob("*.jsonl"):
+            if path.stem != keep:
+                path.unlink()
+        if keep != "enwiki-1001-2002":  # the receipt belongs to the Widget absence
+            shutil.rmtree(target / "receipts")
+        sources = [line for line in (target / "sources.jsonl").read_text().splitlines() if keep in line]
+        (target / "sources.jsonl").write_text("\n".join(sources) + "\n")
+        cls.reseal(target, **fields)
 
     @staticmethod
     def reseal(target: Path, **fields) -> None:
@@ -2556,11 +2589,14 @@ class CombinedSetTests(unittest.TestCase):
             build_store.build(self.a, campaign="fixture-batch")
         self.assertIn("--campaign names a build of several record sets", str(caught.exception))
         refuse("set_id appears twice", [self.a, self.a])
-        self.reseal(self.b, skill_commit="0" * 40)
-        refuse("SEAL.json skill_commit differs from fixture-a's")
-        self.reseal(self.b, skill_commit=json.loads((self.a / "SEAL.json").read_text())["skill_commit"],
-                    sourceset={"id": "ss-other", "manifest_sha256": "0" * 64})
-        refuse("SEAL.json sourceset differs from fixture-a's")
+        # One universe means one universe.json, byte for byte: the same libraries written another way differ.
+        universe = self.b / "universe.json"
+        written = universe.read_bytes()
+        universe.write_text(json.dumps(json.loads(written), indent=1) + "\n")
+        self.reseal(self.b)
+        refuse("record set fixture-b: universe.json differs from fixture-a's")
+        universe.write_bytes(written)
+        self.reseal(self.b)
         overlap = self.tmp / "overlap"
         shutil.copytree(RECORDSET, overlap)
         self.reseal(overlap, set_id="fixture-c")
@@ -2568,6 +2604,67 @@ class CombinedSetTests(unittest.TestCase):
         # A refusal inside one set names that set.
         (self.a / "sources.jsonl").write_text((self.a / "sources.jsonl").read_text().replace("Widget lemma", "X"))
         refuse(f"record set {self.a}:\nsources.jsonl: sha256 does not match SEAL.json", [self.a, overlap])
+
+    def test_sets_of_other_sourcesets_and_producer_commits_combine(self):
+        # Later batches, and sets another producer exported, join a store: each keeps its own pins.
+        seal_a = json.loads((self.a / "SEAL.json").read_text())
+        self.reseal(self.b, skill_commit="0" * 40, sourceset={"id": "ss-other", "manifest_sha256": "0" * 64})
+        tree = build_store.build([self.a, self.b], campaign="fixture-batch")
+        current = json.loads(tree["articles/v1/current.json"])
+        self.assertEqual([(r["set_id"], r["skill_commit"], r["sourceset"]) for r in current["record_sets"]],
+                         [("fixture-a", seal_a["skill_commit"], seal_a["sourceset"]),
+                          ("fixture-b", "0" * 40, {"id": "ss-other", "manifest_sha256": "0" * 64})])
+        self.assertEqual(current["record_set"]["skill_commit"], seal_a["skill_commit"])
+
+    def test_producers_are_named_for_every_set_or_for_none(self):
+        producers = {"fixture-a": "formal-companion", "fixture-b": "WikiLean"}
+        plain = build_store.build([self.a, self.b], campaign="fixture-batch")
+        named = build_store.build([self.a, self.b], campaign="fixture-batch", producers=producers)
+        current = json.loads(named["articles/v1/current.json"])
+        self.assertEqual(current["record_set"]["producer"], "formal-companion")
+        self.assertEqual([(r["set_id"], r["producer"]) for r in current["record_sets"]],
+                         [("fixture-a", "formal-companion"), ("fixture-b", "WikiLean")])
+        for entry in (current["record_set"], *current["record_sets"]):
+            del entry["producer"]
+        self.assertEqual(current, json.loads(plain["articles/v1/current.json"]))
+        self.assertNotIn(b'"producer"', plain["articles/v1/current.json"])
+        # A /1 set's articles carry no seal summary, so only current.json names the producers.
+        self.assertEqual(sorted(plain), sorted(named))
+        self.assertEqual([path for path in sorted(plain) if plain[path] != named[path]],
+                         ["articles/v1/current.json", "articles/v1/manifest.json"])
+
+        def refuse(fragment, given):
+            with self.assertRaises(build_store.ArticlesError) as caught:
+                build_store.build([self.a, self.b], campaign="fixture-batch", producers=given)
+            self.assertIn(fragment, str(caught.exception))
+        refuse("record set fixture-b: has no --producer", {"fixture-a": "formal-companion"})
+        refuse("--producer fixture-c: names no record set of this build", {**producers, "fixture-c": "WikiLean"})
+        for name in ("", "formal companion", "1st", "-x", "x" * 65, "Wiki<Lean>", "WikiLean\n", None):
+            with self.subTest(name=name):
+                refuse("is not a producer name", {**producers, "fixture-b": name})
+
+    def test_the_cli_names_each_sets_producer(self):
+        out = self.tmp / "store"
+        err = io.StringIO()
+        flags = ["--record-set", str(self.a), "--record-set", str(self.b), "--campaign", "fixture-batch"]
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            code = build_store.main([*flags, "--producer", "fixture-a=formal-companion",
+                                     "--producer", "fixture-b=WikiLean", "--out", str(out)])
+        self.assertEqual(code, 0, err.getvalue())
+        current = json.loads((out / "articles/v1/current.json").read_text())
+        self.assertEqual([r["producer"] for r in current["record_sets"]], ["formal-companion", "WikiLean"])
+        for given, fragment in ((["fixture-a"], "--producer 'fixture-a': give SET_ID=NAME"),
+                                (["=WikiLean"], "--producer '=WikiLean': give SET_ID=NAME"),
+                                (["fixture-a=formal-companion", "fixture-a=WikiLean"],
+                                 "--producer names record set fixture-a twice"),
+                                (["fixture-a=formal-companion"], "record set fixture-b: has no --producer")):
+            with self.subTest(given=given):
+                err = io.StringIO()
+                with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                    code = build_store.main([*flags, *[arg for value in given for arg in ("--producer", value)],
+                                             "--out", str(out), "--check"])
+                self.assertEqual(code, 2)
+                self.assertIn(fragment, err.getvalue())
 
     def test_the_cli_builds_several_sets_into_one_store(self):
         out = self.tmp / "store"

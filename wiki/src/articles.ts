@@ -282,8 +282,9 @@ export interface ArticlesArticle {
   // records), and the mapping under `mapping`, CC0-1.0. Absent from stores built before it.
   licence?: { text: string | null; mapping: string } | null;
   // A /2 store's seal summary (build_store.seal_summary), which the page's
-  // Details cite; absent from /1 stores. The seal records no model or operator.
-  seal?: { set_id: string; schema: string; status_rule: number; created: string; skill_commit: string } | null;
+  // Details cite; absent from /1 stores. The seal records no model or operator,
+  // and no producer: `producer` is the name the build gave (build_store --producer).
+  seal?: { set_id: string; schema: string; status_rule: number; created: string; skill_commit: string; producer?: string } | null;
   // Optional (build_store --provenance): the runs that made this article's
   // records, which the Details folds cite by model, operator and date, and the
   // inventory run that chose its passages, when the locate run names one.
@@ -355,6 +356,8 @@ export interface ArticlesRecordSet {
   byte_budget?: number;
   schema?: string;
   status_rule?: number;
+  // The set's producer when the build names it (build_store --producer); SEAL.json does not.
+  producer?: string;
 }
 
 export interface IndexEntry {
