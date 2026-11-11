@@ -539,11 +539,15 @@ class RoundTest(unittest.TestCase):
         run_loop(self.site, Config(base_url=self.site_server.base_url, interval=0.0),
                  Options(verbose=False), log=lambda *_: None, sleep=slept.append, rounds=2)
         self.assertEqual(len(slept), 1)
-        self.assertGreaterEqual(slept[0], MIN_INTERVAL)
+        # Seconds, not "whatever MIN_INTERVAL happens to say": a floor of zero
+        # is not a floor, and this test has to notice that too.
+        self.assertGreaterEqual(slept[0], 5.0)
+        self.assertEqual(slept[0], MIN_INTERVAL)
 
     def test_a_zero_interval_in_the_config_file_is_floored_when_it_is_read(self):
         path = Path(self.tmp.name) / "config.json"
         path.write_text(json.dumps({"interval": 0}), encoding="utf-8")
+        self.assertGreaterEqual(Config.load(path).interval, 5.0)
         self.assertEqual(Config.load(path).interval, MIN_INTERVAL)
 
     def test_the_loop_waits_the_retry_after_it_was_given(self):

@@ -306,6 +306,14 @@ class ExistenceOracleTest(unittest.TestCase):
             check_exists("Fixture.known", "mathlib", LIBRARIES, self.oracle(fakes.KNOWN_DECLS),
                          roots={}, vouched={})
 
+    def test_a_hit_with_no_module_is_unverifiable_rather_than_accepted(self):
+        def no_module(name: str):
+            return {"ok": True, "decl": name, "library": "mathlib"}
+
+        with self.assertRaises(Unverifiable):
+            check_exists("Fixture.known", "mathlib", LIBRARIES, no_module, roots=ROOTS,
+                         vouched=self.vouched)
+
     def test_roots_are_read_as_lake_globs_on_a_dot_boundary(self):
         roots = {"mathlib": ("Mathlib", "Wanted"), "core": ("Init.*", "Std.*"),
                  "fc": ("FormalConjectures.+",), "ext": ("MathlibExt.+",)}

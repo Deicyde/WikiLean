@@ -280,7 +280,7 @@ def run_round(site: Site, config: Config, options: Options, *, log=print) -> Out
             state.mark_seen(_seen_key(candidate))
         log(f"  the site refused the write: {exc}")
         return Outcome(EX_FAILED, unit=candidate.unit, summary=f"refused: {exc}", candidate=candidate,
-                       details={"status": exc.status, "error": str(exc)})
+                       details={"write_refused": True, "status": exc.status, "error": str(exc)})
 
     state.mark_seen(_seen_key(candidate))
     journal.write("round", ok=True, unit=candidate.unit, pageid=candidate.pageid, run_id=run_id,
@@ -307,7 +307,13 @@ def _decide(candidate: Candidate, answer: dict, libraries: dict[str, str], site:
 
 
 def _is_account_refusal(outcome: Outcome) -> bool:
-    """Did the site refuse the write because of WHO is writing, not WHAT?"""
+    """Did the site refuse the WRITE because of who is writing, not what?
+
+    Only a write: a read that happened to answer 403 says nothing about the
+    account, and the loop must not stop for it.
+    """
+    if not outcome.details.get("write_refused"):
+        return False
     if outcome.details.get("status") not in ACCOUNT_REFUSAL_STATUSES:
         return False
     return HUMAN_ROW_REFUSAL not in str(outcome.details.get("error") or "")

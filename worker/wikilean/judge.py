@@ -369,16 +369,21 @@ def check_exists(declaration: str, library: str, libraries: dict[str, str],
     found = oracle(declaration)
     if found:
         module = found.get("module")
-        owner = module_library(module, roots) if isinstance(module, str) else None
+        if not isinstance(module, str) or not module:
+            # The name exists somewhere, and without a module there is nothing
+            # to read against the roots. Not the model's fault, and not a write.
+            raise Unverifiable(f"the public index knows {declaration!r} but does not say which module it "
+                               f"is in, so it cannot be tied to library {library!r}")
+        if not roots.get(library):
+            raise Unverifiable(f"this article's universe gives library {library!r} no module roots, so "
+                               f"{declaration!r} cannot be tied to it")
+        owner = module_library(module, roots)
         if owner == library:
             return
         if owner is not None:
             raise Rejected(f"{declaration!r} is in module {module!r}, which belongs to library "
                            f"{owner!r} and not to {library!r}")
-        if not roots.get(library):
-            raise Unverifiable(f"this article's universe gives library {library!r} no module roots, so "
-                               f"{declaration!r} cannot be tied to it")
-        raise Rejected(f"{declaration!r} is in module {module or '(unnamed)'!r}, which no library of this "
+        raise Rejected(f"{declaration!r} is in module {module!r}, which no library of this "
                        f"article's universe claims")
     if not known:
         raise Unverifiable(f"the public index does not know {declaration!r}, and this article records no "
