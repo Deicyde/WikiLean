@@ -21,12 +21,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import fakes
 from wikilean import model
-from wikilean.judge import (Rejected, clean_note, read_review, read_tag,
-                            review_prompt, tag_prompt)
-from wikilean.store import Candidate, Overlay, review_candidates
+from wikilean.judge import (Rejected, Unverifiable, check_exists, clean_note,
+                            plan_review, read_review, read_tag, review_prompt,
+                            tag_prompt)
+from wikilean.store import (Candidate, Overlay, library_roots, module_library,
+                            review_candidates, vouched_declarations)
 
 TOKEN = "wla_" + "C" * 43
 LIBRARIES = {"mathlib": fakes.REPO, "lean-core": fakes.CORE_REPO}
+ROOTS = library_roots(fakes.universe())
 
 
 def candidates():
@@ -220,6 +223,139 @@ class AnswerValidationTest(unittest.TestCase):
         self.assertFalse(tag.skip)
         self.assertEqual(tag.declaration, "Fixture.known")
         self.assertTrue(read_tag({"skip": True, "reason": "nothing states it"}, LIBRARIES).skip)
+
+
+class ExistenceOracleTest(unittest.TestCase):
+    """Which declaration this CLI will write, and in which library.
+
+    The oracle (`GET /decl/<name>`) names the INDEX a declaration was found in,
+    not the universe's library: live, `Int.sq_nonneg` comes back
+    `{"library": "mathlib", "module": "Init.Data.Int.Pow"}` though it is Lean
+    core's. The module, read against the universe's own Lake roots, is the
+    signal; the fake below answers in exactly that shape.
+    """
+
+    def setUp(self):
+        self.asked: list[str] = []
+        self.vouched = vouched_declarations(fakes.article())
+
+    def oracle(self, known: dict[str, str]):
+        def ask(name: str):
+            self.asked.append(name)
+            module = known.get(name)
+            return {"ok": True, "decl": name, "library": "mathlib", "module": module} if module else None
+        return ask
+
+    def check(self, declaration, library, known, *, vouched=None):
+        check_exists(declaration, library, LIBRARIES, self.oracle(known), roots=ROOTS,
+                     vouched=self.vouched if vouched is None else vouched)
+
+    def test_a_library_outside_the_universe_is_refused_before_anything_is_asked(self):
+        with self.assertRaises(Rejected):
+            self.check("Fixture.any", "tauceti", fakes.KNOWN_DECLS)
+        self.assertEqual(self.asked, [])
+
+    def test_a_declaration_the_store_vouches_for_needs_no_lookup(self):
+        self.check("Fixture.settled", "mathlib", {})
+        self.assertEqual(self.asked, [], "the sealed store is the stronger evidence")
+        self.check("FixtureCore.natSucc", "lean-core", {})
+        self.assertEqual(self.asked, [])
+
+    def test_a_name_whose_module_is_the_named_library_s_is_accepted(self):
+        self.check("FixtureCore.zeroAdd", "lean-core", fakes.KNOWN_DECLS)
+        self.assertEqual(self.asked, ["FixtureCore.zeroAdd"])
+
+    def test_a_name_whose_module_is_another_library_s_is_refused(self):
+        # The defect this replaces: /decl says "mathlib" for this name, so a
+        # check that read that field saw nothing wrong and wrote it as Mathlib.
+        with self.assertRaises(Rejected) as caught:
+            self.check("FixtureCore.zeroAdd", "mathlib", fakes.KNOWN_DECLS)
+        self.assertIn("belongs to library 'lean-core'", str(caught.exception))
+        self.assertNotIsInstance(caught.exception, Unverifiable)
+
+    def test_a_name_in_no_library_of_this_universe_is_refused(self):
+        with self.assertRaises(Rejected) as caught:
+            self.check("Elsewhere.lemma", "mathlib", fakes.KNOWN_DECLS)
+        self.assertIn("no library of this article's universe claims", str(caught.exception))
+
+    def test_a_name_missing_from_a_library_the_index_does_cover_is_refused(self):
+        with self.assertRaises(Rejected) as caught:
+            self.check("Fixture.hallucinated", "mathlib", fakes.KNOWN_DECLS)
+        self.assertIn("published index", str(caught.exception))
+        self.assertNotIsInstance(caught.exception, Unverifiable)
+        # It established coverage by asking about a name the store vouches for.
+        self.assertEqual(self.asked[0], "Fixture.hallucinated")
+        self.assertEqual(self.asked[1:], [sorted(self.vouched["mathlib"])[0]])
+
+    def test_a_library_the_index_does_not_cover_is_unverifiable_not_refused(self):
+        """The live case: 0 of 19 sampled atlas / tauceti / formal-conjectures
+        declarations resolve, including ones the pipeline itself located."""
+        mathlib_only = {k: v for k, v in fakes.KNOWN_DECLS.items() if v.startswith("Fixture.")}
+        with self.assertRaises(Unverifiable) as caught:
+            self.check("FixtureCore.guess", "lean-core", mathlib_only)
+        self.assertIn("does not cover library 'lean-core'", str(caught.exception))
+        self.assertIn("FixtureCore.natSucc", self.asked)
+
+    def test_a_library_with_nothing_known_in_it_cannot_be_checked_either(self):
+        with self.assertRaises(Unverifiable) as caught:
+            self.check("FixtureCore.guess", "lean-core", {}, vouched={"mathlib": {"Fixture.settled"}})
+        self.assertIn("records no declaration in library 'lean-core'", str(caught.exception))
+
+    def test_a_universe_that_names_no_roots_cannot_bind_a_module(self):
+        with self.assertRaises(Unverifiable):
+            check_exists("Fixture.known", "mathlib", LIBRARIES, self.oracle(fakes.KNOWN_DECLS),
+                         roots={}, vouched={})
+
+    def test_roots_are_read_as_lake_globs_on_a_dot_boundary(self):
+        roots = {"mathlib": ("Mathlib", "Wanted"), "core": ("Init.*", "Std.*"),
+                 "fc": ("FormalConjectures.+",), "ext": ("MathlibExt.+",)}
+        cases = {
+            "Mathlib.Algebra.Group.Defs": "mathlib",
+            "Mathlib": "mathlib",
+            "MathlibExt.AlgebraicGeometry.CubicSurface": "ext",
+            "Init.Prelude": "core",
+            "Std": "core",
+            "FormalConjectures.ErdosProblems.X": "fc",
+            "FormalConjectures": None,          # ".+" is strictly below
+            "Mathlibre.Something": None,        # not a dot boundary
+            "Cslib.Foo": None,
+            "": None,
+        }
+        for module, expected in cases.items():
+            with self.subTest(module=module):
+                self.assertEqual(module_library(module, roots), expected)
+
+    def test_the_longest_matching_root_wins(self):
+        roots = {"wide": ("Foo",), "narrow": ("Foo.Bar",)}
+        self.assertEqual(module_library("Foo.Bar.Baz", roots), "narrow")
+        self.assertEqual(module_library("Foo.Other", roots), "wide")
+
+
+class PairKeyTest(unittest.TestCase):
+    """The pair key goes into a request PATH, so it is not copied on trust."""
+
+    def _candidate(self, pair_key: str) -> Candidate:
+        article = fakes.article()
+        passage = next(p for p in article["passages"] if p["item"] == "downgraded")
+        location = dict(passage["locations"][0], pair_key=pair_key)
+        return Candidate("review", "downgraded", article["pageid"], article["title"],
+                         article["campaign"], passage, location, 0)
+
+    def removal(self, pair_key: str):
+        review = read_review({"verdict": "wrong_link", "reason": "it is about something else"},
+                             self._candidate(pair_key), LIBRARIES)
+        return plan_review(review, self._candidate(pair_key), LIBRARIES, model="m", run_id="r",
+                           overlay=Overlay.of([]))
+
+    def test_a_good_pair_key_removes_the_location(self):
+        action = self.removal(fakes.DOWNGRADED_PAIR)
+        self.assertEqual(action.path, f"/api/articles/tag/{fakes.DOWNGRADED_PAIR}/state")
+
+    def test_anything_that_is_not_a_digest_is_refused_here_not_at_the_server(self):
+        for bad in ("../../etc", "abc?x=1", "f" * 63, "F" * 64, f"{'f' * 64}/x", "f" * 65):
+            with self.subTest(bad=bad[:12]):
+                with self.assertRaises(Rejected):
+                    self.removal(bad)
 
 
 class PromptTest(unittest.TestCase):

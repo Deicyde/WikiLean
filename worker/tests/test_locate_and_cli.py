@@ -109,6 +109,30 @@ class LocateGateTest(unittest.TestCase):
         with mock.patch.dict(os.environ, {secrets.ENV_TOKEN: TOKEN}):
             self.assertNotIn(secrets.ENV_TOKEN, locate.child_environment("the paid model run", None))
 
+    def test_no_step_is_handed_an_anthropic_key(self):
+        """CLAUDE.md's "Max-auth gotcha": with ANTHROPIC_API_KEY set, a
+        subscription `claude` call fails silently ("error result: success", 0
+        tokens). scripts/pipeline/contribute/bridge.sh unsets it before running
+        exactly this pipeline; so does model.py's allowlist; so does this."""
+        ambient = {"ANTHROPIC_API_KEY": "sk-should-not-travel",
+                   "ANTHROPIC_BASE_URL": "https://elsewhere.invalid"}
+        with mock.patch.dict(os.environ, ambient):
+            for name, _argv in locate.steps(self.ready_config()):
+                environment = locate.child_environment(name, TOKEN)
+                for variable in locate.ANTHROPIC_ENV_KEYS:
+                    self.assertNotIn(variable, environment, name)
+
+    def test_a_contributor_who_pays_by_api_key_can_keep_it(self):
+        ambient = {"ANTHROPIC_API_KEY": "sk-mine", "ANTHROPIC_BASE_URL": "https://mine.invalid"}
+        with mock.patch.dict(os.environ, ambient):
+            environment = locate.child_environment("the paid model run", None, keep_anthropic_env=True)
+        self.assertEqual(environment["ANTHROPIC_API_KEY"], "sk-mine")
+        self.assertEqual(environment["ANTHROPIC_BASE_URL"], "https://mine.invalid")
+
+    def test_the_opt_in_is_a_config_field_and_is_off_by_default(self):
+        self.assertFalse(Config().locate_keep_anthropic_env)
+        self.assertTrue(Config(locate_keep_anthropic_env=True).locate_keep_anthropic_env)
+
 
 class ReadOnlyCommandTest(unittest.TestCase):
     def setUp(self):
@@ -152,7 +176,15 @@ class ReadOnlyCommandTest(unittest.TestCase):
         self.assertNotIn(TOKEN, out)
         self.assertEqual(self.site_server.writes, [])
 
+    def claude_is_logged_in(self) -> None:
+        """Claude Code's credentials file, under the test's own HOME. doctor
+        only looks for it; nothing reads or writes a credential."""
+        credentials = Path(os.environ["HOME"]) / ".claude" / ".credentials.json"
+        credentials.parent.mkdir(parents=True, exist_ok=True)
+        credentials.write_text("{}", encoding="utf-8")
+
     def test_doctor_spends_nothing_and_checks_the_sandbox(self):
+        self.claude_is_logged_in()
         code, out = self.run_cli(["doctor", "--json"])
         checks = {check["name"]: check for check in json.loads(out)}
         self.assertTrue(checks["site reachable"]["ok"], out)
@@ -161,14 +193,30 @@ class ReadOnlyCommandTest(unittest.TestCase):
         self.assertTrue(checks["the model sandbox"]["ok"], out)
         self.assertNotIn(TOKEN, out)
         self.assertEqual(self.site_server.writes, [])
-        self.assertIn(code, (0, 1))
+        # Everything that matters passed, so the exit code says so — and the
+        # locate unit, which has NOT been set up, must not change that: it is
+        # the one check marked non-fatal.
+        self.assertFalse(checks["locate unit"]["ok"])
+        self.assertFalse(checks["locate unit"]["fatal"])
+        self.assertEqual(code, 0, out)
 
     def test_doctor_names_a_token_that_is_not_an_agent(self):
+        self.claude_is_logged_in()
         self.site_server.role = "user"
-        _code, out = self.run_cli(["doctor", "--json"])
+        code, out = self.run_cli(["doctor", "--json"])
         checks = {check["name"]: check for check in json.loads(out)}
         self.assertFalse(checks["token accepted"]["ok"])
         self.assertIn("/agents", checks["token accepted"]["note"])
+        # And a failed fatal check is what the exit code is for.
+        self.assertEqual(code, 1, out)
+
+    def test_the_doctor_report_agrees_with_the_json_exit_code(self):
+        from wikilean.doctor import Check, report
+
+        printed: list[str] = []
+        self.assertEqual(report([Check("a", True), Check("b", False, fatal=False)], log=printed.append), 0)
+        self.assertEqual(report([Check("a", True), Check("b", False)], log=printed.append), 1)
+        self.assertIn("1 check(s) failed", "\n".join(printed))
 
     def test_work_without_a_token_refuses_before_any_request(self):
         secrets.delete_token()

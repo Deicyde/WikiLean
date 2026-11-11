@@ -203,6 +203,12 @@ def tag_candidates(article: dict, overlay: Overlay) -> list[Candidate]:
             continue
         if passage.get("outcome") != "absent" or _list(passage.get("locations")):
             continue
+        if str(passage.get("kind") or "other") not in FORMAL_KINDS:
+            # The unit asks the model to formalize the passage, so the passage
+            # has to state mathematics. vocab.py's other two kinds, "example"
+            # and "other", are prose ("e.g. the cross-ratio of z1, z2, z3"):
+            # offering one buys a model call for a question with no answer.
+            continue
         if _dict(passage.get("absence")).get("challenge") == CHALLENGE_SURVIVED:
             continue  # the review unit's: a checked absence is a claim
         if any(row.get("passage_key") == passage.get("passage_key") for row in overlay.rows.values()):
@@ -267,4 +273,76 @@ def libraries_of(universe: dict) -> dict[str, str]:
         identifier, repo = library.get("id"), library.get("repo")
         if isinstance(identifier, str) and identifier and isinstance(repo, str) and repo:
             out[identifier] = repo
+    return out
+
+
+def library_roots(universe: dict) -> dict[str, tuple[str, ...]]:
+    """Library id → its Lake module roots, from the article's own universe.
+
+    ``roots`` is required of every library in a sealed universe
+    (build_store.load_universe), and it is the only published signal that says
+    which library a module belongs to. A library whose entry is malformed comes
+    back with no roots, and :func:`module_library` then cannot claim a module
+    for it — which is the safe direction.
+    """
+    out: dict[str, tuple[str, ...]] = {}
+    for library in _list(universe.get("libraries")):
+        if not isinstance(library, dict):
+            continue
+        identifier = library.get("id")
+        if not isinstance(identifier, str) or not identifier:
+            continue
+        out[identifier] = tuple(r for r in _list(library.get("roots")) if isinstance(r, str) and r)
+    return out
+
+
+def module_library(module: str, roots: dict[str, tuple[str, ...]]) -> str | None:
+    """Which library of this universe a module belongs to, or None.
+
+    A root is a Lake module glob: ``Foo.+`` is everything strictly under Foo,
+    ``Foo.*`` is Foo and everything under it, and a bare ``Foo`` is read the
+    same way — that is how site/build_library_decls.py filters a doc-gen4 index
+    to a library's own declarations, and how a universe uses it (Mathlib's
+    roots are ["Mathlib", "Wanted"], and no declaration lives in the module
+    `Mathlib` itself). Matching is on a dot boundary, so "MathlibExt.Foo" is
+    not Mathlib's.
+
+    The longest matching root wins, so a library whose roots sit inside
+    another's is still told apart. A universe forbids one repository's root to
+    two of its libraries (build_store LIBRARY_RULE); two different repositories
+    could in principle share one, and then the first by id is chosen.
+    """
+    if not module:
+        return None
+    best: tuple[int, str] | None = None
+    for library in sorted(roots):
+        for root in roots[library]:
+            strict = root.endswith(".+")
+            bare = root[:-2] if strict or root.endswith(".*") else root
+            if not bare:
+                continue
+            if module.startswith(bare + ".") or (module == bare and not strict):
+                if best is None or len(bare) > best[0]:
+                    best = (len(bare), library)
+    return best[1] if best else None
+
+
+def vouched_declarations(article: dict) -> dict[str, set[str]]:
+    """Library id → the declarations this article's sealed records already name.
+
+    The published store is stronger evidence than any index lookup: a name here
+    was located against that library at a pinned commit and sealed. The round
+    uses it both to accept a declaration outright and to find out whether the
+    public existence oracle covers a library at all.
+    """
+    out: dict[str, set[str]] = {}
+    for passage in _list(article.get("passages")):
+        if not isinstance(passage, dict):
+            continue
+        for location in _list(passage.get("locations")):
+            if not isinstance(location, dict):
+                continue
+            library, declaration = location.get("library"), location.get("declaration")
+            if isinstance(library, str) and library and isinstance(declaration, str) and declaration:
+                out.setdefault(library, set()).add(declaration)
     return out

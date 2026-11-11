@@ -38,6 +38,9 @@ from .secrets import ENV_TOKEN, load_token
 RUN_PACKAGE = "scripts/pipeline/contribute/run_package.py"
 SUBMIT = "scripts/articles/submit.py"
 
+# Unset for every step unless the contributor opts in: see child_environment.
+ANTHROPIC_ENV_KEYS: tuple[str, ...] = ("ANTHROPIC_API_KEY", "ANTHROPIC_BASE_URL")
+
 
 @dataclass(frozen=True)
 class Missing:
@@ -100,16 +103,29 @@ def steps(config: Config) -> list[tuple[str, list[str]]]:
     ]
 
 
-def child_environment(step_name: str, token: str | None) -> dict[str, str]:
+def child_environment(step_name: str, token: str | None, *, keep_anthropic_env: bool = False) -> dict[str, str]:
     """The environment one step runs in.
 
     Only the submission steps are given the agent token, and only in the
     environment. The pipeline's own model stages run under the contributor's
     Claude exactly as the repository's scripts invoke it; this CLI does not
-    reach into that.
+    reach into that — except for the one variable that would silently break it.
+
+    **The Max-auth gotcha** (CLAUDE.md, "Security / credentials"): with
+    ``ANTHROPIC_API_KEY`` set, a subscription `claude` call fails silently —
+    "error result: success", 0 tokens. scripts/pipeline/contribute/bridge.sh
+    unsets it before running exactly this pipeline, and model.py keeps it off
+    its own child's allowlist, so this CLI unsets it too (and
+    ``ANTHROPIC_BASE_URL`` with it: a base URL pointed at some other endpoint
+    is the same failure wearing a different name). A contributor who really is
+    paying by API key sets ``"locate_keep_anthropic_env": true`` and gets the
+    variables passed through untouched.
     """
     environment = dict(os.environ)
     environment.pop(ENV_TOKEN, None)
+    if not keep_anthropic_env:
+        for name in ANTHROPIC_ENV_KEYS:
+            environment.pop(name, None)
     if token and "submit" in step_name:
         environment[ENV_TOKEN] = token
     return environment
@@ -146,7 +162,9 @@ def run_locate(config: Config, options, *, log=print):
     for name, argv in plan:
         log(f"  {name}")
         journal.write("locate-step", step=name, argv=argv)
-        done = subprocess.run(argv, env=child_environment(name, token),
+        done = subprocess.run(argv,
+                              env=child_environment(name, token,
+                                                    keep_anthropic_env=config.locate_keep_anthropic_env),
                               cwd=str(Path(config.locate_checkout).expanduser()))
         if done.returncode != 0:
             journal.write("round", ok=False, unit="locate", stage=name, exit=done.returncode)

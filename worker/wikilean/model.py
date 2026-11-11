@@ -47,6 +47,10 @@ CLAUDE_ENV_KEYS: tuple[str, ...] = (
 
 # The binary, overridable so a test can put a stub in its place.
 CLAUDE_CMD_ENV = "WIKILEAN_CLAUDE_CMD"
+# Named rather than written inline below, so that the only ["claude", …]
+# literal in this package is the full argv in claude_argv — which is the one
+# site/test_agent_sandbox.py scans for its flags.
+CLAUDE_BINARY = "claude"
 
 
 class ModelError(Exception):
@@ -65,7 +69,7 @@ class Answer:
 
 def claude_command() -> list[str]:
     raw = os.environ.get(CLAUDE_CMD_ENV, "").strip()
-    return shlex.split(raw) if raw else ["claude"]
+    return shlex.split(raw) if raw else [CLAUDE_BINARY]
 
 
 def claude_environment(environ: dict | None = None) -> dict[str, str]:
@@ -75,9 +79,16 @@ def claude_environment(environ: dict | None = None) -> dict[str, str]:
 
 
 def claude_argv(model: str = "") -> list[str]:
-    """The argv for one tool-less, session-less, settings-less judgement."""
+    """The argv for one tool-less, session-less, settings-less judgement.
+
+    Written as a literal list beginning "claude" because that is what the
+    repository's own gate reads: site/test_agent_sandbox.py scans every
+    pipeline Python file for such a list and fails the build unless it carries
+    --tools, --setting-sources and --strict-mcp-config. WIKILEAN_CLAUDE_CMD
+    replaces the binary afterwards and can never replace a flag.
+    """
     argv = [
-        *claude_command(),
+        "claude",
         "-p",
         "--output-format", "json",
         "--safe-mode",
@@ -86,6 +97,7 @@ def claude_argv(model: str = "") -> list[str]:
         "--strict-mcp-config",
         "--no-session-persistence",
     ]
+    argv[:1] = claude_command()
     if model:
         argv += ["--model", model]
     return argv

@@ -29,6 +29,25 @@ UNIVERSE_SHA = sha("universe")
 REPO = "https://example.invalid/fixture/mathlib"
 CORE_REPO = "https://example.invalid/fixture/lean4"
 
+# The two libraries' Lake module roots, as a sealed universe always carries
+# them (build_store.load_universe requires a non-empty list). They are what
+# says which library a declaration's module belongs to.
+ROOTS = {"mathlib": ["Fixture"], "lean-core": ["FixtureCore.*"]}
+# What the fake /decl knows: declaration -> the module it lives in. The real
+# route answers "library": "mathlib" for a Lean core name too, because the
+# Mathlib index carries core; the fake does the same, so a test that trusted
+# that field would fail here as it does live.
+KNOWN_DECLS = {
+    "Fixture.mulComm": "Fixture.Basic",
+    "Fixture.settled": "Fixture.Basic",
+    "Fixture.known": "Fixture.Basic",
+    # Core names, indexed beside Mathlib's and belonging to lean-core.
+    "FixtureCore.natSucc": "FixtureCore.Prelude",
+    "FixtureCore.zeroAdd": "FixtureCore.Basic",
+    # A name in no library of the fixture universe at all.
+    "Elsewhere.lemma": "Elsewhere.Basic",
+}
+
 PASSAGE_DOWNGRADED = sha("passage-downgraded")
 PASSAGE_ABSENCE = sha("passage-absence")
 PASSAGE_UNTAGGED = sha("passage-untagged")
@@ -51,8 +70,10 @@ def universe() -> dict:
         "sha256": UNIVERSE_SHA,
         "frozen": "2026-01-01",
         "libraries": [
-            {"id": "mathlib", "repo": REPO, "commit": "0" * 40, "display_name": "Fixture Mathlib"},
-            {"id": "lean-core", "repo": CORE_REPO, "commit": "1" * 40, "display_name": "Fixture core"},
+            {"id": "mathlib", "repo": REPO, "commit": "0" * 40, "display_name": "Fixture Mathlib",
+             "roots": list(ROOTS["mathlib"])},
+            {"id": "lean-core", "repo": CORE_REPO, "commit": "1" * 40, "display_name": "Fixture core",
+             "roots": list(ROOTS["lean-core"])},
         ],
         "excluded": [],
     }
@@ -96,6 +117,16 @@ def article() -> dict:
         "location_key": sha("loc-survived"), "pair_key": pair_key(sha("other"), REPO, "Fixture.settled"),
         "note": None,
     }
+    # A second library on the same passage, so the article's own records vouch
+    # for a declaration in lean-core as well as in mathlib.
+    core = {
+        "library": "lean-core", "repo": CORE_REPO, "commit": "1" * 40,
+        "declaration": "FixtureCore.natSucc", "module": "FixtureCore.Prelude",
+        "path": "src/Init/Prelude.lean", "line": 3, "relation": "broadMatch",
+        "proof_status": "proved", "rank": 2, "confidence": "medium", "challenge": "survived",
+        "location_key": sha("loc-core"),
+        "pair_key": pair_key(sha("passage-settled"), CORE_REPO, "FixtureCore.natSucc"), "note": None,
+    }
     receipt = {"sha256": sha("receipt"), "queries": 4, "candidates": 3}
     return {
         "schema": "wikilean.articles.article/1",
@@ -117,7 +148,7 @@ def article() -> dict:
                     "by_library": {}, "by_proof_status": {}, "by_relation": {}},
         "passages": [
             _passage("settled", sha("passage-settled"), kind="theorem", prominence="central",
-                     outcome="located", status="formalized", locations=[survived], absence=None),
+                     outcome="located", status="formalized", locations=[survived, core], absence=None),
             _passage("downgraded", PASSAGE_DOWNGRADED, kind="theorem", prominence="central",
                      outcome="located", status="partial", locations=[downgraded], absence=None),
             _passage("absence", PASSAGE_ABSENCE, kind="theorem", prominence="subject",
@@ -184,14 +215,20 @@ class FakeWikiLean:
     the next write with a status and a Retry-After.
     """
 
-    def __init__(self, *, declarations: set[str] | None = None, overlay: list[dict] | None = None,
+    def __init__(self, *, declarations: dict[str, str] | None = None, overlay: list[dict] | None = None,
                  second: bool = False):
         self.calls: list[dict] = []
-        self.declarations = {DOWNGRADED_DECL, "Fixture.settled", "Fixture.known"} if declarations is None \
-            else declarations
+        # declaration -> module, as GET /decl/<name> answers it.
+        self.declarations = dict(KNOWN_DECLS) if declarations is None else dict(declarations)
         self.overlay_rows = overlay or []
         self.second = second
+        # The next write only; `write_answer` is what every write after that
+        # gets, which is how a permanent refusal is modelled.
         self.next_write: tuple[int, dict, dict] | None = None
+        self.write_answer: tuple[int, dict, dict] | None = None
+        # When set, every GET /decl/<name> answers with it: the oracle being
+        # down, rate limited or paused.
+        self.decl_answer: tuple[int, dict, dict] | None = None
         self.role = "agent"
         outer = self
 
@@ -244,10 +281,15 @@ class FakeWikiLean:
                 if path.startswith("/decl/"):
                     import urllib.parse
 
+                    if outer.decl_answer is not None:
+                        return self._send(*outer.decl_answer)
                     name = urllib.parse.unquote(path[len("/decl/"):])
                     if name in outer.declarations:
+                        # "library" is the INDEX the name was found in, which
+                        # is "mathlib" for a core name too; only "module" says
+                        # which library it belongs to.
                         return self._send(200, {"ok": True, "decl": name, "library": "mathlib",
-                                                "module": "Fixture.Basic"})
+                                                "module": outer.declarations[name]})
                     return self._send(404, {"ok": False, "error": "unknown declaration", "decl": name})
                 return self._send(404, {"ok": False, "error": "no such route"})
 
@@ -259,10 +301,10 @@ class FakeWikiLean:
                 except ValueError:
                     body = {"_unparsed": raw.decode("utf-8", "replace")}
                 self._record(body)
-                if outer.next_write is not None:
-                    status, payload, headers = outer.next_write
-                    outer.next_write = None
-                    return self._send(status, payload, headers)
+                answer = outer.next_write if outer.next_write is not None else outer.write_answer
+                outer.next_write = None
+                if answer is not None:
+                    return self._send(*answer)
                 if self.path.startswith("/api/articles/tag"):
                     return self._send(200, {"ok": True, "pair_key": DOWNGRADED_PAIR, "version": 1,
                                             "state": "live", "status": "statement_only"})

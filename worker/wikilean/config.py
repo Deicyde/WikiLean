@@ -22,6 +22,11 @@ BASE_URL = "https://wikilean.jackmccarthy.org"
 # The three units, in the order `work` tries them.
 UNITS: tuple[str, ...] = ("review", "tag", "locate")
 
+# The shortest gap `work --loop` will leave between two rounds. A round is a
+# paid model call and (usually) a write against an account that may make 30 a
+# minute, so there is no setting of `interval` for which no gap is right.
+MIN_INTERVAL = 5.0
+
 
 def _xdg(variable: str, default: str) -> Path:
     value = os.environ.get(variable, "").strip()
@@ -78,7 +83,7 @@ class Config:
     base_url: str = BASE_URL
     # Passed to `claude --model` when set; empty means the contributor's default.
     model: str = ""
-    # Seconds between rounds in `work --loop`.
+    # Seconds between rounds in `work --loop`, never below MIN_INTERVAL.
     interval: float = 90.0
     # Seconds a single `claude -p` call may take before it is killed.
     model_timeout: float = 300.0
@@ -90,6 +95,12 @@ class Config:
     locate_checkout: str = ""
     locate_repo: str = ""
     locate_workdir: str = ""
+    # The pipeline's model stages run on the contributor's Claude subscription,
+    # and CLAUDE.md's "Max-auth gotcha" says an ANTHROPIC_API_KEY in the
+    # environment makes such a call fail silently. The locate unit therefore
+    # unsets ANTHROPIC_API_KEY and ANTHROPIC_BASE_URL unless this says not to,
+    # which is how somebody genuinely paying by API key opts in.
+    locate_keep_anthropic_env: bool = False
     # Articles the contributor does not want to be given.
     skip_pageids: list[int] = field(default_factory=list)
 
@@ -114,6 +125,7 @@ class Config:
             elif isinstance(current, list) and isinstance(value, list):
                 setattr(out, name, [v for v in value if isinstance(v, int)])
         out.base_url = (os.environ.get("WIKILEAN_BASE_URL") or out.base_url).rstrip("/")
+        out.interval = max(out.interval, MIN_INTERVAL)
         return out
 
     def save(self, path: Path | None = None) -> None:

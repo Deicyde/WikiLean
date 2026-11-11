@@ -139,8 +139,10 @@ class Site:
         self.timeout = timeout
         self._sleep = sleep
         self._opener = opener or self._urlopen
-        # Set whenever the site asks us to wait: the loop reads it.
-        self.pause_until = 0.0
+        # The pause `--loop` honours is the durable one in state.py, set by
+        # work._limited from the Limited raised below. There is deliberately no
+        # second per-instance copy here: a client-side attribute nothing reads
+        # would look like the back-off mechanism without being it.
         self.requests = 0
 
     # ---- transport ---------------------------------------------------------
@@ -186,7 +188,6 @@ class Site:
         if status in (429, 503):
             fallback = PAUSE_RETRY_AFTER if status == 503 else FALLBACK_RETRY_AFTER
             wait = retry_after_seconds(headers_out.get("retry-after"), fallback=fallback)
-            self.pause_until = max(self.pause_until, time.time() + wait)
             raise Limited(_message(parsed, "the site asked us to wait"), status=status,
                           retry_after=wait, code=_code(parsed))
         if 300 <= status < 400:
@@ -222,8 +223,11 @@ class Site:
         return self._send(plan.method, _path_of(plan.url, self.base_url), body=plan.body, authenticated=True)
 
     def plan(self, method: str, path: str, body: dict | None) -> Planned:
+        # Every header `_send` would set, so `--dry-run` prints the whole
+        # request and not most of it. Only the Authorization VALUE is withheld.
         return Planned(method, self.base_url + path, body,
                        {"Authorization": "Bearer <your agent token>",
+                        "Accept": "application/json",
                         "Content-Type": "application/json", "User-Agent": USER_AGENT})
 
     # ---- routes the CLI uses ------------------------------------------------

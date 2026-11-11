@@ -18,13 +18,17 @@ validated answer becomes a request body, and only a caller that is not in
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Callable
 
-from .store import (MAX_NOTE_CHARS, RELATIONS, Candidate, Overlay, pair_key,
-                    valid_declaration, valid_relation)
+from .store import (MAX_NOTE_CHARS, RELATIONS, Candidate, Overlay,
+                    module_library, pair_key, valid_declaration, valid_relation)
 
 TAG_PATH = "/api/articles/tag"
+
+# articles.ts SHA_RE: the pair key is a sha256 hex digest and nothing else.
+PAIR_KEY_RE = re.compile(r"[0-9a-f]{64}")
 
 # What a reviewer may conclude about a claim the pipeline already made.
 VERDICTS: tuple[str, ...] = ("agree", "wrong_relation", "wrong_link", "missed", "unsure")
@@ -34,6 +38,15 @@ MAX_REASON_CHARS = MAX_NOTE_CHARS
 
 class Rejected(Exception):
     """The model's answer is not something this CLI will send anywhere."""
+
+
+class Unverifiable(Rejected):
+    """The answer may well be right, and nothing public can establish that.
+
+    A refusal, so the round sends nothing — but a different one: the model is
+    not being told it was wrong, the CLI is saying it cannot check this library
+    and will not write what it has not checked.
+    """
 
 
 # ---- notes -------------------------------------------------------------------
@@ -274,6 +287,11 @@ def plan_review(review: Review, candidate: Candidate, libraries: dict[str, str],
         key = candidate.pair_key
         if not key:
             raise Rejected("this location has no pair key, so it cannot be removed (a /1 record set)")
+        # It goes into the request PATH, so it is checked here rather than
+        # trusted: `_send`'s guard only refuses the obviously malformed, and a
+        # stray "?" or "/" in this field would quietly change the request.
+        if not PAIR_KEY_RE.fullmatch(key):
+            raise Rejected("this location's pair key is not a sha256 digest, so it cannot be removed")
         return Action(
             f"remove {location.get('declaration')}: {review.reason}",
             "POST", f"{TAG_PATH}/{key}/state",
@@ -307,26 +325,73 @@ def plan_tag(tag: Tag, candidate: Candidate, libraries: dict[str, str], *,
 
 
 def check_exists(declaration: str, library: str, libraries: dict[str, str],
-                 oracle: Callable[[str], dict | None]) -> None:
-    """Refuse a declaration the published data cannot confirm exists.
+                 oracle: Callable[[str], dict | None], *,
+                 roots: dict[str, tuple[str, ...]] | None = None,
+                 vouched: dict[str, set[str]] | None = None) -> None:
+    """Confirm a declaration exists **in the library the model named**, or refuse.
 
-    ``oracle`` is site.Site.declaration: ``GET /decl/<name>`` with
-    ``Accept: application/json``, the site's own existence check over the
-    Mathlib decl index and the nightly multi-library blob. A name it does not
-    know is **not** written. The server itself would take it — articles.ts
-    makes existence a soft check, because the index does not cover every
-    library a person might tag — but a model proposing a declaration is exactly
-    the case the soft check was not written for, and a hallucinated name is the
-    failure this CLI exists to avoid.
+    Three sources of truth, in order of strength.
+
+    1. **The sealed store.** ``vouched`` is every (library, declaration) this
+       article's own records already carry (store.vouched_declarations). A name
+       there was located against that library at a pinned commit and sealed;
+       nothing a lookup could say improves on that.
+    2. **The public existence oracle**, ``site.Site.declaration``:
+       ``GET /decl/<name>`` with ``Accept: application/json``. It answers with
+       the ``module`` the name lives in, and the universe gives every library
+       its Lake module roots, so ``module`` is what says which library a name
+       belongs to. The oracle's own ``library`` field does **not**: it names the
+       index the name was found in, and the Mathlib index carries Lean core and
+       Batteries too, so it answers ``"mathlib"`` for ``Int.sq_nonneg``
+       (module ``Init.Data.Int.Pow``, which is lean-core's).
+    3. **Nothing.** The oracle indexes Mathlib (hence core and Batteries) and
+       whatever the nightly multi-library blob holds; it does not index every
+       library a universe names. When it cannot confirm the name, the round
+       asks it about a declaration the store vouches for in the same library:
+       if that one resolves the library is indexed and the model's name is
+       simply not in it (:class:`Rejected`), and if it does not — or there is
+       nothing to ask about — the library cannot be checked here at all and the
+       answer is :class:`Unverifiable`. **Unverifiable never writes.**
+
+    The server would take any of these: articles.ts makes existence a soft
+    check, because its index does not cover every library a person might tag.
+    A model proposing a declaration is exactly the case that soft check was not
+    written for, and a hallucinated name is the failure this CLI exists to
+    avoid.
     """
     if library not in libraries:
         raise Rejected(f"library {library!r} is not in this article's universe")
+    roots = roots or {}
+    vouched = vouched or {}
+    known = vouched.get(library) or set()
+    if declaration in known:
+        return
     found = oracle(declaration)
-    if not found:
+    if found:
+        module = found.get("module")
+        owner = module_library(module, roots) if isinstance(module, str) else None
+        if owner == library:
+            return
+        if owner is not None:
+            raise Rejected(f"{declaration!r} is in module {module!r}, which belongs to library "
+                           f"{owner!r} and not to {library!r}")
+        if not roots.get(library):
+            raise Unverifiable(f"this article's universe gives library {library!r} no module roots, so "
+                               f"{declaration!r} cannot be tied to it")
+        raise Rejected(f"{declaration!r} is in module {module or '(unnamed)'!r}, which no library of this "
+                       f"article's universe claims")
+    if not known:
+        raise Unverifiable(f"the public index does not know {declaration!r}, and this article records no "
+                           f"declaration in library {library!r} to find out whether the index covers it, "
+                           f"so the name cannot be checked")
+    sample = sorted(known)[0]
+    probe = oracle(sample)
+    probe_module = probe.get("module") if isinstance(probe, dict) else None
+    covered = isinstance(probe_module, str) and module_library(probe_module, roots) == library
+    if covered:
         raise Rejected(f"no declaration named {declaration!r} is in the published index")
-    where = found.get("library")
-    if isinstance(where, str) and where and where != library and where not in libraries:
-        raise Rejected(f"{declaration!r} resolves to library {where!r}, which this universe does not list")
+    raise Unverifiable(f"the public index does not cover library {library!r} (it does not know {sample!r}, "
+                       f"which this article's records place there), so {declaration!r} cannot be checked")
 
 
 # ---- the prompts ------------------------------------------------------------------

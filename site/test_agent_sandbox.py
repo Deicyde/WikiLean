@@ -38,7 +38,10 @@ SCAN_ROOTS = ("site", "brain", "manage", "bot", "catalog", "bench", "wikifunctio
 SANDBOX_MODULE = "site/agent_sandbox.py"
 # Pipeline code (not the operator-run bench/ research harness): a `claude` CLI
 # spawned here must be tool-less, settings-free and MCP-strict, as bot/triage.py is.
-PIPELINE_ROOTS = ("site", "brain", "manage", "bot", "catalog", "wikifunctions", "scripts")
+# worker/ is the contributor CLI: it runs on a volunteer's machine rather than
+# the pipeline host, but its one `claude` call reads untrusted Wikipedia text
+# and is held to the same tool-less form (worker/wikilean/model.py).
+PIPELINE_ROOTS = ("site", "brain", "manage", "bot", "catalog", "wikifunctions", "scripts", "worker")
 CLI_REQUIRED_FLAGS = ("--tools", "--setting-sources", "--strict-mcp-config")
 
 
@@ -149,7 +152,7 @@ class RepositoryScan(unittest.TestCase):
         files = tracked_python()
         self.assertGreater(len(files), 50, "the scan found too few Python files to be meaningful")
         scanned = {p.relative_to(REPO).parts[0] for p in files}
-        for root in ("site", "brain", "manage", "bot"):
+        for root in ("site", "brain", "manage", "bot", "worker"):
             self.assertIn(root, scanned)
         violations = [v for path in files for v in scan(path)]
         self.assertEqual(violations, [])
@@ -199,8 +202,23 @@ class RepositoryScan(unittest.TestCase):
             found = scan(bad, "bot/bad_cli.py")
             self.assertEqual(len(found), 1, found)
             self.assertIn("--tools, --setting-sources, --strict-mcp-config", found[0])
+            # The contributor CLI is held to the same rule as the pipeline.
+            self.assertEqual(len(scan(bad, "worker/wikilean/bad_cli.py")), 1)
             # The operator-run research harness is outside the pipeline rule.
             self.assertEqual(scan(bad, "bench/bad_cli.py"), [])
+
+    def test_the_contributor_cli_claude_call_is_held_to_the_tool_less_form(self):
+        """The rule's point is the real call site, not a fixture: worker's argv
+        must be a literal the scan can read, with every flag present."""
+        model = REPO / "worker" / "wikilean" / "model.py"
+        self.assertEqual(scan(model), [])
+        source = model.read_text(encoding="utf-8")
+        literal = next(node for node in ast.walk(ast.parse(source))
+                       if isinstance(node, (ast.List, ast.Tuple)) and node.elts
+                       and _const(node.elts[0]) == "claude")
+        flags = {_const(e) for e in literal.elts}
+        for flag in CLI_REQUIRED_FLAGS:
+            self.assertIn(flag, flags, "the scan only sees flags in the literal list")
 
 
 class SandboxedOptions(unittest.TestCase):

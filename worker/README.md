@@ -104,20 +104,46 @@ These are the rules the code keeps, each with a test in `worker/tests/`.
 from a Wikipedia revision — text anybody may edit — so the `claude` child gets
 no tools, no project or user settings, no MCP servers and no session
 (`--tools "" --setting-sources "" --strict-mcp-config --no-session-persistence
---safe-mode`, the form `bot/triage.py` already uses). Its environment is an
-**allowlist** that cannot contain `WIKILEAN_AGENT_TOKEN`, and the prompt goes
-in on stdin, so no quoted text is visible in `ps` either.
+--safe-mode`, the form `bot/triage.py` already uses, and the form
+`site/test_agent_sandbox.py` holds every `claude` call in this repository to).
+Its environment is an **allowlist** that cannot contain
+`WIKILEAN_AGENT_TOKEN`, and the prompt goes in on stdin, so no quoted text is
+visible in `ps` either. The allowlist does pass `HOME`, because Claude Code
+needs your own credentials — and the token file lives under it, so what stands
+between the model and the file on disk is `--tools ""`. That is the same
+posture `bot/triage.py` takes, and it is why the flags are not negotiable.
 
 **WikiLean never sees your model credentials.** This CLI never asks for a model
 key and has nowhere to put one. Your Claude subscription is yours.
 
 **The CLI validates the model's answer before anything is sent.** The relation
 must be in the locate vocabulary; the library must be one the article's own
-universe lists; the declaration must pass Lean's name shape **and** be found by
-the site's own existence oracle (`GET /decl/<name>`); a note must be inside the
-server's 500 characters and must not look like pasted Lean source (the
-libraries' text is under their own licences, not CC0). An answer that fails any
-of these is skipped, written to the journal and **never sent**.
+universe lists; the declaration must pass Lean's name shape **and** be shown to
+exist *in that library* (below); a note must be inside the server's 500
+characters and must not look like pasted Lean source (the libraries' text is
+under their own licences, not CC0). An answer that fails any of these is
+skipped, written to the journal and **never sent**.
+
+**A declaration is checked against the library it was proposed for.** Three
+things can settle it, in order:
+
+1. **The article's own sealed records.** They located that name in that library
+   at a pinned commit, which is better evidence than any lookup.
+2. **The public oracle**, `GET /decl/<name>`, read for its **module**. The
+   universe gives every library its Lake module roots, so the module says which
+   library a name belongs to. The oracle's own `library` field does not: it
+   names the *index* the name was found in, and the Mathlib index carries Lean
+   core and Batteries as well, so it answers `"mathlib"` for `Int.sq_nonneg`
+   (module `Init.Data.Int.Pow`, which is Lean core's).
+3. **Nothing** — and then nothing is written. The oracle indexes Mathlib (so
+   Lean core and Batteries too) and whatever the nightly multi-library blob
+   holds; it does **not** index every library a universe names. Today
+   `atlas`, `tauceti` and the FormalFrontier libraries do not resolve, so a
+   proposal naming one is **skipped with that reason in the journal and on
+   screen**, rather than written unchecked or refused as if the name were
+   wrong. Whether a library is covered is worked out from the published data
+   itself: the round asks the oracle about a declaration the store already
+   records in that library.
 
 **One write per round, and the site's "wait" is obeyed.** A 429 or a 503 —
 a rate limit, or the site-wide write brake during maintenance — ends the round
@@ -161,9 +187,20 @@ It is local. Nothing uploads it. Tokens are redacted on the way in.
   "locate_enabled": false,
   "locate_checkout": "",
   "locate_repo": "",
-  "locate_workdir": ""
+  "locate_workdir": "",
+  "locate_keep_anthropic_env": false
 }
 ```
+
+`interval` has a five-second floor, whatever the file says: a round is a paid
+model call and usually a write, and your account may make 30 writes a minute.
+
+`locate_keep_anthropic_env` is off, so the locate unit unsets
+`ANTHROPIC_API_KEY` and `ANTHROPIC_BASE_URL` for the pipeline it runs — with a
+key set, a Claude *subscription* call fails silently, reporting success and
+spending nothing (CLAUDE.md's "Max-auth gotcha";
+`scripts/pipeline/contribute/bridge.sh` guards the same way). Turn it on only
+if you really are paying by API key.
 
 ## The locate unit, and what is still missing
 
@@ -185,7 +222,8 @@ What it drives, in order (`wikilean work --unit locate --enable-locate
 5. `submit.py --record-set <workdir>/set`, then the same with `--execute`
 
 Only the submission steps are given your agent token, in the environment, never
-on a command line.
+on a command line. Every step runs without `ANTHROPIC_API_KEY` or
+`ANTHROPIC_BASE_URL` unless `locate_keep_anthropic_env` says otherwise.
 
 **Not finished, and needed before it runs end to end:**
 
