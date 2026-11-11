@@ -68,8 +68,9 @@ passage, so `tag` runs only when there is no review work in the articles the
 round looked at.
 
 `--unit review|tag|locate` pins the unit. `--dry-run` prints the exact request
-and sends nothing. `--loop` keeps going, waiting between rounds and backing off
-when the site says to.
+and sends nothing — and settles nothing either, whatever the model answered, so
+the first real round still gets the passage the dry run showed you. `--loop`
+keeps going, waiting between rounds and backing off when the site says to.
 
 ### What it sends, exactly
 
@@ -144,6 +145,11 @@ things can settle it, in order:
    wrong. Whether a library is covered is worked out from the published data
    itself: the round asks the oracle about a declaration the store already
    records in that library.
+
+A name containing `/` or `\` is refused before the oracle is asked at all. The
+tag route would accept one, but `/decl/<name>` answers 400 for it every time,
+so it is treated as the model's answer being wrong — and written off — rather
+than as a lookup that failed and might succeed later.
 
 **One write per round, and the site's "wait" is obeyed.** A 429 or a 503 —
 a rate limit, or the site-wide write brake during maintenance — ends the round

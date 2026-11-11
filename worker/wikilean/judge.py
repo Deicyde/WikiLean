@@ -366,6 +366,16 @@ def check_exists(declaration: str, library: str, libraries: dict[str, str],
     known = vouched.get(library) or set()
     if declaration in known:
         return
+    if "/" in declaration or "\\" in declaration:
+        # The one shape the oracle cannot be asked about: decl.ts NAME_RE
+        # refuses a path separator outright (400), while articles-overlay.ts
+        # validDeclaration — which store.valid_declaration mirrors — allows
+        # one. No Lean name has one, and a model shown module and docs paths
+        # does sometimes answer with one, so this is the ANSWER being wrong.
+        # Saying so here makes it a rejection the round writes off, instead of
+        # a request that fails in the same way every round for ever.
+        raise Rejected(f"{declaration!r} contains a path separator, which no Lean name has and "
+                       f"the existence oracle refuses outright")
     found = oracle(declaration)
     if found:
         module = found.get("module")

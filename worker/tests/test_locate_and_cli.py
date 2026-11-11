@@ -225,5 +225,45 @@ class ReadOnlyCommandTest(unittest.TestCase):
         self.assertEqual(self.site_server.calls, [])
 
 
+class PrivateHomeTest(unittest.TestCase):
+    """fakes.private_home must decide the whole environment doctor reads.
+
+    `CLAUDE_CONFIG_DIR` and `CLAUDE_CODE_OAUTH_TOKEN` are Claude Code's own
+    overrides, so they are set on exactly the machines this CLI is for — and
+    doctor.py consults both BEFORE it looks under HOME. A test that let either
+    through would be answered by the host rather than by itself: green where
+    nothing is set, red (or vacuously green) where something is.
+    """
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.directory = Path(self.tmp.name)
+        hostile = self.directory / "hostile"      # a config dir with no credentials in it
+        hostile.mkdir()
+        # The host, as unhelpful as it is allowed to be.
+        self.host = mock.patch.dict(os.environ, {"CLAUDE_CONFIG_DIR": str(hostile),
+                                                 "CLAUDE_CODE_OAUTH_TOKEN": "ambient"}, clear=False)
+        self.host.start()
+        self.addCleanup(self.host.stop)
+        self.env = mock.patch.dict(os.environ, fakes.private_home(self.directory), clear=False)
+        self.env.start()
+        self.addCleanup(self.env.stop)
+
+    def test_the_host_s_claude_code_environment_does_not_reach_doctor(self):
+        from wikilean import doctor
+
+        config = doctor.claude_config_dir()
+        self.assertEqual(config, Path(os.environ["HOME"]) / ".claude")
+        credentials = config / ".credentials.json"
+        credentials.parent.mkdir(parents=True, exist_ok=True)
+        credentials.write_text("{}", encoding="utf-8")
+        ok, note = doctor.claude_logged_in()
+        self.assertTrue(ok)
+        # The test's own file is the reason, not the ambient OAuth token: that
+        # one would make the answer True without the file existing at all.
+        self.assertEqual(note, str(credentials))
+
+
 if __name__ == "__main__":
     unittest.main()

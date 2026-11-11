@@ -10,9 +10,11 @@ The shape, and the three promises it keeps:
   through judge.py's vocabulary checks and, for any declaration it proposed,
   the site's own existence oracle, before a request body exists at all. A
   refusal is journalled and the round ends with no write.
-* **``--dry-run`` sends nothing.** It builds the same request, prints it, and
-  stops. The one code path that can reach the network for a write is the
-  ``if not options.dry_run`` branch below.
+* **``--dry-run`` sends nothing and consumes nothing.** It builds the same
+  request, prints it, and stops. The one code path that can reach the network
+  for a write is the ``if not options.dry_run`` branch below, and no outcome of
+  a dry run writes the candidate off — whatever the model answered, the first
+  real round still gets the passage the dry run showed.
 
 Back-off: a 429 or a 503 from the site sets a pause in state.py, which
 ``--loop`` honours and the next round refuses to start inside. One write per
@@ -45,6 +47,13 @@ MAX_ARTICLES_PER_ROUND = 8
 # off. 409 is deliberately absent: it is the compare-and-set losing, or the
 # campaign having moved, and the next round re-reads and gets it right.
 PERMANENT_WRITE_STATUSES = frozenset({400, 403, 404, 422})
+# The existence oracle (GET /decl/<name>) divides the same way, and for the
+# same reason: a name the route will not parse (400, decl.ts NAME_RE), one too
+# long for the URL (414) or a body it rejects (422) is the same answer every
+# round, so the candidate is written off rather than re-judged with another
+# paid model call. 404 is deliberately absent: it is a clean "no such
+# declaration" and Site.declaration already turns it into None.
+PERMANENT_ORACLE_STATUSES = frozenset({400, 414, 422})
 # Of those, the ones that are about the ACCOUNT and not about this candidate:
 # every later round would buy a model call and be refused the same way, so
 # `--loop` stops instead of backing off.
@@ -224,8 +233,12 @@ def run_round(site: Site, config: Config, options: Options, *, log=print) -> Out
                       retry_after=limited.retry_after, error=str(limited), run_id=run_id)
         return _limited(limited, "checking the declaration")
     except SiteError as exc:
+        permanent = exc.status in PERMANENT_ORACLE_STATUSES
         journal.write("round", ok=False, unit=candidate.unit, stage="validate", status=exc.status,
-                      error=str(exc), run_id=run_id)
+                      error=str(exc), permanent=permanent, run_id=run_id)
+        if permanent and not options.dry_run:
+            # Asking again buys the same refusal and another model call.
+            state.mark_seen(_seen_key(candidate))
         log(f"  the declaration could not be checked: {exc}")
         return Outcome(EX_FAILED, unit=candidate.unit, candidate=candidate,
                        summary=f"could not check the declaration: {exc}", details={"status": exc.status})
@@ -236,7 +249,11 @@ def run_round(site: Site, config: Config, options: Options, *, log=print) -> Out
         journal.write("round", ok=True, unit=candidate.unit, stage="validate", rejected=str(exc),
                       unverifiable=unverifiable, pageid=candidate.pageid, run_id=run_id, sent=False,
                       answer=answer.value)
-        state.mark_seen(_seen_key(candidate))
+        # A dry run leaves nothing behind but the journal entry that is the
+        # point of it: writing the candidate off here would quietly hand the
+        # first REAL round a different passage from the one just looked at.
+        if not options.dry_run:
+            state.mark_seen(_seen_key(candidate))
         if unverifiable:
             log(f"  nothing is written: {exc}")
             return Outcome(EX_OK, unit=candidate.unit, summary=f"not checkable here: {exc}",
@@ -247,7 +264,8 @@ def run_round(site: Site, config: Config, options: Options, *, log=print) -> Out
     if not action.writes:
         journal.write("round", ok=True, unit=candidate.unit, pageid=candidate.pageid, run_id=run_id,
                       sent=False, result=action.summary)
-        state.mark_seen(_seen_key(candidate))
+        if not options.dry_run:          # as above: a dry run consumes nothing
+            state.mark_seen(_seen_key(candidate))
         log(f"  {action.summary}")
         return Outcome(EX_OK, unit=candidate.unit, summary=action.summary, candidate=candidate)
 

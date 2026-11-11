@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import stat
 import sys
 import threading
@@ -33,6 +34,13 @@ CORE_REPO = "https://example.invalid/fixture/lean4"
 # them (build_store.load_universe requires a non-empty list). They are what
 # says which library a declaration's module belongs to.
 ROOTS = {"mathlib": ["Fixture"], "lean-core": ["FixtureCore.*"]}
+
+# decl.ts NAME_RE, minus the \p{C} class Python's re cannot spell (and that
+# store.valid_declaration refuses before a request exists anyway). What matters
+# here is the part the CLI's own rule does NOT share: a path separator, which
+# the real route answers 400 for every time it is asked.
+DECL_NAME_RE = re.compile(r"[^\s/\\]{1,300}")
+
 # What the fake /decl knows: declaration -> the module it lives in. The real
 # route answers "library": "mathlib" for a Lean core name too, because the
 # Mathlib index carries core; the fake does the same, so a test that trusted
@@ -284,6 +292,11 @@ class FakeWikiLean:
                     if outer.decl_answer is not None:
                         return self._send(*outer.decl_answer)
                     name = urllib.parse.unquote(path[len("/decl/"):])
+                    if not DECL_NAME_RE.fullmatch(name):
+                        # decl.ts NAME_RE, which refuses a path separator —
+                        # the shape articles-overlay.ts validDeclaration
+                        # allows. The same 400 every time it is asked.
+                        return self._send(400, {"ok": False, "error": "bad declaration name"})
                     if name in outer.declarations:
                         # "library" is the INDEX the name was found in, which
                         # is "mathlib" for a core name too; only "module" says
@@ -399,6 +412,11 @@ def private_home(directory: Path) -> dict[str, str]:
         (home / child).mkdir(parents=True, exist_ok=True)
     return {
         "HOME": str(home),
+        # Claude Code's own overrides, which doctor.py consults BEFORE HOME:
+        # without them a host that sets either one decides the answer to
+        # "is Claude Code logged in?" instead of the test doing so.
+        "CLAUDE_CONFIG_DIR": str(home / ".claude"),
+        "CLAUDE_CODE_OAUTH_TOKEN": "",
         "XDG_CONFIG_HOME": str(home / "config"),
         "XDG_STATE_HOME": str(home / "state"),
         "XDG_CACHE_HOME": str(home / "cache"),

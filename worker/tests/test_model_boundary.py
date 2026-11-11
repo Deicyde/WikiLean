@@ -25,7 +25,8 @@ from wikilean.judge import (Rejected, Unverifiable, check_exists, clean_note,
                             plan_review, read_review, read_tag, review_prompt,
                             tag_prompt)
 from wikilean.store import (Candidate, Overlay, library_roots, module_library,
-                            review_candidates, vouched_declarations)
+                            review_candidates, valid_declaration,
+                            vouched_declarations)
 
 TOKEN = "wla_" + "C" * 43
 LIBRARIES = {"mathlib": fakes.REPO, "lean-core": fakes.CORE_REPO}
@@ -300,6 +301,27 @@ class ExistenceOracleTest(unittest.TestCase):
         with self.assertRaises(Unverifiable) as caught:
             self.check("FixtureCore.guess", "lean-core", {}, vouched={"mathlib": {"Fixture.settled"}})
         self.assertIn("records no declaration in library 'lean-core'", str(caught.exception))
+
+    def test_a_path_separator_is_the_answer_being_wrong_not_a_failed_request(self):
+        """decl.ts NAME_RE refuses `/` and `\\` with a permanent 400, and
+        articles-overlay.ts validDeclaration — which store.valid_declaration
+        mirrors — allows them. Asking the oracle would fail identically every
+        round, so the name is refused here and written off instead."""
+        for name in ("Mathlib/Analysis/Foo", "Foo\\bar", "Nat/add_comm"):
+            with self.subTest(declaration=name):
+                self.asked.clear()
+                self.assertTrue(valid_declaration(name), "the premise: the tag route would take it")
+                with self.assertRaises(Rejected) as caught:
+                    self.check(name, "mathlib", fakes.KNOWN_DECLS)
+                self.assertIn("path separator", str(caught.exception))
+                self.assertNotIsInstance(caught.exception, Unverifiable)
+                self.assertEqual(self.asked, [], "a request that is always a 400 was spent")
+
+    def test_a_vouched_name_is_still_accepted_before_the_shape_is_looked_at(self):
+        """The order matters: the sealed store is the stronger evidence, and
+        the separator rule is about what the ORACLE can be asked."""
+        self.check("Fixture.settled", "mathlib", {})
+        self.assertEqual(self.asked, [])
 
     def test_a_universe_that_names_no_roots_cannot_bind_a_module(self):
         with self.assertRaises(Unverifiable):

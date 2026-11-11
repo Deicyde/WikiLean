@@ -283,6 +283,55 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(code, EX_OK)   # it finished its rounds rather than raising
         self.assertEqual(len(slept), 1)
 
+    def test_a_name_with_a_path_separator_is_refused_without_asking_the_oracle(self):
+        """The one shape the oracle cannot be asked about: decl.ts NAME_RE
+        answers 400 for it for ever, and articles-overlay.ts validDeclaration
+        (which store.valid_declaration mirrors) lets it through. So it is the
+        model's ANSWER that is wrong, not a request that failed."""
+        from wikilean.store import valid_declaration
+
+        # The two halves of the premise: the tag route's own rule would take
+        # this name, and the oracle answers 400 for it, as production does.
+        self.assertTrue(valid_declaration("Mathlib/Analysis/Foo"))
+        with self.assertRaises(SiteError) as caught:
+            self.site.declaration("Mathlib/Analysis/Foo")
+        self.assertEqual(caught.exception.status, 400)
+        self._ask_about_a_missed_declaration("Mathlib/Analysis/Foo")
+        outcome = self.run_one()
+        self.assertEqual(outcome.code, EX_OK, outcome.summary)
+        self.assertIn("path separator", outcome.summary)
+        self.assertEqual(self.site_server.writes, [])
+        asked = [c["path"] for c in self.site_server.calls if c["path"].startswith("/decl/")]
+        self.assertEqual(asked, [], "it spent a request on a name that is always a 400")
+        self.assertIn("path separator", journal.read(1, event="round")[0]["rejected"])
+        # And it is written off like any other refused answer, rather than
+        # re-judged with a fresh model call every round.
+        second = self.run_one()
+        self.assertNotEqual(second.candidate and second.candidate.passage_key, fakes.PASSAGE_ABSENCE)
+
+    def test_a_declaration_the_oracle_refuses_outright_is_not_judged_again(self):
+        """A 400 from /decl is the same answer every round, so re-judging the
+        passage buys another paid model call and the identical refusal."""
+        self._ask_about_a_missed_declaration("Fixture.known")
+        self.site_server.decl_answer = (400, {"ok": False, "error": "bad declaration name"}, {})
+        first = self.run_one()
+        self.assertEqual(first.code, EX_FAILED)
+        self.assertEqual(first.candidate.passage_key, fakes.PASSAGE_ABSENCE)
+        self.assertTrue(journal.read(1, event="round")[0]["permanent"])
+        second = self.run_one()
+        self.assertNotEqual(second.candidate and second.candidate.passage_key, fakes.PASSAGE_ABSENCE)
+
+    def test_an_oracle_failure_that_may_pass_later_keeps_the_passage(self):
+        """The counterexample: a 500 is the oracle being down, and the passage
+        is still worth judging when it comes back."""
+        self._ask_about_a_missed_declaration("Fixture.known")
+        self.site_server.decl_answer = (500, {"ok": False, "error": "boom"}, {})
+        first = self.run_one()
+        second = self.run_one()
+        self.assertEqual(first.code, EX_FAILED)
+        self.assertFalse(journal.read(1, event="round")[0]["permanent"])
+        self.assertEqual(second.candidate.passage_key, fakes.PASSAGE_ABSENCE)
+
     def test_a_paused_oracle_records_the_pause_like_any_other_wait(self):
         self._ask_about_a_missed_declaration("Fixture.known")
         self.site_server.decl_answer = (503, {"ok": False, "error": "editing is paused site-wide"}, {})
@@ -334,6 +383,36 @@ class RoundTest(unittest.TestCase):
         run_round(self.site, self.config, Options(dry_run=True, verbose=False), log=lambda *_: None)
         outcome = self.run_one()
         self.assertTrue(outcome.wrote)
+
+    def test_dry_run_consumes_no_candidate_whatever_the_model_answered(self):
+        """`wikilean work --dry-run` is the first thing a new contributor is
+        told to run, and most answers produce no request at all: "unsure", an
+        out-of-vocabulary verdict, a tag the model declines. None of them may
+        write the passage off, or the first REAL round quietly does different
+        work from the one the dry run showed."""
+        for answer in ({"verdict": "unsure"}, {"verdict": "nonsense"}):
+            with self.subTest(answer=answer):
+                self.reply(answer)
+                outcome = run_round(self.site, self.config, Options(dry_run=True, verbose=False),
+                                    log=lambda *_: None)
+                self.assertEqual(outcome.code, EX_OK, outcome.summary)
+                self.assertEqual(outcome.candidate.passage_key, fakes.PASSAGE_DOWNGRADED)
+                self.assertEqual(self.site_server.writes, [])
+                self.assertEqual(state.seen_keys(), set(), "the dry run consumed the candidate")
+        self.reply({"verdict": "agree"})
+        outcome = self.run_one()
+        self.assertTrue(outcome.wrote, outcome.summary)
+        self.assertEqual(self.site_server.writes[0]["body"]["passage_key"], fakes.PASSAGE_DOWNGRADED)
+
+    def test_a_dry_run_does_not_write_off_a_name_the_oracle_refuses(self):
+        """The same rule on the path the oracle's permanent refusals take."""
+        self._ask_about_a_missed_declaration("Fixture.known")
+        self.site_server.decl_answer = (400, {"ok": False, "error": "bad declaration name"}, {})
+        before = state.seen_keys()
+        outcome = run_round(self.site, self.config, Options(dry_run=True, verbose=False),
+                            log=lambda *_: None)
+        self.assertEqual(outcome.code, EX_FAILED)
+        self.assertEqual(state.seen_keys(), before)
 
     # ---- unit selection --------------------------------------------------------
 
