@@ -23,7 +23,7 @@ import type { ContentfulStatusCode } from "hono/utils/http-status";
 import { getUser, requireRole, type AuthUser } from "./auth.js";
 import { editLimitKey } from "./agents.js";
 import type { Env } from "./env.js";
-import type { UniverseLibrary } from "./libraries.js";
+import { libraryInfo, type UniverseLibrary } from "./libraries.js";
 import type { PassageSegment } from "./articles-math.js";
 import { articlesCsp, checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
@@ -40,6 +40,7 @@ import {
   articlesReaderPage,
   articlesUniversePage,
   pageNeedsTurnstile,
+  plainHead,
   type DashboardRow,
 } from "./articles-render.js";
 
@@ -629,6 +630,72 @@ export async function articlesSummaryFor(env: Env, wikipediaTitle: string): Prom
     return await lookupTitle(reader, wikipediaTitle);
   } catch (error) {
     console.log(JSON.stringify({ event: "articles-box-error", msg: String(error) }));
+    return null;
+  }
+}
+
+// ---- the home page's example ------------------------------------------------
+//
+// The landing page shows one real passage beside the Lean declaration that
+// formalizes it, and the build's own totals (home.ts landingPage). Nothing here is
+// written in the repository: every word comes from the published store, and when the
+// store is unbound, unpublished or unreadable the home page simply leaves the block
+// out. The choice is deterministic — the published build's first index shard, its
+// article with the most formalized passages (ties by page id), that article's first
+// formalized passage and that passage's best-ranked location — so two renders of one
+// build agree, and the page's KV entry is the same bytes for everyone.
+
+export interface ArticlesExample {
+  articles: number;
+  passages: number;
+  formalized: number;
+  title: string;
+  href: string;
+  revision: number;
+  quote: string;
+  declaration: string;
+  library: string;
+  relation: string;
+}
+
+function exampleFrom(current: ArticlesCurrent, entry: IndexEntry, article: ArticlesArticle): ArticlesExample | null {
+  const passages = Array.isArray(article.passages) ? article.passages : [];
+  const passage = passages.find((p) => p?.status === "formalized" && Array.isArray(p.locations) && p.locations.length > 0);
+  const loc = passage?.locations?.[0];
+  if (!passage || !loc || typeof loc.declaration !== "string" || loc.declaration === "") return null;
+  const quote = plainHead(passage, 220);
+  if (!quote) return null;
+  const unresolved = Number(current.counts?.by_status?.unresolved);
+  const total = Number(current.counts?.passages);
+  return {
+    articles: Number(current.counts?.articles) || 0,
+    passages: Math.max(0, (Number.isSafeInteger(total) ? total : 0) - (Number.isSafeInteger(unresolved) ? unresolved : 0)),
+    formalized: Number(current.counts?.by_status?.formalized) || 0,
+    title: String(article.title ?? entry.title),
+    href: articlesHref(article.pageid, String(article.title ?? entry.title)),
+    revision: Number(article.revision) || 0,
+    quote,
+    declaration: loc.declaration,
+    library: libraryInfo(loc.repo, null).short,
+    relation: String(loc.relation ?? ""),
+  };
+}
+
+export async function articlesExample(env: Env): Promise<ArticlesExample | null> {
+  const reader = articlesReader(env);
+  if (!reader) return null;
+  try {
+    const current = await loadCurrent(reader);
+    if (!current) return null;
+    const shard = publishedShards(current)[0];
+    const entries = shard === undefined ? null : await loadIndexShard(reader, shard);
+    const best = (entries ?? []).filter((entry) => Number(entry.formalized) > 0)
+      .sort((a, b) => Number(b.formalized) - Number(a.formalized) || a.pageid - b.pageid)[0];
+    if (!best) return null;
+    const article = await loadArticle(reader, best.pageid);
+    return article ? exampleFrom(current, best, article) : null;
+  } catch (error) {
+    console.log(JSON.stringify({ event: "articles-example-error", msg: String(error) }));
     return null;
   }
 }

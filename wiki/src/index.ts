@@ -50,7 +50,7 @@ import { registerRepoRoutes } from "./repos.js";
 import { AGENT_MODEL_MAX, AGENT_PENDING_PER_ARTICLE, AGENT_PENDING_TOTAL, editLimitKey, registerAgentRoutes } from "./agents.js";
 import { registerNativeMigrationRoutes } from "./native-migration-api.js";
 import { registerCompanionRoutes } from "./companion.js";
-import { articlesHref, articlesSummaryFor, registerArticlesRoutes } from "./articles.js";
+import { articlesExample, articlesHref, articlesSummaryFor, registerArticlesRoutes } from "./articles.js";
 import { articlesSummaryBox } from "./articles-render.js";
 import {
   NATIVE_SCHEMA_VERSION, isNativeItem, validateNativeItems,
@@ -220,7 +220,10 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // v20: /articles is the formalization reader (docs/ARTICLES.md), so the
   // header's "Articles" link leads somewhere else; bumped so no reader keeps a
   // page cached from before the move.
-  const cacheKey = `render:v20:${slug}:${row.version}`;
+  // v21: style.css?v=11, which gives the links inside the rendered article the
+  // page's accent in both themes (they were the browser's default blue, unreadable
+  // on the dark surface).
+  const cacheKey = `render:v21:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -575,11 +578,14 @@ async function runGuardedArticleBatch(
 // build-public.ts excludes the old static entry pages so assets cannot shadow
 // these routes. The sitemap still reads D1; public entry copy does not.
 // Public entry pages do not query a corpus or load the graph on arrival.
+// The one store read on this page is articlesExample: one passage of a real article
+// beside the Lean declaration that formalizes it, plus the published build's totals.
+// It never throws, and an unbound or unpublished store simply leaves the block out.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v12"; // contributor-focused landing page
+  const cacheKey = "page:home:v13"; // v13: one real example and the build's totals
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
-  const html = landingPage();
+  const html = landingPage(await articlesExample(c.env));
   await c.env.RENDER_CACHE.put(cacheKey, html, { expirationTtl: 300 });
   return c.html(html);
 });
@@ -622,7 +628,7 @@ app.get("/api/articles", async (c) => {
 
 // About describes the current workflow; counts stay with their corpus.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v4";
+  const cacheKey = "page:about:v5";  // v5: the entry shell carries the home example's styles
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = aboutPage();

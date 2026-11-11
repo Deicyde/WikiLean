@@ -51,6 +51,16 @@ function bound(opts: Parameters<typeof setup>[0] = {}): Harness & { gets: string
   return { ...h, gets: bucket.gets };
 }
 
+// The page a reader actually meets: everything outside the closed "About this page"
+// fold (and the footer's licence fold), with the store's own URLs taken out. The
+// pipeline's words — universe, frozen, central, campaign, coverage — belong in that
+// fold and nowhere else (the reader-polish pass, 2026-11-11).
+function outsideAbout(html: string): string {
+  return html.replace(/<details[^>]*>[\s\S]*?<\/details>/g, "")      // every fold, all closed
+    .replace(/\sdata-[a-z-]+="[^"]*"/g, "")                          // the store's own tokens, for the scripts
+    .replace(/\/articles\/universe\/[0-9a-f]{64}/g, "/articles/libraries");
+}
+
 function feedback(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return { location_key: MATHLIB_KEY, pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, verdict: "confirm", ...overrides };
 }
@@ -261,7 +271,8 @@ describe("articles pages with the fixture store", () => {
     // By importance and per article: the passages that have a status, and four status columns.
     expect(html).toContain('<tr><th scope="row">High</th><td class="num">1</td><td class="num">3</td><td class="num" data-status="formalized">1</td>' +
       '<td class="num" data-status="statement_only">1</td><td class="num" data-status="partial">0</td><td class="num" data-status="not_formalized">1</td></tr>');
-    expect(html).toMatch(/<a href="\/articles\/1001\/Widget_lemma">Widget lemma<\/a><\/th><td class="num">3<\/td><td class="num" data-status="formalized">1<\/td>/);
+    expect(html).toMatch(/<a href="\/articles\/1001\/Widget_lemma">Widget lemma<\/a><\/th><td class="articles-cov"><div class="articles-bar" role="img" aria-label="3 passages: 1 formalized, 1 statement only, 1 not formalized">/);
+    expect(html).toContain('data-title="widget lemma" data-passages="3" data-formalized="1" data-libraries="3" data-importance="high"');
     // By library: most passages first, then most complete locations, then by
     // name (FormalFrontier and TauCeti hold one passage each, and only
     // FormalFrontier's location is complete). Batteries holds only a related
@@ -279,7 +290,7 @@ describe("articles pages with the fixture store", () => {
     // The table's column notes follow it directly; the list comes after them.
     expect(html).toContain('</table></div>\n<p class="articles-muted">A passage counts toward every library that states it.');
     expect(html).toContain('as locations.</p>\n<details id="articles-libs-empty"><summary>1 more library searched, with no locations in this build</summary>' +
-      `<ul><li>Lean core <a href="https://github.com/leanprover/lean4/tree/${leanCore}" rel="noopener"><code class="articles-sha">@1465a20</code></a></li></ul></details>\n</section>`);
+      `<ul><li>Lean core <a href="https://github.com/leanprover/lean4/tree/${leanCore}" rel="noopener"><code class="articles-sha">@1465a20</code></a></li></ul></details></section>`);
     // After the bar over all passages and its legend: the central statements
     // (subject and central passages), what the rest are, and the central ones
     // by status. The comma between two counts is an element, so the summary
@@ -287,7 +298,7 @@ describe("articles pages with the fixture store", () => {
     expect(html).toContain('</span></span></div>\n<p class="articles-strip-lead" id="articles-central"><b>Central statements:</b> 4 of the 6 passages, across 2 articles, ' +
       "state an article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of these 4: " +
       '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>3 formalized</span><span>,</span> ' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n</section>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>');
     // Complete and incomplete locations are separate columns: TauCeti only
     // states its result, so it is never counted like a proved Mathlib row.
     expect(html).toContain('<th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th>');
@@ -299,19 +310,20 @@ describe("articles pages with the fixture store", () => {
     expect(html).toContain(`href="${WIDGET_PATH}"`);
     expect(html).toContain(`href="/articles/${GADGET_PAGEID}/Gadget_(mathematics)"`);
     expect(html).toContain('data-shards="1 8"');
-    // Where each article is formalized: a Libraries column from the index.
-    expect(html).toContain('<th scope="col">Libraries</th>');
-    expect(html).toContain('title="FormalFrontier · WidgetTheory · https://github.com/FormalFrontier/WidgetTheory">FormalFrontier · WidgetTheory</span> ' +
-      '<span class="articles-libtag" title="Mathlib · https://github.com/leanprover-community/mathlib4">Mathlib</span> ' +
-      '<span class="articles-libtag" title="TauCeti · https://github.com/TauCetiProject/TauCeti">TauCeti</span>');
+    // Where each article is formalized: how many libraries, named in the cell's title —
+    // not a wall of chips per row.
+    expect(html).toContain('<th scope="col" class="num articles-sortable" data-sort="libraries"');
+    expect(html).toContain('<td class="num"><span title="FormalFrontier · WidgetTheory, Mathlib, TauCeti">3 libraries</span></td>');
+    expect(html).not.toContain('class="articles-libtag"');
     expect(html).toContain("data-library-names=\"{&quot;batteries&quot;:&quot;Batteries&quot;,&quot;ff-widgets&quot;");
     expect(html).toContain("&quot;mathlib&quot;:&quot;Mathlib&quot;");
     // Provenance sits behind a closed fold (the display rule): the campaign, the build date
     // and the record set are under "About this build", never in the open meta line.
     expect(html).toContain('<p class="articles-meta"><a href="/articles/universe/');
-    expect(html).toContain(`<details class="articles-about"><summary>About this build</summary><ul class="articles-prov-list"><li>${UNMEASURED}</li><li>Campaign fixture-2026-10, from record sets exported 17 Oct 2026.</li><li>Campaign <code>fixture-2026-10</code>.</li>` +
+    expect(html).toContain(`<h2 class="articles-about-h">How these links were made</h2><ul class="articles-prov-list"><li>${UNMEASURED}</li><li>Campaign fixture-2026-10, from record sets exported 17 Oct 2026.</li><li>Campaign <code>fixture-2026-10</code>.</li>` +
       '<li>Record set <code>fixture-set</code>, exported 17 Oct 2026 by formal-companion at commit <code title="3bceabcee0724ffdf50ce65dde3ab10048c72cba">3bceabc</code>.</li><li>Seal sha256 <code>');
-    expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
+    expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul>");
+    expect(html).toContain('<details class="articles-about articles-page-about" id="articles-about"><summary>About this build</summary>');
     expect(html).not.toContain("<details class=\"articles-about\" open");
     // The bar's legend: each totals chip carries its fill's swatch, for the four statuses a passage can be given.
     expect(html).toContain('<span class="articles-swatch" data-status="not_formalized" aria-hidden="true"></span>');
@@ -321,10 +333,80 @@ describe("articles pages with the fixture store", () => {
       expect(html).toContain(`<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
-    expect(html).toContain('<script src="/assets/articles.js?v=6"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=11">');
+    expect(html).toContain('<script src="/assets/articles.js?v=7"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=12">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
+  });
+
+  // ---- the article first (the reader-polish pass, 2026-11-11) --------------------------------
+
+  it("an article page opens with its title, one line of counts and the legend that filters", async () => {
+    const h = bound();
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    // One line, in words a reader knows, and the passages with no status counted apart.
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>' +
+      '<span class="articles-dot" aria-hidden="true">·</span>' +
+      '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>1 formalized</span>' +
+      '<span class="articles-dot" aria-hidden="true">·</span>' +
+      '<span class="articles-mini" data-status="statement_only"><span class="articles-ico" aria-hidden="true">◐</span>1 statement only</span>' +
+      '<span class="articles-dot" aria-hidden="true">·</span>' +
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>' +
+      '<span class="articles-dot" aria-hidden="true">·</span><span class="articles-muted">1 with no status yet</span></p>');
+    // The legend is the filter: a swatch, an icon and a word per status, and no second
+    // copy of the counts. What each status means is the button's title.
+    const key = html.slice(html.indexOf('<div class="articles-chips articles-key"'), html.indexOf("</div>", html.indexOf('articles-key"')));
+    expect(key).toContain('aria-label="Show passages by status"');
+    expect(key).toContain('title="Formalized: a Lean declaration states it, proved, or a Lean definition defines it. Show only these passages."');
+    expect(key).not.toContain("articles-n");
+    expect(key.match(/data-filter="status:/g)).toHaveLength(3);   // Partial has no passage: inert
+    expect(key).toContain('<span class="articles-chip is-static is-zero" data-status="partial">');
+    // The library chips are a fold beside it, closed, and nothing else sits above the article.
+    expect(html).toContain('<details class="articles-filters"><summary>More ways to filter</summary>');
+    expect(html).not.toContain('class="articles-strip"');
+  });
+
+  it("every figure that is not the counts is in one closed About fold", async () => {
+    const h = bound();
+    const html = await (await get(h.env, WIDGET_PATH)).text();
+    expect(html.match(/<details class="articles-about articles-page-about"/g)).toHaveLength(1);
+    expect(html).not.toContain('<details class="articles-about articles-page-about" id="articles-about" open');
+    const about = html.slice(html.indexOf('id="articles-about"'), html.indexOf("</details>", html.indexOf('id="articles-about"')));
+    for (const heading of ["This page", "What the colours mean", "Libraries searched", "How these links were made", "How the text is shown"]) {
+      expect(about, heading).toContain(`<h2 class="articles-about-h">${heading}</h2>`);
+    }
+    // The pinned revision, the WikiProject assessment and the WikiLean article are in it.
+    expect(about).toContain("Wikipedia revision <a href=\"https://en.wikipedia.org/w/index.php?curid=1001&amp;oldid=2002\" rel=\"noopener\">2002</a>, pinned");
+    expect(about).toContain("WikiProject Mathematics: B-class, High importance");
+    // And not above it: the page's own head carries the title, the counts and the legend only.
+    const head = html.slice(html.indexOf('<h1 class="articles-h1">'), html.indexOf('id="articles-about"'));
+    expect(head).not.toMatch(/revision|WikiProject|Searched/);
+  });
+
+  it("the notice keeps its words, once, under the header", async () => {
+    const h = bound();
+    for (const path of [WIDGET_PATH, "/articles"]) {
+      const html = await (await get(h.env, path)).text();
+      expect(html.match(/Preliminary: these links have not yet had an independent audit\./g), path).toHaveLength(1);
+      expect(html, path).toContain('<p class="articles-notice" id="articles-notice">Preliminary: these links have not yet had an independent audit.</p>');
+    }
+  });
+
+  it("the list says a row's coverage in words as well as in colour, and counts its libraries", async () => {
+    const h = bound();
+    const html = await (await get(h.env, "/articles")).text();
+    const row = html.slice(html.indexOf('data-title="widget lemma"'), html.indexOf("</tr>", html.indexOf('data-title="widget lemma"')));
+    expect(row).toContain('<div class="articles-bar" role="img" aria-label="3 passages: 1 formalized, 1 statement only, 1 not formalized">');
+    expect(row).toContain('<td class="num">3</td>');
+    expect(row).toContain('<td class="num"><span title="FormalFrontier · WidgetTheory, Mathlib, TauCeti">3 libraries</span></td>');
+    // Four columns, each a sort key for the script; no per-status column and no chips.
+    expect(html).toContain('<th scope="col" class="articles-sortable" data-sort="title" data-sort-title="Sort by title">Article</th>');
+    expect(html).toContain('<th scope="col" class="num articles-sortable" data-sort="passages"');
+    const table = html.slice(html.indexOf('id="articles-list"'), html.indexOf("</table>", html.indexOf('id="articles-list"')));
+    expect(table).not.toContain('<td class="num" data-status=');   // no per-status column
+    expect(html).not.toContain('class="articles-libtag"');
+    // Plain words outside the fold: no universe, no frozen, no coverage.
+    expect(outsideAbout(html)).not.toMatch(/universe|frozen|\bcentral\b|coverage/i);
   });
 
   it("the dashboard reads each index shard once a minute, not once per view", async () => {
@@ -596,10 +678,15 @@ describe("articles pages with the fixture store", () => {
     expect(res.status).toBe(200);
     const html = await res.text();
     expect(html).toContain('<h1 class="articles-h1">Widget lemma</h1>');
-    // Headings to navigate by: Coverage, Passages, one h3 per passage, and an
-    // h4 over related declarations.
-    expect(html).toContain('<section class="articles-strip" aria-labelledby="articles-h-coverage">\n<h2 class="articles-h2" id="articles-h-coverage">Coverage</h2>');
+    // The page opens with the article: the title, one line of counts, the legend that is
+    // also the filter, and then the passages. No strip of eleven figures above them.
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>');
+    expect(html).not.toContain('class="articles-strip"');
+    expect(html).not.toContain("Coverage");
     expect(html).toContain('<h2 class="articles-h2" id="articles-h-passages">Passages</h2>');
+    // The counts line, then the legend, then the passages.
+    expect(html.indexOf('id="articles-counts"')).toBeLessThan(html.indexOf('class="articles-chips articles-key"'));
+    expect(html.indexOf('class="articles-chips articles-key"')).toBeLessThan(html.indexOf('id="articles-h-passages"'));
     // One h3 per passage with a status: the conjecture has none, so it is set aside until read.
     expect(html.match(/<h3 class="articles-p-h">/g)).toHaveLength(3);
     expect(html).not.toContain('id="p-0c4d77b1"');
@@ -613,17 +700,23 @@ describe("articles pages with the fixture store", () => {
     expect(html).toContain('<li class="articles-passage is-subject" id="p-3fa91c07" data-status="formalized" data-prominence="subject"');
     expect(html.match(/class="articles-passage is-subject"/g)).toHaveLength(1);
     expect(html.match(/class="articles-subject"/g)).toHaveLength(1);
-    expect(html).toContain('<span class="articles-eyebrow">Definition · central</span><span class="articles-sr"> · </span><span class="articles-section">Definitions</span></h3>');
+    // The record's prominence reads in plain words ("central" is the store's token, not a
+    // word a reader meets); the token itself stays in data-prominence.
+    expect(html).toContain('<span class="articles-eyebrow">Definition · main statement</span><span class="articles-sr"> · </span><span class="articles-section">Definitions</span></h3>');
     expect(html).toContain('<li class="articles-passage" id="p-5b0e44a1" data-status="statement_only" data-prominence="supporting"');
     expect(html).toContain('<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-subject">Subject</span>' +
       '<ul class="articles-subject-list" aria-labelledby="articles-h-subject"><li><a href="#p-3fa91c07">Theorem: “every finite widget admits a spanning gadget”</a> ' +
       '<span class="articles-pill" data-status="formalized">');
-    expect(html).toContain("Searched <a href=\"/articles/universe/" + FIXTURE_UNIVERSE_SHA + "\">universe u-fixture</a>: 5 libraries, frozen 2026-10-17, 1 excluded</p>");
-    // The campaign and the record set are under a closed "About this data" fold.
+    // Plain words, and only inside the fold: how many libraries were searched and when
+    // they were pinned — never "universe" or "frozen" on a page a reader opens.
+    expect(html).toContain("Searched <a href=\"/articles/universe/" + FIXTURE_UNIVERSE_SHA + "\">5 Lean libraries</a>, pinned 2026-10-17, 1 left out (library set <code>u-fixture</code>).</p>");
+    expect(outsideAbout(html)).not.toMatch(/universe|frozen|\bcentral\b|campaign|coverage/i);
+    // The revision, the record set and the runs are under the one closed "About this page" fold.
     const fixtureRecordSet = fixtureArticle().record_set;
-    expect(html).toContain(`<details class="articles-about"><summary>About this data</summary><ul class="articles-prov-list"><li>${UNMEASURED}</li>` +
+    expect(html).toContain('<details class="articles-about articles-page-about" id="articles-about"><summary>About this page</summary>');
+    expect(html).toContain(`<h2 class="articles-about-h">How these links were made</h2><ul class="articles-prov-list"><li>${UNMEASURED}</li>` +
       `<li>Campaign <code>fixture-2026-10</code>.</li><li>Seal sha256 <code>${fixtureRecordSet}</code>.</li>` +
-      "<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
+      "<li>The record set does not record the model or the operator that ran these runs.</li></ul>");
     expect(html).not.toContain(`record set <code title="${fixtureRecordSet}">`);
     expect(html).toContain('<h4 class="articles-related-h">Related, but states something else</h4>');
     // Only the dashboard is the Articles nav link's own page.
@@ -634,7 +727,7 @@ describe("articles pages with the fixture store", () => {
     // No generic label anywhere a reader sees, and no voting data: no counts of others' verdicts.
     expect(html).not.toMatch(/\bAI\b|pipeline|challenger/);
     expect(html).not.toMatch(/\d+ (confirm|report|vote)/i);
-    // Strip: counts by status and by library, as filter chips.
+    // The legend filters by status; the library chips are in the fold beside it.
     expect(html).toContain('data-filter="status:formalized"');
     expect(html).toContain('data-filter="library:mathlib"');
     expect(html).toContain('data-filter="library:ff-widgets"');
@@ -673,7 +766,7 @@ describe("articles pages with the fixture store", () => {
     expect(html).not.toContain("<details class=\"articles-prov\" open");
     expect(html).toContain(`<code class="articles-commit" title="commit ${mathlib.commit}">@${sha7}</code>`);
     // The relation is a badge beside the declaration, and the legend under Passages names each one.
-    expect(html).toContain('<div class="articles-legend-rel"><p class="articles-muted">How each Lean declaration relates to its passage:</p><ul>' +
+    expect(html).toContain('<details class="articles-legend-rel"><summary>What “exact match”, “more general” and the other labels mean</summary><ul>' +
       '<li><span class="articles-rel" data-relation="exactMatch" title="States this exactly (exactMatch)">exact match</span> states the passage exactly</li>');
     expect(html).toContain('<span class="articles-rel" data-relation="relatedMatch" title="States something related (relatedMatch)">related</span> states something related but different; never counted</li>');
     expect(html).toContain('<code class="articles-decl"><span class="articles-ns">Widget.<wbr></span><b>exists_<wbr>spanning_<wbr>gadget</b></code>');
@@ -694,7 +787,8 @@ describe("articles pages with the fixture store", () => {
     expect(html).toContain("<li>Re-checked in challenge run (unnamed), which downgraded it.</li>");
     expect(html).toContain('<p class="articles-module">Mathlib.Combinatorics.Widget.Basic · lines 612–640</p>');
     // An absence; no passage is labelled undecided, and no status chip offers it.
-    expect(html).toContain(`Searched 5 libraries in universe <a href="/articles/universe/${FIXTURE_UNIVERSE_SHA}">u-fixture</a> (2026-10-17) — not found.`);
+    expect(html).toContain("Searched 5 libraries — not found. " +
+      `<a href="/articles/universe/${FIXTURE_UNIVERSE_SHA}">Which libraries, at which commits</a> (pinned 2026-10-17).`);
     expect(html).toContain("Related, but states something else");
     expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
     // The absence's receipt and challenge are under its own Details fold.
@@ -730,7 +824,7 @@ describe("articles pages with the fixture store", () => {
     // which reads as unchallenged.
     expect(html).toContain("high confidence.</li><li>Not re-checked yet: a challenge is owed (the passage's prominence changed after the challenge ran).</li>");
     expect(html).not.toContain("challenge_pending");
-    expect(html).toContain('aria-label="3 passages: 3 formalized"');
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>');
     expect(html).toContain("3 passages checked, 4 Lean locations.");
     // One passage is "1 passage", in the strip and in the bar's name.
     const files = articlesFixtureFiles();
@@ -742,7 +836,7 @@ describe("articles pages with the fixture store", () => {
     const one = setup();
     bindArticles(one.env, files);
     const single = await (await get(one.env, `/articles/${GADGET_PAGEID}`)).text();
-    expect(single).toContain('aria-label="1 passage: 1 formalized"');
+    expect(single).toContain('<p class="articles-counts" id="articles-counts"><b>1 passage</b>');
     expect(single).toContain("1 passage checked, 1 Lean location.");
   });
 
@@ -863,7 +957,7 @@ describe("articles pages with the fixture store", () => {
       }
     }
     const h = bound();
-    expect(await (await get(h.env, `/articles/${WIDGET_PAGEID}`)).text()).toContain("5 libraries, frozen 2026-10-17, 1 excluded");
+    expect(await (await get(h.env, `/articles/${WIDGET_PAGEID}`)).text()).toContain("5 Lean libraries</a>, pinned 2026-10-17, 1 left out");
   });
 
   it("a passage with no status is set aside, with its related declarations, until someone reads it", async () => {
@@ -890,7 +984,7 @@ describe("articles pages with the fixture store", () => {
       expect(html, path).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
       expect(html, path).toContain("2 passages checked, 1 Lean location (and 1 related declaration). " +
         '<span class="articles-muted" id="articles-unread">2 more passages have no status yet; they are left out until someone reads them.</span>');
-      expect(html, path).toContain('aria-label="2 passages: 1 statement only, 1 not formalized"');
+      expect(html, path).toContain('<p class="articles-counts" id="articles-counts"><b>2 passages</b>');
       // A library whose only related declarations were the set-aside passage's has no chip.
       expect(html, path).not.toContain('data-filter="library:mathlib"');
       expect(html, path).not.toContain(">Mathlib <span class=\"articles-n\">related only</span>");
@@ -1024,10 +1118,11 @@ describe("articles pages with the fixture store", () => {
   it("the universe page lists libraries, commits and exclusions", async () => {
     const h = bound();
     const html = await (await get(h.env, `/articles/universe/${FIXTURE_UNIVERSE_SHA}`)).text();
-    expect(html).toContain("Universe u-fixture");
+    expect(html).toContain("<h1 class=\"articles-h1\">The libraries searched</h1>");
+    expect(html).toContain("library set <code>u-fixture</code>");
     expect(html).toContain("<b>atlas-lean</b>: licence forbids ML evaluation use");
     expect(html).toContain("github.com/leanprover/lean4");
-    expect(html).toContain('<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: Libraries of universe u-fixture">');
+    expect(html).toContain('<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: Libraries of set u-fixture">');
     expect(html).toContain('<a href="https://github.com/leanprover-community/mathlib4" rel="noopener">github.com/leanprover-community/mathlib4</a>');
     expect(html).not.toContain('aria-current="page"');
   });
@@ -1090,7 +1185,7 @@ describe("articles pages with the fixture store", () => {
     expect(universePage).toContain('<th scope="row">Lean core · Init <span class="articles-muted">init</span></th>');
     expect(universePage).toContain('<th scope="row">Lean core · Std <span class="articles-muted">std</span></th>');
     expect(universePage).toContain(`<a href="${LEAN4}/tree/${core.commit}" rel="noopener"><code>${core.commit}</code></a>`);
-    expect(universePage).toContain("6 libraries, frozen 2026-10-17");
+    expect(universePage).toContain("6 Lean libraries, pinned 2026-10-17");
     expect(universePage).not.toMatch(/>Lean core <span/);
 
     const page = await (await get(h.env, WIDGET_PATH)).text();
@@ -1108,7 +1203,7 @@ describe("articles pages with the fixture store", () => {
     expect(dashboard).toContain('<th scope="row">Lean core · Init</th>');
     expect(dashboard).toContain("&quot;init&quot;:&quot;Lean core · Init&quot;");
     expect(dashboard).toContain("&quot;std&quot;:&quot;Lean core · Std&quot;");
-    expect(dashboard).toContain(`<span class="articles-libtag" title="Lean core · Std · ${LEAN4}">Lean core · Std</span>`);
+    expect(dashboard).toContain('<td class="num"><span title="FormalFrontier · WidgetTheory, Mathlib, Lean core · Std">3 libraries</span></td>');
     expect(dashboard).not.toMatch(/>Lean core</);
   });
 
@@ -1161,7 +1256,7 @@ describe("articles pages with the fixture store", () => {
     expect(widget.match(/data-quote-cut=""/g)).toHaveLength(1);
     // Two whole quotes: the conjecture, the third, has no status and is set aside.
     expect(widget.match(/data-quote="whole"/g)).toHaveLength(2);
-    expect(widget).toContain('<h2 class="articles-h2" id="articles-h-passages">Passages</h2>\n<p class="articles-muted" id="articles-quote-note">' +
+    expect(widget).toContain('<h2 class="articles-about-h">How the text is shown</h2><p>' +
       "Quotes show at most the first 12 words of a passage (the record format's quotation cap; a formula's MathML text counts toward it). " +
       "A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. Hover a formula for its TeX.</p>");
     // A passage of exactly 12 words is quoted whole: at the cap, but no ellipsis and no note.
@@ -1241,18 +1336,19 @@ describe("articles pages with the fixture store", () => {
   it("the Coverage box counts the central statements, the subject and central passages, by status", async () => {
     const h = bound();
     const widget = await (await get(h.env, WIDGET_PATH)).text();
-    // Next to the bar over all the passages it shows (the conjecture, with no status, is set aside), which stays.
-    expect(widget).toContain('<div class="articles-bar" role="img" aria-label="3 passages: 1 formalized, 1 statement only, 1 not formalized">');
-    // The bar is followed by its own legend (the Subject row, then the Status chips),
-    // and only then by the line, so the first figures under the bar are the bar's.
-    expect(widget).toContain('title="1 not formalized"></span></div>\n' +
-      '<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-subject">Subject</span>');
-    expect(widget).toContain('<div class="articles-chips" role="group" aria-labelledby="articles-h-status">');
-    expect(widget).toMatch(/aria-labelledby="articles-h-status">.*?<\/div><\/div>\n<p class="articles-strip-lead" id="articles-central">.*?<\/p>\n<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-where">/);
+    // The passages it shows (the conjecture, with no status, is set aside) are counted in
+    // the line under the title; the article page has no bar of its own to read twice.
+    expect(widget).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>');
+    expect(widget).not.toContain('class="articles-bar"');
+    // The line and the Subject row are inside the "About this page" fold, under the
+    // section that says what the page is; the page itself opens with the article.
+    expect(widget).toContain('<h2 class="articles-about-h">This page</h2>');
+    expect(widget.indexOf('id="articles-central"')).toBeLessThan(widget.indexOf('id="articles-h-subject"'));
+    expect(widget.indexOf('id="articles-about"')).toBeLessThan(widget.indexOf('id="articles-central"'));
     expect(widget).toContain('<p class="articles-strip-lead" id="articles-central"><b>Central statements:</b> 2 of the 3 passages ' +
       "state the article's subject or a named result or definition; the other one is supporting (examples, setup). Of these 2: " +
       '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>1 formalized</span><span>,</span> ' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>\n');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>');
     const gadget = await (await get(h.env, `/articles/${GADGET_PAGEID}`)).text();
     expect(gadget).toContain("<b>Central statements:</b> 2 of the 3 passages state the article's subject or a named result or definition; " +
       "the other one is supporting (examples, setup). Of these 2: " +
@@ -1289,7 +1385,7 @@ describe("articles pages with the fixture store", () => {
       const html = await (await get(one.env, WIDGET_PATH)).text();
       if (expected) expect(html, label).toContain(expected);
       else expect(html, label).not.toContain("Central statements");
-      expect(html, label).toContain('aria-label="3 passages: ');
+      expect(html, label).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>');
     }
   });
 
@@ -1824,8 +1920,9 @@ describe("a store built with the optional side files", () => {
     expect(bare).not.toContain("articles-sig");
     expect(bare).not.toContain("Lean code:");
     // The page says once what every card's code is, and that it is not the source text.
-    expect(html).toContain('<p class="articles-muted" id="articles-sig-note">Each card&#x27;s Lean code is its declaration&#x27;s type as Lean ' +
-      "prints it, from universe u-fixture&#x27;s declaration corpus at the card&#x27;s commit, laid out as a header: binders before the " +
+    expect(html).toContain('<h2 class="articles-about-h">How the text is shown</h2>');
+    expect(html).toContain('<p>Each card&#x27;s Lean code is its declaration&#x27;s type as Lean ' +
+      "prints it, from the declaration corpus of library set u-fixture at the card&#x27;s commit, laid out as a header: binders before the " +
       "colon, then the hypotheses as arrows (the corpus keeps no hypothesis names) and the conclusion, in Mathlib&#x27;s notation " +
       "(𝓝, π, R[X], Type*). It is not the source text; Source opens that.</p>");
     // A header shortened to fit keeps the whole type under a fold; a deprecated name says what replaced it.
@@ -1851,7 +1948,7 @@ describe("a store built with the optional side files", () => {
     // Every other passage shows its quote as before, and the notes say which is which.
     expect(html).toContain('<blockquote class="articles-quote" data-quote="whole"><span class="articles-affix">…The widget lemma states that </span>' +
       "<mark>every finite widget admits a spanning gadget</mark>");
-    expect(html).toContain('<p class="articles-muted" id="articles-text-note">1 passage is shown in full, as revision 2002 states it ' +
+    expect(html).toContain('<h2 class="articles-about-h">How the text is shown</h2><p>1 passage is shown in full, as revision 2002 states it ' +
       "(checked against its record&#x27;s span hash when the store was built). Formulas are drawn from their TeX; hover one to see it.</p>");
     // The only capped quote is now shown in full, so the 12-word note goes.
     expect(html).not.toContain('id="articles-quote-note"');
@@ -1897,7 +1994,8 @@ describe("a store built with the optional side files", () => {
     // About this data: each run once, to the minute, with both roles' models; the challenge
     // run says what it re-checked in this article, so its rates and the shares agree; and
     // what the store merged.
-    const about = html.slice(html.indexOf('<details class="articles-about">'), html.indexOf("</details>", html.indexOf('<details class="articles-about">')));
+    const aboutAt = html.indexOf('<details class="articles-about articles-page-about" id="articles-about">');
+    const about = html.slice(aboutAt, html.indexOf("</details>", aboutAt));
     expect(about.split("<code>loc-fx</code>").length - 1).toBe(1);
     expect(about).toContain(`<li>Locate run <code>loc-fx</code>, run by alice, 30 Oct 2026, 23:50 – 31 Oct 2026, 04:48 UTC: ` +
       `worker ${M}, reviewer ${R}.</li><li>Challenge run <code>chal-fx</code>, run by alice, ` +
@@ -1924,7 +2022,7 @@ describe("a store built with the optional side files", () => {
     current.provenance.runs = [CHALLENGE, INVENTORY, LOCATE];
     files.set("articles/v1/current.json", JSON.stringify(current));
     // The article's fold names it first, before the runs that searched and re-checked its passages.
-    const about = (await page(WIDGET_PATH, files)).match(/<details class="articles-about">.*?<\/details>/s)![0];
+    const about = (await page(WIDGET_PATH, files)).match(/<details class="articles-about articles-page-about".*?<\/details>/s)![0];
     expect(about).toContain(`${line}<li>Locate run <code>loc-fx</code>`);
     expect(await page("/articles", files)).toContain(line);
     // A store without it names none, as before.
@@ -1971,7 +2069,7 @@ describe("a store built with the optional side files", () => {
     expect(html).not.toContain("articles-text");
     expect(html).toContain("<li>Found in locate run <code>loc-fx</code>: candidate 1 for this passage, high confidence.</li>");
     expect(html).toContain("The record set does not record the model or the operator that ran these runs.");
-    expect(html).toContain('id="articles-quote-note"');
+    expect(html).toContain("Quotes show at most the first 12 words of a passage");
     expect(html).not.toContain("<script>\"");
     // Store text in a signature or a passage is escaped, never markup.
     const hostile = await page(WIDGET_PATH, supplementedStore((article) => {
@@ -1988,8 +2086,8 @@ describe("a store built with the optional side files", () => {
       expect(html).not.toContain(absent);
     }
     expect(html).toContain('<li>Seal sha256 <code>');
-    expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul></details>");
-    expect(html).toContain('id="articles-quote-note"');
+    expect(html).toContain("<li>The record set does not record the model or the operator that ran these runs.</li></ul>");
+    expect(html).toContain("Quotes show at most the first 12 words of a passage");
     expect(html).toContain("The quote fields of the JSON and JSONL downloads are excerpts of the same text and stay under that licence.");
   });
 });
@@ -2024,7 +2122,7 @@ describe("a record set from a run outside any campaign", () => {
     expect(page).toContain("<li>Not re-checked: sampled out of challenge run <code>chal-smoke-2</code>.</li>");
     expect(page).toContain(`data-campaign="${RUN}"`);
     const dashboard = await (await get(h.env, "/articles")).text();
-    expect(dashboard).toContain(`<summary>About this build</summary><ul class="articles-prov-list"><li>${UNMEASURED}</li><li>Run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign, from record sets exported 17 Oct 2026.</li>`);
+    expect(dashboard).toContain(`<h2 class="articles-about-h">How these links were made</h2><ul class="articles-prov-list"><li>${UNMEASURED}</li><li>Run loc-smoke-2 with challenge run chal-smoke-2, outside any campaign, from record sets exported 17 Oct 2026.</li>`);
     const res = await post(h.env, "/api/articles/feedback", feedback({ campaign: RUN }), { user: "u-human" });
     expect(res.status).toBe(200);
     expect(feedbackRows(h)[0]).toMatchObject({ campaign: RUN, verdict: "confirm" });
@@ -2238,7 +2336,7 @@ describe("articles security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/articles.js?v=6"></script>');
+      expect(html, path).toContain('<script src="/assets/articles.js?v=7"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/articles.css');
@@ -2246,7 +2344,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=11"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=12"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -2395,8 +2493,8 @@ describe("article page summary box", () => {
     expect(html.indexOf("wl-articles-box")).toBeLessThan(html.indexOf('<main class="wl-article-body">'));
     // The publish switch and one index shard, nothing else from the store (each kept a minute).
     expect(h.gets).toEqual(["articles/v1/current.json", "articles/v1/index/1.json"]);
-    // The cached base page (render:v20) does not carry the box.
-    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v20:"));
+    // The cached base page (render:v21) does not carry the box.
+    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v21:"));
     expect(cached).toHaveLength(1);
     expect(String(cached[0][1])).not.toContain("wl-articles-box");
   });
@@ -2597,7 +2695,9 @@ describe("the plane's licence statements", () => {
 });
 
 describe("the plane says the links are preliminary, and what measured them", () => {
-  const ABOUT = /<details class="articles-about"><summary>About this (?:data|build)<\/summary><ul class="articles-prov-list">(.*?)<\/ul><\/details>/s;
+  // The lines on accuracy and provenance, inside the one "About this page" (or, on the
+  // list, "About this build") fold, under the heading that says what they are.
+  const ABOUT = /<h2 class="articles-about-h">How these links were made<\/h2><ul class="articles-prov-list">(.*?)<\/ul>/s;
   // A made-up audit of the fixture build: its run, model, sample and two figures, one weighted.
   const AUDIT = {
     run_id: "audit-fx", operator: "alice", started: "2026-11-03T02:44:00Z", ended: "2026-11-03T05:07:00Z",
@@ -3141,7 +3241,8 @@ describe("the article reader", () => {
     // The conjecture, with no status, is set aside: no row, no section, no heading of its own.
     expect([...html.matchAll(/<h3 class="atlr-group-h">([^<]*)<\/h3>/g)].map((m) => m[1]))
       .toEqual(["Statement", "Definitions", "Statement › Bounds"]);
-    expect(html).toContain('<a class="atlr-row" href="#p-91aa02de" data-p="91aa02de" data-status="not_formalized">');
+    expect(html).toContain('<a class="atlr-row" href="#p-91aa02de" data-p="91aa02de" data-status="not_formalized"' +
+      ' title="a widget is balanced if every gadget has equal weight">');
     expect(html).toContain("not found</span></a>");
   });
 
@@ -3150,7 +3251,7 @@ describe("the article reader", () => {
     const html = await (await get(h.env, WIDGET_PATH)).text();
     expect(html).not.toContain('data-p="5b0e44a1" data-status="statement_only" id="p-5b0e44a1"');
     expect(html).toContain('<span class="atlr-row-note">not marked in the text</span>');
-    expect(html).toContain("(1 passage is listed in the panel only)");
+    expect(html).toContain("1 passage is listed in the panel only."); 
     expect(section(html, "5b0e44a1")).toContain('data-status="statement_only"');
   });
 
@@ -3164,10 +3265,12 @@ describe("the article reader", () => {
     expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
     expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration). " +
       '<span class="articles-muted" id="articles-unread">1 more passage has no status yet; it is left out until someone reads it.</span>');
-    expect(html).toContain('aria-label="3 passages: 1 formalized, 1 statement only, 1 not formalized"');
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>');
     expect(html).not.toContain("listed in the panel only");
     expect(html).toContain('data-passages="3"');
-    expect(html.match(/<li><span class="atlr-sample"/g)).toHaveLength(4);
+    // The legend is the filter, and what each of its four colours means is in the fold.
+    expect(html.match(/<span class="articles-swatch" data-status="[a-z_]+" aria-hidden="true"><\/span>/g)).toHaveLength(4);
+    expect(html.match(/<li><span class="articles-sample"/g)).toHaveLength(4);
   });
 
   it("?view=cards is the card list, with the switch and a link from each passage to its place in the article", async () => {
@@ -3225,7 +3328,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=10", "/assets/articles.css?v=11", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=12", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");

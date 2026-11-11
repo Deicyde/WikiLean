@@ -162,9 +162,11 @@ function getPaths(): string[] {
 }
 
 // A page from each shell that carries the site's navigation (/flags and /proposals send an
-// anonymous reader to sign in), and beside them the sitemap and the article index.
+// anonymous reader to sign in), and beside them the sitemap and the article index. The home
+// page is not here: it shows one real example from the store when there is one (home.ts
+// landingPage), so its bytes are allowed to differ — the test below pins exactly how.
 const SHELL_PATHS = [
-  "/", "/about", "/stats", "/recent-changes", "/flags", "/proposals", `/${SLUG}`,
+  "/about", "/stats", "/recent-changes", "/flags", "/proposals", `/${SLUG}`,
   `/${SLUG}/history`, "/u/u-human", "/wikifunctions", "/wikifunctions/verify", "/sitemap.xml",
   "/api/articles",
 ];
@@ -208,12 +210,39 @@ describe("without the ARTICLES binding", () => {
         expect(await without.text(), path).toBe(await withIt.text());
       }
       // The article page looked for its box (this title has none) in the publish switch and
-      // its title's index shard; no other page touched the bucket.
+      // its title's index shard; no other page of the shell touched the bucket.
       const shard = await titleShard("Test Article");
       expect(new Set(bucket.gets)).toEqual(new Set(["articles/v1/current.json", `articles/v1/index/${shard}.json`]));
     } finally {
       vi.useRealTimers();
     }
+  });
+
+  // The one page outside the plane that reads the store: the home page's example.
+  it("the home page is the old page without the binding, and gains one real example with it", async () => {
+    const absent = setup();
+    const present = setup();
+    const bucket = bindArticles(present.env);
+    const without = await get(absent.env, "/");
+    const withIt = await get(present.env, "/");
+    expect(without.status).toBe(withIt.status);
+    expect([...without.headers]).toEqual([...withIt.headers]);
+    const plain = await without.text();
+    const rich = await withIt.text();
+    // No store, no block — and nothing else on the page moves.
+    expect(plain).not.toContain("What a link looks like");
+    expect(plain).toContain("Connect mathematics");
+    expect(rich).toContain(`<h2 id="example-h">What a link looks like</h2>`);
+    // Every word of the block is the store's: a real article, its pinned revision, the
+    // passage's own words and the Lean declaration that formalizes it.
+    expect(rich).toContain(`<a href="/articles/1001/Widget_lemma">Widget lemma</a>, Wikipedia revision 2002`);
+    expect(rich).toContain("<code>Widget.exists_spanning_gadget</code>");
+    expect(rich).toContain("every finite widget admits a spanning gadget");
+    expect(rich).toContain("Mathlib — states this exactly");
+    expect(rich).toContain("2 articles · 6 passages checked · 4 formalized (67%).");
+    // It read the publish switch, one index shard and that one article, and nothing else.
+    expect(bucket.gets.filter((key) => key.startsWith("articles/v1/articles/"))).toEqual(["articles/v1/articles/1001.json"]);
+    expect(bucket.gets).toContain("articles/v1/current.json");
   });
 
   it("the feedback export, which reads only D1, still answers the pipeline bearer", async () => {

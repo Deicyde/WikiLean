@@ -1133,7 +1133,7 @@ python3 scripts/articles/build_store.py --record-set <set> --out <store> \
   (letters, digits, spaces and `,.()·/+:;'&%_-`, at most 160 characters) and an id a token,
   each id once. Any other key is refused. Every article and `current.json` gain `audit:
   {run_id, operator, started, ended, models, blind, independent, items, figures}`, which the
-  "About this data" folds cite (section 8); without it they say the build carries no accuracy
+  "How these links were made" sections of the About folds cite (section 8); without it they say the build carries no accuracy
   figure. The audit's maker writes the summary from the audit's own records.
 
 Every article of a build with any of them carries `supplements` (each side file's schema and
@@ -1313,10 +1313,66 @@ so a second run is a no-op.
 
 The UI is server-rendered (`wiki/src/articles-render.ts`) with one small vanilla enhancement
 (`site/assets/articles.js`) and one stylesheet (`site/assets/articles.css`), both copied by
-`wiki/scripts/build-public.ts`. The pages work without JavaScript, except Confirm/Report
-and the live list filter.
+`wiki/scripts/build-public.ts`. The pages work without JavaScript, except Confirm/Report,
+the live list filter and the list's column sorting.
 
-- **Coverage strip.** Under a "Coverage" heading: passages checked and Lean locations, a
+### The article first (the reader-polish pass, 2026-11-11)
+
+The maintainer's verdict on the pages as they stood was "right now it is kinda slop": an
+article opened with a wall of pipeline metadata, a bar of eleven status and library chips,
+the same counts again in the side panel, and a banner over all of it. What an article page
+shows now, in this order:
+
+1. the breadcrumb and the title;
+2. **one line of counts** (`countsLine`): "3 passages · ✓1 formalized · ◐1 statement only ·
+   ✕1 not formalized · 1 with no status yet". A status no passage has is left out; the
+   passages with no status are counted apart, in the muted tail, as everywhere else;
+3. **the legend, which is also the filter** (`statusKey`): one swatch, icon and word per
+   status, each a button the scripts press (`data-filter="status:<s>"`, `aria-pressed`).
+   It carries no counts — the line above it does — and what each status means is the
+   button's `title` and the About fold's "What the colours mean";
+4. the line a filter writes, and its "Show all passages" button;
+5. **"More ways to filter"**, a closed fold holding the library chips and, in the reader,
+   "The article's own statements" and "Dim the rest of the text";
+6. **"About this page"**, ONE closed fold (`aboutFold`) holding every other figure: the
+   pinned revision and the WikiProject assessment, the article's own statements and its
+   subject passages, what the colours mean, the libraries searched, what an audit measured
+   and which runs made the links, and how the text and the Lean code are shown;
+7. then the article itself (the reader) or the passages (the card list).
+
+The words outside that fold are a reader's: "libraries searched", "pinned revision", "main
+statement". The pipeline's own — universe, frozen, central, campaign, coverage — stay
+inside it, in the card Details folds, and in `data-*` attributes, which is where the store's
+tokens belong. `test/articles.test.ts` (`outsideAbout`) holds that line.
+
+The article list (`/articles`) is one row per article: its name, a stacked bar of its
+statuses (one image whose accessible name is "3 passages: 1 formalized, 1 statement only,
+1 not formalized"), how many passages were checked, and how many libraries hold a match
+(named in the cell's title). Its four heads carry the key `articles.js` sorts by; without
+the script they are plain words over the server's own title order. The per-status columns,
+the per-row library chips and the importance column are gone; importance stays as a table
+inside the list's "About this build" fold.
+
+The reader's side panel is a narrower column (`clamp(300px, 26vw, 400px)`), can be folded
+away ("Hide the passage list", remembered in `localStorage` under `wl-atlr-panel`, wrapped
+in try/catch), and comes back when a passage is selected, because that is where its cards
+are. Its rows wrap to two lines and are cut at the end of a line, never inside a word; the
+whole of a row's first words is its `title`. On a phone the panel is the bottom sheet it
+always was.
+
+The home page (`wiki/src/home.ts`) shows one real example — a passage of a real article
+beside the Lean declaration that formalizes it — and the published build's own totals, both
+read from the store at request time (`articles.ts` `articlesExample`, chosen
+deterministically: the first index shard, its article with the most formalized passages,
+that article's first formalized passage, its best-ranked location). Nothing of it is written
+in the repository, and an unbound, unpublished or unreadable store simply leaves the block
+out.
+
+What follows describes the pieces themselves; where it says "strip", the pieces now sit in
+the head and the About fold above.
+
+- **Coverage figures.** Formerly a "Coverage" strip, now the counts line, the legend and the
+  About fold: passages checked and Lean locations, a
   coverage bar whose segments are filled with patterns (solid, hatched, dotted,
   cross-hatched), and filter chips by status and by
   library. Each status chip carries a swatch of its fill, so the chips are the bar's
@@ -1427,8 +1483,8 @@ and the live list filter.
   states the dataset's audit status, so it is never a badge on a card, and it is these pages'
   own line: the article box (section 9) does not carry it. The notice changes only with a
   release.
-- **Accuracy.** What an audit measured is in the "About this data" fold (the dashboard's "About
-  this build"), first, and changes with a store build. With an audit summary in the store
+- **Accuracy.** What an audit measured is in the "About this page" fold's "How these links were
+  made" section (the list's fold is "About this build"), first, and changes with a store build. With an audit summary in the store
   (`--audit-summary`, section 5) the fold says how the audit stood to the runs it judged ("blind,
   not independent"), gives each figure as the estimate it is, with its interval and what it rests
   on ("…: 80% (95% interval 62–91%), from 16 drawn of 400, weighted by relation and library, an
@@ -1604,14 +1660,15 @@ checks its bytes against the view's `reader.sha256`; a missing or different file
 list, which `?view=cards` always gives.
 
 - **Layout.** WikiLean's header with a second row: an "Article | Card list" switch (which
-  carries the selected `#p-<hex>` across), the card list's status and library chips, "Central
-  only" and "Dim other text". Below it, the revision in WikiLean's `.wl-article-body` (its
-  headings, figures, tables and MathML formulas as the parse output gives them, links to
-  Wikipedia or, for an articles article, to its reader), and a sticky panel beside it,
-  `clamp(380px, 34vw, 520px)` wide. Below 1000px the article is the page and the panel a bottom
+  carries the selected `#p-<hex>` across) and the "Hide the passage list" button. Below it, the
+  page head (title, counts line, legend-filter, the two folds — see "The article first" above),
+  the revision in WikiLean's `.wl-article-body` (its headings, figures, tables and MathML
+  formulas as the parse output gives them, links to Wikipedia or, for an articles article, to
+  its reader), and a sticky panel beside it, `clamp(300px, 26vw, 400px)` wide. Below 1000px the
+  article is the page and the panel a bottom
   sheet (46% of the screen, 52% below 600px) that a tap opens; a "N passages" button opens it on
   the index, from its top. With the sheet open the header drops its second row (the switch and
-  chips come back when it closes), the sheet's handle, nav and ✕ share one strip, and it leaves
+  the button come back when it closes), the sheet's handle, nav and ✕ share one strip, and it leaves
   out the passage's text, which the article shows just above it; below 600px the header leaves
   out the search box and the "Articles" title link (the breadcrumb names it). Every
   in-page jump, Wikipedia's own `[1]`, `↑` and section links among them, stops below the sticky
@@ -1639,9 +1696,10 @@ list, which `?view=cards` always gives.
   draws the viewer's 4px bar in the margin from its first line to its last, writes `#p-<hex>`
   with `replaceState` and fills the panel. A filtered-out passage reads as plain text.
 - **Panel.** With nothing selected: the passages in the article's reading order under its
-  section headings (status, first words, lead declaration and "+N", or "not found"), the
-  coverage bar and central-statements line, the legend of the four highlights and of the
-  relations, "About this data" and the data links. With a passage selected: "← All passages",
+  section headings (status, first words over two lines with the whole of them as the row's
+  `title`, lead declaration and "+N", or "not found"), the community-edit switch when the
+  article has one, the fold of relation labels and the data links. The counts, the legend
+  and every other figure are in the page head beside the article, said once. With a passage selected: "← All passages",
   a stepper "‹ 2 of 58 ›" over the passages the filters show, and the passage's section, which
   the server renders hidden for every passage: the card list's own block (heading, status pill
   and sentence, the passage's text clamped to three lines with "Show all", then exactly the
@@ -2081,7 +2139,7 @@ recommendation.
    pages from the public baseline, so this change leaves them as they are.
 9. **The notice.** *Decided (Jack, 2026-11-02):* one line under the header of every page of the plane,
    "Preliminary: these links have not yet had an independent audit.", never a badge on a card.
-   The figures an audit measured go in the "About this data" fold, from the store (section 8,
+   The figures an audit measured go in the About fold, from the store (section 8,
    "Accuracy").
 10. **Audit before upload.** *Decided (Jack, 2026-11-02):* a blind audit of a sample of batch
     1's links runs before its store is uploaded. Its figures reach the pages through the store's
