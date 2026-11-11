@@ -2032,15 +2032,18 @@ function libraryTags(ids: string[], libs: Map<string, LibraryView>): string {
 // The dashboard's "About this build": the build's campaign and date, then each
 // record set it holds (record_sets, for a build of several; else record_set).
 // built_at defaults to the latest seal's created (build_store), so when it is that
-// time the line dates the record sets' export, and a build date only otherwise.
+// time the line dates the record sets' export (the days from the first set's to the
+// last's, when later batches joined earlier ones), and a build date only otherwise.
 function buildLines(current: ArticlesCurrent): string[] {
   const day = dayOf(String(current.built_at ?? ""));
   const sets = Array.isArray(current.record_sets) && current.record_sets.length
     ? current.record_sets
     : [{ ...current.record_set, campaign: String(current.campaign ?? "") }];
-  const exported = Math.max(...sets.map((set) => Date.parse(String(set?.created ?? ""))).filter(Number.isFinite));
+  const times = sets.map((set) => Date.parse(String(set?.created ?? ""))).filter(Number.isFinite);
+  const exported = Math.max(...times);
   const dated = !day ? "" : Date.parse(String(current.built_at)) === exported
-    ? `, from record sets exported ${text(day)}` : `, built ${text(day)}`;
+    ? `, from record sets exported ${text(dayRange(new Date(Math.min(...times)).toISOString(), new Date(exported).toISOString()) || day)}`
+    : `, built ${text(day)}`;
   const lines = [...auditLines(current.audit), `${text(capital(campaignLabel(String(current.campaign ?? ""))))}${dated}.`];
   for (const set of sets) {
     if (!set || typeof set !== "object") continue;

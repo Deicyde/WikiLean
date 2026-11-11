@@ -1728,19 +1728,23 @@ describe("a store built from a cf-locate-recordset/2 set", () => {
       `by formal-companion at commit <code title="${SKILL}">d85385a</code>.</li>`);
     expect(page).toContain(`<li>Record set <code>tierA-x</code>, exported 1 Nov 2026 by formal-companion at commit <code title="${SKILL}">d85385a</code>.</li>`);
     expect(page).not.toContain("producer commit");
-    // A build of sets from two producers (build_store --producer): each set under its own name.
+    // A later batch from another producer built beside the first (build_store --producer): each
+    // set under its own name, and the build dated by the days its sets were exported on.
     const files = articlesFixtureFiles();
     const current = JSON.parse(files.get("articles/v1/current.json")!);
     const other = "f".repeat(40);
     current.record_sets = [{ ...current.record_set, campaign: current.campaign, producer: "formal-companion" },
-      { ...current.record_set, set_id: "wl-b2", seal_sha256: "e".repeat(64), skill_commit: other, campaign: current.campaign, producer: "WikiLean" }];
+      { ...current.record_set, set_id: "wl-b2", seal_sha256: "e".repeat(64), skill_commit: other, created: "2026-11-10T12:00:00Z",
+        campaign: current.campaign, producer: "WikiLean" }];
+    current.built_at = "2026-11-10T12:00:00Z";
     files.set("articles/v1/current.json", JSON.stringify(current));
     const h2 = setup();
     bindArticles(h2.env, files);
     const dashboard = await (await get(h2.env, "/articles")).text();
+    expect(dashboard).toContain("<li>Campaign fixture-2026-10, from record sets exported 17 Oct–10 Nov 2026.</li>");
     expect(dashboard).toContain("<li>Record set <code>fixture-set</code>, exported 17 Oct 2026 by formal-companion at commit " +
       '<code title="3bceabcee0724ffdf50ce65dde3ab10048c72cba">3bceabc</code>.</li>');
-    expect(dashboard).toContain(`<li>Record set <code>wl-b2</code>, exported 17 Oct 2026 by WikiLean at commit <code title="${other}">fffffff</code>.</li>`);
+    expect(dashboard).toContain(`<li>Record set <code>wl-b2</code>, exported 10 Nov 2026 by WikiLean at commit <code title="${other}">fffffff</code>.</li>`);
   });
 
   it("derives a store without a basis by the seal's status rule (R-BROAD under rule 3)", () => {

@@ -1480,7 +1480,9 @@ and the live list filter.
   this data" fold (the dashboard's "About this build") holds the runs, the record set, its
   status rule and its seal sha, and the dashboard's dates the build: "built <day>" when the
   builder was given `--built-at`, else, since `built_at` is then the latest seal's `created`,
-  "from record sets exported <day>". The seal records no model and no operator; a store built with
+  "from record sets exported <day>" (or the days from the first set's export to the last's, such
+  as "17 Oct–10 Nov 2026", when a later batch joined an earlier one). The seal records no model
+  and no operator; a store built with
   `--provenance` names them, so a card's Details read "Found by Model X (model-x) on 31 Oct–1 Nov
   2026 (UTC), locate run loc-… by jack: candidate 1 …" and "Re-checked by … on 1 Nov 2026 (UTC),
   challenge run chal-… by jack: it survived" (or "Not re-checked: sampled out of challenge run
