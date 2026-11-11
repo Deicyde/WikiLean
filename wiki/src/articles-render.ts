@@ -301,7 +301,17 @@ function timeRange(start: string, end: string): string {
 }
 
 // The seal fields a /2 store carries per article (build_store.seal_summary).
-interface SealSummary { set_id?: string; schema?: string; status_rule?: number; created?: string; skill_commit?: string }
+interface SealSummary { set_id?: string; schema?: string; status_rule?: number; created?: string; skill_commit?: string; producer?: string }
+
+// Who exported a record set, and at which commit. The seal records the commit but
+// not the producer, so a producer is named only when the build names it
+// (build_store --producer), never assumed.
+function exportedBy(seal: SealSummary): string {
+  const commit = String(seal.skill_commit ?? "");
+  const code = `<code title="${attr(commit)}">${text(sha7(commit))}</code>`;
+  return typeof seal.producer === "string" && seal.producer
+    ? ` by ${text(seal.producer)} at commit ${code}` : ` at producer commit ${code}`;
+}
 
 // What the record set does not record, said rather than guessed (display rule).
 const UNRECORDED = "The record set does not record the model or the operator that ran these runs.";
@@ -323,7 +333,7 @@ function recordSetLines(campaign: string, seal: SealSummary | null | undefined, 
     const tags = [typeof seal.schema === "string" ? text(seal.schema) : "",
       Number.isSafeInteger(seal.status_rule) ? `statuses by status rule ${int(seal.status_rule)}` : ""].filter(Boolean);
     lines.push(`Record set <code>${text(String(seal.set_id ?? ""))}</code>${tags.length ? ` (${tags.join(", ")})` : ""}` +
-      `${day ? `, exported ${text(day)}` : ""} by formal-companion at commit <code title="${attr(String(seal.skill_commit ?? ""))}">${text(sha7(String(seal.skill_commit ?? "")))}</code>.`);
+      `${day ? `, exported ${text(day)}` : ""}${exportedBy(seal)}.`);
   }
   if (sealSha) lines.push(`Seal sha256 <code>${text(sealSha)}</code>.`);
   return lines;
@@ -1096,7 +1106,7 @@ function locationDetails(loc: ArticlesLocation, ctx: CardContext): string {
   ];
   if (ctx.seal) {
     lines.push(`Record set <code>${text(String(ctx.seal.set_id ?? ""))}</code>${day ? `, exported ${text(day)}` : ""}` +
-      ` by formal-companion <code title="${attr(String(ctx.seal.skill_commit ?? ""))}">${text(sha7(String(ctx.seal.skill_commit ?? "")))}</code>.`);
+      `${exportedBy(ctx.seal)}.`);
   }
   if (!ctx.runs) lines.push(UNRECORDED);
   if (signatureOf(loc) && ctx.signatures) {
@@ -2034,7 +2044,7 @@ function buildLines(current: ArticlesCurrent): string[] {
   const lines = [...auditLines(current.audit), `${text(capital(campaignLabel(String(current.campaign ?? ""))))}${dated}.`];
   for (const set of sets) {
     if (!set || typeof set !== "object") continue;
-    const seal = { set_id: set.set_id, schema: set.schema, status_rule: set.status_rule, created: set.created, skill_commit: set.skill_commit };
+    const seal = { set_id: set.set_id, schema: set.schema, status_rule: set.status_rule, created: set.created, skill_commit: set.skill_commit, producer: set.producer };
     lines.push(...recordSetLines(String(set.campaign ?? ""), set.set_id ? seal : null, String(set.seal_sha256 ?? "")));
   }
   // The runs' models, operator and dates when the build has them (--provenance).
