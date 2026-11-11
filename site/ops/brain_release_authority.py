@@ -23,7 +23,11 @@ from pathlib import PurePosixPath
 
 # v2: AGENTS.md and CONTRIBUTING.md are neutral (#68); the reducer's bot/state
 # inputs are release-affecting (#75).
-POLICY = "wikilean.release-neutral-paths/v2"
+# v3: worker/ is neutral — the contributor CLI is installed from the repository
+# with `uv tool install`, runs on a volunteer's own machine against the public
+# routes, and nothing in the Worker, the public assets or a Brain release reads
+# a byte of it.
+POLICY = "wikilean.release-neutral-paths/v3"
 
 # Directories whose contents never feed release, public-asset, or Worker bytes.
 NEUTRAL_DIRECTORIES: tuple[str, ...] = (
@@ -39,6 +43,7 @@ NEUTRAL_DIRECTORIES: tuple[str, ...] = (
     "wiki/e2e",
     "wiki/test",
     "wikifunctions",
+    "worker",
 )
 # Paths inside a neutral directory, or matching a neutral name rule, that are
 # release-affecting anyway: the nightly's own build script and tunables,
