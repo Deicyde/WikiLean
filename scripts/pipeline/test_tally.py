@@ -194,12 +194,13 @@ class Fixture:
 
     # -- running it ------------------------------------------------------------------
 
-    def build(self, *, challenge_runs=(), run_id: str = "loc-1") -> dict:
+    def build(self, *, challenge_runs=(), run_id: str = "loc-1",
+              unchallenged: bool = False) -> dict:
         workspace = tally.Workspace(self.corpus, self.runs, self.sources)
         declarations = index_mod.JsonlIndex.load(self.index_path)
         return tally.build(workspace, run_id, challenge_runs=challenge_runs,
                            universe=tally.Universe.load(self.universe_path),
-                           declarations=declarations)
+                           declarations=declarations, unchallenged=unchallenged)
 
     def rows_by_item(self, built: dict) -> dict[str, dict]:
         return {row["item"]: row for row in built["outcomes"]}
@@ -609,6 +610,71 @@ class TallyTests(unittest.TestCase):
         # the outcome row itself keeps the claim the tally worked with, with no conjuncts
         self.assertNotIn("conjuncts", tally.outcome_row(
             self.fx.rows_by_item(built)[ALPHA])["coverage"])
+
+    # -- an unchallenged run ------------------------------------------------------------
+
+    def _unchallenged_locate(self):
+        self.fx.write_locate(self._bundle_locate() + [
+            {"item": BETA, "outcome": "absent", "locations": [],
+             "receipt": {"queries": ["gadget widget", "widget gadget", "dual"],
+                         "candidates": []}},
+            located(DELTA, [location("Testlib.Dual", "exactMatch", 1)])])
+
+    def test_an_unchallenged_run_reads_not_required_and_owes_nothing(self):
+        self._unchallenged_locate()
+        built = self.fx.build(unchallenged=True)
+        rows = self.fx.rows_by_item(built)
+        self.assertEqual([loc["challenge"] for loc in rows[ALPHA]["locations"]],
+                         ["not_required", "not_required"])
+        self.assertEqual(rows[ALPHA]["coverage"]["challenge"], "not_required")
+        # a claim no challenge confirmed upgrades nothing: two hasPart locations
+        self.assertEqual(rows[ALPHA]["status"], "partial")
+        self.assertEqual(rows[BETA]["absence"]["challenge"], "not_required")
+        self.assertEqual(rows[BETA]["status"], "not_formalized")
+        self.assertEqual(rows[DELTA]["locations"][0]["challenge"], "not_required")
+        self.assertEqual(rows[DELTA]["status"], "formalized")
+        self.assertEqual({rows[label]["challenge"] for label in (ALPHA, BETA, DELTA)},
+                         {"not_required"})
+        self.assertIsNone(rows[DELTA]["runs"]["challenge"])
+        self.assertEqual(built["counts"]["by_challenge"], {"not_required": 3})
+        self.assertTrue(built["unchallenged"])
+        workspace = tally.Workspace(self.fx.corpus, self.fx.runs, self.fx.sources)
+        exported, refused = tally.export_rows(built, workspace)
+        self.assertEqual(refused, [])
+        self.assertEqual({row["item"] for row in exported}, {ALPHA, BETA, DELTA})
+
+    def test_the_same_run_without_a_challenge_or_the_flag_is_owed(self):
+        self._unchallenged_locate()
+        built = self.fx.build()
+        self.assertEqual(built["counts"]["by_challenge"], {"owed": 3})
+        self.assertFalse(built["unchallenged"])
+
+    def test_unchallenged_is_refused_beside_a_challenge_run(self):
+        self.fx.write_locate([located(DELTA, [location("Testlib.Dual", "exactMatch", 1)])],
+                             planned_items=(DELTA,))
+        with self.assertRaises(tally.TallyProblem) as caught:
+            self.fx.build(challenge_runs=["chl-1"], unchallenged=True)
+        self.assertIn("not both", str(caught.exception))
+
+    def test_the_command_line_writes_unchallenged_export_rows(self):
+        self._unchallenged_locate()
+        out = Path(self._tmp.name) / "out"
+        code = tally.main(["--run-id", "loc-1", "--corpus", str(self.fx.corpus),
+                           "--runs", str(self.fx.runs), "--sources", str(self.fx.sources),
+                           "--universe", str(self.fx.universe_path),
+                           "--index", str(self.fx.index_path), "--unchallenged",
+                           "--export-rows", str(out / "rows.jsonl"),
+                           "--report", str(out / "report.json")])
+        self.assertEqual(code, 0)
+        rows = [json.loads(line) for line in
+                (out / "rows.jsonl").read_text(encoding="utf-8").splitlines()]
+        self.assertEqual(len(rows), 3)
+        for row in rows:
+            self.assertTrue(all(loc["challenge"] == "not_required"
+                                for loc in row["locations"]))
+        report = json.loads((out / "report.json").read_text(encoding="utf-8"))
+        self.assertTrue(report["unchallenged"])
+        self.assertEqual(report["challenge_runs"], [])
 
 
 class BundleRelationTests(unittest.TestCase):

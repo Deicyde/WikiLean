@@ -37,6 +37,11 @@ one. A challenge run is applied only to the locate run it challenged, only to th
 its plan REQUIRED, and only while each record is what the plan saw; anything else is
 named in ``problems`` and left owed.
 
+**An unchallenged run** (``--unchallenged``, never beside a challenge run) is sealed with
+no challenge at all: every record a challenge would have judged is ``not_required``,
+which the pages read as unchallenged, so nothing is owed and a coverage claim upgrades
+nothing. It is how a contributor's set reaches the intake without a stage-9d run.
+
 **Status rule 3** is what WikiLean's own runs are derived under, and the only one batch 1
 uses. Under it (and under rule 2, which shares its shapes) a coverage claim is a
 **bundle** whose relation is its weakest part's (:func:`bundle_relation`); a challenge
@@ -53,7 +58,7 @@ than a database the producer happens to hold; and the status half is :mod:`statu
 (stage 3), which was already here.
 
     python3 scripts/pipeline/tally.py --run-id loc-1 --corpus <dir> --runs <dir> \\
-        --universe <file> --index <file> [--challenge-run chl-1] \\
+        --universe <file> --index <file> [--challenge-run chl-1 | --unchallenged] \\
         [--manifest <file>] [--sources <dir>] \\
         [--outcomes <file>] [--report <file>]
 """
@@ -1246,6 +1251,26 @@ def _reopen(row: dict) -> None:
         row["coverage"]["challenge"] = vocab.CHALLENGE_PENDING
 
 
+def _unchallenged(row: dict) -> None:
+    """An unchallenged run's records: each one a challenge would owe is ``not_required``.
+
+    No challenge run planned or judged anything, so every record is left owed (``None``)
+    by an empty plan; sealed unchallenged, it reads ``not_required`` instead, the value a
+    plan gives a record no rule required and the pages show as unchallenged. A coverage
+    claim stamped so upgrades nothing and confirms no part, as any claim no challenge
+    confirmed.
+    """
+    for loc in row["locations"]:
+        if loc.get("challenge") is None:
+            loc["challenge"] = vocab.CHALLENGE_NOT_REQUIRED
+    if row.get("record_challenge", "unset") is None:
+        row["record_challenge"] = vocab.CHALLENGE_NOT_REQUIRED
+    if row.get("absence") is not None and row["absence"].get("challenge") is None:
+        row["absence"]["challenge"] = vocab.CHALLENGE_NOT_REQUIRED
+    if row.get("coverage") is not None and row["coverage"].get("challenge") is None:
+        row["coverage"]["challenge"] = vocab.CHALLENGE_NOT_REQUIRED
+
+
 def _renumbered(locations: list[dict], *,
                 status_rule: int = vocab.STATUS_RULE_D1) -> list[dict]:
     """The surviving locations, ranked 1..n again.
@@ -1362,13 +1387,20 @@ def _owed_hunt(row: dict, problems: list[str]) -> None:
 
 def build(workspace: Workspace, run_id: str, *, challenge_runs: Iterable[str] = (),
           universe: Universe | None = None, declarations=None,
-          manifest: dict[str, tuple] | None = None, require_gate: bool = False) -> dict:
+          manifest: dict[str, tuple] | None = None, require_gate: bool = False,
+          unchallenged: bool = False) -> dict:
     """Everything a run's harvest yields: rows, passage outcomes, counts, problems.
 
     ``{"run", "mode", "rows", "outcomes", "counts", "problems", "gate", "gates",
-    "challenge_runs", "sourceset", "universe", "status_rule"}``; ``outcomes`` is empty for
-    an inventory run, and ``gates`` is the receipt summary of every run read.
+    "challenge_runs", "unchallenged", "sourceset", "universe", "status_rule"}``;
+    ``outcomes`` is empty for an inventory run, and ``gates`` is the receipt summary of
+    every run read. ``unchallenged`` seals a locate run with no challenge
+    (:func:`_unchallenged`), and is refused beside a challenge run.
     """
+    challenge_runs = list(challenge_runs)
+    if unchallenged and challenge_runs:
+        raise TallyProblem(f"run {run_id} is tallied under its challenge runs "
+                           f"({', '.join(challenge_runs)}) or unchallenged, not both")
     run = workspace.run_config(run_id)
     loc_block = run["locate"]
     mode = str(loc_block.get("mode") or run.get("mode"))
@@ -1384,9 +1416,9 @@ def build(workspace: Workspace, run_id: str, *, challenge_runs: Iterable[str] = 
     problems: list[str] = []
     result: dict[str, Any] = {
         "run_id": run_id, "mode": mode, "rows": [], "outcomes": [], "problems": problems,
-        "gate": gate, "gates": gates, "challenge_runs": list(challenge_runs),
-        "sourceset": loc_block.get("sourceset"), "universe": uni_pin,
-        "status_rule": status_rule}
+        "gate": gate, "gates": gates, "challenge_runs": challenge_runs,
+        "unchallenged": unchallenged, "sourceset": loc_block.get("sourceset"),
+        "universe": uni_pin, "status_rule": status_rule}
     if mode == vocab.MODE_INVENTORY:
         result["rows"] = finding_rows(run_id, docs, sourceset_id=sourceset_id, universe=universe)
         result["counts"] = _inventory_counts(docs, result["rows"])
@@ -1481,6 +1513,8 @@ def build(workspace: Workspace, run_id: str, *, challenge_runs: Iterable[str] = 
         _apply_challenge(row, c_planned, c_verdicts, universe, declarations, problems,
                          workspace.layer, status_rule=status_rule,
                          conditional=conditional_of.get(pkey), fill=c_fills.get(pkey))
+        if unchallenged:
+            _unchallenged(row)
         _derive(row, problems, status_rule=status_rule)
         for scratch in ("record_challenge", "prominence_challenge",
                         "passage_challenge_override", "coverage_lapsed", "counted_before"):
@@ -1669,6 +1703,7 @@ def report(built: dict) -> dict:
     """The tally report: everything but the outcome rows, which go to their own file."""
     return {"run_id": built["run_id"], "mode": built["mode"], "sourceset": built["sourceset"],
             "universe": built["universe"], "challenge_runs": built["challenge_runs"],
+            "unchallenged": built["unchallenged"],
             "gate": built["gate"], "gates": built["gates"], "counts": built["counts"],
             "problems": built["problems"], "rows": built["rows"]}
 
@@ -1690,6 +1725,10 @@ def main(argv: list[str] | None = None) -> int:
                              "(.jsonl snapshot or SQLite)")
     parser.add_argument("--challenge-run", action="append", default=[],
                         help="a challenge run whose verdicts apply (repeatable)")
+    parser.add_argument("--unchallenged", action="store_true",
+                        help="tally a locate run that no challenge ran over: every record "
+                             "a challenge would judge is not_required, which the pages read "
+                             "as unchallenged. Refused beside --challenge-run")
     parser.add_argument("--manifest", type=Path,
                         help="the sourceset manifest the run pinned, to check each document's "
                              "source_sha and layer_sha256")
@@ -1711,7 +1750,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         built = build(workspace, args.run_id, challenge_runs=args.challenge_run,
                       universe=universe, declarations=declarations,
-                      manifest=read_manifest(args.manifest), require_gate=args.require_gate)
+                      manifest=read_manifest(args.manifest), require_gate=args.require_gate,
+                      unchallenged=args.unchallenged)
     finally:
         declarations.close()
 
