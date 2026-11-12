@@ -238,6 +238,15 @@ Records follow proposal §2.7, with these points of the agreement:
   `challenge_pending` marks a record that a prominence overturn to `subject` or `central`
   put under a challenge rule after the challenge ran: a challenge is owed and none has
   judged it. The pages say "not challenged yet (a challenge is pending)".
+  What `survived` is worth depends on the rules the challenge ran under. Under judgment
+  rules 4 and below a `confirm` owed a witness and nothing else, and the 2026-11-09
+  community review changed 82 links that carried `challenge: survived` (issue #175).
+  From judgment rules 5 the gate holds the location a verdict leaves to every relation
+  rule and to the three checks — the facts the passage asserts and which of them the
+  declaration states, a `broadMatch`'s direction, and the passage's kind
+  (docs/PIPELINE.md, stage 7). A set says which rules it was produced under through its
+  run's `gate.json`, not through the record: the record's `challenge` value is the same
+  word either way.
 - **An absence's receipt counts** are `receipt: {sha256, queries, candidates}`, where
   `queries` and `candidates` are the lengths of the receipt file's `queries` and
   `candidates` lists, a repeated entry included (contract note 3).

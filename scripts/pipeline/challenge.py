@@ -17,13 +17,21 @@ Over the outcome rows of one or more harvested locate runs:
 * every **strong location whose own note admits a clause it does not state**
   (``gate.verify_locate.admits_missing_clause``) is refuted by default too, whatever its
   passage's prominence: a relation that says the opposite of itself is not evidence;
+* under plan rule 2, every ``hasPart`` **on a passage with no conjuncts**: R4 gives a
+  part to a passage that says several things, and the inventory read this one as saying
+  one, so either the cut is wrong or the part is a ``relatedMatch``;
 * every **subject passage's prominence** is refuted by default and never sampled: the
   article's own identity rides on every record of a subject passage, so a passage
   mislabelled ``subject`` would keep it with no verdict that could take it away;
 * on a supporting passage, every location that sets the passage's derived status **on
-  its own** — its *bases* (:func:`bases`) — is required when its relation is strong: the
-  passage keeps its status while any one of them stands, so a correct downgrade of the
-  best-ranked one alone changes nothing;
+  its own** — its *bases* (:func:`bases`) — is required: the passage keeps its status
+  while any one of them stands, so a correct downgrade of the best-ranked one alone
+  changes nothing. Under plan rule 1 only a *strong* basis was required, and a weak one
+  that set the status alone fell to its relation's stratum at ``sample_rate``; under
+  rule 2 (issue #175) a basis is required whatever its relation, and the command line
+  reads a location's own status under the **run's** status rule rather than status rule
+  1, so a ``broadMatch`` that alone makes a passage ``formalized`` under status rule 3
+  is seen as the basis it is;
 * a **stratified, seeded sample** of the rest: one stratum per scope a passage was
   demoted to, one for the supporting passages' prominences, one per relation on the
   remaining locations, and one of the supporting passages' absences. Each stratum takes
@@ -34,6 +42,12 @@ Over the outcome rows of one or more harvested locate runs:
 
 The draw is a function of the seed and the record keys alone (each record's rank is
 ``sha256(seed, key)``), so re-planning an unchanged run gives the same plan.
+
+**The plan rule.** Which of those rules a plan was drawn under is
+``challenge-plan.json``'s ``plan_rule``: 1 the rules the first runs were planned with,
+2 issue #175's. The default of :func:`plan` is 1, so a caller that names no rule draws
+the plan its code was written against; ``--plan-rule`` defaults to 2, and a replay of an
+older plan passes ``--plan-rule 1``.
 
 **Conditional records.** A prominence sample that overturns a supporting passage to
 central reopens records no task held, which would stay owed forever. So every location,
@@ -50,7 +64,7 @@ encodings of one object, or a definition and the declaration defined from it, ge
 challenger's relations.
 
     python3 scripts/pipeline/challenge.py --rows <outcomes.jsonl> --run-id chal-1 \\
-        --out <dir> [--seed 0] [--sample-rate 0.2]
+        --out <dir> [--seed 0] [--sample-rate 0.2] [--plan-rule 2]
 """
 from __future__ import annotations
 
@@ -182,9 +196,13 @@ def _record(row: dict, target: str, *, run_id: str, location: dict | None = None
     return rec
 
 
-def _location_rule(loc: dict, *, hot: bool, based: list[dict]
-                   ) -> tuple[str, str | None]:
-    """``(rule, stratum)`` of one location record."""
+def _location_rule(loc: dict, *, hot: bool, based: list[dict],
+                   plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
+                   simple: bool = False) -> tuple[str, str | None]:
+    """``(rule, stratum)`` of one location record.
+
+    ``simple`` says the run read the passage's statement and it has no ``conjuncts``.
+    """
     relation = loc["relation"]
     if hot:
         return REFUTE, None
@@ -193,7 +211,19 @@ def _location_rule(loc: dict, *, hot: bool, based: list[dict]
         # its own note says it leaves a clause unstated: a strong relation that says the
         # opposite of itself is refuted by default, whatever the passage's prominence
         return REFUTE, None
-    if relation in vocab.STRONG_RELATIONS and any(loc is b for b in based):
+    if relation == vocab.HAS_PART and simple \
+            and plan_rule >= vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS:
+        # R4: a part states one clause of a passage that says several things, and the
+        # inventory read this passage as saying one. Either the cut is wrong or the
+        # part is a relatedMatch, and a model-free rule cannot tell which: refuted by
+        # default, whatever the prominence (issue #175)
+        return REFUTE, None
+    if any(loc is b for b in based) and (
+            relation in vocab.STRONG_RELATIONS
+            or plan_rule >= vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS):
+        # a basis sets the passage's status on its own, whatever its relation: a
+        # hasPart that alone makes a passage partial is as load-bearing as a strong
+        # location that alone makes it formalized (issue #175)
         return BASIS, None
     if relation in vocab.WEAK_RELATIONS or relation in vocab.STRONG_RELATIONS:
         return SAMPLE, f"relation:{relation}"
@@ -203,11 +233,13 @@ def _location_rule(loc: dict, *, hot: bool, based: list[dict]
 def classify(rows: Iterable[dict], *, run_id: str,
              status_rule: int = vocab.STATUS_RULE_D1,
              basis_rule: int = vocab.STATUS_RULE_D1,
+             plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
              passages: dict | None = None) -> list[dict]:
     """Every record of one run's outcome rows, each with its rule and stratum.
 
     ``passages`` is ``{(source_id, item): inventory passage}``: where a challenger
-    reads the passage from, which the outcome rows do not say.
+    reads the passage from, which the outcome rows do not say. ``plan_rule`` is which
+    set of planning rules the draw is made under (:data:`vocab.CHALLENGE_PLAN_RULES`).
     """
     bundle = vocab.reads_bundles(status_rule)
     passages = passages or {}
@@ -218,10 +250,14 @@ def classify(rows: Iterable[dict], *, run_id: str,
         here = passages.get((row["source_id"], row["item"]))
         hot = row.get("prominence") in vocab.REFUTE_BY_DEFAULT_PROMINENCE
         based = [] if hot else bases(row, basis_rule)
+        # only a run that reads bundles knows a passage's conjuncts; on one that does
+        # not, no row carries them and "no conjuncts" would mean every passage
+        simple = bundle and not row.get("conjuncts")
         for loc in row.get("locations") or []:
             rec = _record(row, "location", run_id=run_id, location=loc,
                           status_rule=status_rule, passage=here)
-            rule, stratum = _location_rule(loc, hot=hot, based=based)
+            rule, stratum = _location_rule(loc, hot=hot, based=based,
+                                           plan_rule=plan_rule, simple=simple)
             rec.update(rule=rule, stratum=stratum)
             out.append(rec)
         claim = row.get("coverage")
@@ -283,17 +319,45 @@ def rates_of(sample_rate: float = vocab.CHALLENGE_SAMPLE_RATE,
     return rates
 
 
-def stratum_rate(stratum: str, rates: dict[str, float]) -> float:
+#: Which relations draw at ``strong_sample_rate``, by plan rule. Rules 1 draw the three
+#: strong ones; rules 2 add ``hasPart`` and ``narrowMatch`` on a supporting passage —
+#: issue #175 found 18 of its 22 wrong partial links sampled out at ``sample_rate``,
+#: and a partial link sets a passage's status as surely as a strong one.
+STRONG_RATE_RELATIONS = {
+    vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS: frozenset(vocab.STRONG_RELATIONS),
+    vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS: frozenset(vocab.STRONG_RELATIONS
+                                                    | vocab.PART_RELATIONS),
+}
+
+
+def check_plan_rule(plan_rule: int) -> int:
+    """``plan_rule`` itself, or a refusal: a rule nobody wrote draws nobody's plan.
+
+    Every entry point that reads one checks it here, so an unknown rule is a refusal
+    and never a silent fall back to a rate table that does not hold it.
+    """
+    if plan_rule not in vocab.CHALLENGE_PLAN_RULES:
+        raise ChallengeProblem(f"a plan is drawn under one of "
+                               f"{list(vocab.CHALLENGE_PLAN_RULES)}, not {plan_rule!r}")
+    return plan_rule
+
+
+def stratum_rate(stratum: str, rates: dict[str, float],
+                 plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS) -> float:
     """One stratum's rate: the strong relations', the absences', else the plan's."""
     if stratum == ABSENCE_STRATUM:
         return rates["absence_sample_rate"]
-    if stratum.startswith("relation:") and stratum.split(":", 1)[1] in vocab.STRONG_RELATIONS:
+    relations = STRONG_RATE_RELATIONS[check_plan_rule(plan_rule)]
+    if stratum.startswith("relation:") and stratum.split(":", 1)[1] in relations:
         return rates["strong_sample_rate"]
     return rates["sample_rate"]
 
 
-def draw(records: list[dict], *, seed: int, **rate_args) -> list[dict]:
+def draw(records: list[dict], *, seed: int,
+         plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
+         **rate_args) -> list[dict]:
     """Give every record its planned value: required, sampled_out or not_required."""
+    check_plan_rule(plan_rule)
     rates = rates_of(**rate_args)
     strata: dict[str, list[dict]] = defaultdict(list)
     for rec in records:
@@ -305,7 +369,7 @@ def draw(records: list[dict], *, seed: int, **rate_args) -> list[dict]:
             rec["planned"] = vocab.CHALLENGE_NOT_REQUIRED
     for stratum, members in sorted(strata.items()):
         members.sort(key=lambda r: _rank(seed, r["key"]))
-        rate = stratum_rate(stratum, rates)
+        rate = stratum_rate(stratum, rates, plan_rule)
         # exact arithmetic: 0.07 of 100 records is 7, never the 8 a float product
         # rounds to
         take = math.ceil(Fraction(str(rate)) * len(members)) if rate > 0 else 0
@@ -385,11 +449,13 @@ def task_id(number: int) -> str:
 def plan(rows_by_run: dict[str, list[dict]], *, seed: int = 0,
          status_rule: int = vocab.STATUS_RULE_D1,
          basis_rule: int = vocab.STATUS_RULE_D1,
+         plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
          passages: dict | None = None,
          batch_size: int = vocab.CHALLENGE_BATCH_RECORDS, conditional: bool = True,
          **rate_args) -> dict:
     """The whole plan: every record classified, drawn, marked, and batched into tasks."""
     rates = rates_of(**rate_args)
+    check_plan_rule(plan_rule)
     if not rows_by_run:
         raise ChallengeProblem("a challenge plan judges harvested locate runs; name at "
                                "least one")
@@ -397,7 +463,7 @@ def plan(rows_by_run: dict[str, list[dict]], *, seed: int = 0,
     for run_id in sorted(rows_by_run):
         records.extend(classify(rows_by_run[run_id], run_id=run_id,
                                 status_rule=status_rule, basis_rule=basis_rule,
-                                passages=passages))
+                                plan_rule=plan_rule, passages=passages))
     seen: dict[str, str] = {}
     for rec in records:
         other = seen.get(rec["key"])
@@ -408,7 +474,7 @@ def plan(rows_by_run: dict[str, list[dict]], *, seed: int = 0,
                 + (f", in runs {other} and {rec['run_id']}" if other != rec["run_id"]
                    else ""))
         seen[rec["key"]] = rec["run_id"]
-    draw(records, seed=seed, **rates)
+    draw(records, seed=seed, plan_rule=plan_rule, **rates)
     if conditional:
         mark_conditional(records)
     show_siblings(records)
@@ -418,7 +484,7 @@ def plan(rows_by_run: dict[str, list[dict]], *, seed: int = 0,
         for rec in group:
             task_of[rec["key"]] = task_id(number)
     return {"records": records, "batches": groups, "task_of": task_of, "rates": rates,
-            "seed": int(seed)}
+            "seed": int(seed), "plan_rule": int(plan_rule)}
 
 
 def plan_document(run_id: str, built: dict, *, challenged_runs: Iterable[str]) -> dict:
@@ -443,6 +509,8 @@ def plan_document(run_id: str, built: dict, *, challenged_runs: Iterable[str]) -
         counts[row["planned"]] += 1
     return {"schema": vocab.CHALLENGE_PLAN_SCHEMA, "run_id": run_id,
             "challenged_runs": sorted(challenged_runs), "seed": built["seed"],
+            "plan_rule": built.get("plan_rule",
+                                   vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS),
             **built["rates"], "counts": dict(sorted(counts.items())), "records": rows}
 
 
@@ -524,6 +592,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--absence-sample-rate", type=float,
                         default=vocab.CHALLENGE_ABSENCE_SAMPLE_RATE)
     parser.add_argument("--status-rule", type=int, default=vocab.STATUS_RULE_BROAD)
+    parser.add_argument("--plan-rule", type=int,
+                        default=vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                        help="which planning rules to draw under "
+                             f"({', '.join(map(str, vocab.CHALLENGE_PLAN_RULES))}); "
+                             "a replay of an older plan passes the rule it was drawn "
+                             "with")
     parser.add_argument("--batch-size", type=int, default=vocab.CHALLENGE_BATCH_RECORDS)
     parser.add_argument("--manifest", type=Path,
                         help="the sourceset manifest the locate runs pinned, for the "
@@ -538,7 +612,18 @@ def main(argv: list[str] | None = None) -> int:
             if not run or not where:
                 raise ChallengeProblem(f"--rows takes <run-id>=<file>, not {spec!r}")
             rows_by_run[run] = read_rows(Path(where))
+        # Which rule a location's OWN status is read under when the plan asks whether
+        # it is a basis. Rule 1 draws the plans the first runs were drawn with, where
+        # this call named none and :func:`plan` defaulted to status rule 1 whatever the
+        # run's own was. Rule 2 reads it under the run's: under status rule 3 a
+        # broadMatch to data formalizes a theorem passage, so a broadMatch that alone
+        # makes a passage `formalized` is a basis there and was invisible here — and
+        # broadMatch is the relation issue #175 found wrong most often.
+        basis_rule = (args.status_rule
+                      if args.plan_rule >= vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS
+                      else vocab.STATUS_RULE_D1)
         built = plan(rows_by_run, seed=args.seed, status_rule=args.status_rule,
+                     basis_rule=basis_rule, plan_rule=args.plan_rule,
                      batch_size=args.batch_size, conditional=not args.no_conditional,
                      sample_rate=args.sample_rate,
                      strong_sample_rate=args.strong_sample_rate,

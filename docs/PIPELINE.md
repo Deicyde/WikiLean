@@ -345,6 +345,62 @@ rest of the time writing one compound passage with a conjunct per structure. The
 records predate the check, and `gate/audit_sentences.py` measures an exported record set
 against it without re-running anything.
 
+**Judgment rules 5 — a challenge verdict faces the relation rules (issue #175).** Until
+rules 5 the whole challenge branch of rule 9 was `rule9_verdict`: a `confirm` owed a
+non-empty witness and nothing else, so every relation rule the challenge prompt states —
+a strong relation names every clause, a `closeMatch` names a convention, a `hasPart` says
+what it alone entails, a strong note that admits a missing clause — bound a locate
+document and nothing a challenger wrote. At rules 5 the gate builds **the location the
+verdict leaves** (`_verdict_location`): the record from the task manifest, under the
+relation a `downgrade` names, with every judgment field the verdict writes replacing the
+record's and every field the new relation does not take dropped as `tally._fit_fields`
+drops it. `rule9_location` then runs over it, with the record's `conjuncts` as the clause
+ids. Levels 0 to 4 are untouched, so a replay of a run pinned at 4 gates exactly as it
+did.
+
+**The note the verdict leaves is the note the record keeps.** The one legal answer to "a
+strong record whose own note admits a clause it does not state, and the note is wrong" is
+a `confirm` that writes its own `note` — the gate holds that note and the planner refutes
+such a record by default on the strength of the old one. So from plan rule 2 the tally
+takes a verdict's `note` onto the location it leaves, beside its `step`, `convention` and
+`instantiation` (`tally.VERDICT_NOTE_FIELDS`). Before it, a verdict's note reached a
+record only through `records.downgrade_note`, on a downgrade to `closeMatch` over a
+location with none: on every other verdict the worker's note stood, the export carried a
+strong relation whose note said it stated less than the passage, and the next plan
+refuted the record by default again for ever. It is gated on the **challenge run's own
+`plan_rule`**, which the tally reads from `challenge-plan.json`, so a replay of a run
+drawn under rule 1 yields the rows it always did; draw at plan rule 2 when you gate at
+judgment rules 5. The note is free-text checked at export like any other
+(`records.check_free_text`).
+
+Rules 5 also add **three checks** (`rule9_checks`), in the prompt and the gate in one
+commit, on every verdict that leaves a strong relation or a `hasPart`:
+
+- **`reading` and `states`** — the facts the passage asserts in the challenger's own
+  words, 1 to `MAX_CONJUNCTS` of them, and the positions of that reading the declaration
+  itself states. A strong relation stands only when it states every one; a `hasPart` that
+  states none is a `relatedMatch`. This is the clause check the inventory's ids cannot
+  make: a passage cut as simple has one clause id, so naming it says nothing.
+- **`direction`** on a `broadMatch` (the record's own or a part's `conjunct_relation`) —
+  the instantiation that yields the passage, and every hypothesis the passage does not
+  have, or a line beginning with the word `none`. A named hypothesis is at most a
+  `narrowMatch` (R2, PD4).
+- **`kind_check`** — whether the passage is a notation passage or a worked example, which
+  the judgment rules now read the same way in both prompts: on a notation passage the
+  declaration that is the operation the notation denotes is a `relatedMatch`, because what
+  the passage asserts is the notation.
+
+A `checks` block on a verdict that leaves a weaker relation is extra and no refusal: the
+tally drops it with every other field that relation does not take. The tally keeps the
+block beside the location it credits, for the audit; nothing of it is exported.
+
+Rules 5 also keep the prompt's one outstanding promise about the index: a downgrade to
+`relatedMatch` names `bridge`, "the lemma the connection needs, which the gate looks up
+in the index", and until now nothing looked anything up. `rule9_bridge` holds the field
+to `{library, declaration, why}` and runs the same index lookup rule 3 runs over a
+location, naming the item as `<item> (bridge)`. Only on a verdict that leaves a
+`relatedMatch`, which is where the tally keeps the field.
+
 **What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
 prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
 naturals-for-integers tripwire, both of which need the declaration index to carry
@@ -468,6 +524,30 @@ records no task held. The verdict vocabulary is `vocab.py`'s and the verdict sem
 `tally.py`'s, both already proved on batch 1's real verdicts.
 *Source:* `scripts/locate/challenge_plan.py`.
 
+**Plan rule 2 (issue #175).** Which rules a plan was drawn under is its `plan_rule`, in
+`challenge-plan.json`. Rule 1 is what the first runs were drawn with. Rule 2 changes two
+things, both on supporting passages: a **basis is required whatever its relation** (under
+rule 1 only a strong basis was, so a `hasPart` that alone made a passage `partial` fell to
+its stratum at `sample_rate`), and `hasPart` and `narrowMatch` **draw at
+`strong_sample_rate`** — the review behind the issue found 18 of its 22 wrong partial
+links sampled out at 0.2. Rule 2 also reads a location's own status under the **run's**
+status rule when it asks whether it is a basis: the command line never passed
+`--status-rule` on to `bases()`, so every plan was drawn with bases computed under status
+rule 1, and a `broadMatch` that alone makes a passage `formalized` under status rule 3 —
+the relation the issue found wrong most often — was not seen as a basis at all. On a
+synthetic corpus of 4,000 passages shaped like the issue's own counts that is 11% of the
+bases. Rule 1 keeps the old reading, so a replay is unchanged. It also adds one
+model-free refusal by default: a `hasPart`
+**on a passage with no conjuncts**, since R4 gives a part to a passage that says several
+things and the inventory read this one as saying one, so either the cut is wrong or the
+part is a `relatedMatch`. That rule reads a passage's `conjuncts`, so it applies only on
+a run that reads bundles; on one that does not, no row carries them and "no conjuncts"
+would mean every passage. `challenge.py`'s `--plan-rule` defaults to 2 and
+`challenge.plan()`'s argument to 1, so a replay of an older plan passes the rule it was
+drawn with and gets the same records back. The rule is also what the tally reads to
+decide whether a verdict's own `note` replaces the worker's (stage 7 above): a plan drawn
+under rule 2 is a run whose verdicts were written and gated under judgment rules 5.
+
 **The prompts (`scripts/pipeline/prompts/`).** WikiLean's own, rendered from the run's own
 paths by `prompts.py`, which refuses a template with an unfilled slot. Four files per root:
 a shared `worker-system.md`, the mode's `worker.md`, and the two reviewer prompts. Three
@@ -475,7 +555,7 @@ differences from formal-companion's worth stating:
 
 - **No conditional arms.** formal-companion's templates carry `{{#if}}` blocks for the rule
   versions a plan may run under; WikiLean's are written for the one set its gate enforces —
-  span-end rule 3, statement-cut rule 4, judgment rules 4 — and a change of rule is a change
+  span-end rule 3, statement-cut rule 4, judgment rules 5 — and a change of rule is a change
   of prompt in the same commit as the gate.
 - **The judgment rules are one text.** R1 to R7, the policy defaults and the readings live in
   `prompts/judgment-rules.md.part`, which both the locate and the challenge prompt render.

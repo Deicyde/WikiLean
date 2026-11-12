@@ -95,6 +95,19 @@ JUDGMENT_LOCATION_FIELDS = ("clauses", "instantiation", "step", "convention",
                             "conjunct_relation", "tests", "pd6")
 #: What a downgrade to ``relatedMatch`` says of the record it leaves (judgment rules 4).
 BRIDGE_FIELDS = ("bridge", "incomparable")
+#: What a ``bridge`` names: the lemma the connection needs, which the gate looks up in
+#: the declaration index, and what it adds.
+BRIDGE_KEYS = ("library", "declaration", "why")
+#: The three checks a challenge verdict runs under judgment rules 5 (issue #175): the
+#: facts the passage asserts in the challenger's own words and which of them the
+#: declaration states (``reading``, ``states``), R2's instantiation and the hypotheses
+#: the passage lacks (``direction``, on a ``broadMatch``), and whether the passage is a
+#: notation passage or a worked example (``kind_check``).
+CHECKS_FIELD = "checks"
+CHECKS_KEYS = ("reading", "states", "direction", "kind_check")
+#: The relations whose verdict carries them: the ones that credit the declaration with
+#: a fact the passage asserts. A weaker relation credits it with none.
+CHECKED_RELATIONS = STRONG_RELATIONS | {HAS_PART}
 
 #: A declaration's proof status, decided mechanically at index time, never by a model.
 PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "wanted", "definition"})
@@ -195,6 +208,16 @@ CHALLENGE_RULES = frozenset({CHALLENGE_RULE_REFUTE, CHALLENGE_RULE_HUNT,
 CHALLENGE_TARGETS = frozenset({"location", "absence", "unresolved", "scope", "prominence",
                                "coverage"})
 VERDICT_ACTIONS = frozenset({"confirm", "uphold", "downgrade", "refute", "overturn"})
+#: Which rules a challenge plan was drawn under, written into ``challenge-plan.json``.
+#: 1 — the rules the first runs were planned under: only a **strong** location can be a
+#: basis, and only the strong relations draw at ``strong_sample_rate``. 2 — issue #175: a
+#: weak relation that sets a passage's status on its own is a basis too, ``hasPart`` and
+#: ``narrowMatch`` on a supporting passage draw at ``strong_sample_rate``, and a
+#: ``hasPart`` on a passage with no conjuncts is refuted by default. A plan is replayed
+#: under the rule it was drawn with, never under the newest.
+CHALLENGE_PLAN_RULE_STRONG_BASIS = 1
+CHALLENGE_PLAN_RULE_WEAK_BASIS = 2
+CHALLENGE_PLAN_RULES = (CHALLENGE_PLAN_RULE_STRONG_BASIS, CHALLENGE_PLAN_RULE_WEAK_BASIS)
 #: The three rates a plan draws its strata at, by the names ``challenge-plan.json`` uses.
 CHALLENGE_SAMPLE_RATE = 0.2
 CHALLENGE_STRONG_SAMPLE_RATE = 0.5

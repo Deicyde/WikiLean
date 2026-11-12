@@ -19,11 +19,13 @@ Run: python3 scripts/pipeline/test_model_stages.py
 """
 from __future__ import annotations
 
+import io
 import json
 import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from fractions import Fraction
 from pathlib import Path
 
@@ -353,6 +355,138 @@ class ChallengePlanTests(unittest.TestCase):
         row = self.row("In-text #00000007", status=None, locations=[
             self.location("a" * 64, "exactMatch", 1)])
         self.assertEqual(challenge_mod.bases(row, vocab.STATUS_RULE_BROAD), [])
+
+    def test_a_weak_basis_is_required_under_plan_rule_two(self):
+        """Issue #175, pattern 4: a hasPart that alone makes a passage partial sets its
+        status as surely as a strong location that alone makes it formalized."""
+        def row():
+            return self.row("In-text #0000000a", status="partial", locations=[
+                self.location("a" * 64, "hasPart", 1)])
+
+        old = challenge_mod.classify([row()], run_id="r1")
+        self.assertEqual([(r["rule"], r["stratum"]) for r in old
+                          if r["target"] == "location"],
+                         [(challenge_mod.SAMPLE, "relation:hasPart")])
+        new = challenge_mod.classify(
+            [row()], run_id="r1",
+            plan_rule=vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS)
+        self.assertEqual([r["rule"] for r in new if r["target"] == "location"],
+                         [challenge_mod.BASIS])
+
+    def test_a_haspart_on_a_passage_with_no_conjuncts_is_refuted_by_default(self):
+        """R4 gives a part to a passage that says several things (issue #175)."""
+        def classify(plan_rule, status_rule, **over):
+            row = self.row("In-text #0000000c", status=None,
+                           locations=[self.location("a" * 64, "hasPart", 1)], **over)
+            return [r["rule"] for r in challenge_mod.classify(
+                [row], run_id="r1", plan_rule=plan_rule, status_rule=status_rule)
+                if r["target"] == "location"]
+
+        simple = {"statement": "A widget is round."}
+        compound = {"statement": "A widget is round and finite.",
+                    "shape": "conclusions",
+                    "conjuncts": [{"id": "c1", "text": "a widget is round"},
+                                  {"id": "c2", "text": "a widget is finite"}]}
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                                  vocab.STATUS_RULE_BROAD, **simple),
+                         [challenge_mod.REFUTE])
+        # a part of a compound statement is what R4 is for, and is sampled as before
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                                  vocab.STATUS_RULE_BROAD, **compound),
+                         [challenge_mod.SAMPLE])
+        # and the rule is plan rule 2's
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
+                                  vocab.STATUS_RULE_BROAD, **simple),
+                         [challenge_mod.SAMPLE])
+        # a run that reads no bundles knows no passage's conjuncts, and this rule
+        # would read every passage as simple
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                                  vocab.STATUS_RULE_D1, **simple),
+                         [challenge_mod.SAMPLE])
+
+    def test_a_partial_link_on_a_supporting_passage_draws_at_the_strong_rate(self):
+        rates = challenge_mod.rates_of(sample_rate=0.2, strong_sample_rate=0.5,
+                                       absence_sample_rate=0.5)
+        for relation in ("hasPart", "narrowMatch"):
+            with self.subTest(relation=relation):
+                stratum = f"relation:{relation}"
+                self.assertEqual(challenge_mod.stratum_rate(
+                    stratum, rates, vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS), 0.2)
+                self.assertEqual(challenge_mod.stratum_rate(
+                    stratum, rates, vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS), 0.5)
+        # a relatedMatch is no partial credit, and keeps the plan's own rate
+        self.assertEqual(challenge_mod.stratum_rate(
+            "relation:relatedMatch", rates, vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS), 0.2)
+
+    def test_the_draw_takes_half_the_partial_links_under_plan_rule_two(self):
+        def rows():
+            # no status, so none of them is a basis, and a compound statement, so none
+            # is refuted by default either: the stratum is the whole question
+            return [self.row(f"In-text #{n:08x}", status=None, shape="conclusions",
+                             conjuncts=[{"id": "c1", "text": "round"},
+                                        {"id": "c2", "text": "finite"}],
+                             locations=[self.location(f"{n:064x}", "hasPart", 1)])
+                    for n in range(10)]
+
+        for rule, wanted in ((vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS, 2),
+                             (vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS, 5)):
+            with self.subTest(plan_rule=rule):
+                records = challenge_mod.classify(rows(), run_id="r1", plan_rule=rule,
+                                                 status_rule=vocab.STATUS_RULE_BROAD)
+                challenge_mod.draw(records, seed=0, plan_rule=rule, sample_rate=0.2,
+                                   strong_sample_rate=0.5, absence_sample_rate=0.5)
+                drawn = [r for r in records if r["target"] == "location"
+                         and r["planned"] == vocab.CHALLENGE_REQUIRED]
+                self.assertEqual(len(drawn), wanted)
+
+    def test_the_plan_says_which_rules_it_was_drawn_under(self):
+        rows = [self.row("In-text #0000000b", prominence="central",
+                         locations=[self.location("a" * 64, "exactMatch", 1)])]
+        for rule in vocab.CHALLENGE_PLAN_RULES:
+            built = challenge_mod.plan({"loc-1": rows}, seed=0, plan_rule=rule)
+            document = challenge_mod.plan_document("chal-1", built,
+                                                   challenged_runs=["loc-1"])
+            self.assertEqual(document["plan_rule"], rule)
+        with self.assertRaises(challenge_mod.ChallengeProblem):
+            challenge_mod.plan({"loc-1": rows}, seed=0, plan_rule=9)
+        # and the draw itself, which a caller may reach without the plan
+        with self.assertRaises(challenge_mod.ChallengeProblem):
+            challenge_mod.draw(challenge_mod.classify(rows, run_id="loc-1"), seed=0,
+                               plan_rule=9)
+
+    def _main_plan(self, rows: list[dict], *args: str) -> dict:
+        """``challenge-plan.json`` as the command line writes it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "rows.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+            with redirect_stdout(io.StringIO()):
+                code = challenge_mod.main(
+                    ["--rows", f"loc-1={root / 'rows.jsonl'}", "--run-id", "chal-1",
+                     "--out", str(root / "out"), *args])
+            self.assertEqual(code, 0)
+            return json.loads((root / "out" / "challenge-plan.json").read_text())
+
+    def test_the_command_line_reads_a_basis_under_the_runs_own_status_rule(self):
+        """A broadMatch to data alone makes a theorem passage formalized under status
+        rule 3, so it is that passage's basis. The command line never passed its
+        ``--status-rule`` on to :func:`challenge.bases`, which read every location's own
+        status under rule 1, where the same location is only ``partial`` — so the
+        relation issue #175 found wrong most often was invisible to the basis rule.
+        Plan rule 2 reads it under the run's rule; rule 1 keeps the old reading, so a
+        replay of an older plan is unchanged.
+        """
+        rows = [self.row("In-text #0000000d", status="formalized", locations=[
+            self.location("a" * 64, "broadMatch", 1, proof_status="definition")])]
+        self.assertEqual(
+            [r["rule"] for r in self._main_plan(rows, "--status-rule", "3",
+                                                "--plan-rule", "2")["records"]
+             if r["target"] == "location"], [challenge_mod.BASIS])
+        self.assertEqual(
+            [(r["rule"], r["planned"]) for r in
+             self._main_plan(rows, "--status-rule", "3", "--plan-rule", "1")["records"]
+             if r["target"] == "location"],
+            [(challenge_mod.SAMPLE, vocab.CHALLENGE_REQUIRED)])
 
     def test_the_draw_is_exact_arithmetic_and_seeded(self):
         rows = [self.row(f"In-text #{n:08x}", outcome=vocab.OUTCOME_ABSENT, status=None)

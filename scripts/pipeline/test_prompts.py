@@ -148,6 +148,20 @@ class TestThePromptsSayWhatTheVocabularySays(unittest.TestCase):
         self.assertIn("refuted by default", text)
         self.assertIn('conditional: "prominence"', text)
 
+    def test_the_challenge_prompt_states_the_three_checks(self):
+        """Judgment rules 5: the gate refuses a verdict without them, so the prompt
+        asks for them by their own names (issue #175)."""
+        text = self.worker(vocab.MODE_CHALLENGE)
+        for key in vocab.CHECKS_KEYS:
+            self.assertIn(f"`{key}`", text)
+        self.assertIn(f"`{vocab.CHECKS_FIELD}`", text)
+        self.assertIn(f"1 to {vocab.MAX_CONJUNCTS}", text)
+
+    def test_both_prompts_read_a_notation_passage_the_same_way(self):
+        for mode in (vocab.MODE_LOCATE, vocab.MODE_CHALLENGE):
+            self.assertIn("one that asserts how something is written",
+                          self.worker(mode), mode)
+
     def test_the_quote_cap_is_the_exports(self):
         for mode in (vocab.MODE_LOCATE, vocab.MODE_CHALLENGE):
             self.assertIn(f"{vocab.QUOTE_MAX_WORDS} consecutive words",
