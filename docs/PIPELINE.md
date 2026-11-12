@@ -378,6 +378,13 @@ A `checks` block on a verdict that leaves a weaker relation is extra and no refu
 tally drops it with every other field that relation does not take. The tally keeps the
 block beside the location it credits, for the audit; nothing of it is exported.
 
+Rules 5 also keep the prompt's one outstanding promise about the index: a downgrade to
+`relatedMatch` names `bridge`, "the lemma the connection needs, which the gate looks up
+in the index", and until now nothing looked anything up. `rule9_bridge` holds the field
+to `{library, declaration, why}` and runs the same index lookup rule 3 runs over a
+location, naming the item as `<item> (bridge)`. Only on a verdict that leaves a
+`relatedMatch`, which is where the tally keeps the field.
+
 **What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
 prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
 naturals-for-integers tripwire, both of which need the declaration index to carry
@@ -507,7 +514,12 @@ things, both on supporting passages: a **basis is required whatever its relation
 rule 1 only a strong basis was, so a `hasPart` that alone made a passage `partial` fell to
 its stratum at `sample_rate`), and `hasPart` and `narrowMatch` **draw at
 `strong_sample_rate`** — the review behind the issue found 18 of its 22 wrong partial
-links sampled out at 0.2. `challenge.py`'s `--plan-rule` defaults to 2 and
+links sampled out at 0.2. It also adds one model-free refusal by default: a `hasPart`
+**on a passage with no conjuncts**, since R4 gives a part to a passage that says several
+things and the inventory read this one as saying one, so either the cut is wrong or the
+part is a `relatedMatch`. That rule reads a passage's `conjuncts`, so it applies only on
+a run that reads bundles; on one that does not, no row carries them and "no conjuncts"
+would mean every passage. `challenge.py`'s `--plan-rule` defaults to 2 and
 `challenge.plan()`'s argument to 1, so a replay of an older plan passes the rule it was
 drawn with and gets the same records back.
 

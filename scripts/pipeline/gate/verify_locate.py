@@ -55,7 +55,9 @@ names its rule:
    challenge verdict leaves standing is held to every one of those relation rules**
    (:func:`_verdict_location`, issue #175), the missing-clause check included, and to
    the three checks of :func:`rule9_checks` — the facts the passage asserts and which
-   of them the declaration states, a ``broadMatch``'s direction, and the passage's kind;
+   of them the declaration states, a ``broadMatch``'s direction, and the passage's kind
+   — and the ``bridge`` of a ``relatedMatch`` is the lemma the prompt promises the gate
+   looks up in the index (:func:`rule9_bridge`);
 10. the statement cut, for a run whose ``gate.json`` names ``statement_cut_rule``: the
     spans of an inventory are disjoint, one text one passage; no span ends inside a
     formula; a span runs past its block only within the bound the rule allows;
@@ -1152,6 +1154,34 @@ def rule9_checks(verdict: dict, left: dict, where: str, item: str,
                                "asks of the declaration")
 
 
+def rule9_bridge(verdict: dict, left: dict, where: str, item: str, cfg: GateConfig,
+                 ctx: Context, problems: Problems) -> None:
+    """The lemma a ``relatedMatch`` names, looked up in the declaration index.
+
+    The challenge prompt says a downgrade to ``relatedMatch`` names "the lemma the
+    connection needs, which the gate looks up in the index", and until judgment rules 5
+    nothing looked anything up: a bridge was free text the tally carried through to the
+    audit. A bridge the universe does not hold is no bridge — the connection it claims
+    to need is one nobody can check — and the honest field is then ``incomparable``.
+
+    Only on a verdict that leaves a ``relatedMatch``, which is where the tally keeps the
+    field; on any other relation it drops it, so a lookup there would refuse a verdict
+    over a field nobody reads.
+    """
+    bridge = verdict.get("bridge")
+    if bridge is None or left.get("relation") != vocab.RELATED_MATCH:
+        return
+    if not isinstance(bridge, dict) \
+            or not all(_nonempty(bridge.get(key)) for key in vocab.BRIDGE_KEYS) \
+            or not _one_line(bridge.get("why")):
+        problems.add(9, where, f"{item}: a bridge is {{{', '.join(vocab.BRIDGE_KEYS)}}}: "
+                               "the lemma the connection needs, and one line on what it "
+                               "adds")
+        return
+    rule3_declaration({key: bridge[key] for key in ("library", "declaration")},
+                      where, f"{item} (bridge)", cfg, ctx, problems)
+
+
 def _normal_query(query: str) -> str:
     return " ".join(str(query).split()).casefold()
 
@@ -1429,6 +1459,7 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
                 rule9_location(left, where, item, cfg, problems, _clause_ids(record),
                                challenger=True)
                 rule9_checks(verdict, left, where, item, problems)
+                rule9_bridge(verdict, left, where, item, cfg, ctx, problems)
             for location in verdict.get("locations") or []:
                 if isinstance(location, dict):
                     rule3_declaration(location, where, str(verdict.get("item")), cfg, ctx,

@@ -17,6 +17,9 @@ Over the outcome rows of one or more harvested locate runs:
 * every **strong location whose own note admits a clause it does not state**
   (``gate.verify_locate.admits_missing_clause``) is refuted by default too, whatever its
   passage's prominence: a relation that says the opposite of itself is not evidence;
+* under plan rule 2, every ``hasPart`` **on a passage with no conjuncts**: R4 gives a
+  part to a passage that says several things, and the inventory read this one as saying
+  one, so either the cut is wrong or the part is a ``relatedMatch``;
 * every **subject passage's prominence** is refuted by default and never sampled: the
   article's own identity rides on every record of a subject passage, so a passage
   mislabelled ``subject`` would keep it with no verdict that could take it away;
@@ -191,9 +194,12 @@ def _record(row: dict, target: str, *, run_id: str, location: dict | None = None
 
 
 def _location_rule(loc: dict, *, hot: bool, based: list[dict],
-                   plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS
-                   ) -> tuple[str, str | None]:
-    """``(rule, stratum)`` of one location record."""
+                   plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
+                   simple: bool = False) -> tuple[str, str | None]:
+    """``(rule, stratum)`` of one location record.
+
+    ``simple`` says the run read the passage's statement and it has no ``conjuncts``.
+    """
     relation = loc["relation"]
     if hot:
         return REFUTE, None
@@ -201,6 +207,13 @@ def _location_rule(loc: dict, *, hot: bool, based: list[dict],
             loc.get("note")):
         # its own note says it leaves a clause unstated: a strong relation that says the
         # opposite of itself is refuted by default, whatever the passage's prominence
+        return REFUTE, None
+    if relation == vocab.HAS_PART and simple \
+            and plan_rule >= vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS:
+        # R4: a part states one clause of a passage that says several things, and the
+        # inventory read this passage as saying one. Either the cut is wrong or the
+        # part is a relatedMatch, and a model-free rule cannot tell which: refuted by
+        # default, whatever the prominence (issue #175)
         return REFUTE, None
     if any(loc is b for b in based) and (
             relation in vocab.STRONG_RELATIONS
@@ -234,11 +247,14 @@ def classify(rows: Iterable[dict], *, run_id: str,
         here = passages.get((row["source_id"], row["item"]))
         hot = row.get("prominence") in vocab.REFUTE_BY_DEFAULT_PROMINENCE
         based = [] if hot else bases(row, basis_rule)
+        # only a run that reads bundles knows a passage's conjuncts; on one that does
+        # not, no row carries them and "no conjuncts" would mean every passage
+        simple = bundle and not row.get("conjuncts")
         for loc in row.get("locations") or []:
             rec = _record(row, "location", run_id=run_id, location=loc,
                           status_rule=status_rule, passage=here)
             rule, stratum = _location_rule(loc, hot=hot, based=based,
-                                           plan_rule=plan_rule)
+                                           plan_rule=plan_rule, simple=simple)
             rec.update(rule=rule, stratum=stratum)
             out.append(rec)
         claim = row.get("coverage")

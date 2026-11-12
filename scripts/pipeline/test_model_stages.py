@@ -371,6 +371,37 @@ class ChallengePlanTests(unittest.TestCase):
         self.assertEqual([r["rule"] for r in new if r["target"] == "location"],
                          [challenge_mod.BASIS])
 
+    def test_a_haspart_on_a_passage_with_no_conjuncts_is_refuted_by_default(self):
+        """R4 gives a part to a passage that says several things (issue #175)."""
+        def classify(plan_rule, status_rule, **over):
+            row = self.row("In-text #0000000c", status=None,
+                           locations=[self.location("a" * 64, "hasPart", 1)], **over)
+            return [r["rule"] for r in challenge_mod.classify(
+                [row], run_id="r1", plan_rule=plan_rule, status_rule=status_rule)
+                if r["target"] == "location"]
+
+        simple = {"statement": "A widget is round."}
+        compound = {"statement": "A widget is round and finite.",
+                    "shape": "conclusions",
+                    "conjuncts": [{"id": "c1", "text": "a widget is round"},
+                                  {"id": "c2", "text": "a widget is finite"}]}
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                                  vocab.STATUS_RULE_BROAD, **simple),
+                         [challenge_mod.REFUTE])
+        # a part of a compound statement is what R4 is for, and is sampled as before
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                                  vocab.STATUS_RULE_BROAD, **compound),
+                         [challenge_mod.SAMPLE])
+        # and the rule is plan rule 2's
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS,
+                                  vocab.STATUS_RULE_BROAD, **simple),
+                         [challenge_mod.SAMPLE])
+        # a run that reads no bundles knows no passage's conjuncts, and this rule
+        # would read every passage as simple
+        self.assertEqual(classify(vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS,
+                                  vocab.STATUS_RULE_D1, **simple),
+                         [challenge_mod.SAMPLE])
+
     def test_a_partial_link_on_a_supporting_passage_draws_at_the_strong_rate(self):
         rates = challenge_mod.rates_of(sample_rate=0.2, strong_sample_rate=0.5,
                                        absence_sample_rate=0.5)
@@ -387,15 +418,19 @@ class ChallengePlanTests(unittest.TestCase):
 
     def test_the_draw_takes_half_the_partial_links_under_plan_rule_two(self):
         def rows():
-            # no status, so none of them is a basis: the stratum is the whole question
-            return [self.row(f"In-text #{n:08x}", status=None,
+            # no status, so none of them is a basis, and a compound statement, so none
+            # is refuted by default either: the stratum is the whole question
+            return [self.row(f"In-text #{n:08x}", status=None, shape="conclusions",
+                             conjuncts=[{"id": "c1", "text": "round"},
+                                        {"id": "c2", "text": "finite"}],
                              locations=[self.location(f"{n:064x}", "hasPart", 1)])
                     for n in range(10)]
 
         for rule, wanted in ((vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS, 2),
                              (vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS, 5)):
             with self.subTest(plan_rule=rule):
-                records = challenge_mod.classify(rows(), run_id="r1", plan_rule=rule)
+                records = challenge_mod.classify(rows(), run_id="r1", plan_rule=rule,
+                                                 status_rule=vocab.STATUS_RULE_BROAD)
                 challenge_mod.draw(records, seed=0, plan_rule=rule, sample_rate=0.2,
                                    strong_sample_rate=0.5, absence_sample_rate=0.5)
                 drawn = [r for r in records if r["target"] == "location"

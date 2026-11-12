@@ -998,6 +998,43 @@ class ChallengeVerdictTests(unittest.TestCase):
         self.refuses(says="`kind_check`")
         self.passes_at_four()
 
+    # -- the bridge the prompt promises the gate looks up -----------------------------
+
+    def bridge(self, declaration: str) -> dict:
+        doc = good_challenge_document()
+        self.verdict(doc, PART2_KEY)["bridge"] = {
+            "library": "testlib", "declaration": declaration,
+            "why": "it carries the finiteness the part does not reach"}
+        return doc
+
+    def test_a_bridge_the_index_holds_stands(self):
+        self.fx.write(self.bridge("Testlib.finite_sprocket"))
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_a_bridge_the_index_does_not_hold_is_refused(self):
+        self.fx.write(self.bridge("Testlib.NotThere"))
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_REJECTED, text)
+        self.assertIn("rule 3:", text)
+        self.assertIn("(bridge)", text)
+        self.passes_at_four()
+
+    def test_a_bridge_that_names_no_lemma_is_refused(self):
+        doc = good_challenge_document()
+        self.verdict(doc, PART2_KEY)["bridge"] = "the finiteness lemma"
+        self.fx.write(doc)
+        self.refuses(says="a bridge is {library, declaration, why}")
+
+    def test_a_bridge_on_a_relation_the_tally_drops_it_from_is_left_alone(self):
+        doc = good_challenge_document()
+        self.verdict(doc, LEAD_KEY)["bridge"] = {"library": "testlib",
+                                                 "declaration": "Testlib.NotThere",
+                                                 "why": "nothing reads this"}
+        self.fx.write(doc)
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+
     def test_the_checks_of_a_weaker_relation_are_extra_and_no_refusal(self):
         """A refusal would spend a model call removing a field that harms nothing."""
         doc = good_challenge_document()
