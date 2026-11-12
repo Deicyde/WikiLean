@@ -23,8 +23,8 @@ import {
   titleKey, titleShard, wikileanSlugFor, type ArticlesLocation,
 } from "../src/articles.js";
 import {
-  ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, UNMEASURED, articlesSummaryBox, campaignLabel, locationStatus,
-  plainHead,
+  ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, UNMEASURED, articlesSummaryBox, campaignLabel,
+  coverageStatus, locationStatus, plainHead,
 } from "../src/articles-render.js";
 import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectArticlesSummary } from "../src/pages.js";
@@ -333,8 +333,8 @@ describe("articles pages with the fixture store", () => {
       expect(html).toContain(`<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
-    expect(html).toContain('<script src="/assets/articles.js?v=7"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=12">');
+    expect(html).toContain('<script src="/assets/articles.js?v=8"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=13">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
@@ -2335,7 +2335,7 @@ describe("articles security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/articles.js?v=7"></script>');
+      expect(html, path).toContain('<script src="/assets/articles.js?v=8"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/articles.css');
@@ -2343,7 +2343,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=12"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=13"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -2459,8 +2459,11 @@ describe("articles security headers and CSP", () => {
     expect(js).toMatch(/var postTag = function \(url, /);
     const tagUrls = [...js.matchAll(/\bpostTag\(\s*([^,]+),/g)].map((m) => m[1].trim());
     expect(tagUrls.length).toBeGreaterThan(0);
-    for (const arg of tagUrls) expect(["\"/api/articles/tag\"", "stateUrl"], arg).toContain(arg);
+    for (const arg of tagUrls) {
+      expect(["\"/api/articles/tag\"", "stateUrl", "\"/api/articles/coverage\"", "url"], arg).toContain(arg);
+    }
     expect(js).toContain('var stateUrl = "/api/articles/tag/" + encodeURIComponent(key) + "/state";');
+    expect(js).toContain('var url = "/api/articles/coverage/" + encodeURIComponent(key) + "/state";');
     expect(js).not.toMatch(/https?:\/\/|["'`]\/\//);
     expect(js).not.toMatch(/\beval\s*\(|\bnew\s+Function\b|\bset(Timeout|Interval)\(\s*["'`]/);
     expect(css).not.toMatch(/url\(|@import/);
@@ -2830,20 +2833,22 @@ describe("the WikiLean slug lookup (migration 0016 indexes articles.wikipedia_ti
       expect(html).toContain(`<a href="/${SLUG}">Annotated article on WikiLean</a>`);
     }
     expect(sql.slugs()).toBe(1);
-    // Besides that one remembered lookup, an anonymous view reads D1 once: the article's community
-    // overlay (migration 0019), read on every view so a tag is live on save (the public-editing
-    // plan's one indexed overlay read per article view). Nothing else.
-    const overlayReads = (all: string[]) => all.filter((query) => query.includes("FROM article_tags WHERE pageid = ?")).length;
-    expect(overlayReads(sql.all)).toBe(3);
-    expect(sql.all).toHaveLength(1 + 3);
+    // Besides that one remembered lookup, an anonymous view reads D1 twice, and both reads are the
+    // article's community overlay: its tags (migration 0019) and its coverage bundles (0021), each
+    // one indexed read on (pageid, state), made in parallel and on every view so an edit is live on
+    // save (the public-editing plan's indexed overlay read per article view). Nothing else.
+    const overlayReads = (all: string[]) => all.filter((query) =>
+      query.includes("FROM article_tags WHERE pageid = ?") || query.includes("FROM article_coverage WHERE pageid = ?")).length;
+    expect(overlayReads(sql.all)).toBe(6);
+    expect(sql.all).toHaveLength(1 + 6);
     // The Gadget has no WikiLean article: that answer is kept too.
     for (let i = 0; i < 3; i += 1) {
       const html = await (await get(h.env, `/articles/${GADGET_PAGEID}/Gadget_(mathematics)`)).text();
       expect(html).not.toContain("Annotated article on WikiLean");
     }
     expect(sql.slugs()).toBe(2);
-    expect(overlayReads(sql.all)).toBe(6);
-    expect(sql.all).toHaveLength(2 + 6);
+    expect(overlayReads(sql.all)).toBe(12);
+    expect(sql.all).toHaveLength(2 + 12);
     // The reader and the card list of one article share it.
     const reader = setup();
     bindArticles(reader.env, articlesReaderFiles());
@@ -3150,6 +3155,56 @@ describe("derived status rows", () => {
     expect(plain.length).toBeGreaterThanOrEqual(30);
     expect(wrong).toEqual([]);
   });
+
+  // The coverage stand-in, cross-language (issue #173). A community bundle has
+  // no precomputed status, so the Worker ports the builder's own
+  // part_finished / coverage_location / coverage_status
+  // (scripts/articles/build_store.py). The pin is the shared parity tables both
+  // sides already run: Python puts every case through
+  // build_store.derive_passage_status (scripts/articles/test_build_store.py,
+  // SharedParityTableTests), and here the same cases go through the TS port,
+  // combined with the per-location rows exactly as derive_status combines them.
+  // One status rule per table: rule 1 makes a survived bundle one more
+  // exactMatch, rules 2 and 3 one more location of the bundle's own relation.
+  describe("the coverage stand-in agrees with the builder, case for case", () => {
+    interface SharedCase {
+      id: string; passage_kind: string; absent: boolean; refused?: boolean; expected?: string | null;
+      rule: string;
+      coverage: { parts: string[]; challenge: string; relation?: string } | null;
+      locations: Array<{ location_key: string; relation: string; proof_status: string; statement: boolean }>;
+    }
+    const tables: Array<[number, string]> = [
+      [1, "status_parity.json"], [2, "status_parity-2.json"], [3, "status_parity-3.json"],
+    ];
+    for (const [statusRule, file] of tables) {
+      it(`status rule ${statusRule} (${file})`, () => {
+        const shared = JSON.parse(readFileSync(`${ARTICLES_STORE_ROOT}/../${file}`, "utf8")) as { cases: SharedCase[] };
+        // A refused case is one the builder's own checks reject before any
+        // status is derived (a malformed claim, a repeated location key); an
+        // absent one has no locations to judge. Neither reaches this port.
+        const claims = shared.cases.filter((c) => !c.refused && !c.absent && c.coverage !== null);
+        const wrong: unknown[] = [];
+        for (const c of claims) {
+          const statuses = c.locations
+            .map((loc) => locationStatus(c.passage_kind, loc as never))
+            .filter((s): s is "formalized" | "statement_only" | "partial" => s !== null);
+          let best = statuses.length ? statuses.reduce((a, b) => (rank[b] < rank[a] ? b : a)) : null;
+          // Only a survived claim counts, as the store's own merge requires too
+          // (articles-overlay coverageStatus); a community bundle is live or
+          // withdrawn and has no challenge of its own.
+          const byKey = new Map(c.locations.map((loc) => [loc.location_key, loc]));
+          const parts = c.coverage!.parts.map((key) => byKey.get(key)).filter((loc) => loc !== undefined);
+          const claimed = c.coverage!.challenge === "survived" && parts.length === c.coverage!.parts.length
+            ? coverageStatus(c.passage_kind, parts as never, c.coverage!.relation ?? "exactMatch", statusRule)
+            : null;
+          if (claimed && (best === null || rank[claimed] < rank[best])) best = claimed;
+          if (best !== c.expected) wrong.push([c.id, c.rule, c.expected, best]);
+        }
+        expect(claims.length).toBeGreaterThanOrEqual(30);
+        expect(wrong).toEqual([]);
+      });
+    }
+  });
 });
 
 // The article reader (build_store --reader-html; docs/ARTICLES.md, "Reader"): with the store's
@@ -3328,7 +3383,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=12", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=13", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");

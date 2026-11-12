@@ -124,6 +124,33 @@ D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
         "pipeline_submission_chunks",
         ("submission_id", "ordinal", "bytes"),
     ),
+    # 0021 creates the overlay's coverage bundles (issue #173), its one table.
+    "wiki/migrations/0021_article_coverage.sql": (
+        "article_coverage",
+        (
+            "bundle_key",
+            "pageid",
+            "passage_key",
+            "parts",
+            "conjuncts",
+            "relation",
+            "state",
+            "origin",
+            "added_by",
+            "actor_type",
+            "via",
+            "campaign",
+            "revision",
+            "record_set",
+            "universe_sha256",
+            "version",
+            "created_at",
+            "updated_at",
+            "removed_by",
+            "removed_at",
+            "removed_reason",
+        ),
+    ),
 }
 
 

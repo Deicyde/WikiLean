@@ -1270,7 +1270,9 @@ is a remote write, and only the maintainer runs it, from the operator Mac (secti
 | `GET /api/articles/feedback/export` | section 10 | `no-store` |
 | `POST /api/articles/tag` | section 10a: add a Lean declaration to a passage, or change the relation or note of a location | `no-store` |
 | `POST /api/articles/tag/:pair_key/state` | section 10a: a soft delete that leaves a gravestone, and its undo | `no-store` |
-| `GET /api/articles/overlay/:pageid` | section 10a: one article's community rows; takes the meta budget | `no-store` |
+| `POST /api/articles/coverage` | section 10a: "these 2 to 5 links together state this passage" (migration 0021) | `no-store` |
+| `POST /api/articles/coverage/:bundle_key/state` | section 10a: withdrawing a bundle, with a gravestone, and its undo | `no-store` |
+| `GET /api/articles/overlay/:pageid` | section 10a: one article's community rows, tags and bundles; takes the meta budget | `no-store` |
 | `ALL /atlas`, `/atlas/*`, `/api/atlas/*` | **301** to the same path under `/articles` or `/api/articles/`, query string kept (`index.ts atlasRedirect`; section 0). Reads nothing, so it answers whether or not `ARTICLES` is bound | none |
 
 Two paths under these prefixes are **not** this plane's and are untouched: the exact
@@ -1951,7 +1953,8 @@ overlay, always; and the default view is both, merged, labelled.**
   editing worth doing; the passage says both, "With community edits: … As published it is …". **"As published"** (`?overlay=off`) shows the sealed statuses
   and the sealed cards; the merged view is the default, because otherwise an edit has no
   visible effect and nobody makes a second one.
-- A community removal of one part of a survived coverage claim withdraws the claim.
+- A community removal of one part of a survived coverage claim withdraws the claim. The
+  community can also make a coverage claim of its own ("The coverage bundle", below).
 - **Caching, and the trap it avoids.** `/api/articles/article/:pageid` stays the sealed view
   model verbatim, `public, max-age=300`, cacheable and hash-checkable: the overlay is **not**
   merged into it. The merge happens server-side, per request, on pages that send no
@@ -1960,6 +1963,79 @@ overlay, always; and the default view is both, merged, labelled.**
   leads, provenance sits behind a closed Details fold, and no voting data is shown. A
   community card carries no Confirm/Report: those are a verdict on a *sealed* location, and
   their `provenance` CHECK keeps that column honest.
+
+### The coverage bundle (issue #173, migration 0021)
+
+> **New after release R1** (2026-11-12). Migration **0021**, table `article_coverage`, routes
+> `POST /api/articles/coverage` and `POST /api/articles/coverage/:bundle_key/state`.
+
+A community tag is one declaration with one relation, so until this the overlay had no way to
+say **"these declarations together state this passage"**. When two declarations each state one
+clause and together state all of it, the honest relation on each link is `hasPart` — and
+`hasPart` alone is always partial (the §2.6 table, both rows). So an editor correcting the
+relations the pipeline overstated made the *status* wrong, and leaving them overstated kept the
+status right while misdescribing every link. The 2026-11-09 review held back ten relation
+changes on eight passages for exactly that reason.
+
+The store has had the concept since decision D1: a **coverage claim** over a passage's `hasPart`
+locations, which counts as one more location through a fixed stand-in (section 3, check 6, and
+the D1 notes above). The overlay now mirrors it.
+
+**The row.** One per `bundle_key`, which is
+`sha256` of the passage key and the parts' pair keys, **sorted, one per line** — the producer's
+own recipe (`build_store.bundle_key`, cflib.hashing). Sorted, so the same parts named in either
+order are the same bundle and the same row; revision- and commit-free, like the other two keys,
+so a bundle survives a rebuild. Columns mirror `article_tags`: `parts` (JSON, 2 to 5 pair keys),
+`conjuncts` (JSON, 2 to 5 `{id, text, part}`), `relation`, `state`, `version`, `added_by`,
+`actor_type`, `removed_reason`, and the copied `campaign`, `revision`, `record_set` and
+`universe_sha256`.
+
+**What the route checks.** Every part is a pair key **of that passage** — a sealed location, or
+a community tag nobody has removed (404 otherwise); 2 to 5 of them, each named once; 2 to 5
+clauses, `c1`..`cN` in order, each naming one part, each part stating at least one, each text one
+plain line of at most 500 characters (the tag note's cap, not the producer's 1,000); and
+`relation` one of the three **strong** relations, `exactMatch`, `closeMatch` or `broadMatch` —
+the bundle's own, its weakest part's. The route does **not** require the parts to be `hasPart`
+yet: relabelling and bundling are two edits and may be made in either order, so the answer says
+`counts` instead, and the page says so in words.
+
+**The merge.** A live bundle counts only when **every part is a live merged location whose
+relation, after any community override, is `hasPart`**. Removing a part withdraws it, as it
+withdraws a sealed claim; relabelling a part away from `hasPart` withdraws it too, because it is
+then a part of nothing. A bundle that counts is judged by a **TypeScript port of the builder's
+own stand-in** (`part_finished` / `coverage_location` / `coverage_status`,
+`scripts/articles/build_store.py`), in `articles-render.ts` `coverageStatus`: every part finished
+(proved, or data) makes it a proved declaration on the theorem row and data on the definition
+row; any unfinished part makes it `statement_only` on both. Its relation is `exactMatch` under
+status rule 1 and the bundle's own under rules 2 and 3. The port is pinned against the shared
+parity tables both languages already run (`scripts/articles/fixtures/status_parity{,-2,-3}.json`:
+Python through `build_store.derive_passage_status`, TypeScript through the port —
+`wiki/test/articles.test.ts`, "the coverage stand-in agrees with the builder").
+
+Each part keeps **its own** proof status: a pipeline part keeps the sealed one, and a
+community-added part is `statement_only` (the same `COMMUNITY_PROOF_STATUS` a community card
+gets; #169 proposes looking its real status up). So a bundle holding any community-added part is
+unfinished and gives **statement only at best** — the rule that a community edit never mints a
+formalization claim holds here too.
+
+The **sealed** claim's own reading is unchanged: the builder stamped its status into the view
+model and `coverageStatus` reads it, withdrawing it when a part is removed. A sealed claim is
+not re-judged against overridden relations; only a community bundle is.
+
+**The reader.** A bundle is one group under the cards it is made of — not a card of its own,
+because the parts *are* the cards above it. It says who added it, what it does ("Formalized by 2
+parts together", "Stated by 2 parts together, not all of them finished", or "These 2 parts no
+longer state the passage together: …"), lists each part with the clause it states, and carries
+**Withdraw this** for any signed-in editor (an agent may not withdraw a person's bundle, exactly
+as it may not remove a person's tag). The form, "These together state the passage", is offered
+only where it can be true: the merged view, a signed-in editor, and two or more live links that
+each state part of this passage. It takes one clause per ticked part. Nothing here is cached:
+the merge is per request, so no render key is bumped, and `/api/articles/article/:pageid` stays
+the sealed view model.
+
+`GET /api/articles/overlay/:pageid` lists the bundles beside the tags, parts and conjuncts
+parsed. Both coverage routes answer **503** until migration 0021 is applied; everything else,
+tags included, works without it.
 
 ### Abuse controls (§2.5, §2.6, decision 3)
 
@@ -2423,6 +2499,26 @@ recommendation.
   highest z-index inside the revision covering neither the header, the panel, the page head nor
   the footer (and on a phone neither the header nor the panel's button), the switch to the card
   list and back, and Confirm from the panel.
+- `wiki/test/articles-coverage.test.ts` (in `npm run test:ci`) covers the community coverage
+  bundle (issue #173) on a fixture whose sealed claim is stripped, so the two `hasPart` parts
+  alone publish "partial": the row and its key (the same parts in either order one row), every
+  validation refusal (parts, clauses, their ids and their parts, the strong relations, the
+  caps), the gates (anonymous, blocked, cross-origin, the pipeline bearer, the brake, the burst
+  and daily caps counting tags and bundles together, the CC0 first edit, an agent whose owner
+  has not accepted, an agent against a person's row and a person against an agent's), the CAS,
+  a `/1` set, an unbound store, a body over the cap, the route's 503 without migration 0021
+  while tags still save, withdrawal and restoring, and the merge (a bundle putting the passage
+  back to formalized, a removed part and a relabelled part each withdrawing it, a
+  community-added part capping it at statement only, the page's group and its clauses, and "As
+  published" showing none of it). The stand-in itself is pinned cross-language in
+  `wiki/test/articles.test.ts`, "the coverage stand-in agrees with the builder": every coverage
+  case of the three shared parity tables, which Python runs through
+  `build_store.derive_passage_status`, through the TypeScript port, one status rule per table.
+  `wiki/test/authz.test.ts` carries both coverage routes in the matrix, and
+  `wiki/e2e/articles.spec.ts` drives the form on a fourth harness listener (port + 3, the
+  bundle store): tick two parts, say what each states, accept the licence, and the passage
+  becomes formalized, with axe clean at each step, "As published" unchanged, and withdrawal
+  putting it back.
 - `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
   body caps and scans `wiki/src` so that no route reads a JSON body except through
   `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry.

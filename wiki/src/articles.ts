@@ -28,11 +28,13 @@ import type { PassageSegment } from "./articles-math.js";
 import { articlesCsp, checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
-  accountFor, agreementStatement, agreementStands, CC0_ACCEPTED_VERSIONS, CC0_AGREEMENT_TEXT,
-  CC0_AGREEMENT_VERSION, loadAgreement, loadOverlay, loadOverlayTags, loadTag, MAX_DECLARATION_CHARS,
-  MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay, overlayTableMissing, pairKey, requireAgreement,
-  statusRuleOf, tagAllowance, tagLimitKey, TAG_RELATIONS, validDeclaration, validRelation, writeBrake,
-  type ArticleTag, type TagActor, type TagAllowance,
+  accountFor, agreementStatement, agreementStands, bundleConjuncts, bundleKey, bundleParts, BUNDLE_RELATIONS,
+  CC0_ACCEPTED_VERSIONS, CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, coverageTableMissing, loadAgreement,
+  loadBundle, loadOverlay, loadOverlayBundles, loadOverlayTags, loadTag, MAX_BUNDLE_PARTS, MAX_CONJUNCTS,
+  MAX_CONJUNCT_CHARS, MAX_DECLARATION_CHARS, MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay,
+  MIN_BUNDLE_PARTS, MIN_CONJUNCTS, overlayTableMissing, pairKey, requireAgreement, statusRuleOf, tagAllowance,
+  tagLimitKey, TAG_RELATIONS, validBundleRelation, validConjunctText, validDeclaration, validRelation, writeBrake,
+  type ArticleBundle, type ArticleTag, type BundleConjunct, type MergedPassage, type TagActor, type TagAllowance,
 } from "./articles-overlay.js";
 import {
   articlesArticlePage,
@@ -924,9 +926,11 @@ function publishedShards(current: ArticlesCurrent): string[] {
 // at most one D1 read and no R2 read.
 
 export const TAG_PATH = "/api/articles/tag";
+export const COVERAGE_PATH = "/api/articles/coverage";
 export const PIPELINE_REFUSED = "the pipeline bearer does not write the community overlay";
 export const AGENT_HUMAN_ROW_REFUSED =
-  "agents may not change or remove an editor's tag: release R1 keeps no history to hold the editor's version";
+  "agents may not change or remove an editor's tag or coverage bundle: release R1 keeps no history " +
+  "to hold the editor's version";
 export const NO_PASSAGE_KEYS =
   "this article's record set carries no passage keys (a /1 set); community tags need a /2 set";
 
@@ -1014,6 +1018,50 @@ function optionalText(c: Ctx, value: unknown, max: number, field: string): strin
   return value.trim() || null;
 }
 
+// A coverage bundle's clauses, checked exactly as the builder checks a /2
+// bundle's (build_store.bundle_problems): 2 to 5 objects {id, text, part}, ids
+// c1..cN in order, each text one plain bounded line, each part one of the
+// bundle's, and every part stating at least one — the parts partition the
+// clauses, which is what makes "together they state it" mean something.
+function conjunctsOf(c: Ctx, value: unknown, parts: readonly string[]): BundleConjunct[] | Response {
+  const bad = (error: string) => c.json({ ok: false, error }, 400);
+  if (!Array.isArray(value) || value.length < MIN_CONJUNCTS || value.length > MAX_CONJUNCTS) {
+    return bad(`conjuncts must be ${MIN_CONJUNCTS} to ${MAX_CONJUNCTS} clauses, one or more per part`);
+  }
+  const out: BundleConjunct[] = [];
+  const stated = new Set<string>();
+  for (let i = 0; i < value.length; i += 1) {
+    const entry: unknown = value[i];
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return bad(`conjunct ${i + 1} must be {id, text, part}`);
+    const { id, text: clause, part } = entry as Record<string, unknown>;
+    if (id !== `c${i + 1}`) return bad(`conjuncts are c1..c${value.length} in order; conjunct ${i + 1} is not`);
+    if (typeof clause !== "string" || !validConjunctText(clause.trim())) {
+      return bad(`conjunct ${id} must be one line of at most ${MAX_CONJUNCT_CHARS} characters`);
+    }
+    if (typeof part !== "string" || !parts.includes(part)) return bad(`conjunct ${id} names no part of this bundle`);
+    stated.add(part);
+    out.push({ id, text: clause.trim(), part });
+  }
+  const idle = parts.find((key) => !stated.has(key));
+  if (idle) return bad(`part ${idle.slice(0, 12)} states no clause: every part of a bundle states at least one`);
+  return out;
+}
+
+// The pair keys a passage offers a bundle: the pipeline's own locations, and
+// every community tag on that passage nobody has removed.
+async function passagePairKeys(env: Env, article: ArticlesArticle, passage: ArticlesPassage): Promise<Set<string>> {
+  const keys = new Set<string>();
+  for (const loc of arrayOf(passage.locations)) {
+    if (loc && typeof loc.pair_key === "string" && loc.pair_key !== "") keys.add(loc.pair_key);
+  }
+  for (const tag of await loadOverlayTags(env, article.pageid)) {
+    if (tag.passage_key === passage.passage_key && tag.state === "live") keys.add(tag.pair_key);
+    // A removed pipeline location is no longer a part to build on.
+    else if (tag.passage_key === passage.passage_key) keys.delete(tag.pair_key);
+  }
+  return keys;
+}
+
 // The pipeline location at a pair key, anywhere in the article, or null.
 function locationAt(article: ArticlesArticle, key: string): { passage: ArticlesPassage; loc: ArticlesLocation } | null {
   for (const passage of arrayOf(article.passages)) {
@@ -1029,17 +1077,31 @@ function hasPassageKeys(article: ArticlesArticle): boolean {
   return arrayOf(article.passages).some((p) => typeof p?.passage_key === "string");
 }
 
+// The passage as the reader will show it after the write: the sealed passage
+// merged with every overlay row on its article, so an answer can say what the
+// edit did without the page reloading.
+async function mergedAfter(env: Env, article: ArticlesArticle, passage: ArticlesPassage): Promise<MergedPassage | null> {
+  const [tags, bundles] = await Promise.all([
+    loadOverlayTags(env, article.pageid), loadOverlayBundles(env, article.pageid),
+  ]);
+  const merged = mergeOverlay(article, { tags, bundles, authors: new Map() }, statusRuleOf(article));
+  return merged.byPassage.get(passage.id) ?? null;
+}
+
 // The passage's status after the write, recomputed over the merged set, so the
 // page can move the headline without a reload.
 async function statusAfter(env: Env, article: ArticlesArticle, passage: ArticlesPassage): Promise<SummaryStatus> {
-  const tags = await loadOverlayTags(env, article.pageid);
-  const merged = mergeOverlay(article, { tags, authors: new Map() }, statusRuleOf(article));
-  return merged.byPassage.get(passage.id)?.status ?? "unresolved";
+  return (await mergedAfter(env, article, passage))?.status ?? "unresolved";
 }
 
 function tagMissingTable(c: Ctx, error: unknown): Response | null {
   if (!overlayTableMissing(error)) return null;
   return notConfiguredJson(c, "community tags are not configured (migration 0019)");
+}
+
+function coverageMissingTable(c: Ctx, error: unknown): Response | null {
+  if (!coverageTableMissing(error)) return tagMissingTable(c, error);
+  return notConfiguredJson(c, "community coverage bundles are not configured (migration 0021)");
 }
 
 // ---- routes ----------------------------------------------------------------
@@ -1693,6 +1755,263 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     }, 200, { "Cache-Control": "no-store" });
   });
 
+  // ---- community coverage bundles (issue #173) ----
+
+  // POST /api/articles/coverage — "these declarations together state this
+  // passage". One row per bundle_key, which is the passage key and the sorted
+  // part pair keys, so two editors who name the same parts write the same row.
+  // The same auth, CC0, Turnstile, brake, limits and agent rules as a tag: this
+  // is the overlay's second write surface, not a new kind of actor.
+  app.post(COVERAGE_PATH, async (c) => {
+    const reader = articlesReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    const published = await storeRead(c, () => loadCurrent(reader));
+    if (published instanceof Response) return published;
+    if (!published) return notConfiguredJson(c, NOT_PUBLISHED);
+    const writer = await beginTagWrite(c);
+    if (writer instanceof Response) return writer;
+
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.articlesCoverage);
+    if (!read.ok) return read.response;
+    const parsed = read.value;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return c.json({ ok: false, error: "bad json" }, 400);
+    const body = parsed as Record<string, unknown>;
+    const { pageid, passage_key: passageKey, relation, campaign } = body;
+    if (typeof pageid !== "number" || !Number.isSafeInteger(pageid) || pageid < 1) {
+      return c.json({ ok: false, error: "bad pageid" }, 400);
+    }
+    if (typeof passageKey !== "string" || !SHA_RE.test(passageKey)) return c.json({ ok: false, error: "bad passage_key" }, 400);
+    if (typeof campaign !== "string" || !CAMPAIGN_RE.test(campaign)) return c.json({ ok: false, error: "bad campaign" }, 400);
+    if (typeof relation !== "string" || !validBundleRelation(relation)) {
+      return c.json({ ok: false, error: `relation must be one of: ${BUNDLE_RELATIONS.join(", ")}` }, 400);
+    }
+    // The parts: 2 to 5 distinct pair keys of this passage, in the editor's
+    // reading order (the row keeps that order; the key sorts them).
+    const parts = body.parts;
+    if (!Array.isArray(parts) || parts.length < MIN_BUNDLE_PARTS || parts.length > MAX_BUNDLE_PARTS
+      || !parts.every((key) => typeof key === "string" && SHA_RE.test(key))) {
+      return c.json({
+        ok: false,
+        error: `parts must be ${MIN_BUNDLE_PARTS} to ${MAX_BUNDLE_PARTS} pair keys of this passage`,
+      }, 400);
+    }
+    const partKeys = parts as string[];
+    if (new Set(partKeys).size !== partKeys.length) {
+      return c.json({ ok: false, error: "parts names one location twice" }, 400);
+    }
+    const conjuncts = conjunctsOf(c, body.conjuncts, partKeys);
+    if (conjuncts instanceof Response) return conjuncts;
+    let baseVersion: number | undefined;
+    if (body.base_version !== undefined && body.base_version !== null) {
+      if (typeof body.base_version !== "number" || !Number.isSafeInteger(body.base_version) || body.base_version < 0) {
+        return c.json({ ok: false, error: "bad base_version" }, 400);
+      }
+      baseVersion = body.base_version;
+    }
+    if (writer.actorType === "agent" && baseVersion === undefined) {
+      return c.json({ ok: false, error: "base_version required" }, 400);
+    }
+    const model = writer.actorType === "agent" ? optionalText(c, body.model, 100, "model") : null;
+    if (model instanceof Response) return model;
+    const runId = writer.actorType === "agent" ? optionalText(c, body.run_id, 100, "run_id") : null;
+    if (runId instanceof Response) return runId;
+
+    const article = await storeRead(c, () => loadArticle(reader, pageid));
+    if (article instanceof Response) return article;
+    if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    if (article.campaign !== campaign) {
+      return c.json({ ok: false, error: "stale: these links changed since this page loaded", campaign: article.campaign }, 409);
+    }
+    if (!hasPassageKeys(article)) return c.json({ ok: false, error: NO_PASSAGE_KEYS }, 422);
+    const passage = arrayOf(article.passages).find((p) => p && p.passage_key === passageKey);
+    if (!passage) return c.json({ ok: false, error: "unknown passage_key" }, 404);
+    // Every part names a location of THIS passage: one the pipeline located, or
+    // one an editor added and nobody has removed. Whether it is a hasPart
+    // location is the merge's question, not this one — the two edits may be
+    // made in either order, and the answer below says whether the bundle counts
+    // yet.
+    let known: Set<string>;
+    try {
+      known = await passagePairKeys(c.env, article, passage);
+    } catch (error) {
+      const missing = coverageMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    const unknown = partKeys.find((key) => !known.has(key));
+    if (unknown) {
+      return c.json({ ok: false, error: `part ${unknown.slice(0, 12)} is no live location of this passage` }, 404);
+    }
+
+    const key = await bundleKey(passageKey, partKeys);
+    const now = Date.now();
+    let existing: ArticleBundle | null;
+    try {
+      existing = await loadBundle(c.env, key);
+    } catch (error) {
+      const missing = coverageMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (existing && writer.actorType === "agent" && existing.actor_type === "human" && existing.state === "live") {
+      return c.json({ ok: false, error: AGENT_HUMAN_ROW_REFUSED }, 403);
+    }
+    const current = existing?.version ?? 0;
+    if (baseVersion !== undefined && baseVersion !== current) {
+      return c.json({ ok: false, error: "stale", version: current, bundle: existing }, 409);
+    }
+    const agreement = await tagAgreement(c, writer, body, now);
+    if (agreement instanceof Response) return agreement;
+
+    const writes: D1PreparedStatement[] = [
+      c.env.DB.prepare(
+        `INSERT INTO article_coverage (bundle_key, pageid, passage_key, parts, conjuncts, relation, state, origin,
+            added_by, actor_type, via, token_id, model, run_id, campaign, revision, record_set, universe_sha256,
+            version, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, 'live', 'community', ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+         ON CONFLICT(bundle_key) DO UPDATE SET
+            parts = excluded.parts, conjuncts = excluded.conjuncts, relation = excluded.relation, state = 'live',
+            added_by = excluded.added_by, actor_type = excluded.actor_type, via = excluded.via,
+            model = excluded.model, run_id = excluded.run_id, campaign = excluded.campaign,
+            revision = excluded.revision, record_set = excluded.record_set,
+            universe_sha256 = excluded.universe_sha256, version = article_coverage.version + 1,
+            updated_at = excluded.updated_at, removed_by = NULL, removed_at = NULL, removed_reason = NULL
+         WHERE article_coverage.version = ?`,
+      ).bind(
+        key, pageid, passageKey, JSON.stringify(partKeys), JSON.stringify(conjuncts), relation,
+        writer.user.id, writer.actorType, writer.via, model, runId, article.campaign,
+        article.revision, article.record_set, article.universe.sha256, now, now, current,
+      ),
+    ];
+    const agreementWrite = agreementStatement(c.env, writer.account, now, agreement);
+    if (agreementWrite) writes.push(agreementWrite);
+    let changes = 0;
+    try {
+      const results = await c.env.DB.batch(writes);
+      changes = results[0]?.meta?.changes ?? 0;
+    } catch (error) {
+      const missing = coverageMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (changes === 0) {
+      const fresh = await loadBundle(c.env, key);
+      return c.json({ ok: false, error: "stale", version: fresh?.version ?? 0, bundle: fresh }, 409);
+    }
+    const version = current + 1;
+    console.log(JSON.stringify({
+      event: "articles-coverage", pageid, bundle_key: key, relation, parts: partKeys.length,
+      actor_type: writer.actorType, user_id: writer.user.id, version, t: now,
+    }));
+    const after = await mergedAfter(c.env, article, passage);
+    return c.json({
+      ok: true, bundle_key: key, version, state: "live", relation,
+      counts: after?.bundles.find((b) => b.bundle.bundle_key === key)?.counts ?? false,
+      status: after?.status ?? "unresolved",
+    }, 200, { "Cache-Control": "no-store" });
+  });
+
+  // POST /api/articles/coverage/:bundle_key/state — withdraw a bundle (a soft
+  // delete with a gravestone, as a tag's removal is) and put it back. There is
+  // no sealed bundle to stand in for: the row must already exist.
+  app.post(`${COVERAGE_PATH}/:bundle_key/state`, async (c) => {
+    const reader = articlesReader(c.env);
+    if (!reader) return notConfiguredJson(c);
+    const published = await storeRead(c, () => loadCurrent(reader));
+    if (published instanceof Response) return published;
+    if (!published) return notConfiguredJson(c, NOT_PUBLISHED);
+    const key = c.req.param("bundle_key");
+    if (!SHA_RE.test(key)) return c.json({ ok: false, error: "bad bundle_key" }, 400);
+    const writer = await beginTagWrite(c);
+    if (writer instanceof Response) return writer;
+
+    const read = await readJsonCapped(c, MAX_JSON_BODY_BYTES.articlesCoverage);
+    if (!read.ok) return read.response;
+    const parsed = read.value;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return c.json({ ok: false, error: "bad json" }, 400);
+    const body = parsed as Record<string, unknown>;
+    const { pageid, state, campaign } = body;
+    if (typeof pageid !== "number" || !Number.isSafeInteger(pageid) || pageid < 1) {
+      return c.json({ ok: false, error: "bad pageid" }, 400);
+    }
+    if (state !== "live" && state !== "removed") return c.json({ ok: false, error: "state must be 'live' or 'removed'" }, 400);
+    if (typeof campaign !== "string" || !CAMPAIGN_RE.test(campaign)) return c.json({ ok: false, error: "bad campaign" }, 400);
+    const reason = optionalText(c, body.reason, MAX_REMOVE_REASON_CHARS, "reason");
+    if (reason instanceof Response) return reason;
+    if (state === "removed" && !reason) return c.json({ ok: false, error: "a reason is required to withdraw a bundle" }, 400);
+    let baseVersion: number | undefined;
+    if (body.base_version !== undefined && body.base_version !== null) {
+      if (typeof body.base_version !== "number" || !Number.isSafeInteger(body.base_version) || body.base_version < 0) {
+        return c.json({ ok: false, error: "bad base_version" }, 400);
+      }
+      baseVersion = body.base_version;
+    }
+    if (writer.actorType === "agent" && baseVersion === undefined) {
+      return c.json({ ok: false, error: "base_version required" }, 400);
+    }
+
+    const article = await storeRead(c, () => loadArticle(reader, pageid));
+    if (article instanceof Response) return article;
+    if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    if (article.campaign !== campaign) {
+      return c.json({ ok: false, error: "stale: these links changed since this page loaded", campaign: article.campaign }, 409);
+    }
+    let existing: ArticleBundle | null;
+    try {
+      existing = await loadBundle(c.env, key);
+    } catch (error) {
+      const missing = coverageMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (!existing || existing.pageid !== pageid) return c.json({ ok: false, error: "unknown bundle_key" }, 404);
+    if (writer.actorType === "agent" && existing.actor_type === "human" && existing.state === "live") {
+      return c.json({ ok: false, error: AGENT_HUMAN_ROW_REFUSED }, 403);
+    }
+    const current = existing.version;
+    if (baseVersion !== undefined && baseVersion !== current) {
+      return c.json({ ok: false, error: "stale", version: current, bundle: existing }, 409);
+    }
+    const passage = arrayOf(article.passages).find((p) => p && p.passage_key === existing!.passage_key);
+    if (!passage) return c.json({ ok: false, error: "unknown bundle_key" }, 404);
+    const now = Date.now();
+    const agreement = await tagAgreement(c, writer, body, now);
+    if (agreement instanceof Response) return agreement;
+
+    const removed = state === "removed";
+    const writes: D1PreparedStatement[] = [
+      c.env.DB.prepare(
+        `UPDATE article_coverage
+            SET state = ?, version = version + 1, updated_at = ?,
+                removed_by = ?, removed_at = ?, removed_reason = ?
+          WHERE bundle_key = ? AND version = ?`,
+      ).bind(state, now, removed ? writer.user.id : null, removed ? now : null, removed ? reason : null, key, current),
+    ];
+    const agreementWrite = agreementStatement(c.env, writer.account, now, agreement);
+    if (agreementWrite) writes.push(agreementWrite);
+    let changes = 0;
+    try {
+      const results = await c.env.DB.batch(writes);
+      changes = results[0]?.meta?.changes ?? 0;
+    } catch (error) {
+      const missing = coverageMissingTable(c, error);
+      if (missing) return missing;
+      throw error;
+    }
+    if (changes === 0) {
+      const fresh = await loadBundle(c.env, key);
+      return c.json({ ok: false, error: "stale", version: fresh?.version ?? 0, bundle: fresh }, 409);
+    }
+    console.log(JSON.stringify({
+      event: "articles-coverage-state", pageid, bundle_key: key, state, actor_type: writer.actorType,
+      user_id: writer.user.id, t: now,
+    }));
+    return c.json({
+      ok: true, bundle_key: key, version: current + 1, state,
+      status: await statusAfter(c.env, article, passage),
+    }, 200, { "Cache-Control": "no-store" });
+  });
+
   // GET /api/articles/overlay/:pageid — one article's community overlay, never
   // cached. Deliberately NOT merged into /api/articles/article/:pageid, which
   // stays the sealed view model verbatim, cacheable and hash-checkable
@@ -1717,6 +2036,27 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
           removed_at: tag.removed_at, removed_reason: tag.removed_reason,
           added_by: { id: tag.added_by, name: author?.name ?? tag.added_by, owner_id: author?.ownerId ?? null, owner_name: author?.ownerName ?? null },
           removed_by: tag.removed_by,
+        };
+      }),
+      // The article's community coverage bundles (issue #173). `parts` and
+      // `conjuncts` are given parsed, so a client never re-parses the stored
+      // JSON; whether a bundle counts is the merge's answer and belongs to the
+      // article page, not to this list of rows.
+      bundles: overlay.bundles.map((bundle) => {
+        const author = overlay.authors.get(bundle.added_by) ?? null;
+        return {
+          bundle_key: bundle.bundle_key, passage_key: bundle.passage_key,
+          parts: bundleParts(bundle), conjuncts: bundleConjuncts(bundle),
+          relation: bundle.relation, state: bundle.state,
+          actor_type: bundle.actor_type, via: bundle.via, model: bundle.model, run_id: bundle.run_id,
+          campaign: bundle.campaign, revision: bundle.revision, version: bundle.version,
+          created_at: bundle.created_at, updated_at: bundle.updated_at,
+          removed_at: bundle.removed_at, removed_reason: bundle.removed_reason,
+          added_by: {
+            id: bundle.added_by, name: author?.name ?? bundle.added_by,
+            owner_id: author?.ownerId ?? null, owner_name: author?.ownerName ?? null,
+          },
+          removed_by: bundle.removed_by,
         };
       }),
     }, 200, { "Cache-Control": "no-store" });

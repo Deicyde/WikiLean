@@ -27,7 +27,11 @@ import type { Context } from "hono";
 import type { Env } from "./env.js";
 import type { AuthUser } from "./auth.js";
 import type { ArticlesArticle, ArticlesLocation, ArticlesPassage, SummaryStatus } from "./articles.js";
-import { locationStatus } from "./articles-render.js";
+import {
+  BUNDLE_PART_RELATION, coverageStatus as bundleStandInStatus, locationStatus,
+  MAX_BUNDLE_PARTS, MIN_BUNDLE_PARTS,
+} from "./articles-render.js";
+export { BUNDLE_PART_RELATION, MAX_BUNDLE_PARTS, MIN_BUNDLE_PARTS } from "./articles-render.js";
 // The brake lives in a module of its own so the Brain's write paths can read
 // it without pulling in the articles plane; re-exported here for the routes.
 export { BRAKE_MESSAGE, SITE_WRITE_MODE_KEY, siteWriteMode, WRITE_MODE_OPEN, writeBrake } from "./site-settings.js";
@@ -41,6 +45,12 @@ export const TAG_RELATIONS: readonly string[] = [
 ];
 const RELATION_SET = new Set(TAG_RELATIONS);
 
+// A coverage bundle's own relation is its weakest part's, and a part states its
+// clause strongly: the three strong relations and no other
+// (build_store.BUNDLE_RELATIONS, verbatim).
+export const BUNDLE_RELATIONS: readonly string[] = ["exactMatch", "closeMatch", "broadMatch"];
+const BUNDLE_RELATION_SET = new Set(BUNDLE_RELATIONS);
+
 // Mirrors articles.ts SUMMARY_STATUSES, best first. Kept local so this module
 // needs no runtime import from articles.ts, which would make an import cycle
 // (test/articles-tag.test.ts pins the two lists against each other).
@@ -52,6 +62,12 @@ export const OVERLAY_STATUSES: readonly string[] = ["formalized", "statement_onl
 export const MAX_DECLARATION_CHARS = 240;
 export const MAX_TAG_NOTE_CHARS = 500;
 export const MAX_REMOVE_REASON_CHARS = 500;
+// A bundle's clauses: 2 to 5 of them (build_store MIN_CONJUNCTS / MAX_CONJUNCTS),
+// each a plain sentence held to the tag note's cap rather than the producer's
+// 1,000 characters — the overlay's free text is all held to one length.
+export const MIN_CONJUNCTS = 2;
+export const MAX_CONJUNCTS = 5;
+export const MAX_CONJUNCT_CHARS = MAX_TAG_NOTE_CHARS;
 
 // Lean's name grammar, as much of it as a tag needs: one or more components
 // separated by single dots, with no whitespace anywhere and no empty component
@@ -74,6 +90,17 @@ export function validRelation(relation: string): boolean {
   return RELATION_SET.has(relation);
 }
 
+export function validBundleRelation(relation: string): boolean {
+  return BUNDLE_RELATION_SET.has(relation);
+}
+
+// A conjunct's text: one plain clause. Bounded like a tag note, and with no
+// control characters — the page writes it with textContent, and a line
+// separator in the middle of a clause is a paste accident, never a sentence.
+export function validConjunctText(value: string): boolean {
+  return value.length >= 1 && value.length <= MAX_CONJUNCT_CHARS && !CONTROL_RE.test(value);
+}
+
 // ---- keys ------------------------------------------------------------------
 
 async function sha256Hex(s: string): Promise<string> {
@@ -87,6 +114,13 @@ async function sha256Hex(s: string): Promise<string> {
 // why the row carries its library id as a column beside the key).
 export function pairKey(passageKey: string, repository: string, declaration: string): Promise<string> {
   return sha256Hex(`${passageKey}\n${repository}\n${declaration}`);
+}
+
+// scripts/articles/build_store.py bundle_key (cflib.hashing.bundle_key): the
+// passage key and the parts' pair keys, sorted, one per line. Sorted, so the
+// same parts named in any order are the same bundle and the same row.
+export function bundleKey(passageKey: string, pairKeys: readonly string[]): Promise<string> {
+  return sha256Hex([passageKey, ...[...pairKeys].sort()].join("\n"));
 }
 
 // ---- rows ------------------------------------------------------------------
@@ -129,14 +163,97 @@ const TAG_COLUMNS =
   "base_relation, added_by, actor_type, via, token_id, model, run_id, campaign, revision, record_set, " +
   "universe_sha256, version, created_at, updated_at, removed_by, removed_at, removed_reason";
 
-// A D1 error naming a table 0019 creates, unwrapped through the cause chain the
-// way articles.ts missingTable does for atlas_feedback. Until 0019 is applied,
-// the overlay reads as empty and the write routes answer 503 rather than 500.
+// One community coverage bundle (migration 0021; issue #173): the overlay's
+// mirror of the sealed store's claim, saying that these 2 to 5 locations of one
+// passage together state every clause of it. `parts` and `conjuncts` are the
+// JSON text D1 holds; read them through bundleParts / bundleConjuncts, which
+// never throw.
+export interface ArticleBundle {
+  bundle_key: string;
+  pageid: number;
+  passage_key: string;
+  parts: string;
+  conjuncts: string;
+  relation: string;
+  state: TagState;
+  origin: string;
+  added_by: string;
+  actor_type: TagActor;
+  via: string;
+  token_id: string | null;
+  model: string | null;
+  run_id: string | null;
+  campaign: string;
+  revision: number;
+  record_set: string;
+  universe_sha256: string;
+  version: number;
+  created_at: number;
+  updated_at: number;
+  removed_by: string | null;
+  removed_at: number | null;
+  removed_reason: string | null;
+}
+
+export interface BundleConjunct {
+  id: string;
+  text: string;
+  part: string;
+}
+
+const BUNDLE_COLUMNS =
+  "bundle_key, pageid, passage_key, parts, conjuncts, relation, state, origin, added_by, actor_type, via, " +
+  "token_id, model, run_id, campaign, revision, record_set, universe_sha256, version, created_at, updated_at, " +
+  "removed_by, removed_at, removed_reason";
+
+// The parts a stored bundle names. A row whose JSON is not a list of strings
+// reads as no parts, so it names no live location and the bundle counts for
+// nothing: a damaged row is inert, never an exception on an article page.
+export function bundleParts(bundle: Pick<ArticleBundle, "parts">): string[] {
+  try {
+    const value: unknown = JSON.parse(bundle.parts);
+    if (!Array.isArray(value) || !value.every((key) => typeof key === "string")) return [];
+    return value as string[];
+  } catch {
+    return [];
+  }
+}
+
+// The clauses a stored bundle names, each beside the part stating it. Malformed
+// entries are dropped; a row with none shows its parts and no clauses.
+export function bundleConjuncts(bundle: Pick<ArticleBundle, "conjuncts">): BundleConjunct[] {
+  try {
+    const value: unknown = JSON.parse(bundle.conjuncts);
+    if (!Array.isArray(value)) return [];
+    return value.filter((c): c is BundleConjunct =>
+      !!c && typeof c === "object" && typeof (c as BundleConjunct).id === "string"
+      && typeof (c as BundleConjunct).text === "string" && typeof (c as BundleConjunct).part === "string");
+  } catch {
+    return [];
+  }
+}
+
+// A D1 error naming a table 0019 or 0021 creates, unwrapped through the cause
+// chain the way articles.ts missingTable does for atlas_feedback. Until the
+// migration is applied, the overlay reads as empty and the write routes answer
+// 503 rather than 500.
 export function overlayTableMissing(error: unknown): boolean {
   let current: unknown = error;
   for (let depth = 0; depth < 5 && current; depth += 1) {
     const message = current instanceof Error ? current.message : String(current);
-    if (/no such table: (article_tags|site_settings|user_agreements)\b/.test(message)) return true;
+    if (/no such table: (article_tags|article_coverage|site_settings|user_agreements)\b/.test(message)) return true;
+    current = typeof current === "object" && current !== null && "cause" in current ? (current as { cause?: unknown }).cause : null;
+  }
+  return false;
+}
+
+// 0021 alone, so a deployment that has 0019 but not 0021 keeps every tag route
+// working and refuses only the two coverage routes (503).
+export function coverageTableMissing(error: unknown): boolean {
+  let current: unknown = error;
+  for (let depth = 0; depth < 5 && current; depth += 1) {
+    const message = current instanceof Error ? current.message : String(current);
+    if (/no such table: article_coverage\b/.test(message)) return true;
     current = typeof current === "object" && current !== null && "cause" in current ? (current as { cause?: unknown }).cause : null;
   }
   return false;
@@ -199,10 +316,11 @@ async function loadAuthors(env: Pick<Env, "DB">, ids: string[]): Promise<Map<str
 
 export interface ArticleOverlay {
   tags: ArticleTag[];
+  bundles: ArticleBundle[];
   authors: Map<string, TagAuthor>;
 }
 
-export const EMPTY_OVERLAY: ArticleOverlay = { tags: [], authors: new Map() };
+export const EMPTY_OVERLAY: ArticleOverlay = { tags: [], bundles: [], authors: new Map() };
 
 // The store's status rule (a /2 seal names 2 or 3; a /1 store names none and
 // reads as 1), the number location_status and the merge are computed under.
@@ -232,17 +350,40 @@ export async function loadOverlayTags(env: Pick<Env, "DB">, pageid: number): Pro
   }
 }
 
+// Every community coverage bundle on one article, newest first. Empty (never an
+// error) when migration 0021 is not applied, so a deployment that has the tag
+// tables and not this one shows its article exactly as before.
+export async function loadOverlayBundles(env: Pick<Env, "DB">, pageid: number): Promise<ArticleBundle[]> {
+  try {
+    const { results } = await env.DB.prepare(
+      `SELECT ${BUNDLE_COLUMNS} FROM article_coverage WHERE pageid = ? ORDER BY created_at DESC, bundle_key LIMIT ?`,
+    ).bind(pageid, MAX_OVERLAY_ROWS).all<ArticleBundle>();
+    return results;
+  } catch (error) {
+    if (!overlayTableMissing(error)) throw error;
+    return [];
+  }
+}
+
 // The same rows with the people and agents that wrote them, for the cards.
 export async function loadOverlay(env: Pick<Env, "DB">, pageid: number): Promise<ArticleOverlay> {
-  const tags = await loadOverlayTags(env, pageid);
-  if (tags.length === 0) return EMPTY_OVERLAY;
-  return { tags, authors: await loadAuthors(env, tags.map((t) => t.added_by)) };
+  const [tags, bundles] = await Promise.all([loadOverlayTags(env, pageid), loadOverlayBundles(env, pageid)]);
+  if (tags.length === 0 && bundles.length === 0) return EMPTY_OVERLAY;
+  const authors = await loadAuthors(env, [...tags.map((t) => t.added_by), ...bundles.map((b) => b.added_by)]);
+  return { tags, bundles, authors };
 }
 
 export async function loadTag(env: Pick<Env, "DB">, key: string): Promise<ArticleTag | null> {
   const { results } = await env.DB.prepare(
     `SELECT ${TAG_COLUMNS} FROM article_tags WHERE pair_key = ?`,
   ).bind(key).all<ArticleTag>();
+  return results[0] ?? null;
+}
+
+export async function loadBundle(env: Pick<Env, "DB">, key: string): Promise<ArticleBundle | null> {
+  const { results } = await env.DB.prepare(
+    `SELECT ${BUNDLE_COLUMNS} FROM article_coverage WHERE bundle_key = ?`,
+  ).bind(key).all<ArticleBundle>();
   return results[0] ?? null;
 }
 
@@ -266,8 +407,30 @@ export interface MergedLocation {
   confirms: boolean;
 }
 
+// One community coverage bundle as the reader shows it, and as the merge counts
+// it: its row, its parts resolved against the merged locations, and the status
+// it gives the passage on its own (null when it gives none).
+export interface MergedBundle {
+  bundle: ArticleBundle;
+  parts: string[];
+  conjuncts: BundleConjunct[];
+  // The merged locations its parts name, in the bundle's own order. A part the
+  // merge does not show as a live location is a null, which withdraws the
+  // bundle: `counts` is then false and the card says why.
+  locations: Array<MergedLocation | null>;
+  state: TagState;
+  author: TagAuthor | null;
+  // Every part is a live merged location whose relation, after any community
+  // override, is hasPart — the one shape in which a bundle counts.
+  counts: boolean;
+  status: SummaryStatus | null;
+}
+
 export interface MergedPassage {
   locations: MergedLocation[];
+  // Community coverage bundles on this passage, newest first, live and
+  // gravestones alike.
+  bundles: MergedBundle[];
   status: SummaryStatus;
   sealedStatus: SummaryStatus;
   // Any community row touches this passage (live or a gravestone).
@@ -353,6 +516,9 @@ export function mergedStatus(
   passage: ArticlesPassage,
   live: ArticlesLocation[],
   statusRule: number,
+  // The statuses the passage's live community bundles give on their own
+  // (mergeOverlay computes them; a bundle that does not count gives null).
+  bundleStatuses: ReadonlyArray<SummaryStatus | null> = [],
 ): SummaryStatus {
   const sealed = passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
   if (sealed === "unresolved") return sealed;
@@ -363,6 +529,13 @@ export function mergedStatus(
   }
   const claimed = coverageStatus(passage, new Set(live.map((loc) => loc.location_key)));
   if (claimed && (best === null || STATUS_RANK[claimed] < STATUS_RANK[best])) best = claimed;
+  // A community bundle is one more location, by the builder's own stand-in
+  // (articles-render coverageStatus, issue #173). It never mints "formalized"
+  // on a community part's word: such a part is statement_only, so a bundle
+  // holding one is unfinished and gives statement only at best.
+  for (const bundled of bundleStatuses) {
+    if (bundled && (best === null || STATUS_RANK[bundled] < STATUS_RANK[best])) best = bundled;
+  }
   // Nothing in the universe states it any more: the editors removed every
   // location that counted. "Not formalized" is what that means, and it is the
   // status an absence carries.
@@ -388,12 +561,18 @@ export function mergeOverlay(
     if (bucket) bucket.push(tag);
     else byPassageKey.set(tag.passage_key, [tag]);
   }
+  const bundlesByPassage = new Map<string, ArticleBundle[]>();
+  for (const bundle of overlay.bundles) {
+    const bucket = bundlesByPassage.get(bundle.passage_key);
+    if (bucket) bucket.push(bundle);
+    else bundlesByPassage.set(bundle.passage_key, [bundle]);
+  }
   const byPassage = new Map<string, MergedPassage>();
   const byStatus = emptyCounts();
   let live = 0;
   let removed = 0;
-  for (const tag of overlay.tags) {
-    if (tag.state === "removed") removed += 1;
+  for (const row of [...overlay.tags, ...overlay.bundles]) {
+    if (row.state === "removed") removed += 1;
     else live += 1;
   }
   for (const passage of list(article.passages)) {
@@ -440,17 +619,57 @@ export function mergeOverlay(
       });
     }
     const liveLocations = merged.filter((m) => m.state === "live").map((m) => m.loc);
-    const edited = merged.some((m) => m.tag !== null);
+    // The passage's community coverage bundles (issue #173). A bundle counts
+    // only when every part it names is still a live merged location whose
+    // relation, after any community override, is hasPart: removing a part
+    // withdraws it, as it withdraws a sealed claim, and so does relabelling one
+    // away from hasPart, because it is then no longer a part of anything.
+    const liveByPair = new Map<string, MergedLocation>();
+    for (const m of merged) {
+      const key = typeof m.loc.pair_key === "string" ? m.loc.pair_key : null;
+      if (key && m.state === "live") liveByPair.set(key, m);
+    }
+    const bundles: MergedBundle[] = (bundlesByPassage.get(passageKey) ?? []).map((bundle) => {
+      const parts = bundleParts(bundle);
+      const locations = parts.map((key) => liveByPair.get(key) ?? null);
+      const counts = bundle.state === "live" && parts.length >= MIN_BUNDLE_PARTS
+        && parts.length <= MAX_BUNDLE_PARTS
+        // The route refuses a repeated part; a row written another way (an
+        // admin's SQL) must not count one location twice.
+        && new Set(parts).size === parts.length
+        && locations.every((m) => m !== null && m.loc.relation === BUNDLE_PART_RELATION);
+      const status = counts
+        ? bundleStandInStatus(String(passage.kind ?? ""),
+          locations.map((m) => m!.loc), bundle.relation, statusRule)
+        : null;
+      return {
+        bundle,
+        parts,
+        conjuncts: bundleConjuncts(bundle),
+        locations,
+        state: bundle.state,
+        author: overlay.authors.get(bundle.added_by) ?? null,
+        counts,
+        status: status ?? null,
+      };
+    });
+    const edited = merged.some((m) => m.tag !== null) || bundles.length > 0;
     // A passage nobody has touched keeps the status the store published,
     // byte for byte: the merge recomputes only where there is something to
     // merge. (The recomputation is a port of the builder's rule and a parity
     // test pins it, but "the sealed set is shown as the sealed set" is the
     // stronger promise, and it is cheaper to keep than to re-derive.)
-    const status = edited ? mergedStatus(passage, liveLocations, statusRule) : sealedStatus;
-    byPassage.set(passage.id, { locations: merged, status, sealedStatus, edited });
+    const status = edited
+      ? mergedStatus(passage, liveLocations, statusRule, bundles.map((b) => b.status))
+      : sealedStatus;
+    byPassage.set(passage.id, { locations: merged, bundles, status, sealedStatus, edited });
     if (status !== "unresolved") byStatus[status] += 1;
   }
-  return { byPassage, live, removed, edits: overlay.tags.length, byStatus, truncated: overlay.tags.length >= MAX_OVERLAY_ROWS };
+  const edits = overlay.tags.length + overlay.bundles.length;
+  return {
+    byPassage, live, removed, edits, byStatus,
+    truncated: overlay.tags.length >= MAX_OVERLAY_ROWS || overlay.bundles.length >= MAX_OVERLAY_ROWS,
+  };
 }
 
 // ---- trust tier and the daily caps (plan section 2.6) -----------------------
@@ -488,18 +707,33 @@ export async function tagAllowance(
   now: number,
 ): Promise<TagAllowance> {
   const since = now - DAY_MS;
-  // Plain ordered placeholders, as every other query in wiki/src uses.
-  const { results } = await env.DB.prepare(
-    `WITH mine(id) AS (
+  // One tier and one cap over both overlay surfaces: a coverage bundle
+  // (migration 0021) is an overlay edit like a tag, so minting bundles buys no
+  // volume a tag would not. A deployment without 0021 falls back to the tags
+  // alone rather than refusing every write. Plain ordered placeholders, as
+  // every other query in wiki/src uses.
+  const counted = (coverage: boolean) => `WITH mine(id) AS (
        SELECT ? UNION SELECT agent_id FROM agent_tokens WHERE owner_id = ?
+     ),
+     overlay_edits(added_by, removed_by, updated_at, removed_at) AS (
+       SELECT added_by, removed_by, updated_at, removed_at FROM article_tags
+       ${coverage ? "UNION ALL SELECT added_by, removed_by, updated_at, removed_at FROM article_coverage" : ""}
      )
      SELECT (SELECT created_at FROM users WHERE id = ?) AS created_at,
-            (SELECT COUNT(*) FROM article_tags WHERE added_by IN (SELECT id FROM mine)) AS edits,
-            (SELECT COUNT(*) FROM article_tags
+            (SELECT COUNT(*) FROM overlay_edits WHERE added_by IN (SELECT id FROM mine)) AS edits,
+            (SELECT COUNT(*) FROM overlay_edits
               WHERE (added_by IN (SELECT id FROM mine) AND updated_at >= ?)
-                 OR (removed_by IN (SELECT id FROM mine) AND removed_at >= ?)) AS today`,
-  ).bind(accountId, accountId, accountId, since, since)
-    .all<{ created_at: number | null; edits: number; today: number }>();
+                 OR (removed_by IN (SELECT id FROM mine) AND removed_at >= ?)) AS today`;
+  type AllowanceRow = { created_at: number | null; edits: number; today: number };
+  const read = (coverage: boolean) => env.DB.prepare(counted(coverage))
+    .bind(accountId, accountId, accountId, since, since).all<AllowanceRow>();
+  let results: AllowanceRow[];
+  try {
+    ({ results } = await read(true));
+  } catch (error) {
+    if (!coverageTableMissing(error)) throw error;
+    ({ results } = await read(false));
+  }
   const row = results[0] ?? { created_at: null, edits: 0, today: 0 };
   // better-auth stores users.created_at in seconds (timestamp mode).
   const createdMs = typeof row.created_at === "number" ? row.created_at * 1000 : now;

@@ -378,17 +378,39 @@
 .articles-tag-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .articles-tag-msg { font-size: 12px; color: var(--muted); margin: 0; }
 
+/* A community coverage bundle (issue #173): one group under the cards it is
+   made of, not a card of its own — the parts are the cards above it. A
+   withdrawn one, and one whose parts no longer state the passage together, are
+   both greyed, and each says so in words beside the grey. */
+.articles-bundle { margin: 10px 0 0; padding: 8px 12px; border: 1px solid var(--line-strong); border-left: 3px solid var(--accent); border-radius: 8px; }
+.articles-bundle .articles-overlay-line { margin: 0 0 2px; }
+.articles-bundle .articles-tag-actions { margin-top: 8px; }
+.articles-bundle[data-counts="false"], .articles-bundle.is-removed { border-left-color: var(--line-strong); opacity: .75; }
+.articles-bundle.is-removed .articles-coverage-parts { text-decoration: line-through; }
+.articles-bundle-new { margin: 10px 0 0; }
+.articles-bundle-form { margin: 10px 0 0; }
+.articles-bundle-form fieldset { margin: 0; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); }
+.articles-bundle-form legend { padding: 0 4px; font-weight: 700; font-size: 13px; }
+.articles-bundle-form label { display: block; margin: 8px 0 2px; font-size: 12px; font-weight: 600; }
+.articles-bundle-form select, .articles-bundle-form input[type="text"] { font: inherit; font-size: 13px; width: min(100%, 460px); box-sizing: border-box; padding: 5px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper); color: var(--ink); }
+.articles-bundle-parts { list-style: none; margin: 6px 0 0; padding: 0; }
+.articles-bundle-parts li { margin: 0 0 8px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; }
+.articles-bundle-parts label[for^="bundlepart-"] { display: flex; gap: 8px; align-items: baseline; font-weight: 600; }
+.articles-bundle-parts input[type="checkbox"] { margin: 0; }
+
 .articles-cc0 { margin: 14px 0 18px; padding: 12px 16px; border: 1px solid var(--accent); border-radius: 8px; background: var(--surface); }
 .articles-cc0 label { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; line-height: 1.5; }
 .articles-cc0 .cf-turnstile { margin: 10px 0 0; }
 
 @media (max-width: 720px) {
   .articles-tag-form input, .articles-tag-form select, .articles-tag-form textarea,
+  .articles-bundle-form input[type="text"], .articles-bundle-form select,
   .articles-card-form select, .articles-card-form textarea { font-size: 16px; }
   .articles-overlay-count { margin-left: 0; flex-basis: 100%; }
 }
 
 @media (prefers-contrast: more) {
-  .articles-card.is-community, .articles-community, .articles-cc0 { border-color: var(--ink); }
+  .articles-card.is-community, .articles-community, .articles-cc0, .articles-bundle { border-color: var(--ink); }
   .articles-overlay-line, .articles-tag-msg { color: var(--ink); }
+  .articles-bundle[data-counts="false"], .articles-bundle.is-removed { opacity: 1; }
 }

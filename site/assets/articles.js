@@ -309,8 +309,10 @@
       });
     });
 
-    // Per-card actions: change this link, say it is wrong, or put it back.
-    Array.prototype.forEach.call(article.querySelectorAll(".articles-tag-actions"), function (box) {
+    // Per-card actions: change this link, say it is wrong, or put it back. A
+    // coverage bundle's own actions carry a bundle key instead and are wired
+    // below, so this selector names the per-location ones exactly.
+    Array.prototype.forEach.call(article.querySelectorAll(".articles-tag-actions[data-pair-key]"), function (box) {
       var msg = box.querySelector(".articles-tag-msg");
       var buttons = box.querySelectorAll("button");
       var key = box.getAttribute("data-pair-key");
@@ -388,6 +390,126 @@
             postTag(stateUrl, { pageid: pageid, campaign: campaign, state: "live", base_version: version }, msg, buttons);
           } else if (action === "change" || action === "remove") {
             openForm(action, button);
+          }
+        });
+      });
+    });
+
+    // ---- coverage bundles: "these together state the passage" ----
+    // The server renders one row per link that states part of the passage; the
+    // editor ticks the ones that together state all of it and says what each
+    // states. The body carries the parts in the order they are ticked and one
+    // conjunct per part, c1..cN, which is the shape the route checks.
+    Array.prototype.forEach.call(article.querySelectorAll(".articles-bundle-new"), function (wrap) {
+      var open = wrap.querySelector(".articles-tag-open");
+      var form = wrap.querySelector(".articles-bundle-form");
+      if (!open || !form) return;
+      var msg = form.querySelector(".articles-tag-msg");
+      var cancel = form.querySelector(".articles-tag-cancel");
+      var show = function (on) {
+        form.hidden = !on;
+        open.setAttribute("aria-expanded", on ? "true" : "false");
+        if (on) {
+          var first = form.querySelector("input, select");
+          if (first) first.focus();
+        } else {
+          open.focus();
+        }
+      };
+      open.addEventListener("click", function () { show(form.hidden); });
+      if (cancel) cancel.addEventListener("click", function () { show(false); });
+      form.addEventListener("keydown", function (e) { if (e.key === "Escape") show(false); });
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var parts = [];
+        var conjuncts = [];
+        var incomplete = false;
+        Array.prototype.forEach.call(form.querySelectorAll(".articles-bundle-parts > li"), function (row) {
+          var box = row.querySelector('input[type="checkbox"]');
+          var clause = row.querySelector('input[type="text"]');
+          if (!box || !box.checked) return;
+          var said = clause ? clause.value.trim() : "";
+          if (!said) { incomplete = true; return; }
+          parts.push(box.value);
+          conjuncts.push({ id: "c" + (conjuncts.length + 1), text: said, part: box.value });
+        });
+        // A ticked link with no clause is the commoner mistake, and it also
+        // makes the count look short, so it is the message that comes first.
+        if (incomplete) {
+          if (msg) msg.textContent = "Say what each ticked link states.";
+          return;
+        }
+        if (parts.length < 2) {
+          if (msg) msg.textContent = "Tick at least two links that together state this passage.";
+          return;
+        }
+        if (parts.length > 5) {
+          if (msg) msg.textContent = "A bundle names at most five parts.";
+          return;
+        }
+        postTag("/api/articles/coverage", {
+          pageid: pageid,
+          campaign: campaign,
+          passage_key: wrap.getAttribute("data-passage-key"),
+          parts: parts,
+          conjuncts: conjuncts,
+          relation: form.querySelector('[name="relation"]').value
+        }, msg, form.querySelectorAll("button"));
+      });
+    });
+
+    // Withdrawing a bundle and putting it back, with the reason a withdrawal needs.
+    Array.prototype.forEach.call(article.querySelectorAll(".articles-tag-actions[data-bundle-key]"), function (box) {
+      var msg = box.querySelector(".articles-tag-msg");
+      var buttons = box.querySelectorAll("button");
+      var key = box.getAttribute("data-bundle-key");
+      var version = Number(box.getAttribute("data-version")) || 0;
+      var url = "/api/articles/coverage/" + encodeURIComponent(key) + "/state";
+      var closeForm = function () {
+        var open = box.parentNode.querySelector(".articles-card-form");
+        if (open) open.remove();
+        Array.prototype.forEach.call(buttons, function (b) { b.setAttribute("aria-expanded", "false"); });
+      };
+      var openForm = function (button) {
+        if (box.parentNode.querySelector(".articles-card-form")) { closeForm(); return; }
+        var form = el("form", "articles-card-form");
+        var field = document.createElement("textarea");
+        field.maxLength = 500;
+        field.rows = 2;
+        field.id = "bundlefield-" + key.slice(0, 12);
+        var label = el("label", null, "Why do these parts not state the passage? (required, at most 500 characters)");
+        label.setAttribute("for", field.id);
+        var submit = el("button", "articles-tag-btn is-primary", "Withdraw this");
+        submit.type = "submit";
+        var cancel = el("button", "articles-tag-btn", "Cancel");
+        cancel.type = "button";
+        cancel.addEventListener("click", closeForm);
+        var row = el("div", "articles-tag-buttons");
+        row.appendChild(submit);
+        row.appendChild(cancel);
+        form.appendChild(label);
+        form.appendChild(field);
+        form.appendChild(row);
+        form.addEventListener("keydown", function (e) { if (e.key === "Escape") closeForm(); });
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var reason = field.value.trim();
+          if (!reason) { if (msg) msg.textContent = "Say why these parts do not state it."; return; }
+          postTag(url, {
+            pageid: pageid, campaign: campaign, state: "removed", reason: reason, base_version: version
+          }, msg, form.querySelectorAll("button"));
+        });
+        box.parentNode.appendChild(form);
+        button.setAttribute("aria-expanded", "true");
+        field.focus();
+      };
+      Array.prototype.forEach.call(buttons, function (button) {
+        var action = button.getAttribute("data-action");
+        button.addEventListener("click", function () {
+          if (action === "bundle-restore") {
+            postTag(url, { pageid: pageid, campaign: campaign, state: "live", base_version: version }, msg, buttons);
+          } else if (action === "bundle-withdraw") {
+            openForm(button);
           }
         });
       });

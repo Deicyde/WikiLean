@@ -107,12 +107,49 @@ function tagBody(): Record<string, unknown> {
   };
 }
 
+// The coverage bundle over the passage's own two locations (issue #173): the
+// parts are pair keys of that passage, which is what the route checks; whether
+// they are hasPart links is the merge's question, not authorization's.
+const BUNDLE_PARTS = (OVERLAY_PASSAGE.locations as Array<{ pair_key: string }>).map((loc) => loc.pair_key);
+const BUNDLE_KEY = createHash("sha256")
+  .update([OVERLAY_PASSAGE.passage_key as string, ...[...BUNDLE_PARTS].sort()].join("\n"), "utf8")
+  .digest("hex");
+
+function bundleBody(): Record<string, unknown> {
+  return {
+    pageid: WIDGET_PAGEID,
+    campaign: FIXTURE_CAMPAIGN,
+    passage_key: OVERLAY_PASSAGE.passage_key,
+    parts: BUNDLE_PARTS,
+    conjuncts: BUNDLE_PARTS.map((part, i) => ({ id: `c${i + 1}`, text: `clause ${i + 1}`, part })),
+    relation: "exactMatch",
+    base_version: 0,
+  };
+}
+
 function overlayPrep(h: Harness): void {
   bindArticles(h.env, articlesPairedFiles());
   const agree = h.db.prepare(
     "INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)",
   );
   for (const id of ["u-human", "u-patroller", "u-admin"]) agree.run(id, CC0_AGREEMENT_VERSION, Date.now());
+}
+
+// The same, with one live bundle a PERSON wrote: the row the state cell acts on,
+// and the row an agent may not touch.
+function coveragePrep(h: Harness): void {
+  overlayPrep(h);
+  const now = Date.now();
+  h.db.prepare(
+    "INSERT INTO article_coverage (bundle_key, pageid, passage_key, parts, conjuncts, relation, state, origin, " +
+      "added_by, actor_type, via, campaign, revision, record_set, universe_sha256, version, created_at, updated_at) " +
+      "VALUES (?, ?, ?, ?, ?, 'exactMatch', 'live', 'community', 'u-human', 'human', 'web', ?, 2002, ?, ?, 1, ?, ?)",
+  ).run(
+    BUNDLE_KEY, WIDGET_PAGEID, OVERLAY_PASSAGE.passage_key as string,
+    JSON.stringify(BUNDLE_PARTS),
+    JSON.stringify(BUNDLE_PARTS.map((part, i) => ({ id: `c${i + 1}`, text: `clause ${i + 1}`, part }))),
+    FIXTURE_CAMPAIGN, "a".repeat(64), "b".repeat(64), now, now,
+  );
 }
 
 // Seed one open flag (id 1) for the resolve cells.
@@ -242,6 +279,23 @@ const ENDPOINTS: EndpointRow[] = [
       pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, state: "removed", reason: "wrong lemma", base_version: 0,
     }, opts),
     expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 200 },
+  },
+  {
+    // The overlay's coverage bundle (issue #173): the same two actors and the
+    // same refusals as a tag — it is the overlay's second write, not a new
+    // kind of writer.
+    name: "POST /api/articles/coverage",
+    prep: overlayPrep,
+    request: (h, opts) => post(h.env, "/api/articles/coverage", bundleBody(), opts),
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 200 },
+  },
+  {
+    name: "POST /api/articles/coverage/:bundle_key/state",
+    prep: coveragePrep,
+    request: (h, opts) => post(h.env, `/api/articles/coverage/${BUNDLE_KEY}/state`, {
+      pageid: WIDGET_PAGEID, campaign: FIXTURE_CAMPAIGN, state: "removed", reason: "a clause is missing", base_version: 1,
+    }, opts),
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 403 },
   },
   {
     // Confirm/report stays a human reader's verdict: PR #126's refusal holds.
