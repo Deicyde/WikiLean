@@ -368,7 +368,8 @@ commit, on every verdict that leaves a strong relation or a `hasPart`:
   make: a passage cut as simple has one clause id, so naming it says nothing.
 - **`direction`** on a `broadMatch` (the record's own or a part's `conjunct_relation`) —
   the instantiation that yields the passage, and every hypothesis the passage does not
-  have, or exactly `none`. A named hypothesis is at most a `narrowMatch` (R2, PD4).
+  have, or a line beginning with the word `none`. A named hypothesis is at most a
+  `narrowMatch` (R2, PD4).
 - **`kind_check`** — whether the passage is a notation passage or a worked example, which
   the judgment rules now read the same way in both prompts: on a notation passage the
   declaration that is the operation the notation denotes is a `relatedMatch`, because what

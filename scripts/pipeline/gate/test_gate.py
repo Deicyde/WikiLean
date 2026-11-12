@@ -983,7 +983,8 @@ class ChallengeVerdictTests(unittest.TestCase):
 
     def test_none_is_the_word_for_no_hypothesis(self):
         doc = good_challenge_document()
-        for word in ("none", "None", "none."):
+        for word in ("none", "None", "none.", "None — it assumes nothing more",
+                     "(none)", "none: every binder of the structure is the passage's"):
             with self.subTest(word=word):
                 self.verdict(doc, BROAD_KEY)["checks"]["direction"]["hypotheses"] = word
                 self.fx.write(doc)
@@ -1045,6 +1046,302 @@ class ChallengeVerdictTests(unittest.TestCase):
         self.fx.write(doc)
         code, text = self.fx.run()
         self.assertEqual(code, gate.EXIT_OK, text)
+
+
+#: The two readings the battery below writes of the synthetic source's two passages,
+#: and the fields a verdict of it carries. All invented here.
+SIMPLE_READING = ["a sprocket is a gadget", "a sprocket turns a widget"]
+COMPOUND_READING = ["every sprocket is finite", "every finite gadget is a sprocket"]
+TESTS = {"r2": "Reading it at the passage's gadgets gives the passage.",
+         "r3": "It asks for nothing the passage does not give."}
+DIRECTION = {"instance": "read at the passage's own gadgets", "hypotheses": "none"}
+
+
+def checks(reading: list, states: list, direction: dict | None = None,
+           kind: str = "neither a notation passage nor a worked example") -> dict:
+    out = {"reading": list(reading), "states": list(states), "kind_check": kind}
+    if direction is not None:
+        out["direction"] = direction
+    return out
+
+
+def legitimate_verdicts() -> list[tuple[str, dict, dict, dict]]:
+    """``(what it is, the record's location, the verdict, the passage)``.
+
+    Verdicts a challenger may legally write, of every relation and every shape the
+    rules admit: a record whose fields the verdict replaces and one whose fields it
+    inherits, a part held by each conjunct relation, a downgrade to each weaker
+    relation, and the two ways out of a strong relation. None of them may be refused —
+    every refusal costs a model call on every run that trips it.
+    """
+    simple, compound = LEAD, COMPOUND
+    both = ["c1", "c2"]
+    return [
+        ("a confirm of an exactMatch on a simple passage",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING[:1], [1])}, simple),
+        ("a confirm whose own reading is finer than the inventory's one clause",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a confirm of a closeMatch with the record's own convention",
+         location("Testlib.Sprocket", "closeMatch", 1, convention="encoding",
+                  note="It carries the widget as an index.", instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a confirm of a broadMatch that instantiates to the passage",
+         location("Testlib.Sprocket", "broadMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2], DIRECTION)}, simple),
+        ("a confirm of a broadMatch whose hypotheses line ends in a full stop",
+         location("Testlib.Sprocket", "broadMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2],
+                           {**DIRECTION, "hypotheses": "None."})}, simple),
+        ("a confirm of a narrowMatch, which runs no checks",
+         location("Testlib.Sprocket", "narrowMatch", 1, step="the gadget case alone"),
+         {"action": "confirm", "clauses": ["c1"]}, simple),
+        ("a confirm of a relatedMatch, which names no clause",
+         location("Testlib.Sprocket", "relatedMatch", 1, clauses=[]),
+         {"action": "confirm"}, simple),
+        ("a confirm of a hasPart of a simple passage, held exactly",
+         location("Testlib.sprocket_finite", "hasPart", 1, conjunct_relation="exactMatch",
+                  step="it gives the first half", instantiation="at a sprocket",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1])}, simple),
+        ("a confirm of a part held by a broadMatch, which gives the direction",
+         location("Testlib.sprocket_finite", "hasPart", 1, conjunct_relation="broadMatch",
+                  step="it gives the first half", instantiation="at a sprocket",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1], DIRECTION)}, simple),
+        ("a confirm of a part held by a hasPart, which gives none",
+         location("Testlib.sprocket_finite", "hasPart", 1, conjunct_relation="hasPart",
+                  step="it gives a piece of the first half"),
+         {"action": "confirm", "clauses": ["c1"],
+          "checks": checks(SIMPLE_READING, [1])}, simple),
+        ("a confirm that writes the tests a record of an older rule set has none of",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget"),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a confirm that writes the instantiation such a record has none of",
+         location("Testlib.Sprocket", "exactMatch", 1),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "instantiation": "at the gadget of the passage",
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a confirm of a closeMatch whose convention an older rule set allowed",
+         location("Testlib.Sprocket", "closeMatch", 1, convention="junk_value",
+                  note="It gives a default outside the passage's domain.",
+                  instantiation="at a gadget", tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a confirm of a record whose note says what the PASSAGE does not state",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS,
+                  note="The passage does not state that the gadget is finite."),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a downgrade of an exactMatch to a closeMatch",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "closeMatch", "clauses": ["c1"],
+          "convention": "encoding", "note": "It indexes the widget.", "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a downgrade of an exactMatch to a broadMatch",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "broadMatch", "clauses": ["c1"],
+          "tests": TESTS, "checks": checks(SIMPLE_READING, [1, 2], DIRECTION)}, simple),
+        ("a downgrade of a closeMatch to a broadMatch, whose convention goes with it",
+         location("Testlib.Sprocket", "closeMatch", 1, convention="encoding",
+                  note="It indexes the widget.", instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "broadMatch", "clauses": ["c1"],
+          "tests": TESTS, "checks": checks(SIMPLE_READING, [1, 2], DIRECTION)}, simple),
+        ("a downgrade of a broadMatch to a narrowMatch",
+         location("Testlib.Sprocket", "broadMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "narrowMatch", "clauses": ["c1"],
+          "step": "it is the passage at a finite gadget"}, simple),
+        ("a downgrade of a broadMatch to a hasPart",
+         location("Testlib.Sprocket", "broadMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "hasPart", "clauses": ["c1"],
+          "step": "it gives the first half alone", "conjunct_relation": "exactMatch",
+          "tests": TESTS, "checks": checks(SIMPLE_READING, [1])}, simple),
+        ("a downgrade to a relatedMatch with a bridge the index holds",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "relatedMatch",
+          "bridge": {"library": "testlib", "declaration": "Testlib.finite_sprocket",
+                     "why": "it carries the finiteness the passage asserts"}}, simple),
+        ("a downgrade to a relatedMatch that says the two are incomparable",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "relatedMatch", "clauses": [],
+          "incomparable": "Neither setting contains the other."}, simple),
+        ("a downgrade of a hasPart to a relatedMatch",
+         location("Testlib.sprocket_finite", "hasPart", 1, conjunct_relation="exactMatch",
+                  step="it gives the first half", instantiation="at a sprocket",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "relatedMatch"}, simple),
+        ("a downgrade of a narrowMatch to a relatedMatch",
+         location("Testlib.Sprocket", "narrowMatch", 1, step="the gadget case alone"),
+         {"action": "downgrade", "relation": "relatedMatch"}, simple),
+        ("a confirm of an exactMatch on a compound statement",
+         location("Testlib.Sprocket", "exactMatch", 1, clauses=both,
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "confirm", "clauses": both, "tests": TESTS,
+          "checks": checks(COMPOUND_READING, [1, 2])}, compound),
+        ("a confirm whose reading splits a compound statement finer than its conjuncts",
+         location("Testlib.Sprocket", "exactMatch", 1, clauses=both,
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "confirm", "clauses": both, "tests": TESTS,
+          "checks": checks([*COMPOUND_READING, "a finite gadget is a gadget"],
+                           [1, 2, 3])}, compound),
+        ("a confirm of a part of a compound statement",
+         location("Testlib.sprocket_finite", "hasPart", 1, clauses=["c1"],
+                  conjunct_relation="exactMatch", step="it states the first conjunct",
+                  instantiation="at a sprocket", tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(COMPOUND_READING, [1])}, compound),
+        ("a confirm of a part credited with both conjuncts",
+         location("Testlib.sprocket_finite", "hasPart", 1, clauses=both,
+                  conjunct_relation="broadMatch", step="it states both conjuncts",
+                  instantiation="at a sprocket", tests=TESTS),
+         {"action": "confirm", "clauses": both, "tests": TESTS,
+          "checks": checks([*COMPOUND_READING, "a sprocket is a gadget"], [1, 2],
+                           DIRECTION)}, compound),
+        ("a downgrade of a strong relation on a compound statement to a part",
+         location("Testlib.Sprocket", "exactMatch", 1, clauses=both,
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "downgrade", "relation": "hasPart", "clauses": ["c1"],
+          "conjunct_relation": "closeMatch", "convention": "encoding",
+          "note": "It indexes the gadget.", "step": "it states the first conjunct",
+          "tests": TESTS, "checks": checks(COMPOUND_READING, [1])}, compound),
+        ("a downgrade of a part of a compound statement to a narrowMatch",
+         location("Testlib.sprocket_finite", "hasPart", 1, clauses=["c1"],
+                  conjunct_relation="exactMatch", step="it states the first conjunct",
+                  instantiation="at a sprocket", tests=TESTS),
+         {"action": "downgrade", "relation": "narrowMatch", "clauses": ["c1"],
+          "step": "it states the first conjunct at a finite sprocket"}, compound),
+        ("a downgrade of a broadMatch on a compound statement to a closeMatch",
+         location("Testlib.Sprocket", "broadMatch", 1, clauses=both,
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "downgrade", "relation": "closeMatch", "clauses": both,
+          "convention": "notation", "note": "It writes the gadget the other way round.",
+          "tests": TESTS, "checks": checks(COMPOUND_READING, [1, 2])}, compound),
+        ("a confirm of a closeMatch on a compound statement",
+         location("Testlib.Sprocket", "closeMatch", 1, clauses=both,
+                  convention="bundling", note="It bundles both halves into one field.",
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "confirm", "clauses": both, "tests": TESTS,
+          "checks": checks(COMPOUND_READING, [1, 2])}, compound),
+        ("a confirm of a broadMatch on a compound statement",
+         location("Testlib.Sprocket", "broadMatch", 1, clauses=both,
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "confirm", "clauses": both, "tests": TESTS,
+          "checks": checks(COMPOUND_READING, [1, 2], DIRECTION)}, compound),
+        ("a confirm of a relatedMatch on a compound statement",
+         location("Testlib.Sprocket", "relatedMatch", 1, clauses=[]),
+         {"action": "confirm"}, compound),
+        ("a downgrade of a closeMatch to a narrowMatch, whose convention goes with it",
+         location("Testlib.Sprocket", "closeMatch", 1, convention="renaming",
+                  note="It renames the widget.", instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "downgrade", "relation": "narrowMatch", "clauses": ["c1"],
+          "step": "it is the passage at a finite gadget"}, simple),
+        ("a confirm of a part held by a narrowMatch",
+         location("Testlib.sprocket_finite", "hasPart", 1, clauses=["c1"],
+                  conjunct_relation="narrowMatch", step="it states a case of c1"),
+         {"action": "confirm", "clauses": ["c1"],
+          "checks": checks(COMPOUND_READING, [1])}, compound),
+        ("a confirm of a part that carries the pd6 line of a bundle",
+         location("Testlib.sprocket_finite", "hasPart", 1, clauses=["c1"],
+                  conjunct_relation="exactMatch", step="it states the first conjunct",
+                  pd6="It concludes with an iff and does not state c2 on its own.",
+                  instantiation="at a sprocket", tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(COMPOUND_READING, [1])}, compound),
+        ("a downgrade that writes its own note over the record's",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  note="It is the gadget itself.", tests=TESTS),
+         {"action": "downgrade", "relation": "broadMatch", "clauses": ["c1"],
+          "note": "It is the gadget over any carrier.", "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2], DIRECTION)}, simple),
+        ("a confirm of a record whose note says what ANOTHER declaration does not state",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS,
+                  note="Unlike the dual, which does not state the widget, it states it."),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2])}, simple),
+        ("a confirm whose clauses name the compound's conjuncts in another order",
+         location("Testlib.Sprocket", "exactMatch", 1, clauses=both,
+                  instantiation="at the sprockets", tests=TESTS),
+         {"action": "confirm", "clauses": ["c2", "c1"], "tests": TESTS,
+          "checks": checks(COMPOUND_READING, [2, 1])}, compound),
+        ("a confirm of a notation reading the kind check spells out",
+         location("Testlib.Sprocket", "exactMatch", 1, instantiation="at a gadget",
+                  tests=TESTS),
+         {"action": "confirm", "clauses": ["c1"], "tests": TESTS,
+          "checks": checks(SIMPLE_READING, [1, 2], None,
+                           "a notation passage, and the structure carries the "
+                           "notation itself")}, simple),
+    ]
+
+
+class LegitimateVerdictsTests(unittest.TestCase):
+    """Thirty-odd verdicts a challenger may legally write, none of them refused.
+
+    Every refusal the gate adds costs a model call on every run that trips it, so the
+    rules of issue #175 are measured against a battery of shapes that must pass: every
+    relation, both actions that keep a record, a record whose fields the verdict
+    replaces and one whose fields it inherits, and records written under older rule
+    sets. Synthetic, like the rest of this file.
+    """
+
+    def test_no_legitimate_verdict_is_refused(self):
+        battery = legitimate_verdicts()
+        self.assertGreaterEqual(len(battery), 30)
+        records, verdicts = [], []
+        for number, (what, loc, verdict, passage) in enumerate(battery):
+            key = f"{number:064x}"
+            records.append(_challenge_record(passage, key, loc))
+            verdicts.append({"item": passage["item"], "target": "location",
+                             "location_key": key, "witness": f"It is {what}.",
+                             **verdict})
+        with tempfile.TemporaryDirectory() as tmp:
+            fixture = Fixture(Path(tmp), mode=vocab.MODE_CHALLENGE, judgment_rules=5)
+            fixture.set_records(records)
+            document = good_challenge_document()
+            document["verdicts"] = verdicts
+            fixture.write(document)
+            code, text = fixture.run()
+            self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_each_one_passes_on_its_own(self):
+        """One document per verdict, so a refusal names which shape it refused."""
+        for number, (what, loc, verdict, passage) in enumerate(legitimate_verdicts()):
+            with self.subTest(what=what):
+                key = f"{number:064x}"
+                with tempfile.TemporaryDirectory() as tmp:
+                    fixture = Fixture(Path(tmp), mode=vocab.MODE_CHALLENGE,
+                                      judgment_rules=5)
+                    fixture.set_records([_challenge_record(passage, key, loc)])
+                    document = good_challenge_document()
+                    document["verdicts"] = [
+                        {"item": passage["item"], "target": "location",
+                         "location_key": key, "witness": f"It is {what}.", **verdict}]
+                    fixture.write(document)
+                    code, text = fixture.run()
+                    self.assertEqual(code, gate.EXIT_OK, f"{what}:\n{text}")
 
 
 def _sentence(text: str, formulas: tuple = (), block: str = "p") -> lt.Blocks:

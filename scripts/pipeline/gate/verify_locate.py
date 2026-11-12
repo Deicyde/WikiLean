@@ -1089,6 +1089,18 @@ def _verdict_location(record: dict, verdict: dict) -> dict:
     return left
 
 
+def _says_none(line: Any) -> bool:
+    """Whether a ``direction.hypotheses`` line says there is no such hypothesis.
+
+    Its first word, and nothing else about it: a challenger told to write ``none``
+    writes "none", "None." or "none — it assumes nothing the passage does not", and
+    refusing the last two would spend a model call on their punctuation. One that names
+    a hypothesis begins with the hypothesis.
+    """
+    first = re.search(r"[a-z]+", str(line or "").casefold())
+    return first is not None and first.group(0) == "none"
+
+
 def rule9_checks(verdict: dict, left: dict, where: str, item: str,
                  problems: Problems) -> None:
     """Judgment rules 5: the clause, direction and kind checks a verdict owes.
@@ -1138,17 +1150,18 @@ def rule9_checks(verdict: dict, left: dict, where: str, item: str,
                                "relatedMatch")
     if held == vocab.BROAD_MATCH:
         direction = checks.get("direction")
-        if not isinstance(direction, dict) or not _one_line(direction.get("instance")) \
-                or not _one_line(direction.get("hypotheses")):
+        if not isinstance(direction, dict) or not _nonempty(direction.get("instance")) \
+                or not _nonempty(direction.get("hypotheses")):
             problems.add(9, where, f"{item}: a broadMatch gives `direction`: the "
                                    "instantiation that yields the passage, and the "
-                                   "hypotheses the passage does not have (`none` when "
-                                   "there are none)")
-        elif str(direction["hypotheses"]).strip().rstrip(".").casefold() != "none":
+                                   "hypotheses the passage does not have (a line "
+                                   "beginning `none` when there are none)")
+        elif not _says_none(direction["hypotheses"]):
             problems.add(9, where, f"{item}: `direction.hypotheses` names a hypothesis the "
                                    "passage does not have, which makes this at most a "
-                                   "narrowMatch (R2, PD4)")
-    if not _one_line(checks.get("kind_check")):
+                                   "narrowMatch (R2, PD4); a line that begins with the "
+                                   "word `none` says there is none")
+    if not _nonempty(checks.get("kind_check")):
         problems.add(9, where, f"{item}: `kind_check` says in one line whether the passage "
                                "is a notation passage or a worked example, and what that "
                                "asks of the declaration")
@@ -1162,7 +1175,8 @@ def rule9_bridge(verdict: dict, left: dict, where: str, item: str, cfg: GateConf
     connection needs, which the gate looks up in the index", and until judgment rules 5
     nothing looked anything up: a bridge was free text the tally carried through to the
     audit. A bridge the universe does not hold is no bridge — the connection it claims
-    to need is one nobody can check — and the honest field is then ``incomparable``.
+    to need is one nobody can check — and the prompt's way out is to write no ``bridge``
+    and name the gap in the witness.
 
     Only on a verdict that leaves a ``relatedMatch``, which is where the tally keeps the
     field; on any other relation it drops it, so a lookup there would refuse a verdict
@@ -1456,10 +1470,14 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
                 # the relation a verdict leaves is held to every rule a locate note
                 # faces, the missing-clause check included (issue #175)
                 left = _verdict_location(record, verdict)
-                rule9_location(left, where, item, cfg, problems, _clause_ids(record),
-                               challenger=True)
-                rule9_checks(verdict, left, where, item, problems)
-                rule9_bridge(verdict, left, where, item, cfg, ctx, problems)
+                # a downgrade that names no relation of the vocabulary, and a record
+                # that carries none, are rule9_verdict's refusal and only its one:
+                # these rules are about a relation, and there is none to hold
+                if vocab.member(left.get("relation"), vocab.LOCATION_RELATIONS):
+                    rule9_location(left, where, item, cfg, problems,
+                                   _clause_ids(record), challenger=True)
+                    rule9_checks(verdict, left, where, item, problems)
+                    rule9_bridge(verdict, left, where, item, cfg, ctx, problems)
             for location in verdict.get("locations") or []:
                 if isinstance(location, dict):
                     rule3_declaration(location, where, str(verdict.get("item")), cfg, ctx,

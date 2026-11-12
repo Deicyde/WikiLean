@@ -211,9 +211,10 @@ VERDICT_ACTIONS = frozenset({"confirm", "uphold", "downgrade", "refute", "overtu
 #: Which rules a challenge plan was drawn under, written into ``challenge-plan.json``.
 #: 1 — the rules the first runs were planned under: only a **strong** location can be a
 #: basis, and only the strong relations draw at ``strong_sample_rate``. 2 — issue #175: a
-#: weak relation that sets a passage's status on its own is a basis too, and ``hasPart``
-#: and ``narrowMatch`` on a supporting passage draw at ``strong_sample_rate``. A plan is
-#: replayed under the rule it was drawn with, never under the newest.
+#: weak relation that sets a passage's status on its own is a basis too, ``hasPart`` and
+#: ``narrowMatch`` on a supporting passage draw at ``strong_sample_rate``, and a
+#: ``hasPart`` on a passage with no conjuncts is refuted by default. A plan is replayed
+#: under the rule it was drawn with, never under the newest.
 CHALLENGE_PLAN_RULE_STRONG_BASIS = 1
 CHALLENGE_PLAN_RULE_WEAK_BASIS = 2
 CHALLENGE_PLAN_RULES = (CHALLENGE_PLAN_RULE_STRONG_BASIS, CHALLENGE_PLAN_RULE_WEAK_BASIS)
