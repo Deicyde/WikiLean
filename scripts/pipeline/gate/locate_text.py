@@ -443,8 +443,14 @@ CONTINUED_FROM = frozenset({"p", "dd", BLOCK_MATH})
 #: The opening brackets and quotes read past to a paragraph's first word; never ``[``,
 #: which opens a footnote mark.
 OPENING_MARKS = frozenset("(\"'\u2018\u201c")
-#: A word that labels an item rather than going on with a sentence.
-_ITEM_LABEL = re.compile(r"[^\W\d_]{1,4}\)")
+#: A word that labels an item rather than going on with a sentence: lettered ("a)", its
+#: opening bracket set aside by the readers below), roman ("iii)") or numbered ("2)").
+#: A number labels an item as often as a letter does, and :meth:`Blocks.continues` and
+#: :meth:`Blocks.opens_with_formula` read a word with no leading lower-case letter as a
+#: continuation of nothing either way, so the number changes only
+#: :meth:`Blocks.allowed_cut`, where it stops a numbered list item being refused as a
+#: start a lettered one is allowed.
+_ITEM_LABEL = re.compile(r"(?:[^\W\d_]{1,4}|[0-9]{1,3})\)")
 _LETTERS = re.compile(r"[^\W\d_]*")
 #: The words a full stop does not end a sentence after. ``scripts/pipeline/records.py``
 #: carries the same list for the note a downgrade leaves; the two move together.
@@ -930,7 +936,13 @@ class Blocks:
         return out
 
     def mid_sentence(self, start: int) -> bool:
-        """Does a passage that starts at ``start`` start inside a sentence?"""
+        """Does a passage that starts at ``start`` start inside a sentence?
+
+        What stands between ``start`` and the sentence before it — whitespace, a comma or
+        semicolon, and the reference superscripts a cited sentence ends with
+        ("…are composite.[3] A gadget…") — is set aside, so the character read is the
+        sentence's own last one.
+        """
         block = self.block_at(start)
         if block is None:
             return False
@@ -941,11 +953,43 @@ class Blocks:
         if start <= first:
             return False
         i = start
-        while i > block.start and self.formula_at(i - 1) is None and (
-                _is_white(layer[i - 1]) or layer[i - 1] in SEPARATOR_MARKS):
-            i -= 1
+        while True:
+            at = i
+            while i > block.start and self.formula_at(i - 1) is None and (
+                    _is_white(layer[i - 1]) or layer[i - 1] in SEPARATOR_MARKS):
+                i -= 1
+            i = self._before_marks(block.start, i)
+            if i == at:
+                break
         last, stops = self._last(block.start, i)
         return bool(last) and not stops
+
+    def _before_marks(self, start: int, at: int) -> int:
+        """``at`` with the footnote marks that end there set aside.
+
+        A ``[3]`` is no character of the sentence it follows: left in, the sentence's
+        full stop is hidden behind it and every passage that starts at the next sentence
+        reads as a start inside one.
+        """
+        layer = self.layer
+        while at > start and layer[at - 1] == "]" and self.formula_at(at - 1) is None:
+            opener = layer.rfind("[", start, at)
+            if opener < 0 or self.formula_at(opener) is not None \
+                    or not FOOTNOTE_MARK.fullmatch(layer[opener:at]):
+                break
+            at = opener
+        return at
+
+    def _after_marks(self, at: int, end: int) -> int:
+        """``at`` with the footnote marks that start there set aside; :meth:`_before_marks`
+        read forwards, for the sentence boundary :meth:`units` looks for."""
+        layer = self.layer
+        while at < end and layer[at] == "[" and self.formula_at(at) is None:
+            found = FOOTNOTE_MARK.match(layer, at, end)
+            if found is None:
+                break
+            at = found.end()
+        return at
 
     def sentence_at(self, offset: int) -> tuple[int, int] | None:
         """The sentence of ``offset``'s block that holds it, as ``(start, end)``.
@@ -995,14 +1039,26 @@ class Blocks:
         j = start
         while j > block.start and _is_white(layer[j - 1]) and self.formula_at(j - 1) is None:
             j -= 1
-        if j > block.start and layer[j - 1] == ";" and self.formula_at(j - 1) is None:
-            return "the connective ';'"
-        found = self._connective_before(block.start, j)
-        if found is not None:
-            return f"the connective {found[1]!r}"
         if self._after_reason(block, start, j):
             return CUT_REASON
-        return None
+        # A connective is often written with a comma after it ("; moreover, W is round"),
+        # so the marks between it and the start are set aside one at a time, as
+        # :meth:`mid_sentence` sets them aside. A list comma survives this: what stands
+        # before it is the list's last word and no connective.
+        k = j
+        while True:
+            if k > block.start and layer[k - 1] == ";" and self.formula_at(k - 1) is None:
+                return "the connective ';'"
+            found = self._connective_before(block.start, k)
+            if found is not None:
+                return f"the connective {found[1]!r}"
+            if not (k > block.start and layer[k - 1] in SEPARATOR_MARKS
+                    and self.formula_at(k - 1) is None):
+                return None
+            k -= 1
+            while k > block.start and _is_white(layer[k - 1]) \
+                    and self.formula_at(k - 1) is None:
+                k -= 1
 
     def cuts_a_sentence(self, start: int) -> bool:
         """Does a passage that starts at ``start`` start inside a sentence at no cut of
@@ -1182,7 +1238,8 @@ class Blocks:
         cursor = start
         block_starts = {block.start for block in self.blocks}
         for stop in stops:
-            j = stop
+            # a cited sentence ends before its reference superscripts, not after them
+            j = self._after_marks(stop, end)
             if j >= end:
                 continue
             if _is_white(layer[j]):

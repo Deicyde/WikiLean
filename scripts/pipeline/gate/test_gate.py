@@ -759,6 +759,18 @@ class SentenceCutTests(unittest.TestCase):
          "Since a widget is finite, it is round.", "it is round"),
         ("an inline list item",
          "The cases are: a) finite widgets, b) round widgets.", "b) round"),
+        ("a bracketed inline list item",
+         "The cases are: (a) finite widgets, (b) round widgets.", "(b) round"),
+        ("a numbered inline list item",
+         "The cases are: 1) finite widgets, 2) round widgets.", "2) round"),
+        ("a bracketed numbered inline list item",
+         "The cases are: (1) finite widgets, (2) round widgets.", "(2) round"),
+        ("a connective written with a comma after it",
+         "A widget is round; moreover, it is finite.", "it is finite"),
+        ("\"hence,\" with a comma after it",
+         "A widget is finite, hence, it is round.", "it is round"),
+        ("\"so,\" with a comma after it",
+         "A widget is round, so, it is finite.", "it is finite"),
     )
 
     def test_a_cut_no_rule_allows_is_a_fault(self):
@@ -798,6 +810,53 @@ class SentenceCutTests(unittest.TestCase):
         for start in (0, text.index("A gadget")):
             self.assertFalse(blocks.mid_sentence(start))
             self.assertFalse(blocks.cuts_a_sentence(start))
+
+    #: A cited sentence, and the sentence after it: the reference superscripts a
+    #: Wikipedia article writes between them are no characters of either.
+    CITED = (
+        ("one mark", "A widget is round.[3] A gadget is finite.", "A gadget"),
+        ("a two-digit mark", "A widget is round.[34] A gadget is finite.", "A gadget"),
+        ("two marks", "A widget is round.[3][4] A gadget is finite.", "A gadget"),
+        ("a lettered mark", "A widget is round.[a] A gadget is finite.", "A gadget"),
+        ("a note mark", "A widget is round.[nb 1] A gadget is finite.", "A gadget"),
+    )
+
+    def test_a_footnote_mark_does_not_hide_the_sentence_it_follows(self):
+        """A passage that starts the sentence after a cited one starts no sentence.
+
+        The gate refuses a re-cut it would cost a model call to make and the worker
+        could not legally make, so a mark left in the reading is a false refusal on
+        every article that cites anything.
+        """
+        for what, text, words in self.CITED:
+            with self.subTest(what=what):
+                blocks = _sentence(text)
+                start = text.index(words)
+                self.assertFalse(blocks.mid_sentence(start), what)
+                self.assertFalse(blocks.cuts_a_sentence(start), what)
+                self.assertEqual(blocks.sentence_at(start), (start, len(text)), what)
+
+    def test_a_mark_inside_a_sentence_still_leaves_the_cut_inside_it(self):
+        """The mark is set aside, the words around it are not: a bare "and" is still one."""
+        text = "The empty set[3] and the whole space are both open."
+        blocks = _sentence(text)
+        self.assertTrue(blocks.cuts_a_sentence(text.index("the whole space")))
+
+    def test_a_cited_sentence_does_not_carry_its_hypothesis_into_the_next(self):
+        """The hypothesis veto is the opener of the start's own sentence, not of a
+        sentence a mark glued to it."""
+        text = "If W is finite, then W is round.[3] A gadget is finite, so it is round."
+        blocks = _sentence(text)
+        start = text.index("it is round.", text.index("[3]"))
+        self.assertEqual(blocks.allowed_cut(start), "the connective 'so'")
+        self.assertFalse(blocks.cuts_a_sentence(start))
+
+    def test_a_reason_after_a_cited_sentence_is_still_a_reason(self):
+        text = "A widget is round.[3] Since W is finite, W is sprocketed."
+        blocks = _sentence(text)
+        start = text.index("W is sprocketed")
+        self.assertEqual(blocks.allowed_cut(start), lt.CUT_REASON)
+        self.assertFalse(blocks.cuts_a_sentence(start))
 
     def test_every_passage_of_the_synthetic_source_is_a_whole_sentence(self):
         blocks = lt.Blocks(LAYER, PARAGRAPHS, FORMULAS)

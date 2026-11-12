@@ -78,6 +78,13 @@ a hypothesis to its conclusions. `Blocks.allowed_cut` is the list and
 `Blocks.cuts_a_sentence` the refusal; neither reads which side of a cut is a clause, so
 a `", and"` is taken at its word.
 
+What is **not** a start inside a sentence, and so is never refused: a start at the
+sentence after a cited one. The reference superscripts a Wikipedia article leaves in the
+layer (`[3]`, `[a]`, `[nb 1]`) are set aside before the sentence's last character is
+read, so a passage at "A gadget is finite." after "…are composite.[3]" is a whole
+sentence. A refusal there would cost a model call per article to re-cut something the
+worker could not legally cut.
+
 **The finding names two passages.** Span-end rules 2 and 3 end a passage at the next
 passage's start, so a head placed inside a sentence truncates the passage before it as
 well. The worker is called again with the refusal, the path every other span fault takes.
