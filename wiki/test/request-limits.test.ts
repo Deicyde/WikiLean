@@ -312,6 +312,20 @@ describe("JSON body caps on the remaining write routes", () => {
       headers: { Cookie: "wl_dev_user=u-human" },
       max: MAX_JSON_BODY_BYTES.articlesTag,
     },
+    {
+      name: "articles coverage",
+      method: "POST",
+      path: "/api/articles/coverage",
+      headers: { Cookie: "wl_dev_user=u-human" },
+      max: MAX_JSON_BODY_BYTES.articlesCoverage,
+    },
+    {
+      name: "articles coverage state",
+      method: "POST",
+      path: `/api/articles/coverage/${"a".repeat(64)}/state`,
+      headers: { Cookie: "wl_dev_user=u-human" },
+      max: MAX_JSON_BODY_BYTES.articlesCoverage,
+    },
   ];
 
   function harness(): Harness {

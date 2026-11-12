@@ -121,6 +121,38 @@ export function pairedPassage(pageid: number, index: number): Record<string, any
   return article.passages[index];
 }
 
+// ---- the passage a community coverage bundle is made on (issue #173) -----------------------
+//
+// The /2 fixture with the Gadget's covered theorem (page 1003, passage 1) stripped of its
+// SEALED claim: two proved hasPart locations and nothing saying they together state the
+// passage, which is exactly the shape the issue is about — the published status says
+// formalized because of the claim, and without one the parts alone leave it partial. A
+// community bundle over those two parts must put it back, so the fixture's status is set to
+// what the parts alone give. Derived in the test process; the committed store is untouched.
+export const COVERED_PAGEID = GADGET_PAGEID;
+export const COVERED_INDEX = 1;
+
+export function articlesBundleFiles(files: Map<string, string> = articlesPairedFiles()): Map<string, string> {
+  const out = new Map(files);
+  const key = `articles/v1/articles/${COVERED_PAGEID}.json`;
+  const article = JSON.parse(out.get(key)!);
+  const passage = article.passages[COVERED_INDEX];
+  delete passage.coverage;
+  passage.status = "partial";
+  passage.basis = null;
+  // The article's own counts say the same thing, as a built store's would.
+  article.summary.by_status.formalized -= 1;
+  article.summary.by_status.partial += 1;
+  out.set(key, JSON.stringify(article));
+  return out;
+}
+
+// That passage, as the bundle fixture's store serves it.
+export function bundlePassage(): Record<string, any> {
+  const article = JSON.parse(articlesBundleFiles().get(`articles/v1/articles/${COVERED_PAGEID}.json`)!);
+  return article.passages[COVERED_INDEX];
+}
+
 // ---- the article reader (build_store --reader-html) ----------------------------------------
 //
 // A synthetic marked revision of the Widget lemma fixture (page 1001), in the shape the builder
