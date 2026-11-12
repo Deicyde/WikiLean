@@ -18,7 +18,8 @@ import { editLimitKey } from "./agents.js";
 import { writeBrake } from "./site-settings.js";
 import {
   accountFor,
-  recordAgreement,
+  agreementStatement,
+  CC0_BRAIN_VERSIONS,
   requireAgreement,
   type AgreementStep,
 } from "./articles-overlay.js";
@@ -231,6 +232,11 @@ function actorTypeFor(role: string, body: Record<string, unknown>): ActorType | 
 // The pipeline bearer is exempt: it is the operator's own token, writing under
 // the operator's terms rather than as a community contributor.
 //
+// Only the CURRENT wording is a grant here: `cc0-1.0/2026-11` released "the
+// mapping data I add here — the declaration names, relations and notes", which
+// is the overlay's passage tags and not an edge's note, so a contributor still
+// on it is asked once for the 1.1 text that names Brain connections.
+//
 // Returns null when the caller needs no grant, a Response that refuses the
 // write, or the acceptance to record once the write goes ahead.
 async function brainAgreement(
@@ -240,15 +246,33 @@ async function brainAgreement(
   now: number,
 ): Promise<AgreementStep | Response | null> {
   if (user.role === "bot") return null;
-  // The Brain's forms carry no Turnstile widget, so a person's first Brain
-  // edit records an unverified acceptance rather than being refused for a
-  // check it cannot offer; /agents and the reader still verify theirs.
+  // The Brain's forms carry no Turnstile widget, so a person's acceptance here
+  // is recorded unverified rather than refused for a check it cannot offer.
+  // The reader's tag routes ask such an acceptance for the check at its next
+  // overlay edit, so this is no way around theirs.
   return requireAgreement(
     c,
-    { account: accountFor(user), isAgent: user.role === "agent", turnstile: false },
+    {
+      account: accountFor(user),
+      isAgent: user.role === "agent",
+      versions: CC0_BRAIN_VERSIONS,
+      turnstile: false,
+    },
     body,
     now,
   );
+}
+
+// Record what the gate asked for, once the write is going ahead.
+async function writeBrainAgreement(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  step: AgreementStep | null,
+  now: number,
+): Promise<void> {
+  if (!step) return;
+  const stmt = agreementStatement(c.env, accountFor(user), now, step);
+  if (stmt) await stmt.run();
 }
 
 // ---- quickstatements: one D1 batch per row ---------------------------------
@@ -1150,7 +1174,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const now = Date.now();
     const agreement = await brainAgreement(c, user, body, now);
     if (agreement instanceof Response) return agreement;
-    if (agreement?.needsRecord) await recordAgreement(c.env, accountFor(user), now, agreement.verifiedAt);
+    await writeBrainAgreement(c, user, agreement, now);
 
     const results: QuickRowResult[] = [];
     const items: QueueItem[] = [];
@@ -1270,7 +1294,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     const now = Date.now();
     const agreement = await brainAgreement(c, user, body, now);
     if (agreement instanceof Response) return agreement;
-    if (agreement?.needsRecord) await recordAgreement(c.env, accountFor(user), now, agreement.verifiedAt);
+    await writeBrainAgreement(c, user, agreement, now);
 
     const db = drizzle(c.env.DB);
     // persist any newly-validated Wikidata concept nodes (idempotent on the QID)

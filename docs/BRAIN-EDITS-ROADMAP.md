@@ -133,8 +133,14 @@ through live Wikidata validation followed by a `brain_nodes` mint. For `xref`, v
     once; an agent gets a plain 403 until its OWNER has accepted, at `/agents`
     or at their own first edit. `POST /api/brain/node` and the deletes stay
     ungated — a node copies Wikidata's label and description, and a delete
-    stores no text. The Brain page has no Turnstile widget, so an acceptance
-    taken there is recorded with `verified_at` NULL.
+    stores no text. These two routes take `CC0_BRAIN_VERSIONS` — the current
+    wording alone, because only it names Brain connections and their notes —
+    while the reader's tag routes and `submissions.ts` take either
+    (`CC0_ACCEPTED_VERSIONS`); accepting an update keeps the row's original
+    `accepted_at`. The Brain page has no Turnstile widget, so an acceptance
+    taken there is recorded with `verified_at` NULL, and the reader's tag
+    routes ask such an acceptance for the challenge at its next edit rather
+    than treating it as cleared.
   - Returns `{ok, id}`.
 - **`GET /api/brain/edges?id=<node>`** — the live D1 overlay: every non-deleted
   community edge touching the node, `Cache-Control: no-store` (live tail). The

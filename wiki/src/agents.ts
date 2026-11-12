@@ -201,20 +201,25 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!user) return c.redirect("/login?returnTo=%2Fagents");
     if (user.role === "bot" || user.role === "agent") return c.text("session required (no bots)", 403);
     c.header("Cache-Control", "no-store"); // per-user page; never cache
-    const agreed = agreementStands(await loadAgreement(c.env, user.id));
+    // Three states: nothing on file, an earlier wording (which still covers
+    // passage tags and submissions but not Brain connections), and the current
+    // one. The middle one is offered the update, with the same checkbox.
+    const agreement = await loadAgreement(c.env, user.id);
+    const agreed = agreement?.cc0_version === CC0_AGREEMENT_VERSION;
+    const outdated = !agreed && agreementStands(agreement);
     const siteKey = agreed ? "" : c.env.TURNSTILE_SITE_KEY ?? "";
     const nonce = crypto.randomUUID().replace(/-/g, "");
     const challenge = siteKey ? ` ${TURNSTILE_ORIGIN}` : "";
     c.header("Content-Security-Policy", `default-src 'none'; script-src 'nonce-${nonce}' https://static.cloudflareinsights.com${challenge}; ` +
       `style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self' https://cloudflareinsights.com${challenge}; ` +
       `frame-src ${siteKey ? TURNSTILE_ORIGIN : "'none'"}; form-action 'self'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'`);
-    return c.html(agentsPageHtml(user.name, agreed, siteKey, nonce));
+    return c.html(agentsPageHtml(user.name, agreed, outdated, siteKey, nonce));
   });
 }
 
 // Same look as /repos (repos.ts). Data loads client-side from /api/agents and
 // renders through textContent only, so agent names cannot inject markup.
-function agentsPageHtml(userName: string, agreed: boolean, siteKey: string, nonce: string): string {
+function agentsPageHtml(userName: string, agreed: boolean, outdated: boolean, siteKey: string, nonce: string): string {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -278,10 +283,12 @@ Up to ${AGENT_CAP} live agents; together they get 30 writes a minute. How an age
 <section aria-label="Contribution agreement">
 <h2>Enable contributions</h2>
 ${agreed ? '<p>You have accepted the CC0 contribution agreement. Your agents can submit pipeline results, add community tags and add Brain connections.</p>' : `
-<p>Before your agents contribute, read and accept the terms yourself.</p>
+<p>${outdated
+  ? "The contribution agreement has been updated to name Brain connections and their evidence notes. Your agents can still submit pipeline results and add community tags; accept the updated terms to let them add Brain connections."
+  : "Before your agents contribute, read and accept the terms yourself."}</p>
 <label><input type="checkbox" id="cc0-agreement"> ${htmlEscape(CC0_AGREEMENT_TEXT)}</label>
 ${siteKey ? `<div class="cf-turnstile" data-sitekey="${htmlEscape(siteKey, true)}"></div><script src="${TURNSTILE_SCRIPT_URL}" async defer></script>` : ""}
-<p><button id="accept-agreement" class="wl-btn" type="button">Accept contribution terms</button> <span id="agreement-status" role="status"></span></p>`}
+<p><button id="accept-agreement" class="wl-btn" type="button">${outdated ? "Accept the updated terms" : "Accept contribution terms"}</button> <span id="agreement-status" role="status"></span></p>`}
 <p><a href="https://github.com/Deicyde/WikiLean/blob/main/docs/INTAKE.md#submit-from-your-laptop">Submit pipeline results from your laptop</a>. A submission receipt records validation; publication is a separate step.</p>
 </section>
 

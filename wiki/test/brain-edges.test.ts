@@ -745,13 +745,36 @@ describe("the CC0 grant on Brain writes", () => {
     expect(agreementRow(h)).toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION });
   });
 
-  it("keeps an acceptance of the superseded wording valid", async () => {
+  // `cc0-1.0/2026-11` released "the mapping data I add here — the declaration
+  // names, relations and notes": the overlay's passage tags, not an edge's
+  // note. It is therefore no grant for a Brain connection, and a contributor
+  // still on it is asked once for the wording that names them.
+  it("asks a person on the superseded wording for the one that names Brain connections", async () => {
     const h = ungreed();
-    agreed(h, "u-human", "cc0-1.0/2026-11");
-    expect((await postEdge(h, REL, { user: "u-human" })).status).toBe(201);
-    // Still the old row: nobody is asked to accept again.
+    const acceptedAt = Date.now() - 86_400_000;
+    h.db.prepare("INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,?)")
+      .run("u-human", "cc0-1.0/2026-11", acceptedAt, acceptedAt);
+
+    const refused = await postEdge(h, REL, { user: "u-human" });
+    expect(refused.status).toBe(403);
+    const body = await refused.json() as Record<string, unknown>;
+    expect(body).toMatchObject({ cc0_required: true, cc0_version: CC0_AGREEMENT_VERSION });
+    expect(String(body.error)).toContain("updated");
+    expect(String(body.cc0_text)).toContain("Brain connections");
+    expect(edgeRows(h)).toHaveLength(0);
     expect(agreementRow(h)).toMatchObject({ cc0_version: "cc0-1.0/2026-11" });
+
+    // Accepting is the same one-checkbox flow, and updates the row in place:
+    // the new version, the ORIGINAL acceptance time, the verification kept.
+    const accepted = await postEdge(h, { ...REL, cc0: true }, { user: "u-human" });
+    expect(accepted.status).toBe(201);
+    expect(agreementRow(h)).toMatchObject({
+      cc0_version: CC0_AGREEMENT_VERSION, accepted_at: acceptedAt, verified_at: acceptedAt,
+    });
+    // Asked once: the next edge goes straight through.
+    expect((await postEdge(h, { ...REL, dst: XREF_DST, kind: "xref" }, { user: "u-human" })).status).toBe(201);
   });
+
 
   it("does not gate a new concept node or a delete, which store no text of the contributor's", async () => {
     const h = ungreed();

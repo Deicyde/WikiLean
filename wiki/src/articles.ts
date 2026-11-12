@@ -28,10 +28,11 @@ import type { PassageSegment } from "./articles-math.js";
 import { articlesCsp, checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
-  accountFor, agreementStands, CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, loadOverlay,
-  loadOverlayTags, loadTag, MAX_DECLARATION_CHARS, MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay,
-  overlayTableMissing, pairKey, requireAgreement, statusRuleOf, tagAllowance, tagLimitKey, TAG_RELATIONS,
-  validDeclaration, validRelation, writeBrake, type ArticleTag, type TagActor, type TagAllowance,
+  accountFor, agreementStatement, agreementStands, CC0_ACCEPTED_VERSIONS, CC0_AGREEMENT_TEXT,
+  CC0_AGREEMENT_VERSION, loadAgreement, loadOverlay, loadOverlayTags, loadTag, MAX_DECLARATION_CHARS,
+  MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay, overlayTableMissing, pairKey, requireAgreement,
+  statusRuleOf, tagAllowance, tagLimitKey, TAG_RELATIONS, validDeclaration, validRelation, writeBrake,
+  type ArticleTag, type TagActor, type TagAllowance,
 } from "./articles-overlay.js";
 import {
   articlesArticlePage,
@@ -987,11 +988,17 @@ async function beginTagWrite(c: Ctx): Promise<TagWriter | Response> {
 // first edit only, never after). The gate itself is shared with the Brain's
 // write routes (articles-overlay.ts `requireAgreement`); this is the overlay's
 // writer, which always asks for the Turnstile check because its form carries
-// the widget.
+// the widget — including from an acceptance taken on a form that had none, so
+// a Brain acceptance is no way around it. Either wording covers a passage tag.
 function tagAgreement(c: Ctx, writer: TagWriter, body: Record<string, unknown>, now: number) {
   return requireAgreement(
     c,
-    { account: writer.account, isAgent: writer.actorType === "agent", turnstile: true },
+    {
+      account: writer.account,
+      isAgent: writer.actorType === "agent",
+      versions: CC0_ACCEPTED_VERSIONS,
+      turnstile: true,
+    },
     body,
     now,
   );
@@ -1221,12 +1228,19 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     // and these pages send no Cache-Control, so no render key is bumped.
     const show = c.req.query("overlay") !== "off";
     const rows = await loadOverlay(c.env, article.pageid);
-    const agreed = user ? agreementStands(await loadAgreement(c.env, accountFor(user))) : true;
+    const agreement = user ? await loadAgreement(c.env, accountFor(user)) : null;
+    const agreed = user ? agreementStands(agreement) : true;
     const overlay = {
       merged: mergeOverlay(article, rows, statusRuleOf(article)),
       show,
       canEdit: user !== null,
       needsAgreement: user !== null && !agreed,
+      // Their grant is on file but no Turnstile check ever cleared it (it was
+      // taken on the Brain's widget-less form, or before a secret was
+      // configured). The tag route asks for one; the page must carry the
+      // widget, or they would be refused with no way to pass.
+      needsVerification: agreed && agreement?.verified_at == null
+        && user !== null && !!c.env.TURNSTILE_SECRET,
       taggable: hasPassageKeys(article),
       cc0Text: CC0_AGREEMENT_TEXT,
       cc0Version: CC0_AGREEMENT_VERSION,
@@ -1519,12 +1533,10 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
         article.revision, article.record_set, article.universe.sha256, now, now, current,
       ),
     ];
-    if (agreement.needsRecord) {
-      writes.push(c.env.DB.prepare(
-        "INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?, ?, ?, ?) " +
-          "ON CONFLICT(user_id) DO NOTHING",
-      ).bind(writer.account, CC0_AGREEMENT_VERSION, now, agreement.verifiedAt));
-    }
+    // The acceptance (or the Turnstile stamp on one taken without a check)
+    // rides in the same batch as the write it authorises.
+    const agreementWrite = agreementStatement(c.env, writer.account, now, agreement);
+    if (agreementWrite) writes.push(agreementWrite);
     let changes = 0;
     try {
       const results = await c.env.DB.batch(writes);
@@ -1654,12 +1666,10 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
         removed ? writer.user.id : null, removed ? now : null, removed ? reason : null,
       ));
     }
-    if (agreement.needsRecord) {
-      writes.push(c.env.DB.prepare(
-        "INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?, ?, ?, ?) " +
-          "ON CONFLICT(user_id) DO NOTHING",
-      ).bind(writer.account, CC0_AGREEMENT_VERSION, now, agreement.verifiedAt));
-    }
+    // The acceptance (or the Turnstile stamp on one taken without a check)
+    // rides in the same batch as the write it authorises.
+    const agreementWrite = agreementStatement(c.env, writer.account, now, agreement);
+    if (agreementWrite) writes.push(agreementWrite);
     let changes = 0;
     try {
       const results = await c.env.DB.batch(writes);

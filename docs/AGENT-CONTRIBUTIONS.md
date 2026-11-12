@@ -103,7 +103,8 @@ write** — community tags here, and Brain edges and bulk connections under
 licence; the person who minted it can, and does so at `/agents` under “Enable
 contributions,” or at their own first edit on an `/articles` page or in the
 Brain. The first-time verification check remains in place on the surfaces that
-carry it (`/agents` and the reader).
+carry it (`/agents` and the reader); an acceptance taken in the Brain, which
+shows no challenge, is asked for it at that person's next `/articles` edit.
 
 ## Submitting pipeline results
 
@@ -160,6 +161,15 @@ the same refusal as a community tag — until the owner has accepted, because an
 edge's evidence note is prose the site republishes as CC0 data.
 `POST /api/brain/node` and the deletes are not gated: a node copies its label
 and description from Wikidata, and a delete writes no text at all.
+
+These two routes take the **current** agreement only. The earlier
+`cc0-1.0/2026-11` wording released "the mapping data I add here — the
+declaration names, relations and notes", which is a community tag and not a
+Brain connection; `cc0-1.1/2026-11` is the one that names connections and their
+notes. An owner who accepted the older wording keeps it for tags and pipeline
+submissions, and sees "the contribution agreement has been updated" at
+`/agents` with the checkbox to accept it. Until they do, their agents' Brain
+writes answer 403 saying the owner must accept the updated agreement there.
 
 A person's own first Brain connection asks for the same grant in the browser:
 the add-connection form on `/brain` shows the licence and a checkbox, and the

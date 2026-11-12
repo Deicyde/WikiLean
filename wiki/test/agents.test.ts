@@ -409,6 +409,37 @@ describe("agent Brain edits", () => {
     expect((await post(h.env, "/api/brain/edge", REL, as(agent.token))).status).toBe(201);
   });
 
+  // The superseded wording covered passage-tag mapping data, not an edge's
+  // note, so an owner still on it is asked for the updated agreement — and
+  // /agents is where they are told so and can give it.
+  it("are refused while the owner is on the superseded agreement, until they accept the update at /agents", async () => {
+    const h = setup();
+    installBrainFixture(h.env);
+    const acceptedAt = Date.now() - 86_400_000;
+    h.db.prepare("INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+      .run("u-human", "cc0-1.0/2026-11", acceptedAt);
+    const agent = await mint(h);
+
+    const refused = await post(h.env, "/api/brain/edge", REL, as(agent.token));
+    expect(refused.status).toBe(403);
+    const message = (await refused.json() as { error: string }).error;
+    expect(message).toContain("updated");
+    expect(message).toContain("/agents");
+    expect(h.db.prepare("SELECT COUNT(*) AS n FROM brain_edges").get()).toMatchObject({ n: 0 });
+
+    // The page tells the owner an update is waiting and offers the checkbox.
+    const page = await (await get(h.env, "/agents", { user: "u-human" })).text();
+    expect(page).toContain("contribution agreement has been updated");
+    expect(page).toContain('id="cc0-agreement"');
+    expect(page).toContain("Brain connections");
+
+    // Accepting records the current version and keeps the original timestamp.
+    expect((await post(h.env, "/api/agents/agreement", { cc0: true }, { user: "u-human" })).status).toBe(200);
+    expect(h.db.prepare("SELECT * FROM user_agreements WHERE user_id='u-human'").get())
+      .toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION, accepted_at: acceptedAt });
+    expect((await post(h.env, "/api/brain/edge", REL, as(agent.token))).status).toBe(201);
+  });
+
   it("are labelled ai whether or not the agent declares it; declaring human is refused", async () => {
     const h = setup();
     installBrainFixture(h.env);

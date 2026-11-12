@@ -537,22 +537,36 @@ export const CC0_AGREEMENT_TEXT =
   "into the public domain under CC0 1.0, and I confirm it is mine to release. " +
   "Wikipedia article text keeps its own licence (CC BY-SA 4.0) and Lean code keeps its library’s.";
 
-// Acceptances that still stand. `cc0-1.0/2026-11` named "the mapping data I add
-// here"; 1.1 only spells out that Brain connections and their notes are part of
-// it, which widens nothing a contributor granted, so an earlier acceptance is
-// not re-asked for.
+// Acceptances that still stand for the surfaces `cc0-1.0/2026-11` described.
+// Its words were "the mapping data I add here — the declaration names,
+// relations and notes", which is exactly what the formalization reader's
+// overlay tags and a pipeline submission store, so neither asks again.
 export const CC0_ACCEPTED_VERSIONS: readonly string[] = ["cc0-1.0/2026-11", CC0_AGREEMENT_VERSION];
 
-export function agreementStands(agreement: { cc0_version: string } | null | undefined): boolean {
-  return !!agreement && CC0_ACCEPTED_VERSIONS.includes(agreement.cc0_version);
+// Acceptances that stand for a BRAIN write. Only 1.1 names Brain connections
+// and their evidence notes; 1.0 covered passage-tag mapping data and is not a
+// grant for an edge's prose, so a contributor still on it is asked once more.
+export const CC0_BRAIN_VERSIONS: readonly string[] = [CC0_AGREEMENT_VERSION];
+
+export function agreementStands(
+  agreement: { cc0_version: string } | null | undefined,
+  versions: readonly string[] = CC0_ACCEPTED_VERSIONS,
+): boolean {
+  return !!agreement && versions.includes(agreement.cc0_version);
 }
 
 // What a writer is told when the grant is missing. The messages live here with
-// the gate so the overlay and the Brain answer in the same words.
+// the gate so the overlay and the Brain answer in the same words. The `UPDATE`
+// pair is for a contributor who accepted an earlier wording that does not cover
+// what they are writing now.
 export const CC0_REQUIRED = "the CC0 agreement is required before your first edit";
+export const CC0_UPDATE_REQUIRED =
+  "the contribution agreement has been updated; read and accept it to make this edit";
 export const TURNSTILE_REQUIRED = "a Turnstile check is required for a new account's first edit";
 export const CC0_AGENT_REQUIRED =
   "the person who minted this agent must accept the CC0 contribution agreement at /agents first";
+export const CC0_AGENT_UPDATE_REQUIRED =
+  "the person who minted this agent must accept the updated CC0 contribution agreement at /agents first";
 
 export interface UserAgreement {
   user_id: string;
@@ -573,17 +587,45 @@ export async function loadAgreement(env: Pick<Env, "DB">, accountId: string): Pr
   }
 }
 
+// One acceptance row per person, recording the CURRENT version. A later
+// re-acceptance (a wording change a surface needs granted explicitly) updates
+// the version in place and KEEPS the original `accepted_at`: that column is the
+// table's only timestamp and when the person first gave the grant is the fact
+// worth holding, so the moment they took the update is not recorded. An
+// acceptance never clears a Turnstile verification already on the row.
+export function agreementAcceptStatement(
+  env: Pick<Env, "DB">,
+  accountId: string,
+  now: number,
+  verifiedAt: number | null,
+): D1PreparedStatement {
+  return env.DB.prepare(
+    "INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?, ?, ?, ?) " +
+      "ON CONFLICT(user_id) DO UPDATE SET cc0_version = excluded.cc0_version, " +
+      "accepted_at = user_agreements.accepted_at, " +
+      "verified_at = COALESCE(user_agreements.verified_at, excluded.verified_at)",
+  ).bind(accountId, CC0_AGREEMENT_VERSION, now, verifiedAt);
+}
+
+// Stamp a Turnstile pass onto an acceptance that was taken without one (a Brain
+// form carries no widget, and a deployment with no secret skips the check).
+export function agreementVerifyStatement(
+  env: Pick<Env, "DB">,
+  accountId: string,
+  verifiedAt: number,
+): D1PreparedStatement {
+  return env.DB.prepare(
+    "UPDATE user_agreements SET verified_at = ? WHERE user_id = ? AND verified_at IS NULL",
+  ).bind(verifiedAt, accountId);
+}
+
 export function recordAgreement(
   env: Pick<Env, "DB">,
   accountId: string,
   now: number,
   verifiedAt: number | null,
 ): Promise<unknown> {
-  return env.DB.prepare(
-    "INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?, ?, ?, ?) " +
-      "ON CONFLICT(user_id) DO UPDATE SET cc0_version = excluded.cc0_version, accepted_at = excluded.accepted_at, " +
-      "verified_at = COALESCE(user_agreements.verified_at, excluded.verified_at)",
-  ).bind(accountId, CC0_AGREEMENT_VERSION, now, verifiedAt).run();
+  return agreementAcceptStatement(env, accountId, now, verifiedAt).run();
 }
 
 // ---- Turnstile on a new account's first edit (plan section 2.6) -------------
@@ -639,7 +681,16 @@ export async function verifyTurnstile(
 //
 // An agent cannot agree to a licence; its OWNER can, and must have, before any
 // of that person's agents may write (plan section 5.3, "Licence").
-export type AgreementStep = { needsRecord: false } | { needsRecord: true; verifiedAt: number | null };
+//
+// The step a caller must write once its own write goes ahead:
+//   none    the row on file already covers this write
+//   accept  record the current version (a first acceptance, or an update)
+//   verify  the acceptance stands but was taken without a Turnstile check and
+//           one has now been passed: stamp verified_at, leave the version be.
+export type AgreementStep =
+  | { record: "none" }
+  | { record: "accept"; verifiedAt: number | null }
+  | { record: "verify"; verifiedAt: number };
 
 export interface AgreementWriter {
   // Whose acceptance governs this write: an agent's owner, else the person
@@ -647,11 +698,21 @@ export interface AgreementWriter {
   account: string;
   // An agent's write, which is refused outright until its owner has accepted.
   isAgent: boolean;
-  // Ask a new account for a Turnstile check with its first acceptance. The
-  // overlay's form carries the widget and does; the Brain page has no widget,
-  // so its forms record an unverified acceptance (verified_at stays NULL)
-  // rather than refusing a contributor who has no way to pass the check.
+  // Which acceptances cover what this surface stores: CC0_ACCEPTED_VERSIONS for
+  // the overlay's passage tags, CC0_BRAIN_VERSIONS for a Brain connection,
+  // whose notes only the 1.1 wording names.
+  versions: readonly string[];
+  // Ask for the Turnstile check that rides with an acceptance. The overlay's
+  // form carries the widget and does; the Brain page has no widget, so its
+  // forms record an unverified acceptance (verified_at stays NULL) rather than
+  // refusing a contributor who has no way to pass the check. A surface that
+  // asks also holds an UNVERIFIED acceptance to it — otherwise taking the
+  // agreement on a widget-less form would buy a way past this check.
   turnstile: boolean;
+}
+
+function turnstileTokenOf(body: Record<string, unknown>): string | null {
+  return typeof body.turnstile_token === "string" && body.turnstile_token !== "" ? body.turnstile_token : null;
 }
 
 export async function requireAgreement(
@@ -660,19 +721,52 @@ export async function requireAgreement(
   body: Record<string, unknown>,
   now: number,
 ): Promise<AgreementStep | Response> {
-  if (agreementStands(await loadAgreement(c.env, writer.account))) return { needsRecord: false };
-  if (writer.isAgent) return c.json({ ok: false, error: CC0_AGENT_REQUIRED }, 403);
+  const agreement = await loadAgreement(c.env, writer.account);
+  if (agreementStands(agreement, writer.versions)) {
+    // The grant is on file. On a surface that asks for Turnstile, a PERSON's
+    // acceptance recorded without one still owes the check: without this,
+    // accepting on the Brain's widget-less form would skip the reader's
+    // first-edit check. An agent is never asked — it cannot answer a challenge,
+    // and it was never the challenge's subject (a bearer token with its own
+    // caps is); its owner answers one at /agents or at their own first edit.
+    if (!writer.turnstile || writer.isAgent || agreement!.verified_at !== null) return { record: "none" };
+    const verdict = await verifyTurnstile(c.env, turnstileTokenOf(body));
+    // No secret configured: the check is skipped site-wide, as it always was.
+    if (verdict === "skipped") return { record: "none" };
+    if (verdict === "failed") {
+      return c.json({ ok: false, error: TURNSTILE_REQUIRED, turnstile_required: true }, 403);
+    }
+    return { record: "verify", verifiedAt: now };
+  }
+  // No grant this surface can use. An earlier version on file means the
+  // contributor is being asked to accept an update, not a first agreement.
+  const updating = agreement !== null;
+  if (writer.isAgent) {
+    return c.json({ ok: false, error: updating ? CC0_AGENT_UPDATE_REQUIRED : CC0_AGENT_REQUIRED }, 403);
+  }
   if (body.cc0 !== true) {
     return c.json({
-      ok: false, error: CC0_REQUIRED, cc0_required: true,
+      ok: false, error: updating ? CC0_UPDATE_REQUIRED : CC0_REQUIRED, cc0_required: true,
       cc0_version: CC0_AGREEMENT_VERSION, cc0_text: CC0_AGREEMENT_TEXT,
     }, 403);
   }
-  if (!writer.turnstile) return { needsRecord: true, verifiedAt: null };
-  const token = typeof body.turnstile_token === "string" && body.turnstile_token !== "" ? body.turnstile_token : null;
-  const verdict = await verifyTurnstile(c.env, token);
+  if (!writer.turnstile) return { record: "accept", verifiedAt: null };
+  const verdict = await verifyTurnstile(c.env, turnstileTokenOf(body));
   if (verdict === "failed") {
     return c.json({ ok: false, error: TURNSTILE_REQUIRED, turnstile_required: true }, 403);
   }
-  return { needsRecord: true, verifiedAt: verdict === "ok" ? now : null };
+  return { record: "accept", verifiedAt: verdict === "ok" ? now : null };
+}
+
+// The one write a step asks for, for a caller to put in its own batch (the
+// overlay) or run on its own (the Brain). Null when there is nothing to record.
+export function agreementStatement(
+  env: Pick<Env, "DB">,
+  accountId: string,
+  now: number,
+  step: AgreementStep,
+): D1PreparedStatement | null {
+  if (step.record === "accept") return agreementAcceptStatement(env, accountId, now, step.verifiedAt);
+  if (step.record === "verify") return agreementVerifyStatement(env, accountId, step.verifiedAt);
+  return null;
 }
