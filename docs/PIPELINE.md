@@ -501,6 +501,16 @@ records no task held. The verdict vocabulary is `vocab.py`'s and the verdict sem
 `tally.py`'s, both already proved on batch 1's real verdicts.
 *Source:* `scripts/locate/challenge_plan.py`.
 
+**Plan rule 2 (issue #175).** Which rules a plan was drawn under is its `plan_rule`, in
+`challenge-plan.json`. Rule 1 is what the first runs were drawn with. Rule 2 changes two
+things, both on supporting passages: a **basis is required whatever its relation** (under
+rule 1 only a strong basis was, so a `hasPart` that alone made a passage `partial` fell to
+its stratum at `sample_rate`), and `hasPart` and `narrowMatch` **draw at
+`strong_sample_rate`** — the review behind the issue found 18 of its 22 wrong partial
+links sampled out at 0.2. `challenge.py`'s `--plan-rule` defaults to 2 and
+`challenge.plan()`'s argument to 1, so a replay of an older plan passes the rule it was
+drawn with and gets the same records back.
+
 **The prompts (`scripts/pipeline/prompts/`).** WikiLean's own, rendered from the run's own
 paths by `prompts.py`, which refuses a template with an unfilled slot. Four files per root:
 a shared `worker-system.md`, the mode's `worker.md`, and the two reviewer prompts. Three
