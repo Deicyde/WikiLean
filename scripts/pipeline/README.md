@@ -28,6 +28,7 @@ so the pipeline changes without a release.
 | `records.py` | 5 | the records of one passage, and the cut the layer gives it |
 | `export_records.py` | 6 | the sealed set, written |
 | `gate/` | 7 | the out-of-tree gate: rules 1 to 10, the text layer, the stager |
+| `gate/audit_sentences.py` | 7 | the sentence check over a sealed set, read-only (below) |
 | `tally.py` | 8 | documents → finding rows → the challenge → the status → outcome rows |
 | `carry.py` | 8 | the carry-over map between two cuts of one page |
 | `corpus.py` | 8, 10 | which files of a run's corpus are documents, and its receipt |
@@ -59,6 +60,40 @@ tree's text onto it and refuses a body the two readers disagree about, so a seco
 the collapse rule cannot creep in. And `wikinet` is the only module that may reach the
 network: `test_wikinet.py` greps every other module here and fails on one that names a
 fetch.
+
+## The sentence check (statement-cut rule 4, issue #172)
+
+A passage that starts inside a sentence where no rule of the cut starts one is a **gate
+finding** — rule 10, for a run whose `gate.json` names `statement_cut_rule: 4`, which is
+what `run/plan.py` now plans. Until it existed only the inventory prompt forbade those
+cuts, and sentences came out of a run as two to four passages, each with a status and
+links of its own for a claim no fragment states ("If x and y are integers," is not the
+zero-product law).
+
+What a start inside a sentence may stand at, which is what the prompt allows there:
+after one of `locate_text.CUT_CONNECTIVES`, at the fact after the reason its sentence
+opens with ("Since W is finite, …"), at a display formula of its own (R-SPLIT), or at a
+list item. Not after a bare "and" or "or", not at a list comma, and not at the step from
+a hypothesis to its conclusions. `Blocks.allowed_cut` is the list and
+`Blocks.cuts_a_sentence` the refusal; neither reads which side of a cut is a clause, so
+a `", and"` is taken at its word.
+
+**The finding names two passages.** Span-end rules 2 and 3 end a passage at the next
+passage's start, so a head placed inside a sentence truncates the passage before it as
+well. The worker is called again with the refusal, the path every other span fault takes.
+
+**The published records predate it.** The 48 articles of the published store keep their
+fragments until a new locate run re-cuts them, which is the operator's decision and no
+part of this check. To measure one exported set first — read-only, printing keys, ids,
+offsets and counts and never a word of an article:
+
+```bash
+python3 scripts/pipeline/gate/audit_sentences.py --record-set <dir> --sources <dir>
+```
+
+`--sources` is the rendered sources the set was cut from (stage 9a), because a span is
+an offset into one layer; a source whose layer is missing or not the one the set pins is
+reported as unchecked. Exit 0 nothing found, 1 something, 2 the set was refused.
 
 ## Running
 

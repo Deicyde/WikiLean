@@ -25,6 +25,7 @@ import tempfile
 import unittest
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 HERE = Path(__file__).resolve().parent
 for _candidate in (HERE, HERE.parent, HERE.parents[2] / "site"):
@@ -85,17 +86,30 @@ DECLS = [
 ]
 
 
-def _inventory_passages() -> list[dict]:
-    """The frozen cut of the synthetic source, keyed by the head rule itself."""
+def _inventory_passages(extra: int | None = None) -> list[dict]:
+    """The frozen cut of the synthetic source, keyed by the head rule itself.
+
+    ``extra`` is one more start, inside block 1: the sentence check's case, where the
+    added passage starts mid-sentence and the end rule truncates the one before it. The
+    compound block is then two passages, so neither carries the compound's conjuncts.
+    """
     head_map = lt.HeadMap(LAYER, FORMULAS)
     blocks = lt.Blocks(LAYER, PARAGRAPHS, FORMULAS)
     rows = []
     for number, (text, para) in enumerate(zip(BLOCK_TEXTS, PARAGRAPHS)):
         if number == 2:
             continue                                   # the display is no passage of its own
-        start = para["span"][0]
-        quote = " ".join(text.split()[:9])
+        start, stop = para["span"]
+        if extra is not None and start < extra < stop:
+            stop = extra                  # a quote stops where the next passage starts
+        quote = " ".join(LAYER[start:stop].split()[:9])
         rows.append({"start": start, "quote": quote, "number": number})
+    if extra is not None:
+        held = next(para for para in PARAGRAPHS if para["span"][0] <= extra < para["span"][1])
+        rows.append({"start": extra,
+                     "quote": " ".join(LAYER[extra:held["span"][1]].split()[:9]),
+                     "number": 4})
+        rows.sort(key=lambda row: row["start"])
     starts = sorted(row["start"] for row in rows)
     ids = lt.assign_ids(head_map.head, [head_map.to_head(row["start"]) for row in rows])
     out = []
@@ -108,9 +122,9 @@ def _inventory_passages() -> list[dict]:
                    "quote": {"exact": row["quote"], "prefix": "", "suffix": ""},
                    "passage_kind": "definition" if row["number"] == 0 else "theorem",
                    "prominence": "subject" if row["number"] == 0 else "supporting",
-                   "scope": "formal_math" if row["number"] < 3 else "expository",
+                   "scope": "expository" if row["number"] == 3 else "formal_math",
                    "statement": f"A restatement of block {row['number']}."}
-        if row["number"] == 1:
+        if row["number"] == 1 and extra is None:
             passage["conjuncts"] = [{"id": "c1", "text": "every sprocket is finite"},
                                     {"id": "c2", "text": "every finite gadget is a sprocket"}]
             passage["shape"] = "conclusions"
@@ -123,6 +137,9 @@ def _inventory_passages() -> list[dict]:
 INVENTORY_PASSAGES = _inventory_passages()
 LEAD, COMPOUND, PROSE = INVENTORY_PASSAGES
 HTML_SHA = "d" * 64
+#: The bare "and" of block 1: a word of the sentence where no rule of the cut starts a
+#: passage, which is what statement-cut rule 4 refuses (issue #172).
+BARE_AND = LAYER.index("and every finite gadget")
 
 
 def location(declaration: str, relation: str, rank: int, **extra) -> dict:
@@ -183,6 +200,14 @@ def good_inventory_document() -> dict:
                    "reason": "a display the statements above already state"}],
         "notes": "",
     }
+
+
+def mid_sentence_inventory_document() -> dict:
+    """The good inventory with block 1 cut at its bare "and": the start statement-cut
+    rule 4 refuses, and the passage the end rule truncates there."""
+    doc = good_inventory_document()
+    doc["passages"] = _inventory_passages(BARE_AND)
+    return doc
 
 
 class Fixture:
@@ -308,6 +333,14 @@ class GatePassesTests(unittest.TestCase):
     def test_a_good_inventory_passes(self):
         with tempfile.TemporaryDirectory() as other:
             fixture = Fixture(Path(other), mode=vocab.MODE_INVENTORY)
+            code, text = fixture.run()
+            self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_a_good_inventory_passes_the_sentence_check_too(self):
+        """Statement-cut rule 4 refuses nothing a whole-sentence cut writes."""
+        with tempfile.TemporaryDirectory() as other:
+            fixture = Fixture(Path(other), mode=vocab.MODE_INVENTORY)
+            fixture.set_gate(statement_cut_rule=4)
             code, text = fixture.run()
             self.assertEqual(code, gate.EXIT_OK, text)
 
@@ -650,6 +683,219 @@ class EachRuleFiresTests(unittest.TestCase):
             code, text = fixture.run()
             self.assertEqual(code, gate.EXIT_REJECTED, text)
             self.assertIn("rule 10:", text)
+
+    def test_rule10_fires_on_a_passage_that_starts_inside_a_sentence(self):
+        """Issue #172: the cut of block 1 at its bare "and", at rule 4 and not before."""
+        with tempfile.TemporaryDirectory() as other:
+            fixture = Fixture(Path(other), mode=vocab.MODE_INVENTORY)
+            doc = mid_sentence_inventory_document()
+            fragment = next(p for p in doc["passages"] if p["span"][0] == BARE_AND)
+            before = next(p for p in doc["passages"]
+                          if p["span"][0] == PARAGRAPHS[1]["span"][0])
+            fixture.write(doc)
+            fixture.set_gate(statement_cut_rule=4)
+            code, text = fixture.run()
+            self.assertEqual(code, gate.EXIT_REJECTED, text)
+            self.assertIn("rule 10:", text)
+            self.assertIn("inside a sentence", text)
+            # the sentence is the whole fault: the two spans are disjoint and in bounds
+            self.assertIn("1 problem(s)", text)
+            # the refusal names the fragment AND the passage the end rule truncates
+            self.assertIn(fragment["item"], text)
+            self.assertIn(before["item"], text)
+            self.assertLessEqual(before["span"][1], BARE_AND)
+            # the cut rules before 4 do not know the check
+            fixture.set_gate(statement_cut_rule=3)
+            code, text = fixture.run()
+            self.assertEqual(code, gate.EXIT_OK, text)
+
+
+def _sentence(text: str, formulas: tuple = (), block: str = "p") -> lt.Blocks:
+    """One synthetic paragraph as a :class:`locate_text.Blocks`.
+
+    Every sentence passed here is invented for this file. Issue #172 names the article
+    sentences that prompted the check; none of them is in this repository.
+    """
+    paragraphs = [{"block": block, "span": [0, len(text)], "math": block == "math"}]
+    return lt.Blocks(text, paragraphs,
+                     [{"span": list(span), "alttext": alt} for span, alt in formulas])
+
+
+class SentenceCutTests(unittest.TestCase):
+    """Statement-cut rule 4: which starts inside a sentence are cuts, and which are not.
+
+    One case per cut issue #172 lists, and one per cut the inventory prompt allows
+    there. ``cuts_a_sentence`` is what gate rule 10 and ``audit_sentences.py`` both call.
+    """
+
+    #: (what it is, the sentence, the words the passage would start at) — refused.
+    REFUSED = (
+        ("a bare \"and\" inside a noun phrase",
+         "The empty set and the whole space are both open.", "the whole space"),
+        ("a list comma",
+         "Widgets, gadgets and sprockets are all finite.", "gadgets and"),
+        ("a hypothesis and its conclusion",
+         "If x and y are widgets, then the product xy is a widget.", "then the product"),
+        ("inside a noun phrase joined by \"or\"",
+         "Open subsets of a widget or a gadget are connected.", "a gadget are"),
+        ("a bare \"and\" joining two equations",
+         "Here 4 = 2 x 2 and 6 = 2 x 3 are both composite.", "6 = 2 x 3"),
+        ("two conclusions one hypothesis governs",
+         "If W is finite, then W is round, and it is sprocketed.", "it is sprocketed"),
+    )
+    #: The same, for the cuts the prompt does put inside a sentence — all allowed.
+    ALLOWED = (
+        ("\", and\" before a clause of its own",
+         "A widget is finite, and it is round.", "it is round"),
+        ("a semicolon",
+         "A widget is round; it is also finite.", "it is also"),
+        ("the connective \"so\"",
+         "A widget is round, so it is finite.", "it is finite"),
+        ("the connective \"hence\"",
+         "A widget is finite, hence it is round.", "it is round"),
+        ("the connective \"moreover\"",
+         "A widget is round, moreover it is finite.", "it is finite"),
+        ("the conclusion after the reason its sentence opens with",
+         "Since a widget is finite, it is round.", "it is round"),
+        ("an inline list item",
+         "The cases are: a) finite widgets, b) round widgets.", "b) round"),
+    )
+
+    def test_a_cut_no_rule_allows_is_a_fault(self):
+        for what, text, words in self.REFUSED:
+            with self.subTest(what=what):
+                blocks = _sentence(text)
+                start = text.index(words)
+                self.assertTrue(blocks.mid_sentence(start), what)
+                self.assertIsNone(blocks.allowed_cut(start), what)
+                self.assertTrue(blocks.cuts_a_sentence(start), what)
+
+    def test_every_cut_the_prompt_allows_stays_allowed(self):
+        for what, text, words in self.ALLOWED:
+            with self.subTest(what=what):
+                blocks = _sentence(text)
+                start = text.index(words)
+                self.assertTrue(blocks.mid_sentence(start), what)
+                self.assertIsNotNone(blocks.allowed_cut(start), what)
+                self.assertFalse(blocks.cuts_a_sentence(start), what)
+
+    def test_a_second_display_formula_starts_a_passage(self):
+        text = "S = W T = V"
+        blocks = _sentence(text, formulas=(([0, 5], "S = W"), ([6, 11], "T = V")),
+                           block="math")
+        self.assertTrue(blocks.mid_sentence(6))
+        self.assertEqual(blocks.allowed_cut(6), lt.CUT_FORMULA)
+        self.assertFalse(blocks.cuts_a_sentence(6))
+
+    def test_a_formula_inside_a_paragraph_is_no_display_and_starts_nothing(self):
+        text = "Note S = W and T = V here."
+        blocks = _sentence(text, formulas=(([5, 10], "S = W"), ([15, 20], "T = V")))
+        self.assertTrue(blocks.cuts_a_sentence(15))
+
+    def test_a_passage_that_starts_a_sentence_is_no_cut_at_all(self):
+        text = "A widget is round. A gadget is finite."
+        blocks = _sentence(text)
+        for start in (0, text.index("A gadget")):
+            self.assertFalse(blocks.mid_sentence(start))
+            self.assertFalse(blocks.cuts_a_sentence(start))
+
+    def test_every_passage_of_the_synthetic_source_is_a_whole_sentence(self):
+        blocks = lt.Blocks(LAYER, PARAGRAPHS, FORMULAS)
+        for passage in INVENTORY_PASSAGES:
+            self.assertFalse(blocks.cuts_a_sentence(passage["span"][0]), passage["item"])
+        self.assertTrue(blocks.cuts_a_sentence(BARE_AND))
+
+
+class AuditTests(unittest.TestCase):
+    """``audit_sentences.py``: the gate's check over a sealed set, reading only.
+
+    The set is the pipeline's own synthetic fixture, written here with one article's
+    sentence cut at a bare "and", so the audit has something to count. Nothing in this
+    test touches the committed fixture.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        fixtures = str(HERE.parent / "fixtures")      # make_fixture, the set's writer
+        if fixtures not in sys.path:
+            sys.path.insert(0, fixtures)
+
+    def _set(self, root: Path) -> tuple[Path, Path]:
+        """``(sealed set, rendered sources)``, the set's second passage cut mid-sentence."""
+        import make_fixture
+
+        layers = dict(make_fixture.LAYERS)
+        layers["enwiki-1001-2002"] = [
+            "A widget is a gadget that carries a handle and a spanning frame around it.",
+            "Every finite widget admits a spanning gadget and",
+            "two such gadgets of one finite widget are equal.",
+            "Worked example: the three-handled widget has one spanning gadget, drawn below.",
+            "A reader who prefers frames to handles may skip the rest of this section.",
+        ]
+        with mock.patch.object(make_fixture, "LAYERS", layers):
+            make_fixture.write(root / "set")
+            sources = root / "sources"
+            for source_id in layers:
+                layer, _spans = make_fixture.layer_of(source_id)
+                directory = sources / source_id
+                directory.mkdir(parents=True)
+                (directory / "layer.txt").write_text(layer, encoding="utf-8")
+                (directory / "paragraphs.json").write_text(
+                    json.dumps([{"block": "p", "span": [0, len(layer)], "math": False}]),
+                    encoding="utf-8")
+                (directory / "formulas.json").write_text("[]", encoding="utf-8")
+        return root / "set", sources
+
+    def test_the_audit_counts_the_fragments_and_names_what_they_truncate(self):
+        import audit_sentences
+        import make_fixture
+
+        with tempfile.TemporaryDirectory() as tmp:
+            set_dir, sources = self._set(Path(tmp))
+            result = audit_sentences.audit(set_dir, sources)
+            self.assertEqual(result["totals"]["passages"], 1)
+            self.assertEqual(result["totals"]["located"], 1)
+            self.assertEqual(result["totals"]["sources_checked"], 2)
+            self.assertEqual(result["totals"]["sources_with_a_cut_no_rule_allows"], 1)
+            entry = result["sources"][0]["passages"][0]
+            self.assertEqual(len(entry["passage_key"]), 64)
+            self.assertIsNotNone(entry["truncates"])
+            # it prints keys, ids, offsets and counts — never the article's own words
+            printed = "\n".join(audit_sentences.report(result))
+            for source_id in ("enwiki-1001-2002", "enwiki-1003-2004"):
+                words = make_fixture.layer_of(source_id)[0].split()
+                for at in range(len(words) - 2):
+                    self.assertNotIn(" ".join(words[at:at + 3]), printed)
+
+    def test_the_audit_says_which_sources_it_could_not_check(self):
+        import audit_sentences
+
+        with tempfile.TemporaryDirectory() as tmp:
+            set_dir, sources = self._set(Path(tmp))
+            (sources / "enwiki-1003-2004" / "layer.txt").write_text("not the layer",
+                                                                    encoding="utf-8")
+            result = audit_sentences.audit(set_dir, sources)
+            self.assertEqual([row["source_id"] for row in result["unchecked"]],
+                             ["enwiki-1003-2004"])
+            self.assertIn("a span is an offset into one layer",
+                          result["unchecked"][0]["reason"])
+            self.assertEqual(result["totals"]["sources_checked"], 1)
+
+    def test_the_exit_code_says_whether_anything_was_found(self):
+        import audit_sentences
+
+        with tempfile.TemporaryDirectory() as tmp:
+            set_dir, sources = self._set(Path(tmp))
+            written = io.StringIO()
+            with redirect_stdout(written), redirect_stderr(io.StringIO()):
+                found = audit_sentences.main(["--record-set", str(set_dir),
+                                              "--sources", str(sources), "--json"])
+            self.assertEqual(found, audit_sentences.EXIT_FOUND)
+            self.assertEqual(json.loads(written.getvalue())["totals"]["passages"], 1)
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                missing = audit_sentences.main(["--record-set", str(set_dir),
+                                                "--sources", str(Path(tmp) / "none")])
+            self.assertEqual(missing, audit_sentences.EXIT_REFUSED)
 
 
 class StagingTests(unittest.TestCase):

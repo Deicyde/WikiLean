@@ -327,7 +327,23 @@ another machine unchanged — which is what lets a contribute package carry one.
 **What is proved.** From batch 1's layers alone, the head rule reproduces all 5,791 passage
 ids of the inventory corpus and the span-end rule all 5,791 span ends; and all 997 harvested
 documents of the four corpora re-gate PASS, as their receipts say. Each rule has a synthetic
-breaking case, and the suite asserts all ten are covered.
+breaking case, and the suite asserts all ten are covered. That re-gate is of the rule set
+those runs pinned, which is statement-cut rule 3 and below; it says nothing about the
+sentence check rule 4 adds.
+
+**Statement-cut rule 4 — the sentence check (issue #172).** Rule 10 refuses a passage that
+starts inside a sentence where no rule of the cut starts one: a bare "and" or "or", a list
+comma, or the step from a hypothesis to its conclusions. `locate_text.Blocks.allowed_cut`
+holds what the inventory prompt does allow there — a piece after one of `CUT_CONNECTIVES`,
+the fact after the reason its sentence opens with, a display formula of its own (R-SPLIT),
+and a list item — and `cuts_a_sentence` is the refusal. Because span-end rules 2 and 3 end a
+passage at the next passage's start, a head placed inside a sentence truncates the passage
+before it too, so **the finding names both passages**; the worker is called again with it,
+the same path as every other span fault. The prompt moved in the same commit: its start rule
+is the gate's, and R-INSTANCE now cuts per structure only where each piece may start, the
+rest of the time writing one compound passage with a conjunct per structure. The published
+records predate the check, and `gate/audit_sentences.py` measures an exported record set
+against it without re-running anything.
 
 **What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
 prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
@@ -459,7 +475,7 @@ differences from formal-companion's worth stating:
 
 - **No conditional arms.** formal-companion's templates carry `{{#if}}` blocks for the rule
   versions a plan may run under; WikiLean's are written for the one set its gate enforces —
-  span-end rule 3, statement-cut rule 3, judgment rules 4 — and a change of rule is a change
+  span-end rule 3, statement-cut rule 4, judgment rules 4 — and a change of rule is a change
   of prompt in the same commit as the gate.
 - **The judgment rules are one text.** R1 to R7, the policy defaults and the readings live in
   `prompts/judgment-rules.md.part`, which both the locate and the challenge prompt render.

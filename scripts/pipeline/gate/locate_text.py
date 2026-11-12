@@ -420,6 +420,20 @@ CLOSING_MARKS = frozenset(")]\"'\u2019\u201d\u00bb")
 CUT_CONNECTIVES = (";", "since", "because", "so", "hence", "then", "moreover", ", and")
 #: What else separates two pieces of one sentence.
 SEPARATOR_MARKS = frozenset(",;")
+#: A sentence that opens with one of these opens with its reason, and the fact it gives
+#: the reason for starts after that clause's comma ("Since W is finite, W is sprocketed").
+#: Each is a word of :data:`CUT_CONNECTIVES`: the same cut, read from the other end.
+REASON_OPENERS = ("since", "because")
+#: A sentence that opens with one of these states a hypothesis, and no cut of the rules
+#: separates it from its conclusions or those conclusions from each other, "however many
+#: it governs" — a ``then`` of :data:`CUT_CONNECTIVES` included, which is where an
+#: "if … then …" would otherwise be cut in two.
+HYPOTHESIS_OPENERS = ("if", "when", "whenever", "suppose", "assume", "let", "given")
+#: What :meth:`Blocks.allowed_cut` answers with: the rule that puts a passage start
+#: inside a sentence. Anything else there is a fragment of a sentence nobody cut.
+CUT_FORMULA = "a display formula of its own (R-SPLIT)"
+CUT_ITEM = "a list item"
+CUT_REASON = "the conclusion after the reason its sentence opens with"
 #: The one block a sentence continues into after its display: a plain paragraph, never a
 #: list item, a ``dd``, a quotation or a theorem box.
 CONTINUATION_BLOCK = "p"
@@ -558,6 +572,9 @@ class Blocks:
         spans.sort()
         self.formulas = spans
         self._formula_starts = [f[0] for f in spans]
+        #: :meth:`sentence_at`'s reading of one block, kept because the sentence check
+        #: asks for it once per passage start and a block holds several
+        self._sentences: dict[tuple[int, int], list[tuple[int, int]]] = {}
 
     @classmethod
     def of(cls, layer: str, paragraphs: "Sequence[dict] | Blocks",
@@ -930,6 +947,112 @@ class Blocks:
         last, stops = self._last(block.start, i)
         return bool(last) and not stops
 
+    def sentence_at(self, offset: int) -> tuple[int, int] | None:
+        """The sentence of ``offset``'s block that holds it, as ``(start, end)``.
+
+        :meth:`units` read over the whole block, so the cut's check and the receipt's
+        counts have one definition of a sentence between them. None where ``offset`` is
+        in no block, or in the whitespace between two sentences.
+        """
+        block = self.block_at(offset)
+        if block is None:
+            return None
+        found = self._sentences.get(block.span)
+        if found is None:
+            found = [(int(a), int(b))
+                     for a, b in self.units(list(block.span))["sentences"]]
+            self._sentences[block.span] = found
+        for a, b in found:
+            if a <= offset < b:
+                return a, b
+        return None
+
+    def allowed_cut(self, start: int) -> str | None:
+        """Which rule of the cut starts a passage at ``start``, inside a sentence.
+
+        The inventory's own rules, in the words of ``prompts/inventory-worker.md.tmpl``
+        ("Inside a sentence", "Displays", "Lists"): a piece after one of
+        :data:`CUT_CONNECTIVES`, the fact after the reason its sentence opens with, a
+        display's second and later formulas (R-SPLIT; a formula inside a paragraph is no
+        display and starts no passage), and a list item. None when no rule does — which
+        is :meth:`cuts_a_sentence`.
+
+        What it cannot read is which side of a cut is a clause of its own, so a
+        ``", and"`` is taken at its word. What it refuses is a bare ``and`` or ``or``, a
+        list comma, and the step from a hypothesis to its conclusion: none of the three
+        is a cut of the rules, and each leaves a fragment that states nothing.
+        """
+        block = self.block_at(start)
+        if block is None:
+            return None
+        if self.formula_starts_at(start) and self.is_display(block):
+            return CUT_FORMULA
+        if _ITEM_LABEL.match(self._word_from(start, block.end)):
+            return CUT_ITEM
+        if self._hypothesis_sentence(start):
+            return None
+        layer = self.layer
+        j = start
+        while j > block.start and _is_white(layer[j - 1]) and self.formula_at(j - 1) is None:
+            j -= 1
+        if j > block.start and layer[j - 1] == ";" and self.formula_at(j - 1) is None:
+            return "the connective ';'"
+        found = self._connective_before(block.start, j)
+        if found is not None:
+            return f"the connective {found[1]!r}"
+        if self._after_reason(block, start, j):
+            return CUT_REASON
+        return None
+
+    def cuts_a_sentence(self, start: int) -> bool:
+        """Does a passage that starts at ``start`` start inside a sentence at no cut of
+        the rules? Gate rule 10's sentence check, and the audit command's."""
+        return self.mid_sentence(start) and self.allowed_cut(start) is None
+
+    def _hypothesis_sentence(self, start: int) -> bool:
+        """Does ``start``'s sentence open with a hypothesis? Then no word of it is a cut:
+        a conclusion is never cut from the hypothesis that governs it, nor from the
+        other conclusions it governs.
+        """
+        sentence = self.sentence_at(start)
+        if sentence is None:
+            return False
+        return self._word_from(sentence[0], start).rstrip(",;:").lower() \
+            in HYPOTHESIS_OPENERS
+
+    def _word_from(self, at: int, end: int) -> str:
+        """The word at ``at``, its opening marks set aside; '' where a formula is."""
+        layer = self.layer
+        i = at
+        while i < end and layer[i] in OPENING_MARKS and self.formula_at(i) is None:
+            i += 1
+        if i >= end or self.formula_at(i) is not None:
+            return ""
+        j = i
+        while j < end and not _is_white(layer[j]) and self.formula_at(j) is None:
+            j += 1
+        return layer[i:j]
+
+    def _after_reason(self, block: Block, start: int, j: int) -> bool:
+        """Is ``start`` (whose words begin at ``j`` less its whitespace) the fact after
+        the reason its sentence opens with?
+
+        The reason is the sentence's **first** clause, so the comma ``start`` follows is
+        the first one of the sentence: a later comma is a list's or an aside's, and no
+        cut of the rules stands there.
+        """
+        layer = self.layer
+        if not (j > block.start and layer[j - 1] == "," and self.formula_at(j - 1) is None):
+            return False
+        sentence = self.sentence_at(start)
+        if sentence is None:
+            return False
+        a = sentence[0]
+        if self._word_from(a, j).rstrip(",;:").lower() not in REASON_OPENERS:
+            return False
+        return not any(layer[k] == "," and self.formula_at(k) is None
+                       for k in range(a, j - 1))
+
     def separator_start(self, start: int, at: int) -> int:
         """Where the separator before ``at`` (the next passage's start) begins.
 
@@ -956,6 +1079,15 @@ class Blocks:
         layer = self.layer
         if j - 1 > start and layer[j - 1] in SEPARATOR_MARKS and self.formula_at(j - 1) is None:
             return j - 1
+        found = self._connective_before(start, j)
+        return j if found is None else found[0]
+
+    def _connective_before(self, start: int, j: int) -> tuple[int, str] | None:
+        """``(offset, connective)`` of the one word of :data:`CUT_CONNECTIVES` that ends
+        at ``j`` and stands after ``start``, else None. ``";"`` is no word: it is a
+        separating mark, read as one wherever this is called.
+        """
+        layer = self.layer
         for connective in CUT_CONNECTIVES:
             word = connective.lstrip(",; ")
             if not word:
@@ -974,8 +1106,8 @@ class Blocks:
                     m -= 1
                 if not (m > start and layer[m - 1] == ","):
                     continue
-            return k
-        return j
+            return k, connective
+        return None
 
     def cut_points(self, span: Sequence[int]) -> list[tuple[int, str]]:
         """``[(offset, connective)]``: where a connective stands strictly inside the span.
