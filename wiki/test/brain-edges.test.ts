@@ -12,6 +12,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { setup, post, get, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import { app } from "../src/index.js";
 import { _brainEditCacheReleaseIds, _resetBrainEditCaches } from "../src/brain-edits.js";
+import { CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
 import { _resetBrainAssetMemo } from "../src/brain.js";
 import {
   installBrainFixture,
@@ -51,9 +52,19 @@ function installBrainAssets(
   });
 }
 
+// An edge carries the contributor's own evidence note, so a write needs the
+// CC0 grant on record (the same gate as the reader's overlay). Record it the
+// way an earlier edit would have, so the ordinary cases below are not about
+// the first-edit flow — "the CC0 grant" describes it on its own.
+function agreed(h: Harness, userId = "u-human", version = CC0_AGREEMENT_VERSION): void {
+  h.db.prepare("INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+    .run(userId, version, Date.now());
+}
+
 function harness(opts: Parameters<typeof setup>[0] = {}): Harness {
   const h = setup(opts);
   installBrainAssets(h.env);
+  agreed(h);
   return h;
 }
 
@@ -501,6 +512,26 @@ describe("POST /api/brain/quickstatements", () => {
     });
   });
 
+  it("mints a QID the Brain does not have yet, in the same batch as the row's edges", async () => {
+    const h = harness();
+    const QID = "Q5530428";
+    const WD = { [QID]: { labels: { en: { value: "GNS construction" } }, descriptions: { en: { value: "a construction" } } } };
+    const res = await withWikidata(WD, () => postQuick(
+      h,
+      { databases: ["wikidata", "nlab"], items: [{ qid: QID, nlab: "gns_construction", note: "same object" }] },
+      { user: "u-human" },
+    ));
+    expect(res.status).toBe(200);
+    const nodes = h.db.prepare("SELECT * FROM brain_nodes").all() as Array<Record<string, unknown>>;
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({
+      id: QID, label: "GNS construction", description: "a construction", node_type: "concept",
+      added_by: "u-human", actor_type: "human", status: "live", version: 1,
+    });
+    expect(edgeRows(h)).toHaveLength(1);
+    expect(edgeRows(h)[0]).toMatchObject({ src: QID, dst: "xref:nlab:gns_construction", kind: "xref" });
+  });
+
   it("keeps good rows when another row is invalid", async () => {
     const h = harness();
     const res = await postQuick(
@@ -515,6 +546,253 @@ describe("POST /api/brain/quickstatements", () => {
     expect(j.rows.some((r) => r.ok === false && String(r.error).includes("LMFDB"))).toBe(true);
     expect(edgeRows(h)).toHaveLength(3);
     expect((await lmfdbQueue(h)).items).toHaveLength(1);
+  });
+});
+
+// D1 allows 1,000 queries per Worker invocation and counts one batch() as one
+// query. A row's writes therefore go out as a single batch: a 100-row submit
+// over every database costs about 100 D1 calls, not the ~6,000 statements it
+// would cost one at a time, and a row that fails writes nothing at all.
+describe("POST /api/brain/quickstatements — the D1 per-invocation budget", () => {
+  const ALL_DBS = [
+    "mathlib", "wikidata", "brain", "lmfdb", "nlab", "mathworld",
+    "proofwiki", "oeis", "stacks", "kerodon", "dlmf", "metamath",
+  ];
+
+  // Count what the Worker spends against the per-invocation cap: a prepared
+  // statement run on its own is one query, and a batch is one query however
+  // many statements it carries. Mirrors the D1 surface helpers/d1shim.ts
+  // implements, so the real app code runs unchanged underneath.
+  interface D1Spend { calls: () => number; statements: () => number }
+  interface Stmt {
+    bind: (...args: unknown[]) => Stmt;
+    run: () => unknown;
+    all: () => unknown;
+    raw: () => unknown;
+    first: () => unknown;
+    _batchExec: () => unknown;
+  }
+  interface Db { prepare: (sql: string) => Stmt; batch: (stmts: Stmt[]) => unknown }
+
+  function countD1(env: Env): D1Spend {
+    let calls = 0;
+    let statements = 0;
+    const real = env.DB as unknown as Db;
+    const wrap = (st: Stmt): Stmt => ({
+      bind: (...args: unknown[]) => wrap(st.bind(...args)),
+      run: () => { calls++; statements++; return st.run(); },
+      all: () => { calls++; statements++; return st.all(); },
+      raw: () => { calls++; statements++; return st.raw(); },
+      first: () => { calls++; statements++; return st.first(); },
+      _batchExec: () => st._batchExec(),
+    });
+    const counting: Db = {
+      prepare: (sql) => wrap(real.prepare(sql)),
+      batch: (stmts) => { calls++; statements += stmts.length; return real.batch(stmts); },
+    };
+    (env as unknown as { DB: unknown }).DB = counting;
+    return { calls: () => calls, statements: () => statements };
+  }
+
+  // Every row names its own nodes, so no two rows write the same edge. The
+  // extra organs make each one resolvable against the oracle without a
+  // Wikidata round trip (the network is blocked in these tests).
+  function bulkHarness(rows: number): Harness {
+    const organs: Record<string, string> = {};
+    for (let i = 0; i < rows; i++) {
+      organs[`decl:Mathlib:Bulk${i}`] = MODULE_CELL;
+      organs[`Q90${i}`] = MODULE_CELL;
+      organs[`decl:Mathlib:Node${i}`] = MODULE_CELL;
+    }
+    const h = setup();
+    installBrainAssets(h.env, organs);
+    agreed(h);
+    return h;
+  }
+
+  function bulkRow(i: number): Record<string, string> {
+    return {
+      mathlib: `Bulk${i}`,
+      file: "Mathlib/Algebra/Group/Defs.lean",
+      wikidata: `Q90${i}`,
+      brain: `decl:Mathlib:Node${i}`,
+      lmfdb: `group.bulk${i}`,
+      nlab: `nlab_${i}`,
+      mathworld: `MathWorld${i}`,
+      proofwiki: `Definition:Bulk_${i}`,
+      oeis: `A00000${i}`,
+      stacks: `0A0${i}`,
+      kerodon: `tag/00${i}`,
+      dlmf: `1.2.E${i}`,
+      metamath: `df-bulk${i}`,
+      note: "bulk connection",
+    };
+  }
+
+  it("spends about one D1 call a row on a 100-row all-databases submit", async () => {
+    const h = bulkHarness(100);
+    const spend = countD1(h.env);
+    const items = Array.from({ length: 100 }, (_, i) => bulkRow(i));
+    const res = await postQuick(h, { databases: ALL_DBS, items }, { user: "u-human" });
+    expect(res.status).toBe(200);
+    const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
+    expect(j).toMatchObject({ accepted: 100, failed: 0 });
+    // 3 node databases and 9 external ones: 3×9 xref edges + 3 node pairs.
+    expect((j.rows[0].edges as unknown[])).toHaveLength(30);
+    expect(edgeRows(h)).toHaveLength(3000);
+    // One batch a row, plus the handful of setup reads (the session lookup).
+    expect(spend.calls()).toBeLessThanOrEqual(110);
+    expect(spend.calls()).toBeGreaterThanOrEqual(100);
+    // …carrying far more statements than the 1,000 the old one-at-a-time path
+    // would have spent as separate queries.
+    expect(spend.statements()).toBeGreaterThan(5000);
+  });
+
+  it("reports edges that already exist as duplicates, and new ones as new", async () => {
+    const h = harness();
+    const first = await postQuick(h, { databases: ["mathlib", "lmfdb"], items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(first.status).toBe(200);
+    expect(edgeRows(h)).toHaveLength(1);
+
+    // The same Mathlib↔LMFDB pair plus a Wikidata column: that one edge is
+    // already live, the other two are new.
+    const second = await postQuick(h, { databases: ["mathlib", "wikidata", "lmfdb"], items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(second.status).toBe(200);
+    const edges = (await second.json() as { rows: Array<{ edges: Array<Record<string, unknown>> }> }).rows[0].edges;
+    expect(edges).toHaveLength(3);
+    const repeated = edges.filter((e) => e.duplicate === true);
+    expect(repeated).toHaveLength(1);
+    expect(repeated[0]).toMatchObject({ src: DECL, dst: XREF_DST, kind: "xref" });
+    expect(edgeRows(h)).toHaveLength(3);
+    // The duplicate keeps the id the first submit minted.
+    expect(repeated[0].id).toBe(edgeRows(h).find((r) => r.src === DECL && r.kind === "xref")!.id);
+  });
+
+  it("writes nothing for a row whose batch fails, and says why", async () => {
+    const h = harness();
+    // Refuse one of the row's edges inside the transaction, the way a
+    // constraint or a D1 limit would.
+    h.db.exec(
+      "CREATE TRIGGER refuse_nlab BEFORE INSERT ON brain_edges WHEN NEW.dst LIKE 'xref:nlab:%' " +
+      "BEGIN SELECT RAISE(ABORT, 'refused by the test trigger'); END",
+    );
+    const res = await postQuick(
+      h,
+      {
+        databases: ["mathlib", "wikidata", "nlab"],
+        items: [{ mathlib: "CommGroup", file: "Mathlib/Algebra/Group/Defs.lean", qid: CONCEPT, nlab: "abelian_group" }],
+      },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(400);
+    const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
+    expect(j).toMatchObject({ accepted: 0, failed: 1 });
+    expect(String(j.rows[0].error)).toContain("could not save row");
+    expect(String(j.rows[0].error)).toContain("refused by the test trigger");
+    // The formalizes edge and the Wikidata xref were in the same batch: the
+    // row left no partial write behind.
+    expect(edgeRows(h)).toHaveLength(0);
+  });
+});
+
+// The routes that store a contributor's own prose take the CC0 grant once, at
+// their first edit, exactly as the formalization reader's overlay does: the
+// evidence note is published through GET /api/brain/edges under a CC0 claim.
+describe("the CC0 grant on Brain writes", () => {
+  function ungreed(): Harness {
+    const h = setup();
+    installBrainAssets(h.env);
+    return h;
+  }
+
+  const agreementRow = (h: Harness) =>
+    h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown> | undefined;
+
+  it("asks a person for it at their first edge, then records it", async () => {
+    const h = ungreed();
+    const refused = await postEdge(h, REL, { user: "u-human" });
+    expect(refused.status).toBe(403);
+    const body = await refused.json() as Record<string, unknown>;
+    expect(body).toMatchObject({ cc0_required: true, cc0_version: CC0_AGREEMENT_VERSION });
+    expect(body.cc0_text).toBe(CC0_AGREEMENT_TEXT);
+    expect(String(body.cc0_text)).toContain("Brain connections");
+    expect(edgeRows(h)).toHaveLength(0);
+    expect(agreementRow(h)).toBeUndefined();
+
+    const accepted = await postEdge(h, { ...REL, cc0: true }, { user: "u-human" });
+    expect(accepted.status).toBe(201);
+    expect(edgeRows(h)).toHaveLength(1);
+    // The Brain's form carries no Turnstile widget, so the acceptance is
+    // recorded unverified rather than refused.
+    expect(agreementRow(h)).toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION, verified_at: null });
+
+    // Asked once: the next edge needs no checkbox.
+    const other = { ...REL, dst: XREF_DST, kind: "xref" };
+    expect((await postEdge(h, other, { user: "u-human" })).status).toBe(201);
+  });
+
+  it("asks for it on a bulk submit too, and writes no row until it is given", async () => {
+    const h = ungreed();
+    const refused = await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(refused.status).toBe(403);
+    expect(await refused.json()).toMatchObject({ cc0_required: true });
+    expect(edgeRows(h)).toHaveLength(0);
+    expect((await lmfdbQueue(h)).items).toHaveLength(0);
+
+    const accepted = await postQuick(h, { db: "lmfdb", cc0: true, items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(accepted.status).toBe(200);
+    expect(edgeRows(h)).toHaveLength(3);
+    expect(agreementRow(h)).toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION });
+  });
+
+  // `cc0-1.0/2026-11` released "the mapping data I add here — the declaration
+  // names, relations and notes": the overlay's passage tags, not an edge's
+  // note. It is therefore no grant for a Brain connection, and a contributor
+  // still on it is asked once for the wording that names them.
+  it("asks a person on the superseded wording for the one that names Brain connections", async () => {
+    const h = ungreed();
+    const acceptedAt = Date.now() - 86_400_000;
+    h.db.prepare("INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,?)")
+      .run("u-human", "cc0-1.0/2026-11", acceptedAt, acceptedAt);
+
+    const refused = await postEdge(h, REL, { user: "u-human" });
+    expect(refused.status).toBe(403);
+    const body = await refused.json() as Record<string, unknown>;
+    expect(body).toMatchObject({ cc0_required: true, cc0_version: CC0_AGREEMENT_VERSION });
+    expect(String(body.error)).toContain("updated");
+    expect(String(body.cc0_text)).toContain("Brain connections");
+    expect(edgeRows(h)).toHaveLength(0);
+    expect(agreementRow(h)).toMatchObject({ cc0_version: "cc0-1.0/2026-11" });
+
+    // Accepting is the same one-checkbox flow, and updates the row in place:
+    // the new version, the ORIGINAL acceptance time, the verification kept.
+    const accepted = await postEdge(h, { ...REL, cc0: true }, { user: "u-human" });
+    expect(accepted.status).toBe(201);
+    expect(agreementRow(h)).toMatchObject({
+      cc0_version: CC0_AGREEMENT_VERSION, accepted_at: acceptedAt, verified_at: acceptedAt,
+    });
+    // Asked once: the next edge goes straight through.
+    expect((await postEdge(h, { ...REL, dst: XREF_DST, kind: "xref" }, { user: "u-human" })).status).toBe(201);
+  });
+
+
+  it("does not gate a new concept node or a delete, which store no text of the contributor's", async () => {
+    const h = ungreed();
+    const node = await post(h.env, "/api/brain/node", { qid: CONCEPT }, { user: "u-human" });
+    expect(node.status).toBe(200); // already a static node: a no-op, not a 403
+    expect(agreementRow(h)).toBeUndefined();
+
+    agreed(h);
+    const edge = (await (await postEdge(h, REL, { user: "u-human" })).json()) as { id: string };
+    h.db.prepare("DELETE FROM user_agreements WHERE user_id = 'u-human'").run();
+    expect((await post(h.env, `/api/brain/edge/${edge.id}/delete`, {}, { user: "u-human" })).status).toBe(200);
+  });
+
+  it("does not gate the pipeline bearer, which writes under the operator's own terms", async () => {
+    const h = ungreed();
+    const res = await postEdge(h, { ...REL, actor_type: "ai" }, { bearer: PIPELINE_TOKEN, origin: null });
+    expect(res.status).toBe(201);
+    expect(h.db.prepare("SELECT COUNT(*) AS n FROM user_agreements").get()).toMatchObject({ n: 0 });
   });
 });
 
@@ -622,6 +900,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
   it("community↔community: two nodes both community-xref'd to one page infer each other", async () => {
     const h = setup();
     installBrainAssets(h.env);
+    agreed(h);
     await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "a" } }, { user: "u-human" });
     await postEdge(h, { src: DECL, dst: PAGE, kind: "xref", evidence: { note: "b" } }, { user: "u-human" });
     const shared = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
@@ -634,6 +913,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
     // (page → nodes), whose inversion is also how the overlay finds NODE_B's
     // own static pages — the v2 shard-entry edge lists are gone.
     installBrainAssets(h.env, { [NODE_B]: "cell:Q11650" }, { [PAGE]: [NODE_B] });
+    agreed(h);
     await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "same object" } }, { user: "u-human" });
     // viewing CONCEPT surfaces the static NODE_B
     const sA = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
@@ -646,6 +926,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
   it("does not reuse an xref inversion after selector rollover", async () => {
     const h = setup();
     installBrainAssets(h.env, { [NODE_B]: "cell:Q11650" }, { [PAGE]: [NODE_B] });
+    agreed(h);
     const first = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`)).json());
     expect(first).toEqual([]);
 

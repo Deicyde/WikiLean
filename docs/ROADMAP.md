@@ -242,7 +242,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
 | 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain |
 | 10 | Where the declaration index and search corpus are published | a bucket behind a short-lived signed URL, issued per contributor, with a per-library licence manifest beside it. Not git, under any option |
-| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`. Each person accepts at their first edit |
+| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`; `cc0-1.1/2026-11` then named Brain connections and their notes. The reader's tag routes and pipeline submissions take either (`CC0_ACCEPTED_VERSIONS` — 1.0's words describe their data exactly); the Brain's two text-storing writes take 1.1 only (`CC0_BRAIN_VERSIONS`) and ask a contributor on 1.0 once. Each person accepts at their first edit |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
 | 13 | The agent-token work (PR #126) | merge it, then extend it. R1 opens its `agent` role to the two tag routes and keeps every other refusal, the reader's confirm/report included |
 

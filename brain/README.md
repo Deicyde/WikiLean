@@ -364,7 +364,7 @@ when `catalog/data/external/` lacks the needed ingest file (P6–P8) or when
 | `brain/data/discovery_proposals.jsonl` | 153 verified discovery links | 79 KB | yes |
 | `brain/data/discovery_rejected.jsonl` | rejected rows + reasons (audit trail) | 104 KB | yes |
 | `brain/data/grading_disputes.jsonl` | skeptic-rejected audits of SHIPPED grounding grades — the human-review queue feeding grounding_overrides.jsonl | small | yes |
-| `brain/data/community_edges.jsonl` | community edges graduated from a verified sealed D1 bundle (`harvest_community_edges.py`) | small | yes |
+| `brain/data/community_edges.jsonl` | community edges graduated from a verified sealed D1 bundle (`harvest_community_edges.py`). Only `xref` rows are folded, into `xref_index.json`; `formalizes` rows to a `decl:Mathlib:` node reach cells through the tag queue, and every other kind is kept but unread — [which kinds graduation reaches](../docs/BRAIN-EDITS-ROADMAP.md#graduation-reaches-one-kind-of-edge). Empty on `main` | small | yes |
 | `brain/proposals/*.jsonl` | raw agent proposals + skeptic verdicts | ~820 KB | yes |
 | `site/assets/brain/` | cells/ (v3 atom shards, build_cell_shards.py) + xref_index.json + sources.json — the v2 per-node shards/manifest/labels/aliases/views are retired | ~95 MB | **gitignored** (rebuild) |
 

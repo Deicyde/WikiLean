@@ -16,6 +16,13 @@ import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { editLimitKey } from "./agents.js";
 import { writeBrake } from "./site-settings.js";
+import {
+  accountFor,
+  agreementStatement,
+  CC0_BRAIN_VERSIONS,
+  requireAgreement,
+  type AgreementStep,
+} from "./articles-overlay.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import {
   brainNodeExists,
@@ -215,95 +222,137 @@ function actorTypeFor(role: string, body: Record<string, unknown>): ActorType | 
   return declared;
 }
 
-async function insertMintedNodes(
+// The CC0 grant, asked for once at a contributor's first edit and shared with
+// the formalization reader's overlay (articles-overlay.ts `requireAgreement`).
+// It gates the two routes that store a contributor's own prose — an edge's
+// evidence note, which `GET /api/brain/edges` republishes as CC0 data — and
+// not `POST /api/brain/node` or the deletes, which add no text of their own
+// (a node copies its label and description from Wikidata).
+//
+// The pipeline bearer is exempt: it is the operator's own token, writing under
+// the operator's terms rather than as a community contributor.
+//
+// Only the CURRENT wording is a grant here: `cc0-1.0/2026-11` released "the
+// mapping data I add here — the declaration names, relations and notes", which
+// is the overlay's passage tags and not an edge's note, so a contributor still
+// on it is asked once for the 1.1 text that names Brain connections.
+//
+// Returns null when the caller needs no grant, a Response that refuses the
+// write, or the acceptance to record once the write goes ahead.
+async function brainAgreement(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  body: Record<string, unknown>,
+  now: number,
+): Promise<AgreementStep | Response | null> {
+  if (user.role === "bot") return null;
+  // The Brain's forms carry no Turnstile widget, so a person's acceptance here
+  // is recorded unverified rather than refused for a check it cannot offer.
+  // The reader's tag routes ask such an acceptance for the check at its next
+  // overlay edit, so this is no way around theirs.
+  return requireAgreement(
+    c,
+    {
+      account: accountFor(user),
+      isAgent: user.role === "agent",
+      versions: CC0_BRAIN_VERSIONS,
+      turnstile: false,
+    },
+    body,
+    now,
+  );
+}
+
+// Record what the gate asked for, once the write is going ahead.
+async function writeBrainAgreement(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  step: AgreementStep | null,
+  now: number,
+): Promise<void> {
+  if (!step) return;
+  const stmt = agreementStatement(c.env, accountFor(user), now, step);
+  if (stmt) await stmt.run();
+}
+
+// ---- quickstatements: one D1 batch per row ---------------------------------
+//
+// Every write a row makes goes out as ONE `c.env.DB.batch(...)`: the nodes it
+// mints, then an idempotent insert per edge, then a read of each edge's live
+// id. D1 counts a batch as a single query against its 1,000-queries-per-Worker-
+// invocation cap, so a 100-row submit makes about 100 D1 calls whatever
+// databases are selected. Sending each statement on its own asked for two per
+// edge — about 6,000 for 100 rows over all twelve databases — and stopped
+// partway, after earlier rows had been written. A batch is also one
+// transaction, so a row is stored whole or not at all.
+const INSERT_NODE_SQL =
+  "INSERT INTO brain_nodes (id, label, description, node_type, added_by, actor_type, status, created_at, version) " +
+  "VALUES (?, ?, ?, 'concept', ?, ?, 'live', ?, 1) ON CONFLICT DO NOTHING";
+// `uniq_brain_edges_live` (migration 0010) is the duplicate oracle: at most one
+// LIVE row per (src, dst, kind), so the insert is a no-op for an edge that is
+// already there and a re-add after a delete still writes a new row.
+const INSERT_EDGE_SQL =
+  "INSERT INTO brain_edges (id, src, dst, kind, evidence, added_by, actor_type, status, created_at, version) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, 'live', ?, 1) ON CONFLICT DO NOTHING";
+const LIVE_EDGE_ID_SQL =
+  "SELECT id FROM brain_edges WHERE src = ? AND dst = ? AND kind = ? AND status = 'live' LIMIT 1";
+
+// An edge the row wants, with the id it takes if it turns out to be new.
+interface PlannedEdge {
+  src: string;
+  dst: string;
+  kind: string;
+  id: string;
+  evidence: Record<string, unknown>;
+}
+
+function quickRowStatements(
   c: Context<{ Bindings: Env }>,
   user: AuthUser,
   actorType: ActorType,
   mints: Array<{ id: string; label: string; description: string }>,
-): Promise<void> {
-  if (!mints.length) return;
-  const db = drizzle(c.env.DB);
-  const nowMs = Date.now();
+  planned: PlannedEdge[],
+  nowMs: number,
+): D1PreparedStatement[] {
+  const stmts: D1PreparedStatement[] = [];
   const seen = new Set<string>();
   for (const m of mints) {
     if (seen.has(m.id)) continue;
     seen.add(m.id);
-    await db
-      .insert(brainNodes)
-      .values({
-        id: m.id,
-        label: m.label,
-        description: m.description || null,
-        nodeType: "concept",
-        addedBy: user.id,
-        actorType,
-        status: "live",
-        createdAt: nowMs,
-        version: 1,
-      })
-      .onConflictDoNothing();
+    stmts.push(
+      c.env.DB.prepare(INSERT_NODE_SQL).bind(m.id, m.label, m.description || null, user.id, actorType, nowMs),
+    );
   }
+  for (const e of planned) {
+    stmts.push(
+      c.env.DB
+        .prepare(INSERT_EDGE_SQL)
+        .bind(e.id, e.src, e.dst, e.kind, JSON.stringify(e.evidence), user.id, actorType, nowMs),
+    );
+  }
+  // The id reads come last, so each one sees its own insert (statements in a
+  // batch run in order) and reports the LIVE row, minted here or already there.
+  for (const e of planned) stmts.push(c.env.DB.prepare(LIVE_EDGE_ID_SQL).bind(e.src, e.dst, e.kind));
+  return stmts;
 }
 
-async function insertCommunityEdge(
+async function writeQuickRow(
   c: Context<{ Bindings: Env }>,
   user: AuthUser,
   actorType: ActorType,
-  src: string,
-  dst: string,
-  kind: string,
-  evidence: Record<string, unknown>,
-): Promise<{ id: string; duplicate: boolean }> {
-  const db = drizzle(c.env.DB);
-  const dup = (
-    await db
-      .select({ id: brainEdges.id })
-      .from(brainEdges)
-      .where(
-        and(
-          eq(brainEdges.src, src),
-          eq(brainEdges.dst, dst),
-          eq(brainEdges.kind, kind),
-          eq(brainEdges.status, "live"),
-        ),
-      )
-      .limit(1)
-  )[0];
-  if (dup) return { id: dup.id, duplicate: true };
-
-  const id = freshEdgeId();
-  try {
-    await db.insert(brainEdges).values({
-      id,
-      src,
-      dst,
-      kind,
-      evidence: JSON.stringify(evidence),
-      addedBy: user.id,
-      actorType,
-      status: "live",
-      createdAt: Date.now(),
-      version: 1,
-    });
-    return { id, duplicate: false };
-  } catch {
-    const ex = (
-      await db
-        .select({ id: brainEdges.id })
-        .from(brainEdges)
-        .where(
-          and(
-            eq(brainEdges.src, src),
-            eq(brainEdges.dst, dst),
-            eq(brainEdges.kind, kind),
-            eq(brainEdges.status, "live"),
-          ),
-        )
-        .limit(1)
-    )[0];
-    if (ex) return { id: ex.id, duplicate: true };
-    throw new Error("could not save edge");
-  }
+  mints: Array<{ id: string; label: string; description: string }>,
+  planned: PlannedEdge[],
+): Promise<QuickEdgeResult[]> {
+  const stmts = quickRowStatements(c, user, actorType, mints, planned, Date.now());
+  const results = await c.env.DB.batch<{ id: string }>(stmts);
+  const firstRead = stmts.length - planned.length;
+  return planned.map((e, i) => {
+    const id = results[firstRead + i]?.results?.[0]?.id;
+    if (!id) throw new Error(`the ${e.kind} edge ${e.src} → ${e.dst} was not stored`);
+    // It kept the id this request minted ⇒ the insert wrote it; any other id is
+    // the edge that was already live.
+    return { src: e.src, dst: e.dst, kind: e.kind, id, duplicate: id !== e.id };
+  });
 }
 
 interface QuickInputRow {
@@ -672,6 +721,20 @@ function edgeEvidence(
   };
 }
 
+// Which input line a result belongs to: the parser stamps `line`; an `items`
+// body may carry one, and otherwise the row's position in the submit stands in.
+function quickRowLine(row: QuickInputRow, fallbackLine: number): number {
+  return typeof row.line === "number" ? row.line : fallbackLine;
+}
+
+// Why a row could not be stored, for the per-row result. D1 says what it
+// refused (a constraint, or a limit it hit), and a row that reports only
+// "could not save row" leaves the submitter with nothing to act on.
+function rowFailure(error: unknown): string {
+  const detail = error instanceof Error && error.message ? error.message : String(error);
+  return detail ? `could not save row: ${detail.slice(0, 200)}` : "could not save row";
+}
+
 function nodePairKind(a: QuickEndpoint, b: QuickEndpoint): { kind: string; src: QuickEndpoint; dst: QuickEndpoint } {
   if (a.db === "wikidata" && b.db === "mathlib") return { kind: "formalizes", src: a, dst: b };
   if (b.db === "wikidata" && a.db === "mathlib") return { kind: "formalizes", src: b, dst: a };
@@ -687,7 +750,7 @@ async function processQuickRow(
   row: QuickInputRow,
   fallbackLine: number,
 ): Promise<{ result: QuickRowResult; item?: QueueItem }> {
-  const line = typeof row.line === "number" ? row.line : fallbackLine;
+  const line = quickRowLine(row, fallbackLine);
   const endpoints: QuickEndpoint[] = [];
   for (const sp of specs) {
     const ep = await endpointForDb(c, release, row, sp);
@@ -701,27 +764,38 @@ async function processQuickRow(
   if (!nodes.length) return { result: { ok: false, line, ids: idsForEndpoints(endpoints), error: "row needs at least one selected database with Brain nodes" } };
 
   const mints = endpoints.flatMap((e) => e.mint ? [e.mint] : []);
-  await insertMintedNodes(c, user, actorType, mints);
 
-  const edges: QuickEdgeResult[] = [];
+  // Plan the row's edges first, then write them in one batch below.
+  const planned: PlannedEdge[] = [];
   for (const n of nodes) {
     for (const x of xrefs) {
-      const saved = await insertCommunityEdge(c, user, actorType, n.nodeId!, x.xrefId!, "xref", edgeEvidence(row, endpoints, actorType, {
-        db: x.xrefDb,
-        value: x.value,
-        assertion: `${n.db}-${x.db}-xref`,
-      }));
-      edges.push({ src: n.nodeId!, dst: x.xrefId!, kind: "xref", ...saved });
+      planned.push({
+        src: n.nodeId!,
+        dst: x.xrefId!,
+        kind: "xref",
+        id: freshEdgeId(),
+        evidence: edgeEvidence(row, endpoints, actorType, {
+          db: x.xrefDb,
+          value: x.value,
+          assertion: `${n.db}-${x.db}-xref`,
+        }),
+      });
     }
   }
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       const pair = nodePairKind(nodes[i], nodes[j]);
-      const saved = await insertCommunityEdge(c, user, actorType, pair.src.nodeId!, pair.dst.nodeId!, pair.kind, edgeEvidence(row, endpoints, actorType));
-      edges.push({ src: pair.src.nodeId!, dst: pair.dst.nodeId!, kind: pair.kind, ...saved });
+      planned.push({
+        src: pair.src.nodeId!,
+        dst: pair.dst.nodeId!,
+        kind: pair.kind,
+        id: freshEdgeId(),
+        evidence: edgeEvidence(row, endpoints, actorType),
+      });
     }
   }
-  if (!edges.length) return { result: { ok: false, line, ids: idsForEndpoints(endpoints), error: "row did not generate any Brain edges" } };
+  if (!planned.length) return { result: { ok: false, line, ids: idsForEndpoints(endpoints), error: "row did not generate any Brain edges" } };
+  const edges = await writeQuickRow(c, user, actorType, mints, planned);
 
   let item: QueueItem | undefined;
   const mathlib = endpoints.find((e) => e.db === "mathlib" && e.nodeId);
@@ -885,7 +959,8 @@ code{font-family:"SF Mono",Menlo,Consolas,monospace}
 </div>
 <label for="qs-rows">Rows</label><textarea id="qs-rows" spellcheck="false">${htmlEscape(sample)}</textarea>
 <div class="controls"><button id="submit" type="button">Submit rows</button><span id="status" class="status"></span></div>
-<p class="hint">Select at least two databases, including at least one Brain-node database. Up to ${MAX_QUICK_ROWS} rows per submit.</p>
+<div id="cc0" class="hint" hidden><label class="check"><input type="checkbox" id="cc0-box"><span id="cc0-text">I release what I add here into the public domain under CC0 1.0, and I confirm it is mine to release.</span></label></div>
+<p class="hint">Select at least two databases, including at least one Brain-node database. Up to ${MAX_QUICK_ROWS} rows per submit. Connections and their notes are published as public-domain (CC0 1.0) data.</p>
 <details class="format-guide" open><summary>Input format</summary>
 <p>Use one row per connection. Tab-separated values are recommended; comma-separated CSV also works when the first line has no tabs. The example below uses <code>&lt;Tab&gt;</code> markers to show where real tab characters go.</p>
 <ul><li>The first line may be headers such as <code>mathlib</code>, <code>wikidata</code>, <code>lmfdb</code>, <code>nlab</code>, <code>file</code>, and <code>note</code>.</li><li>If there is no header row, columns follow the selected databases in order, then <code>file</code> when Mathlib is selected, then <code>note</code>.</li><li>Blank lines and lines starting with <code>#</code> are ignored.</li></ul>
@@ -1026,9 +1101,20 @@ btn.addEventListener("click", async () => {
   try {
     const actor = document.querySelector("input[name=actor]:checked").value;
     const selected = selectedSpecs();
-    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ databases: selected.map(sp => sp.key), actor_type: actor, items: parseRows() }) });
+    const body = { databases: selected.map(sp => sp.key), actor_type: actor, items: parseRows() };
+    const cc0Box = document.getElementById("cc0-box");
+    if (cc0Box.checked) body.cc0 = true;
+    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) });
     const json = await res.json().catch(() => ({}));
     if (res.status === 401) { statusEl.innerHTML = '<a href="/login?returnTo=/quickstatements">Sign in to submit</a>'; return; }
+    // The CC0 grant at a first contribution: show the wording the server
+    // quoted, then the same submit goes through once it is ticked.
+    if (json.cc0_required) {
+      document.getElementById("cc0").hidden = false;
+      if (json.cc0_text) setText("cc0-text", json.cc0_text);
+      statusEl.textContent = "Agree to the licence below, then submit again.";
+      return;
+    }
     setText("accepted", json.accepted || 0); setText("failed", json.failed || 0); setText("queued", json.queue_count || 0);
     results.innerHTML = (json.rows || []).map((r) => {
       const ids = r.ids ? Object.entries(r.ids).map(([k,v]) => k + ":" + v).join(" / ") : "";
@@ -1083,6 +1169,12 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (rows.length > MAX_QUICK_ROWS) {
       return c.json({ ok: false, error: `too many rows (max ${MAX_QUICK_ROWS})`, accepted: 0, failed: rows.length, rows: [] }, 400);
     }
+    // Every row carries the submitter's note, so the grant is taken once for
+    // the whole submit, before the first row is written.
+    const now = Date.now();
+    const agreement = await brainAgreement(c, user, body, now);
+    if (agreement instanceof Response) return agreement;
+    await writeBrainAgreement(c, user, agreement, now);
 
     const results: QuickRowResult[] = [];
     const items: QueueItem[] = [];
@@ -1093,7 +1185,8 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         if (out.item) items.push(out.item);
       } catch (error) {
         if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
-        results.push({ ok: false, line: i + 1, error: "could not save row" });
+        // The row's batch rolled back, so it wrote nothing; say what stopped it.
+        results.push({ ok: false, line: quickRowLine(rows[i], i + 1), error: rowFailure(error) });
       }
     }
 
@@ -1196,9 +1289,15 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     if (src === dst) return c.json({ ok: false, error: "src and dst are identical" }, 400);
 
+    // The evidence note is the contributor's own text: take the CC0 grant
+    // before storing it, as the overlay's tag routes do.
+    const now = Date.now();
+    const agreement = await brainAgreement(c, user, body, now);
+    if (agreement instanceof Response) return agreement;
+    await writeBrainAgreement(c, user, agreement, now);
+
     const db = drizzle(c.env.DB);
     // persist any newly-validated Wikidata concept nodes (idempotent on the QID)
-    const nowMs = Date.now();
     for (const m of mints) {
       await db
         .insert(brainNodes)
@@ -1210,7 +1309,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
           addedBy: user.id,
           actorType,
           status: "live",
-          createdAt: nowMs,
+          createdAt: now,
           version: 1,
         })
         .onConflictDoNothing();

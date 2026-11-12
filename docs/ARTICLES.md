@@ -1978,7 +1978,28 @@ overlay they are shown a checkbox and the write is refused (403 `{cc0_required: 
 cc0_version, cc0_text}`) until they tick it. The acceptance is one row in `user_agreements`
 with its **timestamp** and the wording's version id, and it is never asked for again. The
 wording is in `wiki/src/articles-overlay.ts` (`CC0_AGREEMENT_TEXT`); changing it in a way
-that needs re-acceptance is a version bump.
+that needs re-acceptance is a version bump. **Which versions a gate takes is per surface**:
+`agreementStands` reads `CC0_ACCEPTED_VERSIONS` for these tag routes and for
+`submissions.ts` — the superseded `cc0-1.0/2026-11` said "the mapping data I add here —
+the declaration names, relations and notes", which is exactly what they store, so those
+acceptances keep standing and nobody is asked again.
+
+The same row governs the Brain's two text-storing writes, `POST /api/brain/edge` and
+`POST /api/brain/quickstatements`: one gate (`requireAgreement`), one table, both planes
+(`docs/BRAIN-EDITS-ROADMAP.md`). Those two take `CC0_BRAIN_VERSIONS`, which is the current
+version alone: only the 1.1 wording names Brain connections and their evidence notes, so a
+contributor still on 1.0 is asked once there, with the same `cc0: true` checkbox, and an
+agent whose owner is on 1.0 is refused until the owner accepts the update at `/agents`
+(which says one is waiting). Accepting an update rewrites the row's version in place and
+**keeps the original `accepted_at`** — the table's one timestamp records when the person
+first gave the grant — so the moment an update was taken is not recorded.
+
+The Brain's pages carry no Turnstile widget, so an acceptance taken there records
+`verified_at` NULL. That is **not** a way past the check this plane makes: when a secret is
+configured, a tag route asks an unverified acceptance for the challenge at its next edit
+and stamps `verified_at` once it passes (the reader renders the widget, without the
+checkbox, for exactly that state). A deployment with no secret skips the check as before,
+and the acceptance stays unverified.
 
 **An agent cannot agree to a licence; its owner can, and must have.** An agent's write is
 refused until the person who minted it has accepted, which is the second reason every agent

@@ -455,9 +455,12 @@ explorerScope(scope, part) -> {nodes, edges, bubbles, universe} or one precomput
 - **2 MB per row or value** (unchecked). Explorer parts are at most 1 MB each. The largest
   cell page and supercell rows at TauCeti scale haven't been measured; #150 tests rows from
   90 KB to 1.5 MB.
-- **1,000 queries per Worker invocation on Paid**, counting each statement in a batch
-  (unchecked). The route that came closest, quickstatements, now resolves everything in one
-  batch.
+- **1,000 queries per Worker invocation on Paid** (unchecked). A `batch()` counts as ONE
+  query however many statements it carries, so the cap is on calls, not statements. The
+  route that came closest, quickstatements, sends each row's writes as one batch on
+  `DB` (`brain-edits.ts`), which puts a 100-row submit at about 100 calls whatever
+  databases are selected; the reads planned below (one batch resolves every endpoint
+  before the first write) are the other half of the same budget.
 - **10 GB per database** on Workers Paid.
 - **Billing by rows read and rows written** (unchecked). Index and FTS writes multiply the
   number of rows an import writes.

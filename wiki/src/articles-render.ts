@@ -1046,6 +1046,10 @@ export interface OverlayView {
   // Their first overlay edit: the form carries the CC0 checkbox (decision 11)
   // and, when a site key is configured, the Turnstile widget.
   needsAgreement: boolean;
+  // Their grant is on file but no Turnstile check cleared it, and a secret is
+  // configured: the tag route asks for the check, so the form carries the
+  // widget (and no checkbox — the licence is already granted).
+  needsVerification: boolean;
   // The article's record set carries the /2 keys an overlay needs. A /1 set
   // cannot take a tag, so the page offers none and asks for no agreement.
   taggable: boolean;
@@ -1348,14 +1352,19 @@ function tagForm(passage: ArticlesPassage, ctx: CardContext): string {
 // wording in a way that needs re-acceptance is a version bump.
 function agreementBlock(ctx: CardContext): string {
   const overlay = ctx.overlay;
-  if (!overlay?.canEdit || !overlay.needsAgreement || !overlay.taggable || !overlay.show) return "";
+  if (!overlay?.canEdit || !overlayAsksAgreement(overlay) || !overlay.taggable || !overlay.show) return "";
   const widget = overlay.turnstileSiteKey
     ? `<div class="cf-turnstile" data-sitekey="${attr(overlay.turnstileSiteKey)}"></div>`
     : "";
+  // The licence is asked for only when it is not already granted; a grant that
+  // never passed a Turnstile check brings the widget alone.
+  const heading = overlay.needsAgreement ? "Before your first edit" : "One check before your next edit";
+  const licence = overlay.needsAgreement
+    ? `<p><label><input type="checkbox" id="articles-cc0-box"> ${text(overlay.cc0Text)}</label></p>\n`
+    : "";
   return `<section class="articles-cc0" id="articles-cc0" data-version="${attr(overlay.cc0Version)}" hidden aria-labelledby="articles-cc0-h">
-<h2 class="articles-h2" id="articles-cc0-h">Before your first edit</h2>
-<p><label><input type="checkbox" id="articles-cc0-box"> ${text(overlay.cc0Text)}</label></p>
-${widget}<p class="articles-tag-msg" role="status" id="articles-cc0-msg"></p>
+<h2 class="articles-h2" id="articles-cc0-h">${text(heading)}</h2>
+${licence}${widget}<p class="articles-tag-msg" role="status" id="articles-cc0-msg"></p>
 </section>`;
 }
 
@@ -1377,10 +1386,18 @@ const MAX_TAG_NOTE = 500;
 // which articlesCsp lists only for a page that renders the widget.
 export const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js";
 
+// Does this page carry the agreement block at all? Either the licence is not
+// granted yet, or it is but no Turnstile check cleared it on a deployment that
+// asks for one.
+function overlayAsksAgreement(overlay: OverlayView): boolean {
+  return overlay.needsAgreement || overlay.needsVerification;
+}
+
 // Does this page render the Turnstile widget? (The agreement block, which only
-// a signed-in person making their first edit sees, and only with a site key.)
+// a signed-in person who still owes the licence or the check sees, and only
+// with a site key.)
 export function pageNeedsTurnstile(overlay: OverlayView | null | undefined): boolean {
-  return !!overlay && overlay.canEdit && overlay.needsAgreement && overlay.taggable && overlay.show
+  return !!overlay && overlay.canEdit && overlayAsksAgreement(overlay) && overlay.taggable && overlay.show
     && !!overlay.turnstileSiteKey;
 }
 

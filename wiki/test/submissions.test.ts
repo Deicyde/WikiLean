@@ -105,6 +105,18 @@ describe("self-service submission transport", () => {
     expect(count(h)).toBe(0);
   });
 
+  // The superseded wording named "the mapping data I add here — the
+  // declaration names, relations and notes", which is what a submission
+  // carries, so it still stands here (CC0_ACCEPTED_VERSIONS) even though the
+  // Brain's text-storing writes ask for the version that names connections.
+  it("takes an owner's acceptance of the superseded wording", async () => {
+    const h = setup(), a = await agent(h, "u-human", false);
+    h.db.prepare("INSERT INTO user_agreements (user_id,cc0_version,accepted_at) VALUES (?,?,?)")
+      .run("u-human", "cc0-1.0/2026-11", Date.now());
+    expect((await send(h, a.token)).status).toBe(202);
+    expect(count(h)).toBe(1);
+  });
+
   it.each(["agent", "owner", "revoked"])("refuses a %s whose access was removed", async kind => {
     const h = setup(), a = await agent(h);
     if (kind === "revoked") h.db.prepare("UPDATE agent_tokens SET revoked_at=1 WHERE agent_id=?").run(a.agent.id);

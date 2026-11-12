@@ -5,7 +5,7 @@ import type { Context, Hono } from "hono";
 import type { Env } from "./env.js";
 import { bearerMatches, getUser, type AuthUser } from "./auth.js";
 import { editLimitKey } from "./agents.js";
-import { CC0_AGREEMENT_VERSION, loadAgreement } from "./articles-overlay.js";
+import { agreementStands, CC0_ACCEPTED_VERSIONS, loadAgreement } from "./articles-overlay.js";
 import { checkOrigin, readBytesCapped, readJsonCapped, MAX_JSON_BODY_BYTES } from "./security.js";
 import { writeBrake } from "./site-settings.js";
 
@@ -77,7 +77,7 @@ export function registerSubmissionRoutes(app: Hono<{ Bindings: Env }>): void {
     if (user.role !== "agent" || !user.ownerId) return refuse(c, "agent_required", "submit using an owned agent account", 403);
     const brake = await writeBrake(c); if (brake) return brake;
     const agreement = await loadAgreement(c.env, user.ownerId);
-    if (agreement?.cc0_version !== CC0_AGREEMENT_VERSION) {
+    if (!agreementStands(agreement)) {
       return refuse(c, "agreement_required", "the agent owner must accept the CC0 contribution agreement on WikiLean first", 403);
     }
     if (!(await c.env.EDIT_LIMITER.limit({ key: editLimitKey(user) })).success) {
@@ -115,7 +115,9 @@ export function registerSubmissionRoutes(app: Hono<{ Bindings: Env }>): void {
       "SELECT ?,?,?,?,?,?,?,?,'queued' WHERE " +
       "EXISTS (SELECT 1 FROM agent_tokens t JOIN users a ON a.id=t.agent_id JOIN users o ON o.id=t.owner_id " +
       "JOIN user_agreements g ON g.user_id=o.id WHERE t.agent_id=? AND t.owner_id=? AND t.revoked_at IS NULL " +
-      "AND a.role='agent' AND o.role!='blocked' AND g.cc0_version=?) " +
+      // Any acceptance that still stands, so a wording change that needs no
+      // re-acceptance does not shut an owner's agents out mid-run.
+      `AND a.role='agent' AND o.role!='blocked' AND g.cc0_version IN (${CC0_ACCEPTED_VERSIONS.map(() => "?").join(",")})) ` +
       "AND (SELECT value FROM site_settings WHERE key='site_write_mode')='open' " +
       "AND (SELECT COUNT(*) FROM pipeline_submissions WHERE owner_id=? AND received_at>=?) < ? " +
       "AND (SELECT COALESCE(SUM(body_bytes),0) FROM pipeline_submissions WHERE owner_id=? AND received_at>=?) + ? <= ? " +
@@ -125,7 +127,7 @@ export function registerSubmissionRoutes(app: Hono<{ Bindings: Env }>): void {
       "AND (SELECT COALESCE(SUM(body_bytes),0) FROM pipeline_submissions) + ? <= ? " +
       "ON CONFLICT(agent_id,seal_sha256) DO NOTHING",
     ).bind(id, user.id, user.ownerId, key, digest, bytes.length, now, now,
-      user.id, user.ownerId, CC0_AGREEMENT_VERSION,
+      user.id, user.ownerId, ...CC0_ACCEPTED_VERSIONS,
       user.ownerId, day, SUBMISSION_DAILY_COUNT, user.ownerId, day, bytes.length, SUBMISSION_DAILY_BYTES,
       user.ownerId, SUBMISSION_PENDING_PER_OWNER, SUBMISSION_PENDING_GLOBAL,
       user.ownerId, bytes.length, SUBMISSION_RETAINED_OWNER_BYTES, bytes.length, SUBMISSION_RETAINED_GLOBAL_BYTES);
@@ -142,7 +144,7 @@ export function registerSubmissionRoutes(app: Hono<{ Bindings: Env }>): void {
     const row = await rowById(c, id);
     if (!row) {
       const brake = await writeBrake(c); if (brake) return brake;
-      if (!(await getUser(c)) || (await loadAgreement(c.env, user.ownerId))?.cc0_version !== CC0_AGREEMENT_VERSION) {
+      if (!(await getUser(c)) || !agreementStands(await loadAgreement(c.env, user.ownerId))) {
         return refuse(c, "access_changed", "contributor access changed during the upload", 403);
       }
       const { results: usage } = await c.env.DB.prepare(
