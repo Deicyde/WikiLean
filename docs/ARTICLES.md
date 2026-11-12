@@ -1978,7 +1978,14 @@ overlay they are shown a checkbox and the write is refused (403 `{cc0_required: 
 cc0_version, cc0_text}`) until they tick it. The acceptance is one row in `user_agreements`
 with its **timestamp** and the wording's version id, and it is never asked for again. The
 wording is in `wiki/src/articles-overlay.ts` (`CC0_AGREEMENT_TEXT`); changing it in a way
-that needs re-acceptance is a version bump.
+that needs re-acceptance is a version bump. A superseded id that does **not** need
+re-acceptance stays in `CC0_ACCEPTED_VERSIONS`, which is what every gate reads
+(`agreementStands`), so an older acceptance keeps standing.
+
+The same row governs the Brain's two text-storing writes, `POST /api/brain/edge` and
+`POST /api/brain/quickstatements`: one gate (`requireAgreement`), one grant, both planes
+(`docs/BRAIN-EDITS-ROADMAP.md`). The Brain page carries no Turnstile widget, so an
+acceptance taken there records `verified_at` NULL.
 
 **An agent cannot agree to a licence; its owner can, and must have.** An agent's write is
 refused until the person who minted it has accepted, which is the second reason every agent

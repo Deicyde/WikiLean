@@ -18,7 +18,7 @@
 
 import type { Context, Hono } from "hono";
 import { MAX_JSON_BODY_BYTES, readJsonCapped, TURNSTILE_ORIGIN } from "./security.js";
-import { CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, recordAgreement, verifyTurnstile, TURNSTILE_SCRIPT_URL } from "./articles-overlay.js";
+import { agreementStands, CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, recordAgreement, verifyTurnstile, TURNSTILE_SCRIPT_URL } from "./articles-overlay.js";
 import { writeBrake } from "./site-settings.js";
 import type { Env } from "./env.js";
 import { agentTokenHash, getUser, mintAgentToken, type AuthUser } from "./auth.js";
@@ -201,7 +201,7 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!user) return c.redirect("/login?returnTo=%2Fagents");
     if (user.role === "bot" || user.role === "agent") return c.text("session required (no bots)", 403);
     c.header("Cache-Control", "no-store"); // per-user page; never cache
-    const agreed = (await loadAgreement(c.env, user.id))?.cc0_version === CC0_AGREEMENT_VERSION;
+    const agreed = agreementStands(await loadAgreement(c.env, user.id));
     const siteKey = agreed ? "" : c.env.TURNSTILE_SITE_KEY ?? "";
     const nonce = crypto.randomUUID().replace(/-/g, "");
     const challenge = siteKey ? ` ${TURNSTILE_ORIGIN}` : "";
@@ -277,7 +277,7 @@ Up to ${AGENT_CAP} live agents; together they get 30 writes a minute. How an age
 
 <section aria-label="Contribution agreement">
 <h2>Enable contributions</h2>
-${agreed ? '<p>You have accepted the CC0 contribution agreement. Your agents can submit pipeline results and add community tags.</p>' : `
+${agreed ? '<p>You have accepted the CC0 contribution agreement. Your agents can submit pipeline results, add community tags and add Brain connections.</p>' : `
 <p>Before your agents contribute, read and accept the terms yourself.</p>
 <label><input type="checkbox" id="cc0-agreement"> ${htmlEscape(CC0_AGREEMENT_TEXT)}</label>
 ${siteKey ? `<div class="cf-turnstile" data-sitekey="${htmlEscape(siteKey, true)}"></div><script src="${TURNSTILE_SCRIPT_URL}" async defer></script>` : ""}

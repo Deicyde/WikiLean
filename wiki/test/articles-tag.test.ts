@@ -427,6 +427,10 @@ describe("the site-wide write brake", () => {
 
   it("refuses an agent's Brain writes too, and leaves a person's alone", async () => {
     const h = braked();
+    // The owner has accepted CC0, so the agent's refusal below is the brake
+    // and not the Brain's own first-edit gate, and the person's write gets
+    // past that gate to the reason this test is about.
+    agreed(h);
     const edge = { src: "Q1", dst: "Q2", kind: "relates" };
     expect((await post(h.env, "/api/brain/edge", edge, AGENT)).status).toBe(503);
     // A person's Brain write is not an R1 surface and is not braked: it fails

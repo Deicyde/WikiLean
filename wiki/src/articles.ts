@@ -28,10 +28,10 @@ import type { PassageSegment } from "./articles-math.js";
 import { articlesCsp, checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, researchExportSalt } from "./security.js";
 import { MAX_FLAG_COMMENT_LEN } from "./validation.js";
 import {
-  accountFor, CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, loadOverlay, loadOverlayTags, loadTag,
-  MAX_DECLARATION_CHARS, MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay, overlayTableMissing, pairKey,
-  statusRuleOf, tagAllowance, tagLimitKey, TAG_RELATIONS, validDeclaration, validRelation, verifyTurnstile,
-  writeBrake, type ArticleTag, type TagActor, type TagAllowance,
+  accountFor, agreementStands, CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION, loadAgreement, loadOverlay,
+  loadOverlayTags, loadTag, MAX_DECLARATION_CHARS, MAX_REMOVE_REASON_CHARS, MAX_TAG_NOTE_CHARS, mergeOverlay,
+  overlayTableMissing, pairKey, requireAgreement, statusRuleOf, tagAllowance, tagLimitKey, TAG_RELATIONS,
+  validDeclaration, validRelation, writeBrake, type ArticleTag, type TagActor, type TagAllowance,
 } from "./articles-overlay.js";
 import {
   articlesArticlePage,
@@ -43,6 +43,10 @@ import {
   plainHead,
   type DashboardRow,
 } from "./articles-render.js";
+
+// The first-edit gate's wording, re-exported where the tag routes are: it is
+// shared with the Brain's write routes and now defined beside the gate.
+export { CC0_REQUIRED, TURNSTILE_REQUIRED } from "./articles-overlay.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -919,8 +923,6 @@ function publishedShards(current: ArticlesCurrent): string[] {
 // at most one D1 read and no R2 read.
 
 export const TAG_PATH = "/api/articles/tag";
-export const CC0_REQUIRED = "the CC0 agreement is required before your first edit";
-export const TURNSTILE_REQUIRED = "a Turnstile check is required for a new account's first edit";
 export const PIPELINE_REFUSED = "the pipeline bearer does not write the community overlay";
 export const AGENT_HUMAN_ROW_REFUSED =
   "agents may not change or remove an editor's tag: release R1 keeps no history to hold the editor's version";
@@ -982,38 +984,17 @@ async function beginTagWrite(c: Ctx): Promise<TagWriter | Response> {
 
 // The CC0 agreement at the point of a person's FIRST overlay edit (decision 11),
 // and the Turnstile check that rides with it (plan section 2.6: a new account's
-// first edit only, never after). Returns the timestamp to record, or a Response.
-//
-// An agent cannot agree to a licence; its OWNER can, and must have, before any
-// of that person's agents may write (plan section 5.3, "Licence").
-type AgreementStep = { needsRecord: false } | { needsRecord: true; verifiedAt: number | null };
-
-async function requireAgreement(
-  c: Ctx,
-  writer: TagWriter,
-  body: Record<string, unknown>,
-  now: number,
-): Promise<AgreementStep | Response> {
-  const agreed = await loadAgreement(c.env, writer.account);
-  if (agreed) return { needsRecord: false };
-  if (writer.actorType === "agent") {
-    return c.json({
-      ok: false,
-      error: "the person who minted this agent must accept the CC0 contribution agreement at /agents first",
-    }, 403);
-  }
-  if (body.cc0 !== true) {
-    return c.json({
-      ok: false, error: CC0_REQUIRED, cc0_required: true,
-      cc0_version: CC0_AGREEMENT_VERSION, cc0_text: CC0_AGREEMENT_TEXT,
-    }, 403);
-  }
-  const token = typeof body.turnstile_token === "string" && body.turnstile_token !== "" ? body.turnstile_token : null;
-  const verdict = await verifyTurnstile(c.env, token);
-  if (verdict === "failed") {
-    return c.json({ ok: false, error: TURNSTILE_REQUIRED, turnstile_required: true }, 403);
-  }
-  return { needsRecord: true, verifiedAt: verdict === "ok" ? now : null };
+// first edit only, never after). The gate itself is shared with the Brain's
+// write routes (articles-overlay.ts `requireAgreement`); this is the overlay's
+// writer, which always asks for the Turnstile check because its form carries
+// the widget.
+function tagAgreement(c: Ctx, writer: TagWriter, body: Record<string, unknown>, now: number) {
+  return requireAgreement(
+    c,
+    { account: writer.account, isAgent: writer.actorType === "agent", turnstile: true },
+    body,
+    now,
+  );
 }
 
 // An optional free-text field: null, or a Response when it is too long or not a
@@ -1240,7 +1221,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     // and these pages send no Cache-Control, so no render key is bumped.
     const show = c.req.query("overlay") !== "off";
     const rows = await loadOverlay(c.env, article.pageid);
-    const agreed = user ? (await loadAgreement(c.env, accountFor(user))) !== null : true;
+    const agreed = user ? agreementStands(await loadAgreement(c.env, accountFor(user))) : true;
     const overlay = {
       merged: mergeOverlay(article, rows, statusRuleOf(article)),
       show,
@@ -1513,7 +1494,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     if (baseVersion !== undefined && baseVersion !== current) {
       return c.json({ ok: false, error: "stale", version: current, tag: existing }, 409);
     }
-    const agreement = await requireAgreement(c, writer, body, now);
+    const agreement = await tagAgreement(c, writer, body, now);
     if (agreement instanceof Response) return agreement;
 
     const base = locationAt(article, key);
@@ -1643,7 +1624,7 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
       : base?.passage;
     if (!passage) return c.json({ ok: false, error: "unknown pair_key" }, 404);
     const now = Date.now();
-    const agreement = await requireAgreement(c, writer, body, now);
+    const agreement = await tagAgreement(c, writer, body, now);
     if (agreement instanceof Response) return agreement;
 
     const removed = state === "removed";

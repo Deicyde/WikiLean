@@ -32,6 +32,7 @@ import { _resetBrainEditCaches } from "../src/brain-edits.js";
 import { _resetBrainAssetMemo } from "../src/brain.js";
 import { installBrainFixture } from "./helpers/brain-fixture.js";
 import { AGENT_CAP, AGENT_MODEL_MAX, AGENT_PENDING_PER_ARTICLE, AGENT_PENDING_TOTAL } from "../src/agents.js";
+import { CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
 import { parsePending } from "../src/proposals.js";
 
 blockNetwork();
@@ -379,9 +380,39 @@ describe("agent article saves", () => {
 describe("agent Brain edits", () => {
   const REL = { src: "Q181296", dst: "decl:Mathlib:CommGroup", kind: "formalizes", evidence: { note: "n" } };
 
+  // A Brain edge carries the contributor's own evidence note, so its owner's
+  // CC0 grant must be on record first — the same gate as the overlay's tags.
+  function agreed(h: Harness, userId = "u-human"): void {
+    h.db.prepare("INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+      .run(userId, CC0_AGREEMENT_VERSION, Date.now());
+  }
+
+  it("are refused until the person who minted the agent has accepted the CC0 terms", async () => {
+    const h = setup();
+    installBrainFixture(h.env);
+    const agent = await mint(h);
+    const refused = await post(h.env, "/api/brain/edge", REL, as(agent.token));
+    expect(refused.status).toBe(403);
+    expect((await refused.json() as { error: string }).error).toContain("CC0");
+    // An agent cannot agree for its owner, and a quickstatements submit is
+    // refused for the same reason.
+    const quick = await post(h.env, "/api/brain/quickstatements", {
+      cc0: true,
+      databases: ["mathlib", "lmfdb"],
+      items: [{ mathlib: "CommGroup", file: "Mathlib/Algebra/Group/Defs.lean", lmfdb: "group.abelian" }],
+    }, as(agent.token));
+    expect(quick.status).toBe(403);
+    expect(h.db.prepare("SELECT COUNT(*) AS n FROM brain_edges").get()).toMatchObject({ n: 0 });
+
+    // Once the owner accepts at /agents, the same posts go through.
+    expect((await post(h.env, "/api/agents/agreement", { cc0: true }, { user: "u-human" })).status).toBe(200);
+    expect((await post(h.env, "/api/brain/edge", REL, as(agent.token))).status).toBe(201);
+  });
+
   it("are labelled ai whether or not the agent declares it; declaring human is refused", async () => {
     const h = setup();
     installBrainFixture(h.env);
+    agreed(h);
     const agent = await mint(h);
     const human = await post(h.env, "/api/brain/edge", { ...REL, actor_type: "human" }, as(agent.token));
     expect(human.status).toBe(400);
@@ -393,6 +424,7 @@ describe("agent Brain edits", () => {
   it("may delete AI-made edges only", async () => {
     const h = setup();
     installBrainFixture(h.env);
+    agreed(h);
     const agent = await mint(h);
     const byHuman = (await (await post(h.env, "/api/brain/edge", REL, { user: "u-human" })).json()) as { id: string };
     const refused = await post(h.env, `/api/brain/edge/${byHuman.id}/delete`, {}, as(agent.token));

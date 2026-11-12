@@ -12,6 +12,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { setup, post, get, blockNetwork, PIPELINE_TOKEN, type Harness } from "./helpers/harness.js";
 import { app } from "../src/index.js";
 import { _brainEditCacheReleaseIds, _resetBrainEditCaches } from "../src/brain-edits.js";
+import { CC0_AGREEMENT_TEXT, CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
 import { _resetBrainAssetMemo } from "../src/brain.js";
 import {
   installBrainFixture,
@@ -51,9 +52,19 @@ function installBrainAssets(
   });
 }
 
+// An edge carries the contributor's own evidence note, so a write needs the
+// CC0 grant on record (the same gate as the reader's overlay). Record it the
+// way an earlier edit would have, so the ordinary cases below are not about
+// the first-edit flow — "the CC0 grant" describes it on its own.
+function agreed(h: Harness, userId = "u-human", version = CC0_AGREEMENT_VERSION): void {
+  h.db.prepare("INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+    .run(userId, version, Date.now());
+}
+
 function harness(opts: Parameters<typeof setup>[0] = {}): Harness {
   const h = setup(opts);
   installBrainAssets(h.env);
+  agreed(h);
   return h;
 }
 
@@ -595,6 +606,7 @@ describe("POST /api/brain/quickstatements — the D1 per-invocation budget", () 
     }
     const h = setup();
     installBrainAssets(h.env, organs);
+    agreed(h);
     return h;
   }
 
@@ -680,6 +692,84 @@ describe("POST /api/brain/quickstatements — the D1 per-invocation budget", () 
     // The formalizes edge and the Wikidata xref were in the same batch: the
     // row left no partial write behind.
     expect(edgeRows(h)).toHaveLength(0);
+  });
+});
+
+// The routes that store a contributor's own prose take the CC0 grant once, at
+// their first edit, exactly as the formalization reader's overlay does: the
+// evidence note is published through GET /api/brain/edges under a CC0 claim.
+describe("the CC0 grant on Brain writes", () => {
+  function ungreed(): Harness {
+    const h = setup();
+    installBrainAssets(h.env);
+    return h;
+  }
+
+  const agreementRow = (h: Harness) =>
+    h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown> | undefined;
+
+  it("asks a person for it at their first edge, then records it", async () => {
+    const h = ungreed();
+    const refused = await postEdge(h, REL, { user: "u-human" });
+    expect(refused.status).toBe(403);
+    const body = await refused.json() as Record<string, unknown>;
+    expect(body).toMatchObject({ cc0_required: true, cc0_version: CC0_AGREEMENT_VERSION });
+    expect(body.cc0_text).toBe(CC0_AGREEMENT_TEXT);
+    expect(String(body.cc0_text)).toContain("Brain connections");
+    expect(edgeRows(h)).toHaveLength(0);
+    expect(agreementRow(h)).toBeUndefined();
+
+    const accepted = await postEdge(h, { ...REL, cc0: true }, { user: "u-human" });
+    expect(accepted.status).toBe(201);
+    expect(edgeRows(h)).toHaveLength(1);
+    // The Brain's form carries no Turnstile widget, so the acceptance is
+    // recorded unverified rather than refused.
+    expect(agreementRow(h)).toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION, verified_at: null });
+
+    // Asked once: the next edge needs no checkbox.
+    const other = { ...REL, dst: XREF_DST, kind: "xref" };
+    expect((await postEdge(h, other, { user: "u-human" })).status).toBe(201);
+  });
+
+  it("asks for it on a bulk submit too, and writes no row until it is given", async () => {
+    const h = ungreed();
+    const refused = await postQuick(h, { db: "lmfdb", items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(refused.status).toBe(403);
+    expect(await refused.json()).toMatchObject({ cc0_required: true });
+    expect(edgeRows(h)).toHaveLength(0);
+    expect((await lmfdbQueue(h)).items).toHaveLength(0);
+
+    const accepted = await postQuick(h, { db: "lmfdb", cc0: true, items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(accepted.status).toBe(200);
+    expect(edgeRows(h)).toHaveLength(3);
+    expect(agreementRow(h)).toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION });
+  });
+
+  it("keeps an acceptance of the superseded wording valid", async () => {
+    const h = ungreed();
+    agreed(h, "u-human", "cc0-1.0/2026-11");
+    expect((await postEdge(h, REL, { user: "u-human" })).status).toBe(201);
+    // Still the old row: nobody is asked to accept again.
+    expect(agreementRow(h)).toMatchObject({ cc0_version: "cc0-1.0/2026-11" });
+  });
+
+  it("does not gate a new concept node or a delete, which store no text of the contributor's", async () => {
+    const h = ungreed();
+    const node = await post(h.env, "/api/brain/node", { qid: CONCEPT }, { user: "u-human" });
+    expect(node.status).toBe(200); // already a static node: a no-op, not a 403
+    expect(agreementRow(h)).toBeUndefined();
+
+    agreed(h);
+    const edge = (await (await postEdge(h, REL, { user: "u-human" })).json()) as { id: string };
+    h.db.prepare("DELETE FROM user_agreements WHERE user_id = 'u-human'").run();
+    expect((await post(h.env, `/api/brain/edge/${edge.id}/delete`, {}, { user: "u-human" })).status).toBe(200);
+  });
+
+  it("does not gate the pipeline bearer, which writes under the operator's own terms", async () => {
+    const h = ungreed();
+    const res = await postEdge(h, { ...REL, actor_type: "ai" }, { bearer: PIPELINE_TOKEN, origin: null });
+    expect(res.status).toBe(201);
+    expect(h.db.prepare("SELECT COUNT(*) AS n FROM user_agreements").get()).toMatchObject({ n: 0 });
   });
 });
 
@@ -787,6 +877,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
   it("community↔community: two nodes both community-xref'd to one page infer each other", async () => {
     const h = setup();
     installBrainAssets(h.env);
+    agreed(h);
     await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "a" } }, { user: "u-human" });
     await postEdge(h, { src: DECL, dst: PAGE, kind: "xref", evidence: { note: "b" } }, { user: "u-human" });
     const shared = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
@@ -799,6 +890,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
     // (page → nodes), whose inversion is also how the overlay finds NODE_B's
     // own static pages — the v2 shard-entry edge lists are gone.
     installBrainAssets(h.env, { [NODE_B]: "cell:Q11650" }, { [PAGE]: [NODE_B] });
+    agreed(h);
     await postEdge(h, { src: CONCEPT, dst: PAGE, kind: "xref", evidence: { note: "same object" } }, { user: "u-human" });
     // viewing CONCEPT surfaces the static NODE_B
     const sA = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(CONCEPT)}`)).json());
@@ -811,6 +903,7 @@ describe("GET /api/brain/edges — xref-shared cross-pollination", () => {
   it("does not reuse an xref inversion after selector rollover", async () => {
     const h = setup();
     installBrainAssets(h.env, { [NODE_B]: "cell:Q11650" }, { [PAGE]: [NODE_B] });
+    agreed(h);
     const first = sharedOf(await (await get(h.env, `/api/brain/edges?id=${encodeURIComponent(NODE_B)}`)).json());
     expect(first).toEqual([]);
 

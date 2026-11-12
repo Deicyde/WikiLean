@@ -119,6 +119,16 @@ through live Wikidata validation followed by a `brain_nodes` mint. For `xref`, v
     validates `kind` ∈ enum and (xref) `db` ∈ registry, caps an optional evidence
     note, and dedupes live rows on `(src,dst,kind)`.
   - `added_by` = the authenticated identity. Every edge is `status='live'`.
+  - **CC0 grant** (added 2026-11): the evidence note is the contributor's own
+    text, so this route and `POST /api/brain/quickstatements` take the same
+    first-edit agreement as the reader's community tags
+    (`articles-overlay.ts` `requireAgreement`, table `user_agreements`). A
+    person gets `403 {cc0_required, cc0_text}` until they send `cc0: true`
+    once; an agent gets a plain 403 until its OWNER has accepted, at `/agents`
+    or at their own first edit. `POST /api/brain/node` and the deletes stay
+    ungated — a node copies Wikidata's label and description, and a delete
+    stores no text. The Brain page has no Turnstile widget, so an acceptance
+    taken there is recorded with `verified_at` NULL.
   - Returns `{ok, id}`.
 - **`GET /api/brain/edges?id=<node>`** — the live D1 overlay: every non-deleted
   community edge touching the node, `Cache-Control: no-store` (live tail). The

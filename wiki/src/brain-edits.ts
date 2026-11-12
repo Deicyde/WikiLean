@@ -16,6 +16,12 @@ import type { Env } from "./env.js";
 import { getUser, type AuthUser } from "./auth.js";
 import { editLimitKey } from "./agents.js";
 import { writeBrake } from "./site-settings.js";
+import {
+  accountFor,
+  recordAgreement,
+  requireAgreement,
+  type AgreementStep,
+} from "./articles-overlay.js";
 import { brainEdges, brainNodes } from "./db/schema.js";
 import {
   brainNodeExists,
@@ -213,6 +219,36 @@ function actorTypeFor(role: string, body: Record<string, unknown>): ActorType | 
   if (!isBearer(role) && !declared) return "human";
   if (declared !== "human" && declared !== "ai") return "API calls must set actor_type to 'human' or 'ai'";
   return declared;
+}
+
+// The CC0 grant, asked for once at a contributor's first edit and shared with
+// the formalization reader's overlay (articles-overlay.ts `requireAgreement`).
+// It gates the two routes that store a contributor's own prose — an edge's
+// evidence note, which `GET /api/brain/edges` republishes as CC0 data — and
+// not `POST /api/brain/node` or the deletes, which add no text of their own
+// (a node copies its label and description from Wikidata).
+//
+// The pipeline bearer is exempt: it is the operator's own token, writing under
+// the operator's terms rather than as a community contributor.
+//
+// Returns null when the caller needs no grant, a Response that refuses the
+// write, or the acceptance to record once the write goes ahead.
+async function brainAgreement(
+  c: Context<{ Bindings: Env }>,
+  user: AuthUser,
+  body: Record<string, unknown>,
+  now: number,
+): Promise<AgreementStep | Response | null> {
+  if (user.role === "bot") return null;
+  // The Brain's forms carry no Turnstile widget, so a person's first Brain
+  // edit records an unverified acceptance rather than being refused for a
+  // check it cannot offer; /agents and the reader still verify theirs.
+  return requireAgreement(
+    c,
+    { account: accountFor(user), isAgent: user.role === "agent", turnstile: false },
+    body,
+    now,
+  );
 }
 
 // ---- quickstatements: one D1 batch per row ---------------------------------
@@ -899,7 +935,8 @@ code{font-family:"SF Mono",Menlo,Consolas,monospace}
 </div>
 <label for="qs-rows">Rows</label><textarea id="qs-rows" spellcheck="false">${htmlEscape(sample)}</textarea>
 <div class="controls"><button id="submit" type="button">Submit rows</button><span id="status" class="status"></span></div>
-<p class="hint">Select at least two databases, including at least one Brain-node database. Up to ${MAX_QUICK_ROWS} rows per submit.</p>
+<div id="cc0" class="hint" hidden><label class="check"><input type="checkbox" id="cc0-box"><span id="cc0-text">I release what I add here into the public domain under CC0 1.0, and I confirm it is mine to release.</span></label></div>
+<p class="hint">Select at least two databases, including at least one Brain-node database. Up to ${MAX_QUICK_ROWS} rows per submit. Connections and their notes are published as public-domain (CC0 1.0) data.</p>
 <details class="format-guide" open><summary>Input format</summary>
 <p>Use one row per connection. Tab-separated values are recommended; comma-separated CSV also works when the first line has no tabs. The example below uses <code>&lt;Tab&gt;</code> markers to show where real tab characters go.</p>
 <ul><li>The first line may be headers such as <code>mathlib</code>, <code>wikidata</code>, <code>lmfdb</code>, <code>nlab</code>, <code>file</code>, and <code>note</code>.</li><li>If there is no header row, columns follow the selected databases in order, then <code>file</code> when Mathlib is selected, then <code>note</code>.</li><li>Blank lines and lines starting with <code>#</code> are ignored.</li></ul>
@@ -1040,9 +1077,20 @@ btn.addEventListener("click", async () => {
   try {
     const actor = document.querySelector("input[name=actor]:checked").value;
     const selected = selectedSpecs();
-    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify({ databases: selected.map(sp => sp.key), actor_type: actor, items: parseRows() }) });
+    const body = { databases: selected.map(sp => sp.key), actor_type: actor, items: parseRows() };
+    const cc0Box = document.getElementById("cc0-box");
+    if (cc0Box.checked) body.cc0 = true;
+    const res = await fetch("/api/brain/quickstatements", { method:"POST", headers:{ "Content-Type":"application/json" }, body:JSON.stringify(body) });
     const json = await res.json().catch(() => ({}));
     if (res.status === 401) { statusEl.innerHTML = '<a href="/login?returnTo=/quickstatements">Sign in to submit</a>'; return; }
+    // The CC0 grant at a first contribution: show the wording the server
+    // quoted, then the same submit goes through once it is ticked.
+    if (json.cc0_required) {
+      document.getElementById("cc0").hidden = false;
+      if (json.cc0_text) setText("cc0-text", json.cc0_text);
+      statusEl.textContent = "Agree to the licence below, then submit again.";
+      return;
+    }
     setText("accepted", json.accepted || 0); setText("failed", json.failed || 0); setText("queued", json.queue_count || 0);
     results.innerHTML = (json.rows || []).map((r) => {
       const ids = r.ids ? Object.entries(r.ids).map(([k,v]) => k + ":" + v).join(" / ") : "";
@@ -1097,6 +1145,12 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     if (rows.length > MAX_QUICK_ROWS) {
       return c.json({ ok: false, error: `too many rows (max ${MAX_QUICK_ROWS})`, accepted: 0, failed: rows.length, rows: [] }, 400);
     }
+    // Every row carries the submitter's note, so the grant is taken once for
+    // the whole submit, before the first row is written.
+    const now = Date.now();
+    const agreement = await brainAgreement(c, user, body, now);
+    if (agreement instanceof Response) return agreement;
+    if (agreement?.needsRecord) await recordAgreement(c.env, accountFor(user), now, agreement.verifiedAt);
 
     const results: QuickRowResult[] = [];
     const items: QueueItem[] = [];
@@ -1211,9 +1265,15 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     if (src === dst) return c.json({ ok: false, error: "src and dst are identical" }, 400);
 
+    // The evidence note is the contributor's own text: take the CC0 grant
+    // before storing it, as the overlay's tag routes do.
+    const now = Date.now();
+    const agreement = await brainAgreement(c, user, body, now);
+    if (agreement instanceof Response) return agreement;
+    if (agreement?.needsRecord) await recordAgreement(c.env, accountFor(user), now, agreement.verifiedAt);
+
     const db = drizzle(c.env.DB);
     // persist any newly-validated Wikidata concept nodes (idempotent on the QID)
-    const nowMs = Date.now();
     for (const m of mints) {
       await db
         .insert(brainNodes)
@@ -1225,7 +1285,7 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
           addedBy: user.id,
           actorType,
           status: "live",
-          createdAt: nowMs,
+          createdAt: now,
           version: 1,
         })
         .onConflictDoNothing();

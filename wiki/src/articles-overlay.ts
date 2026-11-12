@@ -23,6 +23,7 @@
 // (which only type-imports articles.ts) and types from articles.ts, so there is
 // no import cycle with either.
 
+import type { Context } from "hono";
 import type { Env } from "./env.js";
 import type { AuthUser } from "./auth.js";
 import type { ArticlesArticle, ArticlesLocation, ArticlesPassage, SummaryStatus } from "./articles.js";
@@ -525,14 +526,33 @@ export function accountFor(user: AuthUser): string {
 
 // ---- the CC0 agreement at first edit (decision 11) --------------------------
 
-// The licence the mapping data is released under. Bump this id if the wording
-// changes in a way a contributor should re-accept.
-export const CC0_AGREEMENT_VERSION = "cc0-1.0/2026-11";
+// The licence the contributed data is released under. Bump this id when the
+// wording changes, and add the superseded id to CC0_ACCEPTED_VERSIONS unless
+// the change is one a contributor must see and accept again.
+export const CC0_AGREEMENT_VERSION = "cc0-1.1/2026-11";
 
 export const CC0_AGREEMENT_TEXT =
-  "I release the mapping data I add here — the declaration names, relations and notes — " +
+  "I release the data I add here — passage tags (declaration names, relations and notes) " +
+  "and Brain connections (their endpoints, kinds and evidence notes) — " +
   "into the public domain under CC0 1.0, and I confirm it is mine to release. " +
   "Wikipedia article text keeps its own licence (CC BY-SA 4.0) and Lean code keeps its library’s.";
+
+// Acceptances that still stand. `cc0-1.0/2026-11` named "the mapping data I add
+// here"; 1.1 only spells out that Brain connections and their notes are part of
+// it, which widens nothing a contributor granted, so an earlier acceptance is
+// not re-asked for.
+export const CC0_ACCEPTED_VERSIONS: readonly string[] = ["cc0-1.0/2026-11", CC0_AGREEMENT_VERSION];
+
+export function agreementStands(agreement: { cc0_version: string } | null | undefined): boolean {
+  return !!agreement && CC0_ACCEPTED_VERSIONS.includes(agreement.cc0_version);
+}
+
+// What a writer is told when the grant is missing. The messages live here with
+// the gate so the overlay and the Brain answer in the same words.
+export const CC0_REQUIRED = "the CC0 agreement is required before your first edit";
+export const TURNSTILE_REQUIRED = "a Turnstile check is required for a new account's first edit";
+export const CC0_AGENT_REQUIRED =
+  "the person who minted this agent must accept the CC0 contribution agreement at /agents first";
 
 export interface UserAgreement {
   user_id: string;
@@ -607,4 +627,52 @@ export async function verifyTurnstile(
   } catch {
     return "failed";
   }
+}
+
+// ---- the shared first-edit gate --------------------------------------------
+//
+// Every write surface that stores a contributor's own text asks for the CC0
+// grant once, at the first edit, and records it: the overlay's two tag routes
+// (articles.ts) and the Brain's `POST /api/brain/edge` and
+// `POST /api/brain/quickstatements` (brain-edits.ts), whose evidence notes are
+// free text the site republishes as CC0.
+//
+// An agent cannot agree to a licence; its OWNER can, and must have, before any
+// of that person's agents may write (plan section 5.3, "Licence").
+export type AgreementStep = { needsRecord: false } | { needsRecord: true; verifiedAt: number | null };
+
+export interface AgreementWriter {
+  // Whose acceptance governs this write: an agent's owner, else the person
+  // themself (accountFor).
+  account: string;
+  // An agent's write, which is refused outright until its owner has accepted.
+  isAgent: boolean;
+  // Ask a new account for a Turnstile check with its first acceptance. The
+  // overlay's form carries the widget and does; the Brain page has no widget,
+  // so its forms record an unverified acceptance (verified_at stays NULL)
+  // rather than refusing a contributor who has no way to pass the check.
+  turnstile: boolean;
+}
+
+export async function requireAgreement(
+  c: Context<{ Bindings: Env }>,
+  writer: AgreementWriter,
+  body: Record<string, unknown>,
+  now: number,
+): Promise<AgreementStep | Response> {
+  if (agreementStands(await loadAgreement(c.env, writer.account))) return { needsRecord: false };
+  if (writer.isAgent) return c.json({ ok: false, error: CC0_AGENT_REQUIRED }, 403);
+  if (body.cc0 !== true) {
+    return c.json({
+      ok: false, error: CC0_REQUIRED, cc0_required: true,
+      cc0_version: CC0_AGREEMENT_VERSION, cc0_text: CC0_AGREEMENT_TEXT,
+    }, 403);
+  }
+  if (!writer.turnstile) return { needsRecord: true, verifiedAt: null };
+  const token = typeof body.turnstile_token === "string" && body.turnstile_token !== "" ? body.turnstile_token : null;
+  const verdict = await verifyTurnstile(c.env, token);
+  if (verdict === "failed") {
+    return c.json({ ok: false, error: TURNSTILE_REQUIRED, turnstile_required: true }, 403);
+  }
+  return { needsRecord: true, verifiedAt: verdict === "ok" ? now : null };
 }
