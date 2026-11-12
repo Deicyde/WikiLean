@@ -357,7 +357,7 @@ test("an article the reader covers shows the summary box", async ({ page }) => {
   const box = page.getByRole("complementary", { name: "Formalization" });
   // The passages with a status, as the article's articles page counts them, and how many more there are.
   await expect(box).toContainText("3 passages of Wikipedia revision 2002");
-  await expect(box).toContainText("1 more passage has no status yet.");
+  await expect(box).not.toContainText("no status yet");
   await expect(box).not.toContainText("undecided");
   await expect(box).toContainText("This page shows revision");
   await expectNoSeriousViolations(page);

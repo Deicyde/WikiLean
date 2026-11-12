@@ -264,8 +264,8 @@ describe("articles pages with the fixture store", () => {
     const html = await res.text();
     expect(html).toContain("<title>WikiLean · Articles</title>");
     // The passage with no status is in no count, status or bar: the totals say there is one more.
-    expect(html).toContain("2 articles · 6 passages · 7 Lean locations · 1 related declaration " +
-      '<span class="articles-muted" id="articles-unread">1 more passage has no status yet; it is left out until someone reads it.</span></p>');
+    expect(html).toContain("2 articles · 6 passages · 7 Lean locations · 1 related declaration</p>");
+    expect(html).not.toContain("no status yet");
     expect(html).toContain('aria-label="6 passages: 4 formalized, 1 statement only, 1 not formalized"');
     expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
     // By importance and per article: the passages that have a status, and four status columns.
@@ -351,8 +351,7 @@ describe("articles pages with the fixture store", () => {
       '<span class="articles-dot" aria-hidden="true">·</span>' +
       '<span class="articles-mini" data-status="statement_only"><span class="articles-ico" aria-hidden="true">◐</span>1 statement only</span>' +
       '<span class="articles-dot" aria-hidden="true">·</span>' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>' +
-      '<span class="articles-dot" aria-hidden="true">·</span><span class="articles-muted">1 with no status yet</span></p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span></p>');
     // The legend is the filter: a swatch, an icon and a word per status, and no second
     // copy of the counts. What each status means is the button's title.
     const key = html.slice(html.indexOf('<div class="articles-chips articles-key"'), html.indexOf("</div>", html.indexOf('articles-key"')));
@@ -734,8 +733,8 @@ describe("articles pages with the fixture store", () => {
     // A zero count is shown but is not a filter.
     expect(html).not.toContain('data-filter="status:partial"');
     expect(html).toContain('<span class="articles-chip is-static is-zero" data-status="partial">');
-    expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration). " +
-      '<span class="articles-muted" id="articles-unread">1 more passage has no status yet; it is left out until someone reads it.</span>');
+    expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration).");
+    expect(html).not.toContain("no status yet");
     expect(html).toContain("Batteries <span class=\"articles-n\">related only</span>");
     // The status in words is visible text beside the pill, not a hover-only
     // title, and the pill is not read twice.
@@ -982,8 +981,8 @@ describe("articles pages with the fixture store", () => {
       expect(html, path).not.toContain('id="p-3fa91c07"');
       expect(html, path).not.toContain("exists_<wbr>spanning_<wbr>gadget");
       expect(html, path).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
-      expect(html, path).toContain("2 passages checked, 1 Lean location (and 1 related declaration). " +
-        '<span class="articles-muted" id="articles-unread">2 more passages have no status yet; they are left out until someone reads them.</span>');
+      expect(html, path).toContain("2 passages checked, 1 Lean location (and 1 related declaration).");
+      expect(html, path).not.toContain("no status yet");
       expect(html, path).toContain('<p class="articles-counts" id="articles-counts"><b>2 passages</b>');
       // A library whose only related declarations were the set-aside passage's has no chip.
       expect(html, path).not.toContain('data-filter="library:mathlib"');
@@ -2484,7 +2483,8 @@ describe("article page summary box", () => {
     expect(html).toContain("Separately from this page&#x27;s annotations, WikiLean checked 3 passages of Wikipedia revision 2002 against Lean libraries:");
     expect(html).toContain(`<span class="wl-articles-box-rev">This page shows revision ${REVID}.</span>`);
     expect(html).toContain("1 formalized");
-    expect(html).toContain("1 not formalized</span>. 1 more passage has no status yet. <span class=\"wl-articles-box-rev\">");
+    expect(html).toContain("1 not formalized</span>. <span class=\"wl-articles-box-rev\">");
+    expect(html).not.toContain("no status yet");
     expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
     // The notice is the articles pages' line under their header (one line, never a badge); the box
     // carries no notice of its own.
@@ -3263,8 +3263,8 @@ describe("the article reader", () => {
     expect(html).not.toContain('data-p="0c4d77b1"');
     expect(html).not.toContain('id="atlr-pp-0c4d77b1"');
     expect(html).not.toMatch(/Undecided|undecided|data-status="unresolved"/);
-    expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration). " +
-      '<span class="articles-muted" id="articles-unread">1 more passage has no status yet; it is left out until someone reads it.</span>');
+    expect(html).toContain("3 passages checked, 3 Lean locations (and 1 related declaration).");
+    expect(html).not.toContain("no status yet");
     expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 passages</b>');
     expect(html).not.toContain("listed in the panel only");
     expect(html).toContain('data-passages="3"');

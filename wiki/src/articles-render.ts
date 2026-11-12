@@ -104,8 +104,7 @@ const STATUS_ORDER: SummaryStatus[] = ["formalized", "statement_only", "partial"
 // The statuses the pages show. A passage with no status ("unresolved" in the store) gets no
 // highlight and no status until someone reads it (the maintainer's decision, 2026-11-02, after
 // PD5): the article views set it aside (articleParts), and the dashboard and the article box leave
-// it out of their counts and their statuses, saying only how many more passages there are
-// (unreadSentence). The store's JSON keeps it.
+// it out of their counts and their statuses, and do not count it either. The store's JSON keeps it.
 const ARTICLE_STATUSES: SummaryStatus[] = STATUS_ORDER.filter((s) => s !== "unresolved");
 
 // A store's counts by status as the pages show them: the statuses a passage can be given, and
@@ -116,12 +115,6 @@ function shownStatusCounts(raw: Partial<Record<SummaryStatus, number>> | null | 
   return counts;
 }
 
-// How many more passages the counts leave out because they have no status yet.
-function unreadSentence(n: number, short = false): string {
-  if (short) return n === 1 ? "1 more passage has no status yet." : `${int(n)} more passages have no status yet.`;
-  return n === 1 ? "1 more passage has no status yet; it is left out until someone reads it."
-    : `${int(n)} more passages have no status yet; they are left out until someone reads them.`;
-}
 
 // What each status means, in a reader's words: the legend's second column, the
 // title of each filter button, and the sentence the reader's highlight legend gives.
@@ -1720,8 +1713,7 @@ function countsLine(byStatus: Record<SummaryStatus, number>, nUnread: number, le
   const parts = ARTICLE_STATUSES.filter((s) => count(byStatus[s]) > 0).map((s) =>
     `<span class="articles-mini" data-status="${s}"><span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>` +
     `${int(byStatus[s])} ${text(STATUS[s].plural)}</span>`);
-  const tail = nUnread ? [`<span class="articles-muted">${int(nUnread)} with no status yet</span>`] : [];
-  return `<p class="articles-counts" id="articles-counts">${[...head, ...parts, ...tail].join(COUNT_DOT)}</p>`;
+  return `<p class="articles-counts" id="articles-counts">${[...head, ...parts].join(COUNT_DOT)}</p>`;
 }
 
 // The legend under that line, which is also the filter: one swatch, icon and word
@@ -1892,8 +1884,7 @@ function articleParts(input: ArticlePageInput) {
   const central = centralFromPassages(passages, (passage) => shownStatus(passage, ctx));
   const centralRow = central ? centralLine(central, n, { object: "the article's subject or a named result or definition", articles: null }) : "";
   const nText = [...texts.values()].filter((view) => view !== null).length;
-  const lead = `${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.` +
-    (nUnread ? ` <span class="articles-muted" id="articles-unread">${unreadSentence(nUnread)}</span>` : "");
+  const lead = `${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.`;
   const revisionLink = `<a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${int(article.revision)}</a>`;
   const description = `Where ${article.title} is formalized in Lean: ${int(summary.by_status?.formalized)} of ${plural(n, "passage", "passages")} formalized.`;
   // How the passages are shown: in full from the store's verified text, or as the
@@ -2267,7 +2258,7 @@ export function articlesDashboardPage(input: DashboardInput): string {
   const nRelated = count(counts.related);
   const about = aboutFold([
     { h: "Totals", id: "articles-h-totals", body:
-      `<p>${plural(count(counts.articles), "article", "articles")} · ${plural(nPassages, "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}${nUnread ? ` <span class="articles-muted" id="articles-unread">${unreadSentence(nUnread)}</span>` : ""}</p>\n` +
+      `<p>${plural(count(counts.articles), "article", "articles")} · ${plural(nPassages, "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}</p>\n` +
       `${statusBar(byStatus, "passage", "passages")}\n` +
       `<div class="articles-chips articles-legend">${ARTICLE_STATUSES.map((s) => `<span class="articles-chip is-static" data-status="${s}">${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="articles-n">${int(byStatus[s])}</span></span>`).join("")}</div>${centralRow}` },
     { h: "What the colours mean", body: colourLegend() },
@@ -2354,7 +2345,7 @@ export function articlesSummaryBox(entry: IndexEntry, href: string, pageRevision
   const found = checked === 0 && nUnread > 0
     ? `WikiLean found ${plural(nUnread, "passage", "passages")} in Wikipedia revision ${int(revision)}, none with a status yet.`
     : `WikiLean checked ${plural(checked, "passage", "passages")} of Wikipedia revision ${int(revision)} against Lean libraries: ${parts || "none yet"}.` +
-      (nUnread ? ` ${unreadSentence(nUnread, true)}` : "");
+      "";
   return `<link rel="stylesheet" href="${ARTICLES_CSS}">\n` +
     `<aside class="wl-articles-box" aria-label="Formalization">` +
     `<span class="wl-articles-box-h">Formalization</span> ` +
