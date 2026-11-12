@@ -358,6 +358,21 @@ drops it. `rule9_location` then runs over it, with the record's `conjuncts` as t
 ids. Levels 0 to 4 are untouched, so a replay of a run pinned at 4 gates exactly as it
 did.
 
+**The note the verdict leaves is the note the record keeps.** The one legal answer to "a
+strong record whose own note admits a clause it does not state, and the note is wrong" is
+a `confirm` that writes its own `note` — the gate holds that note and the planner refutes
+such a record by default on the strength of the old one. So from plan rule 2 the tally
+takes a verdict's `note` onto the location it leaves, beside its `step`, `convention` and
+`instantiation` (`tally.VERDICT_NOTE_FIELDS`). Before it, a verdict's note reached a
+record only through `records.downgrade_note`, on a downgrade to `closeMatch` over a
+location with none: on every other verdict the worker's note stood, the export carried a
+strong relation whose note said it stated less than the passage, and the next plan
+refuted the record by default again for ever. It is gated on the **challenge run's own
+`plan_rule`**, which the tally reads from `challenge-plan.json`, so a replay of a run
+drawn under rule 1 yields the rows it always did; draw at plan rule 2 when you gate at
+judgment rules 5. The note is free-text checked at export like any other
+(`records.check_free_text`).
+
 Rules 5 also add **three checks** (`rule9_checks`), in the prompt and the gate in one
 commit, on every verdict that leaves a strong relation or a `hasPart`:
 
@@ -515,14 +530,23 @@ things, both on supporting passages: a **basis is required whatever its relation
 rule 1 only a strong basis was, so a `hasPart` that alone made a passage `partial` fell to
 its stratum at `sample_rate`), and `hasPart` and `narrowMatch` **draw at
 `strong_sample_rate`** — the review behind the issue found 18 of its 22 wrong partial
-links sampled out at 0.2. It also adds one model-free refusal by default: a `hasPart`
+links sampled out at 0.2. Rule 2 also reads a location's own status under the **run's**
+status rule when it asks whether it is a basis: the command line never passed
+`--status-rule` on to `bases()`, so every plan was drawn with bases computed under status
+rule 1, and a `broadMatch` that alone makes a passage `formalized` under status rule 3 —
+the relation the issue found wrong most often — was not seen as a basis at all. On a
+synthetic corpus of 4,000 passages shaped like the issue's own counts that is 11% of the
+bases. Rule 1 keeps the old reading, so a replay is unchanged. It also adds one
+model-free refusal by default: a `hasPart`
 **on a passage with no conjuncts**, since R4 gives a part to a passage that says several
 things and the inventory read this one as saying one, so either the cut is wrong or the
 part is a `relatedMatch`. That rule reads a passage's `conjuncts`, so it applies only on
 a run that reads bundles; on one that does not, no row carries them and "no conjuncts"
 would mean every passage. `challenge.py`'s `--plan-rule` defaults to 2 and
 `challenge.plan()`'s argument to 1, so a replay of an older plan passes the rule it was
-drawn with and gets the same records back.
+drawn with and gets the same records back. The rule is also what the tally reads to
+decide whether a verdict's own `note` replaces the worker's (stage 7 above): a plan drawn
+under rule 2 is a run whose verdicts were written and gated under judgment rules 5.
 
 **The prompts (`scripts/pipeline/prompts/`).** WikiLean's own, rendered from the run's own
 paths by `prompts.py`, which refuses a template with an unfilled slot. Four files per root:

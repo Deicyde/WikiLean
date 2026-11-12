@@ -1052,6 +1052,21 @@ def rule9_location(location: dict, where: str, item: str, cfg: GateConfig,
 #: record's one at a time and the rest of the record stands.
 VERDICT_LOCATION_FIELDS = ("relation", "note", "clauses", "instantiation", "step",
                            "convention", "conjunct_relation", "tests")
+#: Which of them the tally takes from a verdict only when it is a non-empty string
+#: (``tally._judged_fields``): a blank one leaves the record's own standing, so the gate
+#: holds the record's too — otherwise ``"note": ""`` would answer the missing-clause
+#: rule with a field the tally throws away.
+VERDICT_TEXT_FIELDS = ("note", "instantiation", "step", "convention")
+
+
+def _written(verdict: dict, key: str) -> bool:
+    """Whether the verdict writes ``key`` over the record's, as the tally reads it."""
+    value = verdict.get(key)
+    if value is None:
+        return False
+    if key in VERDICT_TEXT_FIELDS:
+        return isinstance(value, str) and bool(value.strip())
+    return True
 
 
 def _verdict_location(record: dict, verdict: dict) -> dict:
@@ -1062,7 +1077,10 @@ def _verdict_location(record: dict, verdict: dict) -> dict:
     the one it names. Every judgment field the verdict writes replaces the record's, and
     a field the relation it leaves does not take is dropped exactly as the tally drops it
     (``tally._fit_fields``) — so the gate holds the location the tally will write, and
-    refuses no convention or clause list the tally itself would throw away.
+    refuses no convention or clause list the tally itself would throw away. "Writes" is
+    the tally's reading of it (:func:`_written`): a blank string is no field, and the
+    record's own stands, so a verdict cannot answer a rule about its record's note by
+    blanking the note.
 
     Without this the judgment rules hold of a locate document and of nothing a challenger
     writes: a ``confirm`` owed a non-empty witness and nothing else (issue #175).
@@ -1071,7 +1089,7 @@ def _verdict_location(record: dict, verdict: dict) -> dict:
     if verdict.get("action") == "downgrade":
         left["relation"] = verdict.get("relation")
     for key in VERDICT_LOCATION_FIELDS[1:]:
-        if verdict.get(key) is not None:
+        if _written(verdict, key):
             left[key] = verdict[key]
     left = {key: value for key, value in left.items() if value is not None}
     relation = left.get("relation")
@@ -1129,25 +1147,27 @@ def rule9_checks(verdict: dict, left: dict, where: str, item: str,
         problems.add(9, where, f"{item}: a verdict that leaves a {relation} runs the three "
                                "checks (`reading`, `states`, `kind_check`)")
         return
+    # every check of the three is reported together: a worker answers one gate run with
+    # one rewrite, and the retry cap is what a second refusal costs (issue #175)
     reading = checks.get("reading")
     if not isinstance(reading, list) or not 1 <= len(reading) <= vocab.MAX_CONJUNCTS \
             or not all(_one_line(line) for line in reading):
         problems.add(9, where, f"{item}: `reading` is 1 to {vocab.MAX_CONJUNCTS} one-line "
                                "facts the passage asserts, in your own words")
-        return
-    states = checks.get("states")
-    places = set(range(1, len(reading) + 1))
-    if not isinstance(states, list) or not all(type(s) is int and s in places
-                                               for s in states):
-        problems.add(9, where, f"{item}: `states` names the positions of `reading` the "
-                               f"declaration states, each in 1..{len(reading)}")
-    elif relation in vocab.STRONG_RELATIONS and set(states) != places:
-        problems.add(9, where, f"{item}: a {relation} states every fact of the passage, and "
-                               f"`states` names {sorted(set(states))} of {sorted(places)}; "
-                               "downgrade to hasPart")
-    elif relation == vocab.HAS_PART and not states:
-        problems.add(9, where, f"{item}: a hasPart that states no fact of the passage is a "
-                               "relatedMatch")
+    else:
+        states = checks.get("states")
+        places = set(range(1, len(reading) + 1))
+        if not isinstance(states, list) or not all(type(s) is int and s in places
+                                                   for s in states):
+            problems.add(9, where, f"{item}: `states` names the positions of `reading` the "
+                                   f"declaration states, each in 1..{len(reading)}")
+        elif relation in vocab.STRONG_RELATIONS and set(states) != places:
+            problems.add(9, where, f"{item}: a {relation} states every fact of the passage, "
+                                   f"and `states` names {sorted(set(states))} of "
+                                   f"{sorted(places)}; downgrade to hasPart")
+        elif relation == vocab.HAS_PART and not states:
+            problems.add(9, where, f"{item}: a hasPart that states no fact of the passage is "
+                                   "a relatedMatch")
     if held == vocab.BROAD_MATCH:
         direction = checks.get("direction")
         if not isinstance(direction, dict) or not _nonempty(direction.get("instance")) \

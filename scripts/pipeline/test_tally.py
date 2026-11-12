@@ -31,9 +31,11 @@ import unittest
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-if str(HERE) not in sys.path:
-    sys.path.insert(0, str(HERE))
+for _candidate in (HERE / "gate", HERE):
+    if str(_candidate) not in sys.path:
+        sys.path.insert(0, str(_candidate))
 
+import verify_locate as gate  # noqa: E402 — scripts/pipeline/gate/verify_locate.py
 import carry  # noqa: E402
 import index as index_mod  # noqa: E402
 import keys  # noqa: E402
@@ -178,11 +180,14 @@ class Fixture:
 
     def write_challenge(self, records: list[dict], verdicts: list[dict], *,
                         run_id: str = "chl-1", challenged: str = "loc-1",
+                        plan_rule: int | None = None,
                         extra_document: dict | None = None) -> None:
         self.run_json(run_id, vocab.MODE_CHALLENGE, challenged_runs=[challenged])
-        write_json(self.runs / run_id / "challenge-plan.json",
-                   {"schema": vocab.CHALLENGE_PLAN_SCHEMA, "run_id": run_id,
-                    "challenged_runs": [challenged], "records": records})
+        plan = {"schema": vocab.CHALLENGE_PLAN_SCHEMA, "run_id": run_id,
+                "challenged_runs": [challenged], "records": records}
+        if plan_rule is not None:
+            plan["plan_rule"] = plan_rule
+        write_json(self.runs / run_id / "challenge-plan.json", plan)
         document = {"schema": vocab.DOCUMENT_SCHEMA, "mode": vocab.MODE_CHALLENGE,
                     "run_id": run_id, "task_id": f"{run_id}-t1", "source_id": SOURCE,
                     "source_sha": "h" * 64, "layer_sha256": keys.sha256_text(LAYER),
@@ -307,11 +312,13 @@ class TallyTests(unittest.TestCase):
 
     # -- the challenge ---------------------------------------------------------------
 
-    def _challenged(self, records, verdicts, *, locate=None, extra_document=None):
+    def _challenged(self, records, verdicts, *, locate=None, extra_document=None,
+                    plan_rule=None):
         self.fx.write_locate(locate if locate is not None else [
             located(DELTA, [location("Testlib.Dual", "exactMatch", 1)]),
         ], planned_items=(DELTA,))
-        self.fx.write_challenge(records, verdicts, extra_document=extra_document)
+        self.fx.write_challenge(records, verdicts, plan_rule=plan_rule,
+                                extra_document=extra_document)
         return self.fx.build(challenge_runs=["chl-1"])
 
     def test_confirm_makes_the_record_survive(self):
@@ -345,6 +352,42 @@ class TallyTests(unittest.TestCase):
               "action": "downgrade", "relation": "relatedMatch",
               "witness": "It needs another lemma.", "checks": checks}])
         self.assertNotIn("checks", self.fx.rows_by_item(built)[DELTA]["locations"][0])
+
+    def _gap_note_confirm(self, *, plan_rule):
+        """A confirm of a strong record whose own note admits a clause, with the
+        challenger's own note in its place — the one legal answer judgment rules 5
+        leave to a record the planner refutes by default for that very note."""
+        key = location_key(DELTA, "Testlib.Dual")
+        built = self._challenged(
+            [plan_location(DELTA, "Testlib.Dual", "required", "exactMatch")],
+            [{"item": DELTA, "target": "location", "location_key": key,
+              "action": "confirm", "clauses": ["c1"],
+              "note": "It states the widget and the gadget alike.",
+              "witness": "The record's note was wrong: the structure states both.",
+              "checks": {"reading": ["a widget is dual"], "states": [1],
+                         "kind_check": "a theorem, neither notation nor an example"}}],
+            locate=[located(DELTA, [location("Testlib.Dual", "exactMatch", 1,
+                                             note="It does not state the widget.")])],
+            plan_rule=plan_rule)
+        return self.fx.rows_by_item(built)[DELTA]["locations"][0]
+
+    def test_a_confirms_own_note_replaces_the_one_it_was_refused_for(self):
+        """Issue #175: the gate holds the note the verdict leaves, so the tally must
+        write it. Otherwise the record keeps a note that admits a clause its strong
+        relation says it states, the export carries it, and the next plan refutes the
+        record by default on the strength of it — for ever."""
+        loc = self._gap_note_confirm(plan_rule=vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS)
+        self.assertEqual(loc["note"], "It states the widget and the gadget alike.")
+        self.assertEqual(loc["relation"], "exactMatch")
+        self.assertEqual(loc["challenge"], "survived")
+        self.assertIsNone(gate.admits_missing_clause(loc["note"]))
+
+    def test_a_plan_drawn_before_that_rule_keeps_the_workers_note(self):
+        """A replay of a run drawn under plan rule 1 yields the rows it always did."""
+        for plan_rule in (None, vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS):
+            with self.subTest(plan_rule=plan_rule):
+                loc = self._gap_note_confirm(plan_rule=plan_rule)
+                self.assertEqual(loc["note"], "It does not state the widget.")
 
     def test_a_required_record_nobody_judged_is_owed(self):
         built = self._challenged(

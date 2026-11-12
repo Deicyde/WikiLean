@@ -879,6 +879,21 @@ class ChallengeVerdictTests(unittest.TestCase):
         code, text = self.fx.run()
         self.assertEqual(code, gate.EXIT_OK, text)
 
+    def test_a_blank_note_is_no_note_and_the_records_own_still_stands(self):
+        """The tally takes a verdict's text field only when it is non-empty, so a
+        verdict that blanks the note leaves the record's — and the gate holds that one.
+        Otherwise `"note": ""` would answer the missing-clause rule with a field the
+        tally throws away."""
+        records = challenge_records()
+        records[0]["note"] = "It does not state that the gadget turns a widget."
+        self.fx.set_records(records)
+        for blank in ("", "   "):
+            with self.subTest(note=repr(blank)):
+                doc = good_challenge_document()
+                self.verdict(doc, LEAD_KEY)["note"] = blank
+                self.fx.write(doc)
+                self.refuses(says="admits a clause it does not state")
+
     def test_a_downgrade_to_a_closematch_with_no_convention_is_refused(self):
         doc = good_challenge_document()
         self.verdict(doc, BROAD_KEY).update(action="downgrade", relation="closeMatch")
@@ -964,6 +979,18 @@ class ChallengeVerdictTests(unittest.TestCase):
                 self.verdict(doc, LEAD_KEY)["checks"]["reading"] = reading
                 self.fx.write(doc)
                 self.refuses(says="one-line facts the passage asserts")
+
+    def test_a_checks_block_that_fails_three_ways_is_told_all_three_at_once(self):
+        """A worker answers one gate run with one rewrite, and the retry cap is what a
+        second refusal costs: a malformed `reading` hides neither the direction nor the
+        kind check behind it."""
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY)["checks"] = {"reading": [], "states": [1]}
+        self.fx.write(doc)
+        text = self.refuses(says="one-line facts the passage asserts")
+        self.assertIn("a broadMatch gives `direction`", text)
+        self.assertIn("`kind_check` says in one line", text)
+        self.passes_at_four()
 
     def test_a_broadmatch_with_no_direction_is_refused(self):
         doc = good_challenge_document()

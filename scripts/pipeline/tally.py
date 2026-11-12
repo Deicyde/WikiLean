@@ -91,6 +91,16 @@ CUT_LOCATION_FIELDS = ("conjunct_relation", "tests", "pd6")
 CONDITIONAL_PROMINENCE = "prominence"
 #: What a confirm or downgrade may say of the record it leaves, replacing the worker's.
 VERDICT_FIELDS = ("step", "convention", "instantiation")
+#: And, from plan rule 2 on, its ``note``. Judgment rules 5 hold the note of the location
+#: a verdict leaves (``gate.verify_locate._verdict_location``), and the one legal answer
+#: to "this strong record's own note admits a clause it does not state, and the note is
+#: wrong" is a confirm that writes its own. Before plan rule 2 a verdict's note reached
+#: the record only through :func:`records.downgrade_note`, on a downgrade to
+#: ``closeMatch`` over a location with none, so the worker's stood and the next plan
+#: refuted the record by default again on the strength of it (issue #175). Gated on the
+#: challenge run's own plan rule, so a replay of a run drawn under rule 1 yields the rows
+#: it always did.
+VERDICT_NOTE_FIELDS = (*VERDICT_FIELDS, "note")
 RELATION_STRENGTH = vocab.RELATION_STRENGTH
 
 
@@ -437,6 +447,9 @@ def challenge_values(workspace: Workspace, run_id: str, challenge_runs: Iterable
             raise TallyProblem(f"challenge run {challenge_run!r} challenged "
                                f"{', '.join(plan.get('challenged_runs') or []) or 'nothing'}, "
                                f"not {run_id}")
+        # which rules the plan was drawn under, and so which rules its verdicts were
+        # written and gated against; a plan with no `plan_rule` is one of the first runs
+        plan_rule = plan.get("plan_rule") or vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS
         required = 0
         for rec in plan.get("records") or []:
             if rec.get("run_id") != run_id:
@@ -444,7 +457,8 @@ def challenge_values(workspace: Workspace, run_id: str, challenge_runs: Iterable
             key = rec["key"]
             if key in planned:
                 raise TallyProblem(f"record {key[:12]} is planned by two challenge runs")
-            planned[key] = {**rec, "challenge_run": challenge_run}
+            planned[key] = {**rec, "challenge_run": challenge_run,
+                            "plan_rule": plan_rule}
             required += rec.get("planned") == vocab.CHALLENGE_REQUIRED
         if not any(rec.get("planned") == vocab.CHALLENGE_REQUIRED
                    for rec in plan.get("records") or []):
@@ -810,12 +824,15 @@ def _apply_challenge(row: dict, planned: dict, verdicts: dict, universe, declara
         verdict = verdicts.get(key)
         loc["challenge"] = _challenge_value(key, planned, verdicts)
         if verdict is not None:
+            plan_rule = (plan or {}).get("plan_rule",
+                                         vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS)
             row["runs"]["challenge"] = verdict["challenge_run"]
             action = verdict.get("action")
             if isinstance(verdict.get("claims"), list):
                 row["challenge_claims"] = verdict["claims"]
             if action in vocab.CHALLENGE_KEEP:
-                _judged_fields(loc, verdict, row, problems, status_rule=status_rule)
+                _judged_fields(loc, verdict, row, problems, status_rule=status_rule,
+                               plan_rule=plan_rule)
             if action == "refute":
                 row["refuted"].append({**loc, "witness": verdict.get("witness", "")})
                 row["passage_challenge_override"] = vocab.CHALLENGE_DOWNGRADED
@@ -834,7 +851,8 @@ def _apply_challenge(row: dict, planned: dict, verdicts: dict, universe, declara
                     if relation == vocab.CLOSE_MATCH and not str(loc.get("note") or "").strip():
                         loc["note"] = records_mod.downgrade_note(
                             verdict, layer_of(sid) if layer_of else None)
-                    _judged_fields(loc, verdict, row, problems, status_rule=status_rule)
+                    _judged_fields(loc, verdict, row, problems, status_rule=status_rule,
+                                   plan_rule=plan_rule)
         kept.append(loc)
     row["locations"] = _renumbered(kept, status_rule=status_rule)
     confirmed: list[dict] = []
@@ -984,20 +1002,24 @@ def _apply_fill(row: dict, fill: dict, universe, declarations, problems: list[st
 
 def _judged_fields(loc: dict, verdict: dict, row: dict | None = None,
                    problems: list[str] | None = None, *,
-                   status_rule: int = vocab.STATUS_RULE_D1) -> None:
+                   status_rule: int = vocab.STATUS_RULE_D1,
+                   plan_rule: int = vocab.CHALLENGE_PLAN_RULE_STRONG_BASIS) -> None:
     """What a challenger says the location it leaves states (the judgment rules).
 
     Called for a confirm, and for a downgrade once it is applied. ``clauses`` name the
     challenger's own claim list of the passage, so the location keeps them as
     ``challenge_clauses`` with its worker's ``clauses`` unchanged; a ``step``,
-    ``convention`` or ``instantiation`` the verdict names replaces the worker's. Then a
+    ``convention`` or ``instantiation`` the verdict names replaces the worker's, and
+    from plan rule 2 its ``note`` does too (:data:`VERDICT_NOTE_FIELDS`). Then a
     field that does not describe the relation the location now has is dropped
     (:func:`_fit_fields`), so a downgrade from ``closeMatch`` to ``broadMatch`` leaves no
     convention behind.
     """
     if isinstance(verdict.get("clauses"), list):
         loc["challenge_clauses"] = verdict["clauses"]
-    for key in VERDICT_FIELDS:
+    fields = (VERDICT_NOTE_FIELDS
+              if plan_rule >= vocab.CHALLENGE_PLAN_RULE_WEAK_BASIS else VERDICT_FIELDS)
+    for key in fields:
         if isinstance(verdict.get(key), str) and verdict[key].strip():
             loc[key] = verdict[key]
     if vocab.reads_bundles(status_rule):

@@ -19,11 +19,13 @@ Run: python3 scripts/pipeline/test_model_stages.py
 """
 from __future__ import annotations
 
+import io
 import json
 import shutil
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from fractions import Fraction
 from pathlib import Path
 
@@ -447,6 +449,44 @@ class ChallengePlanTests(unittest.TestCase):
             self.assertEqual(document["plan_rule"], rule)
         with self.assertRaises(challenge_mod.ChallengeProblem):
             challenge_mod.plan({"loc-1": rows}, seed=0, plan_rule=9)
+        # and the draw itself, which a caller may reach without the plan
+        with self.assertRaises(challenge_mod.ChallengeProblem):
+            challenge_mod.draw(challenge_mod.classify(rows, run_id="loc-1"), seed=0,
+                               plan_rule=9)
+
+    def _main_plan(self, rows: list[dict], *args: str) -> dict:
+        """``challenge-plan.json`` as the command line writes it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "rows.jsonl").write_text(
+                "".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+            with redirect_stdout(io.StringIO()):
+                code = challenge_mod.main(
+                    ["--rows", f"loc-1={root / 'rows.jsonl'}", "--run-id", "chal-1",
+                     "--out", str(root / "out"), *args])
+            self.assertEqual(code, 0)
+            return json.loads((root / "out" / "challenge-plan.json").read_text())
+
+    def test_the_command_line_reads_a_basis_under_the_runs_own_status_rule(self):
+        """A broadMatch to data alone makes a theorem passage formalized under status
+        rule 3, so it is that passage's basis. The command line never passed its
+        ``--status-rule`` on to :func:`challenge.bases`, which read every location's own
+        status under rule 1, where the same location is only ``partial`` — so the
+        relation issue #175 found wrong most often was invisible to the basis rule.
+        Plan rule 2 reads it under the run's rule; rule 1 keeps the old reading, so a
+        replay of an older plan is unchanged.
+        """
+        rows = [self.row("In-text #0000000d", status="formalized", locations=[
+            self.location("a" * 64, "broadMatch", 1, proof_status="definition")])]
+        self.assertEqual(
+            [r["rule"] for r in self._main_plan(rows, "--status-rule", "3",
+                                                "--plan-rule", "2")["records"]
+             if r["target"] == "location"], [challenge_mod.BASIS])
+        self.assertEqual(
+            [(r["rule"], r["planned"]) for r in
+             self._main_plan(rows, "--status-rule", "3", "--plan-rule", "1")["records"]
+             if r["target"] == "location"],
+            [(challenge_mod.SAMPLE, vocab.CHALLENGE_REQUIRED)])
 
     def test_the_draw_is_exact_arithmetic_and_seeded(self):
         rows = [self.row(f"In-text #{n:08x}", outcome=vocab.OUTCOME_ABSENT, status=None)
