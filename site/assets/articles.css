@@ -22,7 +22,6 @@
 .articles-crumbs { font-size: 12px; color: var(--muted); margin: 0 0 4px; }
 .articles-h1 { font-family: var(--serif); font-size: 1.75rem; line-height: 1.2; margin: 4px 0 6px; overflow-wrap: anywhere; }
 .articles-h2 { font-family: var(--serif); font-size: 1.15rem; margin: 28px 0 8px; }
-.articles-strip > .articles-h2 { font-size: 1rem; margin: 0 0 4px; }
 .articles-lead { color: var(--muted); max-width: 70ch; margin: 0 0 8px; }
 .articles-meta { color: var(--muted); font-size: 13px; margin: 2px 0; }
 .articles-muted { color: var(--muted); }
@@ -32,12 +31,41 @@
 .articles-foot { max-width: 1000px; margin: 8px auto 40px; padding: 12px 28px 0; box-sizing: border-box; border-top: 1px solid var(--line-strong); color: var(--muted); font-size: 12px; line-height: 1.5; }
 .articles-foot p { margin: 4px 0; }
 .articles-foot a { text-decoration: underline; }
-/* The data's audit status: one line under the header of every articles page, never on a card. */
-.articles-notice { margin: 0; padding: 6px 28px; border-bottom: 1px solid var(--line); background: var(--surface); color: var(--ink); font-size: 13px; line-height: 1.45; text-align: center; }
+/* The data's audit status: one quiet line under the header of every articles page, never a
+   banner and never on a card. It keeps its words; it does not keep the page's attention. */
+.articles-notice { margin: 0; padding: 5px 28px; border-bottom: 1px solid var(--line); background: none; color: var(--muted); font-size: 12px; line-height: 1.45; text-align: left; }
 
-/* ---- coverage strip ---- */
-.articles-strip { margin: 16px 0 18px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--line-strong); border-radius: 8px; }
-.articles-strip .articles-h2 { margin-top: 0; }
+/* ---- the head of an article page: counts, legend-filter, folds ---- */
+/* One line of counts under the title, then the legend that is also the filter. Nothing
+   else: every other figure is in the "About this page" fold under them. */
+.articles-counts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 0; margin: 2px 0 8px; font-size: 15px; }
+.articles-counts b { font-weight: 700; }
+.articles-dot { margin: 0 8px; color: var(--c-untouched); }
+.articles-key { margin: 0 0 2px; }
+.articles-key .articles-chip { font-size: 12.5px; }
+/* The filters that are not the legend, folded away. */
+.articles-filters { margin: 2px 0 8px; font-size: 12px; color: var(--muted); }
+.articles-filters > summary { cursor: pointer; width: max-content; max-width: 100%; }
+.articles-filters > summary:hover { color: var(--accent); }
+.articles-filters .articles-strip-row { margin: 6px 0 0; }
+/* One "About this page" fold holds the pinned revision, the libraries searched, what an
+   audit measured, the runs and how the text is shown — closed, so the article opens first. */
+.articles-page-about { margin: 6px 0 14px; }
+.articles-page-about > summary { font-size: 13px; }
+.articles-about-body { margin: 6px 0 0; padding: 10px 14px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); }
+.articles-about-sec + .articles-about-sec { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
+.articles-about-h { font-family: var(--serif); font-size: .95rem; color: var(--ink); margin: 0 0 4px; }
+.articles-about-body p { margin: 4px 0; }
+.articles-about-body .articles-strip-row { margin: 6px 0 0; }
+.articles-about-body .articles-prov-list { margin: 2px 0 0; }
+/* What the colours mean: the legend's long form, a sample beside each word. */
+.articles-meanings { list-style: none; margin: 2px 0 0; padding: 0; }
+.articles-meanings li { margin: 4px 0; }
+.articles-sample { padding: 0 3px; color: var(--ink); font-family: var(--serif); background: var(--st-bg); border-bottom: 1.5px var(--st-line) var(--st); }
+.articles-sample[data-status="partial"] { border-bottom-width: 2px; }
+.articles-sample[data-status="not_formalized"] { border-bottom-width: 3px; }
+
+/* ---- the figures themselves: the bar, the chips and the rows that hold them ---- */
 .articles-strip-lead { margin: 0 0 6px; font-size: 14px; }
 .articles-strip-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 8px 0 0; }
 .articles-strip-h { flex: 0 0 64px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
@@ -190,9 +218,10 @@
 .articles-rel { display: inline-block; margin-left: 6px; padding: 0 8px; border: 1.5px solid var(--accent); border-radius: 999px; color: var(--accent); font: 700 12px/1.55 system-ui, -apple-system, sans-serif; white-space: nowrap; vertical-align: 1px; }
 .articles-rel[data-relation="broadMatch"], .articles-rel[data-relation="narrowMatch"], .articles-rel[data-relation="hasPart"] { border-style: dashed; }
 .articles-rel[data-relation="relatedMatch"] { border-style: dotted; border-color: var(--line-strong); color: var(--muted); }
-.articles-legend-rel { margin: 0 0 12px; font-size: 12.5px; }
-.articles-legend-rel p { margin: 0 0 4px; }
-.articles-legend-rel ul { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 0; padding: 0; list-style: none; color: var(--muted); }
+.articles-legend-rel { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); }
+.articles-legend-rel > summary { cursor: pointer; width: max-content; max-width: 100%; }
+.articles-legend-rel > summary:hover { color: var(--accent); }
+.articles-legend-rel ul { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 0 0; padding: 0; list-style: none; color: var(--muted); }
 .articles-legend-rel .articles-rel { margin: 0 4px 0 0; }
 .articles-ps { font-size: 11px; color: var(--muted); }
 /* An unfinished proof is the statement-only amber with its dashed stroke, not
@@ -241,12 +270,20 @@
 .articles-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line-strong); font-size: 13px; }
 .articles-table th, .articles-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
 .articles-table thead th { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-/* The articles list: its status headings wrap under their icon and its library
-   tags wrap within the cell, so the table fits the page column at desktop widths. */
-.articles-list th, .articles-list td { padding: 6px 7px; }
+/* The articles list: one row per article — its name, a bar of its statuses, how many
+   passages it has and how many libraries hold a match. Four columns, not eleven. */
+.articles-list th, .articles-list td { padding: 7px 8px; vertical-align: middle; }
 .articles-list thead th.num { white-space: normal; min-width: 4em; }
-.articles-list td:nth-last-child(2) { min-width: 9em; }
+.articles-list .articles-cov { width: 34%; min-width: 120px; }
+.articles-list .articles-cov .articles-bar { margin: 0; }
 .articles-list .articles-libtag { margin: 0 0 2px; }
+/* A sortable column head: plain text without the script, a button with it
+   (articles.js wraps the head's words), and an arrow for the column in force. */
+.articles-sort { display: inline-flex; align-items: center; gap: 4px; font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; text-transform: inherit; letter-spacing: inherit; }
+.articles-sort:hover { color: var(--accent); }
+.articles-sort .articles-sort-mark { visibility: hidden; font-size: 10px; }
+[aria-sort] .articles-sort .articles-sort-mark { visibility: visible; }
+[aria-sort] .articles-sort { color: var(--ink); }
 .articles-table tbody th { font-weight: 600; }
 .articles-table .num { text-align: right; font-variant-numeric: tabular-nums; }
 .articles-table code { font-size: 11.5px; overflow-wrap: anywhere; }

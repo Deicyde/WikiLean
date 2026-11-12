@@ -6,9 +6,11 @@
 //     passage holding exactly the card list's block (its Confirm / Report are articles.js's).
 // This script selects a passage (click, tap, Enter or Space on a highlight, a row of the
 // index, the stepper, the left and right arrow keys, a #p-<hex> link), shows its section in the panel, outlines
-// its highlight with a bar in the margin, filters by status, library and prominence, peeks on
-// hover, and on a phone turns the panel into a bottom sheet. It also draws the revision's
-// MathML the way Wikipedia does where MathML Core leaves something out (fixMath).
+// its highlight with a bar in the margin, filters by status (the legend under the title),
+// by library and by prominence (the fold beside it), hides and shows the panel itself and
+// remembers which, peeks on hover, and on a phone turns the panel into a bottom sheet. It
+// also draws the revision's MathML the way Wikipedia does where MathML Core leaves
+// something out (fixMath).
 //
 // XSS: it reads data attributes and writes with textContent, setAttribute, style, classList
 // and MathML elements it creates itself; nothing is parsed as HTML.
@@ -399,7 +401,10 @@
   // Kept per article for the tab's session: another article opens unfiltered.
   var filterKey = "atlr-filter:" + (root.getAttribute("data-pageid") || location.pathname);
   var active = { status: null, library: null, central: false, dim: false };
-  var chips = Array.prototype.slice.call(document.querySelectorAll(".atlr-chips .articles-chip[data-filter]"));
+  // The legend under the title is the status filter; the rest (library, the article's own
+  // statements, dimming) is in the "More ways to filter" fold beside it.
+  var chips = Array.prototype.slice.call(
+    document.querySelectorAll(".articles-key .articles-chip[data-filter], .articles-filters .articles-chip[data-filter]"));
   var chipWords = {};
   chips.forEach(function (chip) {
     chipWords[chip.getAttribute("data-filter")] = Array.prototype.filter.call(chip.childNodes, function (n) {
@@ -473,8 +478,40 @@
     }
   } catch (e) { /* private mode, or nothing saved */ }
 
+  // ---- the passage list beside the article: hidden or shown, remembered ----
+  // A layout preference, not an article's: one key for the reader, kept in localStorage
+  // (wrapped, so private mode and a blocked store simply mean "shown"). On a phone the
+  // panel is the bottom sheet and the button is not shown at all.
+  var panelToggle = document.getElementById("atlr-panel-toggle");
+  var PANEL_KEY = "wl-atlr-panel";
+  function setPanel(open, save) {
+    document.body.classList.toggle("atlr-no-panel", !open);
+    if (panelToggle) {
+      panelToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      panelToggle.textContent = open ? "Hide the passage list" : "Show the passage list";
+    }
+    if (save) {
+      try { localStorage.setItem(PANEL_KEY, open ? "open" : "closed"); } catch (e) { /* private mode */ }
+    }
+    measure();
+    placeBar();
+  }
+  if (panelToggle) {
+    panelToggle.addEventListener("click", function () {
+      setPanel(document.body.classList.contains("atlr-no-panel"), true);
+    });
+    var savedPanel = null;
+    try { savedPanel = localStorage.getItem(PANEL_KEY); } catch (e) { /* private mode */ }
+    if (savedPanel === "closed") setPanel(false, false);
+  }
+  // Selecting a passage needs the panel: it is where its cards are. The reader's own
+  // choice is not overwritten: the next page load honours it again.
+  function revealPanel() {
+    if (document.body.classList.contains("atlr-no-panel")) setPanel(true, false);
+  }
+
   // ---- the sheet (phone) ----
-  // With the sheet open the header keeps one row (the chips go), so the article keeps the screen above it.
+  // With the sheet open the header keeps its first row only, so the article keeps the screen above it.
   function openSheet() {
     if (!phone.matches) return;
     html.classList.add("atlr-sheet-open");
@@ -540,6 +577,7 @@
   function select(p, opts) {
     opts = opts || {};
     hidePeek();
+    revealPanel();
     if (current && current !== p) {
       current.marks.forEach(function (m) { m.classList.remove("is-sel"); });
       current.el.hidden = true;

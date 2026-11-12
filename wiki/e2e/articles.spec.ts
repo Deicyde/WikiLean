@@ -20,6 +20,14 @@ function collectPageErrors(page: Page): string[] {
   return errors;
 }
 
+// The pipeline's figures live in one closed "About this page" fold (the reader-polish
+// pass, 2026-11-11): a test that reads one opens it first, as a reader would.
+async function openAbout(page: Page, name = "About this page"): Promise<void> {
+  const fold = page.locator("#articles-about");
+  await fold.getByText(name, { exact: true }).click();
+  await expect(fold).toHaveAttribute("open", "");
+}
+
 async function expectNoSeriousViolations(page: Page): Promise<void> {
   const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   const serious = results.violations.filter((v) => v.impact === "serious" || v.impact === "critical");
@@ -93,7 +101,7 @@ test("a survived coverage claim names its parts under 'Formalized by 2 parts tog
 // hidden separators keep the accessible name from running them together.
 test("a passage heading's accessible name keeps its pieces apart", async ({ page }) => {
   await page.goto(WIDGET);
-  await expect(page.locator("#p-91aa02de h3")).toHaveAccessibleName("Definition · central · § Definitions");
+  await expect(page.locator("#p-91aa02de h3")).toHaveAccessibleName("Definition · main statement · § Definitions");
   await expect(page.getByRole("heading", { level: 3, name: "Theorem · Subject of the article · § Statement" })).toHaveCount(1);
   // The separators are read, not seen: the visible heading is unchanged.
   await expect(page.locator("#p-91aa02de h3 .articles-sr")).toHaveCount(1);
@@ -116,7 +124,8 @@ test("a capped quote ends in an ellipsis outside the quotation; a whole one does
   const dots = await cut.locator('[aria-hidden="true"]').boundingBox();
   // After the highlight: to its right on its last line, or on a line below it.
   expect(mark && dots && (dots.x >= mark.x + mark.width - 1 || dots.y >= mark.y + mark.height - 1)).toBe(true);
-  await expect(page.locator("#articles-quote-note")).toHaveText("Quotes show at most the first 12 words of a passage " +
+  await openAbout(page);
+  await expect(page.locator("#articles-about")).toContainText("Quotes show at most the first 12 words of a passage " +
     "(the record format's quotation cap; a formula's MathML text counts toward it). " +
     "A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. " +
     "Hover a formula for its TeX.");
@@ -125,7 +134,8 @@ test("a capped quote ends in an ellipsis outside the quotation; a whole one does
   await page.goto(GADGET);
   await expect(page.locator("#p-c93b0d58 blockquote mark")).toHaveText("Moreover, the gadgets on a widget correspond bijectively to all its vertices.");
   await expect(page.locator("[data-quote-cut]")).toHaveCount(0);
-  await expect(page.locator("#articles-quote-note")).toHaveCount(0);
+  await openAbout(page);
+  await expect(page.locator("#articles-about")).not.toContainText("Quotes show at most the first 12 words");
 });
 
 // The vertical gap from the bottom of `a` to the top of `b` (negative when `b`
@@ -149,22 +159,22 @@ async function expectPlainCommaGaps(page: Page): Promise<void> {
   expect(margins.every((m) => m === "0px")).toBe(true);
 }
 
-test("the central statements are counted under the bar over all passages and its legend", async ({ page }) => {
+test("the article's own statements are counted inside the About fold, under what the page is", async ({ page }) => {
   for (const width of [1280, 375]) {
     await page.setViewportSize({ width, height: 900 });
     await page.goto(WIDGET);
-    await expect(page.locator(".articles-strip .articles-bar")).toHaveCount(1);
+    // Closed, the page opens with the article: the figures are one click away, not above it.
+    await expect(page.locator("#articles-central")).toBeHidden();
+    await openAbout(page);
     await expect(page.locator("#articles-central")).toHaveText(
       "Central statements: 2 of the 3 passages state the article's subject or a named result or definition; " +
       "the other one is supporting (examples, setup). Of these 2: ✓1 formalized, ✕1 not formalized.");
-    // The bar's own counts (the Status chips) come first, then the line, then the Where row.
-    expect(await gapBelow(page, ".articles-strip .articles-bar", '[aria-labelledby="articles-h-status"]')).toBeGreaterThanOrEqual(0);
-    expect(await gapBelow(page, '[aria-labelledby="articles-h-status"]', "#articles-central")).toBeGreaterThanOrEqual(0);
-    expect(await gapBelow(page, "#articles-central", '[aria-labelledby="articles-h-where"]')).toBeGreaterThanOrEqual(0);
+    // In the fold: what the page is, then the line, then the Subject row.
+    expect(await gapBelow(page, '[aria-labelledby="articles-h-subject"]', "#articles-central")).toBeLessThan(0);
     await expectPlainCommaGaps(page);
     await page.goto("/articles");
-    await page.getByText("Coverage and build details", { exact: true }).click();
-    await expect(page.locator(".articles-strip .articles-bar")).toHaveCount(1);
+    await openAbout(page, "About this build");
+    await expect(page.locator("#articles-about .articles-bar")).toHaveCount(1);
     await expect(page.locator("#articles-central")).toHaveText(
       "Central statements: 4 of the 6 passages, across 2 articles, state an article's subject or a named result or definition; " +
       "the other 2 are supporting (examples, setup). Of these 4: ✓3 formalized, ✕1 not formalized.");
@@ -176,7 +186,7 @@ test("the central statements are counted under the bar over all passages and its
 test("the by-library table leads with the libraries that hold passages and lists the empty ones apart", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/articles");
-  await page.getByText("Coverage and build details", { exact: true }).click();
+  await openAbout(page, "About this build");
   const rows = page.getByRole("region", { name: "Table: By library" }).locator("tbody th");
   await expect(rows).toHaveText(["Mathlib", "FormalFrontier · WidgetTheory", "TauCeti", "Batteries"]);
   const more = page.locator("#articles-libs-empty");
@@ -203,11 +213,12 @@ test("a passage permalink is not hidden under the sticky header", async ({ page 
   expect(header && pill && pill.y >= header.y + header.height).toBe(true);
 });
 
-test("the strip's Subject row links the article's subject passage", async ({ page }) => {
+test("the About fold's Subject row links the article's subject passage", async ({ page }) => {
   await page.goto(WIDGET);
   const subject = page.locator(".articles-passage.is-subject");
   await expect(subject).toHaveCount(1);
   await expect(subject.locator(".articles-subject")).toHaveText("Subject of the article");
+  await openAbout(page);
   await page.getByRole("list", { name: "Subject" }).getByRole("link").click();
   await expect(page).toHaveURL(new RegExp(`${WIDGET}#p-3fa91c07$`));
   const header = await page.locator(".wl-header").boundingBox();
@@ -215,19 +226,26 @@ test("the strip's Subject row links the article's subject passage", async ({ pag
   expect(header && pill && pill.y >= header.y + header.height).toBe(true);
 });
 
-test("status and library chips filter the passages", async ({ page }) => {
+test("the legend filters by status, and the fold beside it by library", async ({ page }) => {
   await page.goto(WIDGET);
   // The conjecture has no status, so it is set aside: three passages, and no undecided chip.
   const passages = page.locator(".articles-passage");
   await expect(passages).toHaveCount(3);
   await expect(page.locator('.articles-chip[data-status="unresolved"]')).toHaveCount(0);
-  const chip = page.locator('.articles-chip[data-filter="status:statement_only"]');
+  // The legend under the title is the status filter, and it shows no counts of its own:
+  // the one line above it carries them.
+  const key = page.getByRole("group", { name: "Show passages by status" });
+  await expect(key).toBeVisible();
+  await expect(key.locator(".articles-n")).toHaveCount(0);
+  await expect(page.locator("#articles-counts")).toContainText("3 passages");
+  const chip = key.locator('.articles-chip[data-filter="status:statement_only"]');
   await chip.click();
   await expect(chip).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".articles-passage:visible")).toHaveCount(1);
   await expect(page.locator(".articles-filter-text")).toHaveText("Showing 1 of 3 passages: Statement only.");
   // Status and library are two facets, combined: TauCeti's statement-only
   // passage is not in Mathlib.
+  await page.getByText("More ways to filter", { exact: true }).click();
   const mathlib = page.locator('.articles-chip[data-filter="library:mathlib"]');
   await mathlib.click();
   await expect(chip).toHaveAttribute("aria-pressed", "true");
@@ -242,6 +260,70 @@ test("status and library chips filter the passages", async ({ page }) => {
   await page.getByRole("button", { name: "Show all passages" }).click();
   await expect(page.locator(".articles-passage:visible")).toHaveCount(3);
   await expect(mathlib).toHaveAttribute("aria-pressed", "false");
+});
+
+// ---- the article list (the reader-polish pass, 2026-11-11) -----------------------------------
+
+test("each row of the list is a name, a bar, a passage count and how many libraries", async ({ page }) => {
+  await page.goto("/articles");
+  const row = page.locator("#articles-list tbody tr").filter({ hasText: "Widget lemma" });
+  const cells = row.locator("td");
+  await expect(cells).toHaveCount(3);
+  // The bar is one image whose name says what it is made of, so it is never colour alone.
+  await expect(cells.nth(0).getByRole("img"))
+    .toHaveAccessibleName("3 passages: 1 formalized, 1 statement only, 1 not formalized");
+  await expect(cells.nth(1)).toHaveText("3");
+  await expect(cells.nth(2)).toHaveText("3 libraries");
+  await expect(cells.nth(2).locator("span")).toHaveAttribute("title", "FormalFrontier · WidgetTheory, Mathlib, TauCeti");
+  // No spreadsheet: no per-status column, no library chips, no importance column.
+  await expect(page.locator("#articles-list td[data-status]")).toHaveCount(0);
+  await expect(page.locator("#articles-list .articles-libtag")).toHaveCount(0);
+  await expect(page.locator("#articles-list thead th")).toHaveText([/^Article/, /^Formalized/, /^Passages/, /^Libraries/]);
+  // Importance is a figure in the fold's own table, not a column of the list.
+  await expect(page.locator("#articles-list")).not.toContainText("Importance");
+  await expect(page.locator("#articles-about")).toContainText("By WikiProject importance");
+});
+
+test("the list's columns sort, and the server's order stands without the script", async ({ page }) => {
+  const titles = () => page.locator("#articles-list tbody th a").allTextContents();
+  await page.goto("/articles");
+  // Server order: by title. The script marks the column it is sorted by.
+  expect(await titles()).toEqual(["Gadget (mathematics)", "Widget lemma"]);
+  const article = page.locator('#articles-list th[data-sort="title"]');
+  await expect(article).toHaveAttribute("aria-sort", "ascending");
+  await article.getByRole("button").click();
+  await expect(article).toHaveAttribute("aria-sort", "descending");
+  expect(await titles()).toEqual(["Widget lemma", "Gadget (mathematics)"]);
+  // A measure sorts from the most: the Gadget article is wholly formalized.
+  await page.locator('#articles-list th[data-sort="formalized"]').getByRole("button").click();
+  await expect(page.locator('#articles-list th[data-sort="formalized"]')).toHaveAttribute("aria-sort", "descending");
+  expect(await titles()).toEqual(["Gadget (mathematics)", "Widget lemma"]);
+  await expect(article).not.toHaveAttribute("aria-sort", /./);
+  // Without the script the heads are plain words over the server's own order.
+  await page.setContent("");
+  const res = await page.request.get("/articles");
+  const html = await res.text();
+  expect(html).toContain('<th scope="col" class="articles-sortable" data-sort="title" data-sort-title="Sort by title">Article</th>');
+  expect(html).not.toContain("articles-sort-mark");
+  expect(html.indexOf("Gadget (mathematics)")).toBeLessThan(html.indexOf("Widget lemma"));
+});
+
+// Every link on these pages takes the theme's accent. The browser's default blue
+// (#0000ee) is nearly unreadable on the dark surface and well under 4.5:1.
+test("no link falls back to the browser's blue in dark mode", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
+  for (const path of [WIDGET, `${WIDGET}?view=cards`, "/articles", "/", "/about", "/contribute", "/Widget_lemma",
+    "/articles/universe/0e6efcaae05b9aee11c90b919b55052636ee2932901127ea571268dc3a8d6a25"]) {
+    await page.goto(path);
+    await page.locator("details").evaluateAll((folds) => folds.forEach((fold) => fold.setAttribute("open", "")));
+    const defaulted = await page.locator("a").evaluateAll((links) => {
+      const style = Reflect.get(globalThis, "getComputedStyle") as (element: unknown) => { color: string };
+      return links
+        .map((a) => [((a as unknown as { textContent: string }).textContent || "").trim().slice(0, 40), style(a).color])
+        .filter(([, colour]) => /^rgb\((?:0, 0, 238|0, 0, 255|85, 26, 139)\)$/.test(String(colour)));
+    });
+    expect(defaulted, path).toEqual([]);
+  }
 });
 
 test("a signed-in reader confirms and reports a location", async ({ page }) => {
@@ -267,7 +349,7 @@ test("the dashboard filters its list as you type", async ({ page }) => {
   await page.getByLabel("Search covered articles").fill("gadg");
   await expect(page.locator("#articles-list tbody tr:visible")).toHaveCount(1);
   await expect(page.locator("#articles-count")).toHaveText("1 of 2 articles match.");
-  await expect(page.locator("#articles-list tbody tr:visible .articles-libtag")).toHaveText(["Mathlib"]);
+  await expect(page.locator("#articles-list tbody tr:visible td").nth(2)).toHaveText("1 library");
 });
 
 test("an article the reader covers shows the summary box", async ({ page }) => {
@@ -275,7 +357,7 @@ test("an article the reader covers shows the summary box", async ({ page }) => {
   const box = page.getByRole("complementary", { name: "Formalization" });
   // The passages with a status, as the article's articles page counts them, and how many more there are.
   await expect(box).toContainText("3 passages of Wikipedia revision 2002");
-  await expect(box).toContainText("1 more passage has no status yet.");
+  await expect(box).not.toContainText("no status yet");
   await expect(box).not.toContainText("undecided");
   await expect(box).toContainText("This page shows revision");
   await expectNoSeriousViolations(page);
@@ -365,16 +447,16 @@ test("the reader's flows work under its enforced policy, and the article box und
   const card = page.locator('.articles-card[data-library="mathlib"]');
   await card.getByRole("button", { name: "Confirm" }).click();
   await expect(card.getByRole("status")).toHaveText("Thanks: you confirmed this link.");
-  // The coverage bar's style="width:…" still sizes its segments.
-  const widths = await page.locator(".articles-seg").evaluateAll((segs) =>
-    segs.map((seg) => (seg as unknown as { style: { width: string } }).style.width));
-  expect(widths.length).toBeGreaterThan(0);
-  expect(widths.every((width) => /%$/.test(width))).toBe(true);
   expect(await violations()).toEqual([]);
 
   // The dashboard's live search (it fetches index shards), and the header search, an inline
   // script the policy allows by its hash (it fetches /api/articles).
   await page.goto("/articles");
+  // Each row's bar is sized by style="width:…", which the policy still allows.
+  const widths = await page.locator(".articles-seg").evaluateAll((segs) =>
+    segs.map((seg) => (seg as unknown as { style: { width: string } }).style.width));
+  expect(widths.length).toBeGreaterThan(0);
+  expect(widths.every((width) => /%$/.test(width))).toBe(true);
   await page.getByLabel("Search covered articles").fill("gadg");
   await expect(page.locator("#articles-count")).toHaveText("1 of 2 articles match.");
   await page.locator("#wl-search").fill("Test");
@@ -468,6 +550,54 @@ test.describe("the article reader", () => {
     expect(errors).toEqual([]);
   });
 
+  // The panel is a column beside the article, narrower than the article and foldable
+  // away; the choice is a reader's, kept in localStorage (the reader-polish pass).
+  test("the passage list is narrower than the article, folds away, and is remembered", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto(WIDGET);
+    const article = await page.locator("#atlr-main").boundingBox();
+    const panel = await page.locator("#atlr-panel").boundingBox();
+    expect(article && panel && article.width).toBeGreaterThan(panel!.width * 2);
+    const toggle = page.getByRole("button", { name: "Hide the passage list" });
+    await toggle.click();
+    await expect(page.locator("#atlr-panel")).toBeHidden();
+    await expect(page.getByRole("button", { name: "Show the passage list" })).toHaveAttribute("aria-expanded", "false");
+    const wide = await page.locator("#atlr-main").boundingBox();
+    expect(wide && article && wide.width).toBeGreaterThan(article!.width);
+    expect(await page.evaluate(() => {
+      const store = Reflect.get(globalThis, "localStorage") as { getItem(key: string): string | null };
+      return store.getItem("wl-atlr-panel");
+    })).toBe("closed");
+    // It stays folded on the next page, and selecting a passage brings it back,
+    // because that is where the passage's cards are.
+    await page.goto(WIDGET);
+    await expect(page.locator("#atlr-panel")).toBeHidden();
+    await page.locator('#atlr-article mark.atl[data-p="3fa91c07"]').click();
+    await expect(page.locator("#atlr-panel")).toBeVisible();
+    await expect(panelPassage(page)).toHaveAttribute("id", "atlr-pp-3fa91c07");
+    await page.getByRole("button", { name: "Hide the passage list" }).click();
+    await page.getByRole("button", { name: "Show the passage list" }).click();
+    await expect(page.locator("#atlr-panel")).toBeVisible();
+    expect(await page.evaluate(() => {
+      const store = Reflect.get(globalThis, "localStorage") as { getItem(key: string): string | null };
+      return store.getItem("wl-atlr-panel");
+    })).toBe("open");
+  });
+
+  // A row of the list wraps to two lines and is cut at the end of a line, never in the
+  // middle of a word; the whole of its first words is the row's title.
+  test("a passage row does not truncate mid-word, and carries its words in full", async ({ page }) => {
+    await page.goto(WIDGET);
+    const row = page.locator('a.atlr-row[data-p="91aa02de"]');
+    await expect(row).toHaveAttribute("title", "a widget is balanced if every gadget has equal weight");
+    const cut = await row.locator(".atlr-row-text").evaluate((node) => {
+      const style = (Reflect.get(globalThis, "getComputedStyle") as (e: unknown) => Record<string, string>)(node);
+      return [style.whiteSpace, style.textOverflow, style.overflowWrap];
+    });
+    expect(cut[0]).not.toBe("nowrap");
+    expect(cut[1]).toBe("clip");
+  });
+
   test("the keyboard selects, steps and goes back, one stop per passage", async ({ page }) => {
     await page.goto(WIDGET);
     await expect(page.locator("#atlr-article mark.atl[role=button]")).toHaveCount(3);
@@ -518,8 +648,8 @@ test.describe("the article reader", () => {
 
   test("a status filter leaves the other passages as plain text and the stepper among the rest", async ({ page }) => {
     await page.goto(WIDGET);
-    await page.locator('.atlr-chips .articles-chip[data-filter="status:not_formalized"]').click();
-    await expect(page.locator('.atlr-chips .articles-chip[data-filter="status:not_formalized"]')).toHaveAttribute("aria-pressed", "true");
+    await page.locator('.articles-key .articles-chip[data-filter="status:not_formalized"]').click();
+    await expect(page.locator('.articles-key .articles-chip[data-filter="status:not_formalized"]')).toHaveAttribute("aria-pressed", "true");
     await expect(page.locator("#atlr-filter-text")).toHaveText("Showing 1 of 3 passages: Not formalized.");
     await expect(page.locator("#atlr-article mark.atl.is-off")).toHaveCount(4);
     await expect(page.locator("a.atlr-row:visible")).toHaveCount(1);
@@ -576,7 +706,7 @@ test.describe("the article reader", () => {
     await expect(apply).toHaveAttribute("rspace", "0.1667em");
     await expect(page.locator("#atlr-article annotation").first()).toHaveText("{\\displaystyle \\mathbb {R} }");
     // A filter is this article's: kept under its page id, never the tab's.
-    await page.locator('.atlr-chips .articles-chip[data-filter="status:not_formalized"]').click();
+    await page.locator('.articles-key .articles-chip[data-filter="status:not_formalized"]').click();
     const saved = await page.evaluate(() => {
       const store = Reflect.get(globalThis, "sessionStorage") as { getItem(key: string): string | null };
       return [store.getItem("atlr-filter"), JSON.parse(store.getItem("atlr-filter:1001") ?? "null")?.status];
