@@ -51,7 +51,9 @@ names its rule:
    one; a ``hasPart`` or ``narrowMatch`` says what the declaration alone entails; a strong
    location writes its two-way ``tests`` and its ``instantiation``; an absence's receipt
    tags every query with the claims it targets and gives each claim a query of its own; a
-   challenge verdict carries what its action owes;
+   challenge verdict carries what its action owes; and, at rules 5, **the location a
+   challenge verdict leaves standing is held to every one of those relation rules**
+   (:func:`_verdict_location`, issue #175), the missing-clause check included;
 10. the statement cut, for a run whose ``gate.json`` names ``statement_cut_rule``: the
     spans of an inventory are disjoint, one text one passage; no span ends inside a
     formula; a span runs past its block only within the bound the rule allows;
@@ -217,7 +219,7 @@ class GateConfig:
         self.min_absence_queries = self._count("min_absence_queries", 3)
         self.span_end_rule = self._rule("span_end_rule", lt.SPAN_END_RULES, 1)
         self.statement_cut_rule = self._rule("statement_cut_rule", (0, 1, 2, 3, 4), 0)
-        self.judgment_rules = self._rule("judgment_rules", (0, 1, 2, 3, 4), 0)
+        self.judgment_rules = self._rule("judgment_rules", (0, 1, 2, 3, 4, 5), 0)
         self.inventory_run = str((data.get("inventory") or {}).get("run_id") or "")
         self.challenged_runs = [str(r) for r in data.get("challenged_runs") or []]
         pin = data.get("index")
@@ -1041,6 +1043,48 @@ def rule9_location(location: dict, where: str, item: str, cfg: GateConfig,
                                    f"{', '.join(sorted(vocab.CONJUNCT_RELATIONS_PART))}")
 
 
+#: What a verdict may say of the location it leaves, beside the action's own fields.
+#: They are the judgment fields a locate document writes, so a verdict replaces the
+#: record's one at a time and the rest of the record stands.
+VERDICT_LOCATION_FIELDS = ("relation", "note", "clauses", "instantiation", "step",
+                           "convention", "conjunct_relation", "tests")
+
+
+def _verdict_location(record: dict, verdict: dict) -> dict:
+    """The location a challenge verdict leaves standing (judgment rules 5).
+
+    A challenge document carries no locations of its own: the relation a ``confirm``
+    leaves is the **record's**, which the task manifest carries, and a ``downgrade``'s is
+    the one it names. Every judgment field the verdict writes replaces the record's, and
+    a field the relation it leaves does not take is dropped exactly as the tally drops it
+    (``tally._fit_fields``) — so the gate holds the location the tally will write, and
+    refuses no convention or clause list the tally itself would throw away.
+
+    Without this the judgment rules hold of a locate document and of nothing a challenger
+    writes: a ``confirm`` owed a non-empty witness and nothing else (issue #175).
+    """
+    left = {key: record.get(key) for key in VERDICT_LOCATION_FIELDS}
+    if verdict.get("action") == "downgrade":
+        left["relation"] = verdict.get("relation")
+    for key in VERDICT_LOCATION_FIELDS[1:]:
+        if verdict.get(key) is not None:
+            left[key] = verdict[key]
+    left = {key: value for key, value in left.items() if value is not None}
+    relation = left.get("relation")
+    if relation != vocab.HAS_PART:
+        left.pop("conjunct_relation", None)
+    if relation != vocab.CLOSE_MATCH \
+            and left.get("conjunct_relation") != vocab.CLOSE_MATCH:
+        left.pop("convention", None)
+    if relation not in vocab.STEP_RELATIONS:
+        left.pop("step", None)
+    if relation == vocab.RELATED_MATCH and verdict.get("clauses") is None:
+        # the record's clauses are the relation it no longer has; a clause list the
+        # verdict writes itself is its own claim, and rule 9 holds it to it
+        left.pop("clauses", None)
+    return left
+
+
 def _normal_query(query: str) -> str:
     return " ".join(str(query).split()).casefold()
 
@@ -1301,11 +1345,21 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
     placed = rule2_passages(doc, where, cfg, view, problems, frozen=frozen)
 
     if mode == vocab.MODE_CHALLENGE:
+        records = _frozen_records(ctx, task_id, source_id)
         for number, verdict in enumerate(doc.get("verdicts") or []):
             if not isinstance(verdict, dict):
                 problems.add(1, where, f"verdicts[{number}] is not an object")
                 continue
             rule9_verdict(verdict, where, cfg, problems)
+            item = str(verdict.get("item") or "(no item)")
+            record = records.get((item, verdict.get("location_key")))
+            if record is not None and cfg.judgment_rules >= 5 \
+                    and verdict.get("target") == "location" \
+                    and verdict.get("action") in ("confirm", "downgrade"):
+                # the relation a verdict leaves is held to every rule a locate note
+                # faces, the missing-clause check included (issue #175)
+                rule9_location(_verdict_location(record, verdict), where, item, cfg,
+                               problems, _clause_ids(record), challenger=True)
             for location in verdict.get("locations") or []:
                 if isinstance(location, dict):
                     rule3_declaration(location, where, str(verdict.get("item")), cfg, ctx,
@@ -1340,6 +1394,28 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
         if cfg.judgment_rules >= 1:
             rule9_receipt(passage, where, item, cfg, problems, ids,
                           passage_kind=base.get("passage_kind"))
+
+
+def _frozen_records(ctx: Context, task_id: str, source_id: str) -> dict:
+    """``{(item, location_key): record}`` of the challenge task this document answers.
+
+    A challenge task manifest holds ``records`` where a locate one holds ``passages``: a
+    record carries the relation the verdict judges, what the worker wrote of it, and —
+    on a run that reads bundles — the passage's ``conjuncts``. A manifest with no
+    records (an older plan, or a task nobody staged) leaves the verdict rules to
+    :func:`rule9_verdict` alone, which is what this gate did before rules 5.
+    """
+    manifest = ctx.task_manifest(task_id)
+    if manifest is None:
+        return {}
+    out: dict = {}
+    for document in manifest.get("documents") or []:
+        if str(document.get("source_id")) != source_id:
+            continue
+        for record in document.get("records") or []:
+            if isinstance(record, dict):
+                out[(str(record.get("item")), record.get("location_key"))] = record
+    return out
 
 
 def _frozen_passages(ctx: Context, task_id: str, source_id: str) -> dict:

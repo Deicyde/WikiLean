@@ -41,8 +41,10 @@ PAGEID = 9191
 SOURCE = f"enwiki-{PAGEID}-1000000007"
 RUN = "loc-test-1"
 INV_RUN = "inv-test-1"
+CHL_RUN = "chl-test-1"
 TASK = "loc-test-1-t1"
 INV_TASK = "inv-test-1-t1"
+CHL_TASK = "chl-0001"
 
 #: Four blocks: a lead that defines, a compound statement, a display, and prose.
 BLOCK_TEXTS = [
@@ -202,6 +204,78 @@ def good_inventory_document() -> dict:
     }
 
 
+#: The location keys of the four records the synthetic challenge task holds.
+LEAD_KEY, PART1_KEY, PART2_KEY, BROAD_KEY = ("1" * 64, "2" * 64, "3" * 64, "4" * 64)
+
+
+def _challenge_record(passage: dict, location_key: str, location: dict) -> dict:
+    """One record of a challenge task manifest, as ``challenge._record`` writes it."""
+    record = {"target": "location", "item": passage["item"], "run_id": RUN,
+              "prominence": passage["prominence"], "scope": passage["scope"],
+              "passage_kind": passage["passage_kind"], "outcome": "located",
+              "span": passage["span"], "section": [], "statement": passage["statement"],
+              "location_key": location_key, "library": location["library"],
+              "declaration": location["declaration"], "relation": location["relation"],
+              "rank": location.get("rank"), "note": location.get("note")}
+    record.update({key: location[key] for key in vocab.JUDGMENT_LOCATION_FIELDS
+                   if key in location})
+    if passage.get("conjuncts"):
+        record["conjuncts"] = passage["conjuncts"]
+        record["shape"] = passage["shape"]
+    return record
+
+
+def challenge_records() -> list[dict]:
+    """The four records of the synthetic challenge task.
+
+    Three are the locate document's own locations — a strong one on the simple lead and
+    the compound statement's two parts — and the fourth is a strong location on the
+    compound statement, which is what a challenge confirming one clause of two leaves.
+    """
+    located = good_locate_document()["passages"]
+    lead = located[0]["locations"][0]
+    part1, part2 = located[1]["locations"]
+    broad = location("Testlib.Sprocket", "broadMatch", 3, clauses=["c1", "c2"],
+                     instantiation="at the sprockets and the finite gadgets",
+                     tests={"r2": "Both clauses follow by reading it at the passage's "
+                                  "gadgets.",
+                            "r3": "It asks for nothing the passage does not give."})
+    return [_challenge_record(LEAD, LEAD_KEY, lead),
+            _challenge_record(COMPOUND, PART1_KEY, part1),
+            _challenge_record(COMPOUND, PART2_KEY, part2),
+            _challenge_record(COMPOUND, BROAD_KEY, broad)]
+
+
+def good_challenge_document() -> dict:
+    """A challenge document of the synthetic task that breaks no rule."""
+    return {
+        "schema": vocab.DOCUMENT_SCHEMA, "mode": vocab.MODE_CHALLENGE, "run_id": CHL_RUN,
+        "task_id": CHL_TASK, "source_id": SOURCE, "source_sha": HTML_SHA,
+        "layer_sha256": gate.sha256_bytes(LAYER.encode("utf-8")), "renderer": "web-html/3",
+        "universe": "u-test", "universe_sha256": UNIVERSE_SHA,
+        "verdicts": [
+            {"item": LEAD["item"], "target": "location", "location_key": LEAD_KEY,
+             "action": "confirm", "clauses": ["c1"],
+             "tests": {"r2": "The structure read at a gadget is the passage.",
+                       "r3": "It asks for a gadget and a widget and no more."},
+             "witness": "`structure Sprocket` is the gadget the passage defines."},
+            {"item": COMPOUND["item"], "target": "location", "location_key": PART1_KEY,
+             "action": "confirm", "clauses": ["c1"],
+             "tests": {"r2": "At a sprocket the theorem is the first clause.",
+                       "r3": "It asks only that the gadget be a sprocket."},
+             "witness": "The theorem states finiteness of every sprocket."},
+            {"item": COMPOUND["item"], "target": "location", "location_key": PART2_KEY,
+             "action": "downgrade", "relation": "relatedMatch",
+             "witness": "It needs a second lemma before it reaches either clause."},
+            {"item": COMPOUND["item"], "target": "location", "location_key": BROAD_KEY,
+             "action": "confirm", "clauses": ["c1", "c2"],
+             "tests": {"r2": "Both clauses follow by instantiation.",
+                       "r3": "Neither clause needs anything the structure lacks."},
+             "witness": "The structure states both halves of the statement."},
+        ],
+    }
+
+
 def mid_sentence_inventory_document() -> dict:
     """The good inventory with block 1 cut at its bare "and": the start statement-cut
     rule 4 refuses, and the passage the end rule truncates there."""
@@ -216,8 +290,10 @@ class Fixture:
     def __init__(self, root: Path, *, mode: str = vocab.MODE_LOCATE, **gate_overrides):
         self.root = root
         self.mode = mode
-        self.run_id = RUN if mode == vocab.MODE_LOCATE else INV_RUN
-        self.task_id = TASK if mode == vocab.MODE_LOCATE else INV_TASK
+        self.run_id = {vocab.MODE_LOCATE: RUN, vocab.MODE_INVENTORY: INV_RUN,
+                       vocab.MODE_CHALLENGE: CHL_RUN}[mode]
+        self.task_id = {vocab.MODE_LOCATE: TASK, vocab.MODE_INVENTORY: INV_TASK,
+                        vocab.MODE_CHALLENGE: CHL_TASK}[mode]
         source_dir = root / "sources" / SOURCE
         source_dir.mkdir(parents=True)
         (source_dir / "layer.txt").write_text(LAYER, encoding="utf-8")
@@ -230,18 +306,25 @@ class Fixture:
         (root / "decls.jsonl").write_text(
             "".join(json.dumps(row) + "\n" for row in DECLS), encoding="utf-8")
         (root / "tasks").mkdir()
+        document = {"source_id": SOURCE, "curated": [],
+                    "layer_sha256": gate.sha256_bytes(LAYER.encode("utf-8")),
+                    "passages": copy.deepcopy(INVENTORY_PASSAGES)}
+        if mode == vocab.MODE_CHALLENGE:
+            # a challenge task manifest holds records, not passages
+            document = {"source_id": SOURCE, "source_sha": HTML_SHA,
+                        "layer_sha256": gate.sha256_bytes(LAYER.encode("utf-8")),
+                        "renderer": "web-html/3", "records": challenge_records()}
         self._json(root / "tasks" / f"{self.task_id}.json", {
             "task_id": self.task_id, "run_id": self.run_id, "mode": mode,
-            "documents": [{"source_id": SOURCE, "curated": [],
-                           "layer_sha256": gate.sha256_bytes(LAYER.encode("utf-8")),
-                           "passages": copy.deepcopy(INVENTORY_PASSAGES)}]})
+            "documents": [document]})
         self.gate_path = root / "gate.json"
         self._json(self.gate_path, self.gate_json(**gate_overrides))
         self.findings = root / "findings" / self.task_id
         self.findings.mkdir(parents=True)
         self.document_path = self.findings / f"{SOURCE}.json"
-        self.write(good_locate_document() if mode == vocab.MODE_LOCATE
-                   else good_inventory_document())
+        self.write({vocab.MODE_LOCATE: good_locate_document,
+                    vocab.MODE_INVENTORY: good_inventory_document,
+                    vocab.MODE_CHALLENGE: good_challenge_document}[mode]())
 
     @staticmethod
     def _json(path: Path, value) -> None:
@@ -272,6 +355,14 @@ class Fixture:
 
     def set_gate(self, **overrides) -> None:
         self._json(self.gate_path, self.gate_json(**overrides))
+
+    def set_records(self, records: list) -> None:
+        """Rewrite the challenge task manifest's records."""
+        self.set_task({"task_id": self.task_id, "run_id": self.run_id, "mode": self.mode,
+                       "documents": [{"source_id": SOURCE, "source_sha": HTML_SHA,
+                                      "layer_sha256": gate.sha256_bytes(
+                                          LAYER.encode("utf-8")),
+                                      "renderer": "web-html/3", "records": records}]})
 
     def set_candidates(self, value: dict) -> None:
         self._json(self.root / "candidates" / f"{SOURCE}.json", value)
@@ -708,6 +799,118 @@ class EachRuleFiresTests(unittest.TestCase):
             fixture.set_gate(statement_cut_rule=3)
             code, text = fixture.run()
             self.assertEqual(code, gate.EXIT_OK, text)
+
+
+class ChallengeVerdictTests(unittest.TestCase):
+    """Judgment rules 5: the location a verdict leaves faces every relation rule.
+
+    Issue #175. Each case changes one thing in the good challenge document or in the
+    record its verdict judges, and asserts the gate refuses it at rules 5 and passes it
+    at rules 4 — a run pinned to the old rules re-gates unchanged.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.fx = Fixture(Path(self._tmp.name), mode=vocab.MODE_CHALLENGE,
+                          judgment_rules=5)
+
+    def verdict(self, document: dict, location_key: str) -> dict:
+        return next(v for v in document["verdicts"]
+                    if v["location_key"] == location_key)
+
+    def refuses(self, *, says: str = "") -> str:
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_REJECTED, f"expected a rejection, got:\n{text}")
+        self.assertIn("rule 9:", text, text)
+        if says:
+            self.assertIn(says, text, text)
+        return text
+
+    def passes_at_four(self) -> None:
+        """The same document, under the rules the old runs pinned."""
+        self.fx.set_gate(judgment_rules=4)
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+        self.fx.set_gate(judgment_rules=5)
+
+    def test_a_good_challenge_document_passes(self):
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+        self.assertIn("PASS", text)
+
+    def test_a_confirm_that_states_one_clause_of_two_is_refused(self):
+        """Issue #175, pattern 1: the clause check a confirm never faced."""
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY)["clauses"] = ["c1"]
+        self.fx.write(doc)
+        self.refuses(says="states every clause")
+        self.passes_at_four()
+
+    def test_a_confirm_of_a_record_whose_note_admits_a_gap_is_refused(self):
+        records = challenge_records()
+        records[0]["note"] = "It does not state that the gadget turns a widget."
+        self.fx.set_records(records)
+        self.refuses(says="admits a clause it does not state")
+        self.passes_at_four()
+
+    def test_a_confirm_that_writes_its_own_note_over_that_one_stands(self):
+        """The fix the prompt names: the note the verdict leaves is the one checked."""
+        records = challenge_records()
+        records[0]["note"] = "It does not state that the gadget turns a widget."
+        self.fx.set_records(records)
+        doc = good_challenge_document()
+        self.verdict(doc, LEAD_KEY)["note"] = "It carries the widget as a field."
+        self.fx.write(doc)
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_a_downgrade_to_a_closematch_with_no_convention_is_refused(self):
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY).update(action="downgrade", relation="closeMatch")
+        self.fx.write(doc)
+        self.refuses(says="names the convention")
+        self.passes_at_four()
+
+    def test_a_downgrade_to_a_haspart_with_no_step_is_refused(self):
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY).update(action="downgrade", relation="hasPart",
+                                            clauses=["c1"])
+        self.fx.write(doc)
+        self.refuses(says="`step`")
+        self.passes_at_four()
+
+    def test_a_downgrade_to_a_relatedmatch_that_names_a_clause_is_refused(self):
+        doc = good_challenge_document()
+        self.verdict(doc, PART2_KEY)["clauses"] = ["c2"]
+        self.fx.write(doc)
+        self.refuses(says="a relatedMatch states no clause")
+        self.passes_at_four()
+
+    def test_a_downgrade_leaves_behind_what_its_new_relation_does_not_take(self):
+        """A convention, a step and a conjunct relation the record carried are dropped,
+        as the tally drops them: the gate refuses no field the tally throws away."""
+        records = challenge_records()
+        records[3].update(relation="closeMatch", convention="encoding")
+        self.fx.set_records(records)
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY).update(action="downgrade", relation="broadMatch")
+        self.fx.write(doc)
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_a_manifest_with_no_records_leaves_the_verdict_rules_alone(self):
+        self.fx.set_task({"task_id": CHL_TASK, "run_id": CHL_RUN,
+                          "mode": vocab.MODE_CHALLENGE,
+                          "documents": [{"source_id": SOURCE, "records": []}]})
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_the_clause_ids_are_the_records_own_conjuncts(self):
+        doc = good_challenge_document()
+        self.verdict(doc, PART1_KEY)["clauses"] = ["c3"]
+        self.fx.write(doc)
+        self.refuses(says="not this passage's")
 
 
 def _sentence(text: str, formulas: tuple = (), block: str = "p") -> lt.Blocks:

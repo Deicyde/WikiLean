@@ -345,6 +345,19 @@ rest of the time writing one compound passage with a conjunct per structure. The
 records predate the check, and `gate/audit_sentences.py` measures an exported record set
 against it without re-running anything.
 
+**Judgment rules 5 — a challenge verdict faces the relation rules (issue #175).** Until
+rules 5 the whole challenge branch of rule 9 was `rule9_verdict`: a `confirm` owed a
+non-empty witness and nothing else, so every relation rule the challenge prompt states —
+a strong relation names every clause, a `closeMatch` names a convention, a `hasPart` says
+what it alone entails, a strong note that admits a missing clause — bound a locate
+document and nothing a challenger wrote. At rules 5 the gate builds **the location the
+verdict leaves** (`_verdict_location`): the record from the task manifest, under the
+relation a `downgrade` names, with every judgment field the verdict writes replacing the
+record's and every field the new relation does not take dropped as `tally._fit_fields`
+drops it. `rule9_location` then runs over it, with the record's `conjuncts` as the clause
+ids. Levels 0 to 4 are untouched, so a replay of a run pinned at 4 gates exactly as it
+did.
+
 **What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
 prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
 naturals-for-integers tripwire, both of which need the declaration index to carry
@@ -475,7 +488,7 @@ differences from formal-companion's worth stating:
 
 - **No conditional arms.** formal-companion's templates carry `{{#if}}` blocks for the rule
   versions a plan may run under; WikiLean's are written for the one set its gate enforces —
-  span-end rule 3, statement-cut rule 4, judgment rules 4 — and a change of rule is a change
+  span-end rule 3, statement-cut rule 4, judgment rules 5 — and a change of rule is a change
   of prompt in the same commit as the gate.
 - **The judgment rules are one text.** R1 to R7, the policy defaults and the readings live in
   `prompts/judgment-rules.md.part`, which both the locate and the challenge prompt render.
