@@ -710,23 +710,31 @@ export async function tagAllowance(
   // One tier and one cap over both overlay surfaces: a coverage bundle
   // (migration 0021) is an overlay edit like a tag, so minting bundles buys no
   // volume a tag would not. A deployment without 0021 falls back to the tags
-  // alone rather than refusing every write. Plain ordered placeholders, as
-  // every other query in wiki/src uses.
+  // alone rather than refusing every write. Each table is counted on its own
+  // and the two are added: every count is then an indexed read on that table's
+  // (added_by, updated_at) or (removed_by, removed_at) index, which a count
+  // over a UNION of the two in a CTE is not — SQLite materialises a CTE read
+  // twice and scans both tables, and this query runs on EVERY community write.
+  // Plain ordered placeholders, as every other query in wiki/src uses.
+  const mine = "(SELECT id FROM mine)";
+  const everEdited = (table: string) => `(SELECT COUNT(*) FROM ${table} WHERE added_by IN ${mine})`;
+  const editedToday = (table: string) => `(SELECT COUNT(*) FROM ${table}
+              WHERE (added_by IN ${mine} AND updated_at >= ?)
+                 OR (removed_by IN ${mine} AND removed_at >= ?))`;
   const counted = (coverage: boolean) => `WITH mine(id) AS (
        SELECT ? UNION SELECT agent_id FROM agent_tokens WHERE owner_id = ?
-     ),
-     overlay_edits(added_by, removed_by, updated_at, removed_at) AS (
-       SELECT added_by, removed_by, updated_at, removed_at FROM article_tags
-       ${coverage ? "UNION ALL SELECT added_by, removed_by, updated_at, removed_at FROM article_coverage" : ""}
      )
      SELECT (SELECT created_at FROM users WHERE id = ?) AS created_at,
-            (SELECT COUNT(*) FROM overlay_edits WHERE added_by IN (SELECT id FROM mine)) AS edits,
-            (SELECT COUNT(*) FROM overlay_edits
-              WHERE (added_by IN (SELECT id FROM mine) AND updated_at >= ?)
-                 OR (removed_by IN (SELECT id FROM mine) AND removed_at >= ?)) AS today`;
+            ${everEdited("article_tags")}${coverage ? ` + ${everEdited("article_coverage")}` : ""} AS edits,
+            ${editedToday("article_tags")}${coverage ? ` + ${editedToday("article_coverage")}` : ""} AS today`;
   type AllowanceRow = { created_at: number | null; edits: number; today: number };
-  const read = (coverage: boolean) => env.DB.prepare(counted(coverage))
-    .bind(accountId, accountId, accountId, since, since).all<AllowanceRow>();
+  // The account three times, then the window's two bounds once per counted
+  // table, in the order their clauses appear.
+  const read = (coverage: boolean) => {
+    const bounds = coverage ? [since, since, since, since] : [since, since];
+    return env.DB.prepare(counted(coverage))
+      .bind(accountId, accountId, accountId, ...bounds).all<AllowanceRow>();
+  };
   let results: AllowanceRow[];
   try {
     ({ results } = await read(true));

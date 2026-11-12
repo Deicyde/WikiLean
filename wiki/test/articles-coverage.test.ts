@@ -335,6 +335,29 @@ describe("POST /api/articles/coverage refusals", () => {
     expect((await jsonOf(tag)).cap).toBe(50);
   });
 
+  it("counting both surfaces reads each by its index, never the whole overlay", async () => {
+    // The allowance runs on EVERY community write, so it must stay an indexed
+    // read of one account's rows: counting the two tables through one UNION
+    // would make SQLite materialise it and scan both, which grows with the
+    // overlay and is charged per row read.
+    const h = bound();
+    agreed(h);
+    const seen: string[] = [];
+    const prepare = h.env.DB.prepare.bind(h.env.DB);
+    Object.assign(h.env.DB, { prepare: (query: string) => { seen.push(query); return prepare(query); } });
+    expect((await post(h.env, COVERAGE, body(), { user: "u-human" })).status).toBe(200);
+    const allowance = seen.filter((query) => query.includes("FROM agent_tokens WHERE owner_id = ?"));
+    expect(allowance).toHaveLength(1);
+    // The account three times, then one bound time per window clause.
+    const args = [...allowance[0]].filter((c) => c === "?").map((_, i) => (i < 3 ? "u-human" : 0));
+    const plan = (h.db.prepare(`EXPLAIN QUERY PLAN ${allowance[0]}`)
+      .all(...args) as Array<{ detail: string }>).map((row) => row.detail);
+    expect(plan.filter((step) => /\bSCAN (article_tags|article_coverage)\b/.test(step))).toEqual([]);
+    for (const table of ["article_tags", "article_coverage"]) {
+      expect(plan.filter((step) => step.includes(`SEARCH ${table} USING`)).length, table).toBeGreaterThan(0);
+    }
+  });
+
   it("a part an editor has removed is no part to build on", async () => {
     const h = bound();
     agreed(h);

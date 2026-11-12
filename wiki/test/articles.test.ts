@@ -3186,7 +3186,10 @@ describe("derived status rows", () => {
         const wrong: unknown[] = [];
         for (const c of claims) {
           const statuses = c.locations
-            .map((loc) => locationStatus(c.passage_kind, loc as never))
+            // The table's own rule, as the builder derives it: rule 3 reads a
+            // broadMatch to data differently from rule 1, so a comparison made
+            // under rule 1 would not be the table's.
+            .map((loc) => locationStatus(c.passage_kind, loc as never, statusRule))
             .filter((s): s is "formalized" | "statement_only" | "partial" => s !== null);
           let best = statuses.length ? statuses.reduce((a, b) => (rank[b] < rank[a] ? b : a)) : null;
           // Only a survived claim counts, as the store's own merge requires too
