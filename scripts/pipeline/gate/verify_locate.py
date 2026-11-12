@@ -56,8 +56,10 @@ names its rule:
     spans of an inventory are disjoint, one text one passage; no span ends inside a
     formula; a span runs past its block only within the bound the rule allows;
     ``conjuncts`` are none or 2 to 5 with a ``shape`` of the closed list, on a
-    ``formal_math`` passage; a passage scoped out is ``supporting``; and at most one
-    ``formal_math`` passage of a source is ``prominence: subject``.
+    ``formal_math`` passage; a passage scoped out is ``supporting``; at most one
+    ``formal_math`` passage of a source is ``prominence: subject``; and, at rule 4, no
+    passage starts inside a sentence but where a rule of the cut starts one
+    (:func:`rule10_sentences`, issue #172).
 
 Ported from formal-companion's ``gate/verify_locate.py``. What changes in the move: the
 text layer is :mod:`locate_text`, which is a use of ``site/anchor_resolve``'s whitespace
@@ -214,7 +216,7 @@ class GateConfig:
         self.max_locations = self._count("max_locations", 5)
         self.min_absence_queries = self._count("min_absence_queries", 3)
         self.span_end_rule = self._rule("span_end_rule", lt.SPAN_END_RULES, 1)
-        self.statement_cut_rule = self._rule("statement_cut_rule", (0, 1, 2, 3), 0)
+        self.statement_cut_rule = self._rule("statement_cut_rule", (0, 1, 2, 3, 4), 0)
         self.judgment_rules = self._rule("judgment_rules", (0, 1, 2, 3, 4), 0)
         self.inventory_run = str((data.get("inventory") or {}).get("run_id") or "")
         self.challenged_runs = [str(r) for r in data.get("challenged_runs") or []]
@@ -1174,6 +1176,36 @@ def rule9_verdict(verdict: dict, where: str, cfg: GateConfig, problems: Problems
 # ---- rule 10: the statement cut -------------------------------------------------------------------
 
 
+def rule10_sentences(where: str, view: SourceView, rows: list, problems: Problems) -> None:
+    """No passage starts inside a sentence but where a rule of the cut starts one.
+
+    The prompt already forbids a cut at a bare "and" or "or", at a list comma, or
+    between a hypothesis and its conclusions; until statement-cut rule 4 only the prompt
+    did, and the published records carry sentences cut into two to four passages, each
+    with a status and links of its own for a claim no fragment states (issue #172).
+
+    **The finding names two passages.** Span-end rules 2 and 3 end a passage at the next
+    passage's start, so a head placed inside a sentence truncates the passage before it
+    as well: the one that stated the sentence keeps its hypothesis and loses its
+    conclusion, and re-cutting either alone leaves the other a fragment. Which end is
+    wrong is the worker's call, which is why the refusal names both and not a fix.
+    """
+    for number, ((start, _end), item) in enumerate(rows):
+        if not view.blocks.cuts_a_sentence(start):
+            continue
+        before = ""
+        sentence = view.blocks.sentence_at(start)
+        if number and sentence is not None:
+            (earlier_start, earlier_end), earlier = rows[number - 1]
+            if earlier_end <= start and view.blocks.sentence_at(earlier_start) == sentence:
+                before = (f", and truncates {earlier}, the passage of the same sentence "
+                          "that ends at that start")
+        problems.add(10, where, f"{item}: the passage starts at {start}, inside a sentence and "
+                                "at no cut of the rules — a bare \"and\" or \"or\", a list comma "
+                                "and the step from a hypothesis to its conclusion are none — so "
+                                f"it leaves a fragment that states nothing{before}")
+
+
 def rule10_cut(doc: dict, where: str, cfg: GateConfig, view: SourceView, placed: dict,
                problems: Problems) -> None:
     """The spans of an inventory are disjoint, bounded and shaped as the cut asks.
@@ -1202,6 +1234,8 @@ def rule10_cut(doc: dict, where: str, cfg: GateConfig, view: SourceView, placed:
         if bound is not None and b > bound:
             problems.add(10, where, f"{item}: the span ends at {b}, past the furthest its block "
                                     f"and what its last sentence runs on into reach ({bound})")
+    if cfg.statement_cut_rule >= 4:
+        rule10_sentences(where, view, rows, problems)
     subjects = []
     for passage in doc.get("passages") or []:
         item = str(passage.get("item"))

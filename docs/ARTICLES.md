@@ -765,6 +765,36 @@ producer's maintainer before the first real set is published (section 14, item 7
     (`smoke-2-d1`, `smoke-2-d1c`, `smoke-2-d1e`) build byte for byte the stores the previous
     builder built.
 
+### One sentence, one passage: the producer's sentence check (issue #172)
+
+A passage of a set is one span of one layer, and the store and the overlay both take the
+producer's cut as given: `passage_key` is the sha256 of the page id and the span
+(above), the overlay groups tags by that key (§10a), and `mergedStatus` derives a
+passage's status from that passage's own locations. **Nothing downstream joins two
+passages of one sentence**, so a set that cuts a sentence into fragments gives each
+fragment a status, links and a tag key of its own, and the reader counts one sentence as
+two to four passages. Issue #172 found 20 such sentences (43 passages, 10 articles) in
+the published records: a link that formalizes the sentence's claim sitting on a fragment
+that states nothing ("If x and y are integers,"), and reviewers unable to correct one
+fragment without mismarking the rest.
+
+The fix is in the producer, where the cut is made: the locate gate's **statement-cut
+rule 4** (`scripts/pipeline/gate/`, docs/PIPELINE.md stage 7) refuses a passage that
+starts inside a sentence anywhere the inventory's own rules do not cut — after a bare
+"and" or "or", at a list comma, or at the step from a hypothesis to its conclusions —
+and names the passage before it too, since the span-end rule ends that one where this
+one starts. A refusal calls the inventory worker again to re-cut, exactly as every other
+span fault does; `wikilean.articles.article/1` and the overlay are unchanged, and the
+builder checks nothing new.
+
+**The 48 published articles keep their fragments.** A sealed set is never rewritten and
+this check cannot re-cut one: those passages stay as they are, with their keys, statuses
+and community tags, until a new locate run re-cuts and re-locates those articles and a
+new set is built and published — which is the operator's decision, not a consequence of
+the check. `python3 scripts/pipeline/gate/audit_sentences.py --record-set <dir>
+--sources <dir>` measures a set against the check first, read-only, printing passage
+keys and counts and no article text.
+
 ## 4. The store (v1)
 
 ```
