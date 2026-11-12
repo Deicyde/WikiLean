@@ -2,8 +2,14 @@
 
 > Status: **historical rollout record; Phases 0–4 shipped, deployed, and merged.**
 > The initial production deployment was 2026-07-05 (wrangler version b1683966;
-> remote migration 0010 applied). Community harvesting/folding is now wired into
-> nightly operations, while Brain release deployment remains separately opt-in.
+> remote migration 0010 applied). Community harvesting/folding is **wired into
+> nightly operations but opt-in**: `site/ops/nightly-moderate.sh` runs it only
+> when `WIKILEAN_COMMUNITY_HARVEST=1` names an existing absolute
+> `WIKILEAN_D1_SNAPSHOT_BUNDLE`, and `brain/data/community_edges.jsonl` is still
+> empty on `main`. Brain release deployment is separately opt-in. What a
+> graduated edge reaches depends on its kind — see
+> [Graduation reaches one kind of edge](#graduation-reaches-one-kind-of-edge)
+> under phase 4.
 >
 > **Architecture status (2026-08-31):** this document describes the current
 > mutable-row overlay. Its future replacement is the release-pinned, append-only
@@ -188,6 +194,21 @@ connections with no new nodes.**
 
 The original build order—backend, UI, cross-pollination, then graduation—is complete.
 All new architecture work is tracked in `docs/ROADMAP.md`.
+
+### Graduation reaches one kind of edge
+
+Phase 4 is scoped to `xref`, so most graduated rows never reach a cell. The
+harvester keeps every live row of every kind, and what reads
+`community_edges.jsonl` afterwards decides the rest:
+
+| Edge kind | What a build stage does with the graduated row |
+|---|---|
+| `xref` | `brain/build_shards.py:176-190` is the only reducer fold: it appends `src` under `dst` in `xref_index.json`, an output of the `top-level-shards` stage, which the shared-page inference reads. The `cells` stage depends only on `base-graph` (`brain/authority/reducer-inputs-v3.json`), so no cell changes. |
+| `formalizes` between a QID and `decl:Mathlib:…`, either direction | Outside the reducer: `bot/brain_queue.py:106` keeps `formalizes` rows and `parse_pair` (`:82-90`) accepts only `decl:Mathlib:` endpoints. It writes `bot/state/brain_queue.json`, which `brain/build_cells.py:356` reads as tag-queue items and `:448-459` turns into `formalizes` fusions. The workflow step is `.github/workflows/wikidata-poll.yml:125`. |
+| `formalizes` to any other library, `relates`, `mentions`, `matches`, `cites` | Nothing reads them. They sit in `community_edges.jsonl`, and in the live D1 overlay `GET /api/brain/edges` serves, until the `docs/ROADMAP.md` Phase 3 promotion (P3A–P3D) exists. A reviewed concept→declaration link for a non-Mathlib library can instead be exported into the curated join inputs `brain/build_common.py` already accepts (for TauCeti, `catalog/data/tauceti_links.jsonl`, read at `:2893-2914`), which is a separate decision, not graduation. |
+
+The contributor-facing version of this table is in `docs/AGENT-CONTRIBUTIONS.md`
+("What happens to an edge after you post it").
 
 ## Invariants to hold (from the recon)
 

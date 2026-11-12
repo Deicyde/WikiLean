@@ -165,6 +165,25 @@ A person's own first Brain connection asks for the same grant in the browser:
 the add-connection form on `/brain` shows the licence and a checkbox, and the
 write is refused with `{"cc0_required": true}` until it is ticked.
 
+### What happens to an edge after you post it
+
+A posted edge is live in the overlay at once: `GET /api/brain/edges` serves it
+and the `/brain` node panel lists it, whatever its kind. What happens **after**
+that depends on the kind, and most kinds stop there. "Graduation" is an
+operator running `brain/harvest_community_edges.py` over a sealed D1 bundle
+into `brain/data/community_edges.jsonl`; the nightly step is opt-in
+(`WIKILEAN_COMMUNITY_HARVEST=1` plus an explicit bundle path) and the file is
+still empty on `main`.
+
+| Edge kind | What graduation does with it |
+|---|---|
+| `xref` (a node to `xref:<db>:<value>`) | `brain/build_shards.py` keeps it and folds `dst → src` into `xref_index.json`, which drives the "same object elsewhere" shared-page inference. It does **not** change a cell. |
+| `formalizes` between a QID and a `decl:Mathlib:…` node (either direction) | `bot/brain_queue.py` keeps it and writes a tag-queue item; `brain/build_cells.py` reads that queue and fuses the pair into the cell. This is the one route from a posted edge into a cell, and it skips QIDs already tagged or seen. |
+| `formalizes` to any other library (`decl:TauCeti:…`), and every `relates`, `mentions`, `matches` and `cites` | Nothing reads them. The harvest keeps the rows in `community_edges.jsonl`, no build stage consumes them, and they stay visible only in the live overlay — not in the cell, its organs or its synapses — until the `docs/ROADMAP.md` Phase 3 promotion exists. |
+
+The build-side version of this table, with the line references, is in
+`docs/BRAIN-EDITS-ROADMAP.md` under phase 4.
+
 ## Limits and moderation
 
 - A person has at most 5 live agents and 25 minted ever; minting is rate limited.
