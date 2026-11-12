@@ -1015,6 +1015,9 @@ def _judged_cut_fields(loc: dict, verdict: dict, row: dict | None,
     """
     if isinstance(verdict.get("tests"), dict):
         loc["tests"] = verdict["tests"]
+    # judgment rules 5: the clause, direction and kind checks, kept for the audit
+    if isinstance(verdict.get(vocab.CHECKS_FIELD), dict):
+        loc[vocab.CHECKS_FIELD] = verdict[vocab.CHECKS_FIELD]
     for key in vocab.BRIDGE_FIELDS:
         if verdict.get(key) is not None:
             loc[key] = verdict[key]
@@ -1070,6 +1073,10 @@ def _fit_fields(loc: dict) -> None:
         loc.pop("tests", None)
     if loc.get("relation") != vocab.HAS_PART:
         loc.pop("pd6", None)
+    if loc.get("relation") not in vocab.CHECKED_RELATIONS:
+        # the three checks credit the declaration with a fact of the passage; a weaker
+        # relation credits it with none, so a block a verdict wrote anyway is dropped
+        loc.pop(vocab.CHECKS_FIELD, None)
     if loc.get("relation") != vocab.RELATED_MATCH:
         for key in vocab.BRIDGE_FIELDS:
             loc.pop(key, None)

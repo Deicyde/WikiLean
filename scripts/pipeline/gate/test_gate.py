@@ -258,11 +258,19 @@ def good_challenge_document() -> dict:
              "action": "confirm", "clauses": ["c1"],
              "tests": {"r2": "The structure read at a gadget is the passage.",
                        "r3": "It asks for a gadget and a widget and no more."},
+             "checks": {"reading": ["a sprocket is a gadget",
+                                    "a sprocket turns a widget"],
+                        "states": [1, 2],
+                        "kind_check": "a definition, neither notation nor an example"},
              "witness": "`structure Sprocket` is the gadget the passage defines."},
             {"item": COMPOUND["item"], "target": "location", "location_key": PART1_KEY,
              "action": "confirm", "clauses": ["c1"],
              "tests": {"r2": "At a sprocket the theorem is the first clause.",
                        "r3": "It asks only that the gadget be a sprocket."},
+             "checks": {"reading": ["every sprocket is finite",
+                                    "every finite gadget is a sprocket"],
+                        "states": [1],
+                        "kind_check": "a theorem, neither notation nor an example"},
              "witness": "The theorem states finiteness of every sprocket."},
             {"item": COMPOUND["item"], "target": "location", "location_key": PART2_KEY,
              "action": "downgrade", "relation": "relatedMatch",
@@ -271,6 +279,12 @@ def good_challenge_document() -> dict:
              "action": "confirm", "clauses": ["c1", "c2"],
              "tests": {"r2": "Both clauses follow by instantiation.",
                        "r3": "Neither clause needs anything the structure lacks."},
+             "checks": {"reading": ["every sprocket is finite",
+                                    "every finite gadget is a sprocket"],
+                        "states": [1, 2],
+                        "direction": {"instance": "read at the passage's gadgets",
+                                      "hypotheses": "none"},
+                        "kind_check": "a theorem, neither notation nor an example"},
              "witness": "The structure states both halves of the statement."},
         ],
     }
@@ -911,6 +925,89 @@ class ChallengeVerdictTests(unittest.TestCase):
         self.verdict(doc, PART1_KEY)["clauses"] = ["c3"]
         self.fx.write(doc)
         self.refuses(says="not this passage's")
+
+    # -- the three checks (judgment rules 5) ----------------------------------------
+
+    def test_a_verdict_that_leaves_a_strong_relation_runs_the_checks(self):
+        doc = good_challenge_document()
+        self.verdict(doc, LEAD_KEY).pop("checks")
+        self.fx.write(doc)
+        self.refuses(says="runs the three checks")
+        self.passes_at_four()
+
+    def test_a_confirm_that_leaves_a_haspart_runs_them_too(self):
+        doc = good_challenge_document()
+        self.verdict(doc, PART1_KEY).pop("checks")
+        self.fx.write(doc)
+        self.refuses(says="runs the three checks")
+        self.passes_at_four()
+
+    def test_a_strong_relation_that_states_some_of_its_own_reading_is_refused(self):
+        """Issue #175, pattern 1: the check the inventory's clause ids cannot make."""
+        doc = good_challenge_document()
+        self.verdict(doc, LEAD_KEY)["checks"]["states"] = [1]
+        self.fx.write(doc)
+        self.refuses(says="downgrade to hasPart")
+        self.passes_at_four()
+
+    def test_a_haspart_that_states_no_fact_of_the_passage_is_refused(self):
+        doc = good_challenge_document()
+        self.verdict(doc, PART1_KEY)["checks"]["states"] = []
+        self.fx.write(doc)
+        self.refuses(says="is a relatedMatch")
+
+    def test_a_reading_that_is_no_list_of_short_lines_is_refused(self):
+        doc = good_challenge_document()
+        for reading in ("every sprocket is finite", [], ["a fact\nand another"],
+                        [f"fact {n}" for n in range(vocab.MAX_CONJUNCTS + 1)]):
+            with self.subTest(reading=reading):
+                self.verdict(doc, LEAD_KEY)["checks"]["reading"] = reading
+                self.fx.write(doc)
+                self.refuses(says="one-line facts the passage asserts")
+
+    def test_a_broadmatch_with_no_direction_is_refused(self):
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY)["checks"].pop("direction")
+        self.fx.write(doc)
+        self.refuses(says="a broadMatch gives `direction`")
+        self.passes_at_four()
+
+    def test_a_broadmatch_that_names_a_hypothesis_the_passage_lacks_is_refused(self):
+        """Issue #175, pattern 2: the direction R2 and PD4 ask for."""
+        doc = good_challenge_document()
+        self.verdict(doc, BROAD_KEY)["checks"]["direction"]["hypotheses"] = \
+            "the gadget must already be finite"
+        self.fx.write(doc)
+        self.refuses(says="at most a narrowMatch")
+        self.passes_at_four()
+
+    def test_none_is_the_word_for_no_hypothesis(self):
+        doc = good_challenge_document()
+        for word in ("none", "None", "none."):
+            with self.subTest(word=word):
+                self.verdict(doc, BROAD_KEY)["checks"]["direction"]["hypotheses"] = word
+                self.fx.write(doc)
+                code, text = self.fx.run()
+                self.assertEqual(code, gate.EXIT_OK, text)
+
+    def test_a_verdict_with_no_kind_check_is_refused(self):
+        """Issue #175, pattern 3: the notation and worked-example reading."""
+        doc = good_challenge_document()
+        self.verdict(doc, LEAD_KEY)["checks"].pop("kind_check")
+        self.fx.write(doc)
+        self.refuses(says="`kind_check`")
+        self.passes_at_four()
+
+    def test_the_checks_of_a_weaker_relation_are_extra_and_no_refusal(self):
+        """A refusal would spend a model call removing a field that harms nothing."""
+        doc = good_challenge_document()
+        self.verdict(doc, PART2_KEY)["checks"] = {
+            "reading": ["every sprocket is finite"], "states": [],
+            "direction": {"instance": "none", "hypotheses": "none"},
+            "kind_check": "a theorem"}
+        self.fx.write(doc)
+        code, text = self.fx.run()
+        self.assertEqual(code, gate.EXIT_OK, text)
 
 
 def _sentence(text: str, formulas: tuple = (), block: str = "p") -> lt.Blocks:

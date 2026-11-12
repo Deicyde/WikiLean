@@ -326,6 +326,26 @@ class TallyTests(unittest.TestCase):
         self.assertEqual(row["challenge"], "survived")
         self.assertEqual(row["runs"]["challenge"], "chl-1")
 
+    def test_the_three_checks_ride_the_location_they_credit(self):
+        """Judgment rules 5 (issue #175): a confirm's checks are kept for the audit,
+        and a relation that credits the declaration with no fact of the passage drops
+        them, as it drops every other field it does not take."""
+        checks = {"reading": ["a widget is dual"], "states": [1],
+                  "kind_check": "a theorem, neither notation nor an example"}
+        key = location_key(DELTA, "Testlib.Dual")
+        built = self._challenged(
+            [plan_location(DELTA, "Testlib.Dual", "required", "exactMatch")],
+            [{"item": DELTA, "target": "location", "location_key": key,
+              "action": "confirm", "witness": "It says it.", "checks": checks}])
+        self.assertEqual(self.fx.rows_by_item(built)[DELTA]["locations"][0]["checks"],
+                         checks)
+        built = self._challenged(
+            [plan_location(DELTA, "Testlib.Dual", "required", "exactMatch")],
+            [{"item": DELTA, "target": "location", "location_key": key,
+              "action": "downgrade", "relation": "relatedMatch",
+              "witness": "It needs another lemma.", "checks": checks}])
+        self.assertNotIn("checks", self.fx.rows_by_item(built)[DELTA]["locations"][0])
+
     def test_a_required_record_nobody_judged_is_owed(self):
         built = self._challenged(
             [plan_location(DELTA, "Testlib.Dual", "required", "exactMatch")], [])

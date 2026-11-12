@@ -95,6 +95,19 @@ JUDGMENT_LOCATION_FIELDS = ("clauses", "instantiation", "step", "convention",
                             "conjunct_relation", "tests", "pd6")
 #: What a downgrade to ``relatedMatch`` says of the record it leaves (judgment rules 4).
 BRIDGE_FIELDS = ("bridge", "incomparable")
+#: What a ``bridge`` names: the lemma the connection needs, which the gate looks up in
+#: the declaration index, and what it adds.
+BRIDGE_KEYS = ("library", "declaration", "why")
+#: The three checks a challenge verdict runs under judgment rules 5 (issue #175): the
+#: facts the passage asserts in the challenger's own words and which of them the
+#: declaration states (``reading``, ``states``), R2's instantiation and the hypotheses
+#: the passage lacks (``direction``, on a ``broadMatch``), and whether the passage is a
+#: notation passage or a worked example (``kind_check``).
+CHECKS_FIELD = "checks"
+CHECKS_KEYS = ("reading", "states", "direction", "kind_check")
+#: The relations whose verdict carries them: the ones that credit the declaration with
+#: a fact the passage asserts. A weaker relation credits it with none.
+CHECKED_RELATIONS = STRONG_RELATIONS | {HAS_PART}
 
 #: A declaration's proof status, decided mechanically at index time, never by a model.
 PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "wanted", "definition"})

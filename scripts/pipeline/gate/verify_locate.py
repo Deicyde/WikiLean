@@ -53,7 +53,9 @@ names its rule:
    tags every query with the claims it targets and gives each claim a query of its own; a
    challenge verdict carries what its action owes; and, at rules 5, **the location a
    challenge verdict leaves standing is held to every one of those relation rules**
-   (:func:`_verdict_location`, issue #175), the missing-clause check included;
+   (:func:`_verdict_location`, issue #175), the missing-clause check included, and to
+   the three checks of :func:`rule9_checks` — the facts the passage asserts and which
+   of them the declaration states, a ``broadMatch``'s direction, and the passage's kind;
 10. the statement cut, for a run whose ``gate.json`` names ``statement_cut_rule``: the
     spans of an inventory are disjoint, one text one passage; no span ends inside a
     formula; a span runs past its block only within the bound the rule allows;
@@ -1085,6 +1087,71 @@ def _verdict_location(record: dict, verdict: dict) -> dict:
     return left
 
 
+def rule9_checks(verdict: dict, left: dict, where: str, item: str,
+                 problems: Problems) -> None:
+    """Judgment rules 5: the clause, direction and kind checks a verdict owes.
+
+    The clause check is the one the inventory's ids cannot make: a passage the inventory
+    read as simple has one clause id, so naming it says nothing about the facts the
+    passage asserts. ``reading`` is the challenger's own decomposition in its own words
+    and ``states`` says which of those facts the declaration itself states — every one of
+    them for a strong relation, at least one for a ``hasPart``. ``direction`` is R2's
+    instantiation on a ``broadMatch``, with every hypothesis the passage does not have
+    (PD4). ``kind_check`` is the notation-or-worked-example reading of the passage.
+
+    A ``checks`` block on a verdict that leaves a weaker relation is extra and not a
+    refusal — the tally drops a field the relation does not take, and a refusal here
+    would spend a model call removing something that harms nothing.
+    """
+    relation = left.get("relation")
+    if relation not in vocab.CHECKED_RELATIONS:
+        return
+    held = relation
+    if relation == vocab.HAS_PART and left.get("conjunct_relation") in \
+            vocab.CONJUNCT_RELATIONS_PART:
+        held = left["conjunct_relation"]
+    checks = verdict.get(vocab.CHECKS_FIELD)
+    if not isinstance(checks, dict):
+        problems.add(9, where, f"{item}: a verdict that leaves a {relation} runs the three "
+                               "checks (`reading`, `states`, `kind_check`)")
+        return
+    reading = checks.get("reading")
+    if not isinstance(reading, list) or not 1 <= len(reading) <= vocab.MAX_CONJUNCTS \
+            or not all(_one_line(line) for line in reading):
+        problems.add(9, where, f"{item}: `reading` is 1 to {vocab.MAX_CONJUNCTS} one-line "
+                               "facts the passage asserts, in your own words")
+        return
+    states = checks.get("states")
+    places = set(range(1, len(reading) + 1))
+    if not isinstance(states, list) or not all(type(s) is int and s in places
+                                               for s in states):
+        problems.add(9, where, f"{item}: `states` names the positions of `reading` the "
+                               f"declaration states, each in 1..{len(reading)}")
+    elif relation in vocab.STRONG_RELATIONS and set(states) != places:
+        problems.add(9, where, f"{item}: a {relation} states every fact of the passage, and "
+                               f"`states` names {sorted(set(states))} of {sorted(places)}; "
+                               "downgrade to hasPart")
+    elif relation == vocab.HAS_PART and not states:
+        problems.add(9, where, f"{item}: a hasPart that states no fact of the passage is a "
+                               "relatedMatch")
+    if held == vocab.BROAD_MATCH:
+        direction = checks.get("direction")
+        if not isinstance(direction, dict) or not _one_line(direction.get("instance")) \
+                or not _one_line(direction.get("hypotheses")):
+            problems.add(9, where, f"{item}: a broadMatch gives `direction`: the "
+                                   "instantiation that yields the passage, and the "
+                                   "hypotheses the passage does not have (`none` when "
+                                   "there are none)")
+        elif str(direction["hypotheses"]).strip().rstrip(".").casefold() != "none":
+            problems.add(9, where, f"{item}: `direction.hypotheses` names a hypothesis the "
+                                   "passage does not have, which makes this at most a "
+                                   "narrowMatch (R2, PD4)")
+    if not _one_line(checks.get("kind_check")):
+        problems.add(9, where, f"{item}: `kind_check` says in one line whether the passage "
+                               "is a notation passage or a worked example, and what that "
+                               "asks of the declaration")
+
+
 def _normal_query(query: str) -> str:
     return " ".join(str(query).split()).casefold()
 
@@ -1358,8 +1425,10 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
                     and verdict.get("action") in ("confirm", "downgrade"):
                 # the relation a verdict leaves is held to every rule a locate note
                 # faces, the missing-clause check included (issue #175)
-                rule9_location(_verdict_location(record, verdict), where, item, cfg,
-                               problems, _clause_ids(record), challenger=True)
+                left = _verdict_location(record, verdict)
+                rule9_location(left, where, item, cfg, problems, _clause_ids(record),
+                               challenger=True)
+                rule9_checks(verdict, left, where, item, problems)
             for location in verdict.get("locations") or []:
                 if isinstance(location, dict):
                     rule3_declaration(location, where, str(verdict.get("item")), cfg, ctx,

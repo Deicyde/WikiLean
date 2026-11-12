@@ -358,6 +358,26 @@ drops it. `rule9_location` then runs over it, with the record's `conjuncts` as t
 ids. Levels 0 to 4 are untouched, so a replay of a run pinned at 4 gates exactly as it
 did.
 
+Rules 5 also add **three checks** (`rule9_checks`), in the prompt and the gate in one
+commit, on every verdict that leaves a strong relation or a `hasPart`:
+
+- **`reading` and `states`** — the facts the passage asserts in the challenger's own
+  words, 1 to `MAX_CONJUNCTS` of them, and the positions of that reading the declaration
+  itself states. A strong relation stands only when it states every one; a `hasPart` that
+  states none is a `relatedMatch`. This is the clause check the inventory's ids cannot
+  make: a passage cut as simple has one clause id, so naming it says nothing.
+- **`direction`** on a `broadMatch` (the record's own or a part's `conjunct_relation`) —
+  the instantiation that yields the passage, and every hypothesis the passage does not
+  have, or exactly `none`. A named hypothesis is at most a `narrowMatch` (R2, PD4).
+- **`kind_check`** — whether the passage is a notation passage or a worked example, which
+  the judgment rules now read the same way in both prompts: on a notation passage the
+  declaration that is the operation the notation denotes is a `relatedMatch`, because what
+  the passage asserts is the notation.
+
+A `checks` block on a verdict that leaves a weaker relation is extra and no refusal: the
+tally drops it with every other field that relation does not take. The tally keeps the
+block beside the location it credits, for the audit; nothing of it is exported.
+
 **What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
 prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
 naturals-for-integers tripwire, both of which need the declaration index to carry
