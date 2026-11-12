@@ -215,95 +215,84 @@ function actorTypeFor(role: string, body: Record<string, unknown>): ActorType | 
   return declared;
 }
 
-async function insertMintedNodes(
+// ---- quickstatements: one D1 batch per row ---------------------------------
+//
+// Every write a row makes goes out as ONE `c.env.DB.batch(...)`: the nodes it
+// mints, then an idempotent insert per edge, then a read of each edge's live
+// id. D1 counts a batch as a single query against its 1,000-queries-per-Worker-
+// invocation cap, so a 100-row submit makes about 100 D1 calls whatever
+// databases are selected. Sending each statement on its own asked for two per
+// edge — about 6,000 for 100 rows over all twelve databases — and stopped
+// partway, after earlier rows had been written. A batch is also one
+// transaction, so a row is stored whole or not at all.
+const INSERT_NODE_SQL =
+  "INSERT INTO brain_nodes (id, label, description, node_type, added_by, actor_type, status, created_at, version) " +
+  "VALUES (?, ?, ?, 'concept', ?, ?, 'live', ?, 1) ON CONFLICT DO NOTHING";
+// `uniq_brain_edges_live` (migration 0010) is the duplicate oracle: at most one
+// LIVE row per (src, dst, kind), so the insert is a no-op for an edge that is
+// already there and a re-add after a delete still writes a new row.
+const INSERT_EDGE_SQL =
+  "INSERT INTO brain_edges (id, src, dst, kind, evidence, added_by, actor_type, status, created_at, version) " +
+  "VALUES (?, ?, ?, ?, ?, ?, ?, 'live', ?, 1) ON CONFLICT DO NOTHING";
+const LIVE_EDGE_ID_SQL =
+  "SELECT id FROM brain_edges WHERE src = ? AND dst = ? AND kind = ? AND status = 'live' LIMIT 1";
+
+// An edge the row wants, with the id it takes if it turns out to be new.
+interface PlannedEdge {
+  src: string;
+  dst: string;
+  kind: string;
+  id: string;
+  evidence: Record<string, unknown>;
+}
+
+function quickRowStatements(
   c: Context<{ Bindings: Env }>,
   user: AuthUser,
   actorType: ActorType,
   mints: Array<{ id: string; label: string; description: string }>,
-): Promise<void> {
-  if (!mints.length) return;
-  const db = drizzle(c.env.DB);
-  const nowMs = Date.now();
+  planned: PlannedEdge[],
+  nowMs: number,
+): D1PreparedStatement[] {
+  const stmts: D1PreparedStatement[] = [];
   const seen = new Set<string>();
   for (const m of mints) {
     if (seen.has(m.id)) continue;
     seen.add(m.id);
-    await db
-      .insert(brainNodes)
-      .values({
-        id: m.id,
-        label: m.label,
-        description: m.description || null,
-        nodeType: "concept",
-        addedBy: user.id,
-        actorType,
-        status: "live",
-        createdAt: nowMs,
-        version: 1,
-      })
-      .onConflictDoNothing();
+    stmts.push(
+      c.env.DB.prepare(INSERT_NODE_SQL).bind(m.id, m.label, m.description || null, user.id, actorType, nowMs),
+    );
   }
+  for (const e of planned) {
+    stmts.push(
+      c.env.DB
+        .prepare(INSERT_EDGE_SQL)
+        .bind(e.id, e.src, e.dst, e.kind, JSON.stringify(e.evidence), user.id, actorType, nowMs),
+    );
+  }
+  // The id reads come last, so each one sees its own insert (statements in a
+  // batch run in order) and reports the LIVE row, minted here or already there.
+  for (const e of planned) stmts.push(c.env.DB.prepare(LIVE_EDGE_ID_SQL).bind(e.src, e.dst, e.kind));
+  return stmts;
 }
 
-async function insertCommunityEdge(
+async function writeQuickRow(
   c: Context<{ Bindings: Env }>,
   user: AuthUser,
   actorType: ActorType,
-  src: string,
-  dst: string,
-  kind: string,
-  evidence: Record<string, unknown>,
-): Promise<{ id: string; duplicate: boolean }> {
-  const db = drizzle(c.env.DB);
-  const dup = (
-    await db
-      .select({ id: brainEdges.id })
-      .from(brainEdges)
-      .where(
-        and(
-          eq(brainEdges.src, src),
-          eq(brainEdges.dst, dst),
-          eq(brainEdges.kind, kind),
-          eq(brainEdges.status, "live"),
-        ),
-      )
-      .limit(1)
-  )[0];
-  if (dup) return { id: dup.id, duplicate: true };
-
-  const id = freshEdgeId();
-  try {
-    await db.insert(brainEdges).values({
-      id,
-      src,
-      dst,
-      kind,
-      evidence: JSON.stringify(evidence),
-      addedBy: user.id,
-      actorType,
-      status: "live",
-      createdAt: Date.now(),
-      version: 1,
-    });
-    return { id, duplicate: false };
-  } catch {
-    const ex = (
-      await db
-        .select({ id: brainEdges.id })
-        .from(brainEdges)
-        .where(
-          and(
-            eq(brainEdges.src, src),
-            eq(brainEdges.dst, dst),
-            eq(brainEdges.kind, kind),
-            eq(brainEdges.status, "live"),
-          ),
-        )
-        .limit(1)
-    )[0];
-    if (ex) return { id: ex.id, duplicate: true };
-    throw new Error("could not save edge");
-  }
+  mints: Array<{ id: string; label: string; description: string }>,
+  planned: PlannedEdge[],
+): Promise<QuickEdgeResult[]> {
+  const stmts = quickRowStatements(c, user, actorType, mints, planned, Date.now());
+  const results = await c.env.DB.batch<{ id: string }>(stmts);
+  const firstRead = stmts.length - planned.length;
+  return planned.map((e, i) => {
+    const id = results[firstRead + i]?.results?.[0]?.id;
+    if (!id) throw new Error(`the ${e.kind} edge ${e.src} → ${e.dst} was not stored`);
+    // It kept the id this request minted ⇒ the insert wrote it; any other id is
+    // the edge that was already live.
+    return { src: e.src, dst: e.dst, kind: e.kind, id, duplicate: id !== e.id };
+  });
 }
 
 interface QuickInputRow {
@@ -672,6 +661,20 @@ function edgeEvidence(
   };
 }
 
+// Which input line a result belongs to: the parser stamps `line`; an `items`
+// body may carry one, and otherwise the row's position in the submit stands in.
+function quickRowLine(row: QuickInputRow, fallbackLine: number): number {
+  return typeof row.line === "number" ? row.line : fallbackLine;
+}
+
+// Why a row could not be stored, for the per-row result. D1 says what it
+// refused (a constraint, or a limit it hit), and a row that reports only
+// "could not save row" leaves the submitter with nothing to act on.
+function rowFailure(error: unknown): string {
+  const detail = error instanceof Error && error.message ? error.message : String(error);
+  return detail ? `could not save row: ${detail.slice(0, 200)}` : "could not save row";
+}
+
 function nodePairKind(a: QuickEndpoint, b: QuickEndpoint): { kind: string; src: QuickEndpoint; dst: QuickEndpoint } {
   if (a.db === "wikidata" && b.db === "mathlib") return { kind: "formalizes", src: a, dst: b };
   if (b.db === "wikidata" && a.db === "mathlib") return { kind: "formalizes", src: b, dst: a };
@@ -687,7 +690,7 @@ async function processQuickRow(
   row: QuickInputRow,
   fallbackLine: number,
 ): Promise<{ result: QuickRowResult; item?: QueueItem }> {
-  const line = typeof row.line === "number" ? row.line : fallbackLine;
+  const line = quickRowLine(row, fallbackLine);
   const endpoints: QuickEndpoint[] = [];
   for (const sp of specs) {
     const ep = await endpointForDb(c, release, row, sp);
@@ -701,27 +704,38 @@ async function processQuickRow(
   if (!nodes.length) return { result: { ok: false, line, ids: idsForEndpoints(endpoints), error: "row needs at least one selected database with Brain nodes" } };
 
   const mints = endpoints.flatMap((e) => e.mint ? [e.mint] : []);
-  await insertMintedNodes(c, user, actorType, mints);
 
-  const edges: QuickEdgeResult[] = [];
+  // Plan the row's edges first, then write them in one batch below.
+  const planned: PlannedEdge[] = [];
   for (const n of nodes) {
     for (const x of xrefs) {
-      const saved = await insertCommunityEdge(c, user, actorType, n.nodeId!, x.xrefId!, "xref", edgeEvidence(row, endpoints, actorType, {
-        db: x.xrefDb,
-        value: x.value,
-        assertion: `${n.db}-${x.db}-xref`,
-      }));
-      edges.push({ src: n.nodeId!, dst: x.xrefId!, kind: "xref", ...saved });
+      planned.push({
+        src: n.nodeId!,
+        dst: x.xrefId!,
+        kind: "xref",
+        id: freshEdgeId(),
+        evidence: edgeEvidence(row, endpoints, actorType, {
+          db: x.xrefDb,
+          value: x.value,
+          assertion: `${n.db}-${x.db}-xref`,
+        }),
+      });
     }
   }
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       const pair = nodePairKind(nodes[i], nodes[j]);
-      const saved = await insertCommunityEdge(c, user, actorType, pair.src.nodeId!, pair.dst.nodeId!, pair.kind, edgeEvidence(row, endpoints, actorType));
-      edges.push({ src: pair.src.nodeId!, dst: pair.dst.nodeId!, kind: pair.kind, ...saved });
+      planned.push({
+        src: pair.src.nodeId!,
+        dst: pair.dst.nodeId!,
+        kind: pair.kind,
+        id: freshEdgeId(),
+        evidence: edgeEvidence(row, endpoints, actorType),
+      });
     }
   }
-  if (!edges.length) return { result: { ok: false, line, ids: idsForEndpoints(endpoints), error: "row did not generate any Brain edges" } };
+  if (!planned.length) return { result: { ok: false, line, ids: idsForEndpoints(endpoints), error: "row did not generate any Brain edges" } };
+  const edges = await writeQuickRow(c, user, actorType, mints, planned);
 
   let item: QueueItem | undefined;
   const mathlib = endpoints.find((e) => e.db === "mathlib" && e.nodeId);
@@ -1093,7 +1107,8 @@ export function registerBrainEditRoutes(app: Hono<{ Bindings: Env }>): void {
         if (out.item) items.push(out.item);
       } catch (error) {
         if (isBrainReleaseUnavailableError(error)) return unavailableReleaseResponse(c, error);
-        results.push({ ok: false, line: i + 1, error: "could not save row" });
+        // The row's batch rolled back, so it wrote nothing; say what stopped it.
+        results.push({ ok: false, line: quickRowLine(rows[i], i + 1), error: rowFailure(error) });
       }
     }
 

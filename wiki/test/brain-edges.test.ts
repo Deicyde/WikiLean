@@ -501,6 +501,26 @@ describe("POST /api/brain/quickstatements", () => {
     });
   });
 
+  it("mints a QID the Brain does not have yet, in the same batch as the row's edges", async () => {
+    const h = harness();
+    const QID = "Q5530428";
+    const WD = { [QID]: { labels: { en: { value: "GNS construction" } }, descriptions: { en: { value: "a construction" } } } };
+    const res = await withWikidata(WD, () => postQuick(
+      h,
+      { databases: ["wikidata", "nlab"], items: [{ qid: QID, nlab: "gns_construction", note: "same object" }] },
+      { user: "u-human" },
+    ));
+    expect(res.status).toBe(200);
+    const nodes = h.db.prepare("SELECT * FROM brain_nodes").all() as Array<Record<string, unknown>>;
+    expect(nodes).toHaveLength(1);
+    expect(nodes[0]).toMatchObject({
+      id: QID, label: "GNS construction", description: "a construction", node_type: "concept",
+      added_by: "u-human", actor_type: "human", status: "live", version: 1,
+    });
+    expect(edgeRows(h)).toHaveLength(1);
+    expect(edgeRows(h)[0]).toMatchObject({ src: QID, dst: "xref:nlab:gns_construction", kind: "xref" });
+  });
+
   it("keeps good rows when another row is invalid", async () => {
     const h = harness();
     const res = await postQuick(
@@ -515,6 +535,151 @@ describe("POST /api/brain/quickstatements", () => {
     expect(j.rows.some((r) => r.ok === false && String(r.error).includes("LMFDB"))).toBe(true);
     expect(edgeRows(h)).toHaveLength(3);
     expect((await lmfdbQueue(h)).items).toHaveLength(1);
+  });
+});
+
+// D1 allows 1,000 queries per Worker invocation and counts one batch() as one
+// query. A row's writes therefore go out as a single batch: a 100-row submit
+// over every database costs about 100 D1 calls, not the ~6,000 statements it
+// would cost one at a time, and a row that fails writes nothing at all.
+describe("POST /api/brain/quickstatements — the D1 per-invocation budget", () => {
+  const ALL_DBS = [
+    "mathlib", "wikidata", "brain", "lmfdb", "nlab", "mathworld",
+    "proofwiki", "oeis", "stacks", "kerodon", "dlmf", "metamath",
+  ];
+
+  // Count what the Worker spends against the per-invocation cap: a prepared
+  // statement run on its own is one query, and a batch is one query however
+  // many statements it carries. Mirrors the D1 surface helpers/d1shim.ts
+  // implements, so the real app code runs unchanged underneath.
+  interface D1Spend { calls: () => number; statements: () => number }
+  interface Stmt {
+    bind: (...args: unknown[]) => Stmt;
+    run: () => unknown;
+    all: () => unknown;
+    raw: () => unknown;
+    first: () => unknown;
+    _batchExec: () => unknown;
+  }
+  interface Db { prepare: (sql: string) => Stmt; batch: (stmts: Stmt[]) => unknown }
+
+  function countD1(env: Env): D1Spend {
+    let calls = 0;
+    let statements = 0;
+    const real = env.DB as unknown as Db;
+    const wrap = (st: Stmt): Stmt => ({
+      bind: (...args: unknown[]) => wrap(st.bind(...args)),
+      run: () => { calls++; statements++; return st.run(); },
+      all: () => { calls++; statements++; return st.all(); },
+      raw: () => { calls++; statements++; return st.raw(); },
+      first: () => { calls++; statements++; return st.first(); },
+      _batchExec: () => st._batchExec(),
+    });
+    const counting: Db = {
+      prepare: (sql) => wrap(real.prepare(sql)),
+      batch: (stmts) => { calls++; statements += stmts.length; return real.batch(stmts); },
+    };
+    (env as unknown as { DB: unknown }).DB = counting;
+    return { calls: () => calls, statements: () => statements };
+  }
+
+  // Every row names its own nodes, so no two rows write the same edge. The
+  // extra organs make each one resolvable against the oracle without a
+  // Wikidata round trip (the network is blocked in these tests).
+  function bulkHarness(rows: number): Harness {
+    const organs: Record<string, string> = {};
+    for (let i = 0; i < rows; i++) {
+      organs[`decl:Mathlib:Bulk${i}`] = MODULE_CELL;
+      organs[`Q90${i}`] = MODULE_CELL;
+      organs[`decl:Mathlib:Node${i}`] = MODULE_CELL;
+    }
+    const h = setup();
+    installBrainAssets(h.env, organs);
+    return h;
+  }
+
+  function bulkRow(i: number): Record<string, string> {
+    return {
+      mathlib: `Bulk${i}`,
+      file: "Mathlib/Algebra/Group/Defs.lean",
+      wikidata: `Q90${i}`,
+      brain: `decl:Mathlib:Node${i}`,
+      lmfdb: `group.bulk${i}`,
+      nlab: `nlab_${i}`,
+      mathworld: `MathWorld${i}`,
+      proofwiki: `Definition:Bulk_${i}`,
+      oeis: `A00000${i}`,
+      stacks: `0A0${i}`,
+      kerodon: `tag/00${i}`,
+      dlmf: `1.2.E${i}`,
+      metamath: `df-bulk${i}`,
+      note: "bulk connection",
+    };
+  }
+
+  it("spends about one D1 call a row on a 100-row all-databases submit", async () => {
+    const h = bulkHarness(100);
+    const spend = countD1(h.env);
+    const items = Array.from({ length: 100 }, (_, i) => bulkRow(i));
+    const res = await postQuick(h, { databases: ALL_DBS, items }, { user: "u-human" });
+    expect(res.status).toBe(200);
+    const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
+    expect(j).toMatchObject({ accepted: 100, failed: 0 });
+    // 3 node databases and 9 external ones: 3×9 xref edges + 3 node pairs.
+    expect((j.rows[0].edges as unknown[])).toHaveLength(30);
+    expect(edgeRows(h)).toHaveLength(3000);
+    // One batch a row, plus the handful of setup reads (the session lookup).
+    expect(spend.calls()).toBeLessThanOrEqual(110);
+    expect(spend.calls()).toBeGreaterThanOrEqual(100);
+    // …carrying far more statements than the 1,000 the old one-at-a-time path
+    // would have spent as separate queries.
+    expect(spend.statements()).toBeGreaterThan(5000);
+  });
+
+  it("reports edges that already exist as duplicates, and new ones as new", async () => {
+    const h = harness();
+    const first = await postQuick(h, { databases: ["mathlib", "lmfdb"], items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(first.status).toBe(200);
+    expect(edgeRows(h)).toHaveLength(1);
+
+    // The same Mathlib↔LMFDB pair plus a Wikidata column: that one edge is
+    // already live, the other two are new.
+    const second = await postQuick(h, { databases: ["mathlib", "wikidata", "lmfdb"], items: [QUICK_ITEM] }, { user: "u-human" });
+    expect(second.status).toBe(200);
+    const edges = (await second.json() as { rows: Array<{ edges: Array<Record<string, unknown>> }> }).rows[0].edges;
+    expect(edges).toHaveLength(3);
+    const repeated = edges.filter((e) => e.duplicate === true);
+    expect(repeated).toHaveLength(1);
+    expect(repeated[0]).toMatchObject({ src: DECL, dst: XREF_DST, kind: "xref" });
+    expect(edgeRows(h)).toHaveLength(3);
+    // The duplicate keeps the id the first submit minted.
+    expect(repeated[0].id).toBe(edgeRows(h).find((r) => r.src === DECL && r.kind === "xref")!.id);
+  });
+
+  it("writes nothing for a row whose batch fails, and says why", async () => {
+    const h = harness();
+    // Refuse one of the row's edges inside the transaction, the way a
+    // constraint or a D1 limit would.
+    h.db.exec(
+      "CREATE TRIGGER refuse_nlab BEFORE INSERT ON brain_edges WHEN NEW.dst LIKE 'xref:nlab:%' " +
+      "BEGIN SELECT RAISE(ABORT, 'refused by the test trigger'); END",
+    );
+    const res = await postQuick(
+      h,
+      {
+        databases: ["mathlib", "wikidata", "nlab"],
+        items: [{ mathlib: "CommGroup", file: "Mathlib/Algebra/Group/Defs.lean", qid: CONCEPT, nlab: "abelian_group" }],
+      },
+      { user: "u-human" },
+    );
+    expect(res.status).toBe(400);
+    const j = await res.json() as { accepted: number; failed: number; rows: Array<Record<string, unknown>> };
+    expect(j).toMatchObject({ accepted: 0, failed: 1 });
+    expect(String(j.rows[0].error)).toContain("could not save row");
+    expect(String(j.rows[0].error)).toContain("refused by the test trigger");
+    // The formalizes edge and the Wikidata xref were in the same batch: the
+    // row left no partial write behind.
+    expect(edgeRows(h)).toHaveLength(0);
   });
 });
 
