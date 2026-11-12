@@ -159,6 +159,10 @@ run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
 run_check "Bot settle trim tests" "$PYTHON_BIN" bot/test_split.py
 run_check "Bot tag refresh refuses a truncated list" "$PYTHON_BIN" bot/test_refresh_tagged.py
 run_check "Queue publisher keeps the bearer off argv" "$PYTHON_BIN" bot/test_publish_queue.py
+run_check "Contributor CLI: token storage and redaction" "$PYTHON_BIN" worker/tests/test_token.py
+run_check "Contributor CLI: the model boundary and answer validation" "$PYTHON_BIN" worker/tests/test_model_boundary.py
+run_check "Contributor CLI: one round against a loopback site" "$PYTHON_BIN" worker/tests/test_round.py
+run_check "Contributor CLI: the locate opt-ins and the read-only commands" "$PYTHON_BIN" worker/tests/test_locate_and_cli.py
 run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" scripts/test_workflow_credentials.py
 run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scripts/test_revoke_github_tokens.py
 

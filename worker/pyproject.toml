@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wikilean"
+version = "0.1.0"
+description = "Contributor CLI for WikiLean: review, tag and locate work on your own machine, with your own Claude"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+# Deliberately empty. The CLI is standard library only: urllib for the site,
+# subprocess for `claude` and `security`, json/argparse/getpass for the rest.
+# Nothing here is installed on a contributor's machine beyond Python itself.
+dependencies = []
+
+[project.scripts]
+wikilean = "wikilean.cli:main"
+
+[project.urls]
+Homepage = "https://wikilean.jackmccarthy.org"
+Source = "https://github.com/Deicyde/WikiLean"
+
+[tool.hatch.build.targets.wheel]
+packages = ["wikilean"]

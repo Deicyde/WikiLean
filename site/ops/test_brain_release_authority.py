@@ -54,6 +54,9 @@ class ReleaseNeutralPathsTest(unittest.TestCase):
             "bot/state/batch7_approved.json",
             "manage/status.py",
             "wikifunctions/lean/Foo.lean",
+            "worker/pyproject.toml",
+            "worker/wikilean/cli.py",
+            "worker/tests/fakes.py",
             "brain/authority/fixtures/release-profile-v1-conformance.json",
         ):
             with self.subTest(path=path):
