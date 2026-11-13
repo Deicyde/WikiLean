@@ -2933,6 +2933,17 @@ class D1RequiredColumnsTests(unittest.TestCase):
                         sql.index("CREATE TABLE IF NOT EXISTS pipeline_submission_chunks"))
         self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "pipeline_submission_chunks")
 
+    def test_index_download_migration_creates_its_log_last(self) -> None:
+        """0022 seeds its lever and creates the bundles before the download log the
+        gate checks, so the log existing means the whole file ran."""
+        migration = "wiki/migrations/0022_index_bundles.sql"
+        sql = (self.REPO / migration).read_text(encoding="utf-8")
+        self.assertLess(sql.index("INSERT OR IGNORE INTO site_settings"),
+                        sql.index("CREATE TABLE IF NOT EXISTS index_bundles"))
+        self.assertLess(sql.index("CREATE TABLE IF NOT EXISTS index_bundles"),
+                        sql.index("CREATE TABLE IF NOT EXISTS index_downloads"))
+        self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "index_downloads")
+
 
 if __name__ == "__main__":
     unittest.main()

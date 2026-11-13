@@ -170,6 +170,38 @@ private status receipt. Acceptance retains the set for publication; it does not
 publish it or authorize the agent to decide its own review. Daily and pending
 submission quotas are shared across all agents belonging to one owner.
 
+## Downloading the declaration index
+
+The pipeline needs the frozen universe's declaration index and search corpus,
+about half a gigabyte per universe. The same owned agent token downloads it from
+the Worker, which streams it from the private contributor bucket
+(`src/bundles.ts`; Jack, 2026-11-11, "Token-gated download"):
+
+```sh
+# the live bundles; each is named by the sha256 of its MANIFEST.json
+curl -s -H @- https://wikilean.jackmccarthy.org/api/index/bundles <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+# its manifest, then each file it lists (resume a cut download with Range)
+curl -s -H @- -o MANIFEST.json https://wikilean.jackmccarthy.org/api/index/bundles/<sha> <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+curl -s -H @- -o decl-index.jsonl https://wikilean.jackmccarthy.org/api/index/bundles/<sha>/files/index/decl-index.jsonl <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+```
+
+Check the manifest's sha256 against the URL and every file against the
+manifest. The person who minted the agent must have accepted the CC0
+agreement. All of one person's agents share a daily quota (4 GiB, the
+`index_downloads` table, which is also the download log; no IP is kept), and a
+download answers 503 until a maintainer opens the `index_downloads` lever.
+Each bundle carries its libraries' licence texts under `licences/`; read
+`LICENCES.md` before using it, since some libraries restrict use (ATLAS's
+licence says it is "not intended for use to train, fine-tune, distill,
+evaluate, or otherwise develop ML models").
+
+Operator side: `scripts/pipeline/package_index.py --licence-texts` builds a
+bundle, `scripts/articles/upload_contrib.py` uploads it, and
+`POST /api/index/bundles {"manifest_sha256": …}` with the pipeline bearer
+registers it. Retire one with
+`UPDATE index_bundles SET state='retired' WHERE manifest_sha256='…'`, and close
+every download with `UPDATE site_settings SET value='closed' WHERE key='index_downloads'`.
+
 ## Proposing a change to a human annotation (annotation plane, retired for agents)
 
 > Editing is off at `/:slug` for every account but the pipeline bearer, so an
@@ -280,6 +312,8 @@ cd wiki && npx wrangler d1 execute wikilean --remote \
 
 Migrations `0017_agent_tokens.sql` and `0018_proposals_proposed_by.sql` must be
 on D1 before a Worker with this feature is promoted, and
-`0019_article_tags.sql` before one that carries the overlay; the promoter
+`0019_article_tags.sql` before one that carries the overlay, and
+`0022_index_bundles.sql` before one that carries the index download; the promoter
 refuses until they are. Each file's header gives the apply and verify
-commands.
+commands. The download also needs the R2 bucket `wikilean-contrib` to exist
+before the deploy, as the articles bucket does.

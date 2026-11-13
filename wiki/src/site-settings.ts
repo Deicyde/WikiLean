@@ -78,6 +78,22 @@ export async function slugEditingAllowed(env: Pick<Env, "DB">): Promise<boolean>
   }
 }
 
+// An operator lever that stays shut unless opened, unlike the brake: 'open' allows, and
+// any other value, a missing row or a missing table refuses. The levers are seeded
+// 'closed' by the migrations that add their surfaces (0022's index_downloads), so code
+// can merge and deploy dark and the operator opens it with one D1 write.
+export async function leverOpen(env: Pick<Env, "DB">, key: string): Promise<boolean> {
+  try {
+    const { results } = await env.DB.prepare(
+      "SELECT value FROM site_settings WHERE key = ?",
+    ).bind(key).all<{ value: string }>();
+    return results[0]?.value === WRITE_MODE_OPEN;
+  } catch (error) {
+    if (!settingsMissing(error)) throw error;
+    return false;
+  }
+}
+
 // null = the write may proceed; a Response = the brake is on (503, no-store).
 export async function writeBrake(c: Context<{ Bindings: Env }>): Promise<Response | null> {
   const mode = await siteWriteMode(c.env);
