@@ -177,13 +177,15 @@ const PROOF: Record<string, { label: string; phrase: string; alert: boolean }> =
 // a Details fold says, naming the challenge run when the campaign token names
 // one. The last three were judged by no challenge and read as unchallenged:
 // challenge_pending is a record a prominence overturn put under a challenge rule
-// after the challenge ran, so one is owed.
+// after the challenge ran, so one is owed. A not_required record of a set whose
+// token names no challenge run gives no reason: a set sealed with
+// `tally.py --unchallenged` had no challenge to exempt it.
 export function challengeSentence(challenge: string, runs: CampaignRuns | null): string {
   const run = runs?.challenge ? ` <code>${text(runs.challenge)}</code>` : "";
   switch (challenge) {
     case "survived": return `Re-checked in challenge run${run || " (unnamed)"}: it survived.`;
     case "downgraded": return `Re-checked in challenge run${run || " (unnamed)"}, which downgraded it.`;
-    case "not_required": return `Not re-checked: ${run ? `challenge run${run} did not require it` : "no challenge was required"}.`;
+    case "not_required": return run ? `Not re-checked: challenge run${run} did not require it.` : "Not re-checked.";
     case "sampled_out": return `Not re-checked: sampled out${run ? ` of challenge run${run}` : " of the challenge"}.`;
     case "challenge_pending": return "Not re-checked yet: a challenge is owed (the passage's prominence changed after the challenge ran).";
     default: return `Challenge: ${text(challenge)}.`;
