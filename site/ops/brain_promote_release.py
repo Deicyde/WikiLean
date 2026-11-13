@@ -48,6 +48,18 @@ from brain_public_baseline import (
     _verify_store_identity,
     verify_public_baseline,
 )
+from brain_code_only_release import (
+    POLICY as CODE_ONLY_POLICY,
+    CodeOnlyError,
+    CodeOnlyRelease,
+    brain_surface_fence,
+    load_record as load_code_only_record,
+    production_fetcher as code_only_fetcher,
+    require_record_changes as require_code_only_record_changes,
+    require_record_matches as require_code_only_record_matches,
+)
+from brain_code_only_release import blocking_changes as code_only_blocking_changes
+from brain_code_only_release import describe_blocking as describe_code_only_blocking
 from brain_release_authority import (
     POLICY as NEUTRAL_POLICY,
     blocking_changes,
@@ -291,6 +303,8 @@ class PreparedPromotion:
     node_executables: Mapping[str, object] | None = None
     promotion_commit: str = field(kw_only=True)
     neutral_changes: tuple[str, ...] = field(kw_only=True)
+    code_only: CodeOnlyRelease | None = None
+    code_only_fence: Mapping[str, object] | None = None
 
 
 @dataclass(frozen=True)
@@ -1486,6 +1500,8 @@ class BrainPromoter:
         audited_at: str | None = None,
         selector_opener: Callable[..., object] | None = None,
         retain_dry_run_store: Path | None = None,
+        code_only_record: Path | None = None,
+        code_only_fetcher: Callable[[str], bytes] | None = None,
     ) -> None:
         self.repo = repo_root.absolute()
         self.python = python.absolute()
@@ -1521,6 +1537,8 @@ class BrainPromoter:
         self.audited_at = audited_at or utc_now()
         self.selector_opener = selector_opener
         self.retain_dry_run_store = retain_dry_run_store
+        self.code_only_record_path = code_only_record
+        self.code_only_fetcher = code_only_fetcher
         self._selector_probe_count = 0
         self._authority_equivalence: dict[str, object] | None = None
         self.wiki = self.repo / "wiki"
@@ -1583,6 +1601,11 @@ class BrainPromoter:
             raise PromotionError("command timeout must be positive")
         if ATTEMPT_ID_RE.fullmatch(self.attempt_id) is None:
             raise PromotionError("attempt ID is invalid")
+        if self.code_only_record_path is not None:
+            if self.mode == "reconcile":
+                raise PromotionError("--code-only-release is not valid during reconciliation")
+            if not self.code_only_record_path.is_absolute():
+                raise PromotionError("--code-only-release must be an absolute path")
         if self.mode == "reconcile":
             if not self.reconcile_attempt or ATTEMPT_ID_RE.fullmatch(self.reconcile_attempt) is None:
                 raise PromotionError("--reconcile-attempt requires a valid attempt ID")
@@ -1871,12 +1894,19 @@ class BrainPromoter:
             raise PromotionError("promotion checkout has a merge or rebase in progress")
         return head, main, branch
 
-    def _check_git_authority(self, expected_commit: str) -> str:
+    def _check_git_authority(self, expected_commit: str, *, code_only: bool = False) -> str:
         """Require a clean main checkout that still describes the release authority.
 
         HEAD must equal refs/heads/main. It may be the authority commit itself or a
         descendant whose only differences are release-neutral paths; the accepted
         state is recorded for the durable intent.
+
+        A code-only promotion reuses the live Brain release at a newer website commit,
+        so it widens that rule exactly once: the differing paths must be eligible under
+        ``wikilean.code-only-release-paths`` — release-neutral, or Worker/public-asset
+        sources this promotion rebuilds — and never a reducer input or the builder of
+        the frozen ``/brain`` page. The recorded ``neutral_changes`` list then holds
+        every accepted change, whichever policy admitted it.
         """
         head, main, branch = self._clean_checkout_state()
         if head != main:
@@ -1895,11 +1925,18 @@ class BrainPromoter:
             neutral_changes = changed_paths(
                 lambda arguments: self._git_text(*arguments), expected_commit, head
             )
-            blocking = blocking_changes(neutral_changes)
-            if blocking:
-                raise PromotionError(describe_blocking(expected_commit, head, blocking))
+            if code_only:
+                blocking = code_only_blocking_changes(neutral_changes)
+                if blocking:
+                    raise PromotionError(
+                        describe_code_only_blocking(expected_commit, head, blocking)
+                    )
+            else:
+                blocking = blocking_changes(neutral_changes)
+                if blocking:
+                    raise PromotionError(describe_blocking(expected_commit, head, blocking))
         self._authority_equivalence = {
-            "policy": NEUTRAL_POLICY,
+            "policy": CODE_ONLY_POLICY if code_only else NEUTRAL_POLICY,
             "authority_commit": expected_commit,
             "promotion_commit": head,
             "neutral_changes": neutral_changes,
@@ -2711,12 +2748,24 @@ class BrainPromoter:
             or str(candidate.root) != intent.get("release_root")
         ):
             raise PromotionError("candidate release differs from the reviewed activation")
+        code_only = self._load_code_only_record()
+        # The reviewed dry-run intent decides which policy this execution runs under:
+        # reconstructing it below refuses a code-only record against a full-path
+        # activation bundle, and a full-path execution of a code-only dry run.
+        promotion_commit = self._check_git_authority(
+            candidate.authority_commit, code_only=code_only is not None
+        )
+        neutral_changes = self._recorded_neutral_changes()
+        self._require_code_only_record_changes(code_only, neutral_changes)
+        baseline_authority = (
+            promotion_commit if code_only is not None else candidate.authority_commit
+        )
         try:
             public_baseline = verify_public_baseline(
                 self.public_baseline_root,
                 self.repo.resolve(strict=True),
                 expected_baseline_id=self.public_baseline_id,
-                expected_authority_git_commit=candidate.authority_commit,
+                expected_authority_git_commit=baseline_authority,
             )
         except BaselineValidationError as exc:
             raise PromotionError(f"public asset baseline verification failed: {exc}") from exc
@@ -2759,8 +2808,6 @@ class BrainPromoter:
         reviewed_worker = intent.get("worker_bundle")
         if not isinstance(reviewed_worker, dict):
             raise PromotionError("activation Worker bundle evidence is malformed")
-        promotion_commit = self._check_git_authority(candidate.authority_commit)
-        neutral_changes = self._recorded_neutral_changes()
         node_executables = self._node_executables_identity()
         if reviewed_worker.get("executables") != node_executables:
             raise PromotionError(
@@ -2891,6 +2938,36 @@ class BrainPromoter:
             "deployments": self._reviewed_evidence_body(retained, "deployments_history"),
             "versions": self._reviewed_evidence_body(retained, "versions_history"),
         }
+        if code_only is not None:
+            try:
+                require_code_only_record_matches(
+                    code_only,
+                    release_id=candidate.release_id,
+                    manifest_sha256=candidate.manifest_sha256,
+                    authority_commit=candidate.authority_commit,
+                    previous_release_id=initial_selector.previous_release_id,
+                    previous_manifest_sha256=initial_selector.previous_manifest_sha256,
+                    code_commit=promotion_commit,
+                    selector_sha256=initial_selector.body_sha256,
+                )
+            except CodeOnlyError as exc:
+                raise PromotionError(f"code-only eligibility record is unusable: {exc}") from exc
+            if (
+                initial_selector.current_release_id != candidate.release_id
+                or initial_selector.current_manifest_sha256 != candidate.manifest_sha256
+            ):
+                raise PromotionError(
+                    "a code-only promotion may only republish the release production "
+                    "already serves"
+                )
+        # Re-measure the Brain surface against production from the exact tree that is
+        # about to be uploaded. The reconstructed intent below must still equal the
+        # reviewed one, so any drift since the dry run refuses the execution.
+        code_only_fence = (
+            None
+            if code_only is None
+            else self._run_brain_surface_fence(candidate, prior, retained.public_dir)
+        )
         prepared = PreparedPromotion(
             activation.dry_run_attempt_id,
             audited_at,
@@ -2923,6 +3000,8 @@ class BrainPromoter:
             node_executables=node_executables,
             promotion_commit=promotion_commit,
             neutral_changes=neutral_changes,
+            code_only=code_only,
+            code_only_fence=code_only_fence,
         )
         reconstructed = self._intent_payload(prepared)
         reconstructed.pop("activation_bundle", None)
@@ -2937,6 +3016,54 @@ class BrainPromoter:
             )
         return prepared
 
+    def _load_code_only_record(self) -> CodeOnlyRelease | None:
+        if self.code_only_record_path is None:
+            return None
+        try:
+            return load_code_only_record(self.code_only_record_path)
+        except CodeOnlyError as exc:
+            raise PromotionError(f"code-only eligibility record is invalid: {exc}") from exc
+
+    def _require_code_only_record_changes(
+        self, code_only: CodeOnlyRelease | None, changes: Sequence[str]
+    ) -> None:
+        """Re-derive the record's classification from this checkout's own Git diff."""
+        if code_only is None:
+            return
+        try:
+            require_code_only_record_changes(code_only, changes)
+        except CodeOnlyError as exc:
+            raise PromotionError(f"code-only eligibility record is unusable: {exc}") from exc
+
+    def _run_brain_surface_fence(
+        self,
+        candidate: ReleaseInfo,
+        prior: ReleaseInfo | None,
+        public_dir: Path,
+    ) -> dict[str, object]:
+        """Measure that the staged Brain surface equals the bytes production serves.
+
+        The eligibility policy is a list of paths, and a list can be wrong. This is the
+        independent check: every Brain-owned file the promotion would publish is
+        fetched back from production and compared byte for byte, so a change in the
+        staging code, the shard layout or the selector schema refuses the promotion
+        before Wrangler is invoked rather than after.
+        """
+        fetch = self.code_only_fetcher or code_only_fetcher(
+            self.base_url,
+            max_response_bytes=self.canary_max_response_bytes,
+            nonce=self.attempt_id,
+        )
+        try:
+            return brain_surface_fence(
+                public_dir,
+                current_manifest_sha256=candidate.manifest_sha256,
+                previous_manifest_sha256=(None if prior is None else prior.manifest_sha256),
+                fetch=fetch,
+            )
+        except CodeOnlyError as exc:
+            raise PromotionError(f"Brain surface fence failed: {exc}") from exc
+
     def prepare(self) -> PreparedPromotion:
         assert (
             self.release_id is not None
@@ -2945,17 +3072,28 @@ class BrainPromoter:
             and self.public_baseline_root is not None
         )
         candidate = self._verify_release(self.release_id, self.release_root)
+        code_only = self._load_code_only_record()
+        promotion_commit = self._check_git_authority(
+            candidate.authority_commit, code_only=code_only is not None
+        )
+        neutral_changes = self._recorded_neutral_changes()
+        self._require_code_only_record_changes(code_only, neutral_changes)
+        # A full promotion freezes the public baseline at the commit that built the
+        # Brain. A code-only promotion reuses that Brain but rebuilds the website, so
+        # its baseline is frozen at the promotion commit instead — the one commit whose
+        # committed attestation describes the assets being published.
+        baseline_authority = (
+            promotion_commit if code_only is not None else candidate.authority_commit
+        )
         try:
             public_baseline = verify_public_baseline(
                 self.public_baseline_root,
                 self.repo.resolve(strict=True),
                 expected_baseline_id=self.public_baseline_id,
-                expected_authority_git_commit=candidate.authority_commit,
+                expected_authority_git_commit=baseline_authority,
             )
         except BaselineValidationError as exc:
             raise PromotionError(f"public asset baseline verification failed: {exc}") from exc
-        promotion_commit = self._check_git_authority(candidate.authority_commit)
-        neutral_changes = self._recorded_neutral_changes()
         node_executables = self._node_executables_identity()
         wrangler_installation = self._wrangler_installation_identity()
         self._bind_node_executables(node_executables)
@@ -3012,6 +3150,33 @@ class BrainPromoter:
         else:
             raise PromotionError("predeploy selector release is not available as a verified frozen release")
 
+        if code_only is not None:
+            # "Code only" means the Brain plane does not move. The release being
+            # promoted must therefore already be the live one, and the release it
+            # retains must already be the live previous release.
+            if (
+                selector.current_release_id != candidate.release_id
+                or selector.current_manifest_sha256 != candidate.manifest_sha256
+            ):
+                raise PromotionError(
+                    "a code-only promotion may only republish the release production "
+                    "already serves; production serves "
+                    f"{selector.current_release_id} ({selector.current_manifest_sha256})"
+                )
+            try:
+                require_code_only_record_matches(
+                    code_only,
+                    release_id=candidate.release_id,
+                    manifest_sha256=candidate.manifest_sha256,
+                    authority_commit=candidate.authority_commit,
+                    previous_release_id=selector.previous_release_id,
+                    previous_manifest_sha256=selector.previous_manifest_sha256,
+                    code_commit=promotion_commit,
+                    selector_sha256=selector.body_sha256,
+                )
+            except CodeOnlyError as exc:
+                raise PromotionError(f"code-only eligibility record is unusable: {exc}") from exc
+
         work_root = Path(
             tempfile.mkdtemp(prefix=f"wikilean-brain-promote-{self.attempt_id}-")
         ).resolve(strict=True)
@@ -3026,6 +3191,11 @@ class BrainPromoter:
             deploy_config_sha256 = sha256_bytes(deploy_config.read_bytes())
             public_result, staged_selector = self._stage_public(
                 candidate, prior, public_baseline, public_dir
+            )
+            code_only_fence = (
+                None
+                if code_only is None
+                else self._run_brain_surface_fence(candidate, prior, public_dir)
             )
             before_checks = inventory_tree(public_dir)
             bundle_entry, bundle_before = self._run_worker_checks(
@@ -3059,7 +3229,12 @@ class BrainPromoter:
                 )
                 if prior_after.tree != prior.tree or prior_after.manifest_sha256 != prior.manifest_sha256:
                     raise PromotionError("prior frozen release changed during preparation")
-            if self._check_git_authority(candidate.authority_commit) != promotion_commit:
+            if (
+                self._check_git_authority(
+                    candidate.authority_commit, code_only=code_only is not None
+                )
+                != promotion_commit
+            ):
                 raise PromotionError("promotion checkout moved during preparation")
 
             history, history_raw = self._history_evidence(deploy_config)
@@ -3108,6 +3283,8 @@ class BrainPromoter:
                 node_executables=node_executables,
                 promotion_commit=promotion_commit,
                 neutral_changes=neutral_changes,
+                code_only=code_only,
+                code_only_fence=code_only_fence,
             )
         except BaseException:
             remove_sealed_tree(work_root)
@@ -3443,6 +3620,17 @@ class BrainPromoter:
             "first_deploy_approval": self.first_deploy_approval,
             "history": prepared.history,
         }
+        if prepared.code_only is not None:
+            payload["code_only"] = {
+                "policy": CODE_ONLY_POLICY,
+                "record_id": prepared.code_only.record_id,
+                "code_git_commit": prepared.code_only.code_commit,
+                "brain_authority_commit": prepared.code_only.brain_authority_commit,
+                "reused_release_id": prepared.code_only.brain_release_id,
+                "reused_manifest_sha256": prepared.code_only.brain_manifest_sha256,
+                "review_required": list(prepared.code_only.review_required),
+                "brain_surface_fence": prepared.code_only_fence,
+            }
         if prepared.activation is not None:
             payload["retained_artifacts"] = prepared.activation.retained.reference()
             payload["activation_bundle"] = prepared.activation.reference()
@@ -3509,7 +3697,11 @@ class BrainPromoter:
                 prepared.public_baseline.root,
                 self.repo.resolve(strict=True),
                 expected_baseline_id=prepared.public_baseline.baseline_id,
-                expected_authority_git_commit=prepared.candidate.authority_commit,
+                expected_authority_git_commit=(
+                    prepared.promotion_commit
+                    if prepared.code_only is not None
+                    else prepared.candidate.authority_commit
+                ),
             )
         except BaselineValidationError as exc:
             raise PromotionError(f"public asset baseline changed after durable intent: {exc}") from exc
@@ -3550,7 +3742,13 @@ class BrainPromoter:
             or wrangler_version != prepared.wrangler_version
         ):
             raise PromotionError("Node/Wrangler identity changed after preparation")
-        if self._check_git_authority(prepared.candidate.authority_commit) != prepared.promotion_commit:
+        if (
+            self._check_git_authority(
+                prepared.candidate.authority_commit,
+                code_only=prepared.code_only is not None,
+            )
+            != prepared.promotion_commit
+        ):
             raise PromotionError("promotion checkout moved after preparation")
 
         before, before_result, probe, after, after_result = self._remote_predeploy_fence(
@@ -4646,6 +4844,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         type=float,
         default=_env_float("WIKILEAN_BRAIN_COMMAND_TIMEOUT", 900),
     )
+    parser.add_argument(
+        "--code-only-release",
+        type=Path,
+        help=(
+            "absolute path to a canonical wikilean.code-only-release/v1 record: reuse "
+            "the live Brain release unchanged and promote only the website built at "
+            "this commit (site/ops/brain_code_only_release.py evaluate)"
+        ),
+    )
     parser.add_argument("--attempt-id", help=argparse.SUPPRESS)
     parser.add_argument("--audited-at", help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
@@ -4682,6 +4889,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         )
     if args.retain_dry_run_store is not None and not args.dry_run:
         parser.error("--retain-dry-run-store is valid only with --dry-run")
+    if args.code_only_release is not None and args.reconcile_attempt:
+        parser.error("--code-only-release is not valid during reconciliation")
     if args.execute and os.environ.get("WIKILEAN_BRAIN_DEPLOY") != "1":
         parser.error("--execute requires WIKILEAN_BRAIN_DEPLOY=1")
     return args
@@ -4722,6 +4931,7 @@ def main(argv: list[str] | None = None) -> int:
             attempt_id=args.attempt_id,
             audited_at=args.audited_at,
             retain_dry_run_store=args.retain_dry_run_store,
+            code_only_record=args.code_only_release,
         )
         return promoter.run()
     except KeyboardInterrupt:

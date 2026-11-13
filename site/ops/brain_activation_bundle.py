@@ -61,6 +61,7 @@ from brain_public_baseline import (  # noqa: E402
 import semantic_diff as semantic_diff_tool  # noqa: E402
 import measure_store as measure_store_tool  # noqa: E402
 import brain_release_authority as release_authority  # noqa: E402
+import brain_code_only_release as code_only_policy  # noqa: E402
 from brain_activation_ci import (  # noqa: E402
     ActivationCIError,
     EVIDENCE_SCHEMA as CI_EVIDENCE_SCHEMA,
@@ -130,6 +131,24 @@ EXTERNAL_EVIDENCE_PATHS = tuple(
 )
 EVIDENCE_BY_KIND = dict(EVIDENCE_PATHS)
 EVIDENCE_BY_PATH = {path: kind for kind, path in EVIDENCE_PATHS}
+# A code-only release reuses the live Brain release byte for byte and rebuilds only
+# the website, so it carries one extra reviewed document: the canonical eligibility
+# record that says which release is reused, at which commit the website was built, and
+# why every path that differs between them is outside the Brain's inputs. It sits
+# immediately before the freshly recorded CI evidence, which stays last.
+CODE_ONLY_EVIDENCE: tuple[str, str] = ("code_only_eligibility", "code-only-eligibility.json")
+
+
+def evidence_paths(code_only: bool) -> tuple[tuple[str, str], ...]:
+    """Return the ordered evidence set for a classic or code-only activation bundle."""
+    if not code_only:
+        return EVIDENCE_PATHS
+    return (*EVIDENCE_PATHS[:-1], CODE_ONLY_EVIDENCE, EVIDENCE_PATHS[-1])
+
+
+def external_evidence_paths(code_only: bool) -> tuple[tuple[str, str], ...]:
+    """Return the operator-supplied subset of :func:`evidence_paths`."""
+    return tuple(item for item in evidence_paths(code_only) if item[0] != "ci_evidence")
 
 
 class ActivationBundleError(RuntimeError):
@@ -164,11 +183,21 @@ class ActivationBundle:
     authority_git_commit: str
     reducer_git_commit: str
     files: tuple[EvidenceFile, ...]
+    code_only: code_only_policy.CodeOnlyRelease | None = None
 
     def summary(self) -> dict[str, object]:
         return {
             "ok": True,
             "schema": BUNDLE_SCHEMA,
+            "code_only": (
+                None
+                if self.code_only is None
+                else {
+                    "policy": code_only_policy.POLICY,
+                    "record_id": self.code_only.record_id,
+                    "code_git_commit": self.code_only.code_commit,
+                }
+            ),
             "bundle_id": self.bundle_id,
             "root": str(self.root),
             "manifest": str(self.manifest_path),
@@ -197,6 +226,7 @@ class ValidatedInputs:
     promotion_root: Path
     git: Path | None
     baseline_files: tuple[PublicAssetFile, ...]
+    code_only: code_only_policy.CodeOnlyRelease | None
     documents: Mapping[str, Mapping[str, Any]]
     canonical_bytes: Mapping[str, bytes]
 
@@ -653,8 +683,17 @@ def _require_neutral_descendant(
     head: str,
     declared: Sequence[str],
     label: str,
+    *,
+    code_only: bool = False,
 ) -> None:
-    """Require ``head`` to descend from the authority with only release-neutral changes."""
+    """Require ``head`` to descend from the authority with only release-neutral changes.
+
+    A code-only bundle reuses the live Brain release at a newer website commit, so it
+    widens the accepted set exactly once, to
+    ``wikilean.code-only-release-paths``: release-neutral paths plus the Worker and
+    public-asset sources the promotion rebuilds. Reducer inputs and the builder of the
+    frozen ``/brain`` page stay blocking under both policies.
+    """
     try:
         ancestry = subprocess.run(
             [str(git), "-C", str(root), "merge-base", "--is-ancestor", authority_commit, head],
@@ -681,11 +720,18 @@ def _require_neutral_descendant(
         authority_commit,
         head,
     )
-    blocking = release_authority.blocking_changes(changes)
-    if blocking:
-        raise BundleValidationError(
-            release_authority.describe_blocking(authority_commit, head, blocking)
-        )
+    if code_only:
+        blocking = code_only_policy.blocking_changes(changes)
+        if blocking:
+            raise BundleValidationError(
+                code_only_policy.describe_blocking(authority_commit, head, blocking)
+            )
+    else:
+        blocking = release_authority.blocking_changes(changes)
+        if blocking:
+            raise BundleValidationError(
+                release_authority.describe_blocking(authority_commit, head, blocking)
+            )
     if changes != list(declared):
         raise BundleValidationError(
             f"{label} neutral_changes differ from the Git diff between the candidate "
@@ -699,6 +745,7 @@ def _validate_build_context(
     *,
     inspect_external: bool,
     git: Path | None = None,
+    code_only: bool = False,
 ) -> tuple[Path, Path, str]:
     """Validate the two P1B worktrees; return their roots and the promotion HEAD.
 
@@ -717,10 +764,16 @@ def _validate_build_context(
     if _require_commit(document.get("authority_git_commit"), "build context authority") != authority_commit:
         raise BundleValidationError("build context authority differs from the candidate release")
     try:
-        neutral_changes = release_authority.validate_neutral_changes(
-            document.get("neutral_changes"), "build context neutral_changes"
+        neutral_changes = (
+            code_only_policy.validate_eligible_changes(
+                document.get("neutral_changes"), "build context neutral_changes"
+            )
+            if code_only
+            else release_authority.validate_neutral_changes(
+                document.get("neutral_changes"), "build context neutral_changes"
+            )
         )
-    except ValueError as exc:
+    except (ValueError, code_only_policy.CodeOnlyError) as exc:
         raise BundleValidationError(str(exc)) from exc
     build_value = _require_object(document.get("build_worktree"), "build context build_worktree")
     promotion_value = _require_object(
@@ -780,6 +833,7 @@ def _validate_build_context(
             promotion_head,
             neutral_changes,
             "build context promotion_worktree",
+            code_only=code_only,
         )
     if build_root == promotion_root or _overlap(build_root, promotion_root):
         raise BundleValidationError("build and promotion worktrees must be distinct and non-overlapping")
@@ -1631,6 +1685,95 @@ def _recompute_release_metrics(
     return _decimalize_measurement(measured)
 
 
+def _validate_intent_code_only(
+    value: object,
+    record: code_only_policy.CodeOnlyRelease,
+) -> None:
+    """Require the dry-run intent's code-only block to restate the reviewed record.
+
+    The promoter writes this block only when it ran under ``--code-only-release``, and
+    it carries the Brain surface fence it measured against production. The bundle binds
+    both, so a reviewer reading the frozen evidence can see which release was reused
+    and that its served bytes were proven unchanged before any Wrangler call.
+    """
+    block = _require_object(value, "promoter intent code_only")
+    _exact_keys(
+        block,
+        {
+            "policy",
+            "record_id",
+            "code_git_commit",
+            "brain_authority_commit",
+            "reused_release_id",
+            "reused_manifest_sha256",
+            "review_required",
+            "brain_surface_fence",
+        },
+        "promoter intent code_only",
+    )
+    if block.get("policy") != code_only_policy.POLICY:
+        raise BundleValidationError("promoter intent code_only policy mismatch")
+    if (
+        block.get("record_id") != record.record_id
+        or block.get("code_git_commit") != record.code_commit
+        or block.get("brain_authority_commit") != record.brain_authority_commit
+        or block.get("reused_release_id") != record.brain_release_id
+        or block.get("reused_manifest_sha256") != record.brain_manifest_sha256
+        or block.get("review_required") != list(record.review_required)
+    ):
+        raise BundleValidationError(
+            "promoter intent code_only block differs from the reviewed eligibility record"
+        )
+    fence = _require_object(block.get("brain_surface_fence"), "Brain surface fence")
+    _exact_keys(
+        fence,
+        {"schema", "checked", "paths", "mutable_surface", "response_bytes"},
+        "Brain surface fence",
+    )
+    if fence.get("schema") != "wikilean.code-only-brain-surface-fence/v1":
+        raise BundleValidationError("Brain surface fence schema mismatch")
+    checked = fence.get("checked")
+    if not isinstance(checked, list) or not checked:
+        raise BundleValidationError("Brain surface fence checked nothing")
+    if fence.get("paths") != len(checked):
+        raise BundleValidationError("Brain surface fence path count is inconsistent")
+    surface = fence.get("mutable_surface")
+    if (
+        not isinstance(surface, list)
+        or any(not isinstance(item, str) for item in surface)
+        or surface != sorted(set(surface))
+        or not surface
+    ):
+        raise BundleValidationError("Brain surface fence mutable inventory is malformed")
+    required_surface = {
+        code_only_policy.SELECTOR_PUBLIC_NAME,
+        *code_only_policy.REQUIRED_PUBLIC_ALIASES,
+    }
+    if not required_surface.issubset(surface):
+        raise BundleValidationError(
+            "Brain surface fence mutable inventory is missing required Brain files: "
+            + ", ".join(sorted(required_surface.difference(surface)))
+        )
+    compared = {}
+    for item in checked:
+        entry = _require_object(item, "Brain surface fence entry")
+        _exact_keys(entry, {"path", "route", "compared", "bytes", "sha256"}, "Brain surface fence entry")
+        compared[_require_string(entry.get("path"), "Brain surface fence path")] = entry.get(
+            "compared"
+        )
+    # The selector is the one Brain-owned file a promotion restamps; every other
+    # compared path must have been byte-identical to production.
+    if compared.get(code_only_policy.SELECTOR_PUBLIC_PATH) != "identity-without-audited-at":
+        raise BundleValidationError("Brain surface fence did not compare the release selector")
+    if code_only_policy.BRAIN_PAGE_PUBLIC_PATH not in compared:
+        raise BundleValidationError("Brain surface fence did not compare the frozen /brain page")
+    for path, kind in compared.items():
+        if path != code_only_policy.SELECTOR_PUBLIC_PATH and kind != "bytes":
+            raise BundleValidationError(
+                f"Brain surface fence compared {path} without requiring equal bytes"
+            )
+
+
 def _validate_promoter_intent(
     dry_run: Mapping[str, Any],
     *,
@@ -1642,6 +1785,7 @@ def _validate_promoter_intent(
     promotion_head: str,
     expected_neutral_changes: Sequence[str],
     inspect_external: bool,
+    code_only: code_only_policy.CodeOnlyRelease | None = None,
 ) -> dict[str, Any]:
     _exact_keys(
         dry_run,
@@ -1683,9 +1827,14 @@ def _validate_promoter_intent(
             "first_deploy_approval",
             "history",
             "retained_artifacts",
+            # Present exactly when this is a code-only promotion; its absence is how a
+            # classic bundle refuses a code-only dry run and vice versa.
+            *({"code_only"} if code_only is not None else set()),
         },
         "promoter proposed_intent",
     )
+    if code_only is not None:
+        _validate_intent_code_only(intent.get("code_only"), code_only)
     if (
         intent.get("requested_release_id") != release_id
         or intent.get("authority_commit") != authority_commit
@@ -1696,11 +1845,30 @@ def _validate_promoter_intent(
         raise BundleValidationError("promoter dry-run release identity is inconsistent")
     promotion_commit = _require_commit(intent.get("promotion_commit"), "promoter promotion_commit")
     try:
-        neutral_changes = release_authority.validate_neutral_changes(
-            intent.get("neutral_changes"), "promoter neutral_changes"
+        neutral_changes = (
+            code_only_policy.validate_eligible_changes(
+                intent.get("neutral_changes"), "promoter neutral_changes"
+            )
+            if code_only is not None
+            else release_authority.validate_neutral_changes(
+                intent.get("neutral_changes"), "promoter neutral_changes"
+            )
         )
-    except ValueError as exc:
+    except (ValueError, code_only_policy.CodeOnlyError) as exc:
         raise BundleValidationError(str(exc)) from exc
+    if code_only is not None:
+        if promotion_commit != code_only.code_commit:
+            raise BundleValidationError(
+                "promoter dry run ran at a different commit than the code-only record"
+            )
+        # Re-derive the record's classification of this list, so `review_required` and
+        # the attestation rule are measured rather than taken from the record. During
+        # a freeze `_require_neutral_descendant` has already proved the list is the
+        # real Git diff between the reused release's authority and this commit.
+        try:
+            code_only_policy.require_record_changes(code_only, neutral_changes)
+        except code_only_policy.CodeOnlyError as exc:
+            raise BundleValidationError(str(exc)) from exc
     if promotion_commit == authority_commit and neutral_changes:
         raise BundleValidationError(
             "promoter neutral_changes must be empty at the candidate authority commit"
@@ -2532,6 +2700,32 @@ def _validate_evidence(
     if reducer_commit != authority_commit:
         raise BundleValidationError("candidate authority and reducer commits must agree")
 
+    # A code-only bundle carries one extra reviewed document. Its presence selects the
+    # profile; everything below that used to assume "one commit built the Brain, the
+    # Worker and the public assets" asks it which commit it means.
+    code_only: code_only_policy.CodeOnlyRelease | None = None
+    if "code_only_eligibility" in documents:
+        try:
+            code_only = code_only_policy.validate_record_document(
+                documents["code_only_eligibility"]
+            )
+        except code_only_policy.CodeOnlyError as exc:
+            raise BundleValidationError(
+                f"code-only eligibility record is invalid: {exc}"
+            ) from exc
+        if (
+            code_only.brain_release_id != release_id
+            or code_only.brain_authority_commit != authority_commit
+            or code_only.brain_reducer_commit != reducer_commit
+        ):
+            raise BundleValidationError(
+                "code-only eligibility record names a different reused Brain release"
+            )
+    # The commit whose committed attestation describes the non-Brain public assets this
+    # promotion publishes: the Brain's authority commit for a full release, the website
+    # commit for a code-only one.
+    asset_authority_commit = authority_commit if code_only is None else code_only.code_commit
+
     semantic_baseline_manifest = documents["semantic_baseline_manifest"]
     if semantic_baseline_manifest.get("schema") != RELEASE_SCHEMA:
         raise BundleValidationError("semantic baseline release manifest schema mismatch")
@@ -2552,6 +2746,10 @@ def _validate_evidence(
         )
     expected_release_bytes = release_canonical_json_bytes(validated_release)
     release_manifest_sha256 = hashlib.sha256(expected_release_bytes).hexdigest()
+    if code_only is not None and code_only.brain_manifest_sha256 != release_manifest_sha256:
+        raise BundleValidationError(
+            "code-only eligibility record names a different reused release manifest"
+        )
     semantic_baseline_manifest_sha256 = hashlib.sha256(
         release_canonical_json_bytes(validated_semantic_baseline)
     ).hexdigest()
@@ -2561,7 +2759,12 @@ def _validate_evidence(
         authority_commit,
         inspect_external=inspect_external,
         git=git,
+        code_only=code_only is not None,
     )
+    if code_only is not None and promotion_head != code_only.code_commit:
+        raise BundleValidationError(
+            "build context worktrees are not at the code-only record's website commit"
+        )
     ci_evidence = documents["ci_evidence"]
     if ci_evidence.get("schema") != CI_EVIDENCE_SCHEMA:
         raise BundleValidationError("activation CI evidence schema mismatch")
@@ -2674,8 +2877,12 @@ def _validate_evidence(
     except BaselineValidationError as exc:
         raise BundleValidationError(f"public baseline manifest is invalid: {exc}") from exc
     _, baseline_hex = _require_release_id(baseline_id, "public baseline_id")
-    if baseline_authority != authority_commit:
-        raise BundleValidationError("public baseline authority differs from the candidate release")
+    if baseline_authority != asset_authority_commit:
+        raise BundleValidationError(
+            "public baseline authority differs from the candidate release"
+            if code_only is None
+            else "public baseline authority differs from the code-only website commit"
+        )
     baseline_file_count = len(baseline_file_records)
     baseline_byte_count = sum(item.bytes for item in baseline_file_records)
 
@@ -2701,6 +2908,7 @@ def _validate_evidence(
         promotion_head=promotion_head,
         expected_neutral_changes=documents["build_context"]["neutral_changes"],
         inspect_external=inspect_external,
+        code_only=code_only,
     )
     _validate_ci_node_binding(ci_evidence, intent)
     retained = intent.get("retained_release")
@@ -2744,7 +2952,7 @@ def _validate_evidence(
                 baseline_root,
                 promotion_root,
                 expected_baseline_id=baseline_id,
-                expected_authority_git_commit=authority_commit,
+                expected_authority_git_commit=asset_authority_commit,
                 git_executable=git,
             )
         except (OSError, BaselineValidationError) as exc:
@@ -2771,7 +2979,7 @@ def _validate_evidence(
         committed_source = _git(
             git,
             promotion_root,
-            ["show", f"{authority_commit}:{SOURCE_ATTESTATION_PATH}"],
+            ["show", f"{asset_authority_commit}:{SOURCE_ATTESTATION_PATH}"],
             "committed source attestation",
         )
         if committed_source != canonical["source_attestation"]:
@@ -2899,6 +3107,7 @@ def _validate_evidence(
         promotion_root=promotion_root,
         git=git,
         baseline_files=verified_baseline_files,
+        code_only=code_only,
         documents=frozen_documents,
         canonical_bytes=frozen_canonical,
     )
@@ -2915,12 +3124,13 @@ def _load_inputs(
         expected_semantic_baseline_id,
         "expected semantic baseline ID",
     )
-    expected_external = {kind for kind, _ in EXTERNAL_EVIDENCE_PATHS}
-    if set(paths) != expected_external:
+    code_only = CODE_ONLY_EVIDENCE[0] in paths
+    external = external_evidence_paths(code_only)
+    if set(paths) != {kind for kind, _ in external}:
         raise BundleValidationError("activation evidence input set is incomplete")
     documents: dict[str, Mapping[str, Any]] = {}
     canonical: dict[str, bytes] = {}
-    for kind, _ in EXTERNAL_EVIDENCE_PATHS:
+    for kind, _ in external:
         document, encoded = _read_source_json(
             paths[kind], kind.replace("_", " "), maximum=_max_json_bytes(kind)
         )
@@ -2942,7 +3152,7 @@ def _load_inputs(
 
 
 def _identity_document(validated: ValidatedInputs, files: Sequence[EvidenceFile]) -> dict[str, object]:
-    return {
+    identity: dict[str, object] = {
         "schema": BUNDLE_SCHEMA,
         "release_id": validated.release_id,
         "semantic_baseline_release_id": validated.semantic_baseline_release_id,
@@ -2961,6 +3171,15 @@ def _identity_document(validated: ValidatedInputs, files: Sequence[EvidenceFile]
             for item in files
         ],
     }
+    if validated.code_only is not None:
+        # The bundle's own identity records that the Brain release was reused rather
+        # than rebuilt, and names the website commit it was reused at.
+        identity["code_only"] = {
+            "policy": code_only_policy.POLICY,
+            "record_id": validated.code_only.record_id,
+            "code_git_commit": validated.code_only.code_commit,
+        }
+    return identity
 
 
 def _bundle_id(identity: Mapping[str, object]) -> str:
@@ -3105,6 +3324,7 @@ def _final_publish_fence(validated: ValidatedInputs) -> None:
         validated.authority_commit,
         inspect_external=True,
         git=validated.git,
+        code_only=validated.code_only is not None,
     )
     if build_root != validated.build_root or promotion_root != validated.promotion_root:
         raise BundleFreezeError("worktree identity changed before bundle publication")
@@ -3160,7 +3380,7 @@ def freeze_activation_bundle(
             sha256=hashlib.sha256(validated.canonical_bytes[kind]).hexdigest(),
             bytes=len(validated.canonical_bytes[kind]),
         )
-        for kind, destination in EVIDENCE_PATHS
+        for kind, destination in evidence_paths(validated.code_only is not None)
     )
     identity = _identity_document(validated, files)
     bundle_id = _bundle_id(identity)
@@ -3286,11 +3506,22 @@ def _validate_manifest(
             "baseline_id",
             "authority",
             "files",
+            # Present exactly in a code-only bundle. A verifier that does not know the
+            # key refuses the bundle, which is the safe direction.
+            *({"code_only"} if "code_only" in document else set()),
         },
         "bundle manifest",
     )
     if document.get("schema") != BUNDLE_SCHEMA:
         raise BundleValidationError("bundle manifest schema mismatch")
+    code_only = "code_only" in document
+    if code_only:
+        block = _require_object(document.get("code_only"), "bundle code_only")
+        _exact_keys(block, {"policy", "record_id", "code_git_commit"}, "bundle code_only")
+        if block.get("policy") != code_only_policy.POLICY:
+            raise BundleValidationError("bundle code_only policy mismatch")
+        _require_release_id(block.get("record_id"), "bundle code_only record_id")
+        _require_commit(block.get("code_git_commit"), "bundle code_only code_git_commit")
     bundle_id, _ = _require_release_id(document.get("bundle_id"), "bundle_id")
     release_id, _ = _require_release_id(document.get("release_id"), "bundle release_id")
     semantic_baseline_release_id, _ = _require_release_id(
@@ -3302,8 +3533,9 @@ def _validate_manifest(
     _exact_keys(authority, {"git_commit", "reducer_git_commit"}, "bundle authority")
     authority_commit = _require_commit(authority.get("git_commit"), "bundle authority commit")
     reducer_commit = _require_commit(authority.get("reducer_git_commit"), "bundle reducer commit")
+    expected_files = evidence_paths(code_only)
     raw_files = document.get("files")
-    if not isinstance(raw_files, list) or len(raw_files) != len(EVIDENCE_PATHS):
+    if not isinstance(raw_files, list) or len(raw_files) != len(expected_files):
         raise BundleValidationError("bundle manifest must list the exact evidence file set")
     files: list[EvidenceFile] = []
     for index, raw in enumerate(raw_files):
@@ -3311,7 +3543,7 @@ def _validate_manifest(
         _exact_keys(item, {"kind", "path", "sha256", "bytes"}, f"bundle files[{index}]")
         kind = _require_string(item.get("kind"), f"bundle files[{index}].kind")
         path = _require_string(item.get("path"), f"bundle files[{index}].path")
-        if (kind, path) != EVIDENCE_PATHS[index]:
+        if (kind, path) != expected_files[index]:
             raise BundleValidationError("bundle evidence files must use the canonical order and names")
         digest = _require_digest(item.get("sha256"), f"bundle files[{index}].sha256")
         size = item.get("bytes")
@@ -3336,7 +3568,10 @@ def _validate_manifest(
 def verify_activation_bundle(root_input: Path) -> ActivationBundle:
     root = root_input
     actual = _scan_bundle(root)
-    expected_names = {MANIFEST_NAME, *EVIDENCE_BY_PATH}
+    # The profile is self-describing: a code-only bundle is the one that carries the
+    # eligibility record, and its manifest must then declare the same profile.
+    code_only_present = CODE_ONLY_EVIDENCE[1] in actual
+    expected_names = {MANIFEST_NAME, *(path for _, path in evidence_paths(code_only_present))}
     if set(actual) != expected_names:
         missing = sorted(expected_names - set(actual))
         extra = sorted(set(actual) - expected_names)
@@ -3382,6 +3617,19 @@ def verify_activation_bundle(root_input: Path) -> ActivationBundle:
         or validated.reducer_commit != manifest["authority"]["reducer_git_commit"]
     ):
         raise BundleValidationError("bundle manifest identity differs from its evidence")
+    if (validated.code_only is not None) != code_only_present:
+        raise BundleValidationError(
+            "bundle manifest profile differs from its evidence file set"
+        )
+    if validated.code_only is not None:
+        declared = _require_object(manifest.get("code_only"), "bundle code_only")
+        if (
+            declared.get("record_id") != validated.code_only.record_id
+            or declared.get("code_git_commit") != validated.code_only.code_commit
+        ):
+            raise BundleValidationError(
+                "bundle code_only identity differs from the frozen eligibility record"
+            )
     final = _scan_bundle(root)
     if {name: _signature(info) for name, info in final.items()} != {
         name: _signature(info) for name, info in actual.items()
@@ -3398,6 +3646,7 @@ def verify_activation_bundle(root_input: Path) -> ActivationBundle:
         authority_git_commit=authority_commit,
         reducer_git_commit=validated.reducer_commit,
         files=files,
+        code_only=validated.code_only,
     )
 
 
@@ -3489,6 +3738,14 @@ def _parser() -> argparse.ArgumentParser:
     freeze.add_argument("--semantic-diff", type=Path, required=True)
     freeze.add_argument("--promoter-dry-run", type=Path, required=True)
     freeze.add_argument("--build-context", type=Path, required=True)
+    freeze.add_argument(
+        "--code-only-release",
+        type=Path,
+        help=(
+            "canonical wikilean.code-only-release/v1 record: freeze a code-only bundle "
+            "that reuses the live Brain release and rebuilds only the website"
+        ),
+    )
     freeze.add_argument("--git", type=Path, required=True)
     freeze.add_argument("--node", type=Path, required=True)
     freeze.add_argument("--npm", type=Path, required=True)
@@ -3507,6 +3764,10 @@ def _parser() -> argparse.ArgumentParser:
         help="optional external trust anchor; must equal the verified bundle ID",
     )
     verify.add_argument("--expected-semantic-baseline-id")
+    verify.add_argument(
+        "--expected-code-only-record-id",
+        help="require the bundle to be a code-only bundle naming this eligibility record",
+    )
     context = subparsers.add_parser(
         "context", help="emit a verified canonical two-worktree context document"
     )
@@ -3554,6 +3815,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 "promoter_dry_run": args.promoter_dry_run,
                 "build_context": args.build_context,
             }
+            if args.code_only_release is not None:
+                paths[CODE_ONLY_EVIDENCE[0]] = args.code_only_release
             result = freeze_activation_bundle(
                 paths,
                 args.output_store,
@@ -3582,6 +3845,18 @@ def main(argv: Sequence[str] | None = None) -> int:
                 raise BundleValidationError(
                     "bundle semantic baseline differs from the expected reviewed ID"
                 )
+            if args.expected_code_only_record_id is not None:
+                expected_record, _ = _require_release_id(
+                    args.expected_code_only_record_id, "expected code-only record ID"
+                )
+                if result.code_only is None:
+                    raise BundleValidationError(
+                        "bundle is not a code-only bundle but a record ID was expected"
+                    )
+                if result.code_only.record_id != expected_record:
+                    raise BundleValidationError(
+                        "bundle code-only record differs from the expected reviewed ID"
+                    )
         else:
             context = create_build_context(
                 args.build_worktree,

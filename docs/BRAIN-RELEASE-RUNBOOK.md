@@ -304,6 +304,253 @@ subcommand when the worktrees are ahead of the release authority. The dry run, t
 and the execution all run at one commit; a merge after the freeze means a fresh P1B at the
 new commit, not a rebuild of the release.
 
+## Code-only release: reuse the live Brain, rebuild only the website
+
+A full release rebuilds the Brain from raw inputs — a ~7.4 GB offline pack, two sealed
+builds, qualification — and the measured chain from replay start to live is about
+5 h 50 m. When a release changes only website code, none of that buys anything: the
+frozen Brain release production already serves is exactly the release the new Worker
+should serve. A **code-only release** reuses that frozen release byte for byte and
+rebuilds everything else at the new commit `C`, through the same promoter, journal,
+canary and rollback. It settles the ROADMAP's open "Worker-only hotfix path" decision;
+it is not a hotfix lane that skips review, it is the full promotion with the Brain
+rebuild removed because the Brain is provably not moving.
+
+**What is reused:** the frozen Brain release directory and its `release.json` bytes,
+and — because they describe that same release — the `candidate-release.json`,
+`semantic-baseline-release.json`, `release-result.json` and `semantic-diff.json` from
+its own activation bundle, copied byte for byte. A semantic diff of the reused release
+against itself would be meaningless; the diff that is frozen is the reviewed
+`previous → live` diff, which still describes the Brain data being served.
+
+**What is rebuilt at `C`:** the non-Brain public baseline and its committed
+attestation, the staged public tree, the Worker bundle, CI (`npm ci`,
+`npm run test:ci`, `./scripts/ci-python.sh`), `release-metrics.json` (the freezer
+re-measures the SQLite itself), `shadow-public-result.json`, the promoter dry run, the
+build context, the activation bundle, the operator window, the canary and the journal.
+
+**What is dropped, and why that is safe:** the offline pack compile, the two sealed
+builds and the private qualification. All three answer one
+question — "are the Brain bytes this release publishes the reviewed ones?" — and a
+code-only release answers it more strongly by not producing new bytes at all. (The
+semantic comparison is *not* dropped: the bundle freezer recomputes the reused
+`previous → live` diff from both frozen stores and rejects the copied evidence if it
+differs, so both release stores must be on disk.) The
+reused release root is independently re-verified by `brain/tools/verify_release.py`,
+its exact manifest digest must equal the one the live selector names, and the Brain
+surface fence below re-measures the served bytes before Wrangler is invoked.
+
+### Eligibility is decided by code
+
+`site/ops/brain_code_only_release.py` holds policy
+`wikilean.code-only-release-paths/v1`. Every path that differs between the reused
+release's authority commit `A` and `C` must be release-neutral
+(`brain_release_authority.py`, unchanged) or **website-only**: `wiki/src`,
+`wiki/assets`, `wiki/scripts`, `wiki/migrations`, `wiki/migrations-brain`, the named
+`wiki/` build and configuration files including `wrangler.jsonc`, the lockfile and
+`public-asset-source-attestation.json`, `site/assets`, and the five named non-Brain
+public-asset generators. Everything else is blocking, deny-by-default, so a new
+top-level file is never silently eligible.
+
+Blocking includes everything that feeds the frozen release: `brain/`, `catalog/`,
+`site/annotations*`, `site/data`, `site/cache`, `site/assets/brain`, the five
+`bot/state/` reducer inputs, `site/test_frontier_page.py`, and —
+importantly — **`site/build_brain_page.py`**. The `/brain` page is a release artifact
+(`site/out/brain.html`), and the promoter serves the frozen copy, so a change to its
+builder cannot ship through a path that reuses the release. A release that touches it
+takes the full path. Two more rules: a change under `site/assets` or `wiki/assets`
+must be accompanied by a change to `wiki/public-asset-source-attestation.json`, or
+nothing was regenerated and the change would be reviewed as shipped without shipping;
+and a change to `wiki/wrangler.jsonc` or `wiki/src/security.ts` is eligible but
+flagged `review_required`, because routes, static-asset configuration and the
+generated `_headers` file decide how the unchanged Brain bytes are *served*. The
+surface fence compares bodies, not response headers, so those two are the operator's
+to read and the post-deploy canary's to catch — the same exposure a full release has.
+
+### The Brain surface fence
+
+The path policy is a list, and a list can be wrong. The promoter therefore measures the
+claim independently, after staging and before any Wrangler call, in two halves.
+
+*Locally, exhaustively.* The staged Brain surface — every file under
+`assets/brain/`, both immutable namespaces included — must be exactly the file set the
+reused release's own manifests imply, with every byte matching the digest those
+manifests declare. The expected set is derived in Python from the frozen release by an
+independent copy of the stager's artifact → public-path rule, never from the staged
+cell manifest and never from anything built at `C`. That matters because
+`wiki/scripts/brain-release-public.ts` and `build-public.ts` are themselves eligible
+to change in a code-only release: they cannot be allowed to define what "unchanged"
+means. A symlink, an extra file, a missing shard or trace, a third immutable
+namespace, or one altered byte in any of the thousands of shards refuses the
+promotion.
+
+*Against production, by sample.* The selector, both immutable
+`releases/<manifest>/release.json` namespaces, `sources.json`, `xref_index.json`, the
+six `cells/*.json` shell files, the deterministic first cell shard (the same one the
+canary picks) and `/brain` are fetched back from the live origin and required to be
+byte-identical. The only tolerated difference is the selector's `audited_at`, which
+every promotion restamps. Sampling is enough here *because* of the local half: the
+immutable `release.json` bytes are compared in full, so equal manifests plus
+digest-verified staged files mean equal content for every file the manifests name.
+
+### Commands
+
+Run every step on the operator Mac unless marked otherwise. `evaluate` and `verify`
+are read-only and could also run on ffmain with a checkout of `C` and a copy of the
+frozen release; everything from the public baseline freeze onward needs the Mac's
+release store, Wrangler credentials, age backup key and canonical journal.
+
+Preconditions: `C` is merged on `main`; two clean worktrees at `C` (build and
+promotion) as in the full path; **both** the reused release's frozen directory and the
+release the live selector retains as `previous_release_id` are present in the release
+store, each under its own manifest digest, and verify — the promoter resolves the
+retained release from the live selector and refuses if its directory is absent; the
+activation bundle of the release that put the reused release in production is still on
+disk, because four of its documents are copied into the new bundle.
+
+```bash
+# 0. Identify what production serves (read-only; also fine on ffmain).
+curl -sS https://wikilean.jackmccarthy.org/assets/brain/current.json
+
+# 1. Decide eligibility. Prints the canonical record on stdout; nonzero on refusal,
+#    naming the offending paths. Run from the clean promotion worktree at C.
+cd "$PROMOTION_WORKTREE"
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_code_only_release.py evaluate \
+  --repo-root "$PROMOTION_WORKTREE" \
+  --git "$WIKILEAN_BRAIN_GIT" \
+  --release-manifest /absolute/releases/<live-manifest-hex>/release.json \
+  > "$EVIDENCE_DIR/code-only-eligibility.json"
+
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_code_only_release.py verify \
+  --record "$EVIDENCE_DIR/code-only-eligibility.json" \
+  --expected-code-commit "$(git -C "$PROMOTION_WORKTREE" rev-parse HEAD)"
+```
+
+Review the record: it names the reused release, the authority commit `A`, the website
+commit `C`, every changed path with its classification, and `review_required`.
+
+```bash
+# 2. Regenerate the non-Brain public assets in the BUILD worktree, against the reused
+#    release (seconds, no rebuild). This both produces the tree the baseline is frozen
+#    from and records the shadow evidence, so it must run BEFORE the freeze below.
+#    Same generators as "Attest the reviewed non-Brain public assets" above; the
+#    committed attestation at C must already describe their output byte for byte.
+cd "$BUILD_WORKTREE"
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/export_wikidata_rdf.py
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/build_static_pages.py
+(cd wiki && npm ci)
+(cd wiki && "$WIKILEAN_BRAIN_NODE" --experimental-strip-types scripts/build-public.ts \
+  --brain-release-manifest /absolute/releases/<live-manifest-hex>/release.json \
+  --brain-release-dir /absolute/releases/<live-manifest-hex> \
+  --brain-previous-release-manifest /absolute/releases/<previous-manifest-hex>/release.json \
+  --brain-previous-release-dir /absolute/releases/<previous-manifest-hex> \
+  --brain-audited-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)") \
+  > "$EVIDENCE_DIR/shadow-public-result.json"
+(cd wiki && npm run build:indexes)
+export PUBLIC_SOURCE_ROOT="$BUILD_WORKTREE/wiki/public"
+
+# 3. Freeze the baseline at C. Same command as "Freeze the non-Brain public baseline"
+#    above, with --authority-git-commit C: in a code-only release the baseline binds
+#    to the website commit, not to the reused release's authority.
+AUTHORITY_COMMIT="$(git -C "$PROMOTION_WORKTREE" rev-parse HEAD)"
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_public_baseline.py freeze \
+  --source-public "$PUBLIC_SOURCE_ROOT" \
+  --store "$WIKILEAN_BRAIN_PUBLIC_BASELINE_STORE" \
+  --repo-root "$PROMOTION_WORKTREE" \
+  --authority-git-commit "$AUTHORITY_COMMIT"
+
+# 4. Promoter dry run with retention. This is where the Brain surface fence runs.
+cd "$PROMOTION_WORKTREE"
+bash site/ops/brain-promote-release.sh sha256:<live-release-hex> \
+  --release-root /absolute/releases/<live-manifest-hex> \
+  --public-baseline-id sha256:<public-baseline-hex> \
+  --public-baseline-root /absolute/public-baselines/<public-baseline-hex> \
+  --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
+  --code-only-release "$EVIDENCE_DIR/code-only-eligibility.json" \
+  --dry-run \
+  --retain-dry-run-store "$WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE" \
+  > "$EVIDENCE_DIR/promoter-dry-run.json"
+
+# 5. Build context, exactly as in the full path.
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py context \
+  --build-worktree "$BUILD_WORKTREE" \
+  --promotion-worktree "$PROMOTION_WORKTREE" \
+  --git "$WIKILEAN_BRAIN_GIT" \
+  > "$EVIDENCE_DIR/build-context.json"
+
+# 6. Freeze the code-only activation bundle: 12 files, the 11 of the full path plus
+#    code-only-eligibility.json. --semantic-baseline-manifest, --semantic-diff,
+#    --release-result and --release-metrics are the reused release's own evidence,
+#    copied byte for byte from its activation bundle; freeze re-measures the metrics
+#    and recomputes the diff, so a wrong copy fails here.
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py freeze \
+  --release-manifest /absolute/releases/<live-manifest-hex>/release.json \
+  --semantic-baseline-manifest /absolute/releases/<previous-manifest-hex>/release.json \
+  --expected-semantic-baseline-id sha256:<previous-release-hex> \
+  --public-baseline-manifest /absolute/public-baselines/<public-baseline-hex>/manifest.json \
+  --source-attestation "$PROMOTION_WORKTREE/wiki/public-asset-source-attestation.json" \
+  --release-result "$EVIDENCE_DIR/release-result.json" \
+  --release-metrics "$EVIDENCE_DIR/release-metrics.json" \
+  --shadow-public-result "$EVIDENCE_DIR/shadow-public-result.json" \
+  --semantic-diff "$EVIDENCE_DIR/semantic-diff.json" \
+  --promoter-dry-run "$EVIDENCE_DIR/promoter-dry-run.json" \
+  --build-context "$EVIDENCE_DIR/build-context.json" \
+  --code-only-release "$EVIDENCE_DIR/code-only-eligibility.json" \
+  --git "$WIKILEAN_BRAIN_GIT" --node "$WIKILEAN_BRAIN_NODE" \
+  --npm "$WIKILEAN_BRAIN_NPM" --python "${WIKILEAN_PYTHON:-.venv/bin/python3}" \
+  --output-store "$WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE"
+
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py verify \
+  --bundle-root "$WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE/<bundle-hex>" \
+  --expected-bundle-id sha256:<bundle-hex> \
+  --expected-semantic-baseline-id sha256:<previous-release-hex> \
+  --expected-code-only-record-id sha256:<record-hex>
+
+# 7. Back up D1 (the Worker writes it; a rollback does not undo writes). If the diff
+#    contains wiki/migrations/**, apply and verify the migration first, exactly as the
+#    full path requires — the promoter's existing schema gates are unchanged.
+cd wiki && npm run backup:d1
+
+# 8. Open the operator window and execute, with Jack's approval for the exact release,
+#    bundle and window. Same form as the full path plus --code-only-release.
+WIKILEAN_BRAIN_DEPLOY=1 bash site/ops/brain-promote-release.sh sha256:<live-release-hex> \
+  --release-root /absolute/releases/<live-manifest-hex> \
+  --public-baseline-id sha256:<public-baseline-hex> \
+  --public-baseline-root /absolute/public-baselines/<public-baseline-hex> \
+  --activation-bundle-id sha256:<bundle-hex> \
+  --activation-bundle-root "$WIKILEAN_BRAIN_ACTIVATION_BUNDLE_STORE/<bundle-hex>" \
+  --expected-semantic-baseline-id sha256:<previous-release-hex> \
+  --code-only-release "$EVIDENCE_DIR/code-only-eligibility.json" \
+  --receipt-dir "$WIKILEAN_BRAIN_RECEIPT_DIR" \
+  --execute \
+  --approval-note "Jack approved code-only release <record-id> at <commit C>, reusing <release-id>, and this window"
+```
+
+Execution re-derives everything: it re-reads the record, re-checks that production
+still serves the reused release, re-runs the Brain surface fence against the retained
+tree, and reconstructs the dry-run intent. Passing `--code-only-release` against a
+full-path bundle, or omitting it for a code-only one, fails at that reconstruction.
+
+**Rollback is unchanged and is the reason this is safe.** The predeploy Worker version
+in the fsynced intent is the rollback target; the Brain release does not move, so the
+rolled-back Worker serves the same Brain as the rolled-forward one. The canary after a
+rollback uses the same expected release ID and manifest digest as the canary before it.
+
+### The chicken-and-egg
+
+`site/ops/` is release-neutral under `brain_release_authority.py`, so the promoter, the
+activation bundle and this new module are **not** release-affecting: adding them does
+not invalidate the live release and does not itself require a release. The first
+code-only release is therefore made with the promoter running from the operator's
+promotion checkout at `C`, which is how the promoter has always run — step 4 above
+executes `$PROMOTION_WORKTREE/site/ops/brain-promote-release.sh`, not a copy from the
+deployed Worker. That is sound because the promoter is operator tooling, never
+deployed; what gets deployed is `wiki/src` and the public tree, and those are rebuilt
+and verified at `C` by the same gates as a full release. The one genuinely new trust
+assumption is this module's path list, which is why the Brain surface fence exists:
+the deployment is refused unless the Brain bytes are measured unchanged, whatever the
+list says.
+
 ## Build the P1B activation evidence bundle
 
 Use two non-overlapping worktrees at one commit: an isolated build worktree for the shadow
@@ -492,9 +739,11 @@ Do not delete or relocate either root after review.
 > the attempt's intent byte for byte (see "If an attempt is incomplete"). `npm run deploy`
 > refuses. Never run `wrangler deploy` directly: it uploads the Worker built from local
 > `wiki/src` and the local `wiki/public` outside the promoter, replacing the selector and the
-> whole asset tree. The only emergency lever is "Wrangler rollback" below. There is no forward
-> hotfix path; whether to add one is open ("Worker-only hotfix path" in the ROADMAP's
-> Waiting on Jack list).
+> whole asset tree. The only emergency lever is "Wrangler rollback" below. A release that
+> changes only website code takes the "Code-only release" section above, which reuses the
+> live Brain release byte for byte and runs this same promoter, journal, canary and
+> rollback; it settles the ROADMAP's "Worker-only hotfix path" item. There is still no path
+> that deploys outside the promoter.
 
 The legacy deploy-enabled nightly has been removed. The nightly rejects any nonzero
 `WIKILEAN_BRAIN_DEPLOY` before ingest/build work and contains no Wrangler mutation command.
