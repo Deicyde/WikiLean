@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for upload_contrib.py: an index bundle into the contributor bucket.
+"""Tests for upload_contrib.py: an index bundle, or a work package, into the contributor bucket.
 
 New code. Every test packages a small synthetic bundle with scripts/pipeline/package_index.py
 and uploads it to test_upload_store's loopback S3 server, which checks each request's SigV4
@@ -14,12 +14,15 @@ signature, payload hash and Content-MD5. No network, no real credential. What is
 * a file that differs from the manifest, or one the manifest does not list, is refused
   before any request;
 * an upload whose ETag is not the MD5 stops before MANIFEST.json;
-* the credentials are the contributor bucket's own variables, and no output carries them.
+* the credentials are the contributor bucket's own variables, and no output carries them;
+* a work package's envelope goes to ``packages/v1/<its sha256>.json`` only when it is
+  canonical and every file is the one its package.json names, and is never replaced.
 
 Run: python3 scripts/articles/test_upload_contrib.py
 """
 from __future__ import annotations
 
+import base64
 import hashlib
 import io
 import json
@@ -266,6 +269,96 @@ class CredentialTests(ContribCase):
                                          "--credentials-file", str(path), env={})
         self.assertEqual(code, 2, out + err)
         self.assertIn("0600", err)
+
+
+class PackageTests(ContribCase):
+    FILES = {"plan/gate.json": b'{"gate": 1}\n',
+             "sources/enwiki-1-2/source.raw.html": "<p>widget \u2014 gadget</p>\n".encode("utf-8")}
+
+    def envelope(self, run: str = "loc-7", *, canonical: bool = True, mutate=None) -> Path:
+        manifest = {"schema": upload_contrib.PACKAGE_SCHEMA, "package": run, "run_id": run,
+                    "files": {rel: hashlib.sha256(data).hexdigest() for rel, data in self.FILES.items()}}
+        contents = {**self.FILES, "package.json": (json.dumps(manifest, indent=1, sort_keys=True) + "\n").encode()}
+        value = {"schema": upload_contrib.ENVELOPE_SCHEMA, "run_id": run,
+                 "files": {rel: base64.b64encode(data).decode("ascii") for rel, data in contents.items()}}
+        if mutate:
+            mutate(value)
+        data = (json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True) if canonical
+                else json.dumps(value, indent=1)).encode("ascii")
+        path = self.tmp / f"{run}.json"
+        path.write_bytes(data)
+        return path
+
+    def run_package(self, path: Path, *options: str) -> tuple[int, str, str]:
+        argv = ["package", str(path), "--bucket", BUCKET, "--endpoint", self.s3.endpoint, *options]
+        out, err = io.StringIO(), io.StringIO()
+        code = upload_contrib.main(argv, environ=ENV, stdout=out, stderr=err, sleep=lambda _seconds: None)
+        self.outputs.append(out.getvalue() + err.getvalue())
+        return code, out.getvalue(), err.getvalue()
+
+    @staticmethod
+    def key(path: Path) -> str:
+        return f"packages/v1/{hashlib.sha256(path.read_bytes()).hexdigest()}.json"
+
+    def test_a_dry_run_reads_the_key_and_execute_puts_the_exact_bytes_once(self):
+        path = self.envelope()
+        code, out, err = self.run_package(path)
+        self.assertEqual(code, 0, out + err)
+        self.assertEqual(self.puts(), [])
+        self.assertIn(self.key(path), out)
+        code, out, err = self.run_package(path, "--execute")
+        self.assertEqual(code, 0, out + err)
+        self.assertEqual(self.puts(), [self.key(path)])
+        self.assertEqual(self.s3.objects[self.key(path)], path.read_bytes())
+        self.assertIn(f"envelope_sha256 {hashlib.sha256(path.read_bytes()).hexdigest()}", out)
+        self.s3.log.clear()
+        code, out, err = self.run_package(path, "--execute")
+        self.assertEqual(code, 0, out + err)
+        self.assertEqual(self.puts(), [])
+        self.assertIn("already holds", out)
+
+    def test_a_key_holding_other_bytes_is_refused(self):
+        path = self.envelope()
+        self.s3.put_object(self.key(path), b"somebody else's package")
+        code, out, err = self.run_package(path, "--execute")
+        self.assertEqual(code, 2, out + err)
+        self.assertIn("never replaced", err)
+        self.assertEqual(self.puts(), [])
+
+    def test_an_envelope_that_is_not_canonical_or_not_true_to_its_package_json_is_refused(self):
+        def changed_file(value):
+            value["files"]["plan/gate.json"] = base64.b64encode(b'{"gate": 2}\n').decode("ascii")
+
+        def extra_file(value):
+            value["files"]["notes.txt"] = base64.b64encode(b"mine\n").decode("ascii")
+
+        def escaping(value):
+            value["files"]["../outside"] = base64.b64encode(b"?").decode("ascii")
+
+        def not_base64(value):
+            value["files"]["plan/gate.json"] = "%%%"
+
+        def other_schema(value):
+            value["schema"] = "wikilean.contribute.package-transport/0"
+
+        cases = {"canonical form": self.envelope("loc-a", canonical=False),
+                 "is not the file": self.envelope("loc-b", mutate=changed_file),
+                 "carried but not named": self.envelope("loc-c", mutate=extra_file),
+                 "plain path": self.envelope("loc-d", mutate=escaping),
+                 "not base64": self.envelope("loc-e", mutate=not_base64),
+                 "package-transport/1": self.envelope("loc-f", mutate=other_schema)}
+        for words, path in cases.items():
+            with self.subTest(words=words):
+                code, out, err = self.run_package(path, "--execute")
+                self.assertEqual(code, 2, out + err)
+                self.assertIn(words, err)
+        self.assertEqual(self.s3.log, [])
+
+    def test_an_etag_that_is_not_the_md5_is_a_mismatch(self):
+        path = self.envelope()
+        self.s3.wrong_etag.add(self.key(path))
+        code, out, err = self.run_package(path, "--execute")
+        self.assertEqual(code, 1, out + err)
 
 
 if __name__ == "__main__":

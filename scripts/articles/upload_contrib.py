@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Put an index bundle in the contributor bucket, content-addressed and never replaced.
+"""Put an index bundle or a work package in the contributor bucket, never replaced.
 
 New code, an operator tool. docs/ROADMAP.md, outside contributors (Jack, 2026-11-11): the
 Worker is to stream each declaration-index bundle from a private R2 bucket,
@@ -40,6 +40,20 @@ buckets, and the articles upload must not be able to overwrite a bundle.
         --account-id <32 hex> [--credentials-file <file>] \\
         [--acknowledge-restricted <library> ...] [--execute]
 
+``package`` uploads one work package for the claims API (Jack, 2026-11-11, "Build a
+claims API"): the transport envelope publish_package.py --api writes, one JSON object
+``{"schema", "run_id", "files": {<path>: <base64>}}`` in canonical form, to
+
+    packages/v1/<envelope sha256>.json
+
+after checking that it is canonical and that every file is the one its package.json
+names, so the sha256 the Worker publishes it under is a function of the package. The
+coordinator then publishes it with POST /api/packages, which refuses an envelope the
+bucket does not hold at its size.
+
+    python3 scripts/articles/upload_contrib.py package <envelope.json> --bucket wikilean-contrib \\
+        --account-id <32 hex> [--credentials-file <file>] [--execute]
+
 Exit codes: 0 done, or the dry run's plan printed; 1 the bucket did not match after
 writing began; 2 refused before writing anything; 3 a request failed after retries, or an
 internal error; 130 interrupted.
@@ -47,7 +61,10 @@ internal error; 130 interrupted.
 from __future__ import annotations
 
 import argparse
+import base64
+import binascii
 import hashlib
+import json
 import os
 import re
 import stat
@@ -78,6 +95,14 @@ SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 #: One segment of a path a manifest may list. Nothing that would need URL-encoding, so a
 #: path is the same string in the manifest, the bucket key and the Worker's download URL.
 SEGMENT_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._-]*$")
+PACKAGE_PREFIX = "packages/v1/"
+ENVELOPE_SCHEMA = "wikilean.contribute.package-transport/1"
+PACKAGE_SCHEMA = "wikilean.contribute.package/1"  # scripts/pipeline/contribute/package.py
+PACKAGE_JSON = "package.json"
+#: The Worker's limit on a package (wiki/src/claims.ts PACKAGE_MAX_BYTES).
+MAX_ENVELOPE_BYTES = 64 << 20
+#: scripts/pipeline/vocab.py RUN_ID.
+RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 EXIT_OK, EXIT_MISMATCH, EXIT_REFUSED, EXIT_FAILED, EXIT_INTERRUPTED = 0, 1, 2, 3, 130
 
 
@@ -266,6 +291,81 @@ def check_licences(manifest: dict, root: Path, listed: set[str], acknowledged: S
             "reading their terms in LICENCES.md: each copy handed out carries those terms")
 
 
+@dataclass(frozen=True)
+class Envelope:
+    path: Path
+    run_id: str
+    data: bytes
+    local: Local
+    files: int
+
+    @property
+    def key(self) -> str:
+        return f"{PACKAGE_PREFIX}{self.local.sha256}.json"
+
+
+def load_envelope(path: Path) -> Envelope:
+    """A work package's transport envelope, refused unless canonical and true to its package.json."""
+    data = read_regular(path)
+    if not data or len(data) > MAX_ENVELOPE_BYTES:
+        raise Refused(f"{path} is {size_of(len(data))}; a package's envelope holds between 1 byte and "
+                      f"{size_of(MAX_ENVELOPE_BYTES)}")
+    envelope = _strict_json(data, path.name)
+    if (not isinstance(envelope, dict) or set(envelope) != {"schema", "run_id", "files"}
+            or envelope["schema"] != ENVELOPE_SCHEMA):
+        raise Refused(f"{path} is not a {ENVELOPE_SCHEMA} envelope: one object of schema, run_id and files")
+    run_id, files = envelope["run_id"], envelope["files"]
+    if not isinstance(run_id, str) or not RUN_ID_RE.match(run_id):
+        raise Refused(f"{path} names {shown(repr(run_id))}, which is not a pipeline run id")
+    if not isinstance(files, dict) or PACKAGE_JSON not in files:
+        raise Refused(f"{path} carries no {PACKAGE_JSON}")
+    canonical = json.dumps(envelope, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
+    if canonical != data:
+        raise Refused(f"{path} is not in canonical form (sorted keys, no spaces, ASCII), so its sha256 is not "
+                      "a function of the package; write it again with publish_package.py --api")
+    contents: dict[str, bytes] = {}
+    for rel, text in files.items():
+        if not isinstance(text, str) or rel.startswith("/") or any(part in ("", ".", "..") for part in rel.split("/")):
+            raise Refused(f"{path} carries {shown(repr(rel))}, which is not a plain path inside a package")
+        try:
+            contents[rel] = base64.b64decode(text, validate=True)
+        except (binascii.Error, ValueError):
+            raise Refused(f"{path}: {shown(rel)} is not base64") from None
+    manifest = _strict_json(contents[PACKAGE_JSON], PACKAGE_JSON)
+    named = manifest.get("files") if isinstance(manifest, dict) else None
+    if (not isinstance(manifest, dict) or manifest.get("schema") != PACKAGE_SCHEMA
+            or manifest.get("run_id") != run_id or not isinstance(named, dict)):
+        raise Refused(f"{path}'s {PACKAGE_JSON} is not a {PACKAGE_SCHEMA} manifest of run {run_id}")
+    carried = set(contents) - {PACKAGE_JSON}
+    if carried != set(named):
+        extra, missing = sorted(carried - set(named)), sorted(set(named) - carried)
+        raise Refused(f"{path} and its {PACKAGE_JSON} disagree: "
+                      + "; ".join(part for part in (
+                          f"carried but not named: {', '.join(map(shown, extra[:3]))}" if extra else "",
+                          f"named but not carried: {', '.join(map(shown, missing[:3]))}" if missing else "")
+                          if part))
+    for rel in sorted(carried):
+        if hashlib.sha256(contents[rel]).hexdigest() != named[rel]:
+            raise Refused(f"{path}: {shown(rel)} is not the file its {PACKAGE_JSON} names")
+    local = Local(len(data), hashlib.sha256(data).hexdigest(), hashlib.md5(data, usedforsecurity=False).hexdigest())
+    return Envelope(path, run_id, data, local, len(files))
+
+
+def envelope_needed(envelope: Envelope, remote: Mapping[str, RemoteObject]) -> bool:
+    """Whether the envelope must be uploaded; refused if its key holds other bytes."""
+    stray = sorted(key for key in remote if key != envelope.key)
+    if stray:
+        raise Refused(f"the bucket's listing of {envelope.key} returned {shown(stray[0])}; refusing to write "
+                      "to a bucket whose listing cannot be trusted")
+    found = remote.get(envelope.key)
+    if found is None:
+        return True
+    if (found.size, found.etag) == (envelope.local.size, envelope.local.md5):
+        return False
+    raise Refused(f"the bucket already holds {envelope.key} with other bytes; a key here is never replaced. "
+                  "Nothing was uploaded")
+
+
 # ---- the bucket ------------------------------------------------------------------------------------
 
 
@@ -341,17 +441,42 @@ def parse_arguments(argv: Sequence[str]) -> argparse.Namespace:
     sub = parser.add_subparsers(dest="command", required=True)
     bundle = sub.add_parser("bundle", help="upload an index bundle package_index.py wrote")
     bundle.add_argument("dir", type=Path, help="the bundle directory")
-    bundle.add_argument("--bucket", required=True, help="the contributor bucket's name")
-    where = bundle.add_mutually_exclusive_group(required=True)
-    where.add_argument("--account-id", help="the Cloudflare account id (32 hex characters)")
-    where.add_argument("--endpoint", help="tests only: a loopback S3 server, http://127.0.0.1:<port>")
-    bundle.add_argument("--credentials-file", type=Path, metavar="FILE",
-                        help=f"a 0600 file setting {ACCESS_KEY_VAR} and {SECRET_KEY_VAR}")
+    package = sub.add_parser("package", help="upload a work package's envelope publish_package.py --api wrote")
+    package.add_argument("envelope", type=Path, help="the envelope file")
+    for command in (bundle, package):
+        command.add_argument("--bucket", required=True, help="the contributor bucket's name")
+        where = command.add_mutually_exclusive_group(required=True)
+        where.add_argument("--account-id", help="the Cloudflare account id (32 hex characters)")
+        where.add_argument("--endpoint", help="tests only: a loopback S3 server, http://127.0.0.1:<port>")
+        command.add_argument("--credentials-file", type=Path, metavar="FILE",
+                             help=f"a 0600 file setting {ACCESS_KEY_VAR} and {SECRET_KEY_VAR}")
+        command.add_argument("--execute", action="store_true", help="upload (default: a dry run)")
     bundle.add_argument("--acknowledge-restricted", action="append", default=[], metavar="LIBRARY",
                         help="a library whose use is restricted, named to hand it out anyway "
                              "(repeatable; must be exactly the bundle's restricted libraries)")
-    bundle.add_argument("--execute", action="store_true", help="upload (default: a dry run)")
     return parser.parse_args(list(argv))
+
+
+def upload_package(envelope: Envelope, bucket: Bucket, execute: bool, console: Console) -> int:
+    """The package command once the envelope is checked: plan, then upload with --execute."""
+    if not envelope_needed(envelope, bucket.list(envelope.key)):
+        console.say(f"done      the bucket already holds {envelope.key} with the same bytes; nothing to upload")
+        return EXIT_OK
+    console.say(f"plan      1 object to upload ({size_of(envelope.local.size)})")
+    if not execute:
+        console.say("dry run   nothing was written. Run the same command with --execute to upload.")
+        return EXIT_OK
+    etag = bucket.put(envelope.key, envelope.data)
+    if etag != envelope.local.md5:
+        raise Mismatch(f"PUT {envelope.key} answered ETag {shown(etag, 40)}, not the MD5 of the bytes "
+                       f"({envelope.local.md5}). Run again with --execute to see what the bucket holds")
+    found = bucket.list(envelope.key).get(envelope.key)
+    if found is None or (found.size, found.etag) != (envelope.local.size, envelope.local.md5):
+        raise Mismatch(f"the bucket does not hold {envelope.key} as uploaded")
+    console.say(f"verify    {envelope.key}: its size and ETag match")
+    console.say(f"done      uploaded. Publish it with POST /api/packages: run_id {envelope.run_id}, "
+                f"envelope_sha256 {envelope.local.sha256}, bytes {envelope.local.size}")
+    return EXIT_OK
 
 
 def main(argv: Sequence[str] | None = None, *, environ: Mapping[str, str] | None = None,
@@ -370,6 +495,16 @@ def main(argv: Sequence[str] | None = None, *, environ: Mapping[str, str] | None
         endpoint = loopback_endpoint(args.endpoint) if args.endpoint else r2_endpoint(args.account_id)
         console.say(f"{label}, " + ("UPLOADING (--execute)" if args.execute
                                     else "dry run: reads the bucket, writes nothing (--execute uploads)"))
+        if args.command == "package":
+            envelope = load_envelope(args.envelope.absolute())
+            console.say(f"package   {envelope.path}  (run {envelope.run_id}, {envelope.files} files, "
+                        f"{size_of(envelope.local.size)})")
+            console.say(f"          envelope sha256 {envelope.local.sha256}")
+            tls, trust = tls_context() if endpoint.scheme == "https" else (None, "none (loopback test server)")
+            console.say(f"bucket    {args.bucket} at {endpoint.origin}, key {envelope.key} (TLS trust: {trust})")
+            bucket = Bucket(endpoint, args.bucket, credentials, sleep=sleep, tls=tls)
+            wrote = args.execute
+            return upload_package(envelope, bucket, args.execute, console)
         bundle = load_bundle(args.dir.absolute(), args.acknowledge_restricted)
         manifest = bundle.manifest
         console.say(f"bundle    {bundle.root}  ({len(bundle.files)} objects, {size_of(bundle.total_bytes)})")
