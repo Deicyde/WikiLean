@@ -87,8 +87,10 @@ scripts/pipeline/keys.py            stage 2: the revision-free keys, canonical J
 scripts/pipeline/vocab.py           the locate vocabulary (relations, verdicts, rules)
 scripts/pipeline/status.py          stage 3: the derived status, rules 1, 2 and 3
 scripts/pipeline/readback.py        stage 4: a sealed set read back into outcome rows
+scripts/pipeline/statements.py      stage 4b: a sealed statement set read back
 scripts/pipeline/records.py         stage 5: the Literature Links records of one passage
 scripts/pipeline/export_records.py  stage 6: the sealed set, written and verified
+scripts/pipeline/export_statements.py  stage 6b: the sealed statement set, written
 scripts/pipeline/gate/              stage 7: the out-of-tree gate
   gate/verify_locate.py               rules 1 to 10, with the 0/1/3 exit vocabulary
   gate/locate_text.py                 the head rule, the quote, the span end, the blocks
@@ -298,6 +300,27 @@ seal names formal-companion; `skill_commit` is a 40-hex commit of whatever produ
 and the field keeps its name because renaming it is a format change on both sides at once
 (ARTICLES.md contract note 10). **Question for Jack (Q2):** whether to rename it
 `producer_commit` in a future `/3`.
+
+**Cost.** None; deterministic, offline.
+
+### Stages 6b and 4b — the statement set (`export_statements.py`, `statements.py`)
+
+**What it is.** Phase 1 of the maintainer's 2026-11-12 split: a harvested **cut** (stage
+9b) sealed and published on its own, before any locate run, as
+`wikilean.statement-set/1`. The format and every refusal are
+[STATEMENTS.md](STATEMENTS.md); the short of it is a sibling of the record set, not a
+profile of it, built from the same parts — `keys.py`'s recipes, the canonical spelling,
+the seal grammar, the quote cap — and carrying no universe, no receipts, no `challenge`
+and no status, because a cut judged none of those. Nothing shared with formal-companion
+changes.
+
+**New code**, not ported: formal-companion has no such format.
+
+`statements.py` reads one back into the `{source_id: [passage]}` shape
+`cut.frozen_inventory` returns, **recomputing every `span_sha256` and `passage_key`
+against the pinned revision's own render and refusing on any difference**, so the keys
+cannot drift between the phases and a tag written on a statement in phase 1 is the row
+the pipeline's location fills in in phase 2.
 
 **Cost.** None; deterministic, offline.
 
