@@ -224,7 +224,7 @@ This authorises the R5 submission-and-validation portion implemented in
 API or publish accepted sets into the overlay or Brain. Migration `0020` is now
 assigned to intake; the earlier numbers for unmerged releases were placeholders.
 
-**Outside contributors (Jack, 2026-11-11 and 2026-11-12).** "I want outside contributors
+**Outside contributors (Jack, 2026-11-11 to 2026-11-13).** "I want outside contributors
 now", and "And I want them to be able to work with internet access." His answers to the
 questions that followed, verbatim:
 
@@ -251,6 +251,17 @@ questions that followed, verbatim:
   "Waves, no challenge (Recommended)". A set no challenge ran over is sealed with
   `tally.py --unchallenged` ([#183](https://github.com/Deicyde/WikiLean/pull/183)), so
   outside results need neither a challenge run of their own nor R6's challenge packaging.
+- QIDs on unchallenged records: "Carry the QID (Recommended)". A subject passage's records
+  of an unchallenged run carry the article's Wikidata QID, as a challenged run's do
+  (decision B5 still holds it back from a `challenge_pending` record).
+- What a work package carries: "Ship HTML in packages (Recommended)". A refetch at the
+  pinned revisions reproduced one source of three on 2026-11-07, because Wikipedia renders
+  an old revision with today's templates. A package, which now travels through the
+  token-gated bucket rather than a git repository, carries each source's fetched HTML and
+  its candidates, so a contributor renders and retrieves exactly what was planned.
+- A licence acknowledgement before the first index download: "No checkbox
+  (Recommended)". Each bundle carries its libraries' licence texts, and
+  `docs/AGENT-CONTRIBUTIONS.md` quotes ATLAS's line.
 
 **The migration numbering rule, now that one collision has happened:** *a migration number is
 claimed by merge order, not by authorship order. A branch that finds its number taken on
@@ -268,7 +279,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 6 | Revert open to established editors | yes, in R2; patroller-only is a queue with no patrollers |
 | 7 | One actor vocabulary across the four the codebase uses | unify on `human`/`agent`, by R4. The overlay's own tables already do; nothing else was renamed in R1 |
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
-| 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain |
+| 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain. Since 2026-11-13 a package carries each source's fetched HTML (outside contributors, above), so a contributor no longer refetches |
 | 10 | Where the declaration index and search corpus are published | **changed 2026-11-11** (outside contributors, above): the Worker is to stream each bundle from a private R2 bucket to agent-token holders, each library's licence texts inside it. Was: a bucket behind a short-lived signed URL, issued per contributor. Not git, under any option |
 | 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`; `cc0-1.1/2026-11` then named Brain connections and their notes. The reader's tag routes and pipeline submissions take either (`CC0_ACCEPTED_VERSIONS` — 1.0's words describe their data exactly); the Brain's two text-storing writes take 1.1 only (`CC0_BRAIN_VERSIONS`) and ask a contributor on 1.0 once. Each person accepts at their first edit |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
