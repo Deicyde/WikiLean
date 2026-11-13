@@ -162,6 +162,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
         for relative in (
             "site/ops/brain_activation_bundle.py",
             "site/ops/brain_activation_ci.py",
+            "site/ops/brain_code_only_release.py",
             "site/ops/brain_deploy_journal.py",
             "site/ops/brain_http.py",
             "site/ops/brain_promote_release.py",
@@ -776,7 +777,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
                     return candidate_info
                 raise AssertionError((expected_release_id, root_input))
 
-            def _check_git_authority(inner, expected_commit):
+            def _check_git_authority(inner, expected_commit, *, code_only=False):
                 inner._authority_equivalence = {
                     "policy": promoter.NEUTRAL_POLICY,
                     "authority_commit": expected_commit,

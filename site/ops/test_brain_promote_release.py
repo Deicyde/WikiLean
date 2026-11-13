@@ -34,6 +34,7 @@ from brain_deploy_journal import (
     initialize_target_receipt_root,
 )
 from brain_http import SelectorProbe
+import brain_code_only_release as code_only_policy
 
 
 RELEASE_A = "sha256:" + "a" * 64
@@ -568,7 +569,7 @@ class FenceScenario(DeployScenario):
             return self.prepared_value.prior
         raise AssertionError(expected_release_id)
 
-    def _check_git_authority(self, expected_commit):
+    def _check_git_authority(self, expected_commit, *, code_only=False):
         self._authority_equivalence = {
             "policy": promote.NEUTRAL_POLICY,
             "authority_commit": expected_commit,
@@ -664,7 +665,7 @@ class ReconcileScenario(promote.BrainPromoter):
             return self.prepared_value.prior
         raise AssertionError(expected_release_id)
 
-    def _check_git_authority(self, expected_commit):
+    def _check_git_authority(self, expected_commit, *, code_only=False):
         self._authority_equivalence = {
             "policy": promote.NEUTRAL_POLICY,
             "authority_commit": expected_commit,
@@ -1397,6 +1398,331 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 runner=GitRunner(head=current, main=current, branch="feature")
             )._check_recovery_checkout(COMMIT)
 
+    def test_code_only_authority_admits_website_paths_but_not_brain_inputs(self):
+        git_dir = self.repo / ".git-fixture"
+        current = "d" * 40
+
+        class GitRunner(promote.CommandRunner):
+            def __init__(inner, changes):
+                inner.changes = tuple(changes)
+
+            def run(inner, args, *, cwd, timeout=None, env=None):
+                del cwd, timeout, env
+                tail = tuple(args[3:])
+                if tail == ("rev-parse", "--show-toplevel"):
+                    output = str(self.repo)
+                elif tail in {("rev-parse", "HEAD"), ("rev-parse", "refs/heads/main")}:
+                    output = current
+                elif tail == ("symbolic-ref", "--quiet", "--short", "HEAD"):
+                    output = "main"
+                elif tail == ("status", "--porcelain=v1", "--untracked-files=all"):
+                    output = ""
+                elif tail == ("rev-parse", "--absolute-git-dir"):
+                    output = str(git_dir)
+                elif tail == ("merge-base", "--is-ancestor", COMMIT, current):
+                    return promote.RunResult(tuple(args), 0, b"", b"")
+                elif tail == ("diff", "--no-renames", "--name-only", "-z", COMMIT, current):
+                    body = "".join(path + "\0" for path in inner.changes)
+                    return promote.RunResult(tuple(args), 0, body.encode(), b"")
+                else:
+                    raise AssertionError(tail)
+                return promote.RunResult(tuple(args), 0, (output + "\n").encode(), b"")
+
+        website = ("docs/x.md", "site/assets/style.css", "wiki/src/index.ts")
+        # The full path refuses these; the code-only path accepts them and records
+        # which policy admitted them.
+        with self.assertRaisesRegex(promote.PromotionError, "release-affecting paths"):
+            self.promoter(runner=GitRunner(website))._check_git_authority(COMMIT)
+        code_only = self.promoter(runner=GitRunner(website))
+        self.assertEqual(
+            code_only._check_git_authority(COMMIT, code_only=True), current
+        )
+        self.assertEqual(
+            code_only._authority_equivalence["policy"], promote.CODE_ONLY_POLICY
+        )
+        self.assertEqual(code_only._recorded_neutral_changes(), website)
+
+        for blocking in ("brain/layout.py", "site/build_brain_page.py", "catalog/data/x.json"):
+            with self.subTest(blocking=blocking), self.assertRaisesRegex(
+                promote.PromotionError, "feed the frozen Brain release"
+            ):
+                self.promoter(
+                    runner=GitRunner(("wiki/src/index.ts", blocking))
+                )._check_git_authority(COMMIT, code_only=True)
+
+    def test_code_only_preparation_reuses_the_live_release_end_to_end(self):
+        candidate = make_release(self.base, RELEASE_A)
+        previous = make_release(self.base, RELEASE_B)
+        baseline = make_baseline(self.base)
+        website_commit = "d" * 40
+        selector_body = (
+            json.dumps(
+                {
+                    "schema": "wikilean.release-selector/v2",
+                    "release_id": candidate.release_id,
+                    "release": candidate.release_hex,
+                    "manifest_sha256": candidate.manifest_sha256,
+                    "manifest": f"/assets/brain/releases/{candidate.manifest_sha256}/release.json",
+                    "previous_release_id": previous.release_id,
+                    "previous_release": previous.release_hex,
+                    "previous_manifest_sha256": previous.manifest_sha256,
+                    "previous_manifest": (
+                        f"/assets/brain/releases/{previous.manifest_sha256}/release.json"
+                    ),
+                    "audited_at": "2029-01-01T00:00:00Z",
+                },
+                sort_keys=True,
+            )
+            + "\n"
+        ).encode()
+        probe = promote.SelectorProbe(
+            body=selector_body,
+            body_sha256=hashlib.sha256(selector_body).hexdigest(),
+            content_type="application/json",
+            status=200,
+            trust_source="fixture-ca",
+            url="https://example.test/assets/brain/current.json?x=1",
+        )
+
+        record_document = code_only_policy.build_record(
+            brain_release_id=candidate.release_id,
+            brain_manifest_sha256=candidate.manifest_sha256,
+            brain_authority_commit=candidate.authority_commit,
+            brain_reducer_commit=candidate.reducer_commit,
+            previous_release_id=previous.release_id,
+            previous_manifest_sha256=previous.manifest_sha256,
+            code_commit=website_commit,
+            selector_sha256=probe.body_sha256,
+            classification=code_only_policy.classify_changes(
+                ["wiki/src/index.ts", "wiki/wrangler.jsonc"]
+            ),
+        )
+        record_path = self.base / "code-only-eligibility.json"
+        record_path.write_bytes(code_only_policy.canonical_json_bytes(record_document))
+
+        shard_manifest = json.dumps({"shards": {"a0": {"bytes": 1}}}, sort_keys=True).encode()
+        page = (candidate.root / "site/out/brain.html").read_bytes()
+        served = {
+            "assets/brain/current.json": selector_body,
+            f"assets/brain/releases/{candidate.manifest_sha256}/release.json": (
+                candidate.manifest.read_bytes()
+            ),
+            f"assets/brain/releases/{previous.manifest_sha256}/release.json": (
+                previous.manifest.read_bytes()
+            ),
+            "assets/brain/sources.json": b'{"sources":[]}\n',
+            "assets/brain/xref_index.json": b'{"xref":[]}\n',
+            "assets/brain/cells/manifest.json": shard_manifest,
+            "assets/brain/cells/aliases.json": b'{"a":{}}\n',
+            "assets/brain/cells/labels.json": b'{"l":{}}\n',
+            "assets/brain/cells/supercells.json": b'{"s":[]}\n',
+            "assets/brain/cells/explorer.json": b'{"e":[]}\n',
+            "assets/brain/cells/frontier_graph.json": b'{"f":[]}\n',
+            "assets/brain/cells/a0.json": b'{"cells":["a0"]}\n',
+            "brain.html": page,
+        }
+        fetched: list[str] = []
+
+        def fetcher(route: str) -> bytes:
+            fetched.append(route)
+            relative = "brain.html" if route == "/brain" else route.lstrip("/")
+            return served[relative]
+
+        git_calls: list[tuple[str, bool]] = []
+
+        class CodeOnlyPromoter(promote.BrainPromoter):
+            def _verify_release(
+                inner, expected_release_id, root_input, *, allow_legacy_release_id_root=False
+            ):
+                del root_input, allow_legacy_release_id_root
+                return candidate if expected_release_id == RELEASE_A else previous
+
+            def _check_git_authority(inner, expected_commit, *, code_only=False):
+                git_calls.append((expected_commit, code_only))
+                inner._authority_equivalence = {
+                    "policy": (
+                        promote.CODE_ONLY_POLICY if code_only else promote.NEUTRAL_POLICY
+                    ),
+                    "authority_commit": expected_commit,
+                    "promotion_commit": website_commit,
+                    "neutral_changes": ["wiki/src/index.ts", "wiki/wrangler.jsonc"],
+                }
+                return website_commit
+
+            def _verify_toolchain(inner):
+                return "v22.0.0", "4.120.0"
+
+            def _require_d1_schema(inner, commit):
+                self.assertEqual(commit, website_commit)
+
+            def _wrangler_installation_identity(inner):
+                return node_modules_identity(self.base)
+
+            def _node_executables_identity(inner):
+                return node_executables_identity(self.base)
+
+            def _probe_selector(inner, phase):
+                del phase
+                return probe, "fixture-ca"
+
+            def _stage_public(inner, candidate_info, prior, public_baseline, public_dir):
+                del public_baseline
+                self.assertIs(candidate_info, candidate)
+                self.assertIs(prior, previous)
+                for relative, body in served.items():
+                    target = public_dir / relative
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_bytes(body)
+                staged = promote.selector_from_probe(
+                    probe, RELEASE_A,
+                    candidate_manifest_sha256=candidate.manifest_sha256,
+                    allow_first_deploy=False,
+                )
+                return {"schema": "wikilean.public-build-result/v1"}, staged
+
+            def _run_worker_checks(inner, public_dir, bundle_dir, deploy_config):
+                del public_dir, deploy_config
+                bundle_dir.mkdir()
+                entry = bundle_dir / "index.js"
+                entry.write_text("export default {};\n", encoding="utf-8")
+                return entry, promote.inventory_tree(bundle_dir)
+
+            def _history_evidence(inner, config=None):
+                del config
+                return {}, {"deployments": b"[]\n", "versions": b"[]\n"}
+
+            def _wrangler_status(inner, config=None):
+                del config
+                return (
+                    promote.DeploymentState(DEPLOYMENT_A, VERSION_A, "x" * 64),
+                    promote.RunResult((), 0, b"{}", b""),
+                )
+
+        baseline_commits: list[str] = []
+
+        def fake_verify_public_baseline(root, repo, **kwargs):
+            del root, repo
+            baseline_commits.append(kwargs["expected_authority_git_commit"])
+            return baseline
+
+        instance = CodeOnlyPromoter(
+            repo_root=self.repo,
+            python=Path(sys.executable),
+            release_id=RELEASE_A,
+            release_root=candidate.root,
+            public_baseline_id=baseline.baseline_id,
+            public_baseline_root=baseline.root,
+            receipt_root=self.receipt,
+            base_url="https://example.test",
+            production_origin="https://example.test",
+            mode="dry-run",
+            attempt_id="code-only-attempt",
+            audited_at="2030-01-01T00:00:00Z",
+            code_only_record=record_path,
+            code_only_fetcher=fetcher,
+        )
+        with mock.patch.object(
+            promote, "verify_public_baseline", fake_verify_public_baseline
+        ):
+            prepared = instance.prepare()
+        try:
+            # The baseline is verified against the website commit, not the Brain's.
+            self.assertEqual(baseline_commits, [website_commit])
+            # Every authority re-check runs under the code-only policy.
+            self.assertTrue(git_calls)
+            self.assertTrue(all(code_only for _, code_only in git_calls))
+            self.assertTrue(all(commit == COMMIT for commit, _ in git_calls))
+            self.assertIs(prepared.prior, previous)
+            self.assertIs(prepared.predeploy_release, candidate)
+            self.assertIn("/brain", fetched)
+
+            intent = instance._intent_payload(prepared)
+            block = intent["code_only"]
+            self.assertEqual(block["policy"], promote.CODE_ONLY_POLICY)
+            self.assertEqual(block["record_id"], record_document["record_id"])
+            self.assertEqual(block["reused_release_id"], candidate.release_id)
+            self.assertEqual(block["review_required"], ["wiki/wrangler.jsonc"])
+            fence = block["brain_surface_fence"]
+            self.assertEqual(fence["paths"], len(served))
+            compared = {item["path"]: item["compared"] for item in fence["checked"]}
+            self.assertEqual(
+                compared["assets/brain/current.json"], "identity-without-audited-at"
+            )
+            self.assertEqual(compared["brain.html"], "bytes")
+        finally:
+            promote.remove_sealed_tree(prepared.public_dir.parent)
+
+    def test_code_only_refuses_a_release_production_does_not_serve(self):
+        candidate = make_release(self.base, RELEASE_A)
+        other = make_release(self.base, RELEASE_B)
+        baseline = make_baseline(self.base)
+        probe = selector_probe(RELEASE_B)
+        record_document = code_only_policy.build_record(
+            brain_release_id=candidate.release_id,
+            brain_manifest_sha256=candidate.manifest_sha256,
+            brain_authority_commit=candidate.authority_commit,
+            brain_reducer_commit=candidate.reducer_commit,
+            previous_release_id=None,
+            previous_manifest_sha256=None,
+            code_commit="d" * 40,
+            selector_sha256=probe.body_sha256,
+            classification=code_only_policy.classify_changes(["wiki/src/index.ts"]),
+        )
+        record_path = self.base / "code-only-eligibility.json"
+        record_path.write_bytes(code_only_policy.canonical_json_bytes(record_document))
+
+        class CodeOnlyPromoter(promote.BrainPromoter):
+            def _verify_release(
+                inner, expected_release_id, root_input, *, allow_legacy_release_id_root=False
+            ):
+                del root_input, allow_legacy_release_id_root
+                return candidate if expected_release_id == RELEASE_A else other
+
+            def _check_git_authority(inner, expected_commit, *, code_only=False):
+                inner._authority_equivalence = {
+                    "policy": promote.CODE_ONLY_POLICY,
+                    "authority_commit": expected_commit,
+                    "promotion_commit": "d" * 40,
+                    "neutral_changes": ["wiki/src/index.ts"],
+                }
+                return "d" * 40
+
+            def _verify_toolchain(inner):
+                return "v22.0.0", "4.120.0"
+
+            def _require_d1_schema(inner, commit):
+                del commit
+
+            def _wrangler_installation_identity(inner):
+                return node_modules_identity(self.base)
+
+            def _node_executables_identity(inner):
+                return node_executables_identity(self.base)
+
+            def _probe_selector(inner, phase):
+                del phase
+                return probe, "fixture-ca"
+
+        instance = CodeOnlyPromoter(
+            repo_root=self.repo,
+            python=Path(sys.executable),
+            release_id=RELEASE_A,
+            release_root=candidate.root,
+            public_baseline_id=baseline.baseline_id,
+            public_baseline_root=baseline.root,
+            receipt_root=self.receipt,
+            base_url="https://example.test",
+            production_origin="https://example.test",
+            mode="dry-run",
+            attempt_id="code-only-refusal",
+            code_only_record=record_path,
+        )
+        with mock.patch.object(promote, "verify_public_baseline", return_value=baseline):
+            with self.assertRaisesRegex(
+                promote.PromotionError, "may only republish the release production"
+            ):
+                instance.prepare()
+
     def test_selector_race_aborts_preparation(self):
         candidate = make_release(self.base, RELEASE_A)
         baseline = make_baseline(self.base)
@@ -1419,7 +1745,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 del expected_release_id, root_input, allow_legacy_release_id_root
                 return candidate
 
-            def _check_git_authority(inner, expected_commit):
+            def _check_git_authority(inner, expected_commit, *, code_only=False):
                 inner._authority_equivalence = {
                     "policy": promote.NEUTRAL_POLICY,
                     "authority_commit": expected_commit,
@@ -2388,7 +2714,7 @@ class BrainPromotionDryRunTest(unittest.TestCase):
                         return prepared.prior
                     raise AssertionError((expected_release_id, root_input))
 
-                def _check_git_authority(inner, expected_commit):
+                def _check_git_authority(inner, expected_commit, *, code_only=False):
                     self.assertEqual(expected_commit, COMMIT)
                     inner._authority_equivalence = {
                         "policy": promote.NEUTRAL_POLICY,

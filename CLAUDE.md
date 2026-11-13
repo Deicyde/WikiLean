@@ -205,9 +205,13 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - Worker source and config, `wiki/scripts/`, `wiki/package*.json`, lockfiles, non-test
   `site/*.py` and site assets are release-affecting; `site/ops/brain_release_authority.py` is
   the exact list. A change there ships only in
-  a new release built at the new commit, with a fresh P1B and Jack's approval; no Worker-only
-  hotfix path exists (whether to add one is open: "Worker-only hotfix path" in the ROADMAP's
-  Waiting on Jack list). Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
+  a new release built at the new commit, with a fresh P1B and Jack's approval — unless the
+  change is website-only, in which case it takes the **code-only release**
+  (`site/ops/brain_code_only_release.py`, runbook section "Code-only release"): the same
+  promoter, journal, canary and rollback, reusing the live frozen Brain release byte for
+  byte instead of rebuilding it. Eligibility is deny-by-default and
+  `site/build_brain_page.py` is blocking, because the `/brain` page is a release artifact.
+  Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
   rejects nonzero `WIKILEAN_BRAIN_DEPLOY`.
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
