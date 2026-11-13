@@ -125,6 +125,36 @@ class FixtureTests(Temp):
         self.assertTrue(any(row["fragment"] is None for row in rows))
         self.assertIsNone(st.sources["enwiki-1007-3008"]["wikidata"])
 
+    def test_the_passage_index_is_what_stage_9d_reads(self):
+        """A challenge plan takes each record's quote and span from the cut. A published
+        cut answers that the same way cut.passage_index does, so this feeds one to
+        challenge.plan and reads the quote back off a task manifest."""
+        import challenge as challenge_mod  # noqa: PLC0415
+
+        st = statements_mod.read_set(FIXTURE)
+        index = statements_mod.passage_index(st)
+        self.assertEqual(len(index), 8)
+        for (sid, item), row in index.items():
+            self.assertEqual(row["item"], item)
+            self.assertIn(sid, st.statements)
+        statement = st.statements[FIRST][0]
+        row = {"source_id": FIRST, "item": statement["item"], "prominence": "subject",
+               "scope": vocab.SCOPE_FORMAL_MATH, "passage_kind": "definition",
+               "outcome": vocab.OUTCOME_LOCATED, "span": statement["span"],
+               "section": [], "status": "formalized", "coverage": None,
+               "locations": [{"location_key": "a" * 64, "library": "widgetlib",
+                              "declaration": "d1", "relation": "exactMatch", "rank": 1,
+                              "proof_status": "proved", "statement": False, "note": ""}]}
+        plan = challenge_mod.plan({"loc-1": [row]}, seed=0,
+                                  status_rule=vocab.STATUS_RULE_BROAD, passages=index)
+        manifests = challenge_mod.task_documents(
+            "chal-1", plan, {FIRST: {"source_sha": st.sources[FIRST]["html_sha256"],
+                                     "layer_sha256": st.sources[FIRST]["layer_sha256"],
+                                     "renderer": vocab.RENDERER_WEB_HTML}})
+        quotes = [record["quote"] for record in manifests[0]["documents"][0]["records"]]
+        self.assertTrue(quotes)
+        self.assertTrue(all(quote == statement["quote"] for quote in quotes), quotes)
+
     def test_the_counts_are_the_cuts(self):
         summary = statements_mod.counts(statements_mod.read_set(FIXTURE))
         self.assertEqual(summary["sources"], 2)
@@ -139,6 +169,20 @@ class FixtureTests(Temp):
 
 
 class RoundTripTests(Temp):
+    def test_the_sealed_quote_is_the_formats_capped_head_not_the_workers(self):
+        """A cut passage carries the quote the worker found it at; a record carries the
+        format's capped head. Phase 1 publishes the second, so the passage a reader tags
+        and the location phase 2 writes show the same words."""
+        rows = inventory()
+        rows[FIRST][0]["quote"] = {"exact": "A sprocket bundle", "prefix": "", "suffix": ""}
+        out = self.root / "set"
+        self.assertEqual(write_set(out, inventory_rows=rows)["refused"], [])
+        sealed = statements_mod.read_set(out).statements[FIRST][0]
+        self.assertEqual(sealed["quote"],
+                         dict(records_mod.cut_passage(LAYERS[FIRST],
+                                                      sealed["span"]).quote))
+        self.assertEqual(len(sealed["quote"]["exact"].split()), 12)
+
     def test_the_set_reads_back_into_the_cut_it_was_written_from(self):
         read = statements_mod.frozen_inventory(FIXTURE)
         for sid, rows in inventory().items():
@@ -398,31 +442,39 @@ class RefusalTests(Temp):
     """
 
     #: ``(name, what to change on the statement, a phrase of the writer's refusal,
-    #: a phrase of the reader's where the two differ)``
+    #: a phrase of the reader's)``. Either may be None, which says that side does not
+    #: judge the case: the writer **derives** the sealed quote (records.cut_passage) and
+    #: so cannot produce one over a cap, and the reader holds the sealed bytes it is
+    #: handed to every rule, including the ones the writer's derivation settles.
     CASES = (
         ("no item", {"item": None}, "item None is no", "no item"),
         ("an item outside the head rule's grammar", {"item": "In-text #zz"},
          "is no 'In-text #<8 to 16 hex>'", None),
-        ("a span outside the layer", {"span": [0, 100000]}, "a span is [start, end]",
+        ("a span outside the layer", {"span": [0, 100000]}, "leaves the layer",
          "leaves the pinned layer"),
-        ("a backwards span", {"span": [40, 10]}, "a span is [start, end]",
+        ("a backwards span", {"span": [40, 10]}, "is not 0 <= start < end",
          "is no [start, end] with 0 <= start < end"),
-        ("no span", {"span": None}, "a span is [start, end]", "no span"),
-        ("no quote", {"quote": {}}, "quote is {exact, prefix, suffix}", None),
+        ("no span", {"span": None}, "no [start, end] layer span", "no span"),
+        ("no quote", {"quote": {}}, "carries the quote it was cut at",
+         "quote is {exact, prefix, suffix}"),
         ("a quote over the word cap",
          {"quote": {"exact": "A sprocket bundle is a widget equipped with a chosen sprocket over "
-                             "each handle.", "prefix": "", "suffix": ""}}, "over the cap of 12",
-         None),
+                             "each handle.", "prefix": "", "suffix": ""}}, None,
+         "over the cap of 12"),
         ("an affix over the character cap",
          {"quote": {"exact": "A sprocket bundle is a widget equipped with a chosen sprocket over",
-                    "prefix": "", "suffix": "x" * 33}}, "over the cap of 32", None),
+                    "prefix": "", "suffix": "x" * 33}},
+         "the cut's own quote is not the one text at 0", "over the cap of 32"),
         ("a quote that is not on the layer",
          {"quote": {"exact": "A cog bundle is", "prefix": "", "suffix": ""}},
-         "the quote is not the one text at 0 on the pinned layer", None),
+         "the cut's own quote is not the one text at 0",
+         "the quote is not the one text at 0 on the pinned layer"),
         ("a quote that is not at the span's start",
-         {"span": [80, 179]}, "the quote is not the one text at 80 on the pinned layer", None),
+         {"span": [80, 179]}, "the cut's own quote is not the one text at 80",
+         "the quote is not the one text at 80 on the pinned layer"),
         ("a quote that runs past the end of the span", {"span": [0, 5]},
-         "the quote runs past the end of the span", None),
+         "the cut's own quote runs past the end of the span",
+         "the quote runs past the end of the span"),
         ("no head_words", {"head_words": None}, "head_words is", "no head_words"),
         ("a kind outside the vocabulary", {"passage_kind": "lemma"}, "passage_kind 'lemma'",
          None),
@@ -518,12 +570,18 @@ class RefusalTests(Temp):
         for name, change, expected, reader_expected in cases:
             with self.subTest(case=name, side="writer"):
                 refused = self.refuse(index, change)
-                self.assertEqual(len(refused), 1, refused)
-                self.assertIn(expected, refused[0]["reason"])
+                if expected is None:         # the writer's derivation settles this one
+                    self.assertEqual(refused, [])
+                else:
+                    self.assertEqual(len(refused), 1, refused)
+                    self.assertIn(expected, refused[0]["reason"])
             with self.subTest(case=name, side="reader"):
                 problems = self.reader_problems(index, change)
-                self.assertTrue(problems, f"the reader accepted {name}")
-                self.assertIn(reader_expected or expected, "\n".join(problems))
+                if reader_expected is None and expected is None:
+                    self.assertEqual(problems, [])
+                else:
+                    self.assertTrue(problems, f"the reader accepted {name}")
+                    self.assertIn(reader_expected or expected, "\n".join(problems))
 
     def test_every_rule_refuses_the_statement_that_breaks_it(self):
         self.check(0, self.CASES)
@@ -865,6 +923,58 @@ class CommandTests(Temp):
                 "--producer-commit", "ab" * 20, "--created", "2026-11-12T01:02:03Z"])
         self.assertEqual(code, 1)
         self.assertEqual(len(statements_mod.read_set(out).statements[FIRST]), 4)
+
+    def test_a_published_cut_and_a_render_go_together(self):
+        """Either alone is refused: the cut is what the render is checked against, and a
+        render nothing is checked against would only weaken the quote cap."""
+        for extra in (["--statement-set", str(FIXTURE)],
+                      ["--rendered-sources", str(render(self.root / "sources"))]):
+            with self.subTest(extra=extra[0]):
+                buffer = io.StringIO()
+                with contextlib.redirect_stderr(buffer):
+                    with self.assertRaises(SystemExit) as caught:
+                        export_records.main([
+                            "--rows", "/dev/null", "--sources", "/dev/null",
+                            "--universe", "/dev/null", "--out", str(self.root / "o"),
+                            "--set-id", "s", "--campaign", "c", "--sourceset", "ss",
+                            "--sourceset-manifest", "ab" * 32,
+                            "--producer-commit", "ab" * 20,
+                            "--created", "2026-11-12T00:00:00Z", "--status-rule", "3",
+                            *extra])
+                self.assertEqual(caught.exception.code, 2)
+                self.assertIn("--statement-set and --rendered-sources go together",
+                              buffer.getvalue())
+
+    def sources_rows(self) -> list[dict]:
+        return [json.loads(line) for line
+                in (FIXTURE / "sources.jsonl").read_text(encoding="utf-8").split("\n")
+                if line.strip()]
+
+    def test_a_published_cut_the_render_contradicts_refuses_the_record_export(self):
+        sources = render(self.root / "sources",
+                         {**LAYERS, FIRST: LAYERS[FIRST].replace("sprocket", "cog", 1)})
+        with self.assertRaises(export_records.ExportProblem) as caught:
+            export_records._published_cut(FIXTURE, sources, self.sources_rows())
+        self.assertIn("the set was cut from", str(caught.exception))
+
+    def test_a_record_set_may_not_seal_sources_the_cut_was_not_made_from(self):
+        """--rendered-sources checks the render; this checks the rows the export seals.
+        A record set whose sources named another layer would publish spans that are
+        offsets on nothing."""
+        sources = render(self.root / "sources")
+        rows = self.sources_rows()
+        rows[0] = {**rows[0], "layer_sha256": "f" * 64}
+        with self.assertRaises(export_records.ExportProblem) as caught:
+            export_records._published_cut(FIXTURE, sources, rows)
+        self.assertIn("the set was cut from layer_sha256", str(caught.exception))
+        with self.assertRaises(export_records.ExportProblem) as caught:
+            export_records._published_cut(FIXTURE, sources, rows[1:])
+        self.assertIn("pins no entry", str(caught.exception))
+        # and the good rows pass, so the check is not vacuous
+        cuts, spans, layers = export_records._published_cut(FIXTURE, sources, self.sources_rows())
+        self.assertEqual(len(cuts), 8)
+        self.assertEqual(sorted(spans), sorted(cuts))
+        self.assertEqual(sorted(layers), sorted(LAYERS))
 
     def test_the_reader_runs_from_the_command_line(self):
         buffer = io.StringIO()

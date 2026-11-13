@@ -120,11 +120,14 @@ def _inventory_passages(extra: int | None = None) -> list[dict]:
         end = lt.passage_end(LAYER, blocks, row["start"], row["quote"], None, rule=2,
                              next_start=after[0] if after else None, formulas=FORMULAS)
         passage = {"item": "In-text #" + digest, "head_words": words,
-                   "span": [row["start"], end], "section": [],
+                   "span": [row["start"], end], "section": [], "fragment": None,
                    "quote": {"exact": row["quote"], "prefix": "", "suffix": ""},
                    "passage_kind": "definition" if row["number"] == 0 else "theorem",
                    "prominence": "subject" if row["number"] == 0 else "supporting",
                    "scope": "expository" if row["number"] == 3 else "formal_math",
+                   # what the inventory prompt asks for beside the cut: which finder
+                   # proposed the passage, and the section's fragment
+                   "finder": "bold_definition" if row["number"] == 0 else "model",
                    "statement": f"A restatement of block {row['number']}."}
         if row["number"] == 1 and extra is None:
             passage["conjuncts"] = [{"id": "c1", "text": "every sprocket is finite"},

@@ -101,6 +101,15 @@ MAPPING_LICENCE = "CC0-1.0"
 CURRENT_SCHEMA = "wikilean.articles.current/1"
 UNIVERSE_SCHEMA = "wikilean.articles.universe/1"
 INDEX_SCHEMA = "wikilean.articles.index/1"
+# The carry-over map between two cuts of one page (scripts/pipeline/carry.py; docs/STATEMENTS.md
+# section 6). --carry publishes one document a page at articles/v1/carry/<pageid>.json, so the
+# reader can show the tags of an earlier cut in a fold — "from an earlier cut of this article",
+# with the fate and the old quote — and an editor can re-apply one. Nothing auto-moves: a tag
+# carries only on the `unchanged` fate, where the key is byte-identical.
+CARRY_SCHEMA = "wikilean.pipeline.carry/1"
+CARRY_FATES = frozenset({"unchanged", "end_moved", "split", "merged", "reshaped", "removed",
+                         "changed"})
+CARRY_NEW = "new"
 MANIFEST_SCHEMA = "wikilean.articles.manifest/1"
 BUILDER = "scripts/articles/build_store.py/1"
 
@@ -3765,8 +3774,164 @@ def apply_supplements(sets: list[BuiltSet], universe: dict, supplements: Supplem
     return extra
 
 
+# A carry document's keys, exactly, and each side's (scripts/pipeline/carry.py map_page).
+CARRY_KEYS = ("schema", "pageid", "old", "new", "same_layer", "passages", "new_passages",
+              "counts")
+CARRY_SIDE_KEYS = ("source_id", "layer_sha256", "cut_id")
+CARRY_SIDE_OPTIONAL = ("inventory_run", "statement_set")
+CARRY_ENTRY_KEYS = ("passage_key", "item", "span", "scope", "quote", "fate", "into",
+                    "scope_changed", "conjuncts_changed")
+CARRY_NEW_KEYS = ("passage_key", "item", "span", "scope", "fate")
+# One new passage, as an entry's `into` names it (carry.py _Keyed.ref).
+CARRY_INTO_KEYS = ("passage_key", "item", "span", "scope")
+# How many new passages each fate went into (carry.py _fate), which is what makes the
+# fates mean anything: `unchanged` is ONE new passage with the same key — the whole basis
+# for "a tag carries only on unchanged, where nothing has to move" — `split` is several,
+# `removed` and `changed` none, and the rest exactly one.
+CARRY_INTO_COUNT = {"unchanged": (1, 1), "end_moved": (1, 1), "merged": (1, 1),
+                    "reshaped": (1, 1), "split": (2, None), "removed": (0, 0),
+                    "changed": (0, 0)}
+
+
+def read_carry(directory: Path, articles: dict[int, dict]) -> dict[int, bytes]:
+    """``{pageid: the page's carry document}`` from a --carry directory, each checked.
+
+    One ``<pageid>.json`` a page, as ``scripts/pipeline/carry.py --store-out`` writes
+    them. A page of the build with no document is normal (it was never re-cut); a
+    document for a page the build does not hold is refused, because it would publish a
+    map of an article the store does not show, and so is one whose **new** side is not
+    the cut this store was built from — a map filed under a page id is otherwise just
+    JSON. The bytes are re-serialised canonically, like every other file of the store.
+    """
+    problems = Problems()
+    out: dict[int, bytes] = {}
+    directory = Path(directory)
+    if not directory.is_dir() or directory.is_symlink():
+        raise ArticlesError(f"--carry {directory}: not a directory")
+    for path in sorted(directory.iterdir()):
+        at = f"--carry {path.name}"
+        if path.is_dir() or path.is_symlink() or not path.name.endswith(".json"):
+            problems.add(at, "a carry directory holds one <pageid>.json a page and nothing else")
+            continue
+        name = path.name[:-len(".json")]
+        # isdigit() is true for superscripts and other Unicode digits int() rejects.
+        if not (name.isascii() and name.isdecimal()) or str(int(name)) != name:
+            problems.add(at, "a carry file is named by its page id")
+            continue
+        pageid = int(name)
+        try:
+            doc = strict_json(path.read_bytes().decode("utf-8"))
+        except (OSError, UnicodeDecodeError, ValueError) as exc:
+            problems.add(at, f"not UTF-8 JSON ({exc})")
+            continue
+        if not isinstance(doc, dict) or doc.get("schema") != CARRY_SCHEMA:
+            problems.add(at, f"schema must be {CARRY_SCHEMA!r}")
+            continue
+        if type(doc.get("pageid")) is not int or doc["pageid"] != pageid:
+            problems.add(at, f"pageid must be the integer {pageid}, the file's own name")
+            continue
+        article = articles.get(pageid)
+        if article is None:
+            problems.add(at, "page is not in this build; a carry map is published beside the "
+                             "article it is a map of")
+            continue
+        found = carry_problems(doc, article)
+        for message in found:
+            problems.add(at, message)
+        if not found:
+            out[pageid] = canonical(doc)
+    problems.raise_if_any()
+    return out
+
+
+def carry_problems(doc: dict, article: dict) -> list[str]:
+    """Why a carry document is not a map of THIS article's previous cut."""
+    found = list(key_problems(doc, CARRY_KEYS))
+    if found:
+        return found
+    if not isinstance(doc["same_layer"], bool):
+        found.append("same_layer must be true or false")
+    for side in ("old", "new"):
+        value = doc[side]
+        if not isinstance(value, dict):
+            found.append(f"{side} must name the cut it is of")
+            continue
+        found += [f"{side}: {message}" for message in
+                  key_problems(value, CARRY_SIDE_KEYS, CARRY_SIDE_OPTIONAL)]
+        for key in ("layer_sha256", "cut_id"):
+            if key in value and not HEX64.match(str(value.get(key, ""))):
+                found.append(f"{side}.{key} must be 64 lowercase hex")
+    # The map's NEW side is this store's cut, or the map is of some other article's
+    # history: the article names the very bytes its passages were cut from.
+    new = doc["new"] if isinstance(doc["new"], dict) else {}
+    old = doc["old"] if isinstance(doc["old"], dict) else {}
+    for key, value in (("source_id", article["source_id"]),
+                       ("layer_sha256", article["source"]["layer_sha256"])):
+        if new.get(key) != value:
+            found.append(f"new.{key} must be {value!r}, the cut this store was built from")
+    # same_layer is what the fold says the re-cut was (the same revision read again, or a
+    # new one), and the document states both layers: it is read off them, not taken.
+    if isinstance(doc["same_layer"], bool) and HEX64.match(str(old.get("layer_sha256", ""))) \
+            and doc["same_layer"] != (old.get("layer_sha256") == new.get("layer_sha256")):
+        found.append("same_layer must be whether the two sides name one layer_sha256")
+    counted: dict[str, int] = {}
+    for name, fates, keys in (("passages", CARRY_FATES, CARRY_ENTRY_KEYS),
+                              ("new_passages", {CARRY_NEW}, CARRY_NEW_KEYS)):
+        rows = doc[name]
+        if not isinstance(rows, list):
+            found.append(f"{name} must be a list")
+            continue
+        for number, row in enumerate(rows):
+            at = f"{name}[{number}]"
+            if not isinstance(row, dict):
+                found.append(f"{at} must be an object")
+                continue
+            found += [f"{at}: {message}" for message in key_problems(row, keys)]
+            if not HEX64.match(str(row.get("passage_key", ""))):
+                found.append(f"{at}: passage_key must be 64 lowercase hex")
+            if not member(row.get("fate"), frozenset(fates)):
+                found.append(f"{at}: fate must be one of {', '.join(sorted(fates))}")
+            else:
+                counted[row["fate"]] = counted.get(row["fate"], 0) + 1
+            if name != "passages":
+                continue
+            into = row.get("into")
+            if not isinstance(into, list):
+                found.append(f"{at}: into must list the new passages it went into")
+                continue
+            shaped = True
+            for n, went in enumerate(into):
+                if not isinstance(went, dict) or set(went) != set(CARRY_INTO_KEYS) \
+                        or not HEX64.match(str(went.get("passage_key", ""))):
+                    found.append(f"{at}: into[{n}] must be {{{', '.join(CARRY_INTO_KEYS)}}}, "
+                                 "its passage_key 64 lowercase hex")
+                    shaped = False
+            # The fates are not decoration: the fold offers a one-click re-apply on
+            # `unchanged` BECAUSE the key is byte-identical and nothing has to move.
+            least, most = CARRY_INTO_COUNT.get(str(row.get("fate")), (0, None))
+            if len(into) < least or (most is not None and len(into) > most):
+                found.append(f"{at}: a {row.get('fate')!r} passage went into "
+                             f"{least if most == least else f'{least} or more'} new "
+                             f"passage(s), not {len(into)}")
+            elif shaped and row.get("fate") == "unchanged" \
+                    and into[0].get("passage_key") != row.get("passage_key"):
+                found.append(f"{at}: an unchanged passage went into its own passage_key — "
+                             "that is what unchanged means, and what carries a tag")
+            # Nothing went in: there is nothing to have changed, and the fold says so.
+            for key in ("scope_changed", "conjuncts_changed"):
+                value = row.get(key)
+                if (value is None) != (not into) or (value is not None and not isinstance(value, bool)):
+                    found.append(f"{at}: {key} is true or false where the passage went "
+                                 "somewhere, and null where it went nowhere")
+    # The fold shows the counts without reading the entries, so they are not taken on
+    # trust: they are the entries' own fates.
+    if not found and doc["counts"] != counted:
+        found.append(f"counts must be the entries' own fates, {dict(sorted(counted.items()))}")
+    return found
+
+
 def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str | None = None,
-          supplements: Supplements | None = None) -> dict[str, bytes]:
+          supplements: Supplements | None = None, carry: Path | None = None) -> dict[str, bytes]:
     """Return the store tree, {relative path: bytes}, for one sealed record set or several.
 
     One set builds exactly as it always has, under its seal's campaign. Several (a list of
@@ -3873,6 +4038,14 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
         current["record_sets"] = [{**record_set_entry(built.seal, built.seal_sha), "campaign": built.seal["campaign"]}
                                   for built in sets]
         manifest["record_sets"] = [built.seal_sha for built in sets]
+    if carry is not None:
+        maps = read_carry(Path(carry), {article["pageid"]: article for article, _ in articles})
+        for pageid, data in sorted(maps.items()):
+            tree[f"{prefix}carry/{pageid}.json"] = data
+        # Optional within v1, like record_sets, and a no-op when there is nothing to
+        # carry: --carry over an empty directory builds the store it would have built.
+        if maps:
+            current["carry"] = {"pages": len(maps)}
     current.update(extra)
     tree[f"{prefix}current.json"] = canonical(current)
     manifest["files"] = {path: {"bytes": len(data), "sha256": sha256_hex(data)} for path, data in sorted(tree.items())}
@@ -3962,6 +4135,11 @@ def main(argv: list[str] | None = None) -> int:
                         help=f"optional side file ({READER_HTML_SCHEMA}): each article's pinned revision, sanitised, "
                              "with its passages marked; its text must be the records' layer and each passage's marks "
                              "its span")
+    parser.add_argument("--carry", type=Path, metavar="DIR",
+                        help=f"optional directory of <pageid>.json carry maps ({CARRY_SCHEMA}), as "
+                             "scripts/pipeline/carry.py --store-out writes them: what a re-cut did "
+                             "to each passage of the earlier cut, published at "
+                             "articles/v1/carry/<pageid>.json")
     parser.add_argument("--audit-summary", type=Path, metavar="FILE",
                         help=f"optional side file ({AUDIT_SUMMARY_SCHEMA}): what an audit of this build's links "
                              "measured, the run that judged them and the record sets it read")
@@ -3973,7 +4151,8 @@ def main(argv: list[str] | None = None) -> int:
         sets = args.record_set
         supplements = Supplements.read(args.passage_text, args.signatures, args.provenance, args.reader_html,
                                        args.audit_summary)
-        tree = build(sets[0] if len(sets) == 1 else sets, args.built_at, args.campaign, supplements=supplements)
+        tree = build(sets[0] if len(sets) == 1 else sets, args.built_at, args.campaign,
+                     supplements=supplements, carry=args.carry)
         if args.check:
             differences = check_tree(args.out, tree)
             for line in differences:
