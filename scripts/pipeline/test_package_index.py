@@ -16,7 +16,11 @@ and no library's real licence. What is checked:
   the universe's own exclusion list naming the same repository, and the operator — and
   the command exits non-zero when there is one;
 * the bundle is a function of its inputs: two runs over the same files write the same
-  manifest.
+  manifest;
+* **each library's own licence files travel inside the bundle** with ``--licence-texts``,
+  listed in the manifest, and a library without one is refused before anything is written;
+* the manifest names no path of the operator's machine, and an index of another universe
+  is refused.
 
 Run: python3 scripts/pipeline/test_package_index.py
 """
@@ -358,6 +362,76 @@ class TestLicences(BundleCase):
         self.assertIn("Lean source text", text)
 
 
+class TestLicenceTexts(BundleCase):
+    def write_texts(self, layout: dict[str, dict[str, str]]) -> Path:
+        root = self.tmp / "licence-texts"
+        for library, files in layout.items():
+            (root / library).mkdir(parents=True, exist_ok=True)
+            for name, text in files.items():
+                (root / library / name).write_text(text, encoding="utf-8")
+        return root
+
+    def full(self) -> Path:
+        return self.write_texts({
+            "alpha": {"LICENSE": "Apache License 2.0\n", "NOTICE": "alpha notice\n"},
+            "beta": {"COPYING": "GPL text\n"},
+            "gamma": {"LICENSE.md": "CC BY-NC 4.0\n", "README.md": "not a licence\n"}})
+
+    def test_each_library_s_licence_files_travel_in_the_bundle(self):
+        manifest = self.package(licences=self.full())
+        out = self.tmp / "bundle"
+        self.assertEqual(manifest["licences"]["texts"], {
+            "alpha": ["licences/alpha/LICENSE", "licences/alpha/NOTICE"],
+            "beta": ["licences/beta/COPYING"],
+            "gamma": ["licences/gamma/LICENSE.md"]})
+        for paths in manifest["licences"]["texts"].values():
+            for rel in paths:
+                self.assertIn(rel, manifest["files"])
+        self.assertEqual((out / "licences" / "alpha" / "LICENSE").read_text(encoding="utf-8"),
+                         "Apache License 2.0\n")
+        # a README beside the licence is not a licence, and does not ride along
+        self.assertFalse((out / "licences" / "gamma" / "README.md").exists())
+        text = (out / package_index.LICENCES_MD).read_text(encoding="utf-8")
+        self.assertIn("[LICENSE](licences/alpha/LICENSE)", text)
+        self.assertEqual(manifest["schema"], "wikilean.pipeline.index-bundle/2")
+
+    def test_a_library_without_a_licence_file_is_refused_before_anything_is_written(self):
+        root = self.write_texts({"alpha": {"LICENSE": "x"}, "beta": {"NOTICE": "a notice only"},
+                                 "gamma": {"COPYING": "y"}})
+        with self.assertRaises(package_index.PackageProblem) as caught:
+            self.package(out="nolicence", licences=root)
+        self.assertIn("beta", str(caught.exception))
+        self.assertFalse((self.tmp / "nolicence").exists())
+
+    def test_a_folder_that_names_no_library_is_refused(self):
+        root = self.full()
+        (root / "alpah").mkdir()
+        with self.assertRaises(package_index.PackageProblem) as caught:
+            self.package(out="typo", licences=root)
+        self.assertIn("alpah", str(caught.exception))
+
+    def test_without_licence_texts_the_manifest_lists_none(self):
+        manifest = self.package()
+        self.assertEqual(manifest["licences"]["texts"], {})
+        self.assertFalse((self.tmp / "bundle" / package_index.LICENCE_TEXTS_DIR).exists())
+
+    def test_a_rewrite_without_texts_drops_the_earlier_ones(self):
+        self.package(out="again", licences=self.full())
+        manifest = self.package(out="again")
+        self.assertFalse((self.tmp / "again" / package_index.LICENCE_TEXTS_DIR).exists())
+        self.assertFalse(any(rel.startswith("licences/") for rel in manifest["files"]))
+
+    def test_the_command_takes_licence_texts(self):
+        root = self.full()
+        with io.StringIO() as sink, redirect_stdout(sink):
+            package_index.main(["--index", str(self.index), "--search", str(self.search),
+                                "--universe", str(self.universe), "--out", str(self.tmp / "cli"),
+                                "--created", CREATED, "--licence-texts", str(root)])
+            text = sink.getvalue()
+        self.assertIn("3 with their licence texts", text)
+        self.assertTrue((self.tmp / "cli" / "licences" / "beta" / "COPYING").is_file())
+
+
 class TestRefusals(BundleCase):
     def test_half_a_search_corpus_is_refused_before_anything_is_written(self):
         (self.search / "signatures.tsv").unlink()
@@ -382,6 +456,31 @@ class TestRefusals(BundleCase):
              "rows": 1, "libraries": 1}), encoding="utf-8")
         manifest = self.package(out="withprov", provenance=provenance)
         self.assertEqual(manifest["converted"]["rows"], 1)
+
+    def test_the_provenance_names_no_path_of_the_operator_s_machine(self):
+        provenance = self.tmp / "prov.json"
+        provenance.write_text(json.dumps(
+            {"index": {"path": "/Users/someone/wl/out/decl-index.jsonl",
+                       "sha256": package_index.sha256_file(self.index), "rows": 1},
+             "corpus": {"path": "corpus.db", "sha256": "c" * 64},
+             "search": {"dir": "/home/operator/wl/out/search", "lines": {"declarations": 1}},
+             "rows": 1}), encoding="utf-8")
+        manifest = self.package(out="scrubbed", provenance=provenance)
+        converted = manifest["converted"]
+        self.assertEqual(converted["index"]["path"], "decl-index.jsonl")
+        self.assertEqual(converted["search"]["dir"], "search")
+        self.assertEqual(converted["corpus"]["path"], "corpus.db")
+        self.assertEqual(converted["index"]["sha256"], package_index.sha256_file(self.index))
+        text = (self.tmp / "scrubbed" / package_index.MANIFEST_NAME).read_text(encoding="utf-8")
+        self.assertNotIn("/Users/", text)
+        self.assertNotIn("/home/", text)
+
+    def test_an_index_of_another_universe_is_refused(self):
+        self.index.write_text(INDEX_LINES.replace("a" * 64, "b" * 64, 1), encoding="utf-8")
+        with self.assertRaises(package_index.PackageProblem) as caught:
+            self.package(out="other")
+        self.assertIn("another index", str(caught.exception))
+        self.assertFalse((self.tmp / "other").exists())
 
     def test_a_non_empty_directory_that_is_not_a_bundle_is_refused(self):
         target = self.tmp / "occupied"
@@ -468,6 +567,13 @@ class TestCommandLine(BundleCase):
         self.assertIn("RESTRICTED: alpha", text)
         self.assertIn("NOASSERTION: beta", text)
         self.assertIn("nothing was uploaded", text)
+
+    def test_it_prints_the_manifest_sha256_the_bucket_keys_it_by(self):
+        with io.StringIO() as sink, redirect_stdout(sink):
+            package_index.main(self.argv("keyed"))
+            text = sink.getvalue()
+        sha = package_index.sha256_file(self.tmp / "keyed" / package_index.MANIFEST_NAME)
+        self.assertIn(f"manifest sha256 {sha}", text)
 
     def test_restricted_takes_library_equals_reason(self):
         self.assertEqual(quiet(package_index.main,
