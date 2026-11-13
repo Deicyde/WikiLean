@@ -330,9 +330,12 @@ re-measures the SQLite itself), `shadow-public-result.json`, the promoter dry ru
 build context, the activation bundle, the operator window, the canary and the journal.
 
 **What is dropped, and why that is safe:** the offline pack compile, the two sealed
-builds, the private qualification, and a fresh semantic comparison. All four answer one
+builds and the private qualification. All three answer one
 question — "are the Brain bytes this release publishes the reviewed ones?" — and a
-code-only release answers it more strongly by not producing new bytes at all. The
+code-only release answers it more strongly by not producing new bytes at all. (The
+semantic comparison is *not* dropped: the bundle freezer recomputes the reused
+`previous → live` diff from both frozen stores and rejects the copied evidence if it
+differs, so both release stores must be on disk.) The
 reused release root is independently re-verified by `brain/tools/verify_release.py`,
 its exact manifest digest must equal the one the live selector names, and the Brain
 surface fence below re-measures the served bytes before Wrangler is invoked.
@@ -358,21 +361,37 @@ builder cannot ship through a path that reuses the release. A release that touch
 takes the full path. Two more rules: a change under `site/assets` or `wiki/assets`
 must be accompanied by a change to `wiki/public-asset-source-attestation.json`, or
 nothing was regenerated and the change would be reviewed as shipped without shipping;
-and a change to `wiki/wrangler.jsonc` is eligible but flagged `review_required`,
-because routing and asset configuration decide how the unchanged Brain bytes are
-served.
+and a change to `wiki/wrangler.jsonc` or `wiki/src/security.ts` is eligible but
+flagged `review_required`, because routes, static-asset configuration and the
+generated `_headers` file decide how the unchanged Brain bytes are *served*. The
+surface fence compares bodies, not response headers, so those two are the operator's
+to read and the post-deploy canary's to catch — the same exposure a full release has.
 
 ### The Brain surface fence
 
 The path policy is a list, and a list can be wrong. The promoter therefore measures the
-claim independently: after staging and before any Wrangler call, it fetches every
-Brain-owned path it is about to publish back from production and requires byte
-equality — the selector, both immutable `releases/<manifest>/release.json` namespaces,
-`sources.json`, `xref_index.json`, the six `cells/*.json` shell files, the
-deterministic first cell shard (the same one the canary picks), and `/brain` against
-the frozen page. The only tolerated difference is the selector's `audited_at`, which
-every promotion restamps. A changed shard layout, selector schema, immutable namespace
-or staging rule therefore refuses the promotion instead of landing it.
+claim independently, after staging and before any Wrangler call, in two halves.
+
+*Locally, exhaustively.* The staged Brain surface — every file under
+`assets/brain/`, both immutable namespaces included — must be exactly the file set the
+reused release's own manifests imply, with every byte matching the digest those
+manifests declare. The expected set is derived in Python from the frozen release by an
+independent copy of the stager's artifact → public-path rule, never from the staged
+cell manifest and never from anything built at `C`. That matters because
+`wiki/scripts/brain-release-public.ts` and `build-public.ts` are themselves eligible
+to change in a code-only release: they cannot be allowed to define what "unchanged"
+means. A symlink, an extra file, a missing shard or trace, a third immutable
+namespace, or one altered byte in any of the thousands of shards refuses the
+promotion.
+
+*Against production, by sample.* The selector, both immutable
+`releases/<manifest>/release.json` namespaces, `sources.json`, `xref_index.json`, the
+six `cells/*.json` shell files, the deterministic first cell shard (the same one the
+canary picks) and `/brain` are fetched back from the live origin and required to be
+byte-identical. The only tolerated difference is the selector's `audited_at`, which
+every promotion restamps. Sampling is enough here *because* of the local half: the
+immutable `release.json` bytes are compared in full, so equal manifests plus
+digest-verified staged files mean equal content for every file the manifests name.
 
 ### Commands
 
@@ -382,9 +401,12 @@ frozen release; everything from the public baseline freeze onward needs the Mac'
 release store, Wrangler credentials, age backup key and canonical journal.
 
 Preconditions: `C` is merged on `main`; two clean worktrees at `C` (build and
-promotion) as in the full path; the reused release's frozen directory is present in the
-release store and verifies; the activation bundle of the release that put it in
-production is still on disk.
+promotion) as in the full path; **both** the reused release's frozen directory and the
+release the live selector retains as `previous_release_id` are present in the release
+store, each under its own manifest digest, and verify — the promoter resolves the
+retained release from the live selector and refuses if its directory is absent; the
+activation bundle of the release that put the reused release in production is still on
+disk, because four of its documents are copied into the new bundle.
 
 ```bash
 # 0. Identify what production serves (read-only; also fine on ffmain).
@@ -408,25 +430,34 @@ Review the record: it names the reused release, the authority commit `A`, the we
 commit `C`, every changed path with its classification, and `review_required`.
 
 ```bash
-# 2. Regenerate the non-Brain public assets in the BUILD worktree and freeze the
-#    baseline at C. Same commands as "Freeze the non-Brain public baseline" above,
-#    with --authority-git-commit C. The committed attestation at C must already match.
-AUTHORITY_COMMIT="$(git -C "$PROMOTION_WORKTREE" rev-parse HEAD)"
-"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_public_baseline.py freeze \
-  --source-public "$PUBLIC_SOURCE_ROOT" \
-  --store "$WIKILEAN_BRAIN_PUBLIC_BASELINE_STORE" \
-  --repo-root "$PROMOTION_WORKTREE" \
-  --authority-git-commit "$AUTHORITY_COMMIT"
-
-# 3. Shadow public staging at C against the reused release (seconds, no rebuild).
-(cd "$BUILD_WORKTREE/wiki" && "$WIKILEAN_BRAIN_NODE" --experimental-strip-types \
-  scripts/build-public.ts \
+# 2. Regenerate the non-Brain public assets in the BUILD worktree, against the reused
+#    release (seconds, no rebuild). This both produces the tree the baseline is frozen
+#    from and records the shadow evidence, so it must run BEFORE the freeze below.
+#    Same generators as "Attest the reviewed non-Brain public assets" above; the
+#    committed attestation at C must already describe their output byte for byte.
+cd "$BUILD_WORKTREE"
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/export_wikidata_rdf.py
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/build_static_pages.py
+(cd wiki && npm ci)
+(cd wiki && "$WIKILEAN_BRAIN_NODE" --experimental-strip-types scripts/build-public.ts \
   --brain-release-manifest /absolute/releases/<live-manifest-hex>/release.json \
   --brain-release-dir /absolute/releases/<live-manifest-hex> \
   --brain-previous-release-manifest /absolute/releases/<previous-manifest-hex>/release.json \
   --brain-previous-release-dir /absolute/releases/<previous-manifest-hex> \
   --brain-audited-at "$(date -u +%Y-%m-%dT%H:%M:%SZ)") \
   > "$EVIDENCE_DIR/shadow-public-result.json"
+(cd wiki && npm run build:indexes)
+export PUBLIC_SOURCE_ROOT="$BUILD_WORKTREE/wiki/public"
+
+# 3. Freeze the baseline at C. Same command as "Freeze the non-Brain public baseline"
+#    above, with --authority-git-commit C: in a code-only release the baseline binds
+#    to the website commit, not to the reused release's authority.
+AUTHORITY_COMMIT="$(git -C "$PROMOTION_WORKTREE" rev-parse HEAD)"
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_public_baseline.py freeze \
+  --source-public "$PUBLIC_SOURCE_ROOT" \
+  --store "$WIKILEAN_BRAIN_PUBLIC_BASELINE_STORE" \
+  --repo-root "$PROMOTION_WORKTREE" \
+  --authority-git-commit "$AUTHORITY_COMMIT"
 
 # 4. Promoter dry run with retention. This is where the Brain surface fence runs.
 cd "$PROMOTION_WORKTREE"
