@@ -912,6 +912,54 @@ class SealTests(MiddleTests):
             self.seal(clone, workdir)
         self.assertIn("--challenge-run", str(caught.exception))
         self.assertIn("challenge value", str(caught.exception))
+        self.assertIn("--unchallenged", str(caught.exception))
+
+    def test_a_run_sealed_unchallenged_reads_not_required_and_intake_accepts_it(self):
+        import vocab  # noqa: PLC0415
+
+        clone, workdir = self.finished_run()
+        done = self.seal(clone, workdir, unchallenged=True)
+        set_dir = Path(done["set_dir"])
+        records = [json.loads(line)
+                   for path in sorted((set_dir / "records").glob("*.jsonl"))
+                   for line in path.read_text(encoding="utf-8").splitlines()]
+        self.assertTrue(records)
+        self.assertEqual({record["extensions"][vocab.LOCATE]["challenge"]
+                          for record in records}, {"not_required"})
+        seal = json.loads((set_dir / "SEAL.json").read_text(encoding="utf-8"))
+        self.assertEqual(seal["campaign"], "run:loc-7")
+        # the intake contract ran here, on this machine, and accepted it
+        self.assertEqual(done["submission"]["records"], len(records))
+        # and nothing was dropped: the same run sealed under a challenge that upheld
+        # everything holds the same records, with only their challenge values changed
+        challenged = self.challenged(clone, workdir, out=self.tmp / "challenged-set",
+                                     set_id="contrib-1c")
+        upheld = [json.loads(line)
+                  for path in sorted((Path(challenged["set_dir"]) / "records").glob("*.jsonl"))
+                  for line in path.read_text(encoding="utf-8").splitlines()]
+
+        def shape(record):
+            # not the status: a confirmed coverage claim upgrades one, a claim no
+            # challenge judged does not
+            return (record["id"], record.get("relation"),
+                    json.dumps(record["object"], sort_keys=True))
+
+        self.assertEqual(sorted(map(shape, records)), sorted(map(shape, upheld)))
+
+    def test_an_unchallenged_seal_names_no_challenge_run_in_its_campaign(self):
+        clone, workdir = self.finished_run()
+        with self.assertRaises(seal_mod.SealProblem) as caught:
+            self.seal(clone, workdir, unchallenged=True, campaign="run:loc-7+chl-7")
+        self.assertIn("names no challenge run", str(caught.exception))
+        self.assertFalse((workdir / run_package.SET_DIR).exists())
+
+    def test_unchallenged_is_refused_beside_a_challenge_run(self):
+        clone, workdir = self.finished_run()
+        run = self.write_challenge(workdir, self.root)
+        with self.assertRaises(seal_mod.SealProblem) as caught:
+            self.seal(clone, workdir, unchallenged=True, challenge_runs=(run,))
+        self.assertIn("--challenge-run", str(caught.exception))
+        self.assertFalse((workdir / run_package.SET_DIR).exists())
 
     def test_a_finished_run_seals_and_the_intake_contract_accepts_it(self):
         clone, workdir = self.finished_run()
@@ -1022,6 +1070,18 @@ class SealTests(MiddleTests):
         self.assertEqual(
             json.loads((out / "SEAL.json").read_text(encoding="utf-8"))["set_id"],
             "contrib-2")
+
+    def test_the_command_line_seals_unchallenged(self):
+        clone, workdir = self.finished_run()
+        out = self.tmp / "my-set"
+        code = quiet(run_package.main,
+                     ["--repo", str(clone), "--workdir", str(workdir),
+                      "--package", "loc-7", "--stage", "seal",
+                      "--set-id", "contrib-4", "--campaign", "run:loc-7",
+                      "--producer-commit", "b" * 40, "--unchallenged",
+                      "--created", "2026-11-06T00:00:00Z", "--set-out", str(out)])
+        self.assertEqual(code, 0)
+        self.assertTrue((out / "SEAL.json").is_file())
 
 
 class ResultBoundaryTests(unittest.TestCase):
