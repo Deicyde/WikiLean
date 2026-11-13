@@ -2944,6 +2944,21 @@ class D1RequiredColumnsTests(unittest.TestCase):
                         sql.index("CREATE TABLE IF NOT EXISTS index_downloads"))
         self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "index_downloads")
 
+    def test_claims_migration_creates_its_links_last(self) -> None:
+        """0023 seeds its lever and creates packages and claims before the links table the
+        gate checks, so the links table existing means the lever and every table are there."""
+        migration = "wiki/migrations/0023_contrib_claims.sql"
+        sql = (self.REPO / migration).read_text(encoding="utf-8")
+        order = [sql.index(text) for text in (
+            "INSERT OR IGNORE INTO site_settings",
+            "CREATE TABLE IF NOT EXISTS contrib_packages",
+            "CREATE TABLE IF NOT EXISTS contrib_claims",
+            "CREATE TABLE IF NOT EXISTS contrib_claim_submissions",
+            "CREATE INDEX IF NOT EXISTS idx_contrib_claim_submissions_claim",
+        )]
+        self.assertEqual(order, sorted(order))
+        self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "contrib_claim_submissions")
+
 
 if __name__ == "__main__":
     unittest.main()
