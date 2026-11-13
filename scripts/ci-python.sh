@@ -85,6 +85,7 @@ run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_bui
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
 run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
 run_check "Self-service submission client and real loopback intake" "$PYTHON_BIN" scripts/articles/test_submission_transport.py
+run_check "Contributor transport: index bundle downloads and the claims client" "$PYTHON_BIN" scripts/articles/test_contrib_transport.py
 run_check "Contributed set promoted to reviewable overlay rows" "$PYTHON_BIN" scripts/articles/test_promote_submission.py
 run_check "Pipeline Literature Links pin" "$PYTHON_BIN" scripts/pipeline/test_links.py
 run_check "Pipeline revision-free key tests" "$PYTHON_BIN" scripts/pipeline/test_keys.py
