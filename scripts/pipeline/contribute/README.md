@@ -165,8 +165,8 @@ Two preconditions worth knowing before you try it:
   challenge value, so a locate run with neither stage-9d verdicts nor `--unchallenged`
   exports no record, and `--stage seal` refuses to write an empty set and says so.
   `--unchallenged` stamps every record `not_required`, which the pages show as not
-  re-checked; a coverage claim then upgrades nothing, no record carries the article's
-  Wikidata QID, and the campaign names no challenge run (`run:<run>`);
+  re-checked; a coverage claim then upgrades nothing, a subject passage's records still
+  carry the article's Wikidata QID, and the campaign names no challenge run (`run:<run>`);
 * **the inventory run** the plan was cut from, in the same corpus. It is your own stage
   9b over the same pinned revisions; the package cannot carry it, because its passages
   are article text.

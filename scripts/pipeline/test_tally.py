@@ -644,9 +644,8 @@ class TallyTests(unittest.TestCase):
         exported, refused = tally.export_rows(built, workspace)
         self.assertEqual(refused, [])
         self.assertEqual({row["item"] for row in exported}, {ALPHA, BETA, DELTA})
-        # marked, so records.article_qid gives the subject passage (alpha) no QID
-        self.assertTrue(all(row["unchallenged"] is True for row in exported))
-        self.assertTrue(tally.outcome_row(rows[ALPHA])["unchallenged"])
+        # no mark rides on the rows: the subject passage (alpha) keeps the article's QID
+        self.assertFalse(any("unchallenged" in row for row in exported))
 
     def test_an_unresolved_passage_of_an_unchallenged_run_is_exported(self):
         self.fx.write_locate([{"item": DELTA, "outcome": "unresolved", "locations": []}],
@@ -666,8 +665,6 @@ class TallyTests(unittest.TestCase):
         built = self.fx.build()
         self.assertEqual(built["counts"]["by_challenge"], {"owed": 3})
         self.assertFalse(built["unchallenged"])
-        self.assertFalse(any(row.get("unchallenged") for row in built["outcomes"]))
-        self.assertNotIn("unchallenged", tally.outcome_row(self.fx.rows_by_item(built)[ALPHA]))
 
     def test_unchallenged_is_refused_beside_a_challenge_run(self):
         self.fx.write_locate([located(DELTA, [location("Testlib.Dual", "exactMatch", 1)])],

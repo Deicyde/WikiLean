@@ -306,10 +306,11 @@ def article_qid(source: Mapping[str, Any], row: Mapping[str, Any], *, challenge:
     A ``challenge_pending`` record carries none. It is a record a prominence overturn to
     ``subject`` reopened, which no challenger judged under that prominence's rule, so the
     QID would rest on a location nobody checked. The rule is per record, not per passage:
-    the passage's other records carry it. No record of a row the tally marked
-    ``unchallenged`` carries it either, for the same reason: no challenge ran over the
-    run at all (``tally.py --unchallenged``). A source with no QID gives None; one whose
-    ``wikidata`` is not a QID is refused, never guessed.
+    the passage's other records carry it. A record of a run sealed with no challenge at
+    all (``tally.py --unchallenged``, every record ``not_required``) does carry it: the
+    locate worker's subject call stands without a challenger (Jack, 2026-11-13, "Carry
+    the QID"). A source with no QID gives None; one whose ``wikidata`` is not a QID is
+    refused, never guessed.
     """
     if row.get("prominence") != vocab.PROMINENCE_SUBJECT:
         return None
@@ -319,7 +320,7 @@ def article_qid(source: Mapping[str, Any], row: Mapping[str, Any], *, challenge:
     if not isinstance(qid, str) or not vocab.QID_RE.match(qid):
         raise RecordProblem(f"{source.get('source_id')}: wikidata {qid!r} is not a Wikidata QID, "
                             "and a subject passage's records carry it")
-    return None if challenge == vocab.CHALLENGE_PENDING or row.get("unchallenged") else qid
+    return None if challenge == vocab.CHALLENGE_PENDING else qid
 
 
 def subject_end(source: Mapping[str, Any], cut: Cut, span: list[int], *,
