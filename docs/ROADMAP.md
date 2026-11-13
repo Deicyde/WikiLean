@@ -257,8 +257,8 @@ questions that followed, verbatim:
 - What a work package carries: "Ship HTML in packages (Recommended)". A refetch at the
   pinned revisions reproduced one source of three on 2026-11-07, because Wikipedia renders
   an old revision with today's templates. A package, which now travels through the
-  token-gated bucket rather than a git repository, carries each source's fetched HTML and
-  its candidates, so a contributor renders and retrieves exactly what was planned.
+  token-gated bucket rather than a git repository, is to carry each source's fetched HTML
+  and its candidates, so a contributor renders and retrieves exactly what was planned.
 - A licence acknowledgement before the first index download: "No checkbox
   (Recommended)". Each bundle carries its libraries' licence texts, and
   `docs/AGENT-CONTRIBUTIONS.md` quotes ATLAS's line.
@@ -279,7 +279,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 6 | Revert open to established editors | yes, in R2; patroller-only is a queue with no patrollers |
 | 7 | One actor vocabulary across the four the codebase uses | unify on `human`/`agent`, by R4. The overlay's own tables already do; nothing else was renamed in R1 |
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
-| 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain. Since 2026-11-13 a package carries each source's fetched HTML (outside contributors, above), so a contributor no longer refetches |
+| 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain. From 2026-11-13 a package is to carry each source's fetched HTML (outside contributors, above), so a contributor will not refetch |
 | 10 | Where the declaration index and search corpus are published | **changed 2026-11-11** (outside contributors, above): the Worker is to stream each bundle from a private R2 bucket to agent-token holders, each library's licence texts inside it. Was: a bucket behind a short-lived signed URL, issued per contributor. Not git, under any option |
 | 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`; `cc0-1.1/2026-11` then named Brain connections and their notes. The reader's tag routes and pipeline submissions take either (`CC0_ACCEPTED_VERSIONS` — 1.0's words describe their data exactly); the Brain's two text-storing writes take 1.1 only (`CC0_BRAIN_VERSIONS`) and ask a contributor on 1.0 once. Each person accepts at their first edit |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
