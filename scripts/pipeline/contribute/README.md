@@ -65,7 +65,7 @@ python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir
     --stage seal --set-id <token> --campaign 'run:loc-7+chl-7' \
     --challenge-run chl-7 --producer-commit "$(git rev-parse HEAD)" \
     --created "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-# or, with no challenge run: every record reads unchallenged
+# or, with no challenge run: every record reads "Not re-checked"
 python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
     --stage seal --set-id <token> --campaign 'run:loc-7' --unchallenged \
     --producer-commit "$(git rev-parse HEAD)" --created "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
@@ -164,9 +164,9 @@ Two preconditions worth knowing before you try it:
 * **a challenge run, or `--unchallenged`.** Nothing leaves this pipeline without a
   challenge value, so a locate run with neither stage-9d verdicts nor `--unchallenged`
   exports no record, and `--stage seal` refuses to write an empty set and says so.
-  `--unchallenged` stamps every record `not_required`, which the pages show as
-  unchallenged; a coverage claim then upgrades nothing, and the campaign names no
-  challenge run (`run:<run>`);
+  `--unchallenged` stamps every record `not_required`, which the pages show as not
+  re-checked; a coverage claim then upgrades nothing, no record carries the article's
+  Wikidata QID, and the campaign names no challenge run (`run:<run>`);
 * **the inventory run** the plan was cut from, in the same corpus. It is your own stage
   9b over the same pinned revisions; the package cannot carry it, because its passages
   are article text.

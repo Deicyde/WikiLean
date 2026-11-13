@@ -373,8 +373,9 @@ question 3, still open. The bundle's conjuncts are computed here, in the one pla
 both the inventory's conjuncts and the parts' clauses. Carry-over is computed from spans and
 span text only — never from an item, a statement or a model — and uses stage 2's
 `passage_key`. A run no challenge ran over is tallied with `--unchallenged`: every record a
-challenge would judge is `not_required`, which the pages read as unchallenged, so the export
-has a challenge value for each and a coverage claim upgrades nothing. It is refused beside
+challenge would judge is `not_required`, which the pages show as not re-checked, so the export
+has a challenge value for each, a coverage claim upgrades nothing, and no record carries the
+article's QID (decision B5). It is refused beside
 `--challenge-run`, and contribute mode's seal takes it too.
 
 **What is proved.** From batch 1's four corpora,

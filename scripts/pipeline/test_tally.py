@@ -636,18 +636,38 @@ class TallyTests(unittest.TestCase):
         self.assertEqual({rows[label]["challenge"] for label in (ALPHA, BETA, DELTA)},
                          {"not_required"})
         self.assertIsNone(rows[DELTA]["runs"]["challenge"])
+        # gamma was inventoried expository: its scope record is stamped too
+        self.assertEqual(rows[GAMMA]["challenge"], "not_required")
         self.assertEqual(built["counts"]["by_challenge"], {"not_required": 3})
         self.assertTrue(built["unchallenged"])
         workspace = tally.Workspace(self.fx.corpus, self.fx.runs, self.fx.sources)
         exported, refused = tally.export_rows(built, workspace)
         self.assertEqual(refused, [])
         self.assertEqual({row["item"] for row in exported}, {ALPHA, BETA, DELTA})
+        # marked, so records.article_qid gives the subject passage (alpha) no QID
+        self.assertTrue(all(row["unchallenged"] is True for row in exported))
+        self.assertTrue(tally.outcome_row(rows[ALPHA])["unchallenged"])
+
+    def test_an_unresolved_passage_of_an_unchallenged_run_is_exported(self):
+        self.fx.write_locate([{"item": DELTA, "outcome": "unresolved", "locations": []}],
+                             planned_items=(DELTA,))
+        built = self.fx.build(unchallenged=True)
+        row = self.fx.rows_by_item(built)[DELTA]
+        self.assertEqual(row["outcome"], "unresolved")
+        self.assertEqual(row["challenge"], "not_required")
+        workspace = tally.Workspace(self.fx.corpus, self.fx.runs, self.fx.sources)
+        exported, refused = tally.export_rows(built, workspace)
+        self.assertEqual(refused, [])
+        self.assertEqual([r["item"] for r in exported], [DELTA])
+        self.assertEqual(exported[0]["challenge"], "not_required")
 
     def test_the_same_run_without_a_challenge_or_the_flag_is_owed(self):
         self._unchallenged_locate()
         built = self.fx.build()
         self.assertEqual(built["counts"]["by_challenge"], {"owed": 3})
         self.assertFalse(built["unchallenged"])
+        self.assertFalse(any(row.get("unchallenged") for row in built["outcomes"]))
+        self.assertNotIn("unchallenged", tally.outcome_row(self.fx.rows_by_item(built)[ALPHA]))
 
     def test_unchallenged_is_refused_beside_a_challenge_run(self):
         self.fx.write_locate([located(DELTA, [location("Testlib.Dual", "exactMatch", 1)])],

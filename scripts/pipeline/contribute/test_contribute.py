@@ -930,6 +930,21 @@ class SealTests(MiddleTests):
         self.assertEqual(seal["campaign"], "run:loc-7")
         # the intake contract ran here, on this machine, and accepted it
         self.assertEqual(done["submission"]["records"], len(records))
+        # and nothing was dropped: the same run sealed under a challenge that upheld
+        # everything holds the same records, with only their challenge values changed
+        challenged = self.challenged(clone, workdir, out=self.tmp / "challenged-set",
+                                     set_id="contrib-1c")
+        upheld = [json.loads(line)
+                  for path in sorted((Path(challenged["set_dir"]) / "records").glob("*.jsonl"))
+                  for line in path.read_text(encoding="utf-8").splitlines()]
+
+        def shape(record):
+            # not the status: a confirmed coverage claim upgrades one, a claim no
+            # challenge judged does not
+            return (record["id"], record.get("relation"),
+                    json.dumps(record["object"], sort_keys=True))
+
+        self.assertEqual(sorted(map(shape, records)), sorted(map(shape, upheld)))
 
     def test_an_unchallenged_seal_names_no_challenge_run_in_its_campaign(self):
         clone, workdir = self.finished_run()

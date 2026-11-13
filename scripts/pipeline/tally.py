@@ -39,8 +39,9 @@ named in ``problems`` and left owed.
 
 **An unchallenged run** (``--unchallenged``, never beside a challenge run) is sealed with
 no challenge at all: every record a challenge would have judged is ``not_required``,
-which the pages read as unchallenged, so nothing is owed and a coverage claim upgrades
-nothing. It is how a contributor's set reaches the intake without a stage-9d run.
+which the pages show as not re-checked, so nothing is owed, a coverage claim upgrades
+nothing, and no record carries the article's QID. It is how a contributor's set reaches
+the intake without a stage-9d run.
 
 **Status rule 3** is what WikiLean's own runs are derived under, and the only one batch 1
 uses. Under it (and under rule 2, which shares its shapes) a coverage claim is a
@@ -1256,10 +1257,13 @@ def _unchallenged(row: dict) -> None:
 
     No challenge run planned or judged anything, so every record is left owed (``None``)
     by an empty plan; sealed unchallenged, it reads ``not_required`` instead, the value a
-    plan gives a record no rule required and the pages show as unchallenged. A coverage
+    plan gives a record no rule required and the pages show as not re-checked. A coverage
     claim stamped so upgrades nothing and confirms no part, as any claim no challenge
-    confirmed.
+    confirmed. The row is marked ``unchallenged``, so none of its records carries the
+    article's QID (records.article_qid, decision B5): no challenger judged the location
+    or the subject label it would rest on.
     """
+    row["unchallenged"] = True
     for loc in row["locations"]:
         if loc.get("challenge") is None:
             loc["challenge"] = vocab.CHALLENGE_NOT_REQUIRED
@@ -1602,7 +1606,7 @@ OUTCOME_KEYS = ("source_id", "item", "passage_kind", "prominence", "scope", "out
 OUTCOME_OPTIONAL = ("claims", "challenge_claims", "challenge_receipt",
                     "coverage_challenge_clauses", "coverage_part_relations",
                     "coverage_part_conventions", "coverage_part_limits", *STATEMENT_FIELDS,
-                    "cut_flag", "owed", "fill")
+                    "cut_flag", "owed", "fill", "unchallenged")
 
 
 def outcome_row(row: dict) -> dict:
@@ -1728,7 +1732,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--unchallenged", action="store_true",
                         help="tally a locate run that no challenge ran over: every record "
                              "a challenge would judge is not_required, which the pages read "
-                             "as unchallenged. Refused beside --challenge-run")
+                             "as not re-checked. Refused beside --challenge-run")
     parser.add_argument("--manifest", type=Path,
                         help="the sourceset manifest the run pinned, to check each document's "
                              "source_sha and layer_sha256")

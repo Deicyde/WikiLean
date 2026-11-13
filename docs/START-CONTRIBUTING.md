@@ -221,7 +221,7 @@ python3 scripts/pipeline/contribute/run_package.py \
 # 5. Seal it here, and check it against WikiLean's own rules, offline, before you
 #    send anything. With no challenge run of your own, replace the two challenge
 #    arguments with --unchallenged and use --campaign 'run:<run>': every record then
-#    reads "unchallenged" on the pages.
+#    reads "Not re-checked" on the pages and carries no Wikidata QID.
 python3 scripts/pipeline/contribute/run_package.py \
         --repo <work-repo clone> --workdir <dir> --stage seal \
         --set-id <token> --campaign 'run:<run>+<challenge run>' \

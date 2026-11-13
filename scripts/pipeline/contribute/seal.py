@@ -242,7 +242,7 @@ def seal(*, root: Path, workdir: Path, package_dir: Path, manifest: dict, out: P
             "is not worth sending. The usual cause is that no challenge run's verdicts "
             "were applied — nothing leaves this pipeline without a challenge value, so "
             "run stage 9d over this run and name it with --challenge-run, or seal it "
-            "with --unchallenged, which the pages show as unchallenged. The export's "
+            "with --unchallenged, which the pages show as not re-checked. The export's "
             "own reasons are above.")
     return {"pins": pinned, "export": report, "rows": len(rows),
             "not_exportable": refused, "tally_problems": built["problems"],
