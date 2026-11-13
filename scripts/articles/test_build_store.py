@@ -2584,6 +2584,216 @@ class CombinedSetTests(unittest.TestCase):
         self.assertIn("needs --campaign", err.getvalue())
 
 
+class CarryTests(unittest.TestCase):
+    """--carry: the map of an earlier cut, published a page at a time.
+
+    The map itself is scripts/pipeline/carry.py's; what is held here is that the store
+    publishes it unchanged and refuses a document it cannot stand behind — including one
+    that is a perfectly good map of some other article's history.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        article = json.loads(build_store.build(RECORDSET)["articles/v1/articles/1001.json"])
+        cls.source_id = article["source_id"]
+        cls.layer_sha = article["source"]["layer_sha256"]
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = Path(self._tmp.name)
+
+    def side(self, **over) -> dict:
+        side = {"source_id": self.source_id, "layer_sha256": self.layer_sha,
+                "cut_id": "c" * 64}
+        side.update(over)
+        return side
+
+    def document(self, pageid: int = 1001, **over) -> dict:
+        doc = {"schema": build_store.CARRY_SCHEMA, "pageid": pageid,
+               "old": {"inventory_run": "inv-1", **self.side(layer_sha256="d" * 64,
+                                                             cut_id="e" * 64)},
+               "new": {"inventory_run": "inv-2", **self.side()},
+               "same_layer": False,
+               "passages": [{"passage_key": "a" * 64, "item": "In-text #00000001",
+                             "span": [0, 10], "scope": "formal_math",
+                             "quote": {"exact": "A widget", "prefix": "", "suffix": ""},
+                             "fate": "removed", "into": [], "scope_changed": None,
+                             "conjuncts_changed": None}],
+               "new_passages": [{"passage_key": "b" * 64, "item": "In-text #00000002",
+                                 "span": [0, 12], "scope": "formal_math", "fate": "new"}],
+               "counts": {"new": 1, "removed": 1}}
+        doc.update(over)
+        return doc
+
+    def write(self, name: str, doc) -> Path:
+        path = self.dir / name
+        path.write_text(json.dumps(doc, sort_keys=True) + "\n", encoding="utf-8")
+        return path
+
+    def refuse(self, expected: str, name: str = "1001.json", doc=None, **over) -> None:
+        self.write(name, self.document(**over) if doc is None else doc)
+        with self.assertRaises(build_store.ArticlesError) as caught:
+            build_store.build(RECORDSET, carry=self.dir)
+        self.assertIn(expected, str(caught.exception))
+        (self.dir / name).unlink()
+
+    def test_a_build_without_carry_is_byte_for_byte_the_build_it_was(self):
+        self.assertEqual(build_store.check_tree(STORE, build_store.build(RECORDSET)), [])
+
+    def test_an_empty_carry_directory_builds_the_store_it_would_have_built(self):
+        """--carry is a no-op when there is nothing to carry: an operator who always
+        passes the flag does not get a different store on the runs with no re-cut."""
+        self.assertEqual(build_store.build(RECORDSET, carry=self.dir),
+                         build_store.build(RECORDSET))
+
+    def test_a_map_is_published_canonically_beside_its_article(self):
+        self.write("1001.json", self.document())
+        tree = build_store.build(RECORDSET, carry=self.dir)
+        plain = build_store.build(RECORDSET)
+        self.assertEqual(sorted(set(tree) - set(plain)), ["articles/v1/carry/1001.json"])
+        self.assertEqual(tree["articles/v1/carry/1001.json"],
+                         build_store.canonical(self.document()))
+        current = json.loads(tree["articles/v1/current.json"])
+        self.assertEqual(current["carry"], {"pages": 1})
+        manifest = json.loads(tree["articles/v1/manifest.json"])
+        self.assertIn("articles/v1/carry/1001.json", manifest["files"])
+
+    def test_a_map_of_another_cut_is_refused(self):
+        """The new side is this store's cut, or the document is a map of some other
+        article's history filed under this page id."""
+        self.refuse("new.layer_sha256 must be", new={"inventory_run": "inv-2",
+                                                     **self.side(layer_sha256="0" * 64)})
+        self.refuse("new.source_id must be", new={"inventory_run": "inv-2",
+                                                  **self.side(source_id="enwiki-1-2")})
+        self.refuse("new: missing", new={"inventory_run": "inv-2"})
+
+    def test_counts_are_the_entries_own_fates(self):
+        self.refuse("counts must be the entries' own fates",
+                    counts={"unchanged": 99})
+        self.refuse("counts must be the entries' own fates", counts={})
+
+    def test_a_fate_must_be_the_new_passages_it_went_into(self):
+        """The fold offers a one-click re-apply on `unchanged` because the key is
+        byte-identical and nothing has to move; a document that says `unchanged` of a
+        passage that went somewhere else, or nowhere, would move a tag onto another
+        passage. The entries are held to the fates' own shapes (carry.py _fate)."""
+        def entry(**over) -> dict:
+            row = {"passage_key": "a" * 64, "item": "In-text #00000001", "span": [0, 10],
+                   "scope": "formal_math", "quote": {"exact": "A widget", "prefix": "", "suffix": ""},
+                   "fate": "unchanged",
+                   "into": [{"passage_key": "a" * 64, "item": "In-text #00000001",
+                             "span": [0, 10], "scope": "formal_math"}],
+                   "scope_changed": False, "conjuncts_changed": False}
+            row.update(over)
+            return row
+
+        def one(expected: str, counts=None, **over) -> None:
+            row = entry(**over)
+            self.refuse(expected, passages=[row],
+                        counts=counts or {"new": 1, str(row["fate"]): 1})
+
+        # The committed shape builds, so the cases below are not vacuous.
+        self.write("1001.json", self.document(passages=[entry()],
+                                              counts={"new": 1, "unchanged": 1}))
+        build_store.build(RECORDSET, carry=self.dir)
+        (self.dir / "1001.json").unlink()
+        one("into[0] must be", into=["not even an object"])
+        one("into[0] must be", into=[{"passage_key": "a" * 64, "item": "x"}])
+        one("into[0] must be", into=[{"passage_key": "zz", "item": "x", "span": [0, 1],
+                                      "scope": "formal_math"}])
+        one("an unchanged passage went into its own passage_key",
+            into=[{"passage_key": "b" * 64, "item": "In-text #00000002", "span": [0, 10],
+                   "scope": "formal_math"}])
+        one("a 'unchanged' passage went into 1 new passage(s), not 0",
+            into=[], scope_changed=None, conjuncts_changed=None)
+        one("a 'split' passage went into 2 or more new passage(s), not 1", fate="split")
+        one("a 'removed' passage went into 0 new passage(s), not 1", fate="removed")
+        one("conjuncts_changed is true or false", conjuncts_changed=None)
+        one("scope_changed is true or false",
+            fate="removed", into=[], scope_changed=False, conjuncts_changed=None)
+
+    def test_same_layer_is_read_off_the_two_sides(self):
+        """The fold says whether the re-cut read the same revision again; the document
+        states both layers, so the claim is checked rather than taken."""
+        self.refuse("same_layer must be whether the two sides name one layer_sha256",
+                    same_layer=True)
+
+    def test_what_a_carry_directory_may_not_hold(self):
+        cases = [
+            ("notes.txt", "hello", "one <pageid>.json a page"),
+            ("widget.json", None, "named by its page id"),
+            # isdigit() is true for a superscript two, and int() refuses it
+            ("\u00b2.json", None, "named by its page id"),
+            ("1001.json", "{", "not UTF-8 JSON"),
+            ("1001.json", {"schema": "something/1"}, "schema must be"),
+        ]
+        for name, body, expected in cases:
+            with self.subTest(expected=expected):
+                if body is None:
+                    self.refuse(expected, name=name)
+                    continue
+                if isinstance(body, str):
+                    (self.dir / name).write_text(body, encoding="utf-8")
+                else:
+                    self.write(name, body)
+                with self.assertRaises(build_store.ArticlesError) as caught:
+                    build_store.build(RECORDSET, carry=self.dir)
+                self.assertIn(expected, str(caught.exception))
+                (self.dir / name).unlink()
+
+    def test_a_document_whose_page_is_not_this_builds(self):
+        self.refuse("page is not in this build", name="4242.json", pageid=4242)
+
+    def test_a_float_page_id_is_not_a_page_id(self):
+        self.refuse("pageid must be the integer 1001", pageid=1001.0)
+
+    def test_a_carry_directory_that_is_not_one_is_refused_not_a_crash(self):
+        for path in (self.dir / "missing", self.dir / "file.json"):
+            with self.subTest(path=path.name):
+                if path.name.endswith(".json"):
+                    path.write_text("{}", encoding="utf-8")
+                with self.assertRaises(build_store.ArticlesError) as caught:
+                    build_store.build(RECORDSET, carry=path)
+                self.assertIn("not a directory", str(caught.exception))
+
+    def test_a_symlinked_document_is_refused(self):
+        target = self.dir / "elsewhere.json"
+        target.write_text(json.dumps(self.document()), encoding="utf-8")
+        (self.dir / "1001.json").symlink_to(target)
+        with self.assertRaises(build_store.ArticlesError) as caught:
+            build_store.build(RECORDSET, carry=self.dir)
+        self.assertIn("one <pageid>.json a page", str(caught.exception))
+
+    def test_an_entry_is_held_to_its_keys_its_key_and_its_fate(self):
+        good = self.document()
+        for change, expected in (
+                ({"passages": [{**good["passages"][0], "passage_key": "nope"}]},
+                 "passage_key must be 64 lowercase hex"),
+                ({"passages": [{**good["passages"][0], "fate": "moved"}]},
+                 "fate must be one of"),
+                ({"passages": [{k: v for k, v in good["passages"][0].items() if k != "into"}]},
+                 "missing 'into'"),
+                ({"passages": [{**good["passages"][0], "evil": 1}]}, "unexpected 'evil'"),
+                ({"new_passages": [{**good["new_passages"][0], "fate": "removed"}]},
+                 "fate must be one of new"),
+                ({"passages": "no"}, "passages must be a list"),
+                ({"same_layer": "yes"}, "same_layer must be true or false"),
+                ({"evil": 1}, "unexpected 'evil'")):
+            with self.subTest(expected=expected):
+                self.refuse(expected, **change)
+
+    def test_the_command_line_takes_the_directory(self):
+        self.write("1001.json", self.document())
+        out = self.dir / "store"
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            code = build_store.main(["--record-set", str(RECORDSET), "--out", str(out),
+                                     "--carry", str(self.dir)])
+        self.assertEqual(code, 0, err.getvalue())
+        self.assertTrue((out / "articles/v1/carry/1001.json").is_file())
+
+
 class SupplementTests(SetCopyTest):
     """The optional side files (build_store.apply_supplements): present, absent, and refused when they do not check out.
 

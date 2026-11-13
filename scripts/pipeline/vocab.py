@@ -158,6 +158,9 @@ CUT_FLAG_NOT_A_STATEMENT = "not_a_statement"
 CUT_FLAG_SEVERAL_STATEMENTS = "several_statements"
 CUT_FLAGS = frozenset({CUT_FLAG_NOT_A_STATEMENT, CUT_FLAG_SEVERAL_STATEMENTS})
 
+#: The carry-over map's schema, which the store publishes a page at a time at
+#: ``articles/v1/carry/<pageid>.json`` (scripts/pipeline/carry.py).
+CARRY_SCHEMA = "wikilean.pipeline.carry/1"
 #: What a re-cut did to one passage of the old cut (the carry-over map, stage 8).
 #: ``unchanged`` is the only fate a verdict, a gold label or a known answer carries over.
 CARRY_UNCHANGED = "unchanged"

@@ -291,6 +291,7 @@ widened only until the quote is unique).
 | refuses a target inside the skill repo or a companion | refuses a target inside this checkout, a symlink, or a non-empty directory that is not an earlier set |
 | the licence check reads `registry/sources.yaml` | the licence check reads the source row's own `licence_class` against `scripts/pipeline/sources.py`'s table (stage 9a); until that stage lands, `--licence-class` states it and the export refuses a class that may not be quoted |
 | writes `reports/export.<set-id>.json` into the workspace | writes the same report to `--report <file>`, or stdout |
+| — | `--statement-set <dir> --rendered-sources <dir>` (new, and the two go together): the run was planned from a published cut, so every passage's quote and `span_sha256` are the **set's**, checked against the pinned render and against the sources this export seals, and a row whose own cut states another is refused (STATEMENTS.md section 5) |
 
 The seal's `schema` stays `cf-locate-recordset/1` or `/2` and its keys stay exactly the agreed
 ones. **The format is the contract, not the producer's name**: a seal that said
@@ -451,7 +452,10 @@ a database the producer happens to hold — where WikiLean's own copy lives is s
 question 3, still open. The bundle's conjuncts are computed here, in the one place that holds
 both the inventory's conjuncts and the parts' clauses. Carry-over is computed from spans and
 span text only — never from an item, a statement or a model — and uses stage 2's
-`passage_key`.
+`passage_key`. **Either side may be a sealed statement set** (`--from-set`/`--to-set`,
+docs/STATEMENTS.md section 5a), and `--store-out` writes the map one `<pageid>.json` a
+page, which `build_store.py --carry` publishes at `articles/v1/carry/<pageid>.json` so
+the reader can show the tags of the cut before it.
 
 **What is proved.** From batch 1's four corpora,
 `reports/locate-outcomes.loc-tierA-b1a.jsonl` (549 rows) and `.loc-tierA-b1b.jsonl` (5,242
@@ -524,7 +528,10 @@ lookup and nothing else — and it binds gate rule 4: a worker must accept or re
 with a reason. A **lexical** hit is a hint: a deterministic token-overlap search over the
 index's declaration names and modules, scored by Sørensen–Dice, because this pipeline has no
 full-text engine to rank by and a plan must be reproducible. The task cut, the manifests,
-`gate.json` and the root stay stage 10's.
+`gate.json` and the root stay stage 10's. The cut it plans over is a harvested run
+(`--inventory`) or a sealed statement set (`--statement-set`, refused beside it:
+stages 6b and 4b above), and the task manifests are the same either way but for the
+quote handed to the worker.
 *Source:* `scripts/locate/{plan,candidates,prompts,presets}.py`.
 
 **This is narrower than formal-companion's retrieval, deliberately and at a cost.** Batch 1's

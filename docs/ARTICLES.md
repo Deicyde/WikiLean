@@ -814,6 +814,7 @@ articles/v1/articles/<pageid>.json          the article's view model (below)
 articles/v1/records/<pageid>.jsonl          that article's records, byte for byte as sealed
 articles/v1/index/<shard>.json              title -> page id and summary counts, sharded
 articles/v1/reader/<pageid>.html            optional (--reader-html): the article's pinned revision, its passages marked
+articles/v1/carry/<pageid>.json             optional (--carry): what a re-cut did to each passage of the cut before it
 ```
 
 - **Article view model** (`wikilean.articles.article/1`): `pageid`, `title`, `revision`,
@@ -972,6 +973,66 @@ and the status rule, and no page id or title key. `--campaign` (a campaign id, n
 and is the first set's by `set_id`, and an optional `record_sets` lists every set (its seal
 sha, set id, campaign, created, skill commit, byte budget). Each article keeps its own seal's
 `campaign` and `record_set`, which the feedback route checks against.
+
+### `--carry`: the map of an earlier cut
+
+A re-cut of an article retires the `passage_key`s of the cut before it, so the community
+tags written on those passages stop appearing: the overlay merge is driven by the
+store's passages, and the sealed store no longer holds them. The D1 rows are not
+deleted.
+
+`scripts/pipeline/carry.py` maps an old cut onto a new one from spans and span text
+alone (docs/STATEMENTS.md section 5a), and `--store-out <dir>` writes one
+`<pageid>.json` a page. `build_store.py --carry <dir>` publishes those at
+`articles/v1/carry/<pageid>.json`, canonically, beside the article each is a map of:
+
+```bash
+python3 scripts/articles/build_store.py --record-set <set> --carry <dir> --out <store>
+```
+
+Each document is `wikilean.pipeline.carry/1`, eight keys exactly: `schema`, `pageid`,
+`old` and `new` (each `{source_id, layer_sha256, cut_id}` plus the cut it came from —
+`inventory_run` or `statement_set`), `same_layer`, `passages` (one entry per passage of
+the **old** cut: `passage_key`, `item`, `span`, `scope`, its old `quote`, its `fate` and
+the new passages it went `into`, with `scope_changed` and `conjuncts_changed`),
+`new_passages` and `counts`. So the reader can show an orphaned tag in a fold — "from an
+earlier cut of this article", with the fate and the words it was written on (the quote is
+derived from the old layer, so it is words the reader really showed) — and an editor can
+re-apply one. **Nothing auto-moves:** a tag carries only on the `unchanged` fate, where
+the key is byte-identical and nothing has to move; every other fate means the text
+changed, and no mechanical re-pairing is honest.
+
+What the builder refuses, so that a document filed under a page id is a map of *that*
+article's previous cut and not arbitrary JSON:
+
+- a file that is not a `<pageid>.json` named by an ASCII decimal page id, a symlink, or
+  a `--carry` path that is not a directory;
+- a `pageid` that is not the integer the file name is (`1001.0` is not a page id);
+- a page the build does not hold;
+- a schema that is not the carry schema, a missing or stray top-level key, a
+  `same_layer` that is not a boolean, a side missing `source_id`/`layer_sha256`/`cut_id`
+  or carrying a sha that is not 64 hex;
+- a `same_layer` that is not what the two sides' own `layer_sha256` say: the document
+  states both layers, so the claim is read off them rather than taken;
+- **a `new` side whose `source_id` and `layer_sha256` are not the article's own** — the
+  new side is the cut this store was built from, or the map is of some other history;
+- an entry with a stray or missing key, a `passage_key` that is not 64 hex, a fate
+  outside the vocabulary (`new_passages` takes `new` alone), or no `into` list;
+- an `into` entry that is not `{passage_key, item, span, scope}` with a 64-hex key, or a
+  fate whose `into` is not the shape that fate means (`carry.py`'s own `_fate`):
+  `unchanged` is **one** new passage **with the entry's own `passage_key`** — which is
+  the whole basis for carrying a tag on it and nothing else — `split` is two or more,
+  `removed` and `changed` none, and `end_moved`, `merged` and `reshaped` exactly one;
+- a `scope_changed` or `conjuncts_changed` that is not a boolean where the passage went
+  somewhere, or not null where it went nowhere (there was nothing to compare);
+- `counts` that are not the entries' own fates, recomputed: the fold shows the counts
+  without reading the entries, so they are not taken on trust.
+
+A page of the build with no document is normal (it was never re-cut). `current.json`
+gains `carry: {pages}` **when there is a map to publish**; `--carry` over a directory
+with nothing in it builds the store it would have built, so an operator who always passes
+the flag gets no difference on the runs with no re-cut. Optional within v1: a build
+without `--carry` is byte for byte the build it always was.
 
 ### Supplements: five optional side files
 

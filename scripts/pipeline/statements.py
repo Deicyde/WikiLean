@@ -85,6 +85,18 @@ class StatementSet:
         return {(sid, row["item"]): records_mod.Cut(dict(row["quote"]), row["span_sha256"])
                 for sid, rows in self.statements.items() for row in rows}
 
+    def spans(self) -> dict[tuple[str, str], list[int]]:
+        """``{(source_id, item): [start, end]}`` — where each statement is on the layer.
+
+        A record carries the span its outcome row gives it beside the ``span_sha256`` of
+        the cut it is written with (``records.subject_end``), so an export from a
+        published cut holds the row's span to the sealed one: the two are offsets and a
+        hash of one stretch of text, and a record that pairs the hash of one passage with
+        the offsets of another would publish a highlight over text nobody judged.
+        """
+        return {(sid, row["item"]): list(row["span"])
+                for sid, rows in self.statements.items() for row in rows}
+
 
 # ---- the seal ----------------------------------------------------------------------------
 
@@ -520,6 +532,16 @@ def frozen_inventory(st: StatementSet | Path, sources_dir: Path | None = None
         raise StatementSetProblem("\n".join(found))
     st.verified_against = Path(sources_dir)
     return out
+
+
+def passage_index(st: StatementSet) -> dict[tuple[str, str], dict]:
+    """``{(source_id, item): statement}`` — what :func:`cut.passage_index` gives stage 9d.
+
+    A challenge plan takes each record's quote and span from the cut, because both are
+    the cut's and a re-cut moves them. A published cut answers that the same way.
+    """
+    return {(sid, row["item"]): dict(row)
+            for sid, rows in st.statements.items() for row in rows}
 
 
 def counts(st: StatementSet) -> dict:

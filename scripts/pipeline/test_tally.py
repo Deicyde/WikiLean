@@ -770,6 +770,166 @@ class CarryTests(unittest.TestCase):
         self.assertTrue(carry.carries({**unchanged, "conjuncts_changed": True},
                                       reads_conjuncts=False))
 
+    def test_an_entry_carries_the_old_quote_the_tag_was_written_on(self):
+        """The quote is DERIVED from the layer, the way a record's and a sealed
+        statement's are — the words the reader saw — not copied from the document, whose
+        own quote is whatever the worker was cut at and nothing ever displayed."""
+        import records as records_mod  # noqa: PLC0415
+
+        old = carry.Cut(PAGEID, SOURCE, LAYER, keys.sha256_text(LAYER),
+                        [{"item": ALPHA, "span": SPANS["alpha"], "scope": "formal_math",
+                          "quote": {"exact": "Alpha states that", "prefix": "",
+                                    "suffix": ""}}])
+        entry = carry.map_page(old, self.cut(LAYER, [SPANS["beta"]]))["passages"][0]
+        self.assertEqual(entry["fate"], "removed")
+        self.assertEqual(entry["quote"],
+                         dict(records_mod.cut_passage(LAYER, SPANS["alpha"]).quote))
+        # and a cut with no quote on its rows gets the same one, because it is the span's
+        self.assertEqual(carry.map_page(self.cut(LAYER, [SPANS["alpha"]]),
+                                        self.cut(LAYER, [SPANS["beta"]])
+                                        )["passages"][0]["quote"], entry["quote"])
+
+    def test_the_store_document_is_one_file_a_page_and_holds_no_time_or_path(self):
+        old = carry.Side("inv-1", {PAGEID: [(SOURCE, {
+            "mode": vocab.MODE_INVENTORY, "source_id": SOURCE,
+            "layer_sha256": keys.sha256_text(LAYER),
+            "passages": [{"item": ALPHA, "span": SPANS["alpha"], "scope": "formal_math"}]})]},
+            {SOURCE: LAYER})
+        new = carry.Side("inv-2", {PAGEID: [(SOURCE, {
+            "mode": vocab.MODE_INVENTORY, "source_id": SOURCE,
+            "layer_sha256": keys.sha256_text(LAYER),
+            "passages": [{"item": BETA, "span": SPANS["beta"], "scope": "formal_math"}]})]},
+            {SOURCE: LAYER})
+        doc = carry.build(old, new)
+        pages = carry.page_documents(doc)
+        self.assertEqual(sorted(pages), [PAGEID])
+        page = pages[PAGEID]
+        self.assertEqual(page["schema"], vocab.CARRY_SCHEMA)
+        self.assertEqual(page["pageid"], PAGEID)
+        self.assertEqual(page["old"]["inventory_run"], "inv-1")
+        self.assertEqual(page["new"]["inventory_run"], "inv-2")
+        self.assertEqual(page["counts"], {"new": 1, "removed": 1})
+        with tempfile.TemporaryDirectory() as tmp:
+            written = carry.write_page_documents(doc, Path(tmp))
+            self.assertEqual([path.name for path in written], [f"{PAGEID}.json"])
+            first = written[0].read_bytes()
+            carry.write_page_documents(doc, Path(tmp))
+            self.assertEqual(written[0].read_bytes(), first)   # a re-run writes the bytes
+            self.assertEqual(json.loads(first.decode("utf-8")), page)
+
+    def test_a_sealed_statement_set_is_a_side_of_the_map(self):
+        sys.path.insert(0, str(HERE / "fixtures"))
+        import make_statement_fixture as sfixture  # noqa: PLC0415
+        import statements as statements_mod  # noqa: PLC0415
+
+        st = statements_mod.read_set(HERE / "fixtures" / "statementset")
+        source_id = "enwiki-1005-3006"
+        layer = sfixture.layer_of(source_id)[0]
+        with tempfile.TemporaryDirectory() as tmp:
+            sources = Path(tmp)
+            (sources / source_id).mkdir(parents=True)
+            (sources / source_id / "layer.txt").write_text(layer, encoding="utf-8")
+            side = carry.statement_side(st, sources)
+        self.assertEqual(side.named(),
+                         {"statement_set": {"set_id": st.set_id,
+                                            "seal_sha256": st.seal_sha256}})
+        doc = carry.build(side, side)
+        page = carry.page_documents(doc)[1005]
+        self.assertEqual(page["old"], page["new"])
+        self.assertEqual(page["counts"], {"unchanged": 5})
+        # the published cut's own quote rides along, which is what an orphaned tag shows
+        self.assertTrue(all(entry["quote"]["exact"] for entry in page["passages"]))
+        self.assertEqual([entry["fate"] for entry in page["passages"]], ["unchanged"] * 5)
+
+    def test_the_store_directory_holds_this_map_and_nothing_else(self):
+        old = carry.Side("inv-1", {PAGEID: [(SOURCE, {
+            "mode": vocab.MODE_INVENTORY, "source_id": SOURCE,
+            "layer_sha256": keys.sha256_text(LAYER),
+            "passages": [{"item": ALPHA, "span": SPANS["alpha"], "scope": "formal_math"}]})]},
+            {SOURCE: LAYER})
+        doc = carry.build(old, old)
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "carry"
+            carry.write_page_documents(doc, out)
+            self.assertEqual([p.name for p in out.iterdir()], [f"{PAGEID}.json"])
+            # a page that drops out of the map does not go on being published
+            carry.write_page_documents({**doc, "pages": []}, out)
+            self.assertEqual(list(out.iterdir()), [])
+            (out / "notes.txt").write_text("x", encoding="utf-8")
+            with self.assertRaises(carry.CarryRefused) as caught:
+                carry.write_page_documents(doc, out)
+            self.assertIn("--store-out writes one <pageid>.json a page",
+                          str(caught.exception))
+
+    def test_the_command_line_writes_the_store_documents_and_refuses_a_refused_page(self):
+        import io  # noqa: PLC0415
+        from contextlib import redirect_stderr, redirect_stdout  # noqa: PLC0415
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            sources = root / "sources" / SOURCE
+            sources.mkdir(parents=True)
+            (sources / "layer.txt").write_text(LAYER, encoding="utf-8")
+            manifest = root / "manifest.jsonl"
+            manifest.write_text(json.dumps({"source_id": SOURCE, "pageid": PAGEID}) + "\n",
+                                encoding="utf-8")
+            corpus = root / "corpus"
+            for run, spans in (("inv-1", [SPANS["alpha"]]), ("inv-2", [SPANS["beta"]])):
+                path = corpus / run / f"{run}-t1" / f"{SOURCE}.json"
+                path.parent.mkdir(parents=True)
+                path.write_text(json.dumps({
+                    "schema": vocab.DOCUMENT_SCHEMA, "mode": vocab.MODE_INVENTORY,
+                    "source_id": SOURCE, "layer_sha256": keys.sha256_text(LAYER),
+                    "passages": [{"item": ALPHA, "span": span, "scope": "formal_math"}
+                                 for span in spans]}), encoding="utf-8")
+            out = root / "carry"
+            argv = ["--from-run", "inv-1", "--to-run", "inv-2", "--corpus", str(corpus),
+                    "--manifest", str(manifest), "--sources", str(root / "sources"),
+                    "--store-out", str(out)]
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                self.assertEqual(carry.main(argv), 0)
+            page = json.loads((out / f"{PAGEID}.json").read_text(encoding="utf-8"))
+            self.assertEqual(page["schema"], vocab.CARRY_SCHEMA)
+            self.assertEqual(page["counts"], {"new": 1, "removed": 1})
+            # a page the map could not be computed for is never published as "nothing moved"
+            (sources / "layer.txt").unlink()
+            err = io.StringIO()
+            with redirect_stdout(io.StringIO()), redirect_stderr(err):
+                self.assertEqual(carry.main(argv), 2)
+            self.assertIn("refuses to publish a map with 1 refused page(s)", err.getvalue())
+
+    def test_the_store_documents_are_never_written_for_part_of_a_corpus(self):
+        """--store-out writes the WHOLE map and the directory holds that and nothing
+        else, so publishing a --source run would delete every page it did not name."""
+        import io  # noqa: PLC0415
+        from contextlib import redirect_stderr  # noqa: PLC0415
+
+        err = io.StringIO()
+        with redirect_stderr(err), self.assertRaises(SystemExit) as caught:
+            carry.main(["--from-set", "a", "--to-set", "b", "--sources", "c",
+                        "--source", SOURCE, "--store-out", "d"])
+        self.assertEqual(caught.exception.code, 2)
+        self.assertIn("--store-out publishes the whole map", err.getvalue())
+
+    def test_a_sealed_set_the_render_contradicts_is_not_mapped_under_our_own_keys(self):
+        """The map's keys are recomputed from the layer, so a set whose sealed
+        span_sha256 is not that layer's would be published under keys the store never
+        had: refused, rather than quietly re-keyed."""
+        sys.path.insert(0, str(HERE / "fixtures"))
+        import make_statement_fixture as sfixture  # noqa: PLC0415
+        import statements as statements_mod  # noqa: PLC0415
+
+        st = statements_mod.read_set(HERE / "fixtures" / "statementset")
+        source_id = "enwiki-1005-3006"
+        layer = sfixture.layer_of(source_id)[0].replace("sprocket", "widget", 1)
+        with tempfile.TemporaryDirectory() as tmp:
+            sources = Path(tmp)
+            (sources / source_id).mkdir(parents=True)
+            (sources / source_id / "layer.txt").write_text(layer, encoding="utf-8")
+            with self.assertRaises(carry.CarryRefused) as caught:
+                carry.statement_side(st, sources)
+        self.assertIn("the published keys are not this layer's", str(caught.exception))
+
     def test_carry_rows_marks_each_row(self):
         cut = self.cut(LAYER, [SPANS["alpha"]])
         doc = {"pages": [carry.map_page(cut, cut)]}
