@@ -275,7 +275,7 @@ export function registerBundleRoutes(app: Hono<{ Bindings: Env }>): void {
 
   app.get("/api/index/bundles/:sha{[0-9a-f]{64}}", c => serve(c, c.req.param("sha"), null));
 
-  app.get("/api/index/bundles/:sha{[0-9a-f]{64}}/files/:path{.+}", c => {
+  app.get("/api/index/bundles/:sha{[0-9a-f]{64}}/files/:path{.+}", async c => {
     // The path as the client sent it, never decoded: a listed path needs no encoding, so
     // one that arrives encoded names nothing the manifest lists.
     const sha = c.req.param("sha");
