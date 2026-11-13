@@ -217,6 +217,16 @@ describe("claiming", () => {
     expect(body.packages.map(x => [x.run_id, x.available])).toEqual([["loc-1", false], ["loc-2", false]]);
   });
 
+  it("gives a package two agents race for to exactly one of them", async () => {
+    const { h, bucket } = world();
+    await publish(h, bucket, "loc-1");
+    const a = await agent(h), b = await agent(h, "u-admin");
+    const raced = await Promise.all([claim(h, a.token), claim(h, b.token)]);
+    expect(raced.map(r => r.res.status).sort()).toEqual([200, 201]);
+    expect(raced.filter(r => r.body.claim).length).toBe(1);
+    expect(h.db.prepare("SELECT COUNT(*) AS n FROM contrib_claims WHERE state='live'").get()).toEqual({ n: 1 });
+  });
+
   it("answers a repeated request with its claim, and takes a named run only when it is open and free", async () => {
     const { h, bucket } = world();
     for (const run of ["loc-1", "loc-2"]) await publish(h, bucket, run);
