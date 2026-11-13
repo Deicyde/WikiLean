@@ -135,6 +135,11 @@ mark.atl[data-status="partial"] { border-bottom-width: 2px; }
 /* A passage's text is ink on its wash, even in a quiet hatnote or caption; link text keeps its link colour. */
 .atlr-article a mark.atl { color: inherit; }
 mark.atl[data-status="not_formalized"] { border-bottom-width: 3px; }
+/* A statement no library has been searched for IS highlighted — neutrally: the theme's grey
+   wash and a dashed grey underline, its own pattern, so it reads as "here is a statement",
+   never as a status. The builder's mark carries the passage's outcome ("unchecked"); a store
+   that writes the summary status instead ("not_checked") paints the same. */
+mark.atl[data-status="unchecked"], mark.atl[data-status="not_checked"] { border-bottom-style: dashed; }
 /* A passage with no status gets no highlight until it is read: the builder refuses a mark on one,
    and a mark from an older store reads as the plain text around it. */
 mark.atl[data-status="unresolved"] { background: none; border-bottom: 0; text-decoration: none; color: inherit; cursor: inherit; }
@@ -192,6 +197,7 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
 .atlr-row:hover, .atlr-row.is-hover { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); }
 .atlr-swatch { grid-row: 1 / span 2; margin-top: 3px; width: 12px; height: 12px; border-radius: 2px; background: var(--st-bg); border: 1.5px var(--st-line) var(--st); box-sizing: border-box; }
 .atlr-swatch[data-status="not_formalized"] { border-width: 3px; }
+.atlr-swatch[data-status="not_checked"] { border-style: dashed; }
 .atlr-swatch[data-status="unresolved"] { border: 1.5px dashed var(--c-untouched); }
 .atlr-row-text { font-family: var(--serif); font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
 .atlr-row-text .articles-math-display { display: inline; }

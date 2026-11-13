@@ -582,7 +582,7 @@ async function runGuardedArticleBatch(
 // beside the Lean declaration that formalizes it, plus the published build's totals.
 // It never throws, and an unbound or unpublished store simply leaves the block out.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v13"; // v13: one real example and the build's totals
+  const cacheKey = "page:home:v14"; // v14: "passages checked" excludes phase 1's unchecked statements
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = landingPage(await articlesExample(c.env));

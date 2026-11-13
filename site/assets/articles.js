@@ -56,6 +56,10 @@
     var chips = Array.prototype.slice.call(article.querySelectorAll(".articles-chip[data-filter]"));
     var note = article.querySelector(".articles-filter-text");
     var clear = article.querySelector(".articles-clear");
+    // What this page calls its passages: "statements" on a page nothing has checked
+    // (articles-render.ts filterNote writes data-noun only there).
+    var noteBox = article.querySelector(".articles-filter-note");
+    var noun = (noteBox && noteBox.getAttribute("data-noun")) || "passages";
 
     // Two independent facets: at most one status and at most one library,
     // combined with AND ("Statement only, in Mathlib"). A second chip in the
@@ -83,7 +87,7 @@
       var words = [];
       if (active.status) words.push(labels.status);
       if (active.library) words.push("in " + labels.library);
-      if (note) note.textContent = any ? "Showing " + shown + " of " + passages.length + " passages: " + words.join(", ") + "." : "";
+      if (note) note.textContent = any ? "Showing " + shown + " of " + passages.length + " " + noun + ": " + words.join(", ") + "." : "";
       if (clear) clear.hidden = !any;
     };
     chips.forEach(function (chip) {
@@ -525,8 +529,9 @@
     var count = document.getElementById("articles-count");
     var total = Number(table.getAttribute("data-total")) || 0;
     var shards = (table.getAttribute("data-shards") || "").split(/\s+/).filter(Boolean);
-    // The statuses a passage can be given: one with no status yet is in no column and no count,
-    // as the server-rendered rows have it (articles-render.ts ARTICLE_STATUSES).
+    // The statuses a CHECK can give a passage: one with no status yet is in no column and no
+    // count, and a statement no library has been searched for takes no share of the bar, as
+    // the server-rendered rows have it (articles-render.ts CHECKED_STATUSES).
     var STATUSES = ["formalized", "statement_only", "partial", "not_formalized"];
     var libraryNames = {};
     try { libraryNames = JSON.parse(table.getAttribute("data-library-names") || "{}") || {}; } catch (e) { libraryNames = {}; }
@@ -552,9 +557,20 @@
     var barFor = function (entry) {
       var total = 0;
       STATUSES.forEach(function (s) { total += Number(entry[s]) || 0; });
-      if (!total) return el("span", "articles-muted", "no status yet");
+      var notChecked = Number(entry.not_checked) || 0;
+      if (!total) {
+        // Nothing checked: the empty track, named for what is waiting (articles-render.ts
+        // emptyStatusBar), not a bar that failed to draw.
+        if (!notChecked) return el("span", "articles-muted", "no status yet");
+        var empty = el("div", "articles-bar is-empty");
+        empty.setAttribute("role", "img");
+        empty.setAttribute("aria-label", notChecked + (notChecked === 1 ? " statement" : " statements") + ": none checked yet");
+        return empty;
+      }
       var bar = el("div", "articles-bar");
       var words = [];
+      // The bar is over the CHECKED passages; its name says so where some are not.
+      var noun = notChecked ? " checked passage" : " passage";
       STATUSES.forEach(function (s) {
         var n = Number(entry[s]) || 0;
         if (!n) return;
@@ -566,16 +582,19 @@
         words.push(n + " " + STATUS_WORDS[s]);
       });
       bar.setAttribute("role", "img");
-      bar.setAttribute("aria-label", total + (total === 1 ? " passage: " : " passages: ") + words.join(", "));
+      bar.setAttribute("aria-label", total + noun + (total === 1 ? ": " : "s: ") + words.join(", "));
       return bar;
     };
     var rowFor = function (entry) {
       var tr = el("tr");
       var shown = Math.max(0, (Number(entry.passages) || 0) - (Number(entry.unresolved) || 0));
+      var notChecked = Number(entry.not_checked) || 0;
+      var checked = Math.max(0, shown - notChecked);
       var ids = Array.isArray(entry.libraries) ? entry.libraries : [];
       tr.setAttribute("data-title", fold(entry.title));
-      tr.setAttribute("data-passages", String(shown));
+      tr.setAttribute("data-passages", String(checked));
       tr.setAttribute("data-formalized", String(Number(entry.formalized) || 0));
+      if (notChecked) tr.setAttribute("data-not-checked", String(notChecked));
       tr.setAttribute("data-libraries", String(ids.length));
       tr.setAttribute("data-importance", String(entry.importance || ""));
       var th = el("th");
@@ -587,7 +606,7 @@
       var cov = el("td", "articles-cov");
       cov.appendChild(barFor(entry));
       tr.appendChild(cov);
-      tr.appendChild(el("td", "num", shown));
+      tr.appendChild(el("td", "num", notChecked ? checked + " of " + shown + " checked" : checked));
       var libs = el("td", "num");
       if (!ids.length) {
         libs.appendChild(el("span", "articles-muted", "none"));

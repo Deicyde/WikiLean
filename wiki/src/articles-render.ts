@@ -56,12 +56,12 @@ import {
 import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=13";
-export const ARTICLES_JS = "/assets/articles.js?v=8";
+export const ARTICLES_CSS = "/assets/articles.css?v=14";
+export const ARTICLES_JS = "/assets/articles.js?v=9";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
-export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=6";
-export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=5";
+export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=7";
+export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=6";
 const STYLE_CSS = "/assets/style.css?v=11";
 
 const text = (s: string) => htmlEscape(String(s ?? ""), false);
@@ -96,21 +96,44 @@ const STATUS: Record<SummaryStatus, { label: string; icon: string; plural: strin
   statement_only: { label: "Statement only", icon: "◐", plural: "statement only" },
   partial: { label: "Partial", icon: "◔", plural: "partial" },
   not_formalized: { label: "Not formalized", icon: "✕", plural: "not formalized" },
+  // Phase 1 (the statement-set design, section 3): the statement was cut and no library has
+  // been searched for it. Shown only where there is one (shownStatuses), and never counted,
+  // coloured or worded as "not formalized", which is the opposite claim.
+  not_checked: { label: "Not checked yet", icon: "○", plural: "not checked yet" },
   // Never shown: a passage with no status is set aside (ARTICLE_STATUSES, below), so it gets no
   // status word, icon or count anywhere; this entry only completes the record.
   unresolved: { label: "No status yet", icon: "", plural: "with no status yet" },
 };
-const STATUS_ORDER: SummaryStatus[] = ["formalized", "statement_only", "partial", "not_formalized", "unresolved"];
+const STATUS_ORDER: SummaryStatus[] = ["formalized", "statement_only", "partial", "not_formalized", "not_checked", "unresolved"];
 // The statuses the pages show. A passage with no status ("unresolved" in the store) gets no
 // highlight and no status until someone reads it (the maintainer's decision, 2026-11-02, after
 // PD5): the article views set it aside (articleParts), and the dashboard and the article box leave
 // it out of their counts and their statuses, and do not count it either. The store's JSON keeps it.
 const ARTICLE_STATUSES: SummaryStatus[] = STATUS_ORDER.filter((s) => s !== "unresolved");
+// The statuses a check can give a passage: the coverage bar's segments, and what "checked"
+// counts. A statement nothing has searched for is in neither — it is not a shade of
+// "not formalized", so it never takes a share of the bar.
+const CHECKED_STATUSES: SummaryStatus[] = ARTICLE_STATUSES.filter((s) => s !== "not_checked");
+
+// The statuses a page's legend, columns and chips offer, given its counts: the four a check can
+// give, always, and "not checked yet" only where something is not checked (a page of checked
+// passages gains no fifth column of zeros).
+function shownStatuses(byStatus: Partial<Record<SummaryStatus, number>> | null | undefined): SummaryStatus[] {
+  return count(byStatus?.not_checked) > 0 ? ARTICLE_STATUSES : CHECKED_STATUSES;
+}
+
+// How many of a page's passages a check has given a status, and how many it has not.
+function checkedCounts(byStatus: Partial<Record<SummaryStatus, number>> | null | undefined): { checked: number; notChecked: number } {
+  return {
+    checked: CHECKED_STATUSES.reduce((sum, s) => sum + count(byStatus?.[s]), 0),
+    notChecked: count(byStatus?.not_checked),
+  };
+}
 
 // A store's counts by status as the pages show them: the statuses a passage can be given, and
 // none for the passages that have none yet.
 function shownStatusCounts(raw: Partial<Record<SummaryStatus, number>> | null | undefined): Record<SummaryStatus, number> {
-  const counts = { formalized: 0, statement_only: 0, partial: 0, not_formalized: 0, unresolved: 0 };
+  const counts = emptyStatusCounts();
   for (const s of ARTICLE_STATUSES) counts[s] = count(raw?.[s]);
   return counts;
 }
@@ -123,6 +146,7 @@ const READER_LEGEND: Record<SummaryStatus, string> = {
   statement_only: "Lean states it, but the proof is not finished",
   partial: "Lean states part of it, or a more general or special form",
   not_formalized: "searched every library and not found",
+  not_checked: "no library has been searched for it; not counted as not formalized",
   unresolved: "nobody has read it yet; not counted as not formalized",
 };
 
@@ -377,11 +401,27 @@ function timeRange(start: string, end: string): string {
     : `${a.d} ${a.m} ${a.y}, ${a.hm} – ${b.d} ${b.m} ${b.y}, ${b.hm} UTC`;
 }
 
-// The seal fields a /2 store carries per article (build_store.seal_summary).
-interface SealSummary { set_id?: string; schema?: string; status_rule?: number; created?: string; skill_commit?: string }
+// The seal fields a /2 store carries per article (build_store.seal_summary). A statement
+// set's seal names its producer_commit instead of a skill_commit and carries no status rule.
+interface SealSummary {
+  set_id?: string; schema?: string; status_rule?: number; created?: string;
+  skill_commit?: string; producer_commit?: string;
+}
 
 // What the record set does not record, said rather than guessed (display rule).
 const UNRECORDED = "The record set does not record the model or the operator that ran these runs.";
+// The same for a statement set, whose runs cut the statements and searched nothing.
+const UNRECORDED_CUT = "The statement set does not record the model or the operator that cut these statements.";
+// Said on every page of statements nothing has searched for, so no reader takes the absence
+// of a Lean card for an absence in Lean (the statement-set design, section 3).
+export const NO_LOCATE_RUN =
+  "No locate run has run over these statements: this page says what the article states, not whether Lean has it.";
+
+// A sealed set of statements rather than of locations: the cut alone, published on its own
+// (the statement-set design, section 1). Its seal is WikiLean's, not formal-companion's.
+function isStatementSet(schema: unknown): boolean {
+  return typeof schema === "string" && schema.startsWith("wikilean.statement-set/");
+}
 
 // One record set's provenance as Details lines: its runs, its set, when and by
 // which producer commit it was exported, under which status rule, its seal.
@@ -389,18 +429,26 @@ const UNRECORDED = "The record set does not record the model or the operator tha
 // line naming them is left out rather than said twice.
 function recordSetLines(campaign: string, seal: SealSummary | null | undefined, sealSha: string, named = false): string[] {
   const runs = campaignRuns(campaign);
+  // A statement set names the run that CUT the statements; nothing located or re-checked them.
+  const cut = isStatementSet(seal?.schema);
   const lines: string[] = [];
   if (!(named && runs)) {
     lines.push(runs
-      ? `Locate run <code>${text(runs.locate)}</code>${runs.challenge ? `, re-checked by challenge run <code>${text(runs.challenge)}</code>` : ", not re-checked by a challenge run"}.`
+      ? cut
+        ? `Cut run <code>${text(runs.locate)}</code>; no locate run has run over these statements.`
+        : `Locate run <code>${text(runs.locate)}</code>${runs.challenge ? `, re-checked by challenge run <code>${text(runs.challenge)}</code>` : ", not re-checked by a challenge run"}.`
       : `Campaign <code>${text(campaign)}</code>.`);
   }
   if (seal && typeof seal === "object") {
     const day = dayOf(String(seal.created ?? ""));
     const tags = [typeof seal.schema === "string" ? text(seal.schema) : "",
-      Number.isSafeInteger(seal.status_rule) ? `statuses by status rule ${int(seal.status_rule)}` : ""].filter(Boolean);
-    lines.push(`Record set <code>${text(String(seal.set_id ?? ""))}</code>${tags.length ? ` (${tags.join(", ")})` : ""}` +
-      `${day ? `, exported ${text(day)}` : ""} by formal-companion at commit <code title="${attr(String(seal.skill_commit ?? ""))}">${text(sha7(String(seal.skill_commit ?? "")))}</code>.`);
+      !cut && Number.isSafeInteger(seal.status_rule) ? `statuses by status rule ${int(seal.status_rule)}` : ""].filter(Boolean);
+    const commit = String(seal.producer_commit ?? seal.skill_commit ?? "");
+    lines.push(cut
+      ? `Statement set <code>${text(String(seal.set_id ?? ""))}</code>${tags.length ? ` (${tags.join(", ")})` : ""}` +
+        `${day ? `, cut ${text(day)}` : ""} by WikiLean at commit <code title="${attr(commit)}">${text(sha7(commit))}</code>.`
+      : `Record set <code>${text(String(seal.set_id ?? ""))}</code>${tags.length ? ` (${tags.join(", ")})` : ""}` +
+        `${day ? `, exported ${text(day)}` : ""} by formal-companion at commit <code title="${attr(commit)}">${text(sha7(commit))}</code>.`);
   }
   if (sealSha) lines.push(`Seal sha256 <code>${text(sealSha)}</code>.`);
   return lines;
@@ -997,18 +1045,33 @@ function tableWrap(label: string, table: string): string {
   return `<div class="articles-table-wrap" role="region" tabindex="0" aria-label="${attr(`Table: ${label}`)}">${table}</div>`;
 }
 
-// The bar over the statuses a passage can be shown with (ARTICLE_STATUSES): never a segment for
-// passages with no status, whatever counts it is given.
+// The bar over the statuses a check can give (CHECKED_STATUSES): never a segment for passages
+// with no status, nor for statements no library has been searched for — the bar is how the
+// checked passages came out, and a statement nothing searched for is not a share of it.
 function statusBar(raw: Record<SummaryStatus, number>, one: string, many: string): string {
-  const counts = Object.fromEntries(ARTICLE_STATUSES.map((s) => [s, count(raw?.[s])])) as Record<SummaryStatus, number>;
-  const total = ARTICLE_STATUSES.reduce((sum, s) => sum + counts[s], 0);
+  const counts = Object.fromEntries(CHECKED_STATUSES.map((s) => [s, count(raw?.[s])])) as Record<SummaryStatus, number>;
+  const total = CHECKED_STATUSES.reduce((sum, s) => sum + counts[s], 0);
   if (total === 0) return "";
-  const label = ARTICLE_STATUSES.filter((s) => counts[s]).map((s) => `${counts[s]} ${STATUS[s].plural}`).join(", ");
-  const segments = ARTICLE_STATUSES.filter((s) => counts[s]).map((s) => {
+  const label = CHECKED_STATUSES.filter((s) => counts[s]).map((s) => `${counts[s]} ${STATUS[s].plural}`).join(", ");
+  const segments = CHECKED_STATUSES.filter((s) => counts[s]).map((s) => {
     const pct = ((counts[s] / total) * 100).toFixed(2);
     return `<span class="articles-seg" data-status="${s}" style="width:${pct}%" title="${attr(`${counts[s]} ${STATUS[s].plural}`)}"></span>`;
   }).join("");
   return `<div class="articles-bar" role="img" aria-label="${attr(`${plural(total, one, many)}: ${label}`)}">${segments}</div>`;
+}
+
+// The same bar with nothing checked: the empty track, which says how many statements are
+// waiting (the statement-set design, section 3: "an empty status bar").
+function emptyStatusBar(notChecked: number, one = "statement", many = "statements"): string {
+  return `<div class="articles-bar is-empty" role="img" ` +
+    `aria-label="${attr(`${plural(count(notChecked), one, many)}: none checked yet`)}"></div>`;
+}
+
+// The word a page's passages go by: "statement" while nothing is checked (the article is a cut
+// and nothing more), "passage" as soon as anything is.
+function passageNoun(byStatus: Partial<Record<SummaryStatus, number>> | null | undefined): { one: string; many: string } {
+  const { checked, notChecked } = checkedCounts(byStatus);
+  return checked === 0 && notChecked > 0 ? { one: "statement", many: "statements" } : { one: "passage", many: "passages" };
 }
 
 // The location that justifies a located passage's status: the store's basis
@@ -1644,9 +1707,12 @@ ${foot}
 </article>`;
 }
 
-// The sealed status the store published.
-function passageStatus(passage: ArticlesPassage): SummaryStatus {
-  return passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
+// The sealed status the store published. A statement set's passage carries no status at all
+// (outcome "unchecked", status null), which is not_checked here and nowhere near not_formalized.
+export function passageStatus(passage: Pick<ArticlesPassage, "outcome" | "status">): SummaryStatus {
+  if (passage.outcome === "unresolved") return "unresolved";
+  if (passage.outcome === "unchecked") return "not_checked";
+  return asStatus(passage.status);
 }
 
 // The status the page shows: the merged one by default (decision 4 — otherwise
@@ -1782,6 +1848,14 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
     parts.push(`<p class="articles-overlay-line">With community edits: ${text(STATUS[status].label)}.` +
       ` As published it is ${text(STATUS[sealedStatus].label)}.</p>`);
   }
+  // A statement nothing has searched for says exactly that, in its own neutral box: the cut
+  // found it and no locate run has run. It is said whenever the SEALED status is not_checked,
+  // so a community tag that moves the shown status does not quietly turn it into a claim
+  // about the libraries (the line above already says which status is whose).
+  if (sealedStatus === "not_checked") {
+    parts.push(`<p class="articles-unchecked"><span class="articles-ico" aria-hidden="true">${STATUS.not_checked.icon}</span>` +
+      `Not checked yet — no library has been searched for this statement.</p>`);
+  }
   // A located passage says, in words, which location gives it its status. An
   // absence says so in its own box below (a passage with no status is set aside,
   // articleParts, and never reaches here). When a
@@ -1915,16 +1989,29 @@ function chip(filter: string, label: string, n: number, title: string, status?: 
 // middle dot 1 formalized".
 const COUNT_DOT = `<span class="articles-dot" aria-hidden="true">·</span>`;
 
+// One count in that line: the status's icon and its word.
+function miniCount(status: SummaryStatus, words: string): string {
+  return `<span class="articles-mini" data-status="${status}"><span class="articles-ico" aria-hidden="true">${STATUS[status].icon}</span>` +
+    `${text(words)}</span>`;
+}
+
 // The one line under the title: how many passages the page shows, then each status
 // it shows them with. A status no passage has is left out; the passages with no
 // status yet are counted apart, in the muted tail, as they are everywhere else.
+// Statements nothing has searched for are counted here too, as their own figure and never
+// inside another ("89 statements · none checked yet", the statement-set design, section 3).
 // `lead` replaces the passage count at its head (the list page leads with its articles).
 function countsLine(byStatus: Record<SummaryStatus, number>, nUnread: number, lead: string[] = []): string {
-  const total = ARTICLE_STATUSES.reduce((sum, s) => sum + count(byStatus[s]), 0);
-  const head = lead.length ? lead : [`<b>${plural(total, "passage", "passages")}</b>`];
-  const parts = ARTICLE_STATUSES.filter((s) => count(byStatus[s]) > 0).map((s) =>
-    `<span class="articles-mini" data-status="${s}"><span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>` +
-    `${int(byStatus[s])} ${text(STATUS[s].plural)}</span>`);
+  const { checked, notChecked } = checkedCounts(byStatus);
+  const noun = passageNoun(byStatus);
+  const head = lead.length ? lead : [`<b>${plural(checked + notChecked, noun.one, noun.many)}</b>`];
+  const parts = CHECKED_STATUSES.filter((s) => count(byStatus[s]) > 0)
+    .map((s) => miniCount(s, `${int(byStatus[s])} ${STATUS[s].plural}`));
+  if (notChecked > 0) {
+    // Nothing checked at all: the head already said how many there are, so the tail says only
+    // that none of them has been checked.
+    parts.push(miniCount("not_checked", checked === 0 ? "none checked yet" : `${int(notChecked)} ${STATUS.not_checked.plural}`));
+  }
   return `<p class="articles-counts" id="articles-counts">${[...head, ...parts].join(COUNT_DOT)}</p>`;
 }
 
@@ -1932,8 +2019,10 @@ function countsLine(byStatus: Record<SummaryStatus, number>, nUnread: number, le
 // per status, pressable (both scripts read data-filter and set aria-pressed). A
 // status no passage has is inert, as a zero chip always was, and what each status
 // means is the button's title and the "About this page" fold's first section.
+// "Not checked yet" is offered only where there is one: an article nobody left uncut
+// gains no fifth, always-empty chip.
 function statusKey(byStatus: Record<SummaryStatus, number>): string {
-  const chips = ARTICLE_STATUSES.map((s) => {
+  const chips = shownStatuses(byStatus).map((s) => {
     const mark = `${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>`;
     if (count(byStatus[s]) === 0) {
       return `<span class="articles-chip is-static is-zero" data-status="${s}">${mark}${text(STATUS[s].label)}</span>`;
@@ -1945,10 +2034,13 @@ function statusKey(byStatus: Record<SummaryStatus, number>): string {
 }
 
 // The line a filter writes, and the button that clears it. The reader's script finds
-// them by id, the card list's by class; both are here so the two pages read alike.
-function filterNote(ids: boolean): string {
-  return `<p class="articles-filter-note" role="status"><span class="articles-filter-text"${ids ? ` id="atlr-filter-text"` : ""}></span> ` +
-    `<button type="button" class="articles-clear"${ids ? ` id="atlr-clear"` : ""} hidden>Show all passages</button></p>`;
+// them by id, the card list's by class; both are here so the two pages read alike. On a page
+// of statements the word is "statements", here and in the line the scripts write (they read
+// data-noun, which a page of passages does not carry).
+function filterNote(ids: boolean, noun = { one: "passage", many: "passages" }): string {
+  const named = noun.many === "passages" ? "" : ` data-noun="${attr(noun.many)}"`;
+  return `<p class="articles-filter-note" role="status"${named}><span class="articles-filter-text"${ids ? ` id="atlr-filter-text"` : ""}></span> ` +
+    `<button type="button" class="articles-clear"${ids ? ` id="atlr-clear"` : ""} hidden>Show all ${text(noun.many)}</button></p>`;
 }
 
 // The filters that are not the legend — by library, and, in the reader, the
@@ -1964,9 +2056,10 @@ function moreFilters(libraryChips: string, extra: string): string {
     (extra ? row("articles-h-more", "Passages", extra) : "") + `</details>`;
 }
 
-// What the status colours mean, with a sample of each: the legend's long form.
-function colourLegend(): string {
-  return `<ul class="articles-meanings">${ARTICLE_STATUSES.map((s) =>
+// What the status colours mean, with a sample of each: the legend's long form, over the
+// statuses the page actually shows.
+function colourLegend(byStatus: Record<SummaryStatus, number>): string {
+  return `<ul class="articles-meanings">${shownStatuses(byStatus).map((s) =>
     `<li><span class="articles-sample" data-status="${s}"><span aria-hidden="true">${STATUS[s].icon} </span>${text(STATUS[s].label)}</span> ` +
     `${text(READER_LEGEND[s])}</li>`).join("")}</ul>`;
 }
@@ -2075,13 +2168,25 @@ function articleParts(input: ArticlePageInput) {
       return chip(`library:${view.id}`, view.info.short, passages,
         `${view.info.name}${commit}: ${plural(passages, "passage", "passages")}, ${plural(locations, "location", "locations")}. Show only those passages.`);
     }).join("");
+  // Nothing on this page has been checked: its passages were cut from the revision and no
+  // locate run has run over them (the article's own `checked` says so; a page whose every
+  // passage is not_checked says it too, for a store that predates the field).
+  const { checked: nChecked, notChecked: nNotChecked } = checkedCounts(byStatus);
+  const unchecked = article.checked === false || (nNotChecked > 0 && nChecked === 0);
+  const noun = passageNoun(byStatus);
   const nLibraries = int(article.universe.libraries);
   const nExcluded = universe ? list(universe.excluded).length : 0;
   // Plain words, in the About fold: how many Lean libraries were searched, at which
-  // day's commits, and how many were left out — never "universe" or "frozen".
-  const searched = universe
-    ? `Searched <a href="/articles/universe/${attr(article.universe.sha256)}">${nLibraries} Lean libraries</a>, pinned ${text(article.universe.frozen)}${nExcluded ? `, ${int(nExcluded)} left out` : ""} (library set <code>${text(article.universe.id)}</code>).`
-    : `Searched ${nLibraries} Lean libraries, pinned ${text(article.universe.frozen)} (library set <code>${text(article.universe.id)}</code>).`;
+  // day's commits, and how many were left out — never "universe" or "frozen". On a page
+  // nothing has checked the same libraries are the ones a tag may name, and the line says
+  // so rather than claiming a search that has not happened.
+  const librariesLink = universe
+    ? `<a href="/articles/universe/${attr(article.universe.sha256)}">${nLibraries} Lean libraries</a>`
+    : `${nLibraries} Lean libraries`;
+  const pinned = `pinned ${text(article.universe.frozen)}${universe && nExcluded ? `, ${int(nExcluded)} left out` : ""} (library set <code>${text(article.universe.id)}</code>)`;
+  const searched = unchecked
+    ? `No library has been searched for these ${text(noun.many)}. A tag may name any of the ${librariesLink}, ${pinned}.`
+    : `Searched ${librariesLink}, ${pinned}.`;
   // The article's subject passages, named in the About fold with a link to each.
   // A capped head's ellipsis follows the closing quotation mark, outside the quote.
   const subjects = passages.filter(isSubject).map((passage) => {
@@ -2096,9 +2201,14 @@ function articleParts(input: ArticlePageInput) {
   const central = centralFromPassages(passages, (passage) => shownStatus(passage, ctx));
   const centralRow = central ? centralLine(central, n, { object: "the article's subject or a named result or definition", articles: null }) : "";
   const nText = [...texts.values()].filter((view) => view !== null).length;
-  const lead = `${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.`;
+  const lead = unchecked
+    ? `${plural(n, "statement", "statements")} cut from this revision, none of them checked against a Lean library yet.`
+    : `${plural(nChecked, "passage", "passages")} checked${nNotChecked ? `, ${int(nNotChecked)} not checked yet` : ""}` +
+      `${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.`;
   const revisionLink = `<a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${int(article.revision)}</a>`;
-  const description = `Where ${article.title} is formalized in Lean: ${int(summary.by_status?.formalized)} of ${plural(n, "passage", "passages")} formalized.`;
+  const description = unchecked
+    ? `${plural(n, "statement", "statements")} cut from ${article.title}, none checked against a Lean library yet.`
+    : `Where ${article.title} is formalized in Lean: ${int(summary.by_status?.formalized)} of ${plural(nChecked, "passage", "passages")} formalized.`;
   // How the passages are shown: in full from the store's verified text, or as the
   // export's capped quote; and where a card's Lean code comes from. Both views say it
   // in the About fold, never above the article.
@@ -2123,12 +2233,16 @@ function articleParts(input: ArticlePageInput) {
       ...(wikileanSlug ? [`<a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>.`] : []),
       lead,
     ]) + centralRow + subjectRow },
-    { h: "What the colours mean", body: colourLegend() },
-    { h: "Libraries searched", body: `<p>${searched}</p>` },
-    { h: "How these links were made", body: provList([...auditLines(article.audit),
+    { h: "What the colours mean", body: colourLegend(byStatus) },
+    { h: unchecked ? "Libraries" : "Libraries searched", body: `<p>${searched}</p>` },
+    { h: unchecked ? "How these statements were cut" : "How these links were made", body: provList([
+      // An audit measures links; a page that has none says nothing about one.
+      ...(unchecked && !asAudit(article.audit) ? [] : auditLines(article.audit)),
       ...recordSetLines(String(article.campaign ?? ""), seal, String(article.record_set ?? ""), runs !== null),
       ...(runs ? [...(runs.inventory ? [runLine(runs.inventory)] : []), runLine(runs.locate),
-        ...(runs.challenge ? [runLine(runs.challenge, recheckTallies(passages), "In this article it")] : [])] : [UNRECORDED]),
+        ...(runs.challenge ? [runLine(runs.challenge, recheckTallies(passages), "In this article it")] : [])]
+        : [unchecked ? UNRECORDED_CUT : UNRECORDED]),
+      ...(unchecked ? [NO_LOCATE_RUN] : []),
       ...supplementLines(supplements, nText, n)]) },
     { h: "How the text is shown", body: `${textNote}${sigNote}${quoteNote}` },
   ]);
@@ -2141,7 +2255,28 @@ function articleParts(input: ArticlePageInput) {
   const agreement = agreementBlock(ctx);
   // Only what a view places: the figures themselves are already built into `counts`,
   // `key` and `about` above, so neither page can say one of them a second time.
-  return { ctx, n, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread, overlayRow, agreement };
+  return {
+    ctx, n, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
+    overlayRow, agreement, unchecked, noun,
+  };
+}
+
+// An article whose view names the sha256 of a records file has one to serve. A
+// statement-only article has none: its statements were cut, not located. (A store-shape
+// helper, here with locationStatus and quoteCapped, so articles.ts keeps importing one way.)
+const RECORDS_SHA256 = /^[0-9a-f]{64}$/;
+export function hasRecords(article: Pick<ArticlesArticle, "records_sha256">): boolean {
+  return typeof article.records_sha256 === "string" && RECORDS_SHA256.test(article.records_sha256);
+}
+
+// What an article page offers to download: its view model, and its Literature Links records
+// where it has them (a statement-only article has none — its statements were cut, not
+// located, and /api/articles/records answers 404).
+function dataLinks(article: ArticlesArticle): string {
+  const view = `<a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a>`;
+  return hasRecords(article)
+    ? `${view} · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a>`
+    : view;
 }
 
 // The two views of an article with a marked revision, as a segmented control: the article
@@ -2156,19 +2291,31 @@ export function articlesArticlePage(input: ArticlePageInput): string {
   const { article, user, selfHref } = input;
   const {
     ctx, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
-    overlayRow, agreement,
+    overlayRow, agreement, unchecked, noun,
   } = articleParts(input);
+  // A page of statements nothing has searched for calls them statements, here as in its
+  // counts line; every other page is a page of passages, as it always was. With no card on
+  // the page there is nothing for the relation legend to explain.
+  const heading = unchecked ? "Statements" : "Passages";
+  // The relation legend explains the words on a card. A page of statements has no card
+  // until a community tag puts one there, so it is left out — and only there: every page
+  // of a store with nothing unchecked prints it exactly where it always did.
+  const relations = !unchecked || passages.some((p) => shownLocations(p, ctx).length > 0)
+    ? `${relationLegend()}\n` : "";
+  const empty = nUnread ? `<p>No passage of this revision has a status yet.</p>`
+    : unchecked ? `<p>No statement was cut from this revision.</p>`
+    : `<p>No formal passages were found in this revision.</p>`;
   const main = `<main class="wl-articles" id="articles-article" data-pageid="${int(article.pageid)}" data-campaign="${attr(article.campaign)}">
 <nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="articles-h1">${text(article.title)}</h1>
 ${counts}
 ${key}
-${filterNote(false)}
+${filterNote(false, noun)}
 ${moreFilters(libraryChips, "")}
 ${about}
-${overlayRow}${agreement ? `${agreement}\n` : ""}<h2 class="articles-h2" id="articles-h-passages">Passages</h2>
-${passages.length ? `${relationLegend()}\n` : ""}${passages.length ? `<ol class="articles-passages" aria-labelledby="articles-h-passages">\n${passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : nUnread ? `<p>No passage of this revision has a status yet.</p>` : `<p>No formal passages were found in this revision.</p>`}
-<p class="articles-data">Data: <a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a></p>
+${overlayRow}${agreement ? `${agreement}\n` : ""}<h2 class="articles-h2" id="articles-h-passages">${text(heading)}</h2>
+${passages.length ? `${relations}<ol class="articles-passages" aria-labelledby="articles-h-passages">\n${passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : empty}
+<p class="articles-data">Data: ${dataLinks(article)}</p>
 ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they audit the locate and challenge runs.</p>` : ""}
 </main>`;
   const footer = `<footer class="articles-foot">
@@ -2235,7 +2382,7 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
 export function articlesReaderPage(input: ArticlePageInput & { html: string }): string {
   const { article, user, selfHref, html } = input;
   const parts = articleParts({ ...input, readerHref: selfHref });
-  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement } = parts;
+  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement, unchecked, noun } = parts;
   const passages = readingOrder(parts.passages, html);
   const placed = new Set<string>();
   for (const m of html.matchAll(/<mark class="atl" data-p="([0-9a-f]{8,16})"/g)) placed.add(m[1]);
@@ -2247,6 +2394,9 @@ export function articlesReaderPage(input: ArticlePageInput & { html: string }): 
   const headerRow = `<div class="atlr-bar">${viewSwitch(selfHref, "article")}` +
     `<button type="button" class="atlr-panel-toggle" id="atlr-panel-toggle" aria-controls="atlr-panel" aria-expanded="true">Hide the passage list</button></div>`;
   const unplaced = passages.filter((p) => !placed.has(passageHex(p))).length;
+  // With no card in the panel there is nothing for the relation legend to explain.
+  const readerRelations = !unchecked || passages.some((p) => shownLocations(p, ctx).length > 0)
+    ? relationLegend() : "";
   const main = `<div class="atlr-layout" id="articles-reader" data-pageid="${int(article.pageid)}" data-self="${attr(selfHref)}" data-passages="${int(n)}">
 <main class="atlr-main" id="atlr-main">
 <div class="atlr-head">
@@ -2255,25 +2405,25 @@ ${NOTICE_LINE}
 <h1 class="articles-h1">${text(article.title)}</h1>
 ${counts}
 ${key}
-${filterNote(true)}
+${filterNote(true, noun)}
 ${moreFilters(libraryChips, extraChips)}
 ${about}
-<p class="atlr-hint">Select a highlighted passage to see where Lean formalizes it${unplaced ? `. ${plural(unplaced, "passage is", "passages are")} listed in the panel only` : ""}.</p>
+<p class="atlr-hint">${unchecked ? "Select a highlighted statement to read it on its own; no library has been searched for it yet" : "Select a highlighted passage to see where Lean formalizes it"}${unplaced ? `. ${plural(unplaced, `${noun.one} is`, `${noun.many} are`)} listed in the panel only` : ""}.</p>
 </div>
 <article class="wl-article-body atlr-article" id="atlr-article" lang="en" aria-label="${attr(article.title)}, Wikipedia revision ${int(article.revision)}">
 <div class="atlr-mbar" id="atlr-mbar" aria-hidden="true" hidden></div>
 ${html}
 </article>
 </main>
-<aside class="atlr-panel" id="atlr-panel" aria-label="Passages and where Lean formalizes them" tabindex="-1">
+<aside class="atlr-panel" id="atlr-panel" aria-label="${attr(unchecked ? "Statements cut from this article" : "Passages and where Lean formalizes them")}" tabindex="-1">
 <div class="atlr-sheet-head"><span class="atlr-handle" aria-hidden="true"></span><button type="button" class="atlr-close" id="atlr-close" aria-label="Close the panel">✕</button></div>
 <div class="atlr-nav" id="atlr-nav" hidden><button type="button" class="atlr-back" id="atlr-back">← All passages</button><span class="atlr-step"><button type="button" class="atlr-stepbtn" id="atlr-prev" aria-label="Previous passage">‹</button><span class="atlr-pos" id="atlr-pos" aria-live="polite"></span><button type="button" class="atlr-stepbtn" id="atlr-next" aria-label="Next passage">›</button></span></div>
 <div class="atlr-index" id="atlr-index">
-<h2 class="articles-h2 atlr-h2" id="atlr-h-index">Passages</h2>
+<h2 class="articles-h2 atlr-h2" id="atlr-h-index">${unchecked ? "Statements" : "Passages"}</h2>
 <p class="atlr-missing" id="atlr-missing" role="status" hidden></p>
 <nav class="atlr-toc" aria-labelledby="atlr-h-index">${readerIndex(passages, placed, ctx)}</nav>
-${overlayRow}${agreement ? `${agreement}\n` : ""}${relationLegend()}
-<p class="articles-data">Data: <a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a> · <a href="${attr(selfHref)}?view=cards">card list</a></p>
+${overlayRow}${agreement ? `${agreement}\n` : ""}${readerRelations}
+<p class="articles-data">Data: ${dataLinks(article)} · <a href="${attr(selfHref)}?view=cards">card list</a></p>
 ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they audit the locate and challenge runs.</p>` : ""}
 <p class="atlr-keys"><kbd>←</kbd> <kbd>→</kbd> previous and next passage · <kbd>Esc</kbd> back to this list</p>
 </div>
@@ -2283,7 +2433,7 @@ ${passages.map((p) => passageBlock(p, article, ctx, true)).join("\n")}
 </aside>
 </div>
 <div class="atlr-peek" id="atlr-peek" aria-hidden="true" hidden></div>
-<button type="button" class="atlr-fab" id="atlr-fab" aria-controls="atlr-panel" aria-expanded="false" hidden>${plural(n, "passage", "passages")} <span aria-hidden="true">▴</span></button>`;
+<button type="button" class="atlr-fab" id="atlr-fab" aria-controls="atlr-panel" aria-expanded="false" hidden>${plural(n, noun.one, noun.many)} <span aria-hidden="true">▴</span></button>`;
   const images = readerImages(article);
   const footer = `<footer class="articles-foot atlr-foot">
   <p>This page is an adaptation of ${articleCredit(article)}, and is shared under ${textLicence(article, true)}, the revision&#x27;s licence. ${downloadsLine(true)}</p>
@@ -2313,13 +2463,14 @@ export interface DashboardInput {
   shards: string[];
 }
 
-// The dashboard's per-status columns: the statuses a passage can be given (ARTICLE_STATUSES).
-function statusCells(row: Record<SummaryStatus, number>): string {
-  return ARTICLE_STATUSES.map((s) => `<td class="num" data-status="${s}">${int(row?.[s])}</td>`).join("");
+// The dashboard's per-status columns, over the statuses the build shows (shownStatuses):
+// a build with nothing unchecked gains no column of zeros.
+function statusCells(row: Record<SummaryStatus, number> | null | undefined, statuses: SummaryStatus[]): string {
+  return statuses.map((s) => `<td class="num" data-status="${s}">${int(row?.[s])}</td>`).join("");
 }
 
-function statusHeads(): string {
-  return ARTICLE_STATUSES.map((s) => `<th scope="col" class="num"><span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)}</th>`).join("");
+function statusHeads(statuses: SummaryStatus[]): string {
+  return statuses.map((s) => `<th scope="col" class="num"><span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)}</th>`).join("");
 }
 
 // A count of passages less those with no status yet (a dashboard row, an importance bucket, the box).
@@ -2354,13 +2505,21 @@ function listHeads(): string {
 function listRow(row: DashboardRow, libs: Map<string, LibraryView>): string {
   const byStatus = shownStatusCounts(row as unknown as Partial<Record<SummaryStatus, number>>);
   const shown = passagesShown(row.passages, row.unresolved);
+  const notChecked = count(byStatus.not_checked);
+  const checked = Math.max(0, shown - notChecked);
   const ids = list(row.libraries);
   const names = ids.map((id) => libs.get(id)?.info.short ?? id).join(", ");
-  return `<tr data-title="${attr(foldTitle(row.title))}" data-passages="${int(shown)}" data-formalized="${int(byStatus.formalized)}"` +
+  // An article with statements nothing has searched for says how many of them are
+  // checked, and its bar — over the checked ones, as the bar always is — is the empty
+  // track when there are none (the statement-set design, section 3).
+  const bar = statusBar(byStatus, notChecked ? "checked passage" : "passage", notChecked ? "checked passages" : "passages")
+    || (notChecked > 0 ? emptyStatusBar(notChecked) : `<span class="articles-muted">no status yet</span>`);
+  return `<tr data-title="${attr(foldTitle(row.title))}" data-passages="${int(checked)}" data-formalized="${int(byStatus.formalized)}"` +
+    `${notChecked ? ` data-not-checked="${int(notChecked)}"` : ""}` +
     ` data-libraries="${int(ids.length)}" data-importance="${attr(String(row.importance ?? ""))}">` +
     `<th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th>` +
-    `<td class="articles-cov">${statusBar(byStatus, "passage", "passages") || `<span class="articles-muted">no status yet</span>`}</td>` +
-    `<td class="num">${int(shown)}</td>` +
+    `<td class="articles-cov">${bar}</td>` +
+    `<td class="num">${notChecked > 0 ? `${int(checked)} of ${int(shown)} checked` : int(checked)}</td>` +
     `<td class="num">${ids.length ? `<span title="${attr(names)}">${plural(ids.length, "library", "libraries")}</span>`
       : `<span class="articles-muted">none</span>`}</td></tr>`;
 }
@@ -2380,7 +2539,10 @@ function buildLines(current: ArticlesCurrent): string[] {
   const lines = [...auditLines(current.audit), `${text(capital(campaignLabel(String(current.campaign ?? ""))))}${dated}.`];
   for (const set of sets) {
     if (!set || typeof set !== "object") continue;
-    const seal = { set_id: set.set_id, schema: set.schema, status_rule: set.status_rule, created: set.created, skill_commit: set.skill_commit };
+    const seal = {
+      set_id: set.set_id, schema: set.schema, status_rule: set.status_rule, created: set.created,
+      skill_commit: set.skill_commit, producer_commit: set.producer_commit,
+    };
     lines.push(...recordSetLines(String(set.campaign ?? ""), set.set_id ? seal : null, String(set.seal_sha256 ?? "")));
   }
   // The runs' models, operator and dates when the build has them (--provenance).
@@ -2403,6 +2565,15 @@ export function articlesDashboardPage(input: DashboardInput): string {
   const { current, universe, q, rows, matched, total, shards } = input;
   const counts = current.counts;
   const libs = libraryViews(universe, []);
+  // A passage with no status is in no count, status or bar here; the totals say how many there are.
+  const nUnread = count(counts.by_status?.unresolved);
+  const nPassages = passagesShown(counts.passages, nUnread);
+  const byStatus = shownStatusCounts(counts.by_status);
+  // The statuses this build shows, and how many of its passages a check has given one.
+  const buildStatuses = shownStatuses(byStatus);
+  const { checked: nChecked, notChecked: nNotChecked } = checkedCounts(byStatus);
+  // Nothing in this build was searched for: every passage of it is a cut statement.
+  const searchedBuild = !(nChecked === 0 && nNotChecked > 0);
   const commitOf = (view: LibraryView) => {
     const tree = view.commit ? treeUrl(view.info, view.commit) : null;
     const sha = view.commit ? `<code class="articles-sha">@${text(sha7(view.commit))}</code>` : "";
@@ -2440,13 +2611,10 @@ export function articlesDashboardPage(input: DashboardInput): string {
     ? tableWrap("By library", `<table class="articles-table"><thead><tr><th scope="col">Library</th><th scope="col">Commit</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th><th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th><th scope="col" class="num">Related only</th></tr></thead><tbody>${libraryRows}</tbody></table>`)
     : `<p>No library holds a location or a related declaration in this build.</p>`;
   const emptyLibraries = empty.length
-    ? `\n<details id="articles-libs-empty"><summary>${plural(empty.length, held.length ? "more library" : "library", held.length ? "more libraries" : "libraries")} searched, with no locations in this build</summary>` +
+    ? `\n<details id="articles-libs-empty"><summary>${plural(empty.length, held.length ? "more library" : "library", held.length ? "more libraries" : "libraries")}` +
+      `${searchedBuild ? " searched, with no locations in this build" : " in the set, none of them searched in this build"}</summary>` +
       `<ul>${empty.map(({ view }) => `<li>${text(view.info.name)} ${commitOf(view)}</li>`).join("")}</ul></details>`
     : "";
-  // A passage with no status is in no count, status or bar here; the totals say how many there are.
-  const nUnread = count(counts.by_status?.unresolved);
-  const nPassages = passagesShown(counts.passages, nUnread);
-  const byStatus = shownStatusCounts(counts.by_status);
   const central = centralFromSummary(counts.by_prominence);
   const centralHtml = central
     ? centralLine(central, nPassages, { object: "an article's subject or a named result or definition", articles: count(counts.articles) })
@@ -2457,7 +2625,7 @@ export function articlesDashboardPage(input: DashboardInput): string {
       const ia = IMPORTANCE_ORDER.indexOf(a), ib = IMPORTANCE_ORDER.indexOf(b);
       return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || (a < b ? -1 : a > b ? 1 : 0);
     })
-    .map(([key, bucket]) => `<tr><th scope="row">${text(importanceLabel(key))}</th><td class="num">${int(bucket?.articles)}</td><td class="num">${int(passagesShown(bucket?.passages, bucket?.by_status?.unresolved))}</td>${statusCells(bucket?.by_status)}</tr>`)
+    .map(([key, bucket]) => `<tr><th scope="row">${text(importanceLabel(key))}</th><td class="num">${int(bucket?.articles)}</td><td class="num">${int(passagesShown(bucket?.passages, bucket?.by_status?.unresolved))}</td>${statusCells(bucket?.by_status, buildStatuses)}</tr>`)
     .join("");
   const hasImportance = Object.keys(counts.by_importance ?? {}).some((key) => key !== "unknown");
   const list = rows.map((row) => listRow(row, libs)).join("\n");
@@ -2468,23 +2636,30 @@ export function articlesDashboardPage(input: DashboardInput): string {
   // id → short name, for rows articles.js builds from the index shards.
   const libraryNames = JSON.stringify(Object.fromEntries([...libs.values()].map((view) => [view.id, view.info.short])));
   const nRelated = count(counts.related);
+  const buildNoun = passageNoun(byStatus);
   const about = aboutFold([
     { h: "Totals", id: "articles-h-totals", body:
-      `<p>${plural(count(counts.articles), "article", "articles")} · ${plural(nPassages, "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}</p>\n` +
-      `${statusBar(byStatus, "passage", "passages")}\n` +
-      `<div class="articles-chips articles-legend">${ARTICLE_STATUSES.map((s) => `<span class="articles-chip is-static" data-status="${s}">${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="articles-n">${int(byStatus[s])}</span></span>`).join("")}</div>${centralRow}` },
-    { h: "What the colours mean", body: colourLegend() },
-    { h: "Which libraries were searched", id: "articles-h-libs", body:
+      `<p>${plural(count(counts.articles), "article", "articles")} · ${plural(nPassages, "passage", "passages")}` +
+      `${nNotChecked ? ` (${int(nChecked)} checked, ${int(nNotChecked)} not checked yet)` : ""}` +
+      ` · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}</p>\n` +
+      // The bar is over the checked passages: a statement nothing searched for takes no share
+      // of it, and the line above says how many are waiting.
+      `${statusBar(byStatus, nNotChecked ? "checked passage" : "passage", nNotChecked ? "checked passages" : "passages")
+        || (nNotChecked ? emptyStatusBar(nNotChecked) : "")}\n` +
+      `<div class="articles-chips articles-legend">${buildStatuses.map((s) => `<span class="articles-chip is-static" data-status="${s}">${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="articles-n">${int(byStatus[s])}</span></span>`).join("")}</div>${centralRow}` },
+    { h: "What the colours mean", body: colourLegend(byStatus) },
+    { h: searchedBuild ? "Which libraries were searched" : "The libraries a tag may name", id: "articles-h-libs", body:
       `<p class="articles-meta">${universe ? `<a href="/articles/universe/${attr(current.universe.sha256)}">${int(current.universe.libraries)} Lean libraries</a>` : `${int(current.universe.libraries)} Lean libraries`}, pinned ${text(current.universe.frozen)} (library set <code>${text(current.universe.id)}</code>)</p>\n` +
       `${libraryTable}${held.length ? `\n<p class="articles-muted">A passage counts toward every library that states it. Complete locations are proved declarations or definitions; incomplete ones are stated without a finished proof (statement only, wanted, or axiom-dependent). “Related only” declarations state something else and are not counted as locations.</p>` : ""}${emptyLibraries}` },
-    { h: "How these links were made", body: provList(buildLines(current)) },
+    { h: searchedBuild ? "How these links were made" : "How this build was made", body: provList(buildLines(current)) },
     ...(hasImportance ? [{ h: "By WikiProject importance", id: "articles-h-imp", body:
-      tableWrap("By WikiProject importance", `<table class="articles-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads()}</tr></thead><tbody>${importance}</tbody></table>`) }] : []),
+      tableWrap("By WikiProject importance", `<table class="articles-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads(buildStatuses)}</tr></thead><tbody>${importance}</tbody></table>`) }] : []),
   ], "About this build");
   const main = `<main class="wl-articles" id="articles-dashboard">
 <h1 class="articles-h1" id="articles-h-list">Articles</h1>
 <p class="articles-lead">Explore mathematical statements and their Lean matches. Choose an article to inspect the evidence, confirm a link, or add a missing declaration. <a href="/contribute">How to contribute</a>.</p>
-${countsLine(byStatus, nUnread, [`<b>${plural(count(counts.articles), "article", "articles")}</b>`, plural(nPassages, "passage", "passages")])}
+${countsLine(byStatus, nUnread, [`<b>${plural(count(counts.articles), "article", "articles")}</b>`,
+  plural(nPassages, buildNoun.one, buildNoun.many)])}
 ${about}
 <section aria-labelledby="articles-h-list">
 <form class="articles-search" method="get" action="/articles" role="search"><label for="articles-q">Search covered articles</label> <input id="articles-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
@@ -2497,7 +2672,7 @@ ${list}
 </main>`;
   return shell({
     title: "Articles",
-    description: `Which WikiProject Mathematics statements are formalized in Lean, and where: ${plural(count(counts.articles), "article", "articles")}, ${plural(nPassages, "passage", "passages")}.`,
+    description: `Which WikiProject Mathematics statements are formalized in Lean, and where: ${plural(count(counts.articles), "article", "articles")}, ${plural(nPassages, buildNoun.one, buildNoun.many)}.`,
     canonical: "https://wikilean.jackmccarthy.org/articles",
     main,
     dashboard: true,
@@ -2506,7 +2681,9 @@ ${list}
 
 // ---- the universe page -------------------------------------------------------
 
-export function articlesUniversePage(universe: ArticlesUniverse): string {
+// `searched` is false for a build whose every passage is a statement nothing has looked for:
+// the page then says what these libraries ARE, rather than claiming a search of them.
+export function articlesUniversePage(universe: ArticlesUniverse, searched = true): string {
   const libraries = universeLibraries(universe);
   const excludedItems = list(universe.excluded).filter((item) => item !== null && typeof item === "object");
   // Named as every other page names them, so libraries of one repository read apart.
@@ -2524,16 +2701,28 @@ export function articlesUniversePage(universe: ArticlesUniverse): string {
   const excluded = excludedItems.length
     ? `<h2 class="articles-h2">Excluded</h2><ul class="articles-excluded">${excludedItems.map((item) => `<li><b>${text(item.id)}</b>: ${text(item.reason)}</li>`).join("")}</ul>`
     : "";
+  // A build that searched nothing says so in its title, its heading and its crumb as well
+  // as in the paragraph: the article page links here with "a tag may name any of these".
+  const heading = searched ? "The libraries searched" : "The libraries a tag may name";
+  const crumb = searched ? "Libraries searched" : "Libraries";
   const main = `<main class="wl-articles" id="articles-universe">
-<nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>Libraries searched</span></nav>
-<h1 class="articles-h1">The libraries searched</h1>
+<nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>${text(crumb)}</span></nav>
+<h1 class="articles-h1">${text(heading)}</h1>
 <p class="articles-meta">${int(libraries.length)} Lean libraries, pinned ${text(universe.frozen)} · library set <code>${text(universe.id)}</code> · sha256 <code>${text(universe.sha256)}</code></p>
-<p>A “not found” here means exactly this: the passage was searched for in these libraries at these commits and nothing stating it was found. It says nothing about other libraries or later commits.</p>
+<p>${searched
+  ? "A “not found” here means exactly this: the passage was searched for in these libraries at these commits and nothing stating it was found. It says nothing about other libraries or later commits."
+  : "No locate run has searched these libraries for this build&#x27;s statements. They are the libraries a community tag may name, at these commits."}</p>
 ${tableWrap(`Libraries of set ${universe.id}`, `<table class="articles-table"><thead><tr><th scope="col">Library</th><th scope="col">Repository</th><th scope="col">Commit</th><th scope="col">Toolchain</th><th scope="col">Licence</th></tr></thead><tbody>${rows}</tbody></table>`)}
 ${excluded}
 <p class="articles-data">Data: <a href="/api/articles/universe/${attr(universe.sha256)}">library set (JSON)</a></p>
 </main>`;
-  return shell({ title: `Articles · libraries searched (${universe.id})`, description: `The Lean libraries and commits searched for the WikiLean formalization reader (library set ${universe.id}).`, main });
+  return shell({
+    title: `Articles · ${searched ? "libraries searched" : "libraries a tag may name"} (${universe.id})`,
+    description: searched
+      ? `The Lean libraries and commits searched for the WikiLean formalization reader (library set ${universe.id}).`
+      : `The Lean libraries and commits a community tag may name in the WikiLean formalization reader; no locate run has searched them (library set ${universe.id}).`,
+    main,
+  });
 }
 
 // ---- the article page's summary box ------------------------------------------
@@ -2546,18 +2735,25 @@ ${excluded}
 export function articlesSummaryBox(entry: IndexEntry, href: string, pageRevision: number | null = null): string {
   const counts = entry as unknown as Record<SummaryStatus, number>;
   const nUnread = count(counts.unresolved);
-  const checked = passagesShown(entry.passages, nUnread);
-  const parts = ARTICLE_STATUSES.filter((s) => count(counts[s]) > 0)
+  const nNotChecked = count(counts.not_checked);
+  const shown = passagesShown(entry.passages, nUnread);
+  const checked = Math.max(0, shown - nNotChecked);
+  const parts = CHECKED_STATUSES.filter((s) => count(counts[s]) > 0)
     .map((s) => `<span class="articles-mini" data-status="${s}"><span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${int(counts[s])} ${text(STATUS[s].plural)}</span>`)
     .join(" ");
   const revision = count(entry.revision);
   const other = pageRevision !== null && Number.isSafeInteger(pageRevision) && pageRevision !== revision
     ? ` <span class="wl-articles-box-rev">This page shows revision ${int(pageRevision)}.</span>`
     : "";
-  const found = checked === 0 && nUnread > 0
+  // Statements nothing has searched for are said as what they are, never as a check that
+  // came out empty.
+  const waiting = nNotChecked > 0 ? ` ${int(nNotChecked)} more ${nNotChecked === 1 ? "statement is" : "statements are"} not checked yet.` : "";
+  const found = checked === 0 && nNotChecked > 0
+    ? `WikiLean cut ${plural(nNotChecked, "statement", "statements")} from Wikipedia revision ${int(revision)}, none checked against a Lean library yet.`
+    : checked === 0 && nUnread > 0
     ? `WikiLean found ${plural(nUnread, "passage", "passages")} in Wikipedia revision ${int(revision)}, none with a status yet.`
     : `WikiLean checked ${plural(checked, "passage", "passages")} of Wikipedia revision ${int(revision)} against Lean libraries: ${parts || "none yet"}.` +
-      "";
+      waiting;
   return `<link rel="stylesheet" href="${ARTICLES_CSS}">\n` +
     `<aside class="wl-articles-box" aria-label="Formalization">` +
     `<span class="wl-articles-box-h">Formalization</span> ` +

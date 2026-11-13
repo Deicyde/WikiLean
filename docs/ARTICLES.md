@@ -1858,6 +1858,80 @@ over to a re-judged relation. Per §8.4, the export stays
 on the operator machine and never goes to the fleet host, and val/test seeds never feed
 the improvement loop.
 
+## 9a. Statements, cut and not checked (phase 1)
+
+> **New with the statement-set design of 2026-11-12** (`~/wl-phase1/DESIGN.md`, decisions 1,
+> 2 and 4 accepted). This is the READER half, P4. The store half (P1–P3) publishes the
+> statement set and builds it into the store; the two were built in parallel against the
+> field names below.
+
+Statement extraction is a published product of its own. A **statement set** carries what the
+cut found — which sentences are statements, and where their edges are — and says nothing
+about Lean. An article built from one appears beside the located ones, in the same store and
+in the same list.
+
+**What the store carries.** All within v1, so a Worker that does not know these fields still
+reads the store:
+
+| Field | Where | Value |
+|---|---|---|
+| `outcome` | passage | `"unchecked"` — the cut ran, no locate run has |
+| `status` | passage | `null` |
+| `not_checked` | `summary.by_status`, `counts.by_status`, the index shard's columns | how many statements nothing has searched for |
+| `checked` | article | `false` |
+| `statement`, `conjuncts` | passage | the worker's one-sentence statement, and a compound's clauses |
+| `records_sha256` | article | `null` — there is no Literature Links record to publish |
+| `seal.schema` | article, `current.record_set` | `wikilean.statement-set/1`; `producer_commit` where a record set has `skill_commit`, and no `status_rule` |
+| `universe` | article | the **tagging** universe: the libraries a community tag may name, which nothing has searched |
+
+The index shard is read by column NAME (`parseIndexShard`), so it does not matter where the
+builder appends `not_checked`.
+
+**The one invariant: `not_checked` is never folded into `not_formalized`.** They are opposite
+claims — "no library has been searched" against "every library was searched and nothing was
+found". The page, the list, the summary box on an article page and the dashboard's totals all
+count it apart (`CHECKED_STATUSES` is the four a check can give; `ARTICLE_STATUSES` adds
+`not_checked`; `shownStatuses` offers it only where there is one, so a page of checked
+passages gains no fifth column of zeros). The community overlay keeps it too: a tag moves an
+unchecked statement's status as it moves any other passage's, but **removing every tag leaves
+it `not_checked`, never `not_formalized`** (`mergedStatus`).
+
+**What a reader sees** (`articles-render.ts`, `site/assets/articles{,-reader}.{css,js}`):
+
+- a **neutral highlight**, not the absence of one: a translucent grey wash of its own (a
+  literal `rgba`, with a dark value under both theme selectors — `color-mix()` would leave an
+  old engine with no highlight at all, and the opaque `--line` would stop the reader's
+  selected state from deepening), a dashed grey underline and its own horizontal-hatch
+  swatch, with `○` and the words "Not checked yet" in the markup, so the status is never
+  colour alone. The builder's mark carries the passage's
+  own outcome (`data-status="unchecked"`); the pages count the summary status
+  (`data-status="not_checked"`); both paint identically.
+- the card: "**Not checked yet — no library has been searched for this statement.**", with the
+  Tag form under it and **no Confirm/Report** — those are a verdict on a sealed location, and
+  there is none. The line stays even after a community tag moves the status, so no reader
+  takes a community card for a search.
+- the counts line: "**3 statements · ○none checked yet**". While nothing on a page is checked
+  its passages are **statements**, in the counts line, the "Statements" heading, the panel, the
+  fab and the filter note (`filterNote` writes `data-noun`, which both scripts read).
+- the legend gains the swatch, and "What the colours mean" gains its row.
+- `/articles` lists the article with "**0 of 3 checked**" and an **empty status bar**
+  (`emptyStatusBar`): the bar is how the checked passages came out, and a statement nothing
+  searched for takes no share of it. The dashboard's totals say both ("9 passages (6 checked,
+  3 not checked yet)") and its importance table gains the column.
+- the About fold says which run **cut** it and that **no locate run has run**, and the
+  libraries section says no library has been searched and that these are the ones a tag may
+  name. The universe page says the same for a build that searched nothing. The "Preliminary"
+  notice is unchanged.
+- the page offers its view model and not records it has none of;
+  `GET /api/articles/records/:pageid` answers **404** for an article whose view names none,
+  which is not a damaged store.
+
+**Tagging works.** `POST /api/articles/tag` checks the library against the article's own
+universe and derives `pair_key` from that library's `repo`, so a tag written in phase 1 is
+**the same row** as the pipeline's location in phase 2 (section 10a, "the key that makes it
+work"). A community card is `statement_only` at best, as everywhere else: an editor's word
+never mints a formalization claim.
+
 ## 10a. Community tags: the overlay (release R1)
 
 > **New in release R1** of the signed public-editing plan (2026-11-06; decisions 1–5, 11 and

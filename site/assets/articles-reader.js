@@ -52,16 +52,22 @@
   var toCards = document.getElementById("atlr-to-cards");
   var filterText = document.getElementById("atlr-filter-text");
   var clearBtn = document.getElementById("atlr-clear");
+  // What this page calls its passages: "statements" on a page nothing has checked
+  // (articles-render.ts filterNote writes data-noun only there).
+  var noteBox = document.querySelector(".articles-filter-note");
+  var noun = (noteBox && noteBox.getAttribute("data-noun")) || "passages";
   var header = document.querySelector(".wl-header");
   var self = root.getAttribute("data-self") || location.pathname;
 
   // The statuses a passage can be shown with. A passage with no status is set aside by the page and
   // never reaches the panel; a section without one of these is ignored, never labelled.
+  // not_checked is phase 1's: the statement was cut and no library has been searched for it.
   var STATUS = {
     formalized: ["\u2713", "Formalized"],
     statement_only: ["\u25d0", "Statement only"],
     partial: ["\u25d4", "Partial"],
-    not_formalized: ["\u2715", "Not formalized"]
+    not_formalized: ["\u2715", "Not formalized"],
+    not_checked: ["\u25cb", "Not checked yet"]
   };
   var phone = window.matchMedia ? window.matchMedia("(max-width: 999px)") : { matches: false };
   var finePointer = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)") : { matches: true };
@@ -283,9 +289,29 @@
     if (p) p.row = row;
   });
 
+  // The highlight's own words, for its accessible name: the text of every mark of the
+  // passage, in document order. A mark covers the WHOLE passage while data-first is the
+  // store's quote, which the record format caps at twelve words, so a name built from the
+  // quote would leave out text the button shows: WCAG 2.5.3 (Label in Name), which axe
+  // reports as label-content-name-mismatch. The quote is the fallback for a passage the
+  // revision leaves unmarked (no button, so nothing to contain).
+  function marked(p) {
+    var words = "";
+    for (var i = 0; i < p.marks.length; i++) {
+      var mark = p.marks[i];
+      // innerText, not textContent: the stored revision keeps each formula's TeX
+      // annotation, which MathML never draws (articles-reader.css), and a name must be
+      // the words the highlight SHOWS. textContent would read the TeX source aloud.
+      var shown = typeof mark.innerText === "string" ? mark.innerText : mark.textContent;
+      words += shown || "";
+    }
+    return words.replace(/\s+/g, " ").trim();
+  }
+
   function label(p) {
     var st = STATUS[p.status];
-    var words = (p.first ? p.first + ": " : "") + st[1].toLowerCase();
+    var shown = marked(p) || p.first;
+    var words = (shown ? shown + ": " : "") + st[1].toLowerCase();
     if (p.lead) words += ", " + (p.leadLib ? p.leadLib + " " : "") + p.lead + (p.more ? " (+" + p.more + ")" : "");
     return words;
   }
@@ -441,7 +467,7 @@
     if (active.status) words.push(chipWords["status:" + active.status]);
     if (active.library) words.push("in " + chipWords["library:" + active.library]);
     if (active.central) words.push("central only");
-    filterText.textContent = any ? "Showing " + shown + " of " + order.length + " passages: " + words.join(", ") + "." : "";
+    filterText.textContent = any ? "Showing " + shown + " of " + order.length + " " + noun + ": " + words.join(", ") + "." : "";
     clearBtn.hidden = !any;
     if (current) updateStepper();
     placeBar();

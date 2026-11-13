@@ -153,6 +153,237 @@ export function bundlePassage(): Record<string, any> {
   return article.passages[COVERED_INDEX];
 }
 
+// ---- a statement-only article (phase 1) -----------------------------------------------------
+//
+// The store side of phase 1 is P3's; this is the contract the Worker reads, written out by
+// hand from the design's section 3 so the two can be built in parallel: passages with
+// outcome "unchecked" and no status, a fifth summary status not_checked, per-article
+// `checked: false`, a statement set's seal, and the golden store's universe attached as the
+// TAGGING universe (the libraries a community tag may name — nothing has searched them).
+// Every word of the article is invented; no Wikipedia text is in this repository.
+
+export const SPROCKET_PAGEID = 1005;
+export const SPROCKET_TITLE = "Sprocket theorem";
+export const SPROCKET_REVISION = 3003;
+export const STATEMENT_CAMPAIGN = "run:cut-fixture-2026-11";
+export const STATEMENT_SET_SCHEMA = "wikilean.statement-set/1";
+export const STATEMENT_SEAL_SHA = "a".repeat(64);
+// Its three statements, in the store's order; the first is the article's subject.
+export const SPROCKET_HEXES = ["a1b2c3d4", "b2c3d4e5", "c3d4e5f6"];
+
+const SPROCKET_PASSAGES = [
+  {
+    hex: SPROCKET_HEXES[0], kind: "theorem", prominence: "subject", section: ["Statement"],
+    quote: { exact: "every sprocket admits a balanced cog", prefix: "The sprocket theorem states that ", suffix: " of finite order." },
+    statement: "Every sprocket admits a balanced cog of finite order.", conjuncts: null,
+  },
+  {
+    hex: SPROCKET_HEXES[1], kind: "definition", prominence: "central", section: ["Definitions"],
+    quote: { exact: "a sprocket is balanced if every cog has equal weight", prefix: "Following Jones, ", suffix: "." },
+    statement: "A sprocket is balanced when every one of its cogs has equal weight.", conjuncts: null,
+  },
+  {
+    hex: SPROCKET_HEXES[2], kind: "theorem", prominence: "supporting", section: ["Properties"],
+    quote: { exact: "every balanced sprocket is finite and has a unique cog", prefix: "It follows that ", suffix: "." },
+    statement: "Every balanced sprocket is finite, and it has exactly one cog.",
+    conjuncts: [{ id: "c1", text: "Every balanced sprocket is finite." }, { id: "c2", text: "A balanced sprocket has exactly one cog." }],
+  },
+];
+
+function sprocketArticle(): Record<string, any> {
+  const sourceId = `enwiki-${SPROCKET_PAGEID}-${SPROCKET_REVISION}`;
+  const passages = SPROCKET_PASSAGES.map((p) => {
+    const id = `${sourceId}::In-text #${p.hex}`;
+    return {
+      id,
+      item: `In-text #${p.hex}`,
+      passage_key: passageKeyFor(SPROCKET_PAGEID, id),
+      kind: p.kind,
+      section: p.section,
+      prominence: p.prominence,
+      quote: p.quote,
+      quote_capped: false,
+      passage_ends_in_suffix: false,
+      subject_uri: `https://en.wikipedia.org/w/index.php?title=Sprocket_theorem&oldid=${SPROCKET_REVISION}`,
+      // The phase-1 shape: the cut ran, no locate run has.
+      outcome: "unchecked",
+      status: null,
+      basis: null,
+      coverage: null,
+      statement: p.statement,
+      conjuncts: p.conjuncts,
+      locations: [],
+      absence: null,
+      unresolved: null,
+    };
+  });
+  const byStatus = { formalized: 0, statement_only: 0, partial: 0, not_formalized: 0, not_checked: 0, unresolved: 0 };
+  const prominence: Record<string, any> = {};
+  for (const passage of passages) {
+    byStatus.not_checked += 1;
+    const bucket = prominence[passage.prominence] ?? (prominence[passage.prominence] = {
+      passages: 0, by_status: { formalized: 0, statement_only: 0, partial: 0, not_formalized: 0, not_checked: 0, unresolved: 0 },
+    });
+    bucket.passages += 1;
+    bucket.by_status.not_checked += 1;
+  }
+  return {
+    schema: "wikilean.articles.article/1",
+    pageid: SPROCKET_PAGEID,
+    title: SPROCKET_TITLE,
+    revision: SPROCKET_REVISION,
+    source_id: sourceId,
+    source: { html_sha256: "b".repeat(64), layer_sha256: "c".repeat(64), renderer: "web-html/3" },
+    wikidata: null,
+    assessment: { class: "C", importance: "mid" },
+    campaign: STATEMENT_CAMPAIGN,
+    // The tagging universe: the same libraries the golden store's articles name, which is
+    // what makes POST /api/articles/tag work on a statement-only article.
+    universe: { id: "u-fixture", sha256: FIXTURE_UNIVERSE_SHA, frozen: "2026-10-17", libraries: 5 },
+    checked: false,
+    record_set: STATEMENT_SEAL_SHA,
+    records_sha256: null,
+    licence: { text: "CC-BY-SA-4.0", mapping: "CC0-1.0" },
+    seal: {
+      set_id: "fixture-statements",
+      schema: STATEMENT_SET_SCHEMA,
+      created: "2026-11-12T09:00:00Z",
+      producer_commit: "7c1d9a2e5b4f6083a1cc27d4e9f0b3a85d6172ef",
+    },
+    summary: {
+      passages: passages.length,
+      locations: 0,
+      related: 0,
+      by_status: byStatus,
+      by_prominence: prominence,
+      by_library: {},
+      by_proof_status: {},
+      by_relation: {},
+    },
+    passages,
+  };
+}
+
+// The index row of one article, in the shard's own field order. not_checked is written LAST,
+// after `libraries`: the Worker reads a shard's columns by name, so where the builder puts
+// the new one does not matter.
+const STATEMENT_INDEX_FIELDS = ["title", "pageid", "revision", "passages", "formalized", "statement_only",
+  "partial", "not_formalized", "unresolved", "importance", "libraries", "not_checked"];
+
+function indexRow(article: Record<string, any>): unknown[] {
+  const by = article.summary.by_status;
+  return [article.title, article.pageid, article.revision, article.summary.passages, by.formalized,
+    by.statement_only, by.partial, by.not_formalized, by.unresolved,
+    article.assessment?.importance ?? null, [], by.not_checked];
+}
+
+// The shard a title falls in (build_store INDEX_HEX = 1).
+function shardOf(title: string): string {
+  return sha256(title.normalize("NFC").replace(/[\s_]+/g, " ").trim()).slice(0, 1);
+}
+
+// A store of one statement-only article: its view, its index shard, the golden store's
+// universe object, and a current.json whose counts are all not_checked.
+export function articlesStatementFiles(): Map<string, string> {
+  const golden = articlesFixtureFiles();
+  const article = sprocketArticle();
+  const shard = shardOf(SPROCKET_TITLE);
+  const files = new Map<string, string>();
+  files.set(`articles/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`, golden.get(`articles/v1/universes/${FIXTURE_UNIVERSE_SHA}.json`)!);
+  files.set(`articles/v1/articles/${SPROCKET_PAGEID}.json`, JSON.stringify(article));
+  files.set(`articles/v1/index/${shard}.json`, JSON.stringify({
+    schema: "wikilean.articles.index/1", shard, fields: STATEMENT_INDEX_FIELDS, articles: [indexRow(article)],
+  }));
+  files.set("articles/v1/current.json", JSON.stringify({
+    schema: "wikilean.articles.current/1",
+    campaign: STATEMENT_CAMPAIGN,
+    built_at: "2026-11-12T09:00:00Z",
+    universe: article.universe,
+    record_set: {
+      seal_sha256: STATEMENT_SEAL_SHA, set_id: "fixture-statements", created: "2026-11-12T09:00:00Z",
+      producer_commit: article.seal.producer_commit, schema: STATEMENT_SET_SCHEMA, byte_budget: 0,
+    },
+    counts: {
+      articles: 1,
+      passages: article.summary.passages,
+      locations: 0,
+      related: 0,
+      by_status: article.summary.by_status,
+      by_prominence: article.summary.by_prominence,
+      by_library: {},
+      by_importance: { mid: { articles: 1, passages: article.summary.passages, by_status: article.summary.by_status } },
+    },
+    index: { hex: 1, shards: [shard], entries: 1 },
+  }));
+  return files;
+}
+
+// The same article beside the golden store's located ones: one build, both kinds, which is
+// what the combine rule allows (the statement-set design, section 3).
+export function articlesMixedFiles(): Map<string, string> {
+  const files = articlesPairedFiles();
+  const statements = articlesStatementFiles();
+  const article = JSON.parse(statements.get(`articles/v1/articles/${SPROCKET_PAGEID}.json`)!);
+  files.set(`articles/v1/articles/${SPROCKET_PAGEID}.json`, statements.get(`articles/v1/articles/${SPROCKET_PAGEID}.json`)!);
+  const shard = shardOf(SPROCKET_TITLE);
+  const key = `articles/v1/index/${shard}.json`;
+  const existing = files.has(key)
+    ? JSON.parse(files.get(key)!)
+    : { schema: "wikilean.articles.index/1", shard, fields: STATEMENT_INDEX_FIELDS, articles: [] };
+  // The shard the golden store wrote has no not_checked column; the combined build's does.
+  const fields: string[] = existing.fields.includes("not_checked") ? existing.fields : [...existing.fields, "not_checked"];
+  const rows = existing.articles.map((row: unknown[]) => (row.length === fields.length ? row : [...row, 0]));
+  files.set(key, JSON.stringify({ ...existing, fields, articles: [...rows, indexRow(article)] }));
+  const current = JSON.parse(files.get("articles/v1/current.json")!);
+  current.counts.articles += 1;
+  current.counts.passages += article.summary.passages;
+  current.counts.by_status.not_checked = article.summary.by_status.not_checked;
+  for (const [name, bucket] of Object.entries(article.summary.by_prominence as Record<string, any>)) {
+    const into = current.counts.by_prominence[name] ??= { passages: 0, by_status: {} };
+    into.passages += bucket.passages;
+    into.by_status.not_checked = (into.by_status.not_checked ?? 0) + bucket.by_status.not_checked;
+  }
+  const mid = current.counts.by_importance.mid ??= { articles: 0, passages: 0, by_status: {} };
+  mid.articles += 1;
+  mid.passages += article.summary.passages;
+  mid.by_status.not_checked = (mid.by_status.not_checked ?? 0) + article.summary.by_status.not_checked;
+  current.index.entries += 1;
+  if (!current.index.shards.includes(shard)) current.index.shards = [...current.index.shards, shard].sort();
+  files.set("articles/v1/current.json", JSON.stringify(current));
+  return files;
+}
+
+// The statement-only article's marked revision: every mark data-status="unchecked", the
+// passage's own outcome, as the design's section 3 writes it.
+export function statementReaderHtml(): string {
+  const mark = (hex: string, body: string) =>
+    `<mark class="atl" data-p="${hex}" data-status="unchecked" id="p-${hex}">${body}</mark>`;
+  return `<div class="mw-parser-output">
+<p>In mechanics, the <b>sprocket theorem</b> states that ${mark(SPROCKET_HEXES[0], "every sprocket admits a balanced cog")} of finite order.</p>
+<h2 id="Definitions">Definitions</h2>
+<p>Following Jones, ${mark(SPROCKET_HEXES[1], "a sprocket is balanced if every cog has equal weight")}.</p>
+<h2 id="Properties">Properties</h2>
+<p>It follows that ${mark(SPROCKET_HEXES[2], "every balanced sprocket is finite and has a unique cog")}.</p>
+</div>`;
+}
+
+// That store with the marked revision, as build_store --reader-html would publish it.
+export function articlesStatementReaderFiles(): Map<string, string> {
+  const files = articlesStatementFiles();
+  const html = statementReaderHtml();
+  const article = JSON.parse(files.get(`articles/v1/articles/${SPROCKET_PAGEID}.json`)!);
+  article.reader = {
+    sha256: createHash("sha256").update(html, "utf8").digest("hex"),
+    bytes: Buffer.byteLength(html, "utf8"),
+    marks: (html.match(/<mark class="atl"/g) ?? []).length,
+    passages: article.passages.length,
+    unplaced: [],
+  };
+  files.set(`articles/v1/articles/${SPROCKET_PAGEID}.json`, JSON.stringify(article));
+  files.set(`articles/v1/reader/${SPROCKET_PAGEID}.html`, html);
+  return files;
+}
+
 // ---- the article reader (build_store --reader-html) ----------------------------------------
 //
 // A synthetic marked revision of the Widget lemma fixture (page 1001), in the shape the builder
@@ -217,5 +448,38 @@ export function articlesReaderFiles(opts: { omit?: string[]; html?: string } = {
   };
   files.set(`articles/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
   files.set(`articles/v1/reader/${WIDGET_PAGEID}.html`, opts.html ?? html);
+  return files;
+}
+
+// ---- the store the Python builder really writes (phase 1's two halves, joined) ---------------
+//
+// Every fixture above is written by hand in this file; this one is the committed golden store
+// of a MIXED build — the record set beside the pipeline's synthetic sealed cut, with the cut's
+// first article's marked revision — which scripts/articles/build_store.py wrote and
+// scripts/articles/test_build_store.py (StatementSetTests, on the statements/store branch)
+// rebuilds byte for byte from its inputs:
+//
+//   python3 scripts/articles/build_store.py --record-set scripts/articles/fixtures/recordset \
+//       --statement-set scripts/pipeline/fixtures/statementset \
+//       --tagging-universe scripts/articles/fixtures/recordset/universe.json \
+//       --reader-html scripts/articles/fixtures/reader-html-statements.json \
+//       --campaign mixed-fixture --out scripts/articles/fixtures/store-mixed --replace
+//
+// So the builder and the Worker cannot drift: test/articles-store-mixed.test.ts serves these
+// bytes, and the builder's own test says they are the bytes it writes.
+export const BUILT_STORE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../../../scripts/articles/fixtures/store-mixed");
+
+// The cut's two articles and the record set's two, as the builder names them.
+export const BUILT_CUT_PAGEID = 1005;
+export const BUILT_CUT_TITLE = "Sprocket bundle";
+export const BUILT_CUT_PATH = "/articles/1005/Sprocket_bundle";
+export const BUILT_CUT_CAMPAIGN = "fixture-2026-11";
+export const BUILT_LOCATED_PAGEID = WIDGET_PAGEID;
+
+export function articlesBuiltMixedFiles(): Map<string, string> {
+  const files = new Map<string, string>();
+  for (const path of walk(BUILT_STORE_ROOT)) {
+    files.set(relative(BUILT_STORE_ROOT, path).split("\\").join("/"), readFileSync(path, "utf8"));
+  }
   return files;
 }

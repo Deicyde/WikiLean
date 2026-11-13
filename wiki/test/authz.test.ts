@@ -24,7 +24,10 @@
 
 import { createHash } from "node:crypto";
 import { describe, it, expect } from "vitest";
-import { bindArticles, articlesPairedFiles, FIXTURE_CAMPAIGN, pairedPassage, WIDGET_PAGEID } from "./helpers/articles.js";
+import {
+  bindArticles, articlesMixedFiles, articlesPairedFiles, FIXTURE_CAMPAIGN, pairedPassage, SPROCKET_PAGEID,
+  STATEMENT_CAMPAIGN, WIDGET_PAGEID,
+} from "./helpers/articles.js";
 import { CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
 import {
   setup,
@@ -127,8 +130,26 @@ function bundleBody(): Record<string, unknown> {
   };
 }
 
+// Phase 1's own passage: a statement nothing has searched for, in a build that also holds
+// the located articles above, so one store answers both rows of the matrix.
+const STATEMENT_PASSAGE: Record<string, any> = JSON.parse(
+  articlesMixedFiles().get(`articles/v1/articles/${SPROCKET_PAGEID}.json`) as string,
+).passages[0];
+
+function statementTagBody(): Record<string, unknown> {
+  return {
+    pageid: SPROCKET_PAGEID,
+    campaign: STATEMENT_CAMPAIGN,
+    passage_key: STATEMENT_PASSAGE.passage_key,
+    library: "mathlib",
+    declaration: "Authz.statement",
+    relation: "exactMatch",
+    base_version: 0,
+  };
+}
+
 function overlayPrep(h: Harness): void {
-  bindArticles(h.env, articlesPairedFiles());
+  bindArticles(h.env, articlesMixedFiles());
   const agree = h.db.prepare(
     "INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)",
   );
@@ -270,6 +291,14 @@ const ENDPOINTS: EndpointRow[] = [
     name: "POST /api/articles/tag",
     prep: overlayPrep,
     request: (h, opts) => post(h.env, "/api/articles/tag", tagBody(), opts),
+    expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 200 },
+  },
+  {
+    // The same route on a statement-only article: its tagging universe is what the write is
+    // checked against, so phase 1's pages are editable exactly as the located ones are.
+    name: "POST /api/articles/tag (a statement-only article)",
+    prep: overlayPrep,
+    request: (h, opts) => post(h.env, "/api/articles/tag", statementTagBody(), opts),
     expected: { anon: 401, user: 200, patroller: 200, admin: 200, blocked: 401, bot: 403, wrongBearer: 401, botNoToken: 401, agent: 200 },
   },
   {
