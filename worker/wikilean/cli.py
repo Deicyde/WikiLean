@@ -58,6 +58,8 @@ def build_parser() -> argparse.ArgumentParser:
     work.add_argument("--dry-run", action="store_true", help="print exactly what would be sent, send nothing")
     work.add_argument("--enable-locate", action="store_true",
                       help="allow the locate unit (also needs \"locate_enabled\" in the config)")
+    work.add_argument("--no-web", action="store_true",
+                      help="judge without web search or fetch: the model gets no tools at all")
     work.add_argument("--rounds", type=int, default=None, help=argparse.SUPPRESS)
 
     journal_command = sub.add_parser("journal", help="the local record of every round and request")
@@ -159,7 +161,8 @@ def _status(args, config: Config) -> int:
 
 
 def _work(args, config: Config) -> int:
-    options = Options(unit=args.unit, dry_run=args.dry_run, enable_locate=args.enable_locate)
+    options = Options(unit=args.unit, dry_run=args.dry_run, enable_locate=args.enable_locate,
+                      web=not args.no_web)
     stored = load_token()
     if stored is None and not options.dry_run:
         print("wikilean: no agent token. Run `wikilean login` (mint one at /agents).", file=sys.stderr)

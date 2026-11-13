@@ -109,6 +109,20 @@ class RoundTest(unittest.TestCase):
     def run_one(self, **kwargs):
         return run_round(self.site, self.config, Options(verbose=False, **kwargs), log=lambda *_: None)
 
+    def test_a_round_gives_the_model_the_web_tools_unless_told_not_to(self):
+        record = self.directory / "record.json"
+        for options, config_web, tools in (({}, True, model.WEB_TOOLS),
+                                           ({"web": False}, True, ""),
+                                           ({}, False, "")):
+            with self.subTest(options=options, config_web=config_web):
+                fakes.set_control(self.directory, reply=json.dumps({"verdict": "unsure"}),
+                                  record=record)
+                self.config.web = config_web
+                self.run_one(dry_run=True, **options)
+                seen = json.loads(record.read_text())
+                self.assertEqual(seen["argv"][seen["argv"].index("--tools") + 1], tools)
+                self.assertEqual("search the web" in seen["prompt"], bool(tools))
+
     # ---- the three outcomes of a review --------------------------------------
 
     def test_agreeing_with_a_downgraded_link_writes_a_confirming_row(self):

@@ -23,6 +23,10 @@ wikilean work --loop  # one unit a round, until you stop it
 Run bare `wikilean` for a dashboard of what is open and a launcher. Piped, it
 prints the same survey and exits, so it is safe in a script.
 
+Your Claude may search the web and fetch pages while it judges, to check a
+declaration's exact name and statement; `wikilean work --no-web` turns that off
+(see Safety).
+
 Requires Python 3.12 or later and [Claude Code](https://claude.com/claude-code),
 logged in. Read [docs/START-CONTRIBUTING.md](../docs/START-CONTRIBUTING.md)
 first: it is the honest account of what is open and what is not.
@@ -103,16 +107,23 @@ These are the rules the code keeps, each with a test in `worker/tests/`.
 
 **The model never sees your WikiLean token.** The prompt carries a quotation
 from a Wikipedia revision — text anybody may edit — so the `claude` child gets
-no tools, no project or user settings, no MCP servers and no session
-(`--tools "" --setting-sources "" --strict-mcp-config --no-session-persistence
---safe-mode`, the form `bot/triage.py` already uses, and the form
-`site/test_agent_sandbox.py` holds every `claude` call in this repository to).
-Its environment is an **allowlist** that cannot contain
+web search and web fetch and no other tool: nothing that reads a file, runs a
+command or edits anything. It also gets no project or user settings, no MCP
+servers and no session (`--tools WebSearch,WebFetch --allowedTools
+WebSearch,WebFetch --setting-sources "" --strict-mcp-config
+--no-session-persistence --safe-mode`), and it runs in an empty temporary
+directory, so what Claude Code tells it about its surroundings names none of
+your paths or repositories. `wikilean work --no-web`, or `"web": false` in the
+config, takes the two web tools away too (`--tools ""`, the form `bot/triage.py`
+uses). `site/test_agent_sandbox.py` holds this call to web search and fetch at
+most. Its environment is an **allowlist** that cannot contain
 `WIKILEAN_AGENT_TOKEN`, and the prompt goes in on stdin, so no quoted text is
 visible in `ps` either. The allowlist does pass `HOME`, because Claude Code
 needs your own credentials — and the token file lives under it, so what stands
-between the model and the file on disk is `--tools ""`. That is the same
-posture `bot/triage.py` takes, and it is why the flags are not negotiable.
+between the model and the file on disk is that it has no file tool. That is
+why the tool list is not negotiable. A planted instruction can still make the
+model search for or fetch something; what it could send is what is already in
+its prompt, which is public.
 
 **WikiLean never sees your model credentials.** This CLI never asks for a model
 key and has nowhere to put one. Your Claude subscription is yours.
@@ -189,6 +200,7 @@ It is local. Nothing uploads it. Tokens are redacted on the way in.
   "model": "",
   "interval": 90.0,
   "model_timeout": 300.0,
+  "web": true,
   "skip_pageids": [],
   "locate_enabled": false,
   "locate_checkout": "",

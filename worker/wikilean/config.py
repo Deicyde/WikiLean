@@ -87,6 +87,10 @@ class Config:
     interval: float = 90.0
     # Seconds a single `claude -p` call may take before it is killed.
     model_timeout: float = 300.0
+    # Whether the model may search the web and fetch pages while it judges
+    # (model.WEB_TOOLS, and nothing else). False, or `work --no-web`, keeps the
+    # call tool-less.
+    web: bool = True
     # docs/START-CONTRIBUTING.md path 3 is "ask first", so the locate unit needs
     # BOTH this flag and --enable-locate on the command line before it runs.
     locate_enabled: bool = False

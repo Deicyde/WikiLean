@@ -57,6 +57,21 @@ class ArgvTest(unittest.TestCase):
         # Whatever else changes, the prompt is not an argument: it goes in on
         # stdin, so no quoted Wikipedia text is visible in `ps`.
         self.assertTrue(all(not a.startswith("A fixture") for a in argv))
+        # Nothing is pre-approved when there is nothing to approve.
+        self.assertNotIn("--allowedTools", argv)
+
+    def test_with_web_the_child_gets_web_search_and_fetch_and_nothing_else(self):
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop(model.CLAUDE_CMD_ENV, None)
+            argv = model.claude_argv("claude-opus-5", web=True)
+        self.assertEqual(argv[argv.index("--tools") + 1], "WebSearch,WebFetch")
+        # Pre-approved, or a print-mode call would be refused each one.
+        self.assertEqual(argv[argv.index("--allowedTools") + 1], "WebSearch,WebFetch")
+        self.assertEqual(argv[argv.index("--setting-sources") + 1], "")
+        self.assertIn("--strict-mcp-config", argv)
+        self.assertIn("--no-session-persistence", argv)
+        self.assertIn("--safe-mode", argv)
+        self.assertEqual(argv[argv.index("--model") + 1], "claude-opus-5")
 
     def test_the_environment_is_an_allowlist_without_the_agent_token(self):
         ambient = {
@@ -110,6 +125,25 @@ class RealChildTest(unittest.TestCase):
         answer = model.ask(review_prompt(located), timeout=60)
         self.assertEqual(answer.value["verdict"], "agree")
         self.assertIn("<passage>", json.loads(self.record.read_text())["prompt"])
+
+    def test_the_child_runs_in_an_empty_directory_removed_afterwards(self):
+        """Claude Code tells the model its working directory and that
+        directory's git state; a fetch could carry either off."""
+        model.ask("judge this", timeout=60)
+        seen = json.loads(self.record.read_text())
+        cwd = Path(seen["cwd"])
+        self.assertNotEqual(cwd.resolve(), Path.cwd().resolve())
+        self.assertTrue(cwd.name.startswith("wikilean-claude-"), cwd)
+        self.assertEqual(seen["cwd_entries"], [])
+        self.assertFalse(cwd.exists())
+
+    def test_the_web_flag_reaches_the_child(self):
+        model.ask("judge this", timeout=60, web=True)
+        argv = json.loads(self.record.read_text())["argv"]
+        self.assertEqual(argv[argv.index("--tools") + 1], model.WEB_TOOLS)
+        model.ask("judge this", timeout=60)
+        argv = json.loads(self.record.read_text())["argv"]
+        self.assertEqual(argv[argv.index("--tools") + 1], "")
 
     def test_a_failing_child_raises_rather_than_returning_data(self):
         fakes.set_control(self.directory, fail=True)
@@ -406,6 +440,19 @@ class PromptTest(unittest.TestCase):
         offered = prompt.split("use an id from this list verbatim):\n", 1)[1].splitlines()[0]
         self.assertEqual(sorted(part.strip() for part in offered.split(",")), ["lean-core", "mathlib"])
         self.assertNotIn("tauceti", prompt)
+
+    def test_the_web_note_is_in_a_prompt_only_when_the_call_has_the_tools(self):
+        located, absence = candidates()
+        for build in (lambda web: review_prompt(located, web=web),
+                      lambda web: review_prompt(absence, web=web),
+                      lambda web: tag_prompt(located, LIBRARIES, web=web)):
+            with_web, without = build(True), build(False)
+            self.assertIn("search the web", with_web)
+            self.assertIn("is data too", with_web)
+            self.assertNotIn("search the web", without)
+            # the note comes before the quotation, never inside it (the preamble
+            # names the markers too, so look for the block's own opening line)
+            self.assertLess(with_web.index("search the web"), with_web.index("\n<passage>\n"))
 
 
 if __name__ == "__main__":

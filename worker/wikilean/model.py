@@ -4,12 +4,19 @@ The boundary this module draws, and why it is drawn here rather than at the
 call sites:
 
 * **The prompt carries untrusted text.** A passage is a quotation from a
-  Wikipedia revision anybody may edit. So the child gets no tools at all
-  (``--tools ""``), no project or user settings (``--setting-sources ""``), no
-  MCP servers (``--strict-mcp-config``) and no session to carry anything into
-  the next one. This is bot/triage.py's tool-less form, which is the shape
-  WikiLean already requires of a pipeline `claude` call (CLAUDE.md, "Security /
-  credentials"), and everything the model needs is in the prompt.
+  Wikipedia revision anybody may edit. So the child gets no tool that reads a
+  file, runs a command or edits anything: web search and web fetch at most
+  (``--tools WebSearch,WebFetch``, the default), and no tools at all with
+  ``--no-web`` (``--tools ""``). It gets no project or user settings
+  (``--setting-sources ""``), no MCP servers (``--strict-mcp-config``) and no
+  session to carry anything into the next one: bot/triage.py's form, which
+  WikiLean requires of a pipeline `claude` call (CLAUDE.md, "Security /
+  credentials"), with the two web tools added for the contributor's own call.
+  The token file sits under HOME, which Claude Code needs; what keeps the
+  model from it is that it has no file tool.
+* **The child runs in an empty temporary directory**, so the context Claude
+  Code gives the model names no path of the contributor's and no git
+  repository's branch or commits, which a fetch could otherwise carry off.
 * **The child's environment is an allowlist, never a copy.** The WikiLean agent
   token cannot reach it, because no name that could hold one is on the list —
   and `ANTHROPIC_API_KEY` is off it too, so the call bills the contributor's
@@ -28,6 +35,7 @@ import os
 import shlex
 import shutil
 import subprocess
+import tempfile
 from dataclasses import dataclass
 
 # bot/triage.py CLAUDE_ENV_KEYS, verbatim. Every name a `claude` call may need
@@ -47,6 +55,9 @@ CLAUDE_ENV_KEYS: tuple[str, ...] = (
 
 # The binary, overridable so a test can put a stub in its place.
 CLAUDE_CMD_ENV = "WIKILEAN_CLAUDE_CMD"
+# The only built-in tools the child may ever have: it can look a declaration up
+# on the web, and nothing it can call reads a file or runs a command.
+WEB_TOOLS = "WebSearch,WebFetch"
 # Named rather than written inline below, so that the only ["claude", …]
 # literal in this package is the full argv in claude_argv — which is the one
 # site/test_agent_sandbox.py scans for its flags.
@@ -78,26 +89,31 @@ def claude_environment(environ: dict | None = None) -> dict[str, str]:
     return {name: source[name] for name in CLAUDE_ENV_KEYS if name in source}
 
 
-def claude_argv(model: str = "") -> list[str]:
-    """The argv for one tool-less, session-less, settings-less judgement.
+def claude_argv(model: str = "", *, web: bool = False) -> list[str]:
+    """The argv for one session-less, settings-less judgement.
 
-    Written as a literal list beginning "claude" because that is what the
-    repository's own gate reads: site/test_agent_sandbox.py scans every
-    pipeline Python file for such a list and fails the build unless it carries
-    --tools, --setting-sources and --strict-mcp-config. WIKILEAN_CLAUDE_CMD
-    replaces the binary afterwards and can never replace a flag.
+    Its tools are web search and web fetch when ``web`` is set, pre-approved so
+    a print-mode call can use them, and none otherwise. Written as a literal
+    list beginning "claude" because that is what the repository's own gate
+    reads: site/test_agent_sandbox.py scans every pipeline Python file for such
+    a list and fails the build unless it carries --tools, --setting-sources and
+    --strict-mcp-config. WIKILEAN_CLAUDE_CMD replaces the binary afterwards and
+    can never replace a flag.
     """
+    tools = WEB_TOOLS if web else ""
     argv = [
         "claude",
         "-p",
         "--output-format", "json",
         "--safe-mode",
-        "--tools", "",
+        "--tools", tools,
         "--setting-sources", "",
         "--strict-mcp-config",
         "--no-session-persistence",
     ]
     argv[:1] = claude_command()
+    if web:
+        argv += ["--allowedTools", tools]
     if model:
         argv += ["--model", model]
     return argv
@@ -124,16 +140,17 @@ def extract_json(text: str) -> dict:
 
 
 def ask(prompt: str, *, model: str = "", timeout: float = 300.0,
-        runner=subprocess.run) -> Answer:
+        runner=subprocess.run, web: bool = False) -> Answer:
     """Ask once and parse the answer. Raises ModelError; never raises data."""
     import time
 
-    argv = claude_argv(model)
+    argv = claude_argv(model, web=web)
     environment = claude_environment()
     started = time.monotonic()
     try:
-        done = runner(argv, input=prompt, capture_output=True, text=True,
-                      env=environment, timeout=timeout)
+        with tempfile.TemporaryDirectory(prefix="wikilean-claude-") as empty:
+            done = runner(argv, input=prompt, capture_output=True, text=True,
+                          env=environment, timeout=timeout, cwd=empty)
     except FileNotFoundError:
         raise ModelError("no `claude` on PATH: install Claude Code and log in") from None
     except subprocess.TimeoutExpired:
