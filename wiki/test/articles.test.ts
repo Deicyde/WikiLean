@@ -14,19 +14,22 @@ import {
   setup, get, post, blockNetwork, PIPELINE_TOKEN, REVID, SLUG, ORIGIN, type Harness,
 } from "./helpers/harness.js";
 import {
-  ARTICLES_STORE_ROOT, articlesFixtureFiles, articlesReaderFiles, bindArticles, fixtureArticle, FIXTURE_CAMPAIGN, FIXTURE_UNIVERSE_SHA,
-  GADGET_PAGEID, READER_ORDER, readerHtml, WIDGET_PAGEID,
+  ARTICLES_STORE_ROOT, articlesFixtureFiles, articlesMixedFiles, articlesPairedFiles, articlesReaderFiles,
+  articlesStatementFiles, articlesStatementReaderFiles, bindArticles, fixtureArticle, FIXTURE_CAMPAIGN,
+  FIXTURE_UNIVERSE_SHA, GADGET_PAGEID, MATHLIB_REPO, pairKeyFor, READER_ORDER, readerHtml, SPROCKET_HEXES,
+  SPROCKET_PAGEID, SPROCKET_REVISION, SPROCKET_TITLE, statementReaderHtml, STATEMENT_CAMPAIGN, WIDGET_PAGEID,
 } from "./helpers/articles.js";
 import {
-  ARTICLES_PSEUDONYM_DOMAIN, CAMPAIGN_RE, INDEX_CACHE_MS, MAX_SLUG_CACHE, NOT_PUBLISHED, SLUG_CACHE_MS, STORE_UNREADABLE,
-  articlesHref, kvReader, loadArticle, loadCurrent, loadIndexShard, lookupTitle, memoryReader, parsePageid, staticReader,
-  titleKey, titleShard, wikileanSlugFor, type ArticlesLocation,
+  ARTICLES_PSEUDONYM_DOMAIN, CAMPAIGN_RE, INDEX_CACHE_MS, MAX_SLUG_CACHE, NO_RECORDS, NOT_PUBLISHED, SLUG_CACHE_MS,
+  STORE_UNREADABLE, articlesHref, kvReader, loadArticle, loadCurrent, loadIndexShard, lookupTitle, memoryReader,
+  parsePageid, staticReader, titleKey, titleShard, wikileanSlugFor, type ArticlesLocation,
 } from "../src/articles.js";
 import {
-  ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, UNMEASURED, articlesSummaryBox, campaignLabel,
-  coverageStatus, locationStatus, plainHead,
+  ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, NO_LOCATE_RUN, UNMEASURED, articlesSummaryBox,
+  campaignLabel, coverageStatus, locationStatus, plainHead,
 } from "../src/articles-render.js";
 import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
+import { CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
 import { injectArticlesSummary } from "../src/pages.js";
 import { app } from "../src/index.js";
 import {
@@ -333,8 +336,8 @@ describe("articles pages with the fixture store", () => {
       expect(html).toContain(`<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
-    expect(html).toContain('<script src="/assets/articles.js?v=8"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=13">');
+    expect(html).toContain('<script src="/assets/articles.js?v=9"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=14">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
@@ -2335,7 +2338,7 @@ describe("articles security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/articles.js?v=8"></script>');
+      expect(html, path).toContain('<script src="/assets/articles.js?v=9"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/articles.css');
@@ -2343,7 +2346,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=13"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=14"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -3386,7 +3389,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=13", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=14", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");
@@ -3428,5 +3431,363 @@ describe("the article reader", () => {
     const long = plainHead({ quote: { exact: "word ".repeat(40).trim() } }, 30);
     expect(long.endsWith("…")).toBe(true);
     expect(long.length).toBeLessThanOrEqual(31);
+  });
+});
+
+// ---- phase 1: statements, cut and not checked ------------------------------------------------
+//
+// The reader side of the statement-set design of 2026-11-12 (section 3), over a store written
+// by hand in test/helpers/articles.ts: passages with outcome "unchecked" and no status, a fifth
+// summary status not_checked, per-article checked:false, and a tagging universe nothing has
+// searched. The one invariant under all of it: not_checked is never folded into not_formalized,
+// on the article page, in the list, in the box or in the dashboard's totals.
+describe("a statement-only article", () => {
+  function statements(opts: Parameters<typeof setup>[0] = {}): Harness {
+    const h = setup(opts);
+    bindArticles(h.env, articlesStatementFiles());
+    return h;
+  }
+  const SPROCKET_PATH = `/articles/${SPROCKET_PAGEID}/Sprocket_theorem`;
+
+  it("counts its statements, says none is checked, and never says not formalized", async () => {
+    const h = statements();
+    const res = await get(h.env, SPROCKET_PATH);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    // "89 statements · none checked yet", in the design's own words.
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 statements</b>' +
+      '<span class="articles-dot" aria-hidden="true">·</span>' +
+      '<span class="articles-mini" data-status="not_checked"><span class="articles-ico" aria-hidden="true">○</span>none checked yet</span></p>');
+    // Nothing on the page COUNTS an unchecked statement as not formalized: no passage, no
+    // count and no bar segment carries that status. (The legend still names the vocabulary,
+    // with a zero beside it, exactly as it does for any status an article has none of.)
+    expect(html).not.toContain('class="articles-mini" data-status="not_formalized"');
+    expect(html).not.toContain('class="articles-seg"');
+    expect(html).not.toMatch(/Searched \d+ (Lean )?librar/);
+    // The passages are statements, and the heading says so.
+    expect(html).toContain('<h2 class="articles-h2" id="articles-h-passages">Statements</h2>');
+    expect(html).toContain("Show all statements</button>");
+    expect(html).toContain('data-noun="statements"');
+  });
+
+  it("gives each statement the neutral status, the card's words, the tag form and no verdict buttons", async () => {
+    const h = statements();
+    const html = await (await get(h.env, SPROCKET_PATH)).text();
+    expect(html.match(/<li class="articles-passage[^"]*" id="p-[0-9a-f]+" data-status="not_checked"/g)).toHaveLength(3);
+    expect(html).toContain('<span class="articles-pill" data-status="not_checked"><span class="articles-ico" aria-hidden="true">○</span>Not checked yet</span>');
+    // The card's exact words (the design, section 3).
+    expect(html.match(/Not checked yet — no library has been searched for this statement\./g)).toHaveLength(3);
+    // No Confirm/Report: they are a verdict on a sealed location, and there is none.
+    expect(html).not.toContain('class="articles-fb"');
+    expect(html).not.toContain("Sign in to confirm or report");
+    expect(html).not.toContain('class="articles-absence"');
+    // The relation legend explains cards; with no card it is not there.
+    expect(html).not.toContain("articles-legend-rel");
+    // Signed in, the one write this page offers is the tag form.
+    const signedIn = await (await get(h.env, SPROCKET_PATH, { user: "u-human" })).text();
+    expect(signedIn.match(/class="articles-tag-open"/g)).toHaveLength(3);
+    expect(signedIn).not.toContain('class="articles-fb-btn"');
+  });
+
+  it("says in its About fold that no library was searched and no locate run has run", async () => {
+    const h = statements();
+    const html = await (await get(h.env, SPROCKET_PATH)).text();
+    const about = html.slice(html.indexOf('id="articles-about"'), html.indexOf("</details>", html.indexOf('id="articles-about"')));
+    expect(about).toContain("<h2 class=\"articles-about-h\">Libraries</h2>");
+    expect(about).toContain("No library has been searched for these statements. A tag may name any of the " +
+      `<a href="/articles/universe/${FIXTURE_UNIVERSE_SHA}">5 Lean libraries</a>, pinned 2026-10-17, 1 left out (library set <code>u-fixture</code>).`);
+    expect(about).toContain('<h2 class="articles-about-h">How these statements were cut</h2>');
+    expect(about).toContain("Cut run <code>cut-fixture-2026-11</code>; no locate run has run over these statements.");
+    expect(about).toContain("Statement set <code>fixture-statements</code> (wikilean.statement-set/1), cut 12 Nov 2026 by WikiLean at commit " +
+      '<code title="7c1d9a2e5b4f6083a1cc27d4e9f0b3a85d6172ef">7c1d9a2</code>.');
+    expect(about).toContain(NO_LOCATE_RUN);
+    expect(about).toContain("3 statements cut from this revision, none of them checked against a Lean library yet.");
+    // No status rule and no claim about an audit of links there are none of.
+    expect(about).not.toContain("status rule");
+    expect(about).not.toContain(UNMEASURED);
+    // What the colours mean names the fifth status, and not one it does not show.
+    expect(about).toContain("no library has been searched for it; not counted as not formalized");
+    // The notice is unchanged.
+    expect(html).toContain(`<p class="articles-notice" id="articles-notice">${ARTICLES_NOTICE}</p>`);
+  });
+
+  it("offers its view model and not records it has none of", async () => {
+    const h = statements();
+    const html = await (await get(h.env, SPROCKET_PATH)).text();
+    expect(html).toContain(`<p class="articles-data">Data: <a href="/api/articles/article/${SPROCKET_PAGEID}">view model (JSON)</a></p>`);
+    expect(html).not.toContain("Literature Links records");
+    const res = await get(h.env, `/api/articles/records/${SPROCKET_PAGEID}`);
+    expect(res.status).toBe(404);
+    expect((await jsonOf(res)).error).toBe(NO_RECORDS);
+    // The view model itself is served, sealed and unchanged.
+    const view = await jsonOf(await get(h.env, `/api/articles/article/${SPROCKET_PAGEID}`));
+    expect(view.checked).toBe(false);
+    expect(view.passages.map((p: { outcome: string; status: null }) => [p.outcome, p.status]))
+      .toEqual([["unchecked", null], ["unchecked", null], ["unchecked", null]]);
+    expect(view.summary.by_status.not_checked).toBe(3);
+  });
+
+  it("is listed with 0 of 3 checked and an empty status bar", async () => {
+    const h = statements();
+    const html = await (await get(h.env, "/articles")).text();
+    const row = html.slice(html.indexOf('data-title="sprocket theorem"'), html.indexOf("</tr>", html.indexOf('data-title="sprocket theorem"')));
+    expect(row).toContain('<div class="articles-bar is-empty" role="img" aria-label="3 statements: none checked yet"></div>');
+    expect(row).toContain('<td class="num">0 of 3 checked</td>');
+    expect(row).toContain('data-passages="0"');
+    expect(row).toContain('data-not-checked="3"');
+    expect(row).not.toContain("no status yet");
+    // The build's own line, and its totals.
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>1 article</b>' +
+      '<span class="articles-dot" aria-hidden="true">·</span>3 statements' +
+      '<span class="articles-dot" aria-hidden="true">·</span>' +
+      '<span class="articles-mini" data-status="not_checked"><span class="articles-ico" aria-hidden="true">○</span>none checked yet</span></p>');
+    expect(html).toContain('<span class="articles-chip is-static" data-status="not_checked">' +
+      '<span class="articles-swatch" data-status="not_checked" aria-hidden="true"></span>' +
+      '<span class="articles-ico" aria-hidden="true">○</span>Not checked yet <span class="articles-n">3</span></span>');
+    expect(html).toContain('<h2 class="articles-about-h" id="articles-h-libs">The libraries a tag may name</h2>');
+    expect(html).toContain("5 libraries in the set, none of them searched in this build");
+    // Nothing in the build is counted as not formalized.
+    expect(html).toContain('>Not formalized <span class="articles-n">0</span></span>');
+    expect(html).not.toContain('class="articles-seg"');
+  });
+
+  it("says on the Wikipedia article's box that its statements are cut, not checked", async () => {
+    const entry = {
+      title: SPROCKET_TITLE, pageid: SPROCKET_PAGEID, revision: SPROCKET_REVISION, passages: 3,
+      formalized: 0, statement_only: 0, partial: 0, not_formalized: 0, not_checked: 3, unresolved: 0,
+      importance: "mid", libraries: [],
+    };
+    const box = articlesSummaryBox(entry, SPROCKET_PATH);
+    expect(box).toContain(`WikiLean cut 3 statements from Wikipedia revision ${SPROCKET_REVISION}, none checked against a Lean library yet.`);
+    expect(box).not.toMatch(/not formalized/);
+  });
+
+  it("the universe page says the libraries were not searched for this build", async () => {
+    const h = statements();
+    const html = await (await get(h.env, `/articles/universe/${FIXTURE_UNIVERSE_SHA}`)).text();
+    expect(html).toContain("No locate run has searched these libraries for this build&#x27;s statements.");
+    expect(html).not.toContain("A “not found” here means exactly this");
+    // Its own title, heading and crumb say the same: the article page links here with
+    // "a tag may name any of these", and the page must not contradict the link.
+    expect(html).toContain("<h1 class=\"articles-h1\">The libraries a tag may name</h1>");
+    expect(html).toContain("<title>WikiLean · Articles · libraries a tag may name (u-fixture)</title>");
+    expect(html).toContain("<span>Libraries</span></nav>");
+    expect(html).not.toContain("libraries searched");
+    expect(html).not.toContain("The libraries searched");
+    // A build that searched is the page it always was.
+    const located = setup();
+    bindArticles(located.env, articlesFixtureFiles());
+    const before = await (await get(located.env, `/articles/universe/${FIXTURE_UNIVERSE_SHA}`)).text();
+    expect(before).toContain("<h1 class=\"articles-h1\">The libraries searched</h1>");
+    expect(before).toContain("<title>WikiLean · Articles · libraries searched (u-fixture)</title>");
+  });
+
+  it("keeps the relation legend on every page of a build that searched", async () => {
+    // The legend explains the words on a card, and a page of statements has none until a
+    // community tag puts one there — but a LOCATED article whose every passage is an
+    // absence has no card either, and its page is the page it always was.
+    const files = articlesFixtureFiles();
+    const article = JSON.parse(files.get(`articles/v1/articles/${WIDGET_PAGEID}.json`)!);
+    for (const passage of article.passages) {
+      passage.locations = [];
+      passage.coverage = null;
+      passage.basis = null;
+      if (passage.outcome === "located") passage.outcome = "absent";
+      if (passage.status) passage.status = "not_formalized";
+    }
+    files.set(`articles/v1/articles/${WIDGET_PAGEID}.json`, JSON.stringify(article));
+    const h = setup();
+    bindArticles(h.env, files);
+    const html = await (await get(h.env, `/articles/${WIDGET_PAGEID}/Widget_lemma`)).text();
+    expect(html).toContain("articles-legend-rel");
+    expect(html).not.toContain("Not checked yet");
+  });
+
+  it("reads not_checked out of an index shard by name, wherever the builder put the column", async () => {
+    const h = statements();
+    const files = articlesStatementFiles();
+    const shard = [...files.keys()].find((key) => key.startsWith("articles/v1/index/"))!.slice(-6, -5);
+    const raw = JSON.parse(files.get(`articles/v1/index/${shard}.json`)!);
+    // The fixture writes the new column LAST, after `libraries`.
+    expect(raw.fields[raw.fields.length - 1]).toBe("not_checked");
+    const entries = await loadIndexShard(memoryReader(files), shard);
+    expect(entries).toHaveLength(1);
+    expect(entries![0]).toMatchObject({ pageid: SPROCKET_PAGEID, passages: 3, not_checked: 3, not_formalized: 0 });
+    expect(h.env).toBeDefined();
+  });
+});
+
+describe("the article reader on a statement-only article", () => {
+  const SPROCKET_PATH = `/articles/${SPROCKET_PAGEID}/Sprocket_theorem`;
+  function withStatementReader(): Harness {
+    const h = setup();
+    bindArticles(h.env, articlesStatementReaderFiles());
+    return h;
+  }
+
+  it("serves the marked revision and highlights every statement neutrally", async () => {
+    const h = withStatementReader();
+    const res = await get(h.env, SPROCKET_PATH);
+    expect(res.status).toBe(200);
+    const html = await res.text();
+    // The builder's marks are served byte for byte, each carrying the passage's outcome.
+    expect(html).toContain(statementReaderHtml());
+    for (const hex of SPROCKET_HEXES) {
+      expect(html, hex).toContain(`<mark class="atl" data-p="${hex}" data-status="unchecked" id="p-${hex}">`);
+      // The panel section the script shows carries the page's status token.
+      expect(html, hex).toContain(`id="atlr-pp-${hex}" data-p="${hex}" data-status="not_checked"`);
+    }
+    expect(html).toContain("Select a highlighted statement to read it on its own; no library has been searched for it yet.");
+    expect(html).toContain('<h2 class="articles-h2 atlr-h2" id="atlr-h-index">Statements</h2>');
+    expect(html).toContain("3 statements <span aria-hidden=\"true\">▴</span>");
+    expect(html).toContain('aria-label="Statements cut from this article"');
+    // Each index row takes the neutral swatch and says the status to a screen reader.
+    expect(html.match(/<span class="atlr-swatch" data-status="not_checked" aria-hidden="true"><\/span>/g)).toHaveLength(3);
+    expect(html).toContain('<span class="articles-sr">Not checked yet: </span>');
+    // A row's lead names the declaration, or says "not found" for an absence: a statement
+    // nothing searched for has neither, and its lead is empty.
+    expect(html).not.toContain('<span class="atlr-row-lead">not found');
+    expect(html.match(/<span class="atlr-row-lead"><\/span>/g)).toHaveLength(3);
+    expect(html).toContain('<link rel="stylesheet" href="' + ARTICLES_READER_CSS + '">');
+  });
+
+  it("both of the reader's status words are styled, and the neutral one has its own pattern", () => {
+    const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");
+    // The store's mark carries the passage's outcome ("unchecked"); the pages count the
+    // summary status ("not_checked"). Both must paint, or a highlight goes missing.
+    expect(css).toMatch(/mark\.atl\[data-status="unchecked"\], mark\.atl\[data-status="not_checked"\]/);
+    const shared = readFileSync(new URL("../../site/assets/articles.css", import.meta.url), "utf8");
+    expect(shared).toMatch(/\[data-status="not_checked"\],\n\[data-status="unchecked"\]/);
+    // Its own swatch fill, told apart from every other status without colour.
+    expect(shared).toContain('.articles-seg[data-status="not_checked"], .articles-swatch[data-status="not_checked"]');
+    // Its stroke is not one another status uses.
+    const rule = /^\[data-status="not_checked"\],\n\[data-status="unchecked"\]\s*\{([^}]*)\}/m.exec(shared);
+    expect(rule, "the two tokens share one rule").not.toBeNull();
+    expect(rule![1]).toContain("--st: var(--c-untouched)");
+    expect(rule![1]).toContain("--st-line: dashed");
+    // Its ink is the page's, not the muted grey: the pill and its count keep their contrast.
+    expect(rule![1]).toContain("--st-ink: var(--ink)");
+    // Translucent, like the other three: the reader paints the wash three times over on the
+    // selected passage, and an opaque one would not move.
+    expect(rule![1]).toMatch(/--st-bg: rgba\([^)]*0\.\d+\)/);
+    // And a dark-mode value of its own, under both of the theme's selectors.
+    expect(shared).toContain('[data-theme="dark"] [data-status="not_checked"]');
+    expect(shared).toContain(':root:not([data-theme]) [data-status="not_checked"]');
+  });
+});
+
+describe("the tag route on a statement-only article", () => {
+  const SPROCKET_PATH = `/articles/${SPROCKET_PAGEID}/Sprocket_theorem`;
+  function bound(): Harness {
+    const h = setup();
+    bindArticles(h.env, articlesStatementFiles());
+    h.db.prepare("INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+      .run("u-human", CC0_AGREEMENT_VERSION, Date.now());
+    return h;
+  }
+  const passageKeyOf = (index: number): string => {
+    const article = JSON.parse(articlesStatementFiles().get(`articles/v1/articles/${SPROCKET_PAGEID}.json`)!);
+    return article.passages[index].passage_key as string;
+  };
+
+  it("takes a tag against the article's tagging universe and moves the statement's status", async () => {
+    const h = bound();
+    const res = await post(h.env, "/api/articles/tag", {
+      pageid: SPROCKET_PAGEID, campaign: STATEMENT_CAMPAIGN, passage_key: passageKeyOf(0),
+      library: "mathlib", declaration: "Sprocket.exists_balanced_cog", relation: "exactMatch",
+    }, { user: "u-human" });
+    expect(res.status).toBe(200);
+    const body = await jsonOf(res);
+    expect(body.pair_key).toBe(await pairKeyFor(passageKeyOf(0), MATHLIB_REPO, "Sprocket.exists_balanced_cog"));
+    // A community card never mints a formalization claim: statement only is as far as it goes.
+    expect(body.status).toBe("statement_only");
+    const row = h.db.prepare("SELECT * FROM article_tags WHERE pair_key = ?").get(body.pair_key) as Record<string, unknown>;
+    expect(row).toMatchObject({ repository: MATHLIB_REPO, origin: "community", state: "live", revision: SPROCKET_REVISION });
+
+    // The page shows it, labels it as a community edit, and still says no library was searched.
+    const html = await (await get(h.env, SPROCKET_PATH, { user: "u-human" })).text();
+    expect(html).toContain("Sprocket.exists_balanced_cog");
+    expect(html).toContain("With community edits: Statement only. As published it is Not checked yet.");
+    expect(html).toContain("Not checked yet — no library has been searched for this statement.");
+    // The sealed store is untouched: the view model still has no status at all.
+    const view = await jsonOf(await get(h.env, `/api/articles/article/${SPROCKET_PAGEID}`));
+    expect(view.passages[0]).toMatchObject({ outcome: "unchecked", status: null, locations: [] });
+  });
+
+  it("refuses a library the article's tagging universe does not name", async () => {
+    const h = bound();
+    const res = await post(h.env, "/api/articles/tag", {
+      pageid: SPROCKET_PAGEID, campaign: STATEMENT_CAMPAIGN, passage_key: passageKeyOf(1),
+      library: "not-a-library", declaration: "Sprocket.balanced", relation: "exactMatch",
+    }, { user: "u-human" });
+    expect(res.status).toBe(400);
+    expect((await jsonOf(res)).error).toBe("unknown library for this article's universe");
+  });
+
+  it("removing the community tag leaves the statement not checked, never not formalized", async () => {
+    const h = bound();
+    const body = {
+      pageid: SPROCKET_PAGEID, campaign: STATEMENT_CAMPAIGN, passage_key: passageKeyOf(2),
+      library: "mathlib", declaration: "Sprocket.balanced_unique", relation: "exactMatch",
+    };
+    const added = await jsonOf(await post(h.env, "/api/articles/tag", body, { user: "u-human" }));
+    const removed = await post(h.env, `/api/articles/tag/${added.pair_key}/state`, {
+      pageid: SPROCKET_PAGEID, campaign: STATEMENT_CAMPAIGN, state: "removed", reason: "wrong cog", base_version: 1,
+    }, { user: "u-human" });
+    expect(removed.status).toBe(200);
+    expect((await jsonOf(removed)).status).toBe("not_checked");
+  });
+});
+
+describe("a build of both kinds of article", () => {
+  function mixed(): Harness {
+    const h = setup();
+    bindArticles(h.env, articlesMixedFiles());
+    return h;
+  }
+
+  it("counts the checked passages and the statements apart, and keeps the bar over the checked ones", async () => {
+    const h = mixed();
+    const html = await (await get(h.env, "/articles")).text();
+    expect(html).toContain('<p class="articles-counts" id="articles-counts"><b>3 articles</b>' +
+      '<span class="articles-dot" aria-hidden="true">·</span>9 passages' +
+      '<span class="articles-dot" aria-hidden="true">·</span>' +
+      '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>4 formalized</span>');
+    expect(html).toContain('<span class="articles-mini" data-status="not_checked"><span class="articles-ico" aria-hidden="true">○</span>3 not checked yet</span></p>');
+    // The totals line names both, and the bar is over the checked passages alone.
+    expect(html).toContain("<p>3 articles · 9 passages (6 checked, 3 not checked yet) · 7 Lean locations · 1 related declaration</p>");
+    expect(html).toContain('aria-label="6 checked passages: 4 formalized, 1 statement only, 1 not formalized"');
+    // Both rows, each with its own shape.
+    expect(html).toMatch(/data-title="widget lemma" data-passages="3" data-formalized="1" data-libraries="3"/);
+    expect(html).toContain('<td class="num">0 of 3 checked</td>');
+    // The importance table gains the column, with a zero where nothing is unchecked.
+    expect(html).toContain('<th scope="col" class="num"><span class="articles-ico" aria-hidden="true">○</span>Not checked yet</th>');
+    expect(html).toContain('<tr><th scope="row">High</th><td class="num">1</td><td class="num">3</td>' +
+      '<td class="num" data-status="formalized">1</td><td class="num" data-status="statement_only">1</td>' +
+      '<td class="num" data-status="partial">0</td><td class="num" data-status="not_formalized">1</td>' +
+      '<td class="num" data-status="not_checked">0</td></tr>');
+  });
+
+  it("the summary box counts the checked passages and names the statements apart", () => {
+    const entry = {
+      title: "Widget lemma", pageid: WIDGET_PAGEID, revision: 2002, passages: 7,
+      formalized: 1, statement_only: 1, partial: 0, not_formalized: 1, not_checked: 3, unresolved: 1,
+      importance: "high", libraries: ["mathlib"],
+    };
+    const box = articlesSummaryBox(entry, WIDGET_PATH);
+    expect(box).toContain("WikiLean checked 3 passages of Wikipedia revision 2002 against Lean libraries:");
+    expect(box).toContain("3 more statements are not checked yet.");
+    // The three statements are in no status count of the box.
+    expect(box).not.toContain('data-status="not_checked"');
+  });
+
+  it("leaves a located article's own page exactly as it was", async () => {
+    const located = setup();
+    bindArticles(located.env, articlesPairedFiles());
+    const before = await (await get(located.env, `/articles/${WIDGET_PAGEID}/Widget_lemma`)).text();
+    const h = mixed();
+    const after = await (await get(h.env, `/articles/${WIDGET_PAGEID}/Widget_lemma`)).text();
+    expect(after).toBe(before);
+    expect(after).not.toContain("not_checked");
   });
 });

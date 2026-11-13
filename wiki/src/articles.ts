@@ -42,6 +42,7 @@ import {
   articlesMessagePage,
   articlesReaderPage,
   articlesUniversePage,
+  hasRecords,
   pageNeedsTurnstile,
   plainHead,
   type DashboardRow,
@@ -60,7 +61,12 @@ export const ARTICLE_SCHEMA = "wikilean.articles.article/1";
 export const CURRENT_SCHEMA = "wikilean.articles.current/1";
 export const UNIVERSE_SCHEMA = "wikilean.articles.universe/1";
 export const INDEX_SCHEMA = "wikilean.articles.index/1";
-export const SUMMARY_STATUSES = ["formalized", "statement_only", "partial", "not_formalized", "unresolved"] as const;
+// The statuses a store's summary counts, best first. "not_checked" is phase 1's
+// (docs/ARTICLES.md section 9a, the statement-set design of 2026-11-12): the cut
+// found the statement and no library has been searched for it. It is NEVER folded
+// into not_formalized, which means the opposite — every library was searched and
+// nothing was found.
+export const SUMMARY_STATUSES = ["formalized", "statement_only", "partial", "not_formalized", "not_checked", "unresolved"] as const;
 export type SummaryStatus = (typeof SUMMARY_STATUSES)[number];
 const MAX_INDEX_SHARDS = 256;
 
@@ -208,8 +214,16 @@ export interface ArticlesPassage {
   // before it; the card then reads a head's passage as going on past it.
   passage_ends_in_suffix?: boolean;
   subject_uri: string;
-  outcome: "located" | "absent" | "unresolved";
+  // "unchecked" is a statement set's outcome (the cut ran, no locate run has):
+  // its status is null and the pages show it as not_checked.
+  outcome: "located" | "absent" | "unresolved" | "unchecked";
   status: string | null;
+  // A statement set's own fields (the statement-set design, section 1): the
+  // worker's one-sentence statement of the passage and, on a compound one, its
+  // clauses. The pages show the passage's own text, never the paraphrase; these
+  // are carried for the API's readers and for phase 2.
+  statement?: string | null;
+  conjuncts?: Array<{ id: string; text: string }> | null;
   // location_key of the location that justifies the status (build_store
   // derive_status), or null (also when the coverage claim justifies it);
   // absent from stores built before it existed.
@@ -282,16 +296,30 @@ export interface ArticlesArticle {
   wikidata: string | null;
   assessment: { class?: string; importance?: string } | null;
   campaign: string;
+  // The libraries a locate run searched; on a statement-only article (checked
+  // false) it is the tagging universe instead — the libraries a community tag
+  // may name, which nothing has searched.
   universe: { id: string; sha256: string; frozen: string; libraries: number };
+  // False on an article built from a statement set: its statements were cut and
+  // no locate run has run over them. Absent from stores built before phase 1,
+  // which hold located articles only and read as checked.
+  checked?: boolean;
   record_set: string;
-  records_sha256: string;
+  // The sha256 of the article's Literature Links records. A statement-only article has
+  // none (null or absent): there is no locate record to publish, only the cut.
+  records_sha256: string | null;
   // The licences of what the view holds (build_store MAPPING_LICENCE): the text it quotes is
   // under `text`, its records' subject licence (an SPDX id, null for an article with no
   // records), and the mapping under `mapping`, CC0-1.0. Absent from stores built before it.
   licence?: { text: string | null; mapping: string } | null;
   // A /2 store's seal summary (build_store.seal_summary), which the page's
   // Details cite; absent from /1 stores. The seal records no model or operator.
-  seal?: { set_id: string; schema: string; status_rule: number; created: string; skill_commit: string } | null;
+  // A statement set's seal names no status rule and names its producer_commit
+  // (the cut's own commit) where a record set names formal-companion's.
+  seal?: {
+    set_id: string; schema: string; created: string;
+    status_rule?: number; skill_commit?: string; producer_commit?: string;
+  } | null;
   // Optional (build_store --provenance): the runs that made this article's
   // records, which the Details folds cite by model, operator and date, and the
   // inventory run that chose its passages, when the locate run names one.
@@ -359,7 +387,10 @@ export interface ArticlesRecordSet {
   seal_sha256: string;
   set_id?: string;
   created: string;
-  skill_commit: string;
+  // formal-companion's commit on a record set; a statement set names WikiLean's own
+  // producer_commit instead and carries no status rule.
+  skill_commit?: string;
+  producer_commit?: string;
   byte_budget?: number;
   schema?: string;
   status_rule?: number;
@@ -374,6 +405,9 @@ export interface IndexEntry {
   statement_only: number;
   partial: number;
   not_formalized: number;
+  // Statements no library has been searched for (0 in a shard written before
+  // phase 1, whose `fields` does not name the column).
+  not_checked: number;
   unresolved: number;
   importance: string | null;
   // Ids of the libraries holding a location for the article, in universe order.
@@ -565,8 +599,8 @@ function parseIndexShard(text: string, shard: string): IndexEntry[] {
   const pos = {
     title: at("title"), pageid: at("pageid"), revision: at("revision"), passages: at("passages"),
     formalized: at("formalized"), statement_only: at("statement_only"), partial: at("partial"),
-    not_formalized: at("not_formalized"), unresolved: at("unresolved"), importance: at("importance"),
-    libraries: at("libraries"),
+    not_formalized: at("not_formalized"), not_checked: at("not_checked"), unresolved: at("unresolved"),
+    importance: at("importance"), libraries: at("libraries"),
   };
   if (pos.title < 0 || pos.pageid < 0) throw new ArticlesStoreError(`articles index shard ${shard} lacks title/pageid`);
   const num = (row: unknown[], i: number) => (i >= 0 && Number.isSafeInteger(row[i]) && (row[i] as number) >= 0 ? (row[i] as number) : 0);
@@ -585,6 +619,7 @@ function parseIndexShard(text: string, shard: string): IndexEntry[] {
     statement_only: num(row, pos.statement_only),
     partial: num(row, pos.partial),
     not_formalized: num(row, pos.not_formalized),
+    not_checked: num(row, pos.not_checked),
     unresolved: num(row, pos.unresolved),
     importance: pos.importance >= 0 && typeof row[pos.importance] === "string" ? (row[pos.importance] as string) : null,
     libraries: libraries(row),
@@ -672,11 +707,14 @@ function exampleFrom(current: ArticlesCurrent, entry: IndexEntry, article: Artic
   if (!passage || !loc || typeof loc.declaration !== "string" || loc.declaration === "") return null;
   const quote = plainHead(passage, 220);
   if (!quote) return null;
-  const unresolved = Number(current.counts?.by_status?.unresolved);
-  const total = Number(current.counts?.passages);
+  // "passages checked" is what the home page says, so the passages nothing has
+  // checked — those with no status, and phase 1's statements — are not in it.
+  const whole = (value: unknown) => (Number.isSafeInteger(value) ? (value as number) : 0);
+  const unchecked = whole(current.counts?.by_status?.unresolved) + whole(current.counts?.by_status?.not_checked);
+  const total = whole(current.counts?.passages);
   return {
     articles: Number(current.counts?.articles) || 0,
-    passages: Math.max(0, (Number.isSafeInteger(total) ? total : 0) - (Number.isSafeInteger(unresolved) ? unresolved : 0)),
+    passages: Math.max(0, total - unchecked),
     formalized: Number(current.counts?.by_status?.formalized) || 0,
     title: String(article.title ?? entry.title),
     href: articlesHref(article.pageid, String(article.title ?? entry.title)),
@@ -709,6 +747,7 @@ export async function articlesExample(env: Env): Promise<ArticlesExample | null>
 
 // ---- responses -------------------------------------------------------------
 
+export const NO_RECORDS = "this article has no Literature Links records: its statements were cut, not located";
 export const NOT_CONFIGURED = "articles store not configured";
 export const NOT_PUBLISHED = "articles store has no published build";
 export const STORE_UNREADABLE = "an articles store object could not be read";
@@ -905,6 +944,16 @@ function limitedJson(c: Ctx): Response {
 
 function limitedHtml(c: Ctx, title: string, message: string, detail: string): Response {
   return articlesHtml(c, articlesMessagePage(title, message, detail), 429, LIMITED_HEADERS);
+}
+
+// Whether anything in the published build was searched for in a Lean library: false for a
+// build of statement sets alone, where every passage is a cut and nothing more.
+function buildSearched(current: ArticlesCurrent): boolean {
+  const byStatus = current.counts?.by_status;
+  if (!byStatus || typeof byStatus !== "object") return true;
+  const whole = (value: unknown) => (Number.isSafeInteger(value) && (value as number) > 0 ? (value as number) : 0);
+  if (whole(byStatus.not_checked) === 0) return true;
+  return SUMMARY_STATUSES.some((status) => status !== "not_checked" && status !== "unresolved" && whole(byStatus[status]) > 0);
 }
 
 // The index shards current.json names (the builder lists every shard it wrote), at most
@@ -1184,6 +1233,9 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     // missing, cut short, or uploaded ahead of their view.
     const article = await loadArticle(reader, pageid);
     if (!article) return c.json({ ok: false, error: "unknown pageid" }, 404);
+    // An article whose view names no records has none to serve (a statement-only article:
+    // its statements were cut and no locate record was made). That is not a damaged store.
+    if (!hasRecords(article)) return c.json({ ok: false, error: NO_RECORDS }, 404);
     const text = await reader.text(`records/${pageid}.jsonl`);
     if (text === null || (await sha256Hex(text)) !== article.records_sha256) {
       throw new ArticlesStoreError(`articles records/${pageid}.jsonl is missing or not the records its view names`);
@@ -1258,7 +1310,9 @@ export function registerArticlesRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!universe) {
       return articlesHtml(c, articlesMessagePage("Unknown universe", "No published universe has that sha256.", ""), 404);
     }
-    return articlesHtml(c, articlesUniversePage(universe));
+    // A build of statement sets alone has searched nothing: the page says so rather than
+    // explaining what a "not found" in it would mean.
+    return articlesHtml(c, articlesUniversePage(universe, buildSearched(current)));
   }));
 
   // An article view takes the read budget before it reads the store or D1.
