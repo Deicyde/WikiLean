@@ -60,6 +60,7 @@ import { checkOrigin, limiterIp, MAX_JSON_BODY_BYTES, readJsonCapped, registerSe
 import { slugEditingAllowed } from "./site-settings.js";
 import { registerVersionRoutes } from "./version.js";
 import { registerSubmissionRoutes } from "./submissions.js";
+import { registerBundleRoutes } from "./bundles.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -145,6 +146,7 @@ const app = new Hono<{ Bindings: Env }>();
 registerSecurityHeaders(app); // first: middleware must wrap every route below
 registerAuthRoutes(app);
 registerSubmissionRoutes(app);
+registerBundleRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
 registerBrainEditRoutes(app);

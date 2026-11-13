@@ -374,6 +374,7 @@ export const MAX_JSON_BODY_BYTES = {
   nativeMigration: 4 * 1024,
   submission: 4 * 1024 * 1024, // exact transport bytes are hashed before UTF-8 decoding
   submissionVerdict: 16 * 1024,
+  indexBundle: 4 * 1024, // {"manifest_sha256": <64 hex>}, bundles.ts
 } as const;
 
 export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };

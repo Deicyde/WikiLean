@@ -860,7 +860,9 @@ describe("the reader shows the merge", () => {
 describe("migration 0019", () => {
   it("is applied by the harness, seeds the brake open and editing off, and is idempotent", () => {
     const h = setup({ slugEditing: false });
-    const settings = h.db.prepare("SELECT key, value FROM site_settings ORDER BY key").all() as Array<{ key: string; value: string }>;
+    const settings = h.db.prepare(
+      "SELECT key, value FROM site_settings WHERE key IN ('site_write_mode', 'slug_editing') ORDER BY key",
+    ).all() as Array<{ key: string; value: string }>;
     expect(settings).toEqual([
       { key: "site_write_mode", value: "open" },
       { key: "slug_editing", value: "off" },

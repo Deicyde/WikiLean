@@ -151,6 +151,12 @@ D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
             "removed_reason",
         ),
     ),
+    # 0022 seeds the index_downloads lever, then creates index_bundles and the download
+    # log index_downloads last (the token-gated index download, src/bundles.ts).
+    "wiki/migrations/0022_index_bundles.sql": (
+        "index_downloads",
+        ("id", "owner_id", "agent_id", "bundle_sha256", "path", "range_start", "bytes", "at"),
+    ),
 }
 
 

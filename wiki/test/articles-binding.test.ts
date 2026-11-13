@@ -73,8 +73,13 @@ interface WranglerConfig {
 const config = parseJsonc(readFileSync(WRANGLER_CONFIG, "utf8")) as WranglerConfig;
 
 describe("wrangler.jsonc", () => {
-  it("binds ARTICLES, and nothing else, to the private bucket wikilean-articles", () => {
-    expect(config.r2_buckets).toEqual([{ binding: "ARTICLES", bucket_name: "wikilean-articles" }]);
+  it("binds ARTICLES to the private bucket wikilean-articles and CONTRIB to wikilean-contrib, and nothing else", () => {
+    // Two buckets, because an R2 token is scoped to buckets: the articles upload must not be
+    // able to overwrite an index bundle (src/bundles.ts).
+    expect(config.r2_buckets).toEqual([
+      { binding: "ARTICLES", bucket_name: "wikilean-articles" },
+      { binding: "CONTRIB", bucket_name: "wikilean-contrib" },
+    ]);
     // The reader kept the config's strings whole: a URL's "//" is not a comment.
     expect(config.vars.BETTER_AUTH_URL).toBe("https://wikilean.jackmccarthy.org");
     // No other binding takes the name.
@@ -87,6 +92,7 @@ describe("wrangler.jsonc", () => {
       ...(config.unsafe?.bindings ?? []).map((b) => b.name),
     ];
     expect(names.filter((name) => name === "ARTICLES")).toHaveLength(1);
+    expect(names.filter((name) => name === "CONTRIB")).toHaveLength(1);
     expect(new Set(names).size).toBe(names.length);
   });
 
@@ -119,6 +125,8 @@ describe("wrangler.jsonc", () => {
 const SAMPLE_PATHS: Record<string, string> = {
   "/api/submissions/:id": "/api/submissions/sub-" + "a".repeat(64),
   "/api/submissions/:id/body": "/api/submissions/sub-" + "a".repeat(64) + "/body",
+  "/api/index/bundles/:sha{[0-9a-f]{64}}": "/api/index/bundles/" + "a".repeat(64),
+  "/api/index/bundles/:sha{[0-9a-f]{64}}/files/:path{.+}": "/api/index/bundles/" + "a".repeat(64) + "/files/index/decl-index.jsonl",
   "/:slug": `/${SLUG}`,
   "/:slug/history": `/${SLUG}/history`,
   "/:slug/diff/:fromId/:toId": `/${SLUG}/diff/1/1`,

@@ -42,6 +42,7 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Agent contributions | Self-serve agent tokens: `wiki/src/agents.ts` (page `/agents`, table `agent_tokens`, migrations 0017 and 0018). An agent (role `agent`) writes **community tags on the formalization reader's overlay** (`POST /api/articles/tag`, `…/tag/:pair_key/state`; migration 0019) and Brain edges and nodes as `ai`; it may not change or remove a tag a person wrote, give feedback in the reader, or save an annotation at `/:slug` (editing is off there for everyone but the pipeline bearer). Doc: `docs/AGENT-CONTRIBUTIONS.md` |
 | Community tags (the articles overlay) | Release R1 of the signed public-editing plan: `wiki/src/articles-overlay.ts` (keys, merge, caps, Turnstile), the three tag routes in `wiki/src/articles.ts`, `wiki/src/site-settings.ts` (the site-wide write brake and the `/:slug` editing switch), migration 0019. A tag is a D1 row keyed by the producer's `pair_key`, so a community tag of a declaration the pipeline already located **is that location's row**; the sealed store is never written and `/api/articles/article/:pageid` stays the sealed, cacheable view model. Doc: `docs/ARTICLES.md` section 10a |
 | Coverage bundles (the same overlay) | "These 2 to 5 links together state this passage" (issue #173): table `article_coverage` (migration **0021**), `POST /api/articles/coverage` and `…/coverage/:bundle_key/state`, keyed by `bundle_key` = sha256 of the passage key and the sorted part pair keys. Same auth, CC0, brake, caps and agent rules as a tag. It counts only when every part is a live merged location whose relation is `hasPart`, judged by the TS port of the builder's stand-in (`articles-render.ts` `coverageStatus`, pinned against `scripts/articles/fixtures/status_parity{,-2,-3}.json`). Doc: `docs/ARTICLES.md` section 10a, "The coverage bundle" |
+| Index downloads | `wiki/src/bundles.ts`: the declaration-index bundles outside contributors download with an owned agent token (`GET /api/index/bundles`, `…/<manifest sha256>`, `…/<sha>/files/<path>` with Range), streamed from the private R2 bucket `wikilean-contrib` (binding `CONTRIB`, read-only; unbound → 503). Registered by the pipeline bearer (`POST /api/index/bundles`) after `scripts/articles/upload_contrib.py` uploads one; migration 0022 (`index_bundles`, `index_downloads`, the download log and per-owner daily byte quota). The `index_downloads` row of `site_settings` is a lever that stays shut unless opened (`leverOpen`): migration 0022 seeds it `closed`. Doc: `docs/AGENT-CONTRIBUTIONS.md` |
 | Pipeline submissions | `wiki/src/submissions.ts`: owned-agent uploads and private receipts at `/api/submissions`; `scripts/articles/submit.py` is the laptop client, `scripts/articles/intake_worker.py` is the trusted non-LLM validator. Migration 0020 creates private staging tables. Validation uses the existing Literature Links checker; acceptance never publishes or changes human rows. Contract: `docs/INTAKE.md`. |
 | Contributor CLI | `worker/` — the `wikilean` command a volunteer installs with `uv tool install "git+https://github.com/Deicyde/WikiLean#subdirectory=worker"`. Standard library Python 3.12; one unit of work a round (review → tag → locate) against the public routes with the volunteer's own agent token and their own Claude Code login. The token never reaches the model call (allowlisted child environment, `bot/triage.py`'s tool-less form) and every model answer is validated against the locate vocabulary and the decl index before a write. Release-neutral. Doc: `worker/README.md` |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
@@ -122,11 +123,13 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   still passes its own hash check. Never merge the overlay into
   `/api/articles/article/:pageid`, which is `public, max-age=300`: the merge is per request,
   on pages that send no `Cache-Control`, so it needs no render-key bump.
-- **Two rows in `site_settings` are operator levers, read per write, and need no release.**
+- **Three rows in `site_settings` are operator levers, read per request, and need no release.**
   `site_write_mode` (`open` | anything else) is the site-wide write brake over every
   community write surface and every agent write; `slug_editing` (`on` | anything else) is
-  the annotation plane's editing switch, which migration 0019 seeds `off`. Both fail in the
-  safe direction; keep it that way.
+  the annotation plane's editing switch, which migration 0019 seeds `off`;
+  `index_downloads` (`open` | anything else, a missing row included) serves the index
+  bundles, and migration 0022 seeds it `closed`. All three fail in the safe direction; keep
+  it that way.
 - Schema changes go through ordered, numbered files in `wiki/migrations/`. **Remote migration
   tracking is out of sync**: the headers of `0009`, `0010` and `0012` say so, and all four of
   `0009`–`0012` give the manual command.
@@ -219,13 +222,15 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - **Migration 0014 before any deploy:** a Worker built from a commit containing
   `wiki/migrations/0014_native_companions.sql` answers 500 on every save, revert and create
   until 0014 is on D1. Back up, apply and verify it first (`docs/COMPANION-NATIVE.md`).
-- **Migrations 0017, 0018, 0019 and 0021 before any promotion:** the promoter refuses a commit
-  containing them until `agent_tokens`, `proposals.proposed_by`, `article_tags` and
-  `article_coverage` exist on D1. Back up, then apply and verify each as its header says, in
-  that order (0018 is an `ADD COLUMN` and runs once; 0019 is idempotent and creates
-  `site_settings` and `user_agreements` beside `article_tags`; 0021 is idempotent and creates
-  `article_coverage`, the overlay's coverage bundles, whose two routes answer 503 until it is
-  applied while every other overlay route works).
+- **Migrations 0017, 0018, 0019, 0021 and 0022 before any promotion:** the promoter refuses a
+  commit containing them until `agent_tokens`, `proposals.proposed_by`, `article_tags`,
+  `article_coverage` and `index_downloads` exist on D1. Back up, then apply and verify each as
+  its header says, in that order (0018 is an `ADD COLUMN` and runs once; 0019 is idempotent and
+  creates `site_settings` and `user_agreements` beside `article_tags`; 0021 is idempotent and
+  creates `article_coverage`, the overlay's coverage bundles, whose two routes answer 503 until
+  it is applied while every other overlay route works; 0022 is idempotent, seeds the
+  `index_downloads` lever `closed` and creates the index download's two tables). A Worker
+  carrying the `CONTRIB` binding also needs the R2 bucket `wikilean-contrib` to exist first.
 - Migration 0015 (`atlas_feedback`, a name the 2026-11-05 rename deliberately left alone) is
   fail-soft: until it is on D1 the two feedback routes answer 503 and everything else works.
   Apply it after a backup like the others.
