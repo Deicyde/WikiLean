@@ -17,6 +17,7 @@ from __future__ import annotations
 import ast
 import asyncio
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -226,20 +227,41 @@ class RepositoryScan(unittest.TestCase):
 
     def test_the_contributor_cli_claude_call_gets_web_search_and_fetch_at_most(self):
         """No file, shell or edit tool, with or without the web: the token file
-        sits under the HOME the call needs, and only a file tool could read it."""
+        sits under the HOME the call needs, and only a file tool could read it.
+        Every --tools and --allowedTools value counts, in the argv claude_argv
+        builds and in the one ask() actually runs."""
         sys.path.insert(0, str(REPO / "worker"))
         try:
             from wikilean import model as worker_model
         finally:
             sys.path.remove(str(REPO / "worker"))
+
+        def named(argv: list[str]) -> dict[str, set[str]]:
+            out = {}
+            for flag in ("--tools", "--allowedTools", "--allowed-tools"):
+                at = [i for i, arg in enumerate(argv) if arg == flag]
+                self.assertLessEqual(len(at), 1, f"{flag} given twice: {argv}")
+                for i in at:
+                    # the CLI reads every value up to the next flag, so nothing may follow
+                    follow = argv[i + 2:i + 3]
+                    self.assertTrue(not follow or follow[0].startswith("-"), argv)
+                out[flag] = {tool for i in at for tool in re.split(r"[,\s]+", argv[i + 1]) if tool}
+            return out
+
+        ran: list[list[str]] = []
+
+        def recording(argv, **kwargs):
+            ran.append(list(argv))
+            return subprocess.CompletedProcess(argv, 0, stdout='{"verdict": "unsure"}', stderr="")
+
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop(worker_model.CLAUDE_CMD_ENV, None)
             for web, expected in ((False, set()), (True, WORKER_WEB_TOOLS)):
-                argv = worker_model.claude_argv(web=web)
-                tools = argv[argv.index("--tools") + 1]
-                self.assertEqual(set(filter(None, tools.split(","))), expected, argv)
-                allowed = argv[argv.index("--allowedTools") + 1] if "--allowedTools" in argv else ""
-                self.assertEqual(set(filter(None, allowed.split(","))), expected, argv)
+                worker_model.ask("judge this", runner=recording, web=web)
+                for argv in (worker_model.claude_argv(web=web), ran[-1]):
+                    found = named(argv)
+                    self.assertEqual(found["--tools"], expected, argv)
+                    self.assertEqual(found["--allowedTools"] | found["--allowed-tools"], expected, argv)
 
 
 class SandboxedOptions(unittest.TestCase):

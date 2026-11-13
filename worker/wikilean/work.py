@@ -223,6 +223,13 @@ def run_round(site: Site, config: Config, options: Options, *, log=print) -> Out
     except ModelError as exc:
         journal.write("round", ok=False, unit=candidate.unit, stage="model", error=str(exc), run_id=run_id)
         log(f"  the model call failed: {exc}")
+        # A passage that never gets a usable answer (a planted instruction that
+        # keeps the model searching until the timeout, say) must not take every
+        # round. A missing or logged-out `claude` is not the passage's fault.
+        if exc.passage and not options.dry_run and \
+                state.note_failure(_seen_key(candidate)) >= state.MAX_MODEL_FAILURES:
+            state.mark_seen(_seen_key(candidate))
+            log(f"  set aside: it got no usable answer {state.MAX_MODEL_FAILURES} times")
         return Outcome(EX_FAILED, unit=candidate.unit, summary=f"model call failed: {exc}", candidate=candidate)
 
     try:

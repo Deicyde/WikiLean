@@ -72,9 +72,13 @@ passage, so `tag` runs only when there is no review work in the articles the
 round looked at.
 
 `--unit review|tag|locate` pins the unit. `--dry-run` prints the exact request
-and sends nothing — and settles nothing either, whatever the model answered, so
-the first real round still gets the passage the dry run showed you. `--loop`
-keeps going, waiting between rounds and backing off when the site says to.
+and sends nothing to WikiLean — and settles nothing either, whatever the model
+answered, so the first real round still gets the passage the dry run showed you.
+The model call itself still runs, so your Claude may still search and fetch
+unless you add `--no-web`. `--loop` keeps going, waiting between rounds and
+backing off when the site says to. A passage that gets no usable answer twice
+(the call times out, or the reply is not the agreed JSON) is set aside like a
+judged one, so a loop never spends every round on it.
 
 ### What it sends, exactly
 
@@ -112,18 +116,25 @@ command or edits anything. It also gets no project or user settings, no MCP
 servers and no session (`--tools WebSearch,WebFetch --allowedTools
 WebSearch,WebFetch --setting-sources "" --strict-mcp-config
 --no-session-persistence --safe-mode`), and it runs in an empty temporary
-directory, so what Claude Code tells it about its surroundings names none of
-your paths or repositories. `wikilean work --no-web`, or `"web": false` in the
-config, takes the two web tools away too (`--tools ""`, the form `bot/triage.py`
-uses). `site/test_agent_sandbox.py` holds this call to web search and fetch at
-most. Its environment is an **allowlist** that cannot contain
-`WIKILEAN_AGENT_TOKEN`, and the prompt goes in on stdin, so no quoted text is
-visible in `ps` either. The allowlist does pass `HOME`, because Claude Code
-needs your own credentials — and the token file lives under it, so what stands
-between the model and the file on disk is that it has no file tool. That is
-why the tool list is not negotiable. A planted instruction can still make the
-model search for or fetch something; what it could send is what is already in
-its prompt, which is public.
+directory, so what Claude Code tells it about its surroundings names neither the
+directory you ran `wikilean` in nor that directory's git branch and commits.
+`wikilean work --no-web`, or `"web": false` in the config, takes the two web
+tools away too (`--tools ""`, the form `bot/triage.py` uses); a config.json the
+CLI cannot read turns them off and says so. `site/test_agent_sandbox.py` holds
+this call to web search and fetch at most. Its environment is an **allowlist**
+that cannot contain `WIKILEAN_AGENT_TOKEN`, and the prompt goes in on stdin, so
+no quoted text is visible in `ps` either. The allowlist does pass `HOME`,
+because Claude Code needs your own credentials — and the token file lives under
+it, so what stands between the model and the file on disk is that it has no
+file tool. That is why the tool list is not negotiable.
+
+**On an office network or a VPN, run with `--no-web`.** Fetch can open any
+HTTPS page your machine can reach. It refuses `localhost`, names without a dot
+and plain HTTP, so on a home connection a planted instruction can at worst
+send what is already in the prompt, which is public. Behind a company network
+it could have the model read an internal page and send what it says to an
+outside address, or put it in a tag's note. `wikilean work` prints this
+warning whenever the web is on, and `wikilean doctor` shows whether it is.
 
 **WikiLean never sees your model credentials.** This CLI never asks for a model
 key and has nowhere to put one. Your Claude subscription is yours.

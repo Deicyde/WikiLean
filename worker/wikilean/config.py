@@ -114,10 +114,18 @@ class Config:
         out = cls()
         try:
             raw = json.loads(target.read_text(encoding="utf-8"))
+        except FileNotFoundError:
+            raw = {}
         except (OSError, ValueError):
-            raw = {}
+            raw = None
         if not isinstance(raw, dict):
+            # A config file this cannot read leaves every setting at its default
+            # except the web tools, which it may have been written to turn off
+            # (config_problem says why, and `work` prints it).
+            out.web = False
             raw = {}
+        if "web" in raw and not isinstance(raw["web"], bool):
+            out.web = False
         for name, value in ((f, raw[f]) for f in cls.__dataclass_fields__ if f in raw):
             current = getattr(out, name)
             if isinstance(current, bool) and isinstance(value, bool):
@@ -134,3 +142,19 @@ class Config:
 
     def save(self, path: Path | None = None) -> None:
         write_private(path or config_path(), json.dumps(asdict(self), indent=2, sort_keys=True) + "\n")
+
+
+def config_problem(path: Path | None = None) -> str | None:
+    """Why config.json cannot be read as settings, or None (it reads, or is absent)."""
+    target = path or config_path()
+    try:
+        raw = json.loads(target.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return None
+    except (OSError, ValueError) as exc:
+        return f"{target} is not readable JSON ({type(exc).__name__}): every setting is its default, and web is off"
+    if not isinstance(raw, dict):
+        return f"{target} is not a JSON object: every setting is its default, and web is off"
+    if "web" in raw and not isinstance(raw["web"], bool):
+        return f'{target}: "web" must be true or false, not {raw["web"]!r}, so web is off'
+    return None

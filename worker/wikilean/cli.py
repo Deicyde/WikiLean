@@ -23,11 +23,18 @@ import os
 import sys
 
 from . import VERSION, journal
-from .config import UNITS, Config
+from .config import UNITS, Config, config_problem
 from .secrets import (ENV_TOKEN, TokenError, delete_token, fingerprint,
                       load_token, read_token_from, store_token, valid_token)
 from .site import Site, SiteError
 from .work import EX_FAILED, EX_OK, EX_USAGE, Options, run_loop, run_round
+
+
+# Printed by every `work` that has the web tools (Jack, 2026-11-12: "Keep fetch
+# open, warn"): fetch refuses localhost, names without a dot and plain HTTP, but
+# not an HTTPS page an office network or VPN can reach.
+WEB_NOTICE = ("web: your Claude may search the web and fetch pages. On an office network or a VPN, "
+              "run with --no-web (worker/README.md, Safety).")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -55,7 +62,9 @@ def build_parser() -> argparse.ArgumentParser:
     work = sub.add_parser("work", help="do exactly one unit of work, or keep doing them")
     work.add_argument("--loop", action="store_true", help="round after round until you stop it")
     work.add_argument("--unit", choices=UNITS, help="only this unit")
-    work.add_argument("--dry-run", action="store_true", help="print exactly what would be sent, send nothing")
+    work.add_argument("--dry-run", action="store_true",
+                      help="print exactly what would be sent, send nothing to WikiLean "
+                           "(your Claude may still search and fetch, unless --no-web)")
     work.add_argument("--enable-locate", action="store_true",
                       help="allow the locate unit (also needs \"locate_enabled\" in the config)")
     work.add_argument("--no-web", action="store_true",
@@ -163,6 +172,11 @@ def _status(args, config: Config) -> int:
 def _work(args, config: Config) -> int:
     options = Options(unit=args.unit, dry_run=args.dry_run, enable_locate=args.enable_locate,
                       web=not args.no_web)
+    problem = config_problem()
+    if problem:
+        print(f"wikilean: {problem}", file=sys.stderr)
+    if options.web and config.web:
+        print(WEB_NOTICE, file=sys.stderr)
     stored = load_token()
     if stored is None and not options.dry_run:
         print("wikilean: no agent token. Run `wikilean login` (mint one at /agents).", file=sys.stderr)

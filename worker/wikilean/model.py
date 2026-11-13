@@ -13,10 +13,16 @@ call sites:
   WikiLean requires of a pipeline `claude` call (CLAUDE.md, "Security /
   credentials"), with the two web tools added for the contributor's own call.
   The token file sits under HOME, which Claude Code needs; what keeps the
-  model from it is that it has no file tool.
+  model from it is that it has no file tool. Fetch is open, as the maintainer
+  chose: it refuses localhost, names without a dot and plain HTTP, but a planted
+  instruction could still have it read an HTTPS page the contributor's network
+  can reach and send what it says elsewhere, which is why the README tells
+  anyone on an office network or VPN to use ``--no-web``.
 * **The child runs in an empty temporary directory**, so the context Claude
-  Code gives the model names no path of the contributor's and no git
-  repository's branch or commits, which a fetch could otherwise carry off.
+  Code gives the model names neither the directory the contributor ran
+  ``wikilean`` in nor that directory's git branch and commits, which a fetch
+  could otherwise carry off. The binary is resolved first, so a relative command
+  still means what it meant where ``wikilean`` was started.
 * **The child's environment is an allowlist, never a copy.** The WikiLean agent
   token cannot reach it, because no name that could hold one is on the list —
   and `ANTHROPIC_API_KEY` is off it too, so the call bills the contributor's
@@ -65,7 +71,16 @@ CLAUDE_BINARY = "claude"
 
 
 class ModelError(Exception):
-    """The model was not asked, or did not answer in the agreed shape."""
+    """The model was not asked, or did not answer in the agreed shape.
+
+    ``passage`` is set when the call ran and the passage may be why it failed:
+    no answer before the timeout, or a reply that is not the agreed JSON. A
+    missing, logged-out or erroring `claude` is not the passage's doing.
+    """
+
+    def __init__(self, message: str, *, passage: bool = False):
+        super().__init__(message)
+        self.passage = passage
 
 
 @dataclass(frozen=True)
@@ -129,13 +144,13 @@ def extract_json(text: str) -> dict:
     """The first JSON object in a reply, however much prose surrounds it."""
     start, end = text.find("{"), text.rfind("}")
     if start < 0 or end <= start:
-        raise ModelError("the reply contains no JSON object")
+        raise ModelError("the reply contains no JSON object", passage=True)
     try:
         parsed = json.loads(text[start:end + 1])
     except ValueError as exc:
-        raise ModelError(f"the reply is not JSON: {exc}") from None
+        raise ModelError(f"the reply is not JSON: {exc}", passage=True) from None
     if not isinstance(parsed, dict):
-        raise ModelError("the reply is not a JSON object")
+        raise ModelError("the reply is not a JSON object", passage=True)
     return parsed
 
 
@@ -146,6 +161,11 @@ def ask(prompt: str, *, model: str = "", timeout: float = 300.0,
 
     argv = claude_argv(model, web=web)
     environment = claude_environment()
+    # Resolved where `wikilean` was started, as `doctor` resolves it: the child
+    # runs in an empty directory, where a relative command would name nothing.
+    found = shutil.which(argv[0], path=environment.get("PATH"))
+    if found:
+        argv[0] = os.path.abspath(found)
     started = time.monotonic()
     try:
         with tempfile.TemporaryDirectory(prefix="wikilean-claude-") as empty:
@@ -154,7 +174,7 @@ def ask(prompt: str, *, model: str = "", timeout: float = 300.0,
     except FileNotFoundError:
         raise ModelError("no `claude` on PATH: install Claude Code and log in") from None
     except subprocess.TimeoutExpired:
-        raise ModelError(f"the model did not answer within {timeout:.0f}s") from None
+        raise ModelError(f"the model did not answer within {timeout:.0f}s", passage=True) from None
     except (OSError, subprocess.SubprocessError) as exc:
         raise ModelError(f"could not run `claude`: {type(exc).__name__}") from None
     elapsed = int((time.monotonic() - started) * 1000)

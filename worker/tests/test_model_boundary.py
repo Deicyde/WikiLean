@@ -147,24 +147,47 @@ class RealChildTest(unittest.TestCase):
 
     def test_a_failing_child_raises_rather_than_returning_data(self):
         fakes.set_control(self.directory, fail=True)
-        with self.assertRaises(model.ModelError):
+        with self.assertRaises(model.ModelError) as raised:
             model.ask("judge this", timeout=60)
+        self.assertFalse(raised.exception.passage)
 
     def test_a_reply_that_is_not_json_raises(self):
         fakes.set_control(self.directory, reply="I would rather not say.", raw=True)
-        with self.assertRaises(model.ModelError):
+        with self.assertRaises(model.ModelError) as raised:
             model.ask("judge this", timeout=60)
+        self.assertTrue(raised.exception.passage)
 
     def test_prose_around_a_json_object_is_tolerated(self):
         fakes.set_control(self.directory, reply='Sure!\n{"verdict": "agree"}\nHope that helps.')
         self.assertEqual(model.ask("judge this", timeout=60).value, {"verdict": "agree"})
 
+    def test_a_relative_command_is_resolved_where_wikilean_started(self):
+        seen = {}
+
+        def recording(argv, **kwargs):
+            seen["argv"], seen["cwd"] = argv, kwargs.get("cwd")
+            return subprocess.CompletedProcess(argv, 0, stdout='{"verdict": "unsure"}', stderr="")
+
+        script = self.directory / "bin" / "claude"
+        script.parent.mkdir()
+        script.write_text("#!/bin/sh\n", encoding="utf-8")
+        script.chmod(0o755)
+        here = os.getcwd()
+        os.chdir(self.directory)
+        self.addCleanup(os.chdir, here)
+        with mock.patch.dict(os.environ, {model.CLAUDE_CMD_ENV: "./bin/claude"}):
+            model.ask("judge this", timeout=60, runner=recording)
+        self.assertEqual(Path(seen["argv"][0]).resolve(), script.resolve())
+        self.assertTrue(os.path.isabs(seen["argv"][0]))
+        self.assertNotEqual(Path(seen["cwd"]).resolve(), self.directory.resolve())
+
     def test_a_timeout_raises(self):
         def slow(*args, **kwargs):
             raise subprocess.TimeoutExpired(cmd="claude", timeout=1)
 
-        with self.assertRaises(model.ModelError):
+        with self.assertRaises(model.ModelError) as raised:
             model.ask("judge this", timeout=1, runner=slow)
+        self.assertTrue(raised.exception.passage)
 
 
 class AnswerValidationTest(unittest.TestCase):
