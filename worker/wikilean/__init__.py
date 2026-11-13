@@ -8,6 +8,6 @@ The package is standard library only. Nothing here holds a model credential,
 and the WikiLean agent token never reaches the model call.
 """
 
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
 USER_AGENT = f"wikilean-cli/{VERSION} (+https://github.com/Deicyde/WikiLean)"

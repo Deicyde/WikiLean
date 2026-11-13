@@ -7,8 +7,9 @@ Wikipedia text ran Bash beside wiki/.dev.vars. These checks fail when any
 tracked Python file reintroduces the bypass (with or without an allowlist),
 builds ClaudeAgentOptions outside site/agent_sandbox.py, gives a sandboxed agent
 Bash (a scoped Bash rule still reads any file through `cat < file`), spawns a
-pipeline `claude` CLI without its tool-less flags, or when the sandbox helper
-stops restricting tools, permissions, settings, Claude's own directories or the
+pipeline `claude` CLI without its tool-less flags, gives the contributor CLI's
+`claude` any tool beyond web search and fetch, or when the sandbox helper stops
+restricting tools, permissions, settings, Claude's own directories or the
 working directory.
 """
 from __future__ import annotations
@@ -16,6 +17,7 @@ from __future__ import annotations
 import ast
 import asyncio
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -39,10 +41,13 @@ SANDBOX_MODULE = "site/agent_sandbox.py"
 # Pipeline code (not the operator-run bench/ research harness): a `claude` CLI
 # spawned here must be tool-less, settings-free and MCP-strict, as bot/triage.py is.
 # worker/ is the contributor CLI: it runs on a volunteer's machine rather than
-# the pipeline host, but its one `claude` call reads untrusted Wikipedia text
-# and is held to the same tool-less form (worker/wikilean/model.py).
+# the pipeline host, and its one `claude` call reads untrusted Wikipedia text.
+# It carries the same flags, and its tools are web search and fetch at most
+# (worker/wikilean/model.py; the test below holds the values).
 PIPELINE_ROOTS = ("site", "brain", "manage", "bot", "catalog", "wikifunctions", "scripts", "worker")
 CLI_REQUIRED_FLAGS = ("--tools", "--setting-sources", "--strict-mcp-config")
+# The only built-in tools the contributor CLI's call may name.
+WORKER_WEB_TOOLS = {"WebSearch", "WebFetch"}
 
 
 def tracked_python() -> list[Path]:
@@ -219,6 +224,44 @@ class RepositoryScan(unittest.TestCase):
         flags = {_const(e) for e in literal.elts}
         for flag in CLI_REQUIRED_FLAGS:
             self.assertIn(flag, flags, "the scan only sees flags in the literal list")
+
+    def test_the_contributor_cli_claude_call_gets_web_search_and_fetch_at_most(self):
+        """No file, shell or edit tool, with or without the web: the token file
+        sits under the HOME the call needs, and only a file tool could read it.
+        Every --tools and --allowedTools value counts, in the argv claude_argv
+        builds and in the one ask() actually runs."""
+        sys.path.insert(0, str(REPO / "worker"))
+        try:
+            from wikilean import model as worker_model
+        finally:
+            sys.path.remove(str(REPO / "worker"))
+
+        def named(argv: list[str]) -> dict[str, set[str]]:
+            out = {}
+            for flag in ("--tools", "--allowedTools", "--allowed-tools"):
+                at = [i for i, arg in enumerate(argv) if arg == flag]
+                self.assertLessEqual(len(at), 1, f"{flag} given twice: {argv}")
+                for i in at:
+                    # the CLI reads every value up to the next flag, so nothing may follow
+                    follow = argv[i + 2:i + 3]
+                    self.assertTrue(not follow or follow[0].startswith("-"), argv)
+                out[flag] = {tool for i in at for tool in re.split(r"[,\s]+", argv[i + 1]) if tool}
+            return out
+
+        ran: list[list[str]] = []
+
+        def recording(argv, **kwargs):
+            ran.append(list(argv))
+            return subprocess.CompletedProcess(argv, 0, stdout='{"verdict": "unsure"}', stderr="")
+
+        with patch.dict(os.environ, {}, clear=False):
+            os.environ.pop(worker_model.CLAUDE_CMD_ENV, None)
+            for web, expected in ((False, set()), (True, WORKER_WEB_TOOLS)):
+                worker_model.ask("judge this", runner=recording, web=web)
+                for argv in (worker_model.claude_argv(web=web), ran[-1]):
+                    found = named(argv)
+                    self.assertEqual(found["--tools"], expected, argv)
+                    self.assertEqual(found["--allowedTools"] | found["--allowed-tools"], expected, argv)
 
 
 class SandboxedOptions(unittest.TestCase):

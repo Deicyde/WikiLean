@@ -109,6 +109,20 @@ class RoundTest(unittest.TestCase):
     def run_one(self, **kwargs):
         return run_round(self.site, self.config, Options(verbose=False, **kwargs), log=lambda *_: None)
 
+    def test_a_round_gives_the_model_the_web_tools_unless_told_not_to(self):
+        record = self.directory / "record.json"
+        for options, config_web, tools in (({}, True, model.WEB_TOOLS),
+                                           ({"web": False}, True, ""),
+                                           ({}, False, "")):
+            with self.subTest(options=options, config_web=config_web):
+                fakes.set_control(self.directory, reply=json.dumps({"verdict": "unsure"}),
+                                  record=record)
+                self.config.web = config_web
+                self.run_one(dry_run=True, **options)
+                seen = json.loads(record.read_text())
+                self.assertEqual(seen["argv"][seen["argv"].index("--tools") + 1], tools)
+                self.assertEqual("search the web" in seen["prompt"], bool(tools))
+
     # ---- the three outcomes of a review --------------------------------------
 
     def test_agreeing_with_a_downgraded_link_writes_a_confirming_row(self):
@@ -346,6 +360,34 @@ class RoundTest(unittest.TestCase):
         outcome = self.run_one()
         self.assertEqual(outcome.code, EX_FAILED)
         self.assertEqual(self.site_server.writes, [])
+
+    def test_a_passage_that_gets_no_usable_answer_twice_is_set_aside(self):
+        fakes.set_control(self.directory, reply="I would rather not say.")
+        first = self.run_one()
+        self.assertEqual(state.seen_keys(), set())
+        second = self.run_one()
+        self.assertEqual(first.candidate.passage_key, second.candidate.passage_key)
+        self.assertEqual(len(state.seen_keys()), 1)
+        self.assertEqual(state.load().get("failures"), {})
+        # the next round offers another passage
+        self.reply({"verdict": "unsure"})
+        third = self.run_one()
+        self.assertNotEqual(third.candidate.passage_key, first.candidate.passage_key)
+
+    def test_a_dry_run_failure_counts_nothing(self):
+        fakes.set_control(self.directory, reply="I would rather not say.")
+        for _ in range(3):
+            self.run_one(dry_run=True)
+        self.assertEqual(state.seen_keys(), set())
+        self.assertFalse(state.load().get("failures"))
+
+    def test_a_failing_claude_sets_no_passage_aside(self):
+        # exit 1, as a logged-out or offline Claude Code would: not the passage's doing
+        fakes.set_control(self.directory, fail=True)
+        for _ in range(3):
+            self.assertEqual(self.run_one().code, EX_FAILED)
+        self.assertEqual(state.seen_keys(), set())
+        self.assertFalse(state.load().get("failures"))
 
     # ---- the dry run ----------------------------------------------------------
 

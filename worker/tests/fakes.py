@@ -361,7 +361,8 @@ if "--control" in argv:
 prompt = sys.stdin.read()
 if control.get("record"):
     with open(control["record"], "w", encoding="utf-8") as handle:
-        json.dump({"argv": argv, "env": dict(os.environ), "prompt": prompt}, handle)
+        json.dump({"argv": argv, "env": dict(os.environ), "prompt": prompt,
+                   "cwd": os.getcwd(), "cwd_entries": sorted(os.listdir("."))}, handle)
 
 leaked = sorted(k for k in os.environ if k.startswith(("WIKILEAN_", "ANTHROPIC_")))
 if leaked:

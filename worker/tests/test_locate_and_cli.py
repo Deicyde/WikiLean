@@ -223,6 +223,34 @@ class ReadOnlyCommandTest(unittest.TestCase):
         self.assertEqual(report([Check("a", True), Check("b", False)], log=printed.append), 1)
         self.assertIn("1 check(s) failed", "\n".join(printed))
 
+    def test_work_warns_that_the_web_is_on_and_no_web_silences_it(self):
+        from wikilean.cli import WEB_NOTICE
+
+        code, out = self.run_cli(["work", "--dry-run"])
+        self.assertIn(WEB_NOTICE, out)
+        self.assertIn("--no-web", WEB_NOTICE)
+        code, out = self.run_cli(["work", "--dry-run", "--no-web"])
+        self.assertNotIn(WEB_NOTICE, out)
+
+    def test_a_config_this_cannot_read_turns_the_web_off_and_says_so(self):
+        from wikilean.config import config_path, config_problem
+
+        path = config_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        for written in ('{"web": false,}', '[]', '{"web": "false"}'):
+            with self.subTest(written=written):
+                path.write_text(written, encoding="utf-8")
+                self.assertFalse(Config.load().web)
+                self.assertIn("web is off", config_problem())
+                code, out = self.run_cli(["doctor", "--json"])
+                checks = {check["name"]: check for check in json.loads(out)}
+                self.assertFalse(checks["config.json"]["ok"])
+                self.assertFalse(checks["config.json"]["fatal"])
+                self.assertTrue(checks["web tools"]["note"].startswith("off"))
+        path.unlink()
+        self.assertTrue(Config.load().web)
+        self.assertIsNone(config_problem())
+
     def test_work_without_a_token_refuses_before_any_request(self):
         secrets.delete_token()
         code, out = self.run_cli(["work"])

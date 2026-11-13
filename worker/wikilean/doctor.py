@@ -20,7 +20,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import VERSION, model
-from .config import Config, config_dir, state_dir
+from .config import Config, config_dir, config_problem, state_dir
 from .locate import preconditions
 from .secrets import ENV_TOKEN, fingerprint, load_token
 from .site import Site, SiteError
@@ -142,6 +142,13 @@ def run_checks(config: Config, *, site_factory=Site) -> list[Check]:
                                 f"this token is role {role!r}; mint an agent token at /agents"))
         except SiteError as exc:
             checks.append(Check("token accepted", False, str(exc)))
+
+    checks.append(Check("web tools", True,
+                        "on: search and fetch (on an office network or a VPN, run `work --no-web`)"
+                        if config.web else "off: the model gets no tools", fatal=False))
+    problem = config_problem()
+    if problem:
+        checks.append(Check("config.json", False, problem, fatal=False))
 
     gaps = preconditions(config)
     checks.append(Check("locate unit", not gaps,
