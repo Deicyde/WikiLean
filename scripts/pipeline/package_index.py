@@ -20,9 +20,12 @@ artefact rather than two loose paths.
       names/declarations.tsv   the names-only subset: no Lean source text
       names/wikidata.tsv
       names/README.md
+      licences/<library>/      each library's own LICENSE, COPYING and NOTICE files,
+                               with --licence-texts
 
-**It uploads nothing.** No network, no R2, no signed URL, no Worker. Publishing is
-decision 10's and R1's; this writes a directory and says what is in it.
+**It uploads nothing.** No network, no R2, no Worker. ``scripts/articles/upload_contrib.py``
+puts a finished bundle in the contributor bucket, keyed by the sha256 of its
+``MANIFEST.json``; this writes a directory and says what is in it.
 
 **Why there is a names-only subset.** ``signatures.tsv`` and ``docstrings.tsv`` carry
 **Lean source text from every library of the universe, under each library's own
@@ -33,7 +36,12 @@ are written again on their own: that subset, and not the whole corpus, is what t
 site's autocomplete asset should be built from.
 
 **Why there is a licence manifest at all.** A universe states each library's SPDX id,
-and a bundle that travels without them makes the person who publishes it guess. Where
+and a bundle that travels without them makes the person who publishes it guess. A copy
+handed to a contributor cannot be recalled, so the licence texts themselves travel too:
+``--licence-texts <dir>`` takes ``<dir>/<library id>/`` per library, holding the
+``LICENSE``/``LICENCE``/``COPYING`` file and any ``NOTICE`` file from its repository at
+the pinned commit (this stays offline, so it cannot fetch them), and refuses a library
+with none. Where
 a library records no licence this writes ``NOASSERTION`` — SPDX's own word for "not
 asserted here" — and lists it, because an unknown licence is a thing to go and find
 out, never a permission. Where a licence or the universe's own exclusion list says a
@@ -43,8 +51,9 @@ command's own output.
 
     python3 scripts/pipeline/package_index.py --index <decl-index.jsonl> \\
         --search <dir> --universe <universe.yaml|json> --out <dir> \\
-        [--version <token>] [--provenance <index-provenance.json>] \\
-        [--created <ISO-Z>] [--restricted <library>=<reason>] [--link]
+        [--licence-texts <dir>] [--version <token>] \\
+        [--provenance <index-provenance.json>] [--created <ISO-Z>] \\
+        [--restricted <library>=<reason>] [--link]
 
 Exit codes: 0 the bundle is written, 1 it is written and a library's use is restricted
 or unknown (the list is on stdout), 2 the inputs were refused before anything was
@@ -68,7 +77,7 @@ if str(HERE) not in sys.path:
 import index_from_corpus as converter  # noqa: E402
 import vocab  # noqa: E402
 
-BUNDLE_SCHEMA = "wikilean.pipeline.index-bundle/1"
+BUNDLE_SCHEMA = "wikilean.pipeline.index-bundle/2"
 LICENCE_SCHEMA = "wikilean.pipeline.index-licences/1"
 MANIFEST_NAME = "MANIFEST.json"
 LICENCES_JSON = "LICENCES.spdx.json"
@@ -78,6 +87,12 @@ README_NAME = "README.md"
 INDEX_DIR = "index"
 SEARCH_DIR = "search"
 NAMES_DIR = "names"
+LICENCE_TEXTS_DIR = "licences"
+#: A library's licence files, as a repository names them: ``LICENSE``, ``LICENCE.md``,
+#: ``COPYING``, ``LICENSE-APACHE``. ``NOTICE`` files ride along; at least one of the
+#: others is required.
+_LICENCE_FILE = re.compile(r"^(?:licen[cs]e|copying)(?:[._-].*)?$", re.IGNORECASE)
+_NOTICE_FILE = re.compile(r"^notice(?:[._-].*)?$", re.IGNORECASE)
 #: The converter's own search files, taken by name and never globbed, so a stray file
 #: beside them does not ride into a published bundle.
 SEARCH_FILES = converter.SEARCH_FILES
@@ -363,7 +378,8 @@ def spdx_document(universe: dict, rows: list[dict], *, bundle: str,
     }
 
 
-def licences_markdown(rows: list[dict], universe: dict) -> str:
+def licences_markdown(rows: list[dict], universe: dict,
+                      texts: dict[str, list[str]] | None = None) -> str:
     """The same table, for whoever reads it beside the download."""
     head = (f"# Licences — the declaration index and search corpus of "
             f"{universe.get('id') or 'this universe'}\n\n"
@@ -397,6 +413,12 @@ def licences_markdown(rows: list[dict], universe: dict) -> str:
                  + "".join(f"- `{row['id']}`\n" for row in unknown)
                  + "\nNo licence recorded is not a permission. Each of these needs its "
                    "SPDX id put into the universe before the bundle is published.\n")
+    if texts:
+        tail += ("\n## Licence texts\n\nEach library's own licence files, from its "
+                 "repository at the commit above:\n\n"
+                 + "".join(f"- `{name}`: " + ", ".join(f"[{Path(rel).name}]({rel})"
+                                                      for rel in texts[name]) + "\n"
+                           for name in sorted(texts)))
     return head + body + tail
 
 
@@ -474,7 +496,7 @@ def _place(source: Path, target: Path, *, link: bool) -> None:
 
 #: The directories a bundle is made of. Everything else in the target directory is
 #: somebody else's, which is why a target holding anything else is refused.
-PARTS = (INDEX_DIR, SEARCH_DIR, NAMES_DIR)
+PARTS = (INDEX_DIR, SEARCH_DIR, NAMES_DIR, LICENCE_TEXTS_DIR)
 #: And the files beside them.
 PART_FILES = (MANIFEST_NAME, LICENCES_JSON, LICENCES_MD, README_NAME)
 
@@ -498,6 +520,75 @@ def _is_a_bundle(out: Path) -> bool:
                for entry in out.iterdir())
 
 
+def licence_texts(directory: Path, rows: list[dict]) -> dict[str, list[Path]]:
+    """Each library's licence files under ``directory/<library id>/``, refused if any lacks one.
+
+    Only regular files named like a licence or a notice are taken, never globbed by
+    hand: a stray file beside them does not ride into a published bundle. A
+    subdirectory that names no library of the universe is refused too, since a typo in
+    a library id would otherwise leave that library's real texts out unnoticed.
+    """
+    directory = Path(directory)
+    if not directory.is_dir():
+        raise PackageProblem(f"--licence-texts {directory} is not a directory")
+    ids = [row["id"] for row in rows]
+    strays = sorted(entry.name for entry in directory.iterdir()
+                    if entry.name not in ids and not entry.name.startswith("."))
+    if strays:
+        raise PackageProblem(
+            f"--licence-texts {directory} holds {', '.join(strays[:5])}, which name(s) no "
+            "library of the universe; each subdirectory is one library id")
+    out: dict[str, list[Path]] = {}
+    missing = []
+    for lib_id in ids:
+        folder = directory / lib_id
+        found = sorted(entry for entry in folder.iterdir()
+                       if entry.is_file() and not entry.is_symlink()
+                       and (_LICENCE_FILE.match(entry.name) or _NOTICE_FILE.match(entry.name))
+                       ) if folder.is_dir() and not folder.is_symlink() else []
+        if not any(_LICENCE_FILE.match(entry.name) for entry in found):
+            missing.append(lib_id)
+            continue
+        out[lib_id] = found
+    if missing:
+        raise PackageProblem(
+            f"--licence-texts has no LICENSE, LICENCE or COPYING file for {len(missing)} "
+            f"librar(ies): {', '.join(missing[:8])}{' ...' if len(missing) > 8 else ''}. Copy "
+            "each one from the library's repository at its pinned commit into "
+            f"{directory}/<library id>/; a bundle handed out without its licences is "
+            "refused here rather than published")
+    return out
+
+
+def _without_paths(value):
+    """The converter's provenance with every absolute ``path`` or ``dir`` cut to its name.
+
+    The shas and counts are what a reader can check; where the operator kept the corpus
+    on their own machine is not, and a published manifest has no business naming it.
+    """
+    if isinstance(value, dict):
+        return {key: (Path(item).name
+                      if key in ("path", "dir") and isinstance(item, str)
+                      and (os.path.isabs(item) or item.startswith("~"))
+                      else _without_paths(item))
+                for key, item in value.items()}
+    if isinstance(value, list):
+        return [_without_paths(item) for item in value]
+    return value
+
+
+def index_universe(index: Path) -> str | None:
+    """The ``universe_sha256`` the index's header line states, or None if it states none."""
+    with open(index, encoding="utf-8") as handle:
+        first = handle.readline()
+    try:
+        header = json.loads(first)
+    except ValueError:
+        return None
+    value = header.get("universe_sha256") if isinstance(header, dict) else None
+    return str(value) if value else None
+
+
 def default_version(universe: dict, index_sha: str) -> str:
     """A version nobody has to remember: the universe and the index's own sha256.
 
@@ -511,7 +602,7 @@ def default_version(universe: dict, index_sha: str) -> str:
 def package(*, index: Path, search: Path, universe: Path, out: Path,
             version: str | None = None, provenance: Path | None = None,
             created: str | None = None, restricted: dict[str, str] | None = None,
-            link: bool = False) -> dict:
+            link: bool = False, licences: Path | None = None) -> dict:
     """Write the bundle and return its ``MANIFEST.json``."""
     index, search, out = Path(index), Path(search), Path(out)
     if not index.is_file():
@@ -526,6 +617,12 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
                                  "index and search corpus are written by one command so "
                                  "they cannot drift, and half of one is not publishable")
     universe_doc = read_universe(Path(universe))
+    stated = index_universe(index)
+    expected = str(universe_doc.get("universe_sha256") or "")
+    if stated and expected and stated != expected:
+        raise PackageProblem(
+            f"{index} is the index of universe {stated[:12]} and {universe} is universe "
+            f"{expected[:12]}: the licences and the pins would describe another index")
     if created is not None and not vocab.CREATED_RE.match(created):
         raise PackageProblem(f"--created {created!r} is not an ISO 8601 UTC time ending in Z")
 
@@ -554,6 +651,7 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
     # Everything that can be refused is refused before half a gigabyte is copied: the
     # licence rows, the operator's own restrictions and the provenance's index sha.
     rows = library_licences(universe_doc, stated=restricted)
+    texts = licence_texts(Path(licences), rows) if licences is not None else {}
     converted = None
     if provenance is not None:
         converted = json.loads(Path(provenance).read_text(encoding="utf-8"))
@@ -570,6 +668,7 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
             raise PackageProblem(
                 f"{provenance} records index sha256 {str(recorded)[:12]} and {index} "
                 f"hashes to {index_sha[:12]}: the provenance is of another index")
+        converted = _without_paths(converted)
     out.mkdir(parents=True, exist_ok=True)
     # An earlier bundle's parts go, so a renamed index or a shrunken search corpus
     # cannot leave a stale file behind for the new MANIFEST.json to vouch for.
@@ -583,12 +682,19 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
         _place(search / name, out / NAMES_DIR / name, link=link)
     (out / NAMES_DIR / README_NAME).write_text(NAMES_README, encoding="utf-8")
     (out / README_NAME).write_text(BUNDLE_README, encoding="utf-8")
+    copied: dict[str, list[str]] = {}
+    for lib_id, paths in texts.items():
+        for source in paths:
+            rel = f"{LICENCE_TEXTS_DIR}/{lib_id}/{source.name}"
+            _place(source, out / rel, link=False)
+            copied.setdefault(lib_id, []).append(rel)
 
     bundle_id = f"{universe_doc.get('id') or 'universe'}/{version}"
     spdx = spdx_document(universe_doc, rows, bundle=bundle_id, created=created)
     (out / LICENCES_JSON).write_text(
         json.dumps(spdx, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    (out / LICENCES_MD).write_text(licences_markdown(rows, universe_doc), encoding="utf-8")
+    (out / LICENCES_MD).write_text(licences_markdown(rows, universe_doc, copied),
+                                   encoding="utf-8")
 
     files = {}
     for path in sorted(out.rglob("*")):
@@ -618,6 +724,9 @@ def package(*, index: Path, search: Path, universe: Path, out: Path,
             "libraries": len(rows),
             "no_licence_recorded": spdx["no_licence_recorded"],
             "use_restricted": spdx["use_restricted"],
+            # Each library's own licence files, by library id; empty without --licence-texts,
+            # and then the bundle is for reading here, not for handing out.
+            "texts": dict(sorted(copied.items())),
         },
         "converted": converted,
         "bytes": sum(entry["bytes"] for entry in files.values()),
@@ -640,7 +749,8 @@ def describe(manifest: dict) -> str:
     licences = manifest["licences"]
     lines.append(f"  licences: {licences['libraries']} librar(ies), "
                  f"{len(licences['no_licence_recorded'])} with none recorded, "
-                 f"{len(licences['use_restricted'])} with a use restriction")
+                 f"{len(licences['use_restricted'])} with a use restriction, "
+                 f"{len(licences.get('texts') or {})} with their licence texts")
     for name in licences["use_restricted"]:
         lines.append(f"    RESTRICTED: {name}")
     for name in licences["no_licence_recorded"]:
@@ -669,6 +779,10 @@ def main(argv: list[str] | None = None) -> int:
                         help="the universe the index is pinned to (json, or yaml with "
                              "PyYAML); its libraries' licences go in the manifest")
     parser.add_argument("--out", required=True, type=Path, help="the bundle directory")
+    parser.add_argument("--licence-texts", type=Path, metavar="DIR",
+                        help="DIR/<library id>/ holds each library's LICENSE or COPYING "
+                             "file and any NOTICE, from its repository at the pinned "
+                             "commit; required for a bundle that is handed out")
     parser.add_argument("--version", default=None,
                         help="the bundle version (default: the universe and index shas)")
     parser.add_argument("--provenance", type=Path,
@@ -686,11 +800,15 @@ def main(argv: list[str] | None = None) -> int:
         manifest = package(index=args.index, search=args.search, universe=args.universe,
                            out=args.out, version=args.version, provenance=args.provenance,
                            created=args.created,
-                           restricted=_restricted_pairs(args.restricted), link=args.link)
+                           restricted=_restricted_pairs(args.restricted), link=args.link,
+                           licences=args.licence_texts)
     except (PackageProblem, OSError, ValueError) as exc:
         print(str(exc), file=sys.stderr)
         return 2
     print(describe(manifest))
+    # The bundle's identity: the contributor bucket keys it by this, and the Worker
+    # serves it by this (scripts/articles/upload_contrib.py).
+    print(f"  manifest sha256 {sha256_file(Path(args.out) / MANIFEST_NAME)}")
     licences = manifest["licences"]
     return 1 if (licences["use_restricted"] or licences["no_licence_recorded"]) else 0
 

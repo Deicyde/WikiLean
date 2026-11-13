@@ -12,7 +12,8 @@ export TZ=UTC
 
 # CI must never inherit credentials that could turn an offline test into a live call.
 unset ANTHROPIC_API_KEY CLAUDE_CODE_OAUTH_TOKEN PIPELINE_TOKEN WIKILEAN_AGENT_TOKEN CLOUDFLARE_API_TOKEN \
-  WIKILEAN_ARTICLES_R2_ACCESS_KEY_ID WIKILEAN_ARTICLES_R2_SECRET_ACCESS_KEY
+  WIKILEAN_ARTICLES_R2_ACCESS_KEY_ID WIKILEAN_ARTICLES_R2_SECRET_ACCESS_KEY \
+  WIKILEAN_CONTRIB_R2_ACCESS_KEY_ID WIKILEAN_CONTRIB_R2_SECRET_ACCESS_KEY
 
 run_check() {
   local name="$1"
@@ -83,6 +84,7 @@ run_check "Local D1 backup fail-closed tests" "$PYTHON_BIN" wiki/scripts/test_ba
 run_check "D1-backed public concept export tests" "$PYTHON_BIN" site/test_export_wikidata_rdf.py
 run_check "Articles store builder tests" "$PYTHON_BIN" scripts/articles/test_build_store.py
 run_check "Articles store uploader tests" "$PYTHON_BIN" scripts/articles/test_upload_store.py
+run_check "Contributor bucket uploader: index bundles, content-addressed" "$PYTHON_BIN" scripts/articles/test_upload_contrib.py
 run_check "Contributed record set intake tests" "$PYTHON_BIN" scripts/articles/test_verify_submission.py
 run_check "Self-service submission client and real loopback intake" "$PYTHON_BIN" scripts/articles/test_submission_transport.py
 run_check "Contributed set promoted to reviewable overlay rows" "$PYTHON_BIN" scripts/articles/test_promote_submission.py
