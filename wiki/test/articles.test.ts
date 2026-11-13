@@ -24,7 +24,7 @@ import {
 } from "../src/articles.js";
 import {
   ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, UNMEASURED, articlesSummaryBox, campaignLabel,
-  coverageStatus, locationStatus, plainHead,
+  campaignRuns, challengeSentence, coverageStatus, locationStatus, plainHead,
 } from "../src/articles-render.js";
 import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { injectArticlesSummary } from "../src/pages.js";
@@ -2131,6 +2131,32 @@ describe("a record set from a run outside any campaign", () => {
       const bad = await post(h.env, "/api/articles/feedback", feedback({ campaign }), { user: "u-human" });
       expect(bad.status, campaign).toBe(400);
     }
+  });
+
+  it("reads a set no challenge ran over as not re-checked, and gives no reason", async () => {
+    expect(challengeSentence("not_required", campaignRuns("run:loc-smoke-2"))).toBe("Not re-checked.");
+    expect(challengeSentence("not_required", campaignRuns(RUN)))
+      .toBe("Not re-checked: challenge run <code>chal-smoke-2</code> did not require it.");
+    // tally.py --unchallenged: every record not_required, and a token naming no challenge run
+    const h = setup();
+    const files = runStore();
+    for (const [key, value] of files) {
+      if (key === "articles/v1/current.json" || key.startsWith("articles/v1/articles/")) {
+        const doc = JSON.parse(value);
+        doc.campaign = "run:loc-smoke-2";
+        for (const passage of doc.passages ?? []) {
+          for (const loc of passage.locations ?? []) loc.challenge = "not_required";
+          if (passage.absence && typeof passage.absence === "object") passage.absence.challenge = "not_required";
+        }
+        files.set(key, JSON.stringify(doc));
+      }
+    }
+    bindArticles(h.env, files);
+    const page = await (await get(h.env, WIDGET_PATH)).text();
+    expect(page).toContain("<li>Locate run <code>loc-smoke-2</code>, not re-checked by a challenge run.</li>");
+    expect(page).toContain("<li>Not re-checked.</li>");
+    expect(page).not.toContain("no challenge was required");
+    expect(page).not.toContain("Re-checked in challenge run");
   });
 
   it("accepts exactly the tokens the builder accepts", () => {
