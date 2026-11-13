@@ -21,12 +21,17 @@ the release as ``site/out/brain.html``, so a change to its builder cannot ship t
 a path that reuses the release.
 
 **Layer 2 — the Brain surface fence.** Layer 1 is a list, and a list can be wrong.
-The fence turns "the Brain is unchanged" from a classification into a measurement: the
-Brain-owned bytes the promoter is about to publish are fetched back from production
-and required to be identical, path for path. The one byte-level exception is the
-selector's ``audited_at`` stamp, which every promotion rewrites. Any change in the
-staging code, the shard layout, the selector schema or the immutable namespace shows
-up here as a diff or a 404 and refuses the promotion before Wrangler is invoked.
+The fence turns "the Brain is unchanged" from a classification into a measurement, in
+two halves. Locally it requires the whole staged Brain surface to be exactly the file
+set the reused release's own manifests imply, with every byte matching the digest they
+declare — the expected set derived here from the frozen release, never from anything
+the promotion built, because the staging code is itself eligible to change. Against
+production it fetches a fixed sample of those paths back and requires byte equality;
+the immutable ``release.json`` bytes are in that sample, so equal manifests plus
+digest-verified staged files cover every file the manifests name. The one byte-level
+exception is the selector's ``audited_at`` stamp, which every promotion rewrites. A
+change in the staging code, the shard layout, the selector schema or the immutable
+namespace shows up here and refuses the promotion before Wrangler is invoked.
 
 Nothing in this module mutates anything. ``evaluate`` makes read-only Git and HTTPS
 calls and prints one canonical record; the promoter and the activation bundle freezer
@@ -73,8 +78,11 @@ DEFAULT_MAX_RESPONSE_BYTES = 32 * 1024 * 1024
 # blocking even when another rule would make them eligible, so widening the
 # website-only lists below can never accidentally expose a reducer input. The
 # exception is a path the full promotion path already treats as release-neutral (a
-# `test_*.py` file, `brain/authority/fixtures/**`): those are checked first and stay
-# neutral here for exactly the reason they are neutral there.
+# `test_*.py` file, a `README.md`, `brain/authority/fixtures/**`): those are checked
+# first and stay neutral here for exactly the reason they are neutral there. A
+# `README.md` under a generated Brain asset directory is therefore eligible; nothing
+# reads it, and if one were ever staged the surface fence would refuse it as a file
+# the reused release's manifest does not name.
 BRAIN_INPUT_DIRECTORIES: tuple[str, ...] = (
     "brain",
     "catalog",
@@ -127,9 +135,15 @@ PUBLIC_ASSET_GENERATORS: tuple[str, ...] = (
     "site/export_wikidata_rdf.py",
     "site/render.py",
 )
-# Changes an operator must look at by hand even though they are eligible: Worker
-# routing and asset configuration decide how the unchanged Brain bytes are served.
-REVIEW_REQUIRED_FILES: tuple[str, ...] = ("wiki/wrangler.jsonc",)
+# Changes an operator must look at by hand even though they are eligible, because
+# they decide how the unchanged Brain bytes are *served* rather than what they are.
+# `wrangler.jsonc` holds the routes and the static-asset configuration;
+# `wiki/src/security.ts` is the sole source of the generated `_headers` file, which
+# Workers Static Assets applies to every Brain asset and which carries a rule naming
+# `/brain.html` by hand. Neither is provable before the deploy, and neither is covered
+# by the surface fence, which compares bodies and not response headers; the canary
+# after the deploy is the backstop, exactly as in a full release.
+REVIEW_REQUIRED_FILES: tuple[str, ...] = ("wiki/src/security.ts", "wiki/wrangler.jsonc")
 
 GIT_DIFF_ARGUMENTS = release_authority.GIT_DIFF_ARGUMENTS
 
@@ -152,6 +166,22 @@ BRAIN_PAGE_ROUTE = "/brain"
 # Every promotion stamps a fresh audit time into the selector; it is the only
 # Brain-owned byte a code-only release is allowed to change.
 SELECTOR_VOLATILE_KEYS = frozenset({"audited_at"})
+
+# The staged Brain surface is derived from the reused release's own manifests, by the
+# same artifact → public-path rule the stager applies
+# (`publicPathForArtifact` in wiki/scripts/brain-release-public.ts). Deriving it here
+# rather than from the staged cell manifest is deliberate: the stager is Worker-side
+# code a code-only release is allowed to change, so the expected set must come from the
+# release being reused, not from anything the promotion built.
+BRAIN_ARTIFACT_PREFIX = "site/assets/brain/"
+CELLS_ARTIFACT_PREFIX = f"{BRAIN_ARTIFACT_PREFIX}cells/"
+RELEASES_DIRECTORY = "releases"
+RELEASE_MANIFEST_NAME = "release.json"
+SELECTOR_PUBLIC_NAME = SELECTOR_PUBLIC_PATH.removeprefix("assets/brain/")
+REQUIRED_PUBLIC_ALIASES = frozenset(
+    path.removeprefix("assets/brain/") for path in FENCE_STATIC_PATHS
+)
+STAGED_READ_BUFFER_BYTES = 1024 * 1024
 
 
 class CodeOnlyError(RuntimeError):
@@ -389,23 +419,96 @@ def _deterministic_shard_path(staged_public: Path) -> str:
     return f"assets/brain/cells/{sorted(shards)[0]}.json"
 
 
-def _staged_shard_keys(staged_public: Path) -> list[str]:
-    manifest_path = staged_public / "assets" / "brain" / "cells" / "manifest.json"
+@dataclass(frozen=True)
+class _ExpectedFile:
+    bytes: int
+    sha256: str
+
+
+def public_path_for_artifact(path: str) -> str | None:
+    """Return a release artifact's public path, or ``None`` if it is not published.
+
+    This mirrors ``publicPathForArtifact`` in
+    ``wiki/scripts/brain-release-public.ts`` exactly. Keeping an independent copy is
+    the point: it is what lets the fence state the expected staged file set without
+    asking the staging code at ``C`` what it decided to write.
+    """
+    if path == f"{BRAIN_ARTIFACT_PREFIX}sources.json":
+        return "sources.json"
+    if path == f"{BRAIN_ARTIFACT_PREFIX}xref_index.json":
+        return "xref_index.json"
+    if path.startswith(CELLS_ARTIFACT_PREFIX):
+        return "cells/" + path[len(CELLS_ARTIFACT_PREFIX) :]
+    return None
+
+
+def namespace_expectations(manifest_bytes: bytes, label: str) -> dict[str, _ExpectedFile]:
+    """Map one release manifest to the exact public files its namespace must hold."""
     try:
-        raw = manifest_path.read_bytes()
-    except OSError as exc:
-        raise CodeOnlyError(f"staged cell manifest is unreadable: {exc}") from exc
-    try:
-        value = json.loads(raw)
+        value = json.loads(manifest_bytes)
     except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise CodeOnlyError(f"staged cell manifest is not valid JSON: {exc}") from exc
-    shards = _require_object(value, "staged cell manifest").get("shards")
-    if not isinstance(shards, dict) or not shards:
-        raise CodeOnlyError("staged cell manifest has no shard inventory")
-    for key in shards:
-        if not isinstance(key, str) or not key or "/" in key or key in {".", ".."}:
-            raise CodeOnlyError("staged cell manifest has an invalid shard key")
-    return sorted(shards)
+        raise CodeOnlyError(f"{label} is not valid JSON: {exc}") from exc
+    artifacts = _require_object(value, label).get("artifacts")
+    if not isinstance(artifacts, list) or not artifacts:
+        raise CodeOnlyError(f"{label} has no artifact inventory")
+    expected: dict[str, _ExpectedFile] = {
+        RELEASE_MANIFEST_NAME: _ExpectedFile(
+            len(manifest_bytes), hashlib.sha256(manifest_bytes).hexdigest()
+        )
+    }
+    for index, item in enumerate(artifacts):
+        artifact = _require_object(item, f"{label} artifacts[{index}]")
+        path = artifact.get("path")
+        if not isinstance(path, str):
+            raise CodeOnlyError(f"{label} artifacts[{index}].path must be a string")
+        public_path = public_path_for_artifact(path)
+        if public_path is None:
+            continue
+        if not _well_formed(public_path) or public_path == RELEASE_MANIFEST_NAME:
+            raise CodeOnlyError(f"{label} maps {path!r} to an unsafe public path")
+        if public_path in expected:
+            raise CodeOnlyError(f"{label} maps two artifacts to {public_path}")
+        size = artifact.get("bytes")
+        if isinstance(size, bool) or not isinstance(size, int) or size < 0:
+            raise CodeOnlyError(f"{label} artifacts[{index}].bytes must be a byte count")
+        expected[public_path] = _ExpectedFile(
+            size,
+            _require_digest(artifact.get("sha256"), f"{label} artifacts[{index}].sha256"),
+        )
+    missing = sorted(REQUIRED_PUBLIC_ALIASES - set(expected))
+    if missing:
+        raise CodeOnlyError(
+            f"{label} is missing required public artifacts: {', '.join(missing)}"
+        )
+    return expected
+
+
+def _staged_namespace_manifest(root: Path, digest: str, label: str) -> bytes:
+    path = root / RELEASES_DIRECTORY / digest / RELEASE_MANIFEST_NAME
+    if path.is_symlink() or not path.is_file():
+        raise CodeOnlyError(
+            f"staged Brain surface omitted the {label} at "
+            f"{RELEASES_DIRECTORY}/{digest}/{RELEASE_MANIFEST_NAME}"
+        )
+    raw = path.read_bytes()
+    if hashlib.sha256(raw).hexdigest() != digest:
+        raise CodeOnlyError(f"staged {label} does not hash to its namespace {digest}")
+    return raw
+
+
+def _measure(path: Path) -> tuple[int, str]:
+    digest = hashlib.sha256()
+    size = 0
+    with path.open("rb") as handle:
+        while chunk := handle.read(STAGED_READ_BUFFER_BYTES):
+            size += len(chunk)
+            digest.update(chunk)
+    return size, digest.hexdigest()
+
+
+def _summarize(paths: Sequence[str], limit: int = 10) -> str:
+    shown = ", ".join(paths[:limit])
+    return f"[{shown}{f', +{len(paths) - limit} more' if len(paths) > limit else ''}]"
 
 
 def require_brain_surface_shape(
@@ -414,24 +517,64 @@ def require_brain_surface_shape(
     current_manifest_sha256: str,
     previous_manifest_sha256: str | None,
 ) -> list[str]:
-    """Require the staged Brain surface to hold exactly the expected files.
+    """Require the staged Brain surface to be the reused release's bytes, exactly.
 
-    The fence compares bytes at known paths; this closes the complementary gap, an
-    *extra* Brain-owned file that staging code at ``C`` learned to write and that no
-    comparison would notice. The mutable surface is fixed by the cell manifest's own
-    shard inventory, and only the current and previous immutable namespaces may exist.
+    The HTTP fence below samples; this does not. Every Brain-owned file the promotion
+    would publish is measured against the digest the reused release's own manifest
+    declares for it, and the file *set* must be exactly the one those manifests imply —
+    no extra file a changed stager learned to write, no missing one, no symlink, and
+    only the current and previous immutable namespaces. Because the expected set and
+    digests come from the frozen release rather than from anything built at ``C``, a
+    change to ``wiki/scripts/brain-release-public.ts`` or ``build-public.ts`` — both
+    eligible under this policy — cannot redefine what "unchanged" means.
+
+    Returns the sorted mutable surface (the files served outside ``releases/``).
     """
+    for digest in (current_manifest_sha256, previous_manifest_sha256):
+        if digest is not None and DIGEST_RE.fullmatch(digest) is None:
+            raise CodeOnlyError("release manifest digest must be 64 lowercase hex characters")
+    if previous_manifest_sha256 == current_manifest_sha256:
+        raise CodeOnlyError("the retained previous release must differ from the reused release")
     root = staged_public / "assets" / "brain"
-    expected = {
-        SELECTOR_PUBLIC_PATH.removeprefix("assets/brain/"),
-        *(path.removeprefix("assets/brain/") for path in FENCE_STATIC_PATHS),
-        *(f"cells/{key}.json" for key in _staged_shard_keys(staged_public)),
-    }
     namespaces = {
         digest
         for digest in (current_manifest_sha256, previous_manifest_sha256)
         if digest is not None
     }
+    releases = root / RELEASES_DIRECTORY
+    present = {entry.name for entry in releases.iterdir()} if releases.is_dir() else set()
+    if present != namespaces:
+        raise CodeOnlyError(
+            "staged Brain surface retains the wrong immutable release namespaces: "
+            f"{sorted(present)}"
+        )
+
+    current = namespace_expectations(
+        _staged_namespace_manifest(root, current_manifest_sha256, "reused release manifest"),
+        "reused release manifest",
+    )
+    mutable = {
+        name: item for name, item in current.items() if name != RELEASE_MANIFEST_NAME
+    }
+    expected: dict[str, _ExpectedFile] = {
+        f"{RELEASES_DIRECTORY}/{current_manifest_sha256}/{name}": item
+        for name, item in current.items()
+    }
+    expected.update(mutable)
+    if previous_manifest_sha256 is not None:
+        previous = namespace_expectations(
+            _staged_namespace_manifest(
+                root, previous_manifest_sha256, "retained previous release manifest"
+            ),
+            "retained previous release manifest",
+        )
+        expected.update(
+            {
+                f"{RELEASES_DIRECTORY}/{previous_manifest_sha256}/{name}": item
+                for name, item in previous.items()
+            }
+        )
+
     actual: set[str] = set()
     for path in sorted(root.rglob("*")):
         if path.is_symlink():
@@ -440,30 +583,25 @@ def require_brain_surface_shape(
             )
         if not path.is_file():
             continue
-        relative = path.relative_to(root).as_posix()
-        head = relative.split("/", 2)
-        if head[0] == "releases":
-            if len(head) < 3 or head[1] not in namespaces:
-                raise CodeOnlyError(
-                    f"staged Brain surface holds an unexpected immutable namespace: {relative}"
-                )
-            continue
-        actual.add(relative)
-    unexpected = sorted(actual - expected)
-    missing = sorted(expected - actual)
+        actual.add(path.relative_to(root).as_posix())
+    # The selector is minted by this promotion rather than copied from the release;
+    # the fence compares its identity with production instead of its bytes.
+    expected_names = {SELECTOR_PUBLIC_NAME, *expected}
+    unexpected = sorted(actual - expected_names)
+    missing = sorted(expected_names - actual)
     if unexpected or missing:
         raise CodeOnlyError(
             "staged Brain surface file set differs from the reused release's "
-            f"(unexpected={unexpected}, missing={missing})"
+            f"(unexpected={_summarize(unexpected)}, missing={_summarize(missing)})"
         )
-    releases = root / "releases"
-    present = {entry.name for entry in releases.iterdir()} if releases.is_dir() else set()
-    if present != namespaces:
-        raise CodeOnlyError(
-            "staged Brain surface retains the wrong immutable release namespaces: "
-            f"{sorted(present)}"
-        )
-    return sorted(actual)
+    for relative, item in sorted(expected.items()):
+        size, digest = _measure(root.joinpath(*relative.split("/")))
+        if size != item.bytes or digest != item.sha256:
+            raise CodeOnlyError(
+                f"staged Brain-owned file {relative} is not the byte content the reused "
+                "release's manifest declares"
+            )
+    return sorted([SELECTOR_PUBLIC_NAME, *mutable])
 
 
 def fence_targets(
@@ -882,6 +1020,31 @@ def require_record_matches(
         raise CodeOnlyError(
             "production's release selector changed since the code-only record was "
             "decided; re-evaluate eligibility"
+        )
+
+
+def require_record_changes(record: CodeOnlyRelease, changes: Iterable[str]) -> None:
+    """Re-derive a record's classification from an independently observed Git diff.
+
+    ``require_record_matches`` re-derives the record's release and commit identity;
+    this re-derives its *content*. Without it the record's change lists — and so
+    ``review_required``, the one field that tells an operator which eligible path to
+    read by hand, and the attestation rule — would be the only claims a consumer took
+    on trust.
+    """
+    observed = classify_changes(changes)
+    if observed.blocking:
+        raise CodeOnlyError(
+            describe_blocking(
+                record.brain_authority_commit, record.code_commit, observed.blocking
+            )
+        )
+    require_attestation_consistency(observed)
+    if observed != record.classification:
+        raise CodeOnlyError(
+            "the code-only record's changed paths differ from the Git diff between "
+            f"{record.brain_authority_commit} and {record.code_commit}; re-evaluate "
+            "eligibility at this commit"
         )
 
 

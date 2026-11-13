@@ -55,6 +55,7 @@ from brain_code_only_release import (
     brain_surface_fence,
     load_record as load_code_only_record,
     production_fetcher as code_only_fetcher,
+    require_record_changes as require_code_only_record_changes,
     require_record_matches as require_code_only_record_matches,
 )
 from brain_code_only_release import blocking_changes as code_only_blocking_changes
@@ -2755,6 +2756,7 @@ class BrainPromoter:
             candidate.authority_commit, code_only=code_only is not None
         )
         neutral_changes = self._recorded_neutral_changes()
+        self._require_code_only_record_changes(code_only, neutral_changes)
         baseline_authority = (
             promotion_commit if code_only is not None else candidate.authority_commit
         )
@@ -3022,6 +3024,17 @@ class BrainPromoter:
         except CodeOnlyError as exc:
             raise PromotionError(f"code-only eligibility record is invalid: {exc}") from exc
 
+    def _require_code_only_record_changes(
+        self, code_only: CodeOnlyRelease | None, changes: Sequence[str]
+    ) -> None:
+        """Re-derive the record's classification from this checkout's own Git diff."""
+        if code_only is None:
+            return
+        try:
+            require_code_only_record_changes(code_only, changes)
+        except CodeOnlyError as exc:
+            raise PromotionError(f"code-only eligibility record is unusable: {exc}") from exc
+
     def _run_brain_surface_fence(
         self,
         candidate: ReleaseInfo,
@@ -3064,6 +3077,7 @@ class BrainPromoter:
             candidate.authority_commit, code_only=code_only is not None
         )
         neutral_changes = self._recorded_neutral_changes()
+        self._require_code_only_record_changes(code_only, neutral_changes)
         # A full promotion freezes the public baseline at the commit that built the
         # Brain. A code-only promotion reuses that Brain but rebuilds the website, so
         # its baseline is frozen at the promotion commit instead — the one commit whose

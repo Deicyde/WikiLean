@@ -1745,6 +1745,15 @@ def _validate_intent_code_only(
         or not surface
     ):
         raise BundleValidationError("Brain surface fence mutable inventory is malformed")
+    required_surface = {
+        code_only_policy.SELECTOR_PUBLIC_NAME,
+        *code_only_policy.REQUIRED_PUBLIC_ALIASES,
+    }
+    if not required_surface.issubset(surface):
+        raise BundleValidationError(
+            "Brain surface fence mutable inventory is missing required Brain files: "
+            + ", ".join(sorted(required_surface.difference(surface)))
+        )
     compared = {}
     for item in checked:
         entry = _require_object(item, "Brain surface fence entry")
@@ -1847,10 +1856,19 @@ def _validate_promoter_intent(
         )
     except (ValueError, code_only_policy.CodeOnlyError) as exc:
         raise BundleValidationError(str(exc)) from exc
-    if code_only is not None and promotion_commit != code_only.code_commit:
-        raise BundleValidationError(
-            "promoter dry run ran at a different commit than the code-only record"
-        )
+    if code_only is not None:
+        if promotion_commit != code_only.code_commit:
+            raise BundleValidationError(
+                "promoter dry run ran at a different commit than the code-only record"
+            )
+        # Re-derive the record's classification of this list, so `review_required` and
+        # the attestation rule are measured rather than taken from the record. During
+        # a freeze `_require_neutral_descendant` has already proved the list is the
+        # real Git diff between the reused release's authority and this commit.
+        try:
+            code_only_policy.require_record_changes(code_only, neutral_changes)
+        except code_only_policy.CodeOnlyError as exc:
+            raise BundleValidationError(str(exc)) from exc
     if promotion_commit == authority_commit and neutral_changes:
         raise BundleValidationError(
             "promoter neutral_changes must be empty at the candidate authority commit"

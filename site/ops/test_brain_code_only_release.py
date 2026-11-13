@@ -22,10 +22,59 @@ import brain_release_authority as release_authority  # noqa: E402
 BRAIN_COMMIT = "a" * 40
 CODE_COMMIT = "b" * 40
 RELEASE_ID = "sha256:" + "1" * 64
-RELEASE_MANIFEST = "2" * 64
 PREVIOUS_ID = "sha256:" + "3" * 64
-PREVIOUS_MANIFEST = "4" * 64
 SELECTOR_SHA = "5" * 64
+
+# The public side of a release: the eight required files, two cell shards and one
+# *trace* shard. Traces are the regression this fixture exists to hold: the live
+# release publishes 219 of them under cells/traces/, they are not listed in the cell
+# manifest's `shards` inventory, and an expected-file set derived from that inventory
+# rather than from the release manifest refuses every real promotion.
+PUBLIC_BODIES: dict[str, bytes] = {
+    "sources.json": b'{"sources":[]}',
+    "xref_index.json": b'{"xref":[]}',
+    "cells/manifest.json": json.dumps(
+        {"shards": {"a0": 1, "z1": 1}, "traces": {"dir": "traces", "files": {"a0": 1}}},
+        sort_keys=True,
+    ).encode(),
+    "cells/aliases.json": b'{"aliases":{}}',
+    "cells/labels.json": b'{"labels":{}}',
+    "cells/supercells.json": b'{"supercells":[]}',
+    "cells/explorer.json": b'{"explorer":[]}',
+    "cells/frontier_graph.json": b'{"frontier":[]}',
+    "cells/a0.json": b'{"cells":["a0"]}',
+    "cells/z1.json": b'{"cells":["z1"]}',
+    "cells/traces/a0.json": b'{"traces":{}}',
+}
+
+
+def release_manifest_bytes(bodies: dict[str, bytes], marker: str) -> bytes:
+    """A release manifest naming exactly ``bodies`` as its public artifacts."""
+    artifacts = [
+        {
+            "path": f"site/assets/brain/{public}",
+            "bytes": len(body),
+            "sha256": hashlib.sha256(body).hexdigest(),
+        }
+        for public, body in sorted(bodies.items())
+    ]
+    artifacts.append({"path": "site/out/brain.html", "bytes": 1, "sha256": "0" * 64})
+    return json.dumps(
+        {
+            "schema": "wikilean.release/v1",
+            "marker": marker,
+            "artifacts": artifacts,
+        },
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode()
+
+
+CURRENT_MANIFEST_BYTES = release_manifest_bytes(PUBLIC_BODIES, "current")
+PREVIOUS_PUBLIC_BODIES = {name: body + b" " for name, body in PUBLIC_BODIES.items()}
+PREVIOUS_MANIFEST_BYTES = release_manifest_bytes(PREVIOUS_PUBLIC_BODIES, "previous")
+RELEASE_MANIFEST = hashlib.sha256(CURRENT_MANIFEST_BYTES).hexdigest()
+PREVIOUS_MANIFEST = hashlib.sha256(PREVIOUS_MANIFEST_BYTES).hexdigest()
 
 
 def selector_bytes(*, audited_at: str = "2030-01-01T00:00:00Z") -> bytes:
@@ -145,9 +194,14 @@ class PathPolicyTest(unittest.TestCase):
         policy.require_attestation_consistency(policy.classify_changes(["wiki/src/a.ts"]))
 
     def test_worker_configuration_is_flagged_for_operator_review(self):
+        # Both decide how the unchanged Brain bytes are served: wrangler.jsonc the
+        # routes and asset configuration, security.ts the generated _headers the
+        # fence cannot see, which carries a rule naming /brain.html by hand.
         self.assertEqual(
-            policy.review_required(policy.classify_changes(["wiki/wrangler.jsonc"])),
-            ["wiki/wrangler.jsonc"],
+            policy.review_required(
+                policy.classify_changes(["wiki/src/security.ts", "wiki/wrangler.jsonc"])
+            ),
+            ["wiki/src/security.ts", "wiki/wrangler.jsonc"],
         )
         self.assertEqual(policy.review_required(policy.classify_changes(["wiki/src/a.ts"])), [])
 
@@ -254,34 +308,57 @@ class RecordTest(unittest.TestCase):
             with self.subTest(key=key), self.assertRaisesRegex(policy.CodeOnlyError, pattern):
                 policy.require_record_matches(record, **{**good, key: value})
 
+    def test_require_record_changes_re_derives_the_classification(self):
+        record = policy.validate_record_document(make_record())
+        policy.require_record_changes(record, ["wiki/src/index.ts", "docs/a.md"])
+        # Order is irrelevant: the observed diff is classified, not compared textually.
+        policy.require_record_changes(record, ["docs/a.md", "wiki/src/index.ts"])
+        # A path the record never mentioned — including the one path the record is
+        # the only witness for, wrangler.jsonc and its review_required flag.
+        for observed, pattern in (
+            (["wiki/src/index.ts"], "differ from the Git diff"),
+            (["wiki/src/index.ts", "docs/a.md", "wiki/wrangler.jsonc"], "differ from the Git diff"),
+            (["wiki/src/index.ts", "docs/a.md", "brain/layout.py"], "brain/layout.py"),
+        ):
+            with self.subTest(observed=observed), self.assertRaisesRegex(
+                policy.CodeOnlyError, pattern
+            ):
+                policy.require_record_changes(record, observed)
+
+    def test_require_record_changes_enforces_the_attestation_rule(self):
+        record = policy.validate_record_document(
+            make_record(
+                classification=policy.classify_changes(
+                    ["site/assets/style.css", policy.ATTESTATION_PATH]
+                )
+            )
+        )
+        policy.require_record_changes(
+            record, ["site/assets/style.css", policy.ATTESTATION_PATH]
+        )
+        with self.assertRaisesRegex(policy.CodeOnlyError, "attestation"):
+            policy.require_record_changes(record, ["site/assets/style.css"])
+
 
 class StagedTreeMixin(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.base = Path(self.temp.name).resolve()
         self.public = self.base / "public"
-        brain = self.public / "assets" / "brain"
-        (brain / "cells").mkdir(parents=True)
-        (brain / "releases" / RELEASE_MANIFEST).mkdir(parents=True)
-        (brain / "releases" / PREVIOUS_MANIFEST).mkdir(parents=True)
-        self.bodies = {
+        # Exactly what wiki/scripts/brain-release-public.ts stages: both immutable
+        # namespaces in full, the current namespace's public files aliased at the
+        # mutable paths, and a freshly minted selector.
+        self.bodies: dict[str, bytes] = {
             "assets/brain/current.json": selector_bytes(),
-            f"assets/brain/releases/{RELEASE_MANIFEST}/release.json": b'{"release":"current"}',
-            f"assets/brain/releases/{PREVIOUS_MANIFEST}/release.json": b'{"release":"previous"}',
-            "assets/brain/sources.json": b'{"sources":[]}',
-            "assets/brain/xref_index.json": b'{"xref":[]}',
-            "assets/brain/cells/manifest.json": json.dumps(
-                {"shards": {"a0": {"bytes": 1}, "z1": {"bytes": 1}}}, sort_keys=True
-            ).encode(),
-            "assets/brain/cells/aliases.json": b'{"aliases":{}}',
-            "assets/brain/cells/labels.json": b'{"labels":{}}',
-            "assets/brain/cells/supercells.json": b'{"supercells":[]}',
-            "assets/brain/cells/explorer.json": b'{"explorer":[]}',
-            "assets/brain/cells/frontier_graph.json": b'{"frontier":[]}',
-            "assets/brain/cells/a0.json": b'{"cells":["a0"]}',
-            "assets/brain/cells/z1.json": b'{"cells":["z1"]}',
-            "brain.html": b"<!doctype html><title>Brain</title>",
+            f"assets/brain/releases/{RELEASE_MANIFEST}/release.json": CURRENT_MANIFEST_BYTES,
+            f"assets/brain/releases/{PREVIOUS_MANIFEST}/release.json": PREVIOUS_MANIFEST_BYTES,
         }
+        for public, body in PUBLIC_BODIES.items():
+            self.bodies[f"assets/brain/{public}"] = body
+            self.bodies[f"assets/brain/releases/{RELEASE_MANIFEST}/{public}"] = body
+        for public, body in PREVIOUS_PUBLIC_BODIES.items():
+            self.bodies[f"assets/brain/releases/{PREVIOUS_MANIFEST}/{public}"] = body
+        self.bodies["brain.html"] = b"<!doctype html><title>Brain</title>"
         for relative, body in self.bodies.items():
             target = self.public / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -315,8 +392,15 @@ class FenceTest(StagedTreeMixin):
             fetch=self.fetcher(),
         )
         self.assertEqual(result["schema"], "wikilean.code-only-brain-surface-fence/v1")
-        self.assertEqual(result["paths"], len(self.bodies) - 1)  # only one shard is sampled
-        self.assertIn("cells/a0.json", result["mutable_surface"])
+        # The selector, both immutable manifests, the eight required files, one
+        # deterministic shard and the frozen page are fetched back from production;
+        # every staged byte is verified locally against the reused release.
+        self.assertEqual(result["paths"], 13)
+        self.assertEqual(
+            result["mutable_surface"],
+            sorted(["current.json", *PUBLIC_BODIES]),
+        )
+        self.assertIn("cells/traces/a0.json", result["mutable_surface"])
         self.assertNotIn("brain.html", result["mutable_surface"])
         compared = {item["path"]: item["compared"] for item in result["checked"]}
         self.assertEqual(
@@ -383,7 +467,7 @@ class FenceTest(StagedTreeMixin):
 
     def test_a_missing_staged_path_refuses(self):
         (self.public / "assets" / "brain" / "sources.json").unlink()
-        with self.assertRaisesRegex(policy.CodeOnlyError, r"missing=\['sources.json'\]"):
+        with self.assertRaisesRegex(policy.CodeOnlyError, r"missing=\[sources.json\]"):
             policy.brain_surface_fence(
                 self.public,
                 current_manifest_sha256=RELEASE_MANIFEST,
@@ -393,7 +477,7 @@ class FenceTest(StagedTreeMixin):
 
     def test_an_extra_staged_brain_file_refuses(self):
         (self.public / "assets" / "brain" / "surprise.json").write_bytes(b"{}")
-        with self.assertRaisesRegex(policy.CodeOnlyError, "unexpected=\\['surprise.json'\\]"):
+        with self.assertRaisesRegex(policy.CodeOnlyError, r"unexpected=\[surprise.json\]"):
             policy.brain_surface_fence(
                 self.public,
                 current_manifest_sha256=RELEASE_MANIFEST,
@@ -405,7 +489,7 @@ class FenceTest(StagedTreeMixin):
         extra = self.public / "assets" / "brain" / "releases" / ("8" * 64)
         extra.mkdir(parents=True)
         (extra / "release.json").write_bytes(b"{}")
-        with self.assertRaisesRegex(policy.CodeOnlyError, "unexpected immutable namespace"):
+        with self.assertRaisesRegex(policy.CodeOnlyError, "wrong immutable release namespaces"):
             policy.brain_surface_fence(
                 self.public,
                 current_manifest_sha256=RELEASE_MANIFEST,
@@ -413,14 +497,82 @@ class FenceTest(StagedTreeMixin):
                 fetch=self.fetcher(),
             )
 
-    def test_a_missing_declared_shard_refuses(self):
+    def test_the_expected_surface_comes_from_the_release_not_the_cell_manifest(self):
+        # Trace shards live under cells/traces/ and are absent from the cell
+        # manifest's `shards` inventory. They are release artifacts, so they belong to
+        # the expected surface; deriving the set from the shard inventory instead
+        # would call all 219 of the live release's traces "unexpected".
         policy.require_brain_surface_shape(
             self.public,
             current_manifest_sha256=RELEASE_MANIFEST,
             previous_manifest_sha256=PREVIOUS_MANIFEST,
         )
+        (self.public / "assets" / "brain" / "cells" / "traces" / "a0.json").unlink()
+        with self.assertRaisesRegex(
+            policy.CodeOnlyError, r"missing=\[cells/traces/a0.json\]"
+        ):
+            policy.require_brain_surface_shape(
+                self.public,
+                current_manifest_sha256=RELEASE_MANIFEST,
+                previous_manifest_sha256=PREVIOUS_MANIFEST,
+            )
+
+    def test_a_missing_declared_shard_refuses(self):
         (self.public / "assets" / "brain" / "cells" / "z1.json").unlink()
-        with self.assertRaisesRegex(policy.CodeOnlyError, "missing=\\['cells/z1.json'\\]"):
+        with self.assertRaisesRegex(policy.CodeOnlyError, r"missing=\[cells/z1.json\]"):
+            policy.require_brain_surface_shape(
+                self.public,
+                current_manifest_sha256=RELEASE_MANIFEST,
+                previous_manifest_sha256=PREVIOUS_MANIFEST,
+            )
+
+    def test_every_staged_byte_is_checked_against_the_reused_release(self):
+        # The HTTP fence samples one shard. Staging code is eligible to change under
+        # this policy, so the staged bytes themselves are measured against the digests
+        # the reused release declares — including the shards and traces nothing
+        # fetches back.
+        for relative in (
+            "assets/brain/cells/z1.json",
+            "assets/brain/cells/traces/a0.json",
+            f"assets/brain/releases/{RELEASE_MANIFEST}/cells/z1.json",
+            f"assets/brain/releases/{PREVIOUS_MANIFEST}/cells/explorer.json",
+        ):
+            with self.subTest(relative=relative):
+                target = self.public / relative
+                original = target.read_bytes()
+                target.write_bytes(b'{"tampered":true}')
+                try:
+                    with self.assertRaisesRegex(
+                        policy.CodeOnlyError, "not the byte content the reused release"
+                    ):
+                        policy.require_brain_surface_shape(
+                            self.public,
+                            current_manifest_sha256=RELEASE_MANIFEST,
+                            previous_manifest_sha256=PREVIOUS_MANIFEST,
+                        )
+                finally:
+                    target.write_bytes(original)
+
+    def test_a_namespace_manifest_that_is_not_its_namespace_refuses(self):
+        (
+            self.public
+            / "assets"
+            / "brain"
+            / "releases"
+            / RELEASE_MANIFEST
+            / "release.json"
+        ).write_bytes(CURRENT_MANIFEST_BYTES + b" ")
+        with self.assertRaisesRegex(policy.CodeOnlyError, "does not hash to its namespace"):
+            policy.require_brain_surface_shape(
+                self.public,
+                current_manifest_sha256=RELEASE_MANIFEST,
+                previous_manifest_sha256=PREVIOUS_MANIFEST,
+            )
+
+    def test_a_staged_symlink_refuses(self):
+        link = self.public / "assets" / "brain" / "cells" / "linked.json"
+        link.symlink_to(self.public / "assets" / "brain" / "cells" / "a0.json")
+        with self.assertRaisesRegex(policy.CodeOnlyError, "contains a symlink"):
             policy.require_brain_surface_shape(
                 self.public,
                 current_manifest_sha256=RELEASE_MANIFEST,
@@ -610,7 +762,9 @@ class BundleIntegrationTest(unittest.TestCase):
             "brain_surface_fence": {
                 "schema": "wikilean.code-only-brain-surface-fence/v1",
                 "paths": 2,
-                "mutable_surface": ["current.json"],
+                "mutable_surface": sorted(
+                    {policy.SELECTOR_PUBLIC_NAME, *policy.REQUIRED_PUBLIC_ALIASES}
+                ),
                 "response_bytes": 20,
                 "checked": [
                     {
@@ -661,6 +815,15 @@ class BundleIntegrationTest(unittest.TestCase):
         block = self.intent_block(record)
         block["brain_surface_fence"]["checked"][0]["compared"] = "bytes"
         with self.assertRaisesRegex(bundle.BundleValidationError, "did not compare the release selector"):
+            bundle._validate_intent_code_only(block, record)
+
+    def test_the_bundle_requires_the_whole_mutable_surface_in_the_evidence(self):
+        record = policy.validate_record_document(make_record())
+        block = self.intent_block(record)
+        block["brain_surface_fence"]["mutable_surface"] = ["current.json"]
+        with self.assertRaisesRegex(
+            bundle.BundleValidationError, "missing required Brain files"
+        ):
             bundle._validate_intent_code_only(block, record)
 
 

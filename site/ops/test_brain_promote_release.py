@@ -93,20 +93,36 @@ def make_repo(root: Path) -> Path:
     return repo
 
 
-def make_release(base: Path, release_id: str = RELEASE_A) -> promote.ReleaseInfo:
+def make_release(
+    base: Path,
+    release_id: str = RELEASE_A,
+    *,
+    public_bodies: dict[str, bytes] | None = None,
+) -> promote.ReleaseInfo:
+    """A frozen release fixture.
+
+    ``public_bodies`` maps a Brain public path (``cells/manifest.json``, …) to the
+    bytes the release declares for it. The code-only Brain surface fence derives the
+    staged file set and its digests from this inventory, so a test that stages a
+    public tree has to give the release one.
+    """
     release_hex = release_id.removeprefix("sha256:")
-    manifest_body = (
-        json.dumps(
+    document: dict[str, object] = {
+        "schema": "wikilean.release/v1",
+        "release_id": release_id,
+        "authority": {"git_commit": COMMIT},
+        "reducer": {"git_commit": COMMIT},
+    }
+    if public_bodies is not None:
+        document["artifacts"] = [
             {
-                "schema": "wikilean.release/v1",
-                "release_id": release_id,
-                "authority": {"git_commit": COMMIT},
-                "reducer": {"git_commit": COMMIT},
-            },
-            sort_keys=True,
-        )
-        + "\n"
-    ).encode()
+                "path": f"site/assets/brain/{public}",
+                "bytes": len(body),
+                "sha256": hashlib.sha256(body).hexdigest(),
+            }
+            for public, body in sorted(public_bodies.items())
+        ]
+    manifest_body = (json.dumps(document, sort_keys=True) + "\n").encode()
     manifest_sha256 = hashlib.sha256(manifest_body).hexdigest()
     root = (base / "store" / manifest_sha256).resolve()
     (root / "site" / "out").mkdir(parents=True)
@@ -1451,8 +1467,28 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 )._check_git_authority(COMMIT, code_only=True)
 
     def test_code_only_preparation_reuses_the_live_release_end_to_end(self):
-        candidate = make_release(self.base, RELEASE_A)
-        previous = make_release(self.base, RELEASE_B)
+        # A release's public side: the eight required files, one cell shard and one
+        # trace shard. Traces are not in the cell manifest's shard inventory, so a
+        # fence that derived the expected set from that inventory would refuse this
+        # promotion exactly as it would refuse the live release's 219 of them.
+        current_bodies = {
+            "sources.json": b'{"sources":[]}\n',
+            "xref_index.json": b'{"xref":[]}\n',
+            "cells/manifest.json": json.dumps(
+                {"shards": {"a0": 1}, "traces": {"dir": "traces", "files": {"a0": 1}}},
+                sort_keys=True,
+            ).encode(),
+            "cells/aliases.json": b'{"a":{}}\n',
+            "cells/labels.json": b'{"l":{}}\n',
+            "cells/supercells.json": b'{"s":[]}\n',
+            "cells/explorer.json": b'{"e":[]}\n',
+            "cells/frontier_graph.json": b'{"f":[]}\n',
+            "cells/a0.json": b'{"cells":["a0"]}\n',
+            "cells/traces/a0.json": b'{"traces":{}}\n',
+        }
+        previous_bodies = {name: body + b"\n" for name, body in current_bodies.items()}
+        candidate = make_release(self.base, RELEASE_A, public_bodies=current_bodies)
+        previous = make_release(self.base, RELEASE_B, public_bodies=previous_bodies)
         baseline = make_baseline(self.base)
         website_commit = "d" * 40
         selector_body = (
@@ -1500,9 +1536,10 @@ class BrainPromotionUnitTest(unittest.TestCase):
         record_path = self.base / "code-only-eligibility.json"
         record_path.write_bytes(code_only_policy.canonical_json_bytes(record_document))
 
-        shard_manifest = json.dumps({"shards": {"a0": {"bytes": 1}}}, sort_keys=True).encode()
         page = (candidate.root / "site/out/brain.html").read_bytes()
-        served = {
+        # The complete tree the stager writes: both immutable namespaces, the current
+        # namespace aliased at the mutable paths, the selector and the frozen page.
+        staged_tree = {
             "assets/brain/current.json": selector_body,
             f"assets/brain/releases/{candidate.manifest_sha256}/release.json": (
                 candidate.manifest.read_bytes()
@@ -1510,23 +1547,19 @@ class BrainPromotionUnitTest(unittest.TestCase):
             f"assets/brain/releases/{previous.manifest_sha256}/release.json": (
                 previous.manifest.read_bytes()
             ),
-            "assets/brain/sources.json": b'{"sources":[]}\n',
-            "assets/brain/xref_index.json": b'{"xref":[]}\n',
-            "assets/brain/cells/manifest.json": shard_manifest,
-            "assets/brain/cells/aliases.json": b'{"a":{}}\n',
-            "assets/brain/cells/labels.json": b'{"l":{}}\n',
-            "assets/brain/cells/supercells.json": b'{"s":[]}\n',
-            "assets/brain/cells/explorer.json": b'{"e":[]}\n',
-            "assets/brain/cells/frontier_graph.json": b'{"f":[]}\n',
-            "assets/brain/cells/a0.json": b'{"cells":["a0"]}\n',
             "brain.html": page,
         }
+        for public, body in current_bodies.items():
+            staged_tree[f"assets/brain/{public}"] = body
+            staged_tree[f"assets/brain/releases/{candidate.manifest_sha256}/{public}"] = body
+        for public, body in previous_bodies.items():
+            staged_tree[f"assets/brain/releases/{previous.manifest_sha256}/{public}"] = body
         fetched: list[str] = []
 
         def fetcher(route: str) -> bytes:
             fetched.append(route)
             relative = "brain.html" if route == "/brain" else route.lstrip("/")
-            return served[relative]
+            return staged_tree[relative]
 
         git_calls: list[tuple[str, bool]] = []
 
@@ -1569,7 +1602,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
                 del public_baseline
                 self.assertIs(candidate_info, candidate)
                 self.assertIs(prior, previous)
-                for relative, body in served.items():
+                for relative, body in staged_tree.items():
                     target = public_dir / relative
                     target.parent.mkdir(parents=True, exist_ok=True)
                     target.write_bytes(body)
@@ -1643,7 +1676,10 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(block["reused_release_id"], candidate.release_id)
             self.assertEqual(block["review_required"], ["wiki/wrangler.jsonc"])
             fence = block["brain_surface_fence"]
-            self.assertEqual(fence["paths"], len(served))
+            # selector + both immutable manifests + 8 required files
+            # + the deterministic shard + /brain.
+            self.assertEqual(fence["paths"], 13)
+            self.assertIn("cells/traces/a0.json", fence["mutable_surface"])
             compared = {item["path"]: item["compared"] for item in fence["checked"]}
             self.assertEqual(
                 compared["assets/brain/current.json"], "identity-without-audited-at"
