@@ -89,15 +89,19 @@ pinned source's fetched bytes at `sources/<sid>/source.raw.html` (the raw
 `action=parse` response), its candidates at `candidates/<sid>.json`, and the harvested
 inventory run at `inputs/inventory/<run>/`. A refetch of an old revision expands
 templates as they are now, and two of three in the 2026-11-07 Mac check rendered
-another layer (docs/CONTRIBUTE-MAC-CHECKS.md). The publisher renders each source and
-holds it to the plan's pins before it ships it (`publish_package.py --sources-dir
---candidates-dir --inventory-corpus`). Before staging anything, `--stage run` renders the
-shipped bytes with the frozen renderer, holds every view to the pins before it is
-written (`work.render_sources`), makes the gate's own sha comparisons of the layer, the
-pinned views, the index and the candidates (`work.check_pins`), and installs the
-inventory where the seal reads it (`work.install_inventory`). A mismatch stops the run:
-the coordinator re-plans, and nobody changes a pin to make a package pass. A package
-never carries a rendered view, nor anything under `index/` or `work/`.
+another layer (docs/CONTRIBUTE-MAC-CHECKS.md). The publisher checks all three before it
+ships them (`publish_package.py --sources-dir --candidates-dir --inventory-corpus`): each
+source renders to the plan's pins, its candidates were made from that rendering and the
+gate's index, and the inventory is a complete, gated harvest of the plan's inventory run
+over the same renderings. Before staging anything, `--stage run` installs the inventory
+where the seal reads it (`work.install_inventory`), renders the shipped bytes with the
+frozen renderer and holds every view to the pins before it is written
+(`work.render_sources`), and makes the gate's own sha comparisons of the layer, the
+pinned views and the index, and of the candidates when the plan pins them
+(`work.check_pins`). A mismatch stops the run: the coordinator re-plans, and nobody
+changes a pin to make a package pass. A package never carries a rendered view, nor
+anything a run writes in its root (`index/`, `work/`, `findings/`, `gate-log/`,
+`attempts/`, `usage/`).
 
 **The claims API's packages** travel as one envelope (`envelope.py`,
 `wikilean.contribute.package-transport/1`): `package.json` and every file it names,
@@ -144,8 +148,9 @@ Two checks that cost nothing and are worth running before any paid call:
 ## What never travels
 
 - **Into a package**: no rendered view (text layer, canonical HTML and the rest), and
-  a source's fetched bytes and candidates only at their own paths, checked against the
-  plan's pins by the publisher and again by the contributor. No path of the
+  a source's fetched bytes and candidates only at their own paths, checked by the
+  publisher; the contributor renders the bytes against the pins again, and
+  `package.json`'s shas pin every file on the way. No path of the
   coordinator's machine in the plan either — a package that names one is refused, never
   rewritten. (The shipped inventory's receipt keeps the paths it was harvested at: it
   travels byte for byte, because the tally pins its sha.)

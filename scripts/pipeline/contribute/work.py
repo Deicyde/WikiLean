@@ -186,15 +186,17 @@ def tasks_of(root: Path) -> list[str]:
     return sorted(path.stem for path in directory.glob("*.json")) if directory.is_dir() else []
 
 
-def missing_inputs(root: Path) -> list[str]:
+def missing_inputs(root: Path, shipped: Iterable[str] = ()) -> list[str]:
     """What the plan names and this machine does not hold yet, by name.
 
     Said before anything runs, because a worker that cannot read its source writes a
     document the gate refuses, and a contributor should learn that from one line rather
     than from a task's worth of model time. Every name here is a file **staging** needs
     (``run/workdir.py``), plus the declaration index the *gate* joins from, which is not
-    staged into a worker's directory at all.
+    staged into a worker's directory at all. ``shipped`` names the sources whose fetched
+    bytes the package carries, which :func:`render_sources` renders.
     """
+    shipped = set(shipped)
     root = Path(root)
     config = gate_config(root)
     gate_dir = root / "gate"
@@ -213,7 +215,7 @@ def missing_inputs(root: Path) -> list[str]:
     for sid in wanted or sorted(config.get("sources") or {}):
         absent = [name for name in workdir_mod.WORKER_VIEWS
                   if not (sources_dir(root) / sid / name).is_file()]
-        if absent and (sources_dir(root) / sid / package_mod.RAW_FILE).is_file():
+        if absent and sid in shipped:
             out.append(f"the rendered source {sid}: {', '.join(absent)} — the package's "
                        "fetched bytes did not render to its pins (said above)")
         elif absent:
@@ -239,6 +241,13 @@ def missing_inputs(root: Path) -> list[str]:
 
 
 # ---- what the package ships, rendered and checked before anything is staged -------------
+
+
+def shipped_sources(manifest: dict) -> set[str]:
+    """The sources whose fetched bytes a package carries."""
+    named = manifest.get("files") or {}
+    return {str(pin.get("source_id")) for pin in manifest.get("sources") or []
+            if package_mod.raw_path(str(pin.get("source_id"))) in named}
 
 
 def render_sources(root: Path, manifest: dict, *, log=print) -> list[str]:
@@ -314,30 +323,31 @@ def check_pins(root: Path) -> list[str]:
     return problems
 
 
-def install_inventory(package_dir: Path, workdir: Path, root: Path, *,
+def install_inventory(package_dir: Path, workdir: Path, root: Path, manifest: dict, *,
                       log=print) -> list[str]:
     """Put the inventory run the package ships at ``<workdir>/corpus/<run>/``; the problems.
 
     The seal tallies the locate run against the inventory it was cut from, and looks for
-    it there (``seal.tally``). A corpus already in place that holds exactly the shipped
-    files is left alone; one that holds anything else is named and never overwritten.
+    it there (``seal.tally``). Only the files ``package.json`` names are copied. A corpus
+    already in place that holds exactly them is left alone (a dotfile a file browser left
+    is not counted); one that holds anything else is named and never overwritten.
     """
     locate = run_config(root).get("locate") or {}
     run = str(locate.get("inventory_run") or "") if isinstance(locate, dict) else ""
-    shipped = Path(package_dir) / package_mod.INPUTS / package_mod.INVENTORY / run
-    if not run or not shipped.is_dir():
+    prefix = f"{package_mod.INPUTS}/{package_mod.INVENTORY}/{run}/"
+    want = {rel[len(prefix):]: Path(package_dir) / rel
+            for rel in sorted(manifest.get("files") or {}) if run and rel.startswith(prefix)}
+    if not want:
         return []
-    want = {path.relative_to(shipped).as_posix(): path for path in sorted(shipped.rglob("*"))
-            if path.is_file()}
     dest = Path(workdir) / CORPUS_DIR / run
     if dest.exists():
         held = {path.relative_to(dest).as_posix() for path in dest.rglob("*")
-                if path.is_file()}
+                if path.is_file() and not path.name.startswith(".")}
         if held == set(want) and all((dest / rel).read_bytes() == path.read_bytes()
                                      for rel, path in want.items()):
             return []
         return [f"{dest} holds other files than the inventory run {run} the package "
-                "carries; move it aside and run this again"]
+                "carries, and the seal would read them; move it aside and run this again"]
     scratch = dest.with_name(f".{run}.installing")
     if scratch.exists():
         shutil.rmtree(scratch)
@@ -514,9 +524,9 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
         log("  DRY RUN  : no model will be called and no document written. This is the "
             "default; pass --execute when you have read what it would do.")
     manifest = package_mod.read(package_dir)
-    refused = install_inventory(package_dir, workdir, root, log=log)
+    refused = install_inventory(package_dir, workdir, root, manifest, log=log)
     refused += render_sources(root, manifest, log=log)
-    missing = missing_inputs(root)
+    missing = missing_inputs(root, shipped=shipped_sources(manifest))
     refused += check_pins(root)
     for line in refused:
         log(f"  refused  : {line}")
@@ -534,9 +544,9 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
     rejected: list[str] = []
     ran = False
     if refused:
-        log("  stopped  : an input is not the bytes the plan pinned, so nothing was "
-            "staged, nothing was run and nothing was harvested. A package whose shipped "
-            "bytes do not render to its pins goes back to the coordinator to re-plan; "
+        log("  stopped  : an input is not what the package or its plan pins (said above), "
+            "so nothing was staged, nothing was run and nothing was harvested. A source "
+            "that does not render to its pins goes back to the coordinator to re-plan; "
             "never change a pin to make it pass.")
     elif missing:
         log("  stopped  : an input the plan names is not on this machine, so nothing "

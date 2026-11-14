@@ -17,8 +17,8 @@ transport is exercised without a network and without a Mac:
   the template, by ``pwd -P``, and exits 78 rather than run an agent unsandboxed;
 * **what never travels**: a rendered view in a package, or article text in a result,
   by name; and **what does**, since 2026-11-13: a source's fetched bytes, its candidates
-  and the inventory run, each checked against the plan's pins on both machines, and the
-  envelope that carries a package through the claims API.
+  and the inventory run, each checked by the publisher (the bytes rendered again by the
+  contributor), and the envelope that carries a package through the claims API.
 
 What only a real Mac can prove is docs/PIPELINE.md section 9, and nothing here claims
 otherwise: these tests cover the transport, not Claude Code's own sandbox.
@@ -805,6 +805,12 @@ class ShippedCase(WorkRepoCase):
         entry = json.loads(workspace.manifest.read_text(encoding="utf-8"))
         entry.update(raw_sha256=sha(raw), html_sha256=rendering.html_sha256,
                      layer_sha256=rendering.layer_sha256, renderer=render_web.RENDERER)
+        # the inventory was cut from the same rendering the plan pins
+        for path in (workspace.corpus / self.inventory_run).rglob(f"{self.sid}.json"):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            document.update(source_sha=rendering.html_sha256,
+                            layer_sha256=rendering.layer_sha256)
+            path.write_text(json.dumps(document), encoding="utf-8")
         workspace.manifest.write_text(json.dumps(entry) + "\n", encoding="utf-8")
         sources = self.tmp / f"sources-{run_id}.jsonl"
         sources.write_text(json.dumps(entry) + "\n", encoding="utf-8")
@@ -891,6 +897,56 @@ class ShippedTests(ShippedCase):
             self.publish("loc-7", **self.shipped_fields(plan_root, workspace, sources))
         self.assertIn("not complete", str(caught.exception))
 
+    def test_the_publisher_refuses_an_inventory_cut_from_another_rendering(self):
+        plan_root, workspace, sources, _raw = self.shipped_plan()
+        for path in (workspace.corpus / self.inventory_run).rglob(f"{self.sid}.json"):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            document["layer_sha256"] = "0" * 64
+            path.write_text(json.dumps(document), encoding="utf-8")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-7", **self.shipped_fields(plan_root, workspace, sources))
+        self.assertIn("other renderings", str(caught.exception))
+
+    def test_a_package_is_its_plans_run(self):
+        plan_root, workspace, sources, _raw = self.shipped_plan("loc-7")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-8", **self.shipped_fields(plan_root, workspace, sources))
+        self.assertIn("a package is its plan's run", str(caught.exception))
+
+    def test_where_a_file_may_sit_holds_on_a_case_insensitive_disk(self):
+        good = {"source_id": "enwiki-1-2"}
+        for files, problem in (
+                ({"Work/t1/x.json": "x"}, "never carries work/"),
+                ({"Index/search/declarations.tsv": "x"}, "never carries index/"),
+                ({"Findings/t1/x.json": "x"}, "never carries findings/"),
+                ({"gate-log/loc-7.jsonl": "x"}, "never carries gate-log/"),
+                ({"tasks/Layer.txt": "x"}, "article text"),
+                ({"tasks/paragraphs.json": "x"}, "article text"),
+                ({"tasks/a.json": "x", "tasks/A.json": "x"}, "case-insensitive disk"),
+                ({"sources//enwiki-1-2/source.raw.html": "x"}, "not a plain path"),
+                ({"a b/c.json": "x"}, "not a plain path")):
+            with self.subTest(files=files):
+                problems = package_mod.shape({"sources": [good], "files": files})
+                self.assertTrue([p for p in problems if problem in p], problems)
+        for sid in ("/private/tmp/victim", "../escape", "enwiki-1"):
+            with self.subTest(source_id=sid):
+                problems = package_mod.shape({"sources": [{"source_id": sid}], "files": {}})
+                self.assertIn(f"{sid!r} is not a source id", problems)
+        self.assertTrue(package_mod.shape({"sources": "enwiki-1-2", "files": {}}))
+        self.assertEqual(package_mod.shape({"sources": [good], "files": {"run.json": "x"}}), [])
+
+    def test_a_symlink_anywhere_in_a_package_is_refused(self):
+        manifest, _workspace, _raw = self.publish_shipped()
+        directory = package_mod.package_dir(self.coordinator, "loc-7")
+        elsewhere = self.tmp / "elsewhere"
+        elsewhere.mkdir()
+        (elsewhere / "token.json").write_text("{}", encoding="utf-8")
+        link = directory / "inputs" / "linked"
+        os.symlink(elsewhere, link)
+        self.assertIn("inputs/linked: a symlink", package_mod.check(directory, manifest))
+        link.unlink()
+        self.assertEqual(package_mod.check(directory, manifest), [])
+
     def test_a_package_carries_no_view_and_nothing_under_index_or_work(self):
         manifest, _workspace, _raw = self.publish_shipped()
         directory = package_mod.package_dir(self.coordinator, "loc-7")
@@ -955,6 +1011,22 @@ class ShippedTests(ShippedCase):
         self.assertTrue(problems and "layer_sha256 renders to" in problems[0], problems)
         self.assertFalse((root / "sources" / self.sid / "layer.txt").exists())
 
+    def test_a_dotfile_beside_the_installed_inventory_stops_nothing(self):
+        clone, workdir, _workspace = self.claimed()
+        quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        installed = workdir / work_mod.CORPUS_DIR / self.inventory_run
+        (installed / ".DS_Store").write_bytes(b"\0")
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertEqual(done["refused"], [])
+
+    def test_a_missing_view_is_blamed_on_the_package_only_when_it_shipped_the_bytes(self):
+        clone, workdir, _workspace = self.claimed()
+        root = work_mod.materialise(package_mod.package_dir(clone, "loc-7"), workdir)
+        shipped = work_mod.missing_inputs(root, shipped={self.sid})
+        self.assertIn("did not render to its pins", shipped[0])
+        unshipped = work_mod.missing_inputs(root)
+        self.assertIn("refetch revision", unshipped[0])
+
     def test_an_inventory_already_there_with_other_bytes_is_never_overwritten(self):
         clone, workdir, _workspace = self.claimed()
         mine = workdir / work_mod.CORPUS_DIR / self.inventory_run
@@ -1010,7 +1082,14 @@ class EnvelopeTests(ShippedCase):
             "another schema": envelope.canonical({**value, "schema": "other/1"}),
             "another run": envelope.canonical({**value, "run_id": "loc-8"}),
             "a key twice": data.replace(b'{"files":', b'{"files":{},"files":', 1),
-            "outside the package": changed(lambda f: f.__setitem__("../escape", stray)),
+            "outside the package": changed(lambda f: f.__setitem__("../escape", stray),
+                                           named={"../escape": sha(b"x")}),
+            "base64 spelt another way": changed(lambda f: f.__setitem__("tasks/pad.json", "eB=="),
+                                                named={"tasks/pad.json": sha(b"x")}),
+            "a case twin": changed(lambda f: (f.__setitem__("tasks/twin.json", stray),
+                                              f.__setitem__("tasks/TWIN.json", stray)),
+                                   named={"tasks/twin.json": sha(b"x"),
+                                          "tasks/TWIN.json": sha(b"x")}),
             "carried, not named": changed(lambda f: f.__setitem__("tasks/extra.json", stray)),
             "not base64": changed(lambda f: f.__setitem__("run.json", "%%%")),
             "other bytes": changed(lambda f: f.__setitem__("run.json", stray)),
@@ -1022,6 +1101,23 @@ class EnvelopeTests(ShippedCase):
             with self.subTest(name), self.assertRaises(package_mod.PackageProblem):
                 envelope.unpack(bad, packages)
         self.assertEqual(list(packages.iterdir()) if packages.exists() else [], [])
+        self.assertFalse((self.tmp / "escape").exists())
+        # the right bytes in the canonical spelling do decode: the cases above fail for
+        # their own reason
+        self.assertEqual(envelope.decode(changed(lambda f: f.__setitem__("tasks/pad.json", "eA=="),
+                                                 named={"tasks/pad.json": sha(b"x")}))[0],
+                         "loc-7")
+        with patch.object(envelope, "MAX_FILES", 3), \
+                self.assertRaises(package_mod.PackageProblem) as caught:
+            envelope.decode(data)
+        self.assertIn("files, over 3", str(caught.exception))
+
+    def test_a_plain_path_is_a_relative_path_of_plain_segments(self):
+        for rel in ("run.json", "gate/verify_locate.py", "inputs/inventory/inv-1/RECEIPT.json"):
+            self.assertTrue(package_mod.plain(rel), rel)
+        for rel in ("", "/abs", "../x", "a/../b", "a//b", ".hidden/x", "a b", "a/", "x" * 301,
+                    "tasks/\u00e9.json", "a\\b"):
+            self.assertFalse(package_mod.plain(rel), rel)
 
     def test_a_directory_holding_another_package_is_never_overwritten(self):
         data, _manifest = self.envelope_of_the_package()
@@ -1098,6 +1194,35 @@ class PublishApiTests(ShippedCase):
                 self.assertIn("index bundle", str(caught.exception))
                 self.assertFalse(fields["out"].exists())
 
+    def test_what_the_claims_api_would_refuse_is_refused_before_anything_is_written(self):
+        fields = self.envelope_fields()
+        for over, problem in (({"mode": "Locate"}, "not a package mode"),
+                              ({"max_cost": float("inf")}, "finite number"),
+                              ({"max_cost": -1.0}, "finite number")):
+            with self.subTest(over=over), self.assertRaises(package_mod.PackageProblem) as caught:
+                publish_package.publish_envelope(**{**fields, **over})
+            self.assertIn(problem, str(caught.exception))
+        self.assertFalse(fields["out"].exists())
+        # a hand-made envelope with another campaign is refused by registration too
+        publish_package.publish_envelope(**fields)
+        value = json.loads(fields["out"].read_bytes())
+        carried = json.loads(base64.b64decode(value["files"]["package.json"]))
+        carried["seal"]["campaign"] = "run:another"
+        value["files"]["package.json"] = base64.b64encode(
+            json.dumps(carried).encode("utf-8")).decode("ascii")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            publish_package.registration(envelope.canonical(value))
+        self.assertIn("the campaign is 'run:another'", str(caught.exception))
+
+    def test_a_plan_made_for_another_universe_is_refused(self):
+        fixture_universe = json.loads((FIXTURE_SET / "universe.json").read_text())
+        fields = self.envelope_fields(bundle={
+            "universe_sha256": fixture_universe["universe_sha256"]})
+        fields["universe"] = self.universe_file()
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            publish_package.publish_envelope(**fields)
+        self.assertIn("the plan was made for universe", str(caught.exception))
+
     def test_register_sends_the_body_as_the_pipeline_bearer_and_dry_runs_by_default(self):
         fields = self.envelope_fields()
         publish_package.publish_envelope(**fields)
@@ -1125,8 +1250,20 @@ class PublishApiTests(ShippedCase):
                           ("/api/packages/loc-7/state", "pipeline-test-token")])
         self.assertEqual(sent[0][3], publish_package.registration(fields["out"].read_bytes()))
         self.assertEqual(sent[1][3], {"state": "retired"})
-        with self.assertRaises(package_mod.PackageProblem):
-            publish_package.set_state("loc-7", "deleted", execute=True)
+
+        def no_request(*_args, **_kwargs):
+            raise AssertionError("a refused command sends nothing")
+
+        with patch.object(contrib_transport, "call", no_request):
+            with self.assertRaises(package_mod.PackageProblem):
+                publish_package.set_state("loc-7", "deleted", execute=True)
+            # a pasted zero-width space would reach http.client, whose encoding error
+            # quotes the whole header; it is refused first, and named only by its variable
+            os.environ["PIPELINE_TOKEN"] = "pipeline\u200btoken"
+            with self.assertRaises(package_mod.PackageProblem) as caught:
+                publish_package.register(fields["out"], execute=True)
+            self.assertNotIn("pipeline\u200btoken", str(caught.exception))
+            self.assertIn("PIPELINE_TOKEN", str(caught.exception))
 
     def test_the_command_line_writes_an_envelope_and_registers_it_as_a_dry_run(self):
         fields = self.envelope_fields()
@@ -1146,8 +1283,8 @@ class PublishApiTests(ShippedCase):
         with io.StringIO() as sink, redirect_stdout(sink):
             self.assertEqual(publish_package.main(["--register", str(fields["out"])]), 0)
             self.assertIn('"campaign": "run:loc-7"', sink.getvalue())
-        # an envelope without a producer commit is refused: a contributor checks the
-        # package's gate code against it
+        # an envelope without a producer commit is refused: the package's gate code runs
+        # on a contributor's machine, and the commit names where it comes from
         self.assertEqual(quiet(publish_package.main,
                                argv[:argv.index("--producer-commit")]
                                + argv[argv.index("--created"):]), 2)

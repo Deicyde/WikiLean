@@ -31,7 +31,6 @@ import binascii
 import hashlib
 import json
 import os
-import re
 import shutil
 import sys
 import tempfile
@@ -46,15 +45,9 @@ import package as package_mod  # noqa: E402
 ENVELOPE_SCHEMA = "wikilean.contribute.package-transport/1"
 #: The claims API's ceiling (wiki/src/claims.ts PACKAGE_MAX_BYTES).
 MAX_ENVELOPE_BYTES = 64 * 1024 * 1024
-#: One segment of a path a package may carry: nothing to escape, nothing hidden, no
-#: way out of the package.
-SEGMENT = re.compile(r"[A-Za-z0-9_][A-Za-z0-9._-]*")
-
-
-def plain(rel: str) -> bool:
-    """Whether ``rel`` is a relative path of plain segments, at most 300 characters."""
-    return (isinstance(rel, str) and 0 < len(rel) <= 300
-            and all(SEGMENT.fullmatch(part) for part in rel.split("/")))
+#: More files than any planned run holds, and few enough that unpacking one cannot make
+#: millions of directories out of 64 MiB of short names.
+MAX_FILES = 20_000
 
 
 def canonical(value: dict) -> bytes:
@@ -63,7 +56,11 @@ def canonical(value: dict) -> bytes:
 
 
 def encode(directory: Path) -> bytes:
-    """The envelope of the package in ``directory``, which is read and checked first."""
+    """The envelope of the package in ``directory``, which is read and checked first.
+
+    What it returns has been through :func:`decode`, so a publisher learns here of an
+    envelope no contributor could unpack.
+    """
     directory = Path(directory)
     manifest = package_mod.read(directory)
     run_id = package_mod.check_run_id(manifest.get("run_id"))
@@ -71,11 +68,6 @@ def encode(directory: Path) -> bytes:
         raise package_mod.PackageProblem(f"{directory}: package.json names package "
                                          f"{manifest.get('package')!r} and run {run_id!r}")
     names = sorted(manifest["files"]) + [package_mod.PACKAGE_JSON]
-    crooked = [rel for rel in names if not plain(rel)]
-    if crooked:
-        raise package_mod.PackageProblem(
-            f"{crooked[0]!r} is not a plain path (letters, digits, . _ - in each segment), "
-            "and an envelope carries no other")
     data = canonical({"schema": ENVELOPE_SCHEMA, "run_id": run_id,
                       "files": {rel: base64.b64encode((directory / rel).read_bytes())
                                 .decode("ascii") for rel in names}})
@@ -83,12 +75,12 @@ def encode(directory: Path) -> bytes:
         raise package_mod.PackageProblem(
             f"the envelope of {run_id} is {len(data)} bytes, over the claims API's "
             f"{MAX_ENVELOPE_BYTES}; plan fewer sources into one package")
+    decode(data)
     return data
 
 
-def write(directory: Path, out: Path) -> tuple[str, int]:
-    """Write the envelope of the package in ``directory`` to ``out``: ``(sha256, bytes)``."""
-    data = encode(directory)
+def save(data: bytes, out: Path) -> tuple[str, int]:
+    """Write envelope bytes to ``out``, whole or not at all: ``(sha256, bytes)``."""
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     scratch = out.with_name(f".{out.name}.part")
@@ -120,9 +112,10 @@ def decode(data: bytes) -> tuple[str, dict[str, bytes]]:
     """``(run id, {relpath: bytes})`` of an envelope, or refuse it by name.
 
     Every check that needs no disk: the size, the canonical form, exactly the keys
-    ``schema``, ``run_id`` and ``files``, the schema, plain paths, base64, and a
-    ``package.json`` of this run whose ``files`` are exactly the other files carried.
-    The shas are :func:`package.read`'s, on disk, in :func:`unpack`.
+    ``schema``, ``run_id`` and ``files``, the schema, plain paths that stay distinct on a
+    case-insensitive disk, canonical base64, and a ``package.json`` of this run whose
+    ``files`` are exactly the other files carried and sit where :func:`package.shape`
+    allows. The shas are :func:`package.read`'s, on disk, in :func:`unpack`.
     """
     if not isinstance(data, (bytes, bytearray)) or not 0 < len(data) <= MAX_ENVELOPE_BYTES:
         raise package_mod.PackageProblem(f"an envelope holds between 1 and "
@@ -142,17 +135,28 @@ def decode(data: bytes) -> tuple[str, dict[str, bytes]]:
     files = value["files"]
     if not isinstance(files, dict) or package_mod.PACKAGE_JSON not in files:
         raise package_mod.PackageProblem(f"the envelope carries no {package_mod.PACKAGE_JSON}")
+    if len(files) > MAX_FILES:
+        raise package_mod.PackageProblem(f"the envelope carries {len(files)} files, over "
+                                         f"{MAX_FILES}")
     contents: dict[str, bytes] = {}
+    folded: dict[str, str] = {}
     for rel, text in sorted(files.items()):
-        if not plain(rel):
+        if not package_mod.plain(rel):
             raise package_mod.PackageProblem(f"the envelope carries {rel[:120]!r}, which is "
                                              "not a plain path inside a package")
+        if rel.casefold() in folded:
+            raise package_mod.PackageProblem(f"{rel} and {folded[rel.casefold()]} are one "
+                                             "path on a case-insensitive disk")
+        folded[rel.casefold()] = rel
         if not isinstance(text, str):
             raise package_mod.PackageProblem(f"{rel}: not base64")
         try:
             contents[rel] = base64.b64decode(text, validate=True)
         except (binascii.Error, ValueError):
             raise package_mod.PackageProblem(f"{rel}: not base64") from None
+        # one spelling of the bytes, or one package would have many shas
+        if base64.b64encode(contents[rel]).decode("ascii") != text:
+            raise package_mod.PackageProblem(f"{rel}: not canonical base64")
     manifest = _strict(contents[package_mod.PACKAGE_JSON], package_mod.PACKAGE_JSON)
     if not isinstance(manifest, dict) or manifest.get("run_id") != run_id \
             or manifest.get("package") != run_id:
@@ -167,6 +171,10 @@ def decode(data: bytes) -> tuple[str, dict[str, bytes]]:
             f"the envelope and its {package_mod.PACKAGE_JSON} disagree"
             + (f"; named but not carried: {', '.join(missing[:3])}" if missing else "")
             + (f"; carried but not named: {', '.join(extra[:3])}" if extra else ""))
+    problems = package_mod.shape(manifest)
+    if problems:
+        raise package_mod.PackageProblem("the envelope's package is not one a contributor "
+                                         "runs: " + "; ".join(problems[:5]))
     return run_id, contents
 
 

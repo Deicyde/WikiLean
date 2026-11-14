@@ -28,7 +28,9 @@ every path it writes at :data:`ROOT_PLACEHOLDER`; :func:`machine_paths` is the c
 that nothing slipped through, and a package that still names a directory is a refusal,
 never a rewrite. A shebang and a cache path under ``~/.cache`` are the same on every
 machine, so the check is the three roots a package must not name, not "an absolute
-path": a check that refuses a shebang teaches nobody anything.
+path": a check that refuses a shebang teaches nobody anything. One file is exempt: a
+shipped inventory's ``RECEIPT.json`` records where the coordinator harvested it, and
+it travels byte for byte because the tally pins its sha.
 
 **What a plan is, is stage 9c's, and stage 9c is TODO.** This module is the container:
 it takes a planned-run directory as it stands, checks it, and writes the manifest. When
@@ -38,6 +40,9 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
+import math
+import os
+import re
 import shutil
 import sys
 from pathlib import Path
@@ -70,7 +75,8 @@ INPUTS = "inputs"
 #: views, and its fetched bytes anywhere but :func:`raw_path`.
 REFUSED_NAMES = ("layer.txt", "body.html", "source.raw.html", "text.txt", "head.txt",
                  "reading.txt", "layer_map.json", "sections.json", "blocks.json",
-                 "candidates.jsonl")
+                 "candidates.jsonl", "formulas.json", "paragraphs.json", "finders.json",
+                 "render.json")
 #: Where a shipped source's fetched bytes and its candidates sit: under the plan's own
 #: ``sources/`` and ``candidates/``, which ``gate.json`` names as ``../sources`` and
 #: ``../candidates``, so materialising the package lands each file where the gate and
@@ -82,8 +88,12 @@ RAW_FILE = "source.raw.html"
 #: locate run against it (``seal.tally``), and nothing else of the plan reads it.
 INVENTORY = "inventory"
 #: What a package never carries at all: the declaration index travels as a bundle, and
-#: ``work/`` is the contributor's own staging, which materialising would write into.
-NEVER_CARRIED = ("index", "work")
+#: the rest are what a run writes in its root (``work.MADE_DIRS``), which materialising
+#: would otherwise overwrite with the publisher's copies.
+NEVER_CARRIED = ("index", "work", "findings", "gate-log", "attempts", "usage")
+#: One segment of a path a package may carry: nothing to escape, nothing hidden, no way
+#: out of the package.
+SEGMENT = re.compile(r"[A-Za-z0-9_][A-Za-z0-9._-]*")
 
 
 class PackageProblem(ValueError):
@@ -132,8 +142,18 @@ def machine_paths(text: str, roots: list[str]) -> list[str]:
 
 
 def refused_names(paths: list[Path]) -> list[str]:
-    """The names among ``paths`` that are article text, whatever directory they sit in."""
-    return sorted({p.name for p in paths if p.name in REFUSED_NAMES})
+    """The names among ``paths`` that are article text, whatever directory they sit in.
+
+    Compared casefolded: the default macOS disk is case-insensitive, so ``Layer.txt``
+    lands where ``layer.txt`` would.
+    """
+    return sorted({p.name for p in paths if p.name.casefold() in REFUSED_NAMES})
+
+
+def plain(rel: str) -> bool:
+    """Whether ``rel`` is a relative path of plain segments, at most 300 characters."""
+    return (isinstance(rel, str) and 0 < len(rel) <= 300
+            and all(SEGMENT.fullmatch(part) for part in rel.split("/")))
 
 
 def raw_path(source_id: str) -> str:
@@ -294,9 +314,14 @@ def _ship_candidates(target: Path, sid: str, candidates_dir: Path, entry: dict,
     return problems
 
 
-def _ship_inventory(target: Path, plan_dir: Path, inventory_dir: Path) -> str:
+def _ship_inventory(target: Path, plan_dir: Path, inventory_dir: Path,
+                    sources: list[dict]) -> str:
     """Copy the harvested inventory run the plan was cut from; returns its run id.
 
+    It must be a complete, gated harvest of the plan's own inventory run, and every
+    document in it must be of a source as the sourceset pins it (its html, layer and
+    renderer): a locate run is tallied against the inventory it was cut from, and an
+    inventory of another rendering would fail the contributor's seal after a paid run.
     It travels byte for byte, its receipt included: the tally records the receipt's sha
     (``corpus.gate_summary``), and a seal over a rewritten receipt would vouch for a
     harvest nobody made.
@@ -316,9 +341,28 @@ def _ship_inventory(target: Path, plan_dir: Path, inventory_dir: Path) -> str:
     if receipt.get("run_id") not in (None, run):
         raise PackageProblem(f"{inventory_dir} is the harvest of {receipt.get('run_id')!r}, "
                              f"and the plan was cut from {run!r}")
+    entries = {str(entry.get("source_id")): entry for entry in sources}
+    problems: list[str] = []
     for path in _files(inventory_dir):
-        _write(target / INPUTS / INVENTORY / run / path.relative_to(inventory_dir),
-               path.read_bytes())
+        rel = path.relative_to(inventory_dir)
+        data = path.read_bytes()
+        if path.suffix == ".json" and rel.as_posix() != corpus_mod.RECEIPT_NAME:
+            try:
+                document = json.loads(data.decode("utf-8"))
+            except (ValueError, UnicodeDecodeError):
+                document = None
+            entry = entries.get(str((document or {}).get("source_id"))) \
+                if isinstance(document, dict) else None
+            for field, pinned in (("source_sha", "html_sha256"),
+                                  ("layer_sha256", "layer_sha256"), ("renderer", "renderer")):
+                if entry is not None and entry.get(pinned) is not None \
+                        and document.get(field) != entry.get(pinned):
+                    problems.append(f"{rel}: its {field} is not the source's pinned "
+                                    f"{pinned}")
+        _write(target / INPUTS / INVENTORY / run / rel, data)
+    if problems:
+        raise PackageProblem("the inventory was cut from other renderings than the plan "
+                             "pins: " + "; ".join(problems[:5]))
     return run
 
 
@@ -349,9 +393,18 @@ def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
     plan_dir = Path(plan_dir)
     if not plan_dir.is_dir():
         raise PackageProblem(f"{plan_dir} is not a planned-run directory")
+    for name in ("run.json", "gate/gate.json"):
+        planned = plan_json(plan_dir, name).get("run_id") if (plan_dir / name).is_file() \
+            else None
+        if planned is not None and planned != run_id:
+            raise PackageProblem(f"the plan's {name} is run {planned!r}, and this package "
+                                 f"would be {run_id!r}; a package is its plan's run")
     if candidates_dir is not None and sources_dir is None:
         raise PackageProblem("candidates ship with their sources' fetched bytes, or not "
                              "at all")
+    if max_cost is not None and not (isinstance(max_cost, (int, float))
+                                     and math.isfinite(max_cost) and max_cost >= 0):
+        raise PackageProblem(f"a spend cap is a finite number of USD, not {max_cost!r}")
     target = package_dir(repo, run_id)
     if target.exists():
         shutil.rmtree(target)
@@ -376,7 +429,7 @@ def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
         copy.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(path, copy)
     for path in inputs or []:
-        if inventory_dir is not None and Path(path).name == INVENTORY:
+        if Path(path).name == INVENTORY:
             raise PackageProblem(f"an input named {INVENTORY!r} would sit where the "
                                  "inventory run travels")
         copy = target / INPUTS / Path(path).name
@@ -385,8 +438,10 @@ def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
     if sources_dir is not None:
         _ship_sources(target, plan_dir, sources, Path(sources_dir),
                       None if candidates_dir is None else Path(candidates_dir))
+    receipt = None
     if inventory_dir is not None:
-        _ship_inventory(target, plan_dir, Path(inventory_dir))
+        run = _ship_inventory(target, plan_dir, Path(inventory_dir), sources)
+        receipt = (Path(INPUTS) / INVENTORY / run / "RECEIPT.json").as_posix()
 
     (target / SOURCES_JSONL).write_text(
         "".join(keys.canonical_line({key: entry.get(key) for key in vocab.SOURCE_KEYS})
@@ -395,7 +450,7 @@ def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
 
     roots = machine_roots(extra_roots)
     for path in _files(target):
-        if path.relative_to(target).parts[:2] == (INPUTS, INVENTORY):
+        if path.relative_to(target).as_posix() == receipt:
             # the harvest receipt records where the coordinator harvested it, and it
             # travels byte for byte because the tally pins its sha; nothing reads those paths
             continue
@@ -436,8 +491,13 @@ def build(plan_dir: Path, *, run_id: str, repo: Path, sources: list[dict],
         manifest["seal"] = dict(seal)
     manifest["files"] = {p.relative_to(target).as_posix(): keys.sha256_file(p)
                          for p in _files(target)}
-    (target / PACKAGE_JSON).write_text(json.dumps(manifest, indent=1, sort_keys=True) + "\n",
-                                       encoding="utf-8")
+    text = json.dumps(manifest, indent=1, sort_keys=True, allow_nan=False) + "\n"
+    found = machine_paths(text, roots)
+    if found:
+        raise PackageProblem(f"{PACKAGE_JSON} would name this machine's {found[0]} (a recorded "
+                             f"argument names {PACKAGE_PLACEHOLDER}/inputs/..., not a path "
+                             "of the coordinator's)")
+    (target / PACKAGE_JSON).write_text(text, encoding="utf-8")
     problems = check(target, manifest)
     if problems:
         raise PackageProblem(f"the package just written does not read back: "
@@ -477,17 +537,22 @@ def check(directory: Path, manifest: dict) -> list[str]:
             problems.append(f"{rel}: missing")
         elif keys.sha256_file(target) != sha:
             problems.append(f"{rel}: sha256 does not match {PACKAGE_JSON}")
-    # every file, work/ included: materialising copies whatever the directory holds
-    for target in sorted(p for p in directory.rglob("*")
-                         if p.is_file() and "__pycache__" not in p.relative_to(directory).parts):
-        rel = target.relative_to(directory).as_posix()
-        if rel != PACKAGE_JSON and rel not in named:
-            problems.append(f"{rel}: not in {PACKAGE_JSON}")
-    problems.extend(_shape(manifest))
-    return problems
+    # every file and link, work/ included and no link followed: materialising copies
+    # whatever the directory holds, and a linked directory is a door out of the package
+    for top, dirs, files in os.walk(directory):
+        dirs[:] = [name for name in dirs if name != "__pycache__"]
+        for name in sorted(dirs + files):
+            path = Path(top) / name
+            rel = path.relative_to(directory).as_posix()
+            if path.is_symlink():
+                problems.append(f"{rel}: a symlink")
+            elif name in files and rel != PACKAGE_JSON and rel not in named:
+                problems.append(f"{rel}: not in {PACKAGE_JSON}")
+    problems.extend(shape(manifest))
+    return list(dict.fromkeys(problems))
 
 
-def _shape(manifest: dict) -> list[str]:
+def shape(manifest: dict) -> list[str]:
     """Where a package's files may sit.
 
     The plan anywhere; a source's fetched bytes and its candidates only at
@@ -495,13 +560,27 @@ def _shape(manifest: dict) -> list[str]:
     the article's rendered views nowhere; and nothing under ``index/`` or ``work/``.
     """
     named = dict(manifest.get("files") or {})
-    pins = {str(pin.get("source_id")): pin for pin in manifest.get("sources") or []
-            if isinstance(pin, dict)}
+    listed = manifest.get("sources")
+    sources = listed if isinstance(listed, list) else []
+    pins = {str(pin.get("source_id")): pin for pin in sources if isinstance(pin, dict)}
+    problems: list[str] = [f"{sid[:80]!r} is not a source id" for sid in sorted(pins)
+                           if not vocab.SOURCE_ID_RE.match(sid)]
+    if listed is not None and (not isinstance(listed, list) or len(pins) != len(listed)):
+        problems.append(f"{PACKAGE_JSON}'s sources are not one pin per source")
     raw = {raw_path(sid): sid for sid in pins}
     candidates = {candidates_path(sid): sid for sid in pins}
-    problems: list[str] = []
+    seen: dict[str, str] = {}
     for rel in sorted(named):
-        top = rel.split("/", 1)[0]
+        if not plain(rel):
+            problems.append(f"{rel[:120]!r}: not a plain path (letters, digits, . _ - in "
+                            "each segment)")
+            continue
+        if rel.casefold() in seen:
+            problems.append(f"{rel}: the same path as {seen[rel.casefold()]} on a "
+                            "case-insensitive disk")
+        seen[rel.casefold()] = rel
+        # casefolded, because the default macOS disk puts Work/ where work/ is
+        top = rel.split("/", 1)[0].casefold()
         if top in NEVER_CARRIED:
             problems.append(f"{rel}: a package never carries {top}/")
         elif top == SOURCES and rel not in raw:

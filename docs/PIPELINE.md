@@ -693,9 +693,11 @@ verification before posting. Here verification is a step of the command:
 
 **Full source layers are not packaged.** A package carries no rendered view: no layer and
 no canonical body. Since 2026-11-13 it can carry each source's raw response, its candidates
-and the harvested inventory run; the publisher holds them to the plan's pins before it ships
-them, and the contributor renders the bytes and makes the gate's sha comparisons before it
-stages anything (`work.render_sources`, `work.check_pins`). For a package that ships none,
+and the harvested inventory run. The publisher checks them before it ships them (each source
+renders to the plan's pins, its candidates match that rendering and the gate's index, the
+inventory is a complete, gated harvest of the plan's inventory run over the same renderings),
+and the contributor renders the bytes and makes the gate's sha comparisons before it stages
+anything (`work.render_sources`, `work.check_pins`). For a package that ships none,
 the contributor refetches and regenerates pinned inputs.
 Results carry gated findings and receipts, including passage quotations, and refuse the
 named source-layer files. This filename check does not filter arbitrary file contents.
