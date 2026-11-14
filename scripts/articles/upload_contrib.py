@@ -41,7 +41,7 @@ buckets, and the articles upload must not be able to overwrite a bundle.
         [--acknowledge-restricted <library> ...] [--execute]
 
 ``package`` uploads one work package for the claims API (Jack, 2026-11-11, "Build a
-claims API"): the transport envelope publish_package.py --api writes, one JSON object
+claims API"): the transport envelope publish_package.py --envelope writes, one JSON object
 ``{"schema", "run_id", "files": {<path>: <base64>}}`` in canonical form, to
 
     packages/v1/<envelope sha256>.json
@@ -91,10 +91,10 @@ SECRET_KEY_VAR = "WIKILEAN_CONTRIB_R2_SECRET_ACCESS_KEY"
 CREDENTIAL_VARS = (ACCESS_KEY_VAR, SECRET_KEY_VAR)
 #: The Worker reads a bundle's MANIFEST.json whole, so it is kept small.
 MAX_MANIFEST_BYTES = 1 << 20
-SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}\Z")
 #: One segment of a path a manifest may list. Nothing that would need URL-encoding, so a
 #: path is the same string in the manifest, the bucket key and the Worker's download URL.
-SEGMENT_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._-]*$")
+SEGMENT_RE = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9._-]*\Z")
 PACKAGE_PREFIX = "packages/v1/"
 ENVELOPE_SCHEMA = "wikilean.contribute.package-transport/1"
 PACKAGE_SCHEMA = "wikilean.contribute.package/1"  # scripts/pipeline/contribute/package.py
@@ -102,7 +102,9 @@ PACKAGE_JSON = "package.json"
 #: The Worker's limit on a package (wiki/src/claims.ts PACKAGE_MAX_BYTES).
 MAX_ENVELOPE_BYTES = 64 << 20
 #: scripts/pipeline/vocab.py RUN_ID.
-RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
+RUN_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}\Z")
+#: scripts/pipeline/contribute/envelope.py MAX_FILES: no envelope a planned run makes holds more.
+MAX_ENVELOPE_FILES = 20_000
 EXIT_OK, EXIT_MISMATCH, EXIT_REFUSED, EXIT_FAILED, EXIT_INTERRUPTED = 0, 1, 2, 3, 130
 
 
@@ -322,19 +324,33 @@ def load_envelope(path: Path) -> Envelope:
     canonical = json.dumps(envelope, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("ascii")
     if canonical != data:
         raise Refused(f"{path} is not in canonical form (sorted keys, no spaces, ASCII), so its sha256 is not "
-                      "a function of the package; write it again with publish_package.py --api")
+                      "a function of the package; write it again with publish_package.py --envelope")
+    if len(files) > MAX_ENVELOPE_FILES:
+        raise Refused(f"{path} carries {len(files)} files; an envelope holds at most {MAX_ENVELOPE_FILES}")
+    # The same rules as the contributor's reader (scripts/pipeline/contribute/envelope.py
+    # decode): an envelope this accepts and a contributor refuses would sit in the bucket for
+    # good, because a key is never replaced.
     contents: dict[str, bytes] = {}
-    for rel, text in files.items():
-        if not isinstance(text, str) or rel.startswith("/") or any(part in ("", ".", "..") for part in rel.split("/")):
+    folded: dict[str, str] = {}
+    for rel, text in sorted(files.items()):
+        if (not isinstance(text, str) or not 0 < len(rel) <= 300
+                or not all(SEGMENT_RE.match(part) for part in rel.split("/"))):
             raise Refused(f"{path} carries {shown(repr(rel))}, which is not a plain path inside a package")
+        if rel.casefold() in folded:
+            raise Refused(f"{path} carries {shown(rel)} and {shown(folded[rel.casefold()])}, one path on a "
+                          "case-insensitive disk")
+        folded[rel.casefold()] = rel
         try:
             contents[rel] = base64.b64decode(text, validate=True)
         except (binascii.Error, ValueError):
             raise Refused(f"{path}: {shown(rel)} is not base64") from None
+        if base64.b64encode(contents[rel]).decode("ascii") != text:
+            raise Refused(f"{path}: {shown(rel)} is not canonical base64, so one package could have many shas")
     manifest = _strict_json(contents[PACKAGE_JSON], PACKAGE_JSON)
     named = manifest.get("files") if isinstance(manifest, dict) else None
     if (not isinstance(manifest, dict) or manifest.get("schema") != PACKAGE_SCHEMA
-            or manifest.get("run_id") != run_id or not isinstance(named, dict)):
+            or manifest.get("run_id") != run_id or manifest.get("package") != run_id
+            or not isinstance(named, dict)):
         raise Refused(f"{path}'s {PACKAGE_JSON} is not a {PACKAGE_SCHEMA} manifest of run {run_id}")
     carried = set(contents) - {PACKAGE_JSON}
     if carried != set(named):
@@ -441,7 +457,7 @@ def parse_arguments(argv: Sequence[str]) -> argparse.Namespace:
     sub = parser.add_subparsers(dest="command", required=True)
     bundle = sub.add_parser("bundle", help="upload an index bundle package_index.py wrote")
     bundle.add_argument("dir", type=Path, help="the bundle directory")
-    package = sub.add_parser("package", help="upload a work package's envelope publish_package.py --api wrote")
+    package = sub.add_parser("package", help="upload a work package's envelope publish_package.py --envelope wrote")
     package.add_argument("envelope", type=Path, help="the envelope file")
     for command in (bundle, package):
         command.add_argument("--bucket", required=True, help="the contributor bucket's name")

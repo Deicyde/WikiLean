@@ -341,12 +341,34 @@ class PackageTests(ContribCase):
         def other_schema(value):
             value["schema"] = "wikilean.contribute.package-transport/0"
 
+        def hidden(value):
+            value["files"][".hidden/x"] = base64.b64encode(b"?").decode("ascii")
+
+        def twin(value):
+            value["files"]["PLAN/gate.json"] = value["files"]["plan/gate.json"]
+
+        def other_spelling(value):
+            value["files"]["plan/pad.json"] = "eB=="   # b"x", whose canonical spelling is eA==
+
+        def trailing_newline(value):
+            value["run_id"] = value["run_id"] + "\n"
+
+        def no_package(value):
+            carried = json.loads(base64.b64decode(value["files"]["package.json"]))
+            del carried["package"]
+            value["files"]["package.json"] = base64.b64encode(json.dumps(carried).encode()).decode("ascii")
+
         cases = {"canonical form": self.envelope("loc-a", canonical=False),
                  "is not the file": self.envelope("loc-b", mutate=changed_file),
                  "carried but not named": self.envelope("loc-c", mutate=extra_file),
                  "plain path": self.envelope("loc-d", mutate=escaping),
                  "not base64": self.envelope("loc-e", mutate=not_base64),
-                 "package-transport/1": self.envelope("loc-f", mutate=other_schema)}
+                 "package-transport/1": self.envelope("loc-f", mutate=other_schema),
+                 "not a plain path": self.envelope("loc-g", mutate=hidden),
+                 "case-insensitive disk": self.envelope("loc-h", mutate=twin),
+                 "not canonical base64": self.envelope("loc-i", mutate=other_spelling),
+                 "not a pipeline run id": self.envelope("loc-j", mutate=trailing_newline),
+                 "manifest of run": self.envelope("loc-k", mutate=no_package)}
         for words, path in cases.items():
             with self.subTest(words=words):
                 code, out, err = self.run_package(path, "--execute")
