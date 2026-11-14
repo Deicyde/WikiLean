@@ -46,6 +46,9 @@ BUNDLE_SCHEMA = "wikilean.pipeline.index-bundle/2"
 MANIFEST = "MANIFEST.json"
 DEFAULT_CACHE = Path("~/.cache/wikilean/index")
 SHA = re.compile(r"[0-9a-f]{64}")
+# A bearer token goes into a header as itself, so it is visible ASCII or nothing: http.client
+# encodes a header as Latin-1, and an encoding error carries the whole value in its repr.
+TOKEN = re.compile(r"[!-~]+")
 _SEGMENT = r"[A-Za-z0-9_][A-Za-z0-9._-]*"
 _RUN = r"[A-Za-z0-9][A-Za-z0-9._-]{0,63}"
 # A file a bundle may list: nothing that needs URL-encoding, nothing that leaves the bundle.
@@ -75,8 +78,9 @@ def _open(base: str, path: str, token: str, *, method: str = "GET", body: bytes 
           headers: dict[str, str] | None = None, timeout: float = 60):
     if not PATHS.fullmatch(path):
         raise TransportError(f"not a path this client requests: {path[:200]}")
-    if not token or any(ch.isspace() for ch in token):
-        raise TransportError(f"missing or malformed WikiLean agent token; set {TOKEN_ENV}")
+    if not isinstance(token, str) or not TOKEN.fullmatch(token):
+        raise TransportError(f"missing or malformed WikiLean agent token (visible ASCII only); "
+                             f"set {TOKEN_ENV}")
     sent = {"Authorization": "Bearer " + token, "User-Agent": "WikiLean-contributor/1", **(headers or {})}
     if body is not None:
         sent["Content-Type"] = "application/json"

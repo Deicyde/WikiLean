@@ -110,10 +110,13 @@ class PathsAndTokens(unittest.TestCase):
             transport.call(base, "/api/index/bundles", TOKEN)
         self.assertNotIn(TOKEN, str(caught.exception))
         self.assertIsNone(caught.exception.__cause__)
-        for token in ("", "two words"):
+        # A pasted zero-width space, byte-order mark or curly quote would reach http.client,
+        # whose Latin-1 encoding error quotes the whole header; it is refused before that.
+        for token in ("", "two words", "s3cret\u200btoken", "\ufeffs3cret", "\u201cs3cret\u201d"):
             with self.assertRaises(transport.TransportError) as caught:
                 transport.call(base, "/api/index/bundles", token)
             self.assertIn("WIKILEAN_AGENT_TOKEN", str(caught.exception))
+            self.assertNotIn("s3cret", repr(caught.exception))
 
     def test_only_https_or_loopback_origins(self):
         for base in ("http://wikilean.example", "https://user:pw@wikilean.example", "https://wikilean.example/x"):
