@@ -6,19 +6,21 @@ docs/PIPELINE.md section 3 (stages 10 and 11). Between ``--stage claim`` and
 since the stage-9/stage-10 join landed it is **the same code the coordinator runs**:
 
 1. **materialise** — lay the package's plan out as a run root under the contributor's
-   working directory, and name the directories the contributor fills: the rendered
-   sources, the candidates, the declaration index and the search corpus. The package
-   carries **no article text**, so the sources are the contributor's own refetch of the
-   pinned revisions; the plan already pins their shas, and the gate refuses anything
-   else (stage 7, rule 2). Nothing is rewritten here: a planned root names everything
-   inside it relatively, so it moves to another machine unchanged.
+   working directory, and name the directories the contributor fills. A package that
+   ships its sources' fetched bytes and their candidates lands them where the plan
+   names them; :func:`render_sources` renders the bytes with the frozen renderer, and
+   :func:`check_pins` makes the gate's own sha comparisons, both before anything is
+   staged; :func:`install_inventory` puts the shipped inventory run where the seal reads
+   it. What is left to fill is the declaration index and the search corpus (and, for a
+   package that ships no bytes, the contributor's own refetch of the pinned revisions).
+   Nothing is rewritten here: a planned root names everything inside it relatively, so
+   it moves to another machine unchanged.
 2. **stage** — ``run/workdir.py`` fills ``work/<task-id>/`` with that task's manifest,
    its article's rendered views, its candidates and the declaration search, plus the
    one directory the worker may write in, and writes ``STAGED.json``. **The coordinator
    does not send its own staged directories** (``contribute/package.py``'s
-   ``NOT_PACKAGED``): they hold the coordinator's copy of the article text, so a
-   contributor stages its own, after refetching, from its own bytes. That is the "no
-   article text ever leaves your machine" promise, enforced rather than asserted.
+   ``NOT_PACKAGED``): a contributor stages its own, from its own rendering of the
+   sources.
 3. **run, gate, retry, promote** — ``run/task.py``, once per task: the worker call
    through ``site/agent_sandbox.py``, the mechanical passage ids, **the runner's own
    gate call** out of tree, one retry that hands the gate's refusal list back, and the
@@ -58,7 +60,9 @@ for _candidate in (HERE, PIPELINE, PIPELINE / "gate", PIPELINE / "run"):
         sys.path.insert(0, str(_candidate))
 
 import harvest as harvest_mod  # noqa: E402
+import keys  # noqa: E402
 import package as package_mod  # noqa: E402
+import render_web  # noqa: E402
 import task as task_mod  # noqa: E402
 import workdir as workdir_mod  # noqa: E402
 
@@ -66,9 +70,10 @@ import workdir as workdir_mod  # noqa: E402
 ROOT_DIR = "root"
 #: Where the harvested documents go, which ``--stage results`` sends back.
 CORPUS_DIR = "corpus"
-#: The directories a contributor fills before it can run, created inside the root where
-#: the plan names them: the package carries none of them, because each is either article
-#: text or a map of a Lean library.
+#: The directories a run reads its inputs from, created inside the root where the plan
+#: names them. A package may ship the first two (``package.raw_path``,
+#: ``package.candidates_path``); the index is a map of the Lean libraries, which travels
+#: as a bundle of its own.
 INPUT_DIRS = ("sources", "candidates", "index")
 #: Where the search corpus goes, under ``index/``: ``index_from_corpus.py`` writes the
 #: declaration index as one file and the search corpus as a directory, and the plan's
@@ -92,10 +97,11 @@ def materialise(package_dir: Path, workdir: Path, *, replace: bool = False) -> P
     package's shas are checked first by :func:`package.read`, so what lands here is what
     the coordinator published.
 
-    **It is re-runnable.** The plan's files are written over whatever is there, and the
-    directories the contributor fills — the sources, the candidates, the index — and
-    everything the run has produced are left alone: a second ``--stage run``, which is
-    the normal way to carry on after filling an input, must not throw away the fetch.
+    **It is re-runnable.** The package's files are written over whatever is there (its
+    shipped bytes and candidates among them), and what the contributor renders or fills —
+    the views, the index — and everything the run has produced are left alone: a second
+    ``--stage run``, which is the normal way to carry on after filling an input, must
+    not throw away the work.
     ``replace`` empties the root first, for a contributor starting again; a root that
     holds another package's plan is refused either way.
     """
@@ -207,7 +213,10 @@ def missing_inputs(root: Path) -> list[str]:
     for sid in wanted or sorted(config.get("sources") or {}):
         absent = [name for name in workdir_mod.WORKER_VIEWS
                   if not (sources_dir(root) / sid / name).is_file()]
-        if absent:
+        if absent and (sources_dir(root) / sid / package_mod.RAW_FILE).is_file():
+            out.append(f"the rendered source {sid}: {', '.join(absent)} — the package's "
+                       "fetched bytes did not render to its pins (said above)")
+        elif absent:
             out.append(f"the rendered source {sid}: {', '.join(absent)} — refetch "
                        f"revision {sid} at its pin and render it into "
                        f"{INPUT_DIRS[0]}/{sid}/")
@@ -227,6 +236,118 @@ def missing_inputs(root: Path) -> list[str]:
         if not (path if path.is_absolute() else gate_dir / path).is_file():
             out.append(f"the declaration index the gate joins from ({index})")
     return out
+
+
+# ---- what the package ships, rendered and checked before anything is staged -------------
+
+
+def render_sources(root: Path, manifest: dict, *, log=print) -> list[str]:
+    """Render each shipped source's fetched bytes into ``sources/<sid>/``; the problems.
+
+    The rendering is held to the package's pin and the gate's **before** a view is
+    written, so a layer that is not the pinned one never lands where staging would hand
+    it to a worker; a source with a problem is left unrendered and named. Free: no
+    model, no network. A source whose bytes the package does not ship is the
+    contributor's to fill, as before, and :func:`missing_inputs` says so.
+    """
+    root = Path(root)
+    named = manifest.get("files") or {}
+    gate_pins = gate_config(root).get("sources") or {}
+    problems: list[str] = []
+    for pin in manifest.get("sources") or []:
+        sid = str(pin.get("source_id"))
+        rel = package_mod.raw_path(sid)
+        if rel not in named:
+            continue
+        raw = (root / rel).read_bytes()
+        if keys.sha256_bytes(raw) != named[rel]:
+            problems.append(f"{sid}: {rel} is not the bytes the package carries")
+            continue
+        gate_pin = gate_pins.get(sid) if isinstance(gate_pins.get(sid), dict) else {}
+        rendering, found = package_mod.render_fetched(sid, raw, pin, gate_pin)
+        if found:
+            problems.extend(found)
+            continue
+        render_web.write_rendering(sources_dir(root) / sid, rendering)
+        log(f"  rendered : {sid} from the package's fetched bytes "
+            f"(layer {rendering.layer_sha256[:12]})")
+    return problems
+
+
+def check_pins(root: Path) -> list[str]:
+    """The gate's own sha comparisons, made before staging rather than after a paid call.
+
+    ``verify_locate.py`` hashes each source's ``layer.txt`` and its pinned views, the
+    declaration index, and every candidates file it holds a pin for, but only once a
+    worker has written a document for it to check. The same comparisons here cost
+    nothing. A file that is not there is :func:`missing_inputs`' to name, not this.
+    """
+    root = Path(root)
+    config = gate_config(root)
+    gate_dir = root / "gate"
+
+    def where(name) -> Path:
+        path = Path(str(name))
+        return path if path.is_absolute() else gate_dir / path
+
+    def differs(path: Path, want) -> bool:
+        return bool(want) and path.is_file() and keys.sha256_file(path) != want
+
+    problems: list[str] = []
+    sources = where(config.get("sources_dir") or f"../{INPUT_DIRS[0]}")
+    for sid, pin in sorted((config.get("sources") or {}).items()):
+        pin = pin if isinstance(pin, dict) else {}
+        if differs(sources / sid / "layer.txt", pin.get("layer_sha256")):
+            problems.append(f"{sid}: layer.txt is not the layer the run pinned")
+        for name, want in sorted((pin.get("views") or {}).items()):
+            if differs(sources / sid / name, want):
+                problems.append(f"{sid}: {name} is not the view the run pinned")
+    index = config.get("index") if isinstance(config.get("index"), dict) else {}
+    if index.get("path") and differs(where(index["path"]), index.get("sha256")):
+        problems.append(f"the declaration index at {index['path']} is not the one the run "
+                        "pinned")
+    if config.get("candidates_dir"):
+        candidates = where(config["candidates_dir"])
+        for sid, want in sorted((config.get("candidates_sha256") or {}).items()):
+            if differs(candidates / f"{sid}.json", want):
+                problems.append(f"{sid}: the candidates are not the bytes the run pinned")
+    return problems
+
+
+def install_inventory(package_dir: Path, workdir: Path, root: Path, *,
+                      log=print) -> list[str]:
+    """Put the inventory run the package ships at ``<workdir>/corpus/<run>/``; the problems.
+
+    The seal tallies the locate run against the inventory it was cut from, and looks for
+    it there (``seal.tally``). A corpus already in place that holds exactly the shipped
+    files is left alone; one that holds anything else is named and never overwritten.
+    """
+    locate = run_config(root).get("locate") or {}
+    run = str(locate.get("inventory_run") or "") if isinstance(locate, dict) else ""
+    shipped = Path(package_dir) / package_mod.INPUTS / package_mod.INVENTORY / run
+    if not run or not shipped.is_dir():
+        return []
+    want = {path.relative_to(shipped).as_posix(): path for path in sorted(shipped.rglob("*"))
+            if path.is_file()}
+    dest = Path(workdir) / CORPUS_DIR / run
+    if dest.exists():
+        held = {path.relative_to(dest).as_posix() for path in dest.rglob("*")
+                if path.is_file()}
+        if held == set(want) and all((dest / rel).read_bytes() == path.read_bytes()
+                                     for rel, path in want.items()):
+            return []
+        return [f"{dest} holds other files than the inventory run {run} the package "
+                "carries; move it aside and run this again"]
+    scratch = dest.with_name(f".{run}.installing")
+    if scratch.exists():
+        shutil.rmtree(scratch)
+    for rel, path in want.items():
+        target = scratch / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(path, target)
+    scratch.rename(dest)
+    log(f"  inventory: {run} -> {dest} ({len(want)} file(s)), for the seal")
+    return []
 
 
 # ---- staging, and the free check over it ------------------------------------------------
@@ -371,8 +492,11 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
     """materialise, stage, check, run, harvest — and say what came of each.
 
     Returns ``{"root", "tasks", "staged", "prompts", "records", "passed", "rejected",
-    "receipt", "missing_inputs", "harvested"}``. A root with a missing input stages
-    nothing, runs nothing and **harvests nothing**: the missing list is the answer.
+    "receipt", "missing_inputs", "refused", "harvested"}``. A root with a missing input,
+    or with an input that is not the bytes the plan pinned (``refused``: the package's
+    sources that did not render to their pins, a file the gate would refuse, a corpus
+    in the inventory's place), stages nothing, runs nothing and **harvests nothing**:
+    those lists are the answer.
 
     **Not harvesting is the important half of that.** The harvest rewrites
     ``RECEIPT.json`` over whatever is there, and a harvest of no documents over a
@@ -389,7 +513,13 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
     if not execute and not worker_command:
         log("  DRY RUN  : no model will be called and no document written. This is the "
             "default; pass --execute when you have read what it would do.")
+    manifest = package_mod.read(package_dir)
+    refused = install_inventory(package_dir, workdir, root, log=log)
+    refused += render_sources(root, manifest, log=log)
     missing = missing_inputs(root)
+    refused += check_pins(root)
+    for line in refused:
+        log(f"  refused  : {line}")
     for line in missing:
         log(f"  missing  : {line}")
     if max_cost is not None:
@@ -403,7 +533,12 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
     passed: list[str] = []
     rejected: list[str] = []
     ran = False
-    if missing:
+    if refused:
+        log("  stopped  : an input is not the bytes the plan pinned, so nothing was "
+            "staged, nothing was run and nothing was harvested. A package whose shipped "
+            "bytes do not render to its pins goes back to the coordinator to re-plan; "
+            "never change a pin to make it pass.")
+    elif missing:
         log("  stopped  : an input the plan names is not on this machine, so nothing "
             "was staged, nothing was run and nothing was harvested. Fill the names "
             "above and run this again.")
@@ -443,4 +578,5 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
         log(f"  rejected : {', '.join(rejected)} — their documents are not harvested")
     return {"root": root, "tasks": tasks, "staged": staged, "prompts": prompts,
             "records": records, "passed": passed, "rejected": rejected,
-            "receipt": receipt, "missing_inputs": missing, "harvested": ran}
+            "receipt": receipt, "missing_inputs": missing, "refused": refused,
+            "harvested": ran}

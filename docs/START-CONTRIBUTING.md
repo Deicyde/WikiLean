@@ -203,11 +203,13 @@ python3 scripts/pipeline/contribute/run_package.py \
 python3 scripts/pipeline/contribute/run_package.py \
         --repo <work-repo clone> --workdir <dir> --stage claim --execute
 
-# 2. Fill what the package cannot carry, because it is article text or a Lean library:
-#      <dir>/root/sources/<source-id>/   the pages refetched at their pinned revisions
-#      <dir>/root/candidates/            the retrieval's hits
+# 2. Fill what the package does not carry, because it is a map of the Lean libraries:
 #      <dir>/root/index/                 the declaration index
 #      <dir>/root/index/search/          the search corpus
+#    A package that ships its sources' fetched bytes and candidates has them rendered
+#    and checked by `--stage run`. For one that ships none, also fill
+#      <dir>/root/sources/<source-id>/   the pages refetched at their pinned revisions
+#      <dir>/root/candidates/            the retrieval's hits
 #    `--stage run` names any that are missing, by name, before it runs anything.
 
 # 3. FREE: stage every task's working directory and check it. No model is called.
@@ -249,10 +251,13 @@ python3 scripts/articles/submit.py --record-set <dir>/set --execute \
 
 ### What the transport carries
 
-- **Source layers are refetched locally.** A package carries the plan, source pins and
-  universe; it omits full text layers, HTML, candidates and the coordinator's staged
-  working directories. Your machine stages its own inputs. Returned findings and
-  sealed records do contain the passage quotations needed to identify their claims.
+- **A package can carry its sources' fetched bytes.** It carries the plan, source pins
+  and universe, and since 2026-11-13 it can carry each source's raw fetched response,
+  its candidates and the inventory run its passages were cut from; never a rendered
+  view, nor the coordinator's staged working directories. Your machine renders the
+  bytes with the frozen renderer, checks every sha before any model call, and stages
+  its own inputs. Returned findings and sealed records do contain the passage
+  quotations needed to identify their claims.
   The result copier refuses the named source-layer files; it is not a general filter
   for arbitrary text placed in other files.
 - **We never see your model credentials.** WikiLean receives no model API key or
