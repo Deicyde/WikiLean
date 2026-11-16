@@ -1458,6 +1458,17 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-16 (UTC): **The articles reader redesign, Brain community-write fixes and
+  community coverage bundles are live.** Promoted `6a95c8b9` (PRs #178, #179, #180,
+  #181, #184 and #185) at 21:01 UTC as Brain release `sha256:de37737b…`, Worker
+  `8afdb303…`, deployment `da76ba1b…`. The exact promoter closed with `deployed` and
+  a passing live canary. Migration `0021` adds only the empty `article_coverage`
+  table and its five indexes; an encrypted backup and two in-memory rehearsals passed
+  first. Wrangler's output for the file import was not JSON, so, as for `0020` on
+  2026-11-10, a read-only reconciliation confirmed the schema and the file was not
+  applied again. Two full private builds qualified the candidate on 2026-11-13, and
+  the semantic diff against `47e3b307` found no change to Brain data. The freeze on
+  `main` set for this release was lifted after activation.
 - 2026-11-10 (UTC): **Self-service pipeline intake is live.** [PR #168](https://github.com/Deicyde/WikiLean/pull/168)
   deployed at 03:22 UTC from `3b32c8cb`, release `sha256:47e3b307…`,
   Worker `89e1f1a4…`, deployment `8fcc8d11…`. The exact promoter closed with
