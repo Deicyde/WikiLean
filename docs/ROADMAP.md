@@ -67,6 +67,18 @@ recommendation. Remove an item once its decision is recorded below.
    statement closes every community write surface and every agent write — and the signed
    plan's decision 3 accepts it as that substitute *for those surfaces*. It is not a hotfix
    path for anything else, so this item stays open.
+   **Answered 2026-11-13: define one — the code-only release.** Jack approved designing
+   a faster path for a website-only change. It is not a lane that skips review: it is
+   the full promotion with the Brain rebuild removed, because the frozen release
+   production serves is reused byte for byte. Eligibility is decided by
+   `site/ops/brain_code_only_release.py` (policy `wikilean.code-only-release-paths/v1`,
+   deny-by-default), and the promoter measures the claim rather than trusting it: every
+   Brain-owned byte it is about to publish is fetched back from production and must
+   match, modulo the selector's `audited_at`. `site/build_brain_page.py` is blocking —
+   the `/brain` page is a release artifact — so a change there still takes the full
+   path. Commands: `docs/BRAIN-RELEASE-RUNBOOK.md`, "Code-only release". The
+   `site_settings` write brake stays the instant lever; this shortens the ~5.5-hour
+   exposure for everything else to roughly the 30–45 minutes the evidence phases take.
 9. **`annotation_events.actor_type` literal.** AI decisions record `'pipeline'`, not `'ai'`
     (flagged 2026-08-07; binding decisions above). Options: keep `'pipeline'`, or rebuild the
     table to allow `'ai'`.
@@ -234,7 +246,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 |---|---|---|
 | 1 | Which plane carries community tagging | the formalization reader's overlay |
 | 2 | Anonymous editing | an account is required (two clicks of an OAuth button); an anonymous suggestion queue is an R6 option. IP-attributed editing is refused: migration 0013 scrubbed the last IP hashes and keeping them again would reverse that |
-| 3 | The Worker-only hotfix path (Waiting on Jack item 8) | **still open.** Signed off for now is the `site_settings` write brake as its substitute: one D1 statement closes every community write surface and every agent write in a second, where a release takes about 5.5 hours |
+| 3 | The Worker-only hotfix path (Waiting on Jack item 8) | **answered 2026-11-13: define one — the code-only release** (item 8 above; runbook section "Code-only release"). The `site_settings` write brake remains the one-second lever for community and agent writes; the code-only path cuts a website-only release from ~5.5 hours to the evidence phases alone |
 | 4 | Does an edit move the published status? | yes — merged by default, with "As published" one click away. Otherwise editing has no visible effect and nobody does it twice |
 | 5 | The retirement conflict: the plan copies the old plane's furniture, and that plane is being deleted | **take editing off `/:slug` now** (it has had 23 human revisions ever, from one account), keep the routes read-only, and **cut over only once R2 has given the overlay history, diffs and revert**. Nothing is reversed, only sequenced. R1 does the first half |
 | 6 | Revert open to established editors | yes, in R2; patroller-only is a queue with no patrollers |

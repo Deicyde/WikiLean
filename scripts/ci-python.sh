@@ -146,6 +146,7 @@ run_check "Brain deployment journal tests" "$PYTHON_BIN" site/ops/test_brain_dep
 run_check "Brain public asset baseline tests" "$PYTHON_BIN" site/ops/test_brain_public_baseline.py
 run_check "Brain exact-release promoter tests" "$PYTHON_BIN" site/ops/test_brain_promote_release.py
 run_check "Release-neutral path policy tests" "$PYTHON_BIN" site/ops/test_brain_release_authority.py
+run_check "Code-only release policy, record and Brain surface fence tests" "$PYTHON_BIN" site/ops/test_brain_code_only_release.py
 run_check "Brain activation CI evidence tests" "$PYTHON_BIN" site/ops/test_brain_activation_ci.py
 run_check "Brain activation evidence bundle tests" "$PYTHON_BIN" site/ops/test_brain_activation_bundle.py
 run_check "Brain activation evidence integration test" "$PYTHON_BIN" site/ops/test_brain_activation_bundle_integration.py
