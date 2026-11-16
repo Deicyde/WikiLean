@@ -32,7 +32,7 @@ so the pipeline changes without a release.
 | `gate/` | 7 | the out-of-tree gate: rules 1 to 10, the text layer, the stager |
 | `gate/audit_sentences.py` | 7 | the sentence check over a sealed set, read-only (below) |
 | `tally.py` | 8 | documents → finding rows → the challenge → the status → outcome rows |
-| `carry.py` | 8 | the carry-over map between two cuts of one page |
+| `carry.py` | 8 | the carry-over map between two cuts of one page, harvested or sealed; `--store-out` writes the store's per-page documents |
 | `corpus.py` | 8, 10 | which files of a run's corpus are documents, and its receipt |
 | `index.py` | 8 | the declaration index the proof statuses join from |
 | `index_from_corpus.py` | 8 | that index, converted from a universe's own corpus, plus the search corpus |
@@ -158,4 +158,8 @@ python3 scripts/pipeline/export_records.py --rows <file> --sources <file> ...
 python3 scripts/pipeline/export_statements.py --inventory <corpus>/inv-1 \
     --sourceset <dir> --out <set> --set-id <token> --campaign run:inv-1 \
     --producer-commit <40 hex> --created <ISO-Z>        # docs/STATEMENTS.md
+python3 scripts/pipeline/locate.py --run-id loc-1 --out <root> \
+    --statement-set <set> --sourceset <dir> --universe <file>   # phase 2 from a published cut
+python3 scripts/pipeline/carry.py --from-set <set> --to-run inv-2 \
+    --corpus <corpus> --manifest <file> --sources <dir> --store-out <dir>
 ```

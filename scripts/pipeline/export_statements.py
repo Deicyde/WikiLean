@@ -99,10 +99,18 @@ def statement(source: Mapping[str, Any], passage: Mapping[str, Any], layer: str)
     state the one the layer gives, and is refused by name otherwise.
 
     The projection is here and **the rules are not**: the sealed shape is built from the
-    passage's own values, the two keys are recomputed from the layer, and
+    passage's own values, the keys and the quote are recomputed from the layer, and
     :func:`statements.statement_problems` — the one rule set, which the reader runs over
     the sealed bytes — judges the result. So the writer cannot hold a statement to a rule
     the reader does not, nor the other way about.
+
+    **The quote is derived, not copied.** A cut passage carries the quote the worker
+    found it at, which gate rule 2 holds to being the one text at the span and nothing
+    more; the quote a *record* carries is the format's capped head
+    (:func:`records.cut_passage`: the span's first 12 words, made unique by as little
+    context as it takes). Phase 1 publishes that one, so the passage a reader tags and
+    the location the pipeline later writes show the same words. The passage's own quote
+    is still checked — it must be the one text at the span — and then set aside.
     """
     if not isinstance(passage, Mapping):
         raise records_mod.RecordProblem(
@@ -110,9 +118,27 @@ def statement(source: Mapping[str, Any], passage: Mapping[str, Any], layer: str)
     item = str(passage.get("item") or "")
     span = _span(passage.get("span"), item)
     try:
-        span_sha = keys.span_sha256(layer, span if isinstance(span, list) else [])
-    except keys.KeyProblem as exc:
+        cut = records_mod.cut_passage(layer, span if isinstance(span, list) else [])
+    except records_mod.RecordProblem as exc:
         raise records_mod.RecordProblem(f"{item or '(no item)'}: {exc}") from None
+    span_sha = cut.span_sha256
+    given = passage.get("quote")
+    if not (isinstance(given, Mapping) and isinstance(given.get("exact"), str)
+            and given["exact"]):
+        raise records_mod.RecordProblem(
+            f"{item or '(no item)'}: a cut passage carries the quote it was cut at "
+            "(gate rule 2), and this one carries none")
+    if records_mod.find_quote(layer, given["exact"], str(given.get("prefix") or ""),
+                              str(given.get("suffix") or "")) != [span[0]]:
+        raise records_mod.RecordProblem(
+            f"{item}: the cut's own quote is not the one text at {span[0]} on the pinned layer "
+            "with its prefix and suffix")
+    if span[0] + len(given["exact"]) > span[1]:
+        # gate rule 2's third check, kept here because the sealed quote is derived: a
+        # span that does not hold the words it was cut at would seal as a statement of
+        # the few characters the span does hold.
+        raise records_mod.RecordProblem(
+            f"{item}: the cut's own quote runs past the end of the span")
     stated_sha = passage.get("span_sha256")
     if stated_sha is not None and stated_sha != span_sha:
         raise records_mod.RecordProblem(
@@ -127,12 +153,9 @@ def statement(source: Mapping[str, Any], passage: Mapping[str, Any], layer: str)
         raise records_mod.RecordProblem(
             f"{item}: the passage states passage_key {str(stated_key)[:12]}, but the page id and "
             "the span's sha256 give another")
-    quote = passage.get("quote")
     out = {"item": passage.get("item"), "passage_key": passage_key, "span": span,
            "span_sha256": span_sha, "head_words": passage.get("head_words"),
-           "quote": ({"exact": quote.get("exact"), "prefix": quote.get("prefix", ""),
-                      "suffix": quote.get("suffix", "")} if isinstance(quote, Mapping)
-                     else quote),
+           "quote": dict(cut.quote),
            "section": (list(passage.get("section"))
                        if isinstance(passage.get("section"), (list, tuple))
                        else passage.get("section")),

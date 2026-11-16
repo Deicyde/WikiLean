@@ -103,7 +103,7 @@ One statement a line. Thirteen keys always, and two more on a compound:
 | `span` | `[start, end]`, half-open code-point offsets on the layer whose sha is the source's `layer_sha256` |
 | `span_sha256` | the sha256 of the span's characters as they stand, trailing whitespace included |
 | `head_words` | how many words the head rule hashed |
-| `quote` | `{exact, prefix, suffix}` — the capped head, the affixes empty when it is already unique on the layer |
+| `quote` | `{exact, prefix, suffix}` — **derived**: the span's first 12 words, made unique by as little context as it takes (`records.cut_passage`), the affixes empty when it is already unique |
 | `section` | the heading path, `[]` in the lead |
 | `fragment` | the section's fragment, or `null` |
 | `passage_kind` | one of `vocab.KINDS` |
@@ -125,6 +125,21 @@ bookkeeping (`concept`, `until`) is not sealed: the span is.
 
 **No universe, no receipts, no `challenge`, no status.** The set states what was cut, and
 nothing about Lean.
+
+**Why the quote is derived and not copied.** A cut passage carries the quote the worker
+found it at, which gate rule 2 holds to being the one text at the span and nothing more:
+in a real run it is whatever words the worker wrote down. The quote a *record* carries is
+the format's capped head — `records.cut_passage`, which the tally derives for every
+record set. Phase 1 publishes that one, so the passage a reader tags in phase 1 and the
+location the pipeline writes in phase 2 show the same words. The passage's own quote is
+still checked (it must be the one text at the span, with its affixes) and then set
+aside.
+
+One consequence, and the only place a published cut and a harvested one differ
+downstream: a locate task manifest planned from a statement set hands the worker the
+capped head, where one planned from the harvested run hands it the worker's own quote.
+Every other byte of every task manifest is the same — `test_model_stages.py` pins it —
+so a run planned from a harvested cut, batch 1 included, is unchanged.
 
 ## 3. Why the keys cannot drift between the phases
 
@@ -153,9 +168,13 @@ the rest:
 
 - no `item`, or one outside the head rule's grammar (`vocab.ITEM_RE`);
 - a span that is not `[start, end]` with `0 <= start < end`, or that leaves the layer;
-- a quote that is empty, over the 12-word cap, or whose affix is over 32 characters;
-- a quote that is not unique on the layer with its affixes, or does not sit at the span's
-  start, or runs past the span's end;
+- the cut's own quote missing, not unique on the layer with its affixes, not at the
+  span's start, or running past the span's end (gate rule 2, kept here because the
+  sealed quote is derived: a span that does not hold the words it was cut at would
+  otherwise seal as a statement of the few characters the span does hold);
+- a sealed quote that is empty, over the 12-word cap, or whose affix is over 32
+  characters — **a reader rule**: the writer derives the quote with
+  `records.cut_passage` and cannot produce one outside those caps;
 - no `head_words`, or one that is not a positive integer;
 - a `passage_kind`, `prominence`, `scope` or `finder` outside its vocabulary;
 - a passage that is not `formal_math` and not `supporting`;
@@ -211,6 +230,12 @@ does, and the reader does inside `frozen_inventory(set, <rendered sources>)`:
 `--sources` is required otherwise. `StatementSet.cuts()`, which hands stage 6 the `Cut` a
 record is written with, refuses a set no render has checked.
 
+Three rules are the **reader's alone**, because the writer derives the value they judge:
+the quote's 12-word cap, its 32-character affix cap, and the quote sitting inside the
+span. The writer holds the *passage's own* quote to gate rule 2 (unique, at the span's
+start, inside the span) and then derives the sealed one, which cannot break any of the
+three.
+
 **What the writer does not check: that the `item` is the id the head rule gives.** The
 head rule reads the *head text*, which needs the source's `formulas.json` as well as its
 layer, and it keys the whole table at once. That check is the gate's, at stage 7 (rule 2),
@@ -224,7 +249,72 @@ statements out of span-then-item order, a `sources.jsonl` row that is not exactl
 neither `sources.jsonl` nor a listed source's statements. Every reason is reported at
 once.
 
-## 5. Commands
+## 5. What phase 2 does with one
+
+```bash
+# 9c: plan a locate run from a published cut instead of a harvested one.
+python3 scripts/pipeline/locate.py --run-id loc-1 --out <root> \
+    --statement-set <set> --sourceset <dir> --universe <file>     # refused beside --inventory
+
+# 6: export the records of that run, their cut taken from the set.
+python3 scripts/pipeline/export_records.py --rows <rows> --sources <sources> ... \
+    --statement-set <set> --rendered-sources <dir>/sources
+```
+
+`locate.py --statement-set` refuses the plan unless the sourceset still pins the
+revision the set was cut from (`statements.manifest_problems`), and recomputes every
+`span_sha256` and `passage_key` against that revision's render before a task is cut.
+`run.json`'s `locate.statement_set` records which set it was, by id and seal sha256; the
+task manifests say nothing about it.
+
+`export_records.py --statement-set` takes each passage's `Cut` from the set — the quote
+and the `span_sha256` are the published ones — and refuses a row whose own cut states
+another. It needs `--rendered-sources`, and the two go together and only together,
+because the published cut is checked **twice** before a record is written from it:
+against the render (every layer hashes to the `layer_sha256` the set was cut from, and
+every span and quote is the sealed one) and against the **sources the export is about to
+seal** (`manifest_problems` again: a record set whose `sources.jsonl` named another
+revision or another layer would publish spans that are offsets on nothing). The layers
+also hold every free-text field the export writes to the quote cap — which is why a
+render is never read without a cut to check it against.
+
+## 5a. A re-cut, and the tags of the cut before it
+
+`carry.py` maps an old cut onto a new one from spans and span text alone, with the fates
+`unchanged`, `end_moved`, `split`, `merged`, `reshaped`, `removed`, `changed` and `new`.
+Either side may now be a sealed statement set (`--from-set` / `--to-set`), because the
+map is a fact about text and not about where a cut was published.
+
+**A tag carries only on `unchanged`** — the key is byte-identical, so nothing has to
+move. On every other fate the text changed and no mechanical re-pairing is honest. The
+D1 row is not deleted; it simply stops appearing, because the overlay merge is driven by
+the store's passages.
+
+So the map is published: `carry.py --store-out <dir>` writes one `<pageid>.json` a page,
+and `build_store.py --carry <dir>` publishes them at `articles/v1/carry/<pageid>.json`.
+Each entry carries the old passage's `passage_key`, `span`, `scope`, its **old quote**
+and its `fate`, and the new passages it went into. That is what lets the reader show the
+tags of an earlier cut in a fold — "from an earlier cut of this article", with the fate
+and the old quote — and an editor re-apply one in a click. Nothing auto-moves.
+
+The old quote is **derived** from the old layer (`records.cut_passage`), like every other
+quote the reader shows, and not copied off the harvested document, whose own quote is the
+words the worker was cut at and which nothing ever displayed.
+
+`--store-out` holds its directory to being this map and nothing else: a page that drops
+out of a later run is removed rather than left to go on being published, and a directory
+holding anything but `<pageid>.json` documents is refused. A map with a **refused page**
+in it is not published at all and the command exits 2: in the store a page nobody could
+map and a page nothing moved on look the same, and only one of them is true. For the
+same reason `--store-out` is refused beside `--source`: that run maps some of the
+corpus, and publishing it would delete the document of every page it did not name. Map
+the corpus in one run, or write `--out` documents and assemble the directory.
+
+A sealed set used as a side is checked against the render too: the map's keys are
+recomputed from the layer, so a set whose sealed `span_sha256` is not that layer's is
+refused rather than mapped under keys the store never published.
+
+## 6. Commands
 
 ```bash
 # Seal a harvested cut run that lives beside its sourceset.
@@ -250,7 +340,7 @@ written, 3 the writer failed.
 statement quotes its article; only `fixtures/make_statement_fixture.py` may write one
 here, and only under `scripts/pipeline/fixtures/`, which the command line cannot reach.
 
-## 6. What a statement set does not decide
+## 7. What a statement set does not decide
 
 - **Boundaries stay the pipeline's.** The community edits tags, not spans: a
   community-invented span would mint a `passage_key` no sealed set will ever reproduce
@@ -259,6 +349,8 @@ here, and only under `scripts/pipeline/fixtures/`, which the command line cannot
 - **The tagging universe is not in the set.** A store built from a statement set is given
   one with `build_store.py --tagging-universe`, and its `(library id, repo)` pairs must be
   the ones phase 2 will search ([ARTICLES.md](ARTICLES.md) section 4a).
-- **A re-cut carries nothing by itself.** `carry.py` maps an old cut onto a new one and a
-  tag carries only on the `unchanged` fate; every other fate means the text changed, and
-  no mechanical re-pairing is honest.
+- **A re-cut carries nothing by itself** (section 5a).
+- **Stage 9d, the challenge, is not wired to a published cut from the command line.**
+  `statements.passage_index` gives `challenge.plan` the `{(source, item): passage}` it
+  takes from `cut.passage_index`, so the piece is there; `challenge.py`'s own flags still
+  name a harvested run.
