@@ -24,9 +24,11 @@ so the pipeline changes without a release.
 | `keys.py` | 2 | `passage_key`, `pair_key`, `bundle_key`, canonical JSON |
 | `vocab.py` | — | the locate vocabulary, pinned to the store builder's |
 | `status.py` | 3 | the derived status, under status rules 1, 2 and 3 |
-| `readback.py` | 4 | a sealed set read back into outcome rows; the seal check |
+| `readback.py` | 4 | a sealed record set read back into outcome rows; the seal check |
+| `statements.py` | 4b | a sealed **statement set** read back into the cut's own shape |
 | `records.py` | 5 | the records of one passage, and the cut the layer gives it |
-| `export_records.py` | 6 | the sealed set, written |
+| `export_records.py` | 6 | the sealed record set, written |
+| `export_statements.py` | 6b | the sealed **statement set**, written (docs/STATEMENTS.md) |
 | `gate/` | 7 | the out-of-tree gate: rules 1 to 10, the text layer, the stager |
 | `gate/audit_sentences.py` | 7 | the sentence check over a sealed set, read-only (below) |
 | `tally.py` | 8 | documents → finding rows → the challenge → the status → outcome rows |
@@ -153,4 +155,7 @@ python3 scripts/pipeline/tally.py --run-id loc-1 --corpus <corpus> --runs <runs>
     --universe <file> --index <file> --challenge-run chl-1 \
     --outcomes <file> --report <file> --export-rows <file>
 python3 scripts/pipeline/export_records.py --rows <file> --sources <file> ...
+python3 scripts/pipeline/export_statements.py --inventory <corpus>/inv-1 \
+    --sourceset <dir> --out <set> --set-id <token> --campaign run:inv-1 \
+    --producer-commit <40 hex> --created <ISO-Z>        # docs/STATEMENTS.md
 ```

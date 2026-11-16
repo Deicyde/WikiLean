@@ -181,26 +181,32 @@ def universe_json(universe: Mapping[str, Any]) -> dict:
 FIXTURE_ROOT = HERE / "fixtures"
 
 
-def check_target(out: Path, *, in_checkout: bool = False) -> set[str]:
-    """Refuse a target a record set may not be written to; return the files its seal names.
+def check_target(out: Path, *, in_checkout: bool = False, schemas: Iterable[str] = (),
+                 what: str = "record set", subdirectories: Iterable[str] = ("records", "receipts"),
+                 ) -> set[str]:
+    """Refuse a target a sealed set may not be written to; return the files its seal names.
 
     Never this checkout or a directory inside it (``in_checkout`` allows the synthetic
-    fixture alone), never a symlink, and never a directory holding anything but an
-    earlier set: a non-empty one needs a record-set ``SEAL.json``, and every file in it
-    must be one that seal names. The names come back so a re-export can remove what the
-    new set does not carry.
+    fixtures alone), never a symlink, and never a directory holding anything but an
+    earlier set: a non-empty one needs a ``SEAL.json`` of one of ``schemas`` (the record
+    set's by default), and every file in it must be one that seal names. The names come
+    back so a re-export can remove what the new set does not carry.
+
+    ``schemas``, ``what`` and ``subdirectories`` are what the statement-set writer
+    (:mod:`export_statements`) passes: the rules are the set's, not the format's.
     """
+    allowed = set(schemas) or set(vocab.SEAL_SCHEMAS.values())
     out = Path(out).expanduser()
     target = out.resolve()
     inside = target == ROOT or ROOT in target.parents
     fixture = target == FIXTURE_ROOT or FIXTURE_ROOT in target.parents
     if inside and not (in_checkout and fixture):
-        raise ExportProblem(f"refusing to write a record set inside this checkout ({ROOT}): it "
+        raise ExportProblem(f"refusing to write a {what} inside this checkout ({ROOT}): it "
                             "holds code, docs and synthetic fixtures only, and WikiLean is "
                             "public")
-    for path in (out, out / "records", out / "receipts", out / "SEAL.json"):
+    for path in (out, *(out / name for name in subdirectories), out / "SEAL.json"):
         if path.is_symlink():
-            raise ExportProblem(f"refusing to write a record set through the symlink {path}")
+            raise ExportProblem(f"refusing to write a {what} through the symlink {path}")
     if not out.exists():
         return set()
     if not out.is_dir():
@@ -210,18 +216,18 @@ def check_target(out: Path, *, in_checkout: bool = False) -> set[str]:
         return set()
     seal_path = out / "SEAL.json"
     seal = json.loads(seal_path.read_text(encoding="utf-8")) if seal_path.is_file() else None
-    if not isinstance(seal, dict) or seal.get("schema") not in vocab.SEAL_SCHEMAS.values():
-        raise ExportProblem(f"{out} is not empty and holds no record-set seal; pass an empty or "
+    if not isinstance(seal, dict) or seal.get("schema") not in allowed:
+        raise ExportProblem(f"{out} is not empty and holds no {what} seal; pass an empty or "
                             "new directory with --out")
     named = set(seal.get("files") or {})
     stray = sorted(present - named - {"SEAL.json"})
     if stray:
         raise ExportProblem(f"{out} holds file(s) its seal does not name: {', '.join(stray[:5])}; "
-                            "a record set directory holds the set and nothing else")
+                            f"a {what} directory holds the set and nothing else")
     return named
 
 
-def _write(out: Path, texts: Mapping[str, str], previous: Iterable[str] = ()) -> None:
+def write_files(out: Path, texts: Mapping[str, str], previous: Iterable[str] = ()) -> None:
     """Write the set's files, then remove what the previous seal named and this set does not."""
     out.mkdir(parents=True, exist_ok=True)
     for rel in sorted(set(previous) - set(texts)):
@@ -347,7 +353,7 @@ def build_set(*, rows: list[dict], sources: list[dict], universe: Mapping[str, A
     texts["universe.json"] = keys.canonical_line(universe_doc)
     texts["sources.jsonl"] = "".join(keys.canonical_line(row) for row in source_rows)
 
-    _write(out, texts, previous)
+    write_files(out, texts, previous)
     seal = {"schema": vocab.SEAL_SCHEMAS[status_rule],
             "set_id": set_id,
             "campaign": campaign,
@@ -361,7 +367,7 @@ def build_set(*, rows: list[dict], sources: list[dict], universe: Mapping[str, A
     if status_rule >= vocab.STATUS_RULE_BUNDLE:
         seal["status_rule"] = status_rule
     seal_text = keys.canonical_line(seal)
-    _write(out, {"SEAL.json": seal_text})
+    write_files(out, {"SEAL.json": seal_text})
     pin = links.pin()
     return {"schema": EXPORT_REPORT_SCHEMA, "set_id": set_id, "path": str(out),
             "campaign": campaign, "status_rule": status_rule, "byte_budget": int(byte_budget),

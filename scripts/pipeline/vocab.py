@@ -32,6 +32,25 @@ SEAL_SCHEMAS = {STATUS_RULE_D1: SEAL_SCHEMA,
                 STATUS_RULE_BUNDLE: SEAL_SCHEMA_BUNDLE,
                 STATUS_RULE_BROAD: SEAL_SCHEMA_BUNDLE}
 
+#: The statement set's schema (docs/STATEMENTS.md): a **sibling** of the record set, not
+#: a profile of it. It states what a cut found and nothing about Lean, so it carries no
+#: universe, no receipts, no challenge value and no status.
+STATEMENT_SET_SCHEMA = "wikilean.statement-set/1"
+#: Its seal's keys, exactly. ``producer_commit`` is the name ``skill_commit`` should have
+#: had (docs/PIPELINE.md question Q2) and can be right here because nothing shared reads it.
+STATEMENT_SEAL_KEYS = ("schema", "set_id", "campaign", "sourceset", "producer_commit",
+                       "created", "cut_rules", "files")
+#: The rules the cut ran under, which the seal records so a re-cut can be compared.
+STATEMENT_CUT_RULE_KEYS = ("span_end_rule", "statement_cut_rule")
+#: What a sealed statement carries, exactly: ``run.plan``'s :data:`LOCATE_PASSAGE_KEYS`
+#: less ``text_span`` (which the reader recomputes from the local render's layer map),
+#: plus the two keys and the cut's own ``fragment``, ``scope`` and ``finder``.
+STATEMENT_KEYS = ("item", "passage_key", "span", "span_sha256", "head_words", "quote",
+                  "section", "fragment", "passage_kind", "prominence", "scope",
+                  "statement", "finder")
+#: ``conjuncts`` and ``shape`` ride together, on a compound ``formal_math`` statement only.
+STATEMENT_OPTIONAL = ("conjuncts", "shape")
+
 #: A passage's own kind (proposal section 2.2).
 KINDS = frozenset({"definition", "theorem", "conjecture", "example", "construction", "notation", "other"})
 #: Which row of the derived-status table judges a passage of that kind. A construction or
