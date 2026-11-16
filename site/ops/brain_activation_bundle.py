@@ -1755,12 +1755,15 @@ def _validate_intent_code_only(
             + ", ".join(sorted(required_surface.difference(surface)))
         )
     compared = {}
+    entries: dict[str, Mapping[str, Any]] = {}
     for item in checked:
         entry = _require_object(item, "Brain surface fence entry")
         _exact_keys(entry, {"path", "route", "compared", "bytes", "sha256"}, "Brain surface fence entry")
-        compared[_require_string(entry.get("path"), "Brain surface fence path")] = entry.get(
-            "compared"
-        )
+        path = _require_string(entry.get("path"), "Brain surface fence path")
+        if path in entries:
+            raise BundleValidationError(f"Brain surface fence lists {path} twice")
+        entries[path] = entry
+        compared[path] = entry.get("compared")
     # The selector is the one Brain-owned file a promotion restamps; every other
     # compared path must have been byte-identical to production.
     if compared.get(code_only_policy.SELECTOR_PUBLIC_PATH) != "identity-without-audited-at":
@@ -1771,6 +1774,18 @@ def _validate_intent_code_only(
         if path != code_only_policy.SELECTOR_PUBLIC_PATH and kind != "bytes":
             raise BundleValidationError(
                 f"Brain surface fence compared {path} without requiring equal bytes"
+            )
+    # The fence's coverage argument rests on the immutable manifests: equal release.json
+    # bytes plus digest-verified staged files cover every file they name. So each
+    # namespace the record names must have been byte-compared, at its own digest.
+    for digest in (record.brain_manifest_sha256, record.previous_manifest_sha256):
+        if digest is None:
+            continue
+        anchor = f"assets/brain/releases/{digest}/release.json"
+        entry = entries.get(anchor)
+        if entry is None or entry.get("compared") != "bytes" or entry.get("sha256") != digest:
+            raise BundleValidationError(
+                f"Brain surface fence did not byte-compare the release manifest {anchor}"
             )
 
 
@@ -2936,7 +2951,9 @@ def _validate_evidence(
     expected_baseline_manifest = baseline_root / "manifest.json"
     if (
         intent_baseline.get("baseline_id") != baseline_id
-        or intent_baseline.get("authority_commit") != authority_commit
+        # The dry run reports the commit its public baseline is frozen at: the Brain
+        # authority for a full release, the website commit for a code-only one.
+        or intent_baseline.get("authority_commit") != asset_authority_commit
         or intent_baseline.get("manifest") != str(expected_baseline_manifest)
         or intent_baseline.get("manifest_sha256")
         != hashlib.sha256(canonical["public_baseline_manifest"]).hexdigest()
@@ -3681,18 +3698,42 @@ def create_build_context(
     *,
     git: Path,
     authority_git_commit: str | None = None,
+    code_only_record: Path | None = None,
 ) -> dict[str, object]:
     """Describe and validate the two isolated worktrees used for P1B.
 
     ``authority_git_commit`` is the candidate release's authority; it defaults to the
     promotion worktree HEAD. When the worktrees sit at a later commit, the paths that
     changed since the authority are recorded and must all be release-neutral.
+
+    With ``code_only_record`` the context is for a code-only release: the authority is
+    the reused release's, taken from the record, the worktrees must sit at the record's
+    website commit, and the changes between them are checked under the code-only policy
+    the freezer will apply.
     """
     approved_git = _approved_git_path(git)
     promotion = _describe_worktree(
         promotion_worktree, "promotion worktree", git=approved_git
     )
     head = _require_commit(promotion["head"], "promotion worktree HEAD")
+    record: code_only_policy.CodeOnlyRelease | None = None
+    if code_only_record is not None:
+        try:
+            record = code_only_policy.load_record(code_only_record)
+        except code_only_policy.CodeOnlyError as exc:
+            raise BundleValidationError(f"code-only eligibility record is invalid: {exc}") from exc
+        if (
+            authority_git_commit is not None
+            and authority_git_commit != record.brain_authority_commit
+        ):
+            raise BundleValidationError(
+                "--authority-git-commit differs from the code-only record's Brain authority"
+            )
+        if head != record.code_commit:
+            raise BundleValidationError(
+                "promotion worktree is not at the code-only record's website commit"
+            )
+        authority_git_commit = record.brain_authority_commit
     authority = (
         head
         if authority_git_commit is None
@@ -3718,7 +3759,11 @@ def create_build_context(
         "neutral_changes": neutral_changes,
     }
     _validate_build_context(
-        document, authority, inspect_external=True, git=approved_git
+        document,
+        authority,
+        inspect_external=True,
+        git=approved_git,
+        code_only=record is not None,
     )
     return document
 
@@ -3777,6 +3822,14 @@ def _parser() -> argparse.ArgumentParser:
     context.add_argument(
         "--authority-git-commit",
         help="candidate release authority; defaults to the promotion worktree HEAD",
+    )
+    context.add_argument(
+        "--code-only-release",
+        type=Path,
+        help=(
+            "canonical wikilean.code-only-release/v1 record: describe the worktrees of a "
+            "code-only release, whose authority is the reused release's"
+        ),
     )
     return parser
 
@@ -3863,6 +3916,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 args.promotion_worktree,
                 git=args.git,
                 authority_git_commit=args.authority_git_commit,
+                code_only_record=(
+                    None
+                    if args.code_only_release is None
+                    else args.code_only_release.resolve(strict=True)
+                ),
             )
             sys.stdout.buffer.write(_canonical_json_bytes(context))
             return 0

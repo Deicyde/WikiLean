@@ -48,6 +48,10 @@ PUBLIC_BODIES: dict[str, bytes] = {
 }
 
 
+# The frozen /brain page: artifact site/out/brain.html, staged verbatim at brain.html.
+BRAIN_PAGE = b"<!doctype html><title>Brain</title>"
+
+
 def release_manifest_bytes(bodies: dict[str, bytes], marker: str) -> bytes:
     """A release manifest naming exactly ``bodies`` as its public artifacts."""
     artifacts = [
@@ -58,7 +62,13 @@ def release_manifest_bytes(bodies: dict[str, bytes], marker: str) -> bytes:
         }
         for public, body in sorted(bodies.items())
     ]
-    artifacts.append({"path": "site/out/brain.html", "bytes": 1, "sha256": "0" * 64})
+    artifacts.append(
+        {
+            "path": "site/out/brain.html",
+            "bytes": len(BRAIN_PAGE),
+            "sha256": hashlib.sha256(BRAIN_PAGE).hexdigest(),
+        }
+    )
     return json.dumps(
         {
             "schema": "wikilean.release/v1",
@@ -132,9 +142,14 @@ class PathPolicyTest(unittest.TestCase):
             "site/assets/brain/sources.json",
             "bot/state/seed_queue.json",
             "site/test_frontier_page.py",
+            # The Brain's D1 serving schema: the fence measures static files only.
+            "wiki/migrations-brain/0001_brain.sql",
+            "wiki/migrations-brain/0002_next.sql",
         ):
             with self.subTest(path=path):
                 self.assertEqual(policy.classify_path(path), "blocking")
+        # The site's own D1 migrations stay website-only.
+        self.assertEqual(policy.classify_path("wiki/migrations/0021_x.sql"), "website")
 
     def test_the_frozen_brain_page_builder_can_never_ship_code_only(self):
         # site/out/brain.html is an artifact inside the frozen release, and the
@@ -204,6 +219,26 @@ class PathPolicyTest(unittest.TestCase):
             ["wiki/src/security.ts", "wiki/wrangler.jsonc"],
         )
         self.assertEqual(policy.review_required(policy.classify_changes(["wiki/src/a.ts"])), [])
+
+    def test_worker_code_that_answers_brain_requests_is_flagged_for_review(self):
+        # The fence compares staged files with what the old Worker serves, so Worker
+        # code that routes or answers Brain requests is read by hand.
+        changed = [
+            "wiki/src/articles.ts",
+            "wiki/src/brain-api.ts",
+            "wiki/src/brain-store-static.ts",
+            "wiki/src/brain.ts",
+            "wiki/src/index.ts",
+        ]
+        self.assertEqual(
+            policy.review_required(policy.classify_changes(changed)),
+            [
+                "wiki/src/brain-api.ts",
+                "wiki/src/brain-store-static.ts",
+                "wiki/src/brain.ts",
+                "wiki/src/index.ts",
+            ],
+        )
 
 
 def make_record(**overrides):
@@ -358,7 +393,7 @@ class StagedTreeMixin(unittest.TestCase):
             self.bodies[f"assets/brain/releases/{RELEASE_MANIFEST}/{public}"] = body
         for public, body in PREVIOUS_PUBLIC_BODIES.items():
             self.bodies[f"assets/brain/releases/{PREVIOUS_MANIFEST}/{public}"] = body
-        self.bodies["brain.html"] = b"<!doctype html><title>Brain</title>"
+        self.bodies["brain.html"] = BRAIN_PAGE
         for relative, body in self.bodies.items():
             target = self.public / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -579,6 +614,17 @@ class FenceTest(StagedTreeMixin):
                 previous_manifest_sha256=PREVIOUS_MANIFEST,
             )
 
+    def test_a_frozen_page_that_is_not_the_releases_refuses_even_if_production_matches(self):
+        changed = BRAIN_PAGE + b"<!-- changed -->"
+        (self.public / "brain.html").write_bytes(changed)
+        with self.assertRaisesRegex(policy.CodeOnlyError, "not the reused release's site/out/brain.html"):
+            policy.brain_surface_fence(
+                self.public,
+                current_manifest_sha256=RELEASE_MANIFEST,
+                previous_manifest_sha256=PREVIOUS_MANIFEST,
+                fetch=self.fetcher({"brain.html": changed}),
+            )
+
     def test_a_missing_frozen_page_refuses(self):
         (self.public / "brain.html").unlink()
         with self.assertRaisesRegex(policy.CodeOnlyError, "omitted the Brain-owned file"):
@@ -781,9 +827,25 @@ class BundleIntegrationTest(unittest.TestCase):
                         "bytes": 10,
                         "sha256": "1" * 64,
                     },
+                    *(
+                        {
+                            "path": f"assets/brain/releases/{digest}/release.json",
+                            "route": f"/assets/brain/releases/{digest}/release.json",
+                            "compared": "bytes",
+                            "bytes": 10,
+                            "sha256": digest,
+                        }
+                        for digest in (
+                            record.brain_manifest_sha256,
+                            record.previous_manifest_sha256,
+                        )
+                        if digest is not None
+                    ),
                 ],
             },
         }
+        fence = block["brain_surface_fence"]
+        fence["paths"] = len(fence["checked"])
         block.update(overrides)
         return block
 
@@ -804,6 +866,7 @@ class BundleIntegrationTest(unittest.TestCase):
             "paths": 1,
             "checked": block["brain_surface_fence"]["checked"][:1],
         }
+        # (the page check precedes the manifest-anchor check)
         with self.assertRaisesRegex(bundle.BundleValidationError, "frozen /brain page"):
             bundle._validate_intent_code_only(block, record)
 
@@ -815,6 +878,32 @@ class BundleIntegrationTest(unittest.TestCase):
         block = self.intent_block(record)
         block["brain_surface_fence"]["checked"][0]["compared"] = "bytes"
         with self.assertRaisesRegex(bundle.BundleValidationError, "did not compare the release selector"):
+            bundle._validate_intent_code_only(block, record)
+
+    def test_the_bundle_requires_each_release_manifest_byte_compared(self):
+        record = policy.validate_record_document(make_record())
+        self.assertIsNotNone(record.previous_manifest_sha256)
+        for digest in (record.brain_manifest_sha256, record.previous_manifest_sha256):
+            anchor = f"assets/brain/releases/{digest}/release.json"
+            block = self.intent_block(record)
+            fence = block["brain_surface_fence"]
+            fence["checked"] = [item for item in fence["checked"] if item["path"] != anchor]
+            fence["paths"] = len(fence["checked"])
+            with self.assertRaisesRegex(bundle.BundleValidationError, "release manifest"):
+                bundle._validate_intent_code_only(block, record)
+
+            block = self.intent_block(record)
+            for item in block["brain_surface_fence"]["checked"]:
+                if item["path"] == anchor:
+                    item["sha256"] = "7" * 64
+            with self.assertRaisesRegex(bundle.BundleValidationError, "release manifest"):
+                bundle._validate_intent_code_only(block, record)
+
+        block = self.intent_block(record)
+        fence = block["brain_surface_fence"]
+        fence["checked"].append(dict(fence["checked"][-1]))
+        fence["paths"] = len(fence["checked"])
+        with self.assertRaisesRegex(bundle.BundleValidationError, "twice"):
             bundle._validate_intent_code_only(block, record)
 
     def test_the_bundle_requires_the_whole_mutable_surface_in_the_evidence(self):

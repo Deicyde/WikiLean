@@ -91,6 +91,11 @@ BRAIN_INPUT_DIRECTORIES: tuple[str, ...] = (
     "site/assets/brain",
     "site/cache",
     "site/data",
+    # The schema of the shared Brain serving database (BRAIN_DB), which
+    # brain_d1_import.py fills and the Worker reads. The surface fence measures only the
+    # static Brain files, so it cannot prove this plane unchanged; a change here takes
+    # the full path.
+    "wiki/migrations-brain",
 )
 # site/build_brain_page.py renders site/out/brain.html, which is a release artifact
 # (brain/tools/authority_contracts.py REQUIRED_RELEASE_PATHS). The promoter serves the
@@ -105,7 +110,6 @@ BRAIN_INPUT_FILES: tuple[str, ...] = (
 WEBSITE_DIRECTORIES: tuple[str, ...] = (
     "wiki/assets",
     "wiki/migrations",
-    "wiki/migrations-brain",
     "wiki/scripts",
     "wiki/src",
 )
@@ -140,10 +144,18 @@ PUBLIC_ASSET_GENERATORS: tuple[str, ...] = (
 # `wrangler.jsonc` holds the routes and the static-asset configuration;
 # `wiki/src/security.ts` is the sole source of the generated `_headers` file, which
 # Workers Static Assets applies to every Brain asset and which carries a rule naming
-# `/brain.html` by hand. Neither is provable before the deploy, and neither is covered
-# by the surface fence, which compares bodies and not response headers; the canary
-# after the deploy is the backstop, exactly as in a full release.
-REVIEW_REQUIRED_FILES: tuple[str, ...] = ("wiki/src/security.ts", "wiki/wrangler.jsonc")
+# `/brain.html` by hand; `wiki/src/index.ts` is the router that decides which requests
+# reach the static Brain files at all; and every `wiki/src/brain*` module (the Brain
+# API, stores, page and edit routes) answers Brain requests from those files. None of
+# this is provable before the deploy: the surface fence compares the staged files with
+# what the *old* Worker serves, not with what the new one will. The canary after the
+# deploy is the backstop, exactly as in a full release.
+REVIEW_REQUIRED_FILES: tuple[str, ...] = (
+    "wiki/src/index.ts",
+    "wiki/src/security.ts",
+    "wiki/wrangler.jsonc",
+)
+REVIEW_REQUIRED_PREFIXES: tuple[str, ...] = ("wiki/src/brain",)
 
 GIT_DIFF_ARGUMENTS = release_authority.GIT_DIFF_ARGUMENTS
 
@@ -357,26 +369,29 @@ def review_required(classification: ChangeClassification) -> list[str]:
         path
         for path in classification.changed
         if path in REVIEW_REQUIRED_FILES
+        or any(path.startswith(prefix) for prefix in REVIEW_REQUIRED_PREFIXES)
     )
 
 
-def validate_eligible_changes(value: object, label: str) -> list[str]:
-    """Validate a recorded change list: sorted, unique, code-only-eligible paths."""
+def _require_sorted_paths(value: object, label: str) -> list[str]:
+    """Require a JSON array of strings that is already sorted and unique."""
     if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
         raise CodeOnlyError(f"{label} must be an array of paths")
     if value != sorted(set(value)):
         raise CodeOnlyError(f"{label} must be sorted and unique")
-    blocking = blocking_changes(value)
+    return list(value)
+
+
+def validate_eligible_changes(value: object, label: str) -> list[str]:
+    """Validate a recorded change list: sorted, unique, code-only-eligible paths."""
+    paths = _require_sorted_paths(value, label)
+    blocking = blocking_changes(paths)
     if blocking:
         raise CodeOnlyError(
             f"{label} names paths that feed the frozen Brain release: "
             + ", ".join(blocking[:20])
         )
-    return list(value)
-
-
-def changed_paths(run_git: Callable[[Sequence[str]], str], base: str, head: str) -> list[str]:
-    return release_authority.changed_paths(run_git, base, head)
+    return paths
 
 
 # ---------------------------------------------------------------------- the fence
@@ -483,6 +498,44 @@ def namespace_expectations(manifest_bytes: bytes, label: str) -> dict[str, _Expe
     return expected
 
 
+BRAIN_PAGE_ARTIFACT = "site/out/brain.html"
+
+
+def frozen_page_expectation(manifest_bytes: bytes, label: str) -> _ExpectedFile:
+    """Return the digest the release declares for its frozen ``/brain`` page.
+
+    The stager copies artifact ``site/out/brain.html`` verbatim to ``brain.html``
+    (``brain-release-public.ts``), outside ``assets/brain``, so it is checked here
+    against the release rather than only against what production serves.
+    """
+    try:
+        value = json.loads(manifest_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise CodeOnlyError(f"{label} is not valid JSON: {exc}") from exc
+    artifacts = _require_object(value, label).get("artifacts")
+    if not isinstance(artifacts, list):
+        raise CodeOnlyError(f"{label} has no artifact inventory")
+    matches = [
+        item
+        for item in artifacts
+        if isinstance(item, dict) and item.get("path") == BRAIN_PAGE_ARTIFACT
+    ]
+    if len(matches) != 1:
+        raise CodeOnlyError(f"{label} must declare exactly one {BRAIN_PAGE_ARTIFACT}")
+    size = matches[0].get("bytes")
+    if isinstance(size, bool) or not isinstance(size, int) or size < 0:
+        raise CodeOnlyError(f"{label} {BRAIN_PAGE_ARTIFACT} bytes must be a byte count")
+    return _ExpectedFile(
+        size, _require_digest(matches[0].get("sha256"), f"{label} {BRAIN_PAGE_ARTIFACT} sha256")
+    )
+
+
+def _require_manifest_digests(current: str, previous: str | None) -> None:
+    for digest in (current, previous):
+        if digest is not None and DIGEST_RE.fullmatch(digest) is None:
+            raise CodeOnlyError("release manifest digest must be 64 lowercase hex characters")
+
+
 def _staged_namespace_manifest(root: Path, digest: str, label: str) -> bytes:
     path = root / RELEASES_DIRECTORY / digest / RELEASE_MANIFEST_NAME
     if path.is_symlink() or not path.is_file():
@@ -528,11 +581,12 @@ def require_brain_surface_shape(
     change to ``wiki/scripts/brain-release-public.ts`` or ``build-public.ts`` — both
     eligible under this policy — cannot redefine what "unchanged" means.
 
+    The frozen ``/brain`` page, staged at ``brain.html`` beside ``assets/brain``, is
+    measured against the reused release's ``site/out/brain.html`` the same way.
+
     Returns the sorted mutable surface (the files served outside ``releases/``).
     """
-    for digest in (current_manifest_sha256, previous_manifest_sha256):
-        if digest is not None and DIGEST_RE.fullmatch(digest) is None:
-            raise CodeOnlyError("release manifest digest must be 64 lowercase hex characters")
+    _require_manifest_digests(current_manifest_sha256, previous_manifest_sha256)
     if previous_manifest_sha256 == current_manifest_sha256:
         raise CodeOnlyError("the retained previous release must differ from the reused release")
     root = staged_public / "assets" / "brain"
@@ -549,10 +603,10 @@ def require_brain_surface_shape(
             f"{sorted(present)}"
         )
 
-    current = namespace_expectations(
-        _staged_namespace_manifest(root, current_manifest_sha256, "reused release manifest"),
-        "reused release manifest",
+    current_manifest = _staged_namespace_manifest(
+        root, current_manifest_sha256, "reused release manifest"
     )
+    current = namespace_expectations(current_manifest, "reused release manifest")
     mutable = {
         name: item for name, item in current.items() if name != RELEASE_MANIFEST_NAME
     }
@@ -601,6 +655,14 @@ def require_brain_surface_shape(
                 f"staged Brain-owned file {relative} is not the byte content the reused "
                 "release's manifest declares"
             )
+    page = frozen_page_expectation(current_manifest, "reused release manifest")
+    page_path = staged_public / BRAIN_PAGE_PUBLIC_PATH
+    if page_path.is_symlink() or not page_path.is_file():
+        raise CodeOnlyError(f"staged public tree omitted the Brain-owned file {BRAIN_PAGE_PUBLIC_PATH}")
+    if _measure(page_path) != (page.bytes, page.sha256):
+        raise CodeOnlyError(
+            f"staged {BRAIN_PAGE_PUBLIC_PATH} is not the reused release's {BRAIN_PAGE_ARTIFACT}"
+        )
     return sorted([SELECTOR_PUBLIC_NAME, *mutable])
 
 
@@ -611,10 +673,8 @@ def fence_targets(
     previous_manifest_sha256: str | None,
 ) -> list[tuple[str, str]]:
     """Return the ordered ``(staged relative path, production route)`` pairs to compare."""
-    for digest in (current_manifest_sha256, previous_manifest_sha256):
-        if digest is not None and DIGEST_RE.fullmatch(digest) is None:
-            raise CodeOnlyError("release manifest digest must be 64 lowercase hex characters")
-    paths = [SELECTOR_PUBLIC_PATH, f"assets/brain/releases/{current_manifest_sha256}/release.json"]
+    _require_manifest_digests(current_manifest_sha256, previous_manifest_sha256)
+    paths =[SELECTOR_PUBLIC_PATH, f"assets/brain/releases/{current_manifest_sha256}/release.json"]
     if previous_manifest_sha256 is not None:
         paths.append(f"assets/brain/releases/{previous_manifest_sha256}/release.json")
     paths.extend(FENCE_STATIC_PATHS)
@@ -867,17 +927,14 @@ def _require_commit(value: object, label: str) -> str:
 
 
 def _require_path_list(value: object, label: str, expected: str) -> tuple[str, ...]:
-    if not isinstance(value, list) or any(not isinstance(item, str) for item in value):
-        raise CodeOnlyError(f"{label} must be an array of paths")
-    if value != sorted(set(value)):
-        raise CodeOnlyError(f"{label} must be sorted and unique")
-    for path in value:
+    paths = _require_sorted_paths(value, label)
+    for path in paths:
         actual = classify_path(path)
         if actual != expected:
             raise CodeOnlyError(
                 f"{label} lists {path!r}, which this policy classifies as {actual!r}"
             )
-    return tuple(value)
+    return tuple(paths)
 
 
 def validate_record_document(document: Mapping[str, object]) -> CodeOnlyRelease:
@@ -1137,7 +1194,9 @@ def _evaluate(args: argparse.Namespace) -> int:
                 f"{code_commit}; main only moves forward past a released Brain"
             )
     classification = classify_changes(
-        changed_paths(lambda arguments: _git_text(git, repo, *arguments), authority_commit, code_commit)
+        release_authority.changed_paths(
+            lambda arguments: _git_text(git, repo, *arguments), authority_commit, code_commit
+        )
         if code_commit != authority_commit
         else []
     )

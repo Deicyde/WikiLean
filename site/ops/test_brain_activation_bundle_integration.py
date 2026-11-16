@@ -23,6 +23,7 @@ sys.path.insert(0, str(TOOLS))
 sys.path.insert(0, str(BRAIN))
 
 import authority_contracts as contracts  # noqa: E402
+import brain_code_only_release as code_only_policy  # noqa: E402
 import brain_promote_release as promoter  # noqa: E402
 import brain_public_baseline as public_baseline  # noqa: E402
 import build_release  # noqa: E402
@@ -240,6 +241,44 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             )
         )
 
+    def _write_release_inputs(self, build_root: Path) -> None:
+        """Write the reducer inputs both integration releases are built from."""
+        fixture = authority_test_helpers.ReleaseVerificationTest(methodName="runTest")
+        fixture.temp = None
+        fixture.root = build_root
+        fixture.write_release_artifacts()
+        edges_path = build_root / "brain/data/edges.jsonl"
+        edge_lines = edges_path.read_text(encoding="utf-8").splitlines()
+        edge = json.loads(edge_lines[1])
+        edge["provenance"] = {"source": "wikidata"}
+        edges_path.write_text(
+            edge_lines[0]
+            + "\n"
+            + json.dumps(edge, separators=(",", ":"), sort_keys=True)
+            + "\n",
+            encoding="utf-8",
+        )
+        brain_store.write_sqlite_from_jsonl(
+            build_root / "brain/data/brain.sqlite3",
+            build_root / "brain/data",
+        )
+        inventory = {
+            "schema": "wikilean.reducer-input-inventory/v1",
+            "scope": ["fixture"],
+            "classes": {},
+            "inputs": [
+                {
+                    "path": "catalog/data/source_registry.json",
+                    "class": "curated_git_input",
+                    "consumers": ["fixture"],
+                    "purpose": "fixture",
+                }
+            ],
+        }
+        inventory_path = build_root / "brain/authority/reducer-inputs-v1.json"
+        inventory_path.parent.mkdir(parents=True, exist_ok=True)
+        inventory_path.write_bytes(contracts.canonical_json_bytes(inventory))
+
     def test_real_release_and_public_baseline_freeze_and_verify(self) -> None:
         public_source = self.base / "public-source"
         public_source.mkdir()
@@ -284,41 +323,7 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
             str(build_root),
             authority,
         )
-        fixture = authority_test_helpers.ReleaseVerificationTest(methodName="runTest")
-        fixture.temp = None
-        fixture.root = build_root
-        fixture.write_release_artifacts()
-        edges_path = build_root / "brain/data/edges.jsonl"
-        edge_lines = edges_path.read_text(encoding="utf-8").splitlines()
-        edge = json.loads(edge_lines[1])
-        edge["provenance"] = {"source": "wikidata"}
-        edges_path.write_text(
-            edge_lines[0]
-            + "\n"
-            + json.dumps(edge, separators=(",", ":"), sort_keys=True)
-            + "\n",
-            encoding="utf-8",
-        )
-        brain_store.write_sqlite_from_jsonl(
-            build_root / "brain/data/brain.sqlite3",
-            build_root / "brain/data",
-        )
-        inventory = {
-            "schema": "wikilean.reducer-input-inventory/v1",
-            "scope": ["fixture"],
-            "classes": {},
-            "inputs": [
-                {
-                    "path": "catalog/data/source_registry.json",
-                    "class": "curated_git_input",
-                    "consumers": ["fixture"],
-                    "purpose": "fixture",
-                }
-            ],
-        }
-        inventory_path = build_root / "brain/authority/reducer-inputs-v1.json"
-        inventory_path.parent.mkdir(parents=True, exist_ok=True)
-        inventory_path.write_bytes(contracts.canonical_json_bytes(inventory))
+        self._write_release_inputs(build_root)
 
         release_store = self.base / "releases"
         prior = self._build_release(
@@ -824,6 +829,493 @@ class BrainActivationBundleIntegrationTest(unittest.TestCase):
         self.assertEqual(executable.public_dir, retained.public_dir)
         self.assertEqual(executable.bundle_entry, retained.worker_entry)
         self.assertEqual(executable.deploy_config, retained.config)
+
+    def test_code_only_release_freezes_verifies_and_reaches_execution(self) -> None:
+        """A code-only release end to end, with the commits apart as they always are.
+
+        The reused release and its retained predecessor are built at authority A; the
+        website commit C changes Worker source only; the public baseline is frozen at C.
+        The code-only context, freeze, verify and the promoter's execute-side
+        reconstruction must all accept it under the eligibility record.
+        """
+        public_source = self.base / "public-source"
+        public_source.mkdir()
+        _populate_public_source(public_source)
+
+        promotion = self.base / "promotion"
+        promotion.mkdir()
+        self._copy_runtime(promotion)
+        attestation_path = promotion / public_baseline.SOURCE_ATTESTATION_PATH
+        attestation_path.parent.mkdir(parents=True, exist_ok=True)
+        attestation_path.write_bytes(
+            public_baseline.render_source_attestation(public_source)
+        )
+        self._git(promotion, "init", "-q", "--initial-branch=main")
+        for key, value in (
+            ("user.name", "Activation Integration"),
+            ("user.email", "activation-integration@example.invalid"),
+            ("commit.gpgsign", "false"),
+            ("core.hooksPath", "/dev/null"),
+        ):
+            self._git(promotion, "config", key, value)
+        self._git(promotion, "add", ".gitignore", "brain", "scripts", "site", "wiki")
+        self._git(promotion, "commit", "-q", "-m", "activation authority")
+        authority = self._git(promotion, "rev-parse", "HEAD")
+
+        build_a = self.base / "build-a"
+        self._git(promotion, "worktree", "add", "--detach", str(build_a), authority)
+        self._write_release_inputs(build_a)
+        release_store = self.base / "releases"
+        prior = self._build_release(build_a, release_store, authority, "integration-prior")
+        candidate = self._build_release(
+            build_a, release_store, authority, "integration-candidate"
+        )
+
+        # C: a website-only change on top of the reused release's authority.
+        website_path = "wiki/src/code-only.ts"
+        (promotion / website_path).parent.mkdir(parents=True, exist_ok=True)
+        (promotion / website_path).write_text("export const codeOnly = 1;\n", encoding="utf-8")
+        self._git(promotion, "add", website_path)
+        self._git(promotion, "commit", "-q", "-m", "website change")
+        website = self._git(promotion, "rev-parse", "HEAD")
+        self.assertNotEqual(website, authority)
+        build_root = self.base / "build-c"
+        self._git(promotion, "worktree", "add", "--detach", str(build_root), website)
+
+        # In a code-only release the non-Brain baseline binds to C, not to A.
+        baseline = public_baseline.freeze_public_baseline(
+            public_source, self.base / "public-baselines", website, promotion
+        )
+
+        python = str(Path(sys.executable).resolve())
+        isolated_env = dict(os.environ)
+        isolated_env["PYTHONDONTWRITEBYTECODE"] = "1"
+        isolated_env["LC_ALL"] = "C"
+        hostile_bin = self.base / "hostile-bin"
+        hostile_bin.mkdir()
+        for name in ("git", "node", "npm"):
+            shadow = hostile_bin / name
+            shadow.write_text("#!/bin/sh\nexit 97\n", encoding="utf-8")
+            shadow.chmod(0o755)
+        isolated_env["PATH"] = str(hostile_bin)
+        activation_script = promotion / "site/ops/brain_activation_bundle.py"
+        evidence = self.base / "evidence"
+        evidence.mkdir()
+
+        # Production already serves the candidate, retaining the prior release.
+        public_dir = build_root / "wiki/public"
+        stage_result = json.loads(
+            _run(
+                [
+                    str(self.node),
+                    "--experimental-strip-types",
+                    str(ROOT / "wiki/scripts/brain-release-public.ts"),
+                    "--manifest",
+                    str(candidate["manifest"]),
+                    "--release-dir",
+                    str(candidate["root"]),
+                    "--previous-manifest",
+                    str(prior["manifest"]),
+                    "--previous-release-dir",
+                    str(prior["root"]),
+                    "--destination",
+                    str(public_dir / "assets/brain"),
+                    "--brain-page-destination",
+                    str(public_dir / "brain.html"),
+                    "--min-free-bytes",
+                    "0",
+                ],
+                cwd=ROOT,
+                env=isolated_env,
+            ).stdout
+        )
+        staged_body = (public_dir / "assets/brain/current.json").read_bytes()
+        live_selector = json.loads(staged_body)
+        live_selector["audited_at"] = "2029-12-31T00:00:00Z"
+        live_body = (json.dumps(live_selector, sort_keys=True) + "\n").encode()
+
+        candidate_sha = hashlib.sha256(Path(candidate["manifest"]).read_bytes()).hexdigest()
+        prior_sha = hashlib.sha256(Path(prior["manifest"]).read_bytes()).hexdigest()
+        record_path = evidence / "code-only-eligibility.json"
+        record_path.write_bytes(
+            code_only_policy.canonical_json_bytes(
+                code_only_policy.build_record(
+                    brain_release_id=str(candidate["release_id"]),
+                    brain_manifest_sha256=candidate_sha,
+                    brain_authority_commit=authority,
+                    brain_reducer_commit=authority,
+                    previous_release_id=str(prior["release_id"]),
+                    previous_manifest_sha256=prior_sha,
+                    code_commit=website,
+                    selector_sha256=hashlib.sha256(live_body).hexdigest(),
+                    classification=code_only_policy.classify_changes([website_path]),
+                )
+            )
+        )
+        record = code_only_policy.load_record(record_path)
+
+        context_result = _run(
+            [
+                python,
+                str(activation_script),
+                "context",
+                "--build-worktree",
+                str(build_root),
+                "--promotion-worktree",
+                str(promotion),
+                "--git",
+                str(self.git),
+                "--code-only-release",
+                str(record_path),
+            ],
+            cwd=promotion,
+            env=isolated_env,
+        )
+        context = json.loads(context_result.stdout)
+        self.assertEqual(context["authority_git_commit"], authority)
+        self.assertEqual(context["neutral_changes"], [website_path])
+        (evidence / "build-context.json").write_text(context_result.stdout, encoding="utf-8")
+
+        semantic_report = semantic_diff.compare_paths(
+            Path(prior["manifest"]), Path(candidate["manifest"])
+        )
+        _write_json(evidence / "semantic-diff.json", semantic_report)
+        metrics = measure_store.measure_database(
+            Path(candidate["root"]) / "brain/data/brain.sqlite3",
+            release_id=str(candidate["release_id"]),
+            release_id_source=str(candidate["manifest"]),
+            limit=100,
+            iterations=5,
+            warmup=1,
+            check_limit=100,
+        )
+        _write_json(evidence / "release-metrics.json", metrics)
+        _write_json(evidence / "release-result.json", candidate)
+        shadow_public = {
+            "schema": "wikilean.public-build-result/v1",
+            "public_dir": str(public_dir),
+            "mathlib_declarations": 1,
+            "public_baseline": None,
+            "brain": stage_result,
+            "duration_ms": stage_result["duration_ms"],
+            "max_rss_bytes": stage_result["max_rss_bytes"],
+        }
+        _write_json(evidence / "shadow-public-result.json", shadow_public)
+
+        node_version = _run([str(self.node), "--version"], cwd=promotion).stdout.strip()
+        attempt_id = "20300101T000000Z-222222222222-deadbeef00"
+        promoter_work = self.base / "promoter-work"
+        promoter_public_dir = promoter_work / "public"
+        shutil.copytree(public_dir, promoter_public_dir)
+        for item in baseline.files:
+            destination = promoter_public_dir / item.path
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(baseline.root / item.path, destination)
+        worker_dir = promoter_work / "worker"
+        worker_dir.mkdir(parents=True)
+        worker_entry = worker_dir / "index.js"
+        worker_entry.write_text("export default {};\n", encoding="utf-8")
+        deploy_config = promoter_work / "wrangler.jsonc"
+        deploy_config.write_text("{}\n", encoding="utf-8")
+        public_inventory = promoter.inventory_tree(promoter_public_dir)
+        worker_inventory = promoter.inventory_tree(worker_dir)
+        promoter.seal_tree_read_only(promoter_public_dir)
+        promoter.seal_tree_read_only(worker_dir)
+        deploy_config.chmod(0o400)
+
+        promoter_brain = json.loads(json.dumps(stage_result))
+        promoter_brain["destination"] = str(promoter_public_dir / "assets/brain")
+        promoter_brain["brain_page"]["destination"] = str(promoter_public_dir / "brain.html")
+        promoter_public_result = {
+            **shadow_public,
+            "public_dir": str(promoter_public_dir),
+            "public_baseline": {
+                "schema": "wikilean.public-asset-baseline/v1",
+                "baseline_id": baseline.baseline_id,
+                "authority_commit": website,
+                "root": str(baseline.root),
+                "files": len(baseline.files),
+                "bytes": baseline.total_bytes,
+            },
+            "brain": promoter_brain,
+        }
+
+        def release_info(built: dict[str, object]) -> promoter.ReleaseInfo:
+            return promoter.ReleaseInfo(
+                str(built["release_id"]),
+                str(built["release"]),
+                Path(str(built["root"])),
+                Path(str(built["manifest"])),
+                hashlib.sha256(Path(str(built["manifest"])).read_bytes()).hexdigest(),
+                authority,
+                authority,
+                promoter.inventory_tree(Path(str(built["root"]))),
+            )
+
+        candidate_info = release_info(candidate)
+        prior_info = release_info(prior)
+
+        def probe_state(body: bytes, trust: str) -> promoter.SelectorState:
+            return promoter.selector_from_probe(
+                promoter.SelectorProbe(
+                    body=body,
+                    body_sha256=hashlib.sha256(body).hexdigest(),
+                    content_type="application/json",
+                    status=200,
+                    trust_source=trust,
+                    url="https://wikilean.jackmccarthy.org/assets/brain/current.json?x=1",
+                ),
+                candidate_info.release_id,
+                candidate_manifest_sha256=candidate_info.manifest_sha256,
+                allow_first_deploy=False,
+            )
+
+        def production(root: Path):
+            # Production serves the reused release's bytes and its own selector.
+            def fetch(route: str) -> bytes:
+                if route == "/" + code_only_policy.SELECTOR_PUBLIC_PATH:
+                    return live_body
+                relative = (
+                    code_only_policy.BRAIN_PAGE_PUBLIC_PATH
+                    if route == code_only_policy.BRAIN_PAGE_ROUTE
+                    else route.lstrip("/")
+                )
+                return (root / relative).read_bytes()
+
+            return fetch
+
+        fence = code_only_policy.brain_surface_fence(
+            promoter_public_dir,
+            current_manifest_sha256=candidate_sha,
+            previous_manifest_sha256=prior_sha,
+            fetch=production(promoter_public_dir),
+        )
+
+        status_body = (
+            b'{"id":"11111111-1111-1111-1111-111111111111",'
+            b'"versions":[{"percentage":100,'
+            b'"version_id":"22222222-2222-2222-2222-222222222222"}]}\n'
+        )
+        history_raw = {"deployments": b"[]\n", "versions": b"[]\n"}
+        history = {
+            key: {"sha256": hashlib.sha256(body).hexdigest(), "bytes": len(body), "entries": 0}
+            for key, body in history_raw.items()
+        }
+        wrangler_installation = {
+            "schema": "wikilean.node-modules-inventory/v1",
+            "root": str(promotion / "wiki" / "node_modules"),
+            "package_lock_sha256": "8" * 64,
+            "objects": 1,
+            "bytes": 1,
+            "symlinks": 0,
+            "sha256": "9" * 64,
+        }
+        node_body = self.node.read_bytes()
+        node_executables = {
+            "schema": "wikilean.node-executables/v1",
+            "node": {
+                "path": str(self.node),
+                "sha256": hashlib.sha256(node_body).hexdigest(),
+                "bytes": len(node_body),
+            },
+            "wrangler": {
+                "path": str(promotion / "wiki/node_modules/wrangler/bin/wrangler.js"),
+                "sha256": "b" * 64,
+                "bytes": 1,
+            },
+        }
+        staged_selector = probe_state(staged_body, "local-staged-file")
+        prepared = promoter.PreparedPromotion(
+            attempt_id,
+            str(staged_selector.audited_at),
+            f"brain-{str(candidate['release'])[:12]}-{attempt_id[-10:]}",
+            f"Brain release {candidate['release_id']} attempt {attempt_id}",
+            candidate_info,
+            prior_info,
+            candidate_info,
+            baseline,
+            probe_state(live_body, "certifi:integration"),
+            promoter.parse_deployment_status(status_body),
+            status_body,
+            status_body,
+            promoter_public_dir,
+            public_inventory,
+            promoter_public_result,
+            staged_selector,
+            worker_dir,
+            worker_entry,
+            worker_inventory,
+            deploy_config,
+            hashlib.sha256(deploy_config.read_bytes()).hexdigest(),
+            node_version,
+            "4.120.0",
+            "certifi:integration",
+            history,
+            history_raw=history_raw,
+            wrangler_installation=wrangler_installation,
+            node_executables=node_executables,
+            promotion_commit=website,
+            neutral_changes=(website_path,),
+            code_only=record,
+            code_only_fence=fence,
+        )
+        receipt_root = self.base / "receipts"
+        receipt_root.mkdir()
+        retained = promoter.retain_dry_run_artifacts(
+            prepared,
+            self.base / "retained-dry-runs",
+            repo_root=promotion,
+            receipt_root=receipt_root,
+        )
+        planner = promoter.BrainPromoter(
+            repo_root=promotion,
+            python=Path(python),
+            release_id=candidate_info.release_id,
+            release_root=candidate_info.root,
+            public_baseline_id=baseline.baseline_id,
+            public_baseline_root=baseline.root,
+            receipt_root=receipt_root,
+            base_url=promoter.PRODUCTION_ORIGIN,
+            mode="dry-run",
+            code_only_record=record_path,
+        )
+        dry_run = {
+            "schema": promoter.DRY_RUN_SCHEMA,
+            "ok": True,
+            "attempt_id": attempt_id,
+            "proposed_intent": planner._retained_intent_payload(prepared, retained),
+            "production_mutated": False,
+        }
+        self.assertEqual(dry_run["proposed_intent"]["public_baseline"]["authority_commit"], website)
+        _write_json(evidence / "promoter-dry-run.json", dry_run)
+
+        freeze = _run(
+            [
+                python,
+                str(activation_script),
+                "freeze",
+                "--release-manifest",
+                str(candidate["manifest"]),
+                "--semantic-baseline-manifest",
+                str(prior["manifest"]),
+                "--expected-semantic-baseline-id",
+                str(prior["release_id"]),
+                "--public-baseline-manifest",
+                str(baseline.manifest_path),
+                "--source-attestation",
+                str(attestation_path),
+                "--release-result",
+                str(evidence / "release-result.json"),
+                "--release-metrics",
+                str(evidence / "release-metrics.json"),
+                "--shadow-public-result",
+                str(evidence / "shadow-public-result.json"),
+                "--semantic-diff",
+                str(evidence / "semantic-diff.json"),
+                "--promoter-dry-run",
+                str(evidence / "promoter-dry-run.json"),
+                "--build-context",
+                str(evidence / "build-context.json"),
+                "--code-only-release",
+                str(record_path),
+                "--git",
+                str(self.git),
+                "--node",
+                str(self.node),
+                "--npm",
+                str(self.npm),
+                "--python",
+                python,
+                "--output-store",
+                str(self.base / "activation-bundles"),
+            ],
+            cwd=promotion,
+            env=isolated_env,
+        )
+        result = json.loads(freeze.stdout)
+        self.assertTrue(result["ok"])
+        self.assertEqual(result["code_only"]["record_id"], record.record_id)
+        self.assertEqual(result["code_only"]["code_git_commit"], website)
+
+        verified = json.loads(
+            _run(
+                [
+                    python,
+                    str(activation_script),
+                    "verify",
+                    "--bundle-root",
+                    result["root"],
+                    "--expected-bundle-id",
+                    result["bundle_id"],
+                    "--expected-semantic-baseline-id",
+                    str(prior["release_id"]),
+                    "--expected-code-only-record-id",
+                    record.record_id,
+                ],
+                cwd=promotion,
+                env=isolated_env,
+            ).stdout
+        )
+        self.assertEqual(verified["bundle_id"], result["bundle_id"])
+
+        class IntegrationPromoter(promoter.BrainPromoter):
+            def _verify_release(
+                inner,
+                expected_release_id,
+                root_input,
+                *,
+                allow_legacy_release_id_root=False,
+            ):
+                del allow_legacy_release_id_root
+                for info in (candidate_info, prior_info):
+                    if expected_release_id == info.release_id and Path(root_input) == info.root:
+                        return info
+                raise AssertionError((expected_release_id, root_input))
+
+            def _check_git_authority(inner, expected_commit, *, code_only=False):
+                self.assertTrue(code_only)
+                self.assertEqual(expected_commit, authority)
+                inner._authority_equivalence = {
+                    "policy": promoter.CODE_ONLY_POLICY,
+                    "authority_commit": expected_commit,
+                    "promotion_commit": website,
+                    "neutral_changes": [website_path],
+                }
+                return website
+
+            def _verify_toolchain(inner):
+                return node_version, "4.120.0"
+
+            def _wrangler_installation_identity(inner):
+                return wrangler_installation
+
+            def _node_executables_identity(inner):
+                return node_executables
+
+        execution = IntegrationPromoter(
+            repo_root=promotion,
+            python=Path(python),
+            release_id=candidate_info.release_id,
+            release_root=candidate_info.root,
+            public_baseline_id=baseline.baseline_id,
+            public_baseline_root=baseline.root,
+            activation_bundle_id=result["bundle_id"],
+            activation_bundle_root=Path(result["root"]),
+            expected_semantic_baseline_id=str(prior["release_id"]),
+            receipt_root=receipt_root,
+            base_url=promoter.PRODUCTION_ORIGIN,
+            mode="execute",
+            approval_note="integration reviewed code-only activation",
+            code_only_record=record_path,
+            code_only_fetcher=production(retained.public_dir),
+        )
+        reviewed = execution._verify_reviewed_activation()
+        executable = execution._prepare_reviewed_activation(reviewed)
+        self.assertEqual(executable.activation.bundle_id, result["bundle_id"])
+        self.assertIsNotNone(executable.code_only)
+        self.assertEqual(executable.code_only.record_id, record.record_id)
+        self.assertEqual(executable.code_only_fence, fence)
+        self.assertEqual(executable.public_dir, retained.public_dir)
 
 
 if __name__ == "__main__":

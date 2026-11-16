@@ -346,7 +346,7 @@ surface fence below re-measures the served bytes before Wrangler is invoked.
 `wikilean.code-only-release-paths/v1`. Every path that differs between the reused
 release's authority commit `A` and `C` must be release-neutral
 (`brain_release_authority.py`, unchanged) or **website-only**: `wiki/src`,
-`wiki/assets`, `wiki/scripts`, `wiki/migrations`, `wiki/migrations-brain`, the named
+`wiki/assets`, `wiki/scripts`, `wiki/migrations`, the named
 `wiki/` build and configuration files including `wrangler.jsonc`, the lockfile and
 `public-asset-source-attestation.json`, `site/assets`, and the five named non-Brain
 public-asset generators. Everything else is blocking, deny-by-default, so a new
@@ -354,18 +354,22 @@ top-level file is never silently eligible.
 
 Blocking includes everything that feeds the frozen release: `brain/`, `catalog/`,
 `site/annotations*`, `site/data`, `site/cache`, `site/assets/brain`, the five
-`bot/state/` reducer inputs, `site/test_frontier_page.py`, and —
+`bot/state/` reducer inputs, `site/test_frontier_page.py`, `wiki/migrations-brain`
+(the schema of the Brain's D1 serving database, which the fence cannot measure), and —
 importantly — **`site/build_brain_page.py`**. The `/brain` page is a release artifact
 (`site/out/brain.html`), and the promoter serves the frozen copy, so a change to its
 builder cannot ship through a path that reuses the release. A release that touches it
 takes the full path. Two more rules: a change under `site/assets` or `wiki/assets`
 must be accompanied by a change to `wiki/public-asset-source-attestation.json`, or
 nothing was regenerated and the change would be reviewed as shipped without shipping;
-and a change to `wiki/wrangler.jsonc` or `wiki/src/security.ts` is eligible but
-flagged `review_required`, because routes, static-asset configuration and the
-generated `_headers` file decide how the unchanged Brain bytes are *served*. The
-surface fence compares bodies, not response headers, so those two are the operator's
-to read and the post-deploy canary's to catch — the same exposure a full release has.
+and a change to `wiki/wrangler.jsonc`, `wiki/src/security.ts`, `wiki/src/index.ts` or
+any `wiki/src/brain*` module is eligible but flagged `review_required`, because routes,
+static-asset configuration, the generated `_headers` file and the Worker code that
+answers Brain requests decide how the unchanged Brain bytes are *served*. The surface
+fence compares the staged files with what the current Worker serves, not with what
+the new one will, and bodies rather than response headers, so those files are the
+operator's to read and the post-deploy canary's to catch — the same exposure a full
+release has.
 
 ### The Brain surface fence
 
@@ -471,11 +475,14 @@ bash site/ops/brain-promote-release.sh sha256:<live-release-hex> \
   --retain-dry-run-store "$WIKILEAN_BRAIN_PROMOTER_DRY_RUN_STORE" \
   > "$EVIDENCE_DIR/promoter-dry-run.json"
 
-# 5. Build context, exactly as in the full path.
+# 5. Build context. --code-only-release takes the authority from the record (the
+#    reused release's, not C) and checks the changes since it under the code-only
+#    policy; without it the context would name C and the freezer would refuse it.
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py context \
   --build-worktree "$BUILD_WORKTREE" \
   --promotion-worktree "$PROMOTION_WORKTREE" \
   --git "$WIKILEAN_BRAIN_GIT" \
+  --code-only-release "$EVIDENCE_DIR/code-only-eligibility.json" \
   > "$EVIDENCE_DIR/build-context.json"
 
 # 6. Freeze the code-only activation bundle: 12 files, the 11 of the full path plus

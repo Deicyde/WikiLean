@@ -93,6 +93,9 @@ def make_repo(root: Path) -> Path:
     return repo
 
 
+BRAIN_PAGE_BODY = b"<html>brain</html>\n"
+
+
 def make_release(
     base: Path,
     release_id: str = RELEASE_A,
@@ -122,11 +125,19 @@ def make_release(
             }
             for public, body in sorted(public_bodies.items())
         ]
+        # The frozen /brain page the stager copies verbatim to brain.html.
+        document["artifacts"].append(
+            {
+                "path": "site/out/brain.html",
+                "bytes": len(BRAIN_PAGE_BODY),
+                "sha256": hashlib.sha256(BRAIN_PAGE_BODY).hexdigest(),
+            }
+        )
     manifest_body = (json.dumps(document, sort_keys=True) + "\n").encode()
     manifest_sha256 = hashlib.sha256(manifest_body).hexdigest()
     root = (base / "store" / manifest_sha256).resolve()
     (root / "site" / "out").mkdir(parents=True)
-    (root / "site" / "out" / "brain.html").write_text("<html>brain</html>\n", encoding="utf-8")
+    (root / "site" / "out" / "brain.html").write_bytes(BRAIN_PAGE_BODY)
     manifest = root / "release.json"
     manifest.write_bytes(manifest_body)
     return promote.ReleaseInfo(
@@ -1674,7 +1685,7 @@ class BrainPromotionUnitTest(unittest.TestCase):
             self.assertEqual(block["policy"], promote.CODE_ONLY_POLICY)
             self.assertEqual(block["record_id"], record_document["record_id"])
             self.assertEqual(block["reused_release_id"], candidate.release_id)
-            self.assertEqual(block["review_required"], ["wiki/wrangler.jsonc"])
+            self.assertEqual(block["review_required"], ["wiki/src/index.ts", "wiki/wrangler.jsonc"])
             fence = block["brain_surface_fence"]
             # selector + both immutable manifests + 8 required files
             # + the deterministic shard + /brain.
