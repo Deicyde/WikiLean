@@ -37,6 +37,23 @@ import make_fixture  # noqa: E402
 
 RECORDSET = HERE / "fixtures" / "recordset"
 STORE = HERE / "fixtures" / "store"
+# The pipeline's own synthetic sealed cut (docs/STATEMENTS.md), written by
+# scripts/pipeline/fixtures/make_statement_fixture.py, the marked revision of its first article
+# (make_reader_fixture.py), and the golden store of a MIXED build: that cut beside the record
+# set, under the record set's own universe.json as the tagging universe. Rebuild it with
+#   python3 scripts/articles/build_store.py --record-set scripts/articles/fixtures/recordset \
+#       --statement-set scripts/pipeline/fixtures/statementset \
+#       --tagging-universe scripts/articles/fixtures/recordset/universe.json \
+#       --reader-html scripts/articles/fixtures/reader-html-statements.json \
+#       --campaign mixed-fixture --out scripts/articles/fixtures/store-mixed --replace
+# The Worker reads this store too (wiki/test/articles-store-mixed.test.ts and
+# wiki/e2e/articles.spec.ts, "the built mixed store"), so the two halves of phase 1 cannot
+# drift: the bytes below are the bytes those tests serve.
+STATEMENTSET = ROOT / "scripts" / "pipeline" / "fixtures" / "statementset"
+TAGGING_UNIVERSE = RECORDSET / "universe.json"
+STATEMENT_READER_HTML = HERE / "fixtures" / "reader-html-statements.json"
+MIXED_STORE = HERE / "fixtures" / "store-mixed"
+MIXED_CAMPAIGN = "mixed-fixture"
 PRODUCER_TABLE = HERE / "fixtures" / "producer_derive_status.json"
 # The parity table both sides run: formal-companion's tests/data/locate/status-parity.json at
 # the commit docs/ARTICLES.md section 3, check 6 names, byte for byte.
@@ -2550,11 +2567,11 @@ class CombinedSetTests(unittest.TestCase):
             with self.assertRaises(build_store.ArticlesError) as caught:
                 build_store.build(sets or [self.a, self.b], campaign=campaign)
             self.assertIn(fragment, str(caught.exception))
-        refuse("a build of several record sets needs --campaign", campaign=None)
-        refuse("a build of several record sets needs --campaign", campaign="run:loc-a")
+        refuse("a build of several sets needs --campaign", campaign=None)
+        refuse("a build of several sets needs --campaign", campaign="run:loc-a")
         with self.assertRaises(build_store.ArticlesError) as caught:
             build_store.build(self.a, campaign="fixture-batch")
-        self.assertIn("--campaign names a build of several record sets", str(caught.exception))
+        self.assertIn("--campaign names a build of several sets", str(caught.exception))
         refuse("set_id appears twice", [self.a, self.a])
         self.reseal(self.b, skill_commit="0" * 40)
         refuse("SEAL.json skill_commit differs from fixture-a's")
@@ -2582,6 +2599,447 @@ class CombinedSetTests(unittest.TestCase):
                                      "--check"])
         self.assertEqual(code, 2)
         self.assertIn("needs --campaign", err.getvalue())
+
+
+class StatementSetTests(unittest.TestCase):
+    """--statement-set: a published cut in the store, checked and unchecked (P3).
+
+    What is held: a build with no statement set is byte for byte the build it always was
+    (R0 and the golden store); a mixed build is the committed golden mixed store; and
+    every field the design names is on the article, with the exact value it names.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.tmp = Path(self._tmp.name)
+
+    def build(self, *, records=(RECORDSET,), cuts=(STATEMENTSET,),
+              universe=TAGGING_UNIVERSE, campaign=MIXED_CAMPAIGN, **kw):
+        return build_store.build([Path(d) for d in records], campaign=campaign,
+                                 statement_sets=[Path(d) for d in cuts],
+                                 tagging_universe=universe, **kw)
+
+    def refuse(self, fragment: str, **kw) -> None:
+        with self.assertRaises(build_store.ArticlesError) as caught:
+            self.build(**kw)
+        self.assertIn(fragment, str(caught.exception))
+
+    def golden(self) -> dict[str, bytes]:
+        """The committed golden mixed store's own build: the cut beside the record set, with the
+        cut's first article's marked revision (the command in the header comment)."""
+        return self.build(supplements=build_store.Supplements.read(reader_html=STATEMENT_READER_HTML))
+
+    def reader_file(self, **change) -> Path:
+        """The committed reader-html side file, with the named entries of its one article changed."""
+        doc = json.loads(STATEMENT_READER_HTML.read_text(encoding="utf-8"))
+        doc["articles"]["1005"] = {**doc["articles"]["1005"], **change}
+        path = self.tmp / "reader-html.json"
+        path.write_text(json.dumps(doc, ensure_ascii=False), encoding="utf-8")
+        return path
+
+    # ---- R0: nothing changes for a build with no statement set -------------------
+
+    def test_a_build_with_no_statement_set_is_byte_for_byte_the_build_it_was(self):
+        tree = build_store.build(RECORDSET)
+        self.assertEqual(build_store.check_tree(STORE, tree), [])
+        self.assertEqual(tree, build_store.build(RECORDSET, statement_sets=[]))
+        index = json.loads(tree["articles/v1/index/1.json"])
+        self.assertEqual(index["fields"], build_store.INDEX_FIELDS)
+        self.assertNotIn("not_checked", index["fields"])
+        article = json.loads(tree["articles/v1/articles/1001.json"])
+        self.assertNotIn("checked", article)
+        self.assertNotIn("not_checked", article["summary"]["by_status"])
+
+    # ---- the golden mixed store ---------------------------------------------------
+
+    def test_the_golden_mixed_store_matches_a_fresh_build(self):
+        self.assertEqual(build_store.check_tree(MIXED_STORE, self.golden()), [])
+
+    def test_a_mixed_build_is_deterministic(self):
+        self.assertEqual(self.build(), self.build())
+
+    def test_a_statement_only_build_needs_no_campaign_and_no_record_set(self):
+        tree = build_store.build(statement_sets=[STATEMENTSET],
+                                 tagging_universe=TAGGING_UNIVERSE)
+        current = json.loads(tree["articles/v1/current.json"])
+        self.assertEqual(current["campaign"], "fixture-2026-11")
+        self.assertNotIn("record_sets", current)
+        self.assertEqual(current["record_set"]["schema"],
+                         build_store.STATEMENT_SET_SCHEMA)
+        self.assertEqual(current["record_set"]["cut_rules"],
+                         {"span_end_rule": 3, "statement_cut_rule": 4})
+        self.assertNotIn("skill_commit", current["record_set"])
+        self.assertEqual(sorted(p for p in tree if "/records/" in p), [])
+
+    # ---- the article a statement set builds ---------------------------------------
+
+    def article(self, pageid: int = 1005) -> dict:
+        return json.loads(self.build()[f"articles/v1/articles/{pageid}.json"])
+
+    def test_the_article_says_nothing_was_checked(self):
+        article = self.article()
+        self.assertIs(article["checked"], False)
+        self.assertIsNone(article["records_sha256"])
+        self.assertEqual(article["licence"], {"text": "CC-BY-SA-4.0", "mapping": "CC0-1.0"})
+        self.assertEqual(article["universe"]["sha256"],
+                         json.loads(TAGGING_UNIVERSE.read_text())["universe_sha256"])
+        self.assertEqual(article["seal"],
+                         {"set_id": "pipeline-statement-fixture",
+                          "schema": build_store.STATEMENT_SET_SCHEMA,
+                          "created": "2026-11-12T00:00:00Z",
+                          "producer_commit": "77" * 20,
+                          "cut_rules": {"span_end_rule": 3, "statement_cut_rule": 4}})
+        self.assertNotIn("articles/v1/records/1005.jsonl", self.build())
+
+    def test_a_record_set_article_of_a_mixed_build_says_it_was_checked(self):
+        article = json.loads(self.build()["articles/v1/articles/1001.json"])
+        self.assertIs(article["checked"], True)
+        self.assertEqual(article["summary"]["by_status"]["not_checked"], 0)
+        # and is otherwise the article it is without the statement set, field for field
+        plain = json.loads(build_store.build(RECORDSET)["articles/v1/articles/1001.json"])
+        article.pop("checked")
+        for counts in (article["summary"]["by_status"],
+                       *(b["by_status"] for b in article["summary"]["by_prominence"].values())):
+            counts.pop("not_checked")
+        self.assertEqual(article, plain)
+
+    def test_every_passage_is_unchecked_and_has_no_status(self):
+        for passage in self.article()["passages"]:
+            self.assertEqual(passage["outcome"], "unchecked")
+            self.assertIsNone(passage["status"])
+            self.assertEqual(passage["locations"], [])
+            for key in ("absence", "basis", "coverage", "unresolved"):
+                self.assertIsNone(passage[key], key)
+            self.assertTrue(passage["subject_uri"].endswith("curid=1005&oldid=3006"))
+
+    def test_a_passage_carries_the_cuts_statement_and_conjuncts(self):
+        by_item = {p["item"]: p for p in self.article()["passages"]}
+        compound = next(p for p in by_item.values() if p["conjuncts"])
+        self.assertEqual(compound["shape"], "existence_uniqueness")
+        self.assertEqual([c["id"] for c in compound["conjuncts"]], ["c1", "c2"])
+        self.assertEqual(sorted(compound["conjuncts"][0]), ["id", "text"])
+        self.assertTrue(all(p["statement"] for p in by_item.values()))
+        simple = next(p for p in by_item.values() if p["conjuncts"] is None)
+        self.assertIsNone(simple["shape"])
+
+    def test_only_a_formal_math_statement_is_published(self):
+        """A locate run searches the formal_math passages and no others, so the store
+        shows those and only those: "0 of N checked" is the same N phase 2 answers for."""
+        sealed = [json.loads(line) for line
+                  in (STATEMENTSET / "statements/enwiki-1005-3006.jsonl").read_text(
+                      encoding="utf-8").split("\n") if line.strip()]
+        self.assertEqual(len(sealed), 5)
+        self.assertEqual(len([row for row in sealed if row["scope"] == "formal_math"]), 4)
+        self.assertEqual([p["item"] for p in self.article()["passages"]],
+                         [row["item"] for row in sealed if row["scope"] == "formal_math"])
+
+    def test_the_keys_are_the_sealed_ones_so_a_tag_lands_on_the_pipelines_row(self):
+        sealed = {json.loads(line)["item"]: json.loads(line)["passage_key"] for line
+                  in (STATEMENTSET / "statements/enwiki-1005-3006.jsonl").read_text(
+                      encoding="utf-8").split("\n") if line.strip()}
+        for passage in self.article()["passages"]:
+            self.assertEqual(passage["passage_key"], sealed[passage["item"]])
+            self.assertEqual(passage["passage_key"],
+                             build_store.passage_key(1005, json.loads(
+                                 [line for line
+                                  in (STATEMENTSET / "statements/enwiki-1005-3006.jsonl")
+                                  .read_text(encoding="utf-8").split("\n")
+                                  if line.strip() and passage["item"] in line][0]
+                             )["span_sha256"]))
+
+    # ---- the counts ----------------------------------------------------------------
+
+    def test_not_checked_is_a_summary_status_of_its_own(self):
+        tree = self.build()
+        current = json.loads(tree["articles/v1/current.json"])
+        self.assertEqual(current["counts"]["by_status"]["not_checked"], 6)
+        self.assertEqual(current["counts"]["by_status"]["not_formalized"], 1)
+        self.assertEqual(current["counts"]["by_status"]["unresolved"], 1)
+        self.assertEqual(sorted(current["counts"]["by_status"]),
+                         sorted(build_store.STATEMENT_SUMMARY_STATUSES))
+        # the sixth status is APPENDED to the index fields, after `libraries`
+        index = json.loads(tree["articles/v1/index/7.json"])
+        self.assertEqual(index["fields"], build_store.STATEMENT_INDEX_FIELDS)
+        self.assertEqual(index["fields"][-1], "not_checked")
+        row = dict(zip(index["fields"], index["articles"][0]))
+        self.assertEqual((row["title"], row["passages"], row["not_checked"],
+                          row["not_formalized"], row["libraries"]),
+                         ("Gadget cover", 2, 2, 0, []))
+
+    # ---- the tagging universe --------------------------------------------------------
+
+    def test_a_statement_set_needs_a_tagging_universe(self):
+        self.refuse("--statement-set needs --tagging-universe", universe=None)
+
+    def test_a_tagging_universe_without_a_statement_set_is_refused(self):
+        with self.assertRaises(build_store.ArticlesError) as caught:
+            build_store.build(RECORDSET, tagging_universe=TAGGING_UNIVERSE)
+        self.assertIn("--tagging-universe names the universe", str(caught.exception))
+
+    def test_every_set_of_a_build_resolves_to_one_universe_json(self):
+        other = self.tmp / "universe.json"
+        raw = json.loads(TAGGING_UNIVERSE.read_text(encoding="utf-8"))
+        other.write_text(json.dumps(raw, sort_keys=True) + "\n", encoding="utf-8")
+        self.refuse("universe.json differs", universe=other)
+        self.refuse("pass the record sets' own universe.json", universe=other)
+
+    def test_a_tagging_universe_is_held_to_the_universe_contract(self):
+        for body, expected in ((b"{", "not UTF-8 JSON"), (b"[]", "not an object"),
+                               (b'{"id": "!", "universe_sha256": "' + b"a" * 64 + b'"}',
+                                "id must be"),
+                               (b'{"id": "u", "universe_sha256": "nope"}',
+                                "universe_sha256 must be 64 lowercase hex"),
+                               (b'{"id": "u", "universe_sha256": "' + b"a" * 64 + b'"}',
+                                "libraries must be")):
+            with self.subTest(expected=expected):
+                path = self.tmp / "u.json"
+                path.write_bytes(body)
+                self.refuse(expected, universe=path)
+
+    # ---- what a statement set may not be ---------------------------------------------
+
+    def copy_set(self) -> Path:
+        self._copies = getattr(self, "_copies", 0) + 1
+        out = self.tmp / f"statementset-{self._copies}"
+        shutil.copytree(STATEMENTSET, out)
+        return out
+
+    def reseal(self, out: Path, rel: str, text: str) -> None:
+        (out / rel).write_text(text, encoding="utf-8")
+        seal = json.loads((out / "SEAL.json").read_text(encoding="utf-8"))
+        seal["files"][rel] = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        (out / "SEAL.json").write_text(
+            json.dumps(seal, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+
+    def rows(self, out: Path) -> list[dict]:
+        return [json.loads(line) for line
+                in (out / "statements/enwiki-1005-3006.jsonl").read_text(
+                    encoding="utf-8").split("\n") if line.strip()]
+
+    def write_rows(self, out: Path, rows: list[dict]) -> None:
+        self.reseal(out, "statements/enwiki-1005-3006.jsonl",
+                    "".join(json.dumps(row, sort_keys=True, separators=(",", ":"),
+                                       ensure_ascii=False) + "\n" for row in rows))
+
+    def test_text_utf8_cannot_carry_is_refused_not_a_crash(self):
+        """A lone surrogate reaches a sealed set only as a \\udXXX escape, and every file
+        of the store is UTF-8: refused by name, never raised by the canonical JSON of the
+        view it would have reached (the builder answers 2, not 3)."""
+        out = self.copy_set()
+        rows = self.rows(out)
+        rows[0] = {**rows[0], "statement": rows[0]["statement"] + "\ud800"}
+        self.reseal(out, "statements/enwiki-1005-3006.jsonl",
+                    "".join(json.dumps(row, sort_keys=True, separators=(",", ":"),
+                                       ensure_ascii=True) + "\n" for row in rows))
+        self.refuse("statement holds a character UTF-8 cannot carry", cuts=(out,))
+
+    def test_a_line_ends_at_a_newline_alone_as_the_producers_reader_reads_it(self):
+        """JSON holds a U+2028 unescaped inside a string and the writer writes it so
+        (keys.canonical_line, ensure_ascii False). str.splitlines would cut the line in
+        two and call a sealed, untampered file broken JSON."""
+        out = self.copy_set()
+        rows = self.rows(out)
+        rows[0] = {**rows[0], "statement": "A sprocket bundle.\u2028One sprocket a handle."}
+        self.write_rows(out, rows)
+        article = json.loads(self.build(cuts=(out,))["articles/v1/articles/1005.json"])
+        self.assertEqual(article["passages"][0]["statement"],
+                         "A sprocket bundle.\u2028One sprocket a handle.")
+
+    def test_a_seal_that_is_not_a_statement_sets_is_refused(self):
+        self.refuse("schema must be 'wikilean.statement-set/1'", cuts=(RECORDSET,))
+
+    def test_a_record_set_is_not_a_statement_set_and_the_other_way_about(self):
+        with self.assertRaises(build_store.ArticlesError) as caught:
+            build_store.build(STATEMENTSET)
+        self.assertIn("schema must be 'cf-locate-recordset/1'", str(caught.exception))
+
+    def test_what_a_statement_sets_seal_may_not_say(self):
+        for change, expected in (({"universe": {"id": "u"}}, "unexpected 'universe'"),
+                                 ({"producer_commit": "nope"}, "producer_commit must be"),
+                                 ({"created": "yesterday"}, "created must be"),
+                                 ({"campaign": "run:"}, "campaign must be"),
+                                 ({"set_id": "!"}, "set_id must be"),
+                                 ({"cut_rules": {"span_end_rule": 3}}, "cut_rules must be"),
+                                 ({"cut_rules": {"span_end_rule": 0,
+                                                 "statement_cut_rule": 4}},
+                                  "must be an integer of 1 or more"),
+                                 ({"sourceset": {"id": "!", "manifest_sha256": "66" * 32}},
+                                  "sourceset.id must be")):
+            with self.subTest(expected=expected):
+                out = self.copy_set()
+                seal = json.loads((out / "SEAL.json").read_text(encoding="utf-8"))
+                seal.update(change)
+                (out / "SEAL.json").write_text(json.dumps(seal, sort_keys=True), encoding="utf-8")
+                self.refuse(expected, cuts=(out,))
+
+    def test_a_statement_the_contract_refuses(self):
+        cases = [
+            ({"item": "In-text #zz"}, "item must be 'In-text #<8 to 16 hex>'"),
+            ({"span": [10, 5]}, "span must be"),
+            ({"passage_key": "0" * 64}, "passage_key must be"),
+            ({"span_sha256": "nope"}, "span_sha256 must be 64 lowercase hex"),
+            ({"quote": {"exact": "", "prefix": "", "suffix": ""}}, "quote must be"),
+            ({"quote": {"exact": "x " * 13, "prefix": "", "suffix": ""}},
+             "exceeds 12 words"),
+            ({"section": [""]}, "section must be the heading path"),
+            ({"fragment": "  x  "}, "fragment must be the section's fragment"),
+            ({"head_words": 0}, "head_words must be"),
+            ({"passage_kind": "lemma"}, "passage_kind must be one of"),
+            ({"prominence": "headline"}, "prominence must be one of"),
+            ({"scope": "maths"}, "scope must be one of"),
+            ({"finder": "hunch"}, "finder must be one of"),
+            ({"statement": ""}, "must carry its restatement"),
+            ({"shape": "cases"}, "ride together"),
+            ({"extra": 1}, "unexpected 'extra'"),
+        ]
+        for change, expected in cases:
+            with self.subTest(expected=expected):
+                out = self.copy_set()
+                rows = self.rows(out)
+                rows[0] = {**rows[0], **change}
+                self.write_rows(out, rows)
+                self.refuse(expected, cuts=(out,))
+
+    def test_a_compound_statement_the_contract_refuses(self):
+        cases = [
+            ({"conjuncts": [{"id": "c1", "text": "one"}]}, "2 to 5 conjuncts"),
+            ({"conjuncts": [{"id": "c1", "text": "a"}, {"id": "c1", "text": "b"}]},
+             "two conjuncts share an id"),
+            ({"conjuncts": [{"id": "c1", "text": "a", "part": "x" * 64},
+                            {"id": "c2", "text": "b"}]}, "{id, text} and nothing else"),
+            ({"shape": "mixture"}, "shape must be one of"),
+            ({"conjuncts": [{"id": "c1", "text": "a"}, {"id": "c2", "text": "b"},
+                            {"id": "c3", "text": "c"}]}, "has exactly 2 conjuncts"),
+        ]
+        for change, expected in cases:
+            with self.subTest(expected=expected):
+                out = self.copy_set()
+                rows = self.rows(out)
+                rows[1] = {**rows[1], **change}
+                self.write_rows(out, rows)
+                self.refuse(expected, cuts=(out,))
+
+    def test_two_statements_no_key_could_tell_apart_are_refused(self):
+        out = self.copy_set()
+        rows = self.rows(out)
+        self.write_rows(out, [*rows, rows[0]])
+        self.refuse("a second statement with one item or one span text", cuts=(out,))
+
+    def test_a_second_subject_statement_is_refused(self):
+        out = self.copy_set()
+        rows = self.rows(out)
+        rows[3] = {**rows[3], "prominence": "subject"}
+        self.write_rows(out, rows)
+        self.refuse("a second subject statement", cuts=(out,))
+
+    def test_a_file_a_statement_set_may_not_hold(self):
+        out = self.copy_set()
+        self.reseal(out, "universe.json", "{}\n")
+        self.refuse("a statement set holds sources and statements/", cuts=(out,))
+
+    def test_two_sets_may_not_share_a_page_or_a_title(self):
+        out = self.copy_set()
+        rows = [json.loads(line) for line
+                in (out / "sources.jsonl").read_text(encoding="utf-8").split("\n")
+                if line.strip()]
+        rows[0] = {**rows[0], "title": "Widget lemma"}
+        self.reseal(out, "sources.jsonl",
+                    "".join(json.dumps(row, sort_keys=True, separators=(",", ":")) + "\n"
+                            for row in rows))
+        self.refuse("has a title key also in", cuts=(out,))
+
+    # ---- the marked revision of a published cut (--reader-html) -------------------
+    #
+    # A statement set seals every statement's span on the pinned layer, which is all
+    # --reader-html joins on, so a cut's article has a marked revision like any other —
+    # and without one the design's section 3 reader (a neutral highlight on the article's
+    # own text) has nothing to highlight. Its marks carry the passage's own outcome,
+    # "unchecked"; the Worker styles that exactly as it styles not_checked.
+
+    def test_a_cut_article_publishes_its_marked_revision_with_unchecked_marks(self):
+        tree = self.golden()
+        html = tree["articles/v1/reader/1005.html"].decode("utf-8")
+        self.assertEqual(html.count('data-status="unchecked"'), 4)
+        self.assertNotIn('data-status="not_checked"', html)
+        view = json.loads(tree["articles/v1/articles/1005.json"])
+        data = tree["articles/v1/reader/1005.html"]
+        self.assertEqual(view["reader"], {"sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data),
+                                          "marks": 4, "passages": 4, "unplaced": []})
+        # Only the article the side file names, and the plain build is the same but for it.
+        self.assertEqual(sorted(set(tree) - set(self.build())), ["articles/v1/reader/1005.html"])
+        self.assertEqual(json.loads(tree["articles/v1/current.json"])["supplements"]["reader_html"]["articles"], 1)
+
+    def test_the_committed_marked_revision_is_what_its_maker_writes(self):
+        import make_reader_fixture  # scripts/articles/fixtures, on sys.path above
+        self.assertEqual(json.dumps(make_reader_fixture.document(), ensure_ascii=False, indent=2,
+                                    sort_keys=True) + "\n",
+                         STATEMENT_READER_HTML.read_text(encoding="utf-8"))
+
+    def test_a_marks_status_must_be_the_statements_own(self):
+        html = json.loads(STATEMENT_READER_HTML.read_text(encoding="utf-8"))["articles"]["1005"]["html"]
+        self.refuse("a mark's data-status is not its passage's status",
+                    supplements=build_store.Supplements.read(
+                        reader_html=self.reader_file(html=html.replace('data-status="unchecked"',
+                                                                       'data-status="not_formalized"', 1))))
+
+    def test_a_statement_the_store_does_not_publish_may_not_be_marked(self):
+        # The expository statement: the cut kept it, no locate run will ever search it, and the
+        # store does not publish it, so the body's text must run through it unmarked.
+        html = json.loads(STATEMENT_READER_HTML.read_text(encoding="utf-8"))["articles"]["1005"]["html"]
+        marked = html.replace("<p>The reader may picture",
+                              '<p><mark class="atl" data-p="deadbeef" data-status="unchecked" '
+                              'id="p-deadbeef">The reader may picture', 1).replace(
+            "its handles.</p>", "its handles.</mark></p>", 1)
+        self.refuse("a mark's data-p names no passage of this article",
+                    supplements=build_store.Supplements.read(reader_html=self.reader_file(html=marked)))
+
+    # ---- the other side files beside a cut ----------------------------------------
+
+    def test_passage_text_reaches_a_cut_article_and_is_held_to_its_sealed_span(self):
+        layer = ("Every finite sprocket bundle has a trivialising cover, and any two trivialising "
+                 "covers of it agree.")
+        span_sha = hashlib.sha256(layer.encode("utf-8")).hexdigest()
+        key = build_store.passage_key(1005, span_sha)
+        path = self.tmp / "passage-text.json"
+        entry = {"id": "enwiki-1005-3006::In-text #785c06ff", "pageid": 1005,
+                 "span_sha256": span_sha, "layer": layer,
+                 "segments": [{"text": layer}]}
+        path.write_text(json.dumps({"schema": build_store.PASSAGE_TEXT_SCHEMA,
+                                    "passages": {key: entry}}, ensure_ascii=False), encoding="utf-8")
+        tree = self.build(supplements=build_store.Supplements.read(passage_text=path))
+        passage = next(p for p in json.loads(tree["articles/v1/articles/1005.json"])["passages"]
+                       if p["passage_key"] == key)
+        self.assertEqual(passage["text"]["layer"], layer)
+        # The pages show an unchecked statement's text like any other passage's, and the
+        # dashboard's denominator counts it, so `shown` must too (a passage with no status
+        # is the only one set aside unread).
+        self.assertEqual(json.loads(tree["articles/v1/current.json"])["supplements"]["passage_text"],
+                         {"schema": build_store.PASSAGE_TEXT_SCHEMA,
+                          "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+                          "passages": 1, "shown": 1})
+        # The same text under a key no statement of the build has is not quietly dropped.
+        other = build_store.passage_key(1005, "f" * 64)
+        path.write_text(json.dumps({"schema": build_store.PASSAGE_TEXT_SCHEMA,
+                                    "passages": {other: entry}}, ensure_ascii=False), encoding="utf-8")
+        self.refuse("--passage-text: matches no passage of this build",
+                    supplements=build_store.Supplements.read(passage_text=path))
+
+    def test_the_command_line_builds_a_mixed_store(self):
+        out = self.tmp / "store"
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+            code = build_store.main(["--record-set", str(RECORDSET),
+                                     "--statement-set", str(STATEMENTSET),
+                                     "--tagging-universe", str(TAGGING_UNIVERSE),
+                                     "--reader-html", str(STATEMENT_READER_HTML),
+                                     "--campaign", MIXED_CAMPAIGN, "--out", str(out)])
+        self.assertEqual(code, 0, err.getvalue())
+        self.assertEqual(build_store.check_tree(out, self.golden()), [])
+        with contextlib.redirect_stderr(io.StringIO()), contextlib.redirect_stdout(io.StringIO()):
+            with self.assertRaises(SystemExit) as caught:
+                build_store.main(["--out", str(out), "--check"])
+        self.assertEqual(caught.exception.code, 2)
 
 
 class CarryTests(unittest.TestCase):
@@ -3127,6 +3585,30 @@ class SupplementTests(SetCopyTest):
         self.assertEqual(current["provenance"], {"runs": [{**challenge, "rechecked": rechecked}, locate]})
         self.assertEqual(current["supplements"], {"provenance": {
             "schema": build_store.PROVENANCE_SCHEMA, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}})
+
+    def test_a_build_that_also_holds_a_cut_keeps_its_located_articles_side_files(self):
+        """A statement set beside the record sets must not cost the located articles what the
+        side files say about them: #177's combine rule plus a published cut is still one store,
+        and the one the operator uploads has both. The cut's own article carries no provenance
+        (it has no locate run) and no signature (it has no card); its text and its marked
+        revision come from the same side files as any other article's."""
+        provenance = self.write("provenance.json", self.provenance_doc())
+        signatures = self.signature_file(self.signature_table())
+        key, bound = self.text_entry(self.BOUND_ID, 1001, self.BOUND_TEXT)
+        text = self.passage_text_file((key, bound))
+        tree = build_store.build([self.set], campaign=MIXED_CAMPAIGN, statement_sets=[STATEMENTSET],
+                                 tagging_universe=TAGGING_UNIVERSE,
+                                 supplements=self.supplements(provenance=provenance, signatures=signatures,
+                                                              passage_text=text,
+                                                              reader_html=STATEMENT_READER_HTML))
+        located = json.loads(tree["articles/v1/articles/1001.json"])
+        self.assertIn("provenance", located)
+        self.assertEqual({p["id"]: p.get("text") for p in located["passages"]}[self.BOUND_ID]["layer"], self.BOUND_TEXT)
+        self.assertTrue(any(loc.get("signature") for p in located["passages"] for loc in p["locations"]))
+        cut = json.loads(tree["articles/v1/articles/1005.json"])
+        self.assertNotIn("provenance", cut)
+        self.assertEqual(cut["reader"]["marks"], 4)
+        self.assertIn("articles/v1/reader/1005.html", tree)
 
     def test_provenance_that_does_not_describe_the_records_is_refused(self):
         def refuse(edit, fragment):

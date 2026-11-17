@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build WikiLean's read-only formalization-articles store from one or more sealed locate record sets.
+"""Build WikiLean's read-only formalization-articles store from one or more sealed sets.
 
 New code. Design and contracts: docs/ARTICLES.md. The input is the sealed record set
 the formal-companion skill's locate pipeline exports, in exactly the record-set
@@ -26,11 +26,25 @@ rely on that html.parser):
     python3 scripts/articles/build_store.py --record-set <set-dir> --out <store-dir> --replace
     python3 scripts/articles/build_store.py --record-set <set-a> --record-set <set-b> \
         --campaign <campaign-id> --out <store-dir>
+    python3 scripts/articles/build_store.py --statement-set <cut-dir> \
+        --tagging-universe <universe.json> --out <store-dir>
     python3 scripts/articles/build_store.py --record-set <set-dir> --out <store-dir> \
         [--passage-text <file>] [--signatures <file>] [--provenance <file>] [--reader-html <file>] \
         [--audit-summary <file>]
 
-A set is cf-locate-recordset/1, or cf-locate-recordset/2 (formal-companion
+A **statement set** (wikilean.statement-set/1, docs/STATEMENTS.md) is the other input: a
+published cut, before any locate run. Its passages carry outcome "unchecked" and no status,
+its article says `checked: false` and has no records file, and every by-status map and the
+index fields gain a sixth status, `not_checked`, which is never folded into `not_formalized`.
+A cut searched nothing and so names no libraries, so --tagging-universe attaches the universe
+a reader may tag against; in a build that mixes the two, every set must resolve to one
+universe.json byte for byte. A build with no statement set is byte for byte the build it
+always was. The side files below describe what they are about and no more: a cut article's
+marked revision and its passages' text come from the same two files as any other article's
+(its marks carry the passage's own outcome, "unchecked"), it has no card for --signatures
+and no locate run for --provenance. Design and contract: docs/ARTICLES.md section 4a.
+
+A record set is cf-locate-recordset/1, or cf-locate-recordset/2 (formal-companion
 references/locate-documents.md §6, "The record set of status rule 2"): /1 plus SEAL.json's
 status_rule (2 or 3), the revision-free passage_key and pair_key on its records and the
 coverage claim as a bundle, each recomputed here, with every status derived by the seal's
@@ -122,6 +136,43 @@ MAX_INDEX_SHARD_BYTES = 1024 * 1024
 INDEX_FIELDS = ["title", "pageid", "revision", "passages", "formalized", "statement_only",
                 "partial", "not_formalized", "unresolved", "importance", "libraries"]
 
+# ---- the statement set (docs/STATEMENTS.md; the producer's copy is scripts/pipeline/vocab.py) ----
+#
+# Phase 1 of the maintainer's 2026-11-12 split publishes a CUT on its own: which sentences of an
+# article state something and where their edges are, and nothing about Lean. It is a sibling of
+# the record set, not a profile of it — no universe (nothing was searched), no receipts, no
+# challenge value and no status — so --statement-set reads it beside --record-set and
+# --tagging-universe attaches the universe a reader may tag against.
+STATEMENT_SET_SCHEMA = "wikilean.statement-set/1"
+STATEMENT_SEAL_KEYS = ("schema", "set_id", "campaign", "sourceset", "producer_commit",
+                       "created", "cut_rules", "files")
+STATEMENT_CUT_RULE_KEYS = ("span_end_rule", "statement_cut_rule")
+STATEMENT_KEYS = ("item", "passage_key", "span", "span_sha256", "head_words", "quote",
+                  "section", "fragment", "passage_kind", "prominence", "scope",
+                  "statement", "finder")
+STATEMENT_OPTIONAL = ("conjuncts", "shape")
+# What the cut said a passage is. Only formal_math is ever located, and only formal_math is
+# published: the store's passages are the ones phase 2 will search, so the two phases count the
+# same passages. The rest stay in the sealed set.
+SCOPE_FORMAL_MATH = "formal_math"
+SCOPES = frozenset({SCOPE_FORMAL_MATH, "expository", "non_math"})
+# Which finder proposed the passage: the three deterministic ones, or the model's own.
+FINDERS = frozenset({"theorem_box", "bold_definition", "lead", "model"})
+# The shape of a compound statement, and the shapes whose conjunct count is fixed.
+COMPOUND_SHAPES = frozenset({"existence_uniqueness", "iff", "cases", "conclusions", "equations"})
+SHAPE_CONJUNCT_COUNTS = {"existence_uniqueness": 2}
+# A passage of a statement set: nothing has searched for it, which is NOT "a locate run ran and
+# settled nothing" (`unresolved`) and is never "not formalized". A reader that does not know the
+# outcome word reads the passage's null status as no status yet, uncounted and unhighlighted,
+# which is survivable but not what the pages should show (docs/ARTICLES.md section 4).
+OUTCOME_UNCHECKED = "unchecked"
+NOT_CHECKED = "not_checked"
+# A source's permalink and the licence of its text. A record set states both on every record's
+# subject end; a statement set holds no record, so they come from the source id's family, which
+# SOURCE_ID_RE already pins to English Wikipedia.
+WIKIPEDIA_REVISION_URL = "https://en.wikipedia.org/w/index.php?curid={pageid}&oldid={revision}"
+WIKIPEDIA_TEXT_LICENCE = "CC-BY-SA-4.0"
+
 # Vocabularies of the locate proposal (§2.2, §2.4, §2.6, §2.7, §5).
 KINDS = frozenset({"definition", "theorem", "conjecture", "example", "construction", "notation", "other"})
 PROMINENCES = frozenset({"subject", "central", "supporting"})
@@ -191,6 +242,12 @@ STATUSES = ("formalized", "statement_only", "partial", "not_formalized")
 # Best first, for "the best such location" (cflib.vocab _STATUS_RANK).
 STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 SUMMARY_STATUSES = (*STATUSES, "unresolved")
+# A build that holds a statement set counts a sixth: every by_status map gains not_checked, and
+# the index rows and INDEX_FIELDS gain it after `libraries` (appended within v1 — the Worker
+# looks a field up by name). A build with no statement set is byte for byte the build it always
+# was, which is what makes the sixth status safe to add.
+STATEMENT_SUMMARY_STATUSES = (*SUMMARY_STATUSES, NOT_CHECKED)
+STATEMENT_INDEX_FIELDS = [*INDEX_FIELDS, NOT_CHECKED]
 MAX_LOCATIONS = 5          # K, proposal §2.7
 # The exported quote caps (proposal §2.7 and §10): the verbatim-quotation cap that the licence
 # class of an open source allows a record (formal-companion POLICY.md, "quotation, not
@@ -567,11 +624,22 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
         listed = {}
     problems.raise_if_any()
 
+    files = sealed_files(set_dir, listed, problems)
+    problems.raise_if_any()
+    return seal, sha256_hex(seal_bytes), files
+
+
+def sealed_files(set_dir: Path, listed: dict, problems: Problems) -> dict[str, bytes]:
+    """Every file SEAL.json names, with its sha256 checked; refuse strays and symlinks.
+
+    The seal's own grammar differs between a record set and a statement set; this — a
+    seal names every file of the directory and nothing else — is the same for both.
+    """
     present: set[str] = set()
     for path in sorted(set_dir.rglob("*")):
         relative = path.relative_to(set_dir).as_posix()
         if path.is_symlink():
-            problems.add(relative, "symlinks are not allowed in a sealed record set")
+            problems.add(relative, "symlinks are not allowed in a sealed set")
         elif path.is_file() and relative != "SEAL.json":
             present.add(relative)
     files: dict[str, bytes] = {}
@@ -592,6 +660,70 @@ def read_record_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
         files[relative] = data
     for relative in sorted(present - set(listed)):
         problems.add(relative, "present but not listed in SEAL.json")
+    return files
+
+
+def read_statement_set(set_dir: Path) -> tuple[dict, str, dict[str, bytes]]:
+    """Read a sealed statement set's SEAL.json and every file it lists (docs/STATEMENTS.md).
+
+    Eight keys exactly, and four a record set's seal has that this one has not: `universe`
+    (nothing was searched), `status_rule` (nothing was derived), `byte_budget` (no receipts
+    to budget) and `skill_commit`, whose job `producer_commit` does.
+    """
+    problems = Problems()
+    if not set_dir.is_dir():
+        raise ArticlesError(f"{set_dir}: not a directory")
+    seal_path = set_dir / "SEAL.json"
+    if not seal_path.is_file() or seal_path.is_symlink():
+        raise ArticlesError(f"{set_dir}: SEAL.json is missing")
+    seal_bytes = seal_path.read_bytes()
+    try:
+        seal = strict_json(seal_bytes.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise ArticlesError(f"SEAL.json: not valid JSON ({exc})") from exc
+    if not isinstance(seal, dict):
+        raise ArticlesError("SEAL.json: not an object")
+    for message in key_problems(seal, STATEMENT_SEAL_KEYS):
+        problems.add("SEAL.json", message)
+    if "schema" in seal and seal["schema"] != STATEMENT_SET_SCHEMA:
+        problems.add("SEAL.json", f"schema must be {STATEMENT_SET_SCHEMA!r}")
+    if "set_id" in seal and (not isinstance(seal["set_id"], str) or not TOKEN_RE.match(seal["set_id"])):
+        problems.add("SEAL.json", f"set_id must be {TOKEN_RULE}")
+    if "campaign" in seal and (not isinstance(seal["campaign"], str)
+                               or not CAMPAIGN_RE.match(seal["campaign"])):
+        problems.add("SEAL.json", "campaign must be a campaign id or run:<run-id>[+<run-id>], never null")
+    if "producer_commit" in seal and (not isinstance(seal["producer_commit"], str)
+                                      or not HEX40.match(seal["producer_commit"])):
+        problems.add("SEAL.json", "producer_commit must be a 40-hex commit")
+    if "created" in seal and (not isinstance(seal["created"], str) or not CREATED_RE.match(seal["created"])):
+        problems.add("SEAL.json", "created must be an ISO 8601 UTC time ending in Z")
+    sourceset = seal.get("sourceset")
+    if "sourceset" in seal and not isinstance(sourceset, dict):
+        problems.add("SEAL.json", "sourceset must be {id, manifest_sha256}")
+    elif isinstance(sourceset, dict):
+        for message in key_problems(sourceset, SEAL_SOURCESET_KEYS):
+            problems.add("SEAL.json: sourceset", message)
+        if "id" in sourceset and (not isinstance(sourceset["id"], str)
+                                  or not TOKEN_RE.match(sourceset["id"])):
+            problems.add("SEAL.json", f"sourceset.id must be {TOKEN_RULE}")
+        if "manifest_sha256" in sourceset and (not isinstance(sourceset["manifest_sha256"], str)
+                                               or not HEX64.match(sourceset["manifest_sha256"])):
+            problems.add("SEAL.json", "sourceset.manifest_sha256 must be 64 lowercase hex")
+    rules = seal.get("cut_rules")
+    if "cut_rules" in seal and (not isinstance(rules, dict)
+                                or set(rules) != set(STATEMENT_CUT_RULE_KEYS)):
+        problems.add("SEAL.json", f"cut_rules must be {{{', '.join(STATEMENT_CUT_RULE_KEYS)}}}: "
+                                  "the rules the cut ran under")
+    elif isinstance(rules, dict):
+        for name in STATEMENT_CUT_RULE_KEYS:
+            if type(rules[name]) is not int or rules[name] < 1:
+                problems.add("SEAL.json", f"cut_rules.{name} must be an integer of 1 or more")
+    listed = seal.get("files")
+    if not isinstance(listed, dict) or not listed:
+        problems.add("SEAL.json", "files must map each relative path to its sha256")
+        listed = {}
+    problems.raise_if_any()
+    files = sealed_files(set_dir, listed, problems)
     problems.raise_if_any()
     return seal, sha256_hex(seal_bytes), files
 
@@ -734,9 +866,20 @@ def load_universe(seal: dict, files: dict[str, bytes], problems: Problems) -> di
             "frozen": frozen, "libraries": libraries, "excluded": excluded}
 
 
-def load_sources(files: dict[str, bytes], problems: Problems) -> list[dict]:
+def load_sources(files: dict[str, bytes], problems: Problems, *, rows: str = "records",
+                 extension: str = "jsonl", kind: str = "record set",
+                 top: tuple[str, ...] = ("universe.json", "universe.yaml", "sources.jsonl"),
+                 directories: tuple[str, ...] = ("records", "receipts"),
+                 layout: str = "a record set holds universe, sources, records/ and receipts/",
+                 ) -> list[dict]:
+    """The set's sources.jsonl, and the file layout its sources imply.
+
+    ``rows``/``top``/``directories`` are what a statement set differs by: its per-source
+    file is ``statements/<source-id>.jsonl`` and it holds no universe and no receipts.
+    Everything a source row itself is held to is the same for both formats.
+    """
     if "sources.jsonl" not in files:
-        raise ArticlesError("sources.jsonl is missing from the record set")
+        raise ArticlesError(f"sources.jsonl is missing from the {kind}")
     sources: list[dict] = []
     seen_ids: set[str] = set()
     seen_pages: set[int] = set()
@@ -796,17 +939,17 @@ def load_sources(files: dict[str, bytes], problems: Problems) -> list[dict]:
                         "wikidata": wikidata, "html_sha256": row.get("html_sha256"),
                         "layer_sha256": row.get("layer_sha256"), "renderer": renderer,
                         "assessment": clean_assessment or None})
-    record_files = {p for p in files if p.startswith("records/")}
-    expected = {f"records/{s['source_id']}.jsonl" for s in sources}
-    for missing in sorted(expected - record_files):
-        problems.add(missing, "listed source has no records file")
-    for extra in sorted(record_files - expected):
-        problems.add(extra, "records file for a source not in sources.jsonl")
+    row_files = {p for p in files if p.startswith(f"{rows}/")}
+    expected = {f"{rows}/{s['source_id']}.{extension}" for s in sources}
+    for missing in sorted(expected - row_files):
+        problems.add(missing, f"listed source has no {rows} file")
+    for extra in sorted(row_files - expected):
+        problems.add(extra, f"{rows} file for a source not in sources.jsonl")
     for path in sorted(files):
-        top = path.split("/", 1)[0]
+        first = path.split("/", 1)[0]
         # universe.yaml (no longer part of the format) is reported by load_universe.
-        if path not in ("universe.json", "universe.yaml", "sources.jsonl") and top not in ("records", "receipts"):
-            problems.add(path, "unexpected file (a record set holds universe, sources, records/ and receipts/)")
+        if path not in top and first not in directories:
+            problems.add(path, f"unexpected file ({layout})")
     return sources
 
 
@@ -1879,37 +2022,54 @@ def build_passages(classified: list[dict], source: dict, problems: Problems,
 # ---- the store ----------------------------------------------------------------------------
 
 
-def _status_counts() -> dict[str, int]:
-    return {status: 0 for status in SUMMARY_STATUSES}
+def _status_counts(statements: bool = False) -> dict[str, int]:
+    return {status: 0 for status in
+            (STATEMENT_SUMMARY_STATUSES if statements else SUMMARY_STATUSES)}
 
 
-def _prominence_counts() -> dict[str, dict]:
+def _prominence_counts(statements: bool = False) -> dict[str, dict]:
     """Passages and their statuses per prominence: the subject and central passages are the
     article's statements, which the pages count apart from the supporting ones (worked
     examples, setup sentences), so a headline is not set by the supporting passages."""
-    return {prominence: {"passages": 0, "by_status": _status_counts()} for prominence in sorted(PROMINENCES)}
+    return {prominence: {"passages": 0, "by_status": _status_counts(statements)}
+            for prominence in sorted(PROMINENCES)}
+
+
+def summary_status(passage: dict) -> str:
+    """Which summary status a passage counts as.
+
+    A derived status when it has one; `not_checked` when no library was searched for it
+    (`outcome: "unchecked"`); and `unresolved` — a locate run ran and settled nothing —
+    for the rest. The three are never folded into one another, and neither is ever
+    `not_formalized`.
+    """
+    if passage["status"]:
+        return str(passage["status"])
+    return NOT_CHECKED if passage.get("outcome") == OUTCOME_UNCHECKED else "unresolved"
 
 
 def article_view(source: dict, passages: list[dict], universe: dict, seal: dict, seal_sha: str,
-                 records_sha: str, licence: str | None = None) -> dict:
+                 records_sha: str | None, licence: str | None = None,
+                 statements: bool = False, checked: bool = True) -> dict:
     """The article's view model. Runs only on a set that passed every check.
 
     `licence` is the source's, as its records' subject ends name it: the view's `licence` says
     that the text it quotes (each passage's quote, and its text when a side file gives it) is
     under it, and the mapping under MAPPING_LICENCE.
     """
-    by_status = _status_counts()
-    by_prominence = _prominence_counts()
+    by_status = _status_counts(statements)
+    by_prominence = _prominence_counts(statements)
     by_library: dict[str, dict[str, int]] = {}
     by_proof = Counter()
     by_relation = Counter()
     n_locations = n_related = 0
     for passage in passages:
-        by_status[passage["status"] or "unresolved"] += 1
+        status = summary_status(passage)
+        by_status[status] += 1
         # Every record of a set that passed carries its passage's prominence.
         bucket = by_prominence[passage["prominence"]]
         bucket["passages"] += 1
-        bucket["by_status"][passage["status"] or "unresolved"] += 1
+        bucket["by_status"][status] += 1
         if passage["absence"] is not None:
             passage["absence"].update({"universe": universe["id"], "universe_sha256": universe["sha256"],
                                        "libraries": len(universe["libraries"])})
@@ -1953,6 +2113,14 @@ def article_view(source: dict, passages: list[dict], universe: dict, seal: dict,
         # set's view is unchanged): the seal's set, schema, status rule, export time and the
         # producer's commit. The seal records no model and no operator, so neither is here.
         view["seal"] = seal_summary(seal)
+    elif seal.get("schema") == STATEMENT_SET_SCHEMA:
+        view["seal"] = statement_seal_summary(seal)
+    if statements:
+        # Optional within v1 and only in a build that holds a statement set: whether any
+        # library was searched for this article's passages at all. An article built from a
+        # record set is checked; one built from a statement set is not, and its universe is
+        # the tagging universe, not a universe anything was searched in.
+        view["checked"] = checked
     return view
 
 
@@ -1960,6 +2128,16 @@ def seal_summary(seal: dict) -> dict:
     """A /2 seal's provenance fields, as a view model and current.json's record_sets carry them."""
     return {"set_id": seal["set_id"], "schema": seal["schema"], "status_rule": seal["status_rule"],
             "created": seal["created"], "skill_commit": seal["skill_commit"]}
+
+
+def statement_seal_summary(seal: dict) -> dict:
+    """A statement set's seal, the same way: no status rule, and the cut's own rules instead.
+
+    `producer_commit` is NOT written as `skill_commit`: the cut was produced by WikiLean's
+    own pipeline, not by formal-companion, and the two fields mean different producers.
+    """
+    return {"set_id": seal["set_id"], "schema": seal["schema"], "created": seal["created"],
+            "producer_commit": seal["producer_commit"], "cut_rules": dict(seal["cut_rules"])}
 
 
 def check_budget(budget: int, path: str, files: dict[str, bytes], classified: list[dict],
@@ -1982,13 +2160,19 @@ def check_budget(budget: int, path: str, files: dict[str, bytes], classified: li
 
 @dataclass
 class BuiltSet:
-    """One sealed record set that passed every check, and its articles' view models."""
+    """One sealed set that passed every check, and its articles' view models."""
     seal: dict
     seal_sha: str
     universe: dict
     universe_bytes: bytes
-    # (view model, records file bytes) per source, in sources.jsonl order.
-    articles: list[tuple[dict, bytes]]
+    # (view model, records file bytes) per source, in sources.jsonl order. A statement set
+    # holds no record, so its records bytes are None and it publishes no records file.
+    articles: list[tuple[dict, bytes | None]]
+    # Whether this is a statement set (a published cut) rather than a record set.
+    statements: bool = False
+    # A statement set's join rows per page id (statement_join_rows): what a side file is checked
+    # against where a record set's side files are checked against record_rows. Empty otherwise.
+    statement_rows: dict[int, list[dict]] = field(default_factory=dict)
     # Optional (--reader-html): page id -> the article's marked revision, reader/<pageid>.html.
     reader_files: dict[int, bytes] = field(default_factory=dict)
     # And page id -> that revision's text layer, which the body's text was proven to be (its sha256
@@ -1996,8 +2180,14 @@ class BuiltSet:
     reader_layers: dict[int, str] = field(default_factory=dict)
 
 
-def build_set(set_dir: Path, validate: Any, schema_error: Any) -> BuiltSet:
-    """Check one sealed record set and build its articles' view models (ArticlesError when refused)."""
+def build_set(set_dir: Path, validate: Any, schema_error: Any,
+              statements: bool = False) -> BuiltSet:
+    """Check one sealed record set and build its articles' view models (ArticlesError when refused).
+
+    ``statements`` says the build holds a statement set too, so every article carries
+    `checked` and the sixth summary status; it changes nothing else, and a build without
+    one is byte for byte the build it always was.
+    """
     seal, seal_sha, files = read_record_set(set_dir)
     problems = Problems()
     universe = load_universe(seal, files, problems)
@@ -2011,10 +2201,16 @@ def build_set(set_dir: Path, validate: Any, schema_error: Any) -> BuiltSet:
         path = f"records/{source['source_id']}.jsonl"
         classified = []
         try:
-            lines = files[path].decode("utf-8").splitlines()
+            # A line ends at "\n" ALONE, as the producer's reader reads it
+            # (statements._jsonl): JSON holds a U+2028, U+2029 or U+0085 unescaped inside
+            # a string and the writer writes them so, where str.splitlines would cut the
+            # line in two and report a sealed, untampered file as broken JSON.
+            lines = files[path].decode("utf-8").split("\n")
         except UnicodeDecodeError:
             problems.add(path, "not UTF-8")
             continue
+        if lines and lines[-1] == "":
+            lines.pop()         # the newline every canonical line ends with
         for number, line in enumerate(lines, 1):
             at = f"{path}:{number}"
             if not line.strip():
@@ -2045,16 +2241,309 @@ def build_set(set_dir: Path, validate: Any, schema_error: Any) -> BuiltSet:
     articles = []
     for source, passages, licence in built:
         records = files[f"records/{source['source_id']}.jsonl"]
-        articles.append((article_view(source, passages, universe, seal, seal_sha, sha256_hex(records), licence),
+        articles.append((article_view(source, passages, universe, seal, seal_sha, sha256_hex(records), licence,
+                                      statements=statements, checked=True),
                          records))
     return BuiltSet(seal=seal, seal_sha=seal_sha, universe=universe, universe_bytes=files["universe.json"],
                     articles=articles)
+
+
+def build_statement_set(set_dir: Path, universe: dict, universe_bytes: bytes) -> BuiltSet:
+    """Check one sealed statement set and build its articles' view models.
+
+    The universe is **given** (`--tagging-universe`), because a cut searched nothing and
+    so names no libraries. It is the universe a reader may tag against: its
+    `(library id, repo)` pairs must be the ones phase 2 will search, since
+    `POST /api/articles/tag` derives `pair_key` from the library's repo and `pair_key`
+    has no commit in it. The builder cannot check that — only the operator can — so it
+    is written down in docs/ARTICLES.md and in docs/STATEMENTS.md and nowhere enforced.
+    """
+    seal, seal_sha, files = read_statement_set(set_dir)
+    problems = Problems()
+    sources = load_sources(files, problems, rows="statements", kind="statement set",
+                           top=("sources.jsonl",), directories=("statements",),
+                           layout="a statement set holds sources and statements/")
+    problems.raise_if_any()
+    built: list[tuple[dict, list[dict]]] = []
+    for source in sources:
+        path = f"statements/{source['source_id']}.jsonl"
+        classified = []
+        try:
+            # A line ends at "\n" ALONE, as the producer's reader reads it
+            # (statements._jsonl): JSON holds a U+2028, U+2029 or U+0085 unescaped inside
+            # a string and the writer writes them so, where str.splitlines would cut the
+            # line in two and report a sealed, untampered file as broken JSON.
+            lines = files[path].decode("utf-8").split("\n")
+        except UnicodeDecodeError:
+            problems.add(path, "not UTF-8")
+            continue
+        if lines and lines[-1] == "":
+            lines.pop()         # the newline every canonical line ends with
+        for number, line in enumerate(lines, 1):
+            at = f"{path}:{number}"
+            if not line.strip():
+                problems.add(at, "blank line")
+                continue
+            try:
+                row = strict_json(line)
+            except ValueError as exc:
+                problems.add(at, f"not valid JSON ({exc})")
+                continue
+            reduced = classify_statement(row, source, at, problems)
+            if reduced is not None:
+                classified.append(reduced)
+        built.append((source, statement_passages(classified, source, problems), classified))
+    # Every check has run: a refused set never reaches the view code, which assumes the contract.
+    problems.raise_if_any()
+    articles = [(article_view(source, passages, universe, seal, seal_sha, None,
+                              WIKIPEDIA_TEXT_LICENCE, statements=True, checked=False), None)
+                for source, passages, _ in built]
+    rows = {source["pageid"]: statement_join_rows(classified, source, passages)
+            for source, passages, classified in built}
+    return BuiltSet(seal=seal, seal_sha=seal_sha, universe=universe,
+                    universe_bytes=universe_bytes, articles=articles, statements=True,
+                    statement_rows=rows)
+
+
+# ---- the statement set's passages ---------------------------------------------------------
+
+
+def revision_uri(source: dict) -> str:
+    """The permalink of the source's revision, which a record's subject end would state."""
+    return WIKIPEDIA_REVISION_URL.format(pageid=source["pageid"], revision=source["revision"])
+
+
+def _unencodable_fields(value: Any, where: str = "") -> list[str]:
+    """The names of the fields of `value` holding text UTF-8 cannot carry (a lone surrogate)."""
+    if isinstance(value, str):
+        try:
+            value.encode("utf-8")
+        except UnicodeEncodeError:
+            return [where or "the statement"]
+        return []
+    if isinstance(value, dict):
+        return [name for key, inner in value.items()
+                for name in _unencodable_fields(inner, f"{where}.{key}" if where else str(key))]
+    if isinstance(value, list):
+        return [name for n, inner in enumerate(value)
+                for name in _unencodable_fields(inner, f"{where}[{n}]")]
+    return []
+
+
+def classify_statement(row: Any, source: dict, at: str, problems: Problems) -> dict | None:
+    """One sealed statement, checked against the contract (docs/STATEMENTS.md section 2).
+
+    The producer's copy of these rules is `scripts/pipeline/statements.statement_problems`;
+    this is the consumer's, as `scripts/pipeline/test_vocab.py` pins the vocabularies.
+    Every key is checked and `passage_key` is recomputed from the page id and the span's
+    sha256, never copied — a statement whose key disagrees would be tagged on a row no
+    locate run will ever fill in.
+    """
+    if not isinstance(row, dict):
+        problems.add(at, "a statement must be an object")
+        return None
+    for message in key_problems(row, STATEMENT_KEYS, STATEMENT_OPTIONAL):
+        problems.add(at, message)
+    if set(STATEMENT_KEYS) - set(row):
+        return None
+    # A lone surrogate (a \udXXX escape in the sealed line) is text UTF-8 cannot carry, and
+    # every file of the store is UTF-8: refused by name here rather than raised as a
+    # UnicodeEncodeError by the canonical JSON of the view it would have reached. The
+    # producer's rule set says the same (statements.statement_problems).
+    unencodable = sorted(_unencodable_fields(row))
+    if unencodable:
+        problems.add(at, f"{', '.join(unencodable)} holds a character UTF-8 cannot carry "
+                         "(a lone surrogate), and every file of the store is UTF-8")
+        return None
+    item = row["item"]
+    if not isinstance(item, str) or not ITEM_RE.match(item):
+        problems.add(at, "item must be 'In-text #<8 to 16 hex>'")
+        return None
+    span = row["span"]
+    if (not isinstance(span, list) or len(span) != 2
+            or not all(type(offset) is int for offset in span) or not 0 <= span[0] < span[1]):
+        problems.add(at, SPAN_RULE)
+        return None
+    for name in ("span_sha256", "passage_key"):
+        if not isinstance(row[name], str) or not HEX64.match(row[name]):
+            problems.add(at, f"{name} must be 64 lowercase hex")
+            return None
+    computed = passage_key(source["pageid"], row["span_sha256"])
+    if computed != row["passage_key"]:
+        problems.add(at, PASSAGE_KEY_RULE)
+        return None
+    quote = row["quote"]
+    if (not isinstance(quote, dict) or set(quote) != {"exact", "prefix", "suffix"}
+            or not all(isinstance(quote[name], str) for name in quote) or not quote["exact"]):
+        problems.add(at, 'quote must be {"exact", "prefix", "suffix"}, the exact part non-empty')
+        return None
+    for message in _quote_problems(quote):
+        problems.add(at, message)
+    if span[0] + len(quote["exact"]) > span[1]:
+        problems.add(at, "the quote must not run past the end of the span")
+    section = row["section"]
+    if not isinstance(section, list) or any(not isinstance(head, str) or not head.strip()
+                                            for head in section):
+        problems.add(at, "section must be the heading path, [] in the lead")
+        section = []
+    if row["fragment"] is not None and (not isinstance(row["fragment"], str)
+                                        or not row["fragment"].strip()
+                                        or row["fragment"] != row["fragment"].strip()):
+        problems.add(at, "fragment must be the section's fragment, or null")
+    if (not isinstance(row["head_words"], int) or isinstance(row["head_words"], bool)
+            or row["head_words"] < 1):
+        problems.add(at, "head_words must be how many words the head rule hashed")
+    for name, allowed in (("passage_kind", KINDS), ("prominence", PROMINENCES),
+                          ("scope", SCOPES), ("finder", FINDERS)):
+        if not member(row[name], allowed):
+            problems.add(at, f"{name} must be one of {', '.join(sorted(allowed))}")
+            return None
+    if not isinstance(row["statement"], str):
+        problems.add(at, "statement must be the worker's one-sentence restatement")
+        return None
+    if row["scope"] == SCOPE_FORMAL_MATH and not row["statement"].strip():
+        problems.add(at, "a formal_math statement must carry its restatement")
+    if len(row["statement"]) > MAX_REASON_CHARS:
+        problems.add(at, f"statement must be at most {MAX_REASON_CHARS} characters")
+    if row["scope"] != SCOPE_FORMAL_MATH and row["prominence"] != "supporting":
+        problems.add(at, f"a {row['scope']} passage is always supporting")
+    conjuncts = statement_conjuncts(row, at, problems)
+    return {"item": item, "passage_key": row["passage_key"], "span": span,
+            "span_sha256": row["span_sha256"], "quote": quote, "section": section,
+            "kind": row["passage_kind"], "prominence": row["prominence"],
+            "scope": row["scope"], "statement": row["statement"],
+            "conjuncts": conjuncts, "shape": row.get("shape") if conjuncts else None}
+
+
+def statement_conjuncts(row: dict, at: str, problems: Problems) -> list[dict] | None:
+    """A compound statement's conjuncts, or None; `conjuncts` and `shape` ride together."""
+    has = [name for name in STATEMENT_OPTIONAL if name in row]
+    if not has:
+        return None
+    if len(has) != len(STATEMENT_OPTIONAL):
+        problems.add(at, f"{' and '.join(STATEMENT_OPTIONAL)} ride together: a compound "
+                         "statement carries both and a simple one neither")
+        return None
+    if row["scope"] != SCOPE_FORMAL_MATH:
+        problems.add(at, f"conjuncts on a {row['scope']} passage: only a formal_math passage "
+                         "is compound")
+        return None
+    if not member(row["shape"], COMPOUND_SHAPES):
+        problems.add(at, f"shape must be one of {', '.join(sorted(COMPOUND_SHAPES))}")
+        return None
+    conjuncts = row["conjuncts"]
+    if not isinstance(conjuncts, list) or any(
+            not isinstance(c, dict) or set(c) != {"id", "text"}
+            or not isinstance(c["id"], str) or not c["id"].strip() or c["id"] != c["id"].strip()
+            or not isinstance(c["text"], str) or not c["text"].strip()
+            or len(c["text"]) > MAX_CONJUNCT_CHARS for c in conjuncts):
+        problems.add(at, "a conjunct of a cut is {id, text} and nothing else, the id a bare "
+                         f"token and the text non-empty and at most {MAX_CONJUNCT_CHARS} characters")
+        return None
+    if not MIN_CONJUNCTS <= len(conjuncts) <= MAX_CONJUNCTS:
+        problems.add(at, f"a compound statement has {MIN_CONJUNCTS} to {MAX_CONJUNCTS} conjuncts")
+        return None
+    if len({c["id"] for c in conjuncts}) != len(conjuncts):
+        problems.add(at, "two conjuncts share an id")
+        return None
+    wanted = SHAPE_CONJUNCT_COUNTS.get(row["shape"])
+    if wanted is not None and len(conjuncts) != wanted:
+        problems.add(at, f"shape {row['shape']} has exactly {wanted} conjuncts")
+        return None
+    return [{"id": c["id"], "text": c["text"]} for c in conjuncts]
+
+
+def statement_passages(classified: list[dict], source: dict, problems: Problems) -> list[dict]:
+    """The article's passages as the store carries them, in span then item order.
+
+    **Only `formal_math` statements are published.** A locate run searches those and no
+    others, so publishing them and only them is what makes "0 of 89 checked" the same 89
+    phase 2 will answer for. The rest stay in the sealed set.
+    """
+    at = f"statements/{source['source_id']}.jsonl"
+    seen_items: set[str] = set()
+    seen_keys: set[str] = set()
+    subject: str | None = None
+    kept: list[dict] = []
+    for row in sorted(classified, key=lambda r: (r["span"][0], r["item"])):
+        if row["item"] in seen_items or row["passage_key"] in seen_keys:
+            problems.add(at, f"{row['item']} is a second statement with one item or one span "
+                             "text, which no key could tell apart")
+            continue
+        seen_items.add(row["item"])
+        seen_keys.add(row["passage_key"])
+        if row["prominence"] == "subject":
+            if subject is not None:
+                problems.add(at, f"{row['item']} is a second subject statement beside {subject}")
+                continue
+            subject = row["item"]
+        if kept and row["span"][0] < kept[-1]["span"][1]:
+            problems.add(at, f"{row['item']} at {row['span']} shares a character with "
+                             f"{kept[-1]['item']} at {kept[-1]['span']}")
+            continue
+        kept.append(row)
+    uri = revision_uri(source)
+    out = []
+    for row in kept:
+        if row["scope"] != SCOPE_FORMAL_MATH:
+            continue
+        quote = {"exact": row["quote"]["exact"]}
+        for name in ("prefix", "suffix"):
+            if row["quote"][name]:
+                quote[name] = row["quote"][name]
+        out.append({
+            "passage_key": row["passage_key"],
+            "id": f"{source['source_id']}::{row['item']}", "item": row["item"],
+            "kind": row["kind"], "section": row["section"], "prominence": row["prominence"],
+            "quote": quote,
+            **quote_extent(quote, row["span_sha256"], row["span"]),
+            "subject_uri": uri,
+            # Nothing has searched for it: never `unresolved` (a locate run ran and settled
+            # nothing) and never `not_formalized`.
+            "outcome": OUTCOME_UNCHECKED, "status": None,
+            "locations": [], "absence": None, "basis": None, "coverage": None,
+            "unresolved": None,
+            # What the cut itself said, which a located passage has nowhere to put: the
+            # worker's one-sentence restatement, and a compound's conjuncts and shape.
+            "statement": row["statement"], "conjuncts": row["conjuncts"],
+            "shape": row["shape"],
+        })
+    return out
+
+
+def statement_join_rows(classified: list[dict], source: dict, passages: list[dict]) -> list[dict]:
+    """What a side file joins a statement article's published passages on.
+
+    `record_rows` is the record set's answer to the same question; a statement set seals the
+    same span and `span_sha256` on every statement, so `--reader-html` and `--passage-text`
+    check out against a published cut exactly as they do against a record set. Only the
+    passages the store publishes are here: a statement the cut kept but no locate run will
+    ever search (`expository`, `non_math`) is not a passage of the article, so the reader
+    body may not mark it.
+
+    Each row carries what the two side files a cut can have read off a record: `id`,
+    `pageid`, `span`, `span_sha256`, `quote` and `passage_key`. The record-only fields
+    (`shape`, `location_key`, `pair_key`, `challenge`) are **not** here, so a consumer
+    written for records and handed a cut fails rather than reading an invented value.
+    """
+    sealed = {f"{source['source_id']}::{row['item']}": row for row in classified}
+    return [{"id": passage["id"], "pageid": source["pageid"], "quote": passage["quote"],
+             "span": sealed[passage["id"]]["span"], "span_sha256": sealed[passage["id"]]["span_sha256"],
+             "passage_key": passage["passage_key"]}
+            for passage in passages]
 
 
 # What several record sets built into one store share (combined_sets), as SEAL.json names it.
 SHARED_SEAL_FIELDS = ("schema", "universe", "sourceset", "skill_commit")
 COMBINED_RULE = ("record sets built into one store share their universe (universe.json byte for byte), sourceset, "
                  "skill_commit, schema and status_rule, and no page id or title key")
+# The one clause a statement set adds (docs/STATEMENTS.md): every set of a build resolves to ONE
+# universe.json, byte for byte. A statement set carries none, so --tagging-universe supplies its
+# bytes and they must be the record sets' own. Page ids and title keys stay disjoint across every
+# set; the schema, sourceset, skill_commit and status-rule agreement is a record-set rule, since a
+# cut has none of those to agree on.
+MIXED_RULE = ("every set of a build resolves to one universe.json, byte for byte: pass the record "
+              "sets' own universe.json as --tagging-universe")
 
 
 def combined_sets(sets: list[BuiltSet]) -> list[BuiltSet]:
@@ -2068,42 +2557,57 @@ def combined_sets(sets: list[BuiltSet]) -> list[BuiltSet]:
     """
     problems = Problems()
     ordered = sorted(sets, key=lambda built: built.seal["set_id"])
+    records = [built for built in ordered if not built.statements]
     first = ordered[0]
+    agreed = records[0] if records else None
     seen_ids: set[str] = set()
     seen_shas: set[str] = set()
     pages: dict[int, str] = {}
     titles: dict[str, str] = {}
     for built in ordered:
         set_id = built.seal["set_id"]
+        what = "statement set" if built.statements else "record set"
         if set_id in seen_ids:
-            problems.add(f"record set {set_id}", "set_id appears twice: each record set is built in once")
+            problems.add(f"{what} {set_id}", f"set_id appears twice: each set is built in once")
         if built.seal_sha in seen_shas:
-            problems.add(f"record set {set_id}", "the same SEAL.json is given twice")
+            problems.add(f"{what} {set_id}", "the same SEAL.json is given twice")
         seen_ids.add(set_id)
         seen_shas.add(built.seal_sha)
         if built.universe_bytes != first.universe_bytes:
-            problems.add(f"record set {set_id}", f"universe.json differs from {first.seal['set_id']}'s: {COMBINED_RULE}")
-        for key in (*SHARED_SEAL_FIELDS, "status_rule"):
-            if built.seal.get(key) != first.seal.get(key):
-                problems.add(f"record set {set_id}", f"SEAL.json {key} differs from {first.seal['set_id']}'s: "
+            problems.add(f"{what} {set_id}",
+                         f"universe.json differs from {first.seal['set_id']}'s: "
+                         + (MIXED_RULE if built.statements or first.statements else COMBINED_RULE))
+        # A cut has no schema, sourceset, producer or status rule to agree with a locate
+        # run's, and nothing in the store makes it need one: only the record sets agree.
+        if agreed is not None and not built.statements:
+            for key in (*SHARED_SEAL_FIELDS, "status_rule"):
+                if built.seal.get(key) != agreed.seal.get(key):
+                    problems.add(f"{what} {set_id}", f"SEAL.json {key} differs from {agreed.seal['set_id']}'s: "
                                                      f"{COMBINED_RULE}")
         for article, _ in built.articles:
             other = pages.setdefault(article["pageid"], set_id)
             if other != set_id:
-                problems.add(f"record set {set_id}", f"page {article['pageid']} is also in {other}: {COMBINED_RULE}")
+                problems.add(f"{what} {set_id}", f"page {article['pageid']} is also in {other}: {COMBINED_RULE}")
             other = titles.setdefault(title_key(article["title"]), set_id)
             if other != set_id:
-                problems.add(f"record set {set_id}", f"title {article['title']!r} has a title key also in {other}: "
-                                                     f"{COMBINED_RULE}")
+                problems.add(f"{what} {set_id}", f"title {article['title']!r} has a title key also in {other}: "
+                                                 f"{COMBINED_RULE}")
     problems.raise_if_any()
     return ordered
 
 
 def record_set_entry(seal: dict, seal_sha: str) -> dict:
-    """current.json's record_set: one seal's identity (and, under /2, the rule its statuses came by)."""
+    """current.json's record_set: one seal's identity (and, under /2, the rule its statuses came by).
+
+    A statement set's entry names the same things a cut has: no status rule, no byte
+    budget, the cut's own rules, and `producer_commit` rather than `skill_commit`.
+    """
+    sourceset = {"id": seal["sourceset"]["id"], "manifest_sha256": seal["sourceset"]["manifest_sha256"]}
+    if seal.get("schema") == STATEMENT_SET_SCHEMA:
+        return {"seal_sha256": seal_sha, "sourceset": sourceset, **statement_seal_summary(seal)}
     entry = {"seal_sha256": seal_sha, "set_id": seal["set_id"], "created": seal["created"],
              "skill_commit": seal["skill_commit"], "byte_budget": seal["byte_budget"],
-             "sourceset": {"id": seal["sourceset"]["id"], "manifest_sha256": seal["sourceset"]["manifest_sha256"]}}
+             "sourceset": sourceset}
     if seal.get("schema") == SEAL_SCHEMA_BUNDLE:
         entry.update(schema=seal["schema"], status_rule=seal["status_rule"])
     return entry
@@ -2212,6 +2716,13 @@ def read_supplement(path: Path, kind: str) -> tuple[dict, str]:
     if not isinstance(doc, dict) or doc.get("schema") != schema:
         raise ArticlesError(f"{flag} {path}: schema must be {schema!r}")
     return doc, sha256_hex(data)
+
+
+def join_rows(built: "BuiltSet", view: dict, records: bytes | None) -> list[dict]:
+    """The rows one article's side-file entries are checked against, whichever kind of set it is:
+    a record set's records (`record_rows`) or a published cut's statements
+    (`statement_join_rows`)."""
+    return built.statement_rows[view["pageid"]] if built.statements else record_rows(records or b"")
 
 
 def record_rows(records: bytes) -> list[dict]:
@@ -2379,8 +2890,9 @@ def context_entry(raw: Any, side: str, row: dict) -> tuple[dict | None, list[str
 
 def attach_passage_text(doc: dict, sets: list[BuiltSet], problems: Problems) -> tuple[int, int]:
     """Give each passage the side file has a verified entry for its full text; the others keep the quote.
-    Returns how many passages got their text, and how many of those have a status (the pages show only
-    a passage with one, so the dashboard counts the text it shows from these)."""
+    Returns how many passages got their text, and how many of those the pages show it for: a passage
+    with a status, and a statement nothing has searched for (which the pages show like any other).
+    A passage with no status is set aside unread, so its text is never on a page."""
     entries = doc.get("passages")
     if not isinstance(entries, dict):
         problems.add("--passage-text", "passages must be an object of entries keyed by passage_key")
@@ -2388,7 +2900,7 @@ def attach_passage_text(doc: dict, sets: list[BuiltSet], problems: Problems) -> 
     attached = shown = 0
     for built in sets:
         for view, records in built.articles:
-            rows = {row["id"]: row for row in record_rows(records)}
+            rows = {row["id"]: row for row in join_rows(built, view, records)}
             for passage in view["passages"]:
                 row = rows[passage["id"]]
                 key = passage_key(row["pageid"], row["span_sha256"])
@@ -2401,7 +2913,8 @@ def attach_passage_text(doc: dict, sets: list[BuiltSet], problems: Problems) -> 
                 if text is not None:
                     passage["text"] = text
                     attached += 1
-                    shown += passage["status"] in STATUSES
+                    shown += (passage["status"] in STATUSES
+                              or passage.get("outcome") == OUTCOME_UNCHECKED)
     return attached, shown
 
 
@@ -2587,6 +3100,11 @@ def attach_provenance(doc: dict, sets: list[BuiltSet], universe: dict, problems:
     described_records = doc.get("records") if isinstance(doc.get("records"), dict) else {}
     cited: dict[str, dict] = {}
     for built in sets:
+        # A published cut has no locate run and no records to describe: its own provenance is the
+        # seal the article already carries (set id, cut rules, producer commit). The side file
+        # describes the record sets of the build and says nothing about it.
+        if built.statements:
+            continue
         seal = built.seal
         entry = described_sets.get(seal["set_id"])
         where = f"--provenance: record_sets[{seal['set_id']}]"
@@ -3595,7 +4113,14 @@ def reader_images(entry: dict, media: list[tuple[str, str]]) -> tuple[list[dict]
 
 def passage_status_word(passage: dict) -> str:
     """The status a passage's marks carry: the page's (articles-render passageStatus). A passage with
-    none ("unresolved") carries no mark: it gets no highlight until it is read."""
+    none ("unresolved") carries no mark: it gets no highlight until it is read.
+
+    A statement nothing has searched for is NOT such a passage: it carries ``unchecked``, its own
+    neutral highlight rather than the absence of one (the statement-set design, section 3, and
+    docs/ARTICLES.md section 9a — the Worker's reader styles ``unchecked`` and ``not_checked`` the
+    same way)."""
+    if passage["outcome"] == OUTCOME_UNCHECKED:
+        return OUTCOME_UNCHECKED
     if passage["outcome"] == "unresolved" or passage.get("status") not in STATUSES:
         return "unresolved"
     return passage["status"]
@@ -3710,7 +4235,7 @@ def attach_reader_html(doc: dict, sets: list[BuiltSet], problems: Problems) -> d
             pageid = view["pageid"]
             if str(pageid) not in entries:
                 continue
-            reader, data, layer, messages = reader_entry(entries[str(pageid)], view, record_rows(records))
+            reader, data, layer, messages = reader_entry(entries[str(pageid)], view, join_rows(built, view, records))
             for message in messages:
                 problems.add(f"--reader-html: articles[{pageid}]", message)
             if reader is not None:
@@ -3930,8 +4455,43 @@ def carry_problems(doc: dict, article: dict) -> list[str]:
     return found
 
 
-def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str | None = None,
-          supplements: Supplements | None = None, carry: Path | None = None) -> dict[str, bytes]:
+def read_tagging_universe(path: Path) -> tuple[dict, bytes]:
+    """`--tagging-universe`: the universe a statement set's readers may tag against.
+
+    The same `universe.json` a record set carries, read the same way. There is no seal to
+    cross-check its id and sha against — a cut has no universe — so the document's own
+    `id` and `universe_sha256` stand for the seal's, and the mixed-build rule (one
+    universe.json byte for byte) is what ties it to the record sets of the same build.
+    """
+    try:
+        data = Path(path).read_bytes()
+    except OSError as exc:
+        raise ArticlesError(f"--tagging-universe {path}: cannot be read ({exc.strerror or exc})") from exc
+    try:
+        raw = strict_json(data.decode("utf-8"))
+    except (UnicodeDecodeError, ValueError) as exc:
+        raise ArticlesError(f"--tagging-universe {path}: not UTF-8 JSON ({exc})") from exc
+    if not isinstance(raw, dict):
+        raise ArticlesError(f"--tagging-universe {path}: not an object")
+    problems = Problems()
+    # A record set's seal states the universe's id and sha and load_universe checks the
+    # file against it. There is no seal here, so the two are checked on their own terms
+    # and the file stands for both.
+    if not isinstance(raw.get("id"), str) or not TOKEN_RE.match(raw["id"]):
+        problems.add("--tagging-universe", f"id must be {TOKEN_RULE}")
+    if not isinstance(raw.get("universe_sha256"), str) or not HEX64.match(raw["universe_sha256"]):
+        problems.add("--tagging-universe", "universe_sha256 must be 64 lowercase hex")
+    problems.raise_if_any()
+    stub = {"universe": {"id": raw["id"], "universe_sha256": raw["universe_sha256"]}}
+    universe = load_universe(stub, {"universe.json": data}, problems)
+    problems.raise_if_any()
+    return universe, data
+
+
+def build(set_dir: Path | list[Path] = (), built_at: str | None = None, campaign: str | None = None,
+          supplements: Supplements | None = None, carry: Path | None = None,
+          statement_sets: list[Path] | None = None,
+          tagging_universe: Path | None = None) -> dict[str, bytes]:
     """Return the store tree, {relative path: bytes}, for one sealed record set or several.
 
     One set builds exactly as it always has, under its seal's campaign. Several (a list of
@@ -3942,26 +4502,43 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
     files given (apply_supplements); without them the tree is exactly what it was before they existed.
     """
     dirs = [set_dir] if isinstance(set_dir, (str, Path)) else list(set_dir)
-    if not dirs:
+    cuts = [Path(directory) for directory in statement_sets or []]
+    if not dirs and not cuts:
         raise ArticlesError("no record set to build")
     if built_at is not None and not CREATED_RE.match(built_at):
         raise ArticlesError("--built-at must be an ISO 8601 UTC time ending in Z")
-    if len(dirs) == 1 and campaign is not None:
-        raise ArticlesError("--campaign names a build of several record sets; one set builds under its seal's campaign")
+    if cuts and tagging_universe is None:
+        raise ArticlesError("--statement-set needs --tagging-universe: a cut searched nothing, so it "
+                            "names no libraries, and a reader tags a statement against a universe. Pass "
+                            f"the record sets' own universe.json ({MIXED_RULE})")
+    if tagging_universe is not None and not cuts:
+        raise ArticlesError("--tagging-universe names the universe a statement set's readers tag "
+                            "against; a record set carries its own")
+    total = len(dirs) + len(cuts)
+    if total == 1 and campaign is not None:
+        raise ArticlesError("--campaign names a build of several sets; one set builds under its seal's campaign")
     # A combined build is no one run's, so its name is a campaign id, never a run token.
-    if len(dirs) > 1 and (not isinstance(campaign, str) or not CAMPAIGN_RE.match(campaign)
-                          or campaign.startswith("run:")):
-        raise ArticlesError("a build of several record sets needs --campaign: the campaign id naming the combined "
+    if total > 1 and (not isinstance(campaign, str) or not CAMPAIGN_RE.match(campaign)
+                      or campaign.startswith("run:")):
+        raise ArticlesError("a build of several sets needs --campaign: the campaign id naming the combined "
                          "build (letters, digits and ._:-, at most 128, not starting 'run:')")
     validate, schema_error, provenance = schema_validator()
+    tagging = read_tagging_universe(Path(tagging_universe)) if tagging_universe is not None else None
     sets = []
     for directory in dirs:
         try:
-            sets.append(build_set(Path(directory), validate, schema_error))
+            sets.append(build_set(Path(directory), validate, schema_error, statements=bool(cuts)))
         except ArticlesError as exc:
-            if len(dirs) == 1:
+            if total == 1:
                 raise
             raise ArticlesError(f"record set {directory}:\n{exc}") from exc
+    for directory in cuts:
+        try:
+            sets.append(build_statement_set(directory, tagging[0], tagging[1]))
+        except ArticlesError as exc:
+            if total == 1:
+                raise
+            raise ArticlesError(f"statement set {directory}:\n{exc}") from exc
     if len(sets) > 1:
         sets = combined_sets(sets)
     first = sets[0]
@@ -3972,17 +4549,24 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
     # Optional within v1, like record_sets: a build without side files adds nothing.
     extra = apply_supplements(sets, universe, supplements) if supplements is not None else {}
 
+    statements = any(built.statements for built in sets)
+    index_fields = STATEMENT_INDEX_FIELDS if statements else INDEX_FIELDS
     tree: dict[str, bytes] = {}
     prefix = STORE_PREFIX + "/"
     tree[f"{prefix}universes/{universe['sha256']}.json"] = canonical(universe)
     shards: dict[str, list[list]] = {}
-    totals = {"articles": len(articles), "passages": 0, "locations": 0, "related": 0, "by_status": _status_counts(),
-              "by_prominence": _prominence_counts(), "by_library": {}, "by_importance": {}}
+    totals = {"articles": len(articles), "passages": 0, "locations": 0, "related": 0,
+              "by_status": _status_counts(statements),
+              "by_prominence": _prominence_counts(statements), "by_library": {},
+              "by_importance": {}}
     reader_files = {pageid: data for built in sets for pageid, data in built.reader_files.items()}
     for article, records in articles:
         pageid = article["pageid"]
         tree[f"{prefix}articles/{pageid}.json"] = canonical(article)
-        tree[f"{prefix}records/{pageid}.jsonl"] = records
+        # A statement set holds no record, so an unchecked article publishes no records
+        # file and its `records_sha256` is null.
+        if records is not None:
+            tree[f"{prefix}records/{pageid}.jsonl"] = records
         if pageid in reader_files:
             tree[f"{prefix}reader/{pageid}.html"] = reader_files[pageid]
         summary = article["summary"]
@@ -3990,9 +4574,13 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
         # Libraries holding a location (not only a related declaration), in universe order.
         located_in = [lib["id"] for lib in universe["libraries"]
                       if summary["by_library"].get(lib["id"], {}).get("passages")]
+        # The index row's fields in `index_fields` order. not_checked is APPENDED, after
+        # `libraries`, because the Worker looks a field up by name and appending is the
+        # move a v1 store allows (docs/ARTICLES.md, "Changing v1").
         shards.setdefault(title_shard(article["title"]), []).append(
             [article["title"], pageid, article["revision"], summary["passages"],
-             *[summary["by_status"][s] for s in SUMMARY_STATUSES], importance, located_in])
+             *[summary["by_status"][s] for s in SUMMARY_STATUSES], importance, located_in,
+             *([summary["by_status"][NOT_CHECKED]] if statements else [])])
         totals["passages"] += summary["passages"]
         totals["locations"] += summary["locations"]
         totals["related"] += summary["related"]
@@ -4008,15 +4596,17 @@ def build(set_dir: Path | list[Path], built_at: str | None = None, campaign: str
             entry["articles"] += 1 if counts["passages"] else 0
             for key in ("passages", "locations", "complete", "incomplete", "related"):
                 entry[key] += counts[key]
-        bucket = totals["by_importance"].setdefault(importance or "unknown",
-                                                    {"articles": 0, "passages": 0, "by_status": _status_counts()})
+        bucket = totals["by_importance"].setdefault(
+            importance or "unknown",
+            {"articles": 0, "passages": 0, "by_status": _status_counts(statements)})
         bucket["articles"] += 1
         bucket["passages"] += summary["passages"]
         for status, count in summary["by_status"].items():
             bucket["by_status"][status] += count
     for shard, entries in sorted(shards.items()):
         entries.sort(key=lambda entry: (title_key(entry[0]), entry[1]))
-        data = canonical({"schema": INDEX_SCHEMA, "shard": shard, "fields": INDEX_FIELDS, "articles": entries})
+        data = canonical({"schema": INDEX_SCHEMA, "shard": shard, "fields": index_fields,
+                          "articles": entries})
         if len(data) > MAX_INDEX_SHARD_BYTES:
             raise ArticlesError(f"index shard {shard} is {len(data)} bytes; the v1 store caps a shard at "
                              f"{MAX_INDEX_SHARD_BYTES} (raise INDEX_HEX in a v2 store)")
@@ -4116,8 +4706,17 @@ def main(argv: list[str] | None = None) -> int:
         print(f"articles: {problem}; nothing was written", file=sys.stderr)
         return 3
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
-    parser.add_argument("--record-set", type=Path, required=True, action="append",
+    parser.add_argument("--record-set", type=Path, action="append", default=[],
                         help="sealed record set directory; repeat it to build several sets into one store")
+    parser.add_argument("--statement-set", type=Path, action="append", default=[],
+                        help=f"sealed statement set directory ({STATEMENT_SET_SCHEMA}, "
+                             "docs/STATEMENTS.md): a published cut, whose passages are unchecked. "
+                             "Needs --tagging-universe; repeatable, and may be mixed with "
+                             "--record-set when every set resolves to one universe.json")
+    parser.add_argument("--tagging-universe", type=Path, metavar="FILE",
+                        help="the universe.json a statement set's readers tag against. Its "
+                             "(library id, repo) pairs must be the ones phase 2 will search, "
+                             "because POST /api/articles/tag derives pair_key from the repo")
     parser.add_argument("--out", type=Path, required=True, help="store directory (holds articles/v1/...)")
     parser.add_argument("--built-at", help="ISO 8601 UTC build time for current.json (default: SEAL created)")
     parser.add_argument("--campaign", help="the campaign id naming a build of several record sets "
@@ -4149,10 +4748,14 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         sets = args.record_set
+        if not sets and not args.statement_set:
+            parser.error("name at least one --record-set or --statement-set")
         supplements = Supplements.read(args.passage_text, args.signatures, args.provenance, args.reader_html,
                                        args.audit_summary)
-        tree = build(sets[0] if len(sets) == 1 else sets, args.built_at, args.campaign,
-                     supplements=supplements, carry=args.carry)
+        tree = build(sets[0] if len(sets) == 1 and not args.statement_set else sets,
+                     args.built_at, args.campaign, supplements=supplements, carry=args.carry,
+                     statement_sets=args.statement_set,
+                     tagging_universe=args.tagging_universe)
         if args.check:
             differences = check_tree(args.out, tree)
             for line in differences:

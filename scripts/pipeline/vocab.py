@@ -188,6 +188,12 @@ STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 NOT_FORMALIZED = "not_formalized"
 #: What the store counts a passage with no derived status as.
 UNRESOLVED = "unresolved"
+#: And what it counts a passage of a published cut as: no library has been searched for
+#: it, which is never ``unresolved`` (a locate run ran and settled nothing) and never
+#: ``not_formalized``. The consumer's words — this pipeline derives neither — kept here
+#: so the two sides spell them the same (docs/STATEMENTS.md, docs/ARTICLES.md section 4).
+OUTCOME_UNCHECKED = "unchecked"
+NOT_CHECKED = "not_checked"
 
 #: A record's challenge value. The last three are records no challenge judged;
 #: ``challenge_pending`` is one a prominence overturn put under a rule after the
