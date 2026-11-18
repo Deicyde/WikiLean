@@ -185,7 +185,8 @@ class BuildFixture(unittest.TestCase):
     def test_edges_reverified(self):
         e = self.by_id("edges.jsonl")
         # Consumer -> prerequisite: Alpha (and its Layer 1) build on Beta.
-        self.assertEqual(sorted(e), sorted([f"depends:{ALPHA}->{BETA}", f"depends:{L1}->{BETA}#layer-0-base"]))
+        self.assertEqual(sorted(e), sorted([f"depends:{ALPHA}->{BETA}", f"depends:{L1}->{BETA}#layer-0-base",
+                                            f"depends:{GAMMA}->{BETA}"]))
         rm = e[f"depends:{ALPHA}->{BETA}"]
         self.assertEqual((rm["source"], rm["target"]), (ALPHA, BETA))
         self.assertEqual(rm["evidence"]["line"], 7)
@@ -193,6 +194,16 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(rm["via"], "atlas")
         st = e[f"depends:{L1}->{BETA}#layer-0-base"]
         self.assertEqual(st["evidence"]["line"], 26)  # the match line inside the quoted block
+
+    def test_edges_verified_at_the_atlas_copy(self):
+        e = self.by_id("edges.jsonl")
+        g = e[f"depends:{GAMMA}->{BETA}"]  # line 3 at our pin is a heading; the atlas's copy names Beta
+        self.assertEqual(g["evidence"], {"evidence_input": "atlas_embedded", "atlas_sha256": self.manifest[
+            "inputs"]["atlas"]["sha256"], "source_path": "content/tau-ceti/Completed/Gamma/README.md",
+            "path": "Completed/Gamma/README.md", "line": 3})
+        self.assertEqual(e[f"depends:{ALPHA}->{BETA}"]["evidence"]["evidence_input"], "tauceti_roadmap")
+        self.assertNotIn(f"depends:{GAMMA}->{ALPHA}", e)  # the copy's line names no Alpha
+        self.assertEqual(self.manifest["inputs"]["atlas"]["atlas_snapshot_commit"]["publicly_available"], False)
 
     def test_edges_rejected(self):
         def reason(src, tgt):

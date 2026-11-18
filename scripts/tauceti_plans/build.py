@@ -311,24 +311,9 @@ def _evidence_candidates(edge: dict) -> list[dict] | str:
     return out or "no_evidence_line"
 
 
-def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared) -> dict | str:
-    """A verified pointer for one atlas evidence item, or the reason it fails. The line must
-    exist at the pinned commit, sit in one endpoint's README, hold the atlas's `match` text
-    when it gives one, and name the other endpoint's roadmap folder."""
-    path = _atlas_path(c["src"]) if isinstance(c["src"], str) else None
-    line = c["line"] if isinstance(c["line"], int) and not isinstance(c["line"], bool) else None
-    if path is None or line is None:
-        return "unrecognized_evidence_path"
-    if path not in texts:
-        return "evidence_file_missing"
-    owner = _owner_of_path(path, roadmaps)
-    if owner not in (rs, rt):
-        return "evidence_not_in_endpoint_roadmap"
-    other = rt if owner == rs else rs
-    other_folder = other.split(":", 1)[1]
-    if path not in lines_cache:
-        lines_cache[path] = parse.lines_of(texts[path].decode("utf-8"))
-    lines = lines_cache[path]
+def _verify_at(lines, c, path, other_folder, shared) -> int | str:
+    """The line (1-based) of `lines` that verifies evidence item `c`, or the reason it fails."""
+    line = c["line"]
     if not 1 <= line <= len(lines):
         return "evidence_line_missing"
     span = list(range(line, min(len(lines), line + c["span"] - 1) + 1))
@@ -337,13 +322,48 @@ def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared) -> 
         if not span:
             return "match_not_at_line"
     hit = next((n for n in span if _names_folder(lines[n - 1], other_folder, path, shared)), None)
-    if hit is None:
-        return "line_does_not_name_target"
-    return pointer(commit, path, hit)
+    return "line_does_not_name_target" if hit is None else hit
 
 
-def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, rejected):
+def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared, embedded) -> dict | str:
+    """A verified pointer for one atlas evidence item, or the reason it fails. The line must
+    sit in one endpoint's README, hold the atlas's `match` text when it gives one, and name the
+    other endpoint's roadmap folder: first at the pinned TauCetiRoadmap commit, else at that
+    line of the README copy the atlas embeds under the evidence's own sourcePath (the atlas
+    took its line numbers from its own snapshot). Nothing is searched or relocated."""
+    path = _atlas_path(c["src"]) if isinstance(c["src"], str) else None
+    line = c["line"] if isinstance(c["line"], int) and not isinstance(c["line"], bool) else None
+    if path is None or line is None:
+        return "unrecognized_evidence_path"
+    owner = _owner_of_path(path, roadmaps)
+    if owner not in (rs, rt):
+        return "evidence_not_in_endpoint_roadmap"
+    other = rt if owner == rs else rs
+    other_folder = other.split(":", 1)[1]
+    if path in texts:
+        if path not in lines_cache:
+            lines_cache[path] = parse.lines_of(texts[path].decode("utf-8"))
+        why = _verify_at(lines_cache[path], c, path, other_folder, shared)
+        if not isinstance(why, str):
+            return {**pointer(commit, path, why), "evidence_input": "tauceti_roadmap"}
+    else:
+        why = "evidence_file_missing"
+    copy = embedded["lines"].get(c["src"])
+    if copy is not None:
+        hit = _verify_at(copy, c, path, other_folder, shared)
+        if not isinstance(hit, str):
+            return {"evidence_input": "atlas_embedded", "atlas_sha256": embedded["sha256"],
+                    "source_path": c["src"], "path": path, "line": hit}
+    return why
+
+
+def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, rejected, atlas_sha256=None):
     commit = tree.commit
+    # The README copies the atlas publishes, keyed by their own sourcePath.
+    embedded = {"sha256": atlas_sha256, "lines": {
+        r["sourcePath"]: parse.lines_of(r["readme"]) for r in atlas.get("roadmaps", [])
+        if isinstance(r, dict) and isinstance(r.get("sourcePath"), str)
+        and isinstance(r.get("readme"), str) and r["readme"]}}
     lines_cache: dict[str, list[str]] = {}
     base_count = Counter(rid.rsplit("/", 1)[1] for rid in roadmaps)
     shared = {b for b, n in base_count.items() if n > 1}
@@ -376,7 +396,7 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
         rs, rt = s.split("#")[0], t.split("#")[0]
         good, failed = [], []
         for c in cands:
-            result = _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared)
+            result = _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared, embedded)
             (failed if isinstance(result, str) else good).append((c, result))
         reasons = sorted({why for _c, why in failed})
         if good:
@@ -399,7 +419,7 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
     rows = []
     for row in kept.values():
         evs = sorted({dumps(e): e for e in row.pop("_ev")}.values(),
-                     key=lambda e: (e["path"], e["line"]))
+                     key=lambda e: (e["path"], e["line"], e["evidence_input"]))
         row["evidence"] = evs[0]
         row["more_evidence"] = evs[1:]
         rows.append(row)
@@ -629,7 +649,8 @@ def build(inputs: str, out: str) -> dict:
             al = sorted(atlas_ids_for.get(l["id"], []))
             l["atlas_id"] = al[0] if len(al) == 1 else None
 
-    edges = verify_edges(inp["atlas"], tree, texts, roadmaps, atlas_to_layer, layer_ids, rejected)
+    edges = verify_edges(inp["atlas"], tree, texts, roadmaps, atlas_to_layer, layer_ids, rejected,
+                         inp["shas"]["atlas"])
 
     deps = json.loads(inp["trough_files"]["deps.json"])
     sorry = {k: v.get("sorry") for k, v in deps.get("declarations", {}).items() if isinstance(v, dict)}
@@ -770,6 +791,11 @@ def make_manifest(inp: dict, data: dict, counts: dict) -> dict:
                       "exported_at": (atlas.get("taucetiProgress") or {}).get("exportedAt"),
                       "edition": (atlas.get("meta") or {}).get("edition"),
                       "roadmap_snapshot_head": snap.get("head"),
+                      # The commit the atlas read its READMEs at: a local working tree, on no
+                      # public remote, so it cannot be pinned; edges verify at our pin or
+                      # against the README copies embedded in this file instead.
+                      "atlas_snapshot_commit": {"commit": snap.get("head"), "source": snap.get("source"),
+                                                "publicly_available": False},
                       "fetched_at": fetched("atlas")},
             "mathlib_decls": {"url": URLS["mathlib_decls"], "path": "decls/mathlib.bmp",
                               "sha256": shas["mathlib_decls"], "docs_commit": None,
