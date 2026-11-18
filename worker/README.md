@@ -241,8 +241,8 @@ on a command line. Every step runs without `ANTHROPIC_API_KEY` or
   to be given; there is no claims API yet.
 - **The declaration index and search corpus** — about 0.5 GB per universe,
   behind signed bucket access that is not issued yet.
-- **The source layers**, refetched locally at their pinned revisions; a package
-  deliberately does not carry article text.
+- **The source layers**, refetched locally at their pinned revisions, unless the
+  package ships their fetched bytes (`publish_package.py --sources-dir`).
 - **macOS.** The pinned client boundary has native evidence on Apple silicon
   only; see docs/CONTRIBUTE-MAC-CHECKS.md.
 - **What it costs.** Nobody has measured an article against a subscription's
