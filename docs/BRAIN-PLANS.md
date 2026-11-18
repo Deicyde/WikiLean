@@ -15,13 +15,30 @@ and the literature they cite.
 Acquisition and replay are separate, as elsewhere in WikiLean.
 
 ```bash
-python3 -m scripts.tauceti_plans fetch --inputs DIR          # network; writes DIR/PINS.json
+python3 -m scripts.tauceti_plans fetch --inputs DIR          # network; newest state; writes DIR/PINS.json
+python3 -m scripts.tauceti_plans fetch --inputs DIR --pins PINS.json  # exactly these commits and bytes
 python3 -m scripts.tauceti_plans build --inputs DIR --out OUT # offline, deterministic
 python3 -m unittest discover -s scripts/tauceti_plans -p 'test_*.py'
 ```
 
 Python 3.12, standard library only (`tomllib` for `metadata.toml`). `build` runs `git` locally
 to read the two checkouts and nothing else.
+
+**The export is never committed.** `decl_refs.jsonl` alone is about 43 MB and grows with the
+roadmaps; GitHub refuses files over 100 MB, and large tracked files were the whole problem in
+[`BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md). `build` refuses an `--out` inside a git work tree (any
+ancestor holding `.git`) before it reads anything.
+
+`fetch` sends every network call (HTTP GETs and git clones) through one `Opener`, which the
+tests replace with an offline fake. With `--pins` (a `PINS.json`, or run 1's `PINS.txt`) it
+checks out each git input at its pinned commit and checks every URL input's sha256 (and each
+`docs_commit` the pins give) against the pin; on any mismatch it exits 1 naming the input, never
+overwrites an input file with the mismatched bytes, and leaves no `PINS.json`.
+
+**Release neutrality.** Every path here is release-neutral. Check with the classifier, run by
+path: `site.ops.brain_release_authority` cannot be imported, because the standard library's
+`site` module shadows the repo's `site/` package, so run
+`python3 -I -B site/ops/brain_code_only_release.py classify <paths>`.
 
 ## Inputs
 
@@ -30,12 +47,23 @@ to read the two checkouts and nothing else.
 | TauCetiRoadmap | `TauCetiRoadmap/` (git checkout) | HEAD commit; files are read from the commit with `git cat-file`, so a dirty working tree cannot leak in |
 | trough | `trough/` (sparse checkout, `data/tauceti/`) | HEAD commit, plus `source.json`'s `rev` (the Tau Ceti commit trough read) and each file's sha256 |
 | Tau Ceti atlas | `atlas-data.json` (the JSON embedded in https://taucetiproject.org/atlas/, built by CBirkbeck/tauceti-explorer) | sha256, `taucetiProgress.exportedAt`, the edition and the roadmap snapshot head it was built from |
-| Mathlib declarations | `decls/mathlib.bmp` (doc-gen4 `declaration-data.bmp`, JSON) | sha256 and URL |
-| Tau Ceti declarations | `decls/tauceti.bmp` | sha256 and URL |
+| Mathlib declarations | `decls/mathlib.bmp` (doc-gen4 `declaration-data.bmp`, JSON) | sha256, URL and `docs_commit` |
+| Tau Ceti declarations | `decls/tauceti.bmp` | sha256, URL and `docs_commit` |
 
 Pins come from `PINS.json` (written by `fetch`) or, failing that, `run.sh`'s `PINS.txt`. `build`
 recomputes every sha256 and commit and refuses (exit 1) when one differs from its pin. The docs
-commit behind each `.bmp` is not in its bytes, so `docs_commit` is `null`.
+commit behind a `.bmp` is not in its bytes: `fetch` takes the first entry's `docLink`, fetches
+that one module page relative to the docs root (the parent of `declarations/`), and reads the
+40-hex commit from its `github.com/<owner>/<repo>/blob/<sha>/` source links
+(`leanprover-community/mathlib4` for Mathlib, `TauCetiProject/TauCeti` for Tau Ceti); it is
+`null` unless the page names exactly one, and always `null` with `PINS.txt`.
+
+The atlas computed its line numbers on its own README copies, at
+`meta.repositorySnapshot.head` (`faa5423b…`), a `local_working_tree` commit that no public
+remote holds (not TauCetiRoadmap, not CBirkbeck's fork), so it cannot be pinned. The manifest
+records it as `inputs.atlas.atlas_snapshot_commit` with `publicly_available: false`; the
+README copies the atlas embeds (`roadmaps[].readme`) are pinned through `atlas-data.json`'s
+sha256 instead.
 
 ## Output
 
@@ -74,6 +102,7 @@ coverage comments use.
 |---|---|
 | `id` | `<roadmap id>#<anchor>` |
 | `roadmap`, `key`, `title` | the title is the heading's rendered text |
+| `ordinal` | 0-based position among the roadmap's layer headings, in README order. Order is sequence, not a dependency claim, so it makes no edge |
 | `state` | `done`, `partial`, `untouched` or `unassessed` |
 | `status_source` | pointer to the `STATUS.md` line holding the coverage comment the state came from, or `null` |
 | `status_readme_current` | whether the comment's `readme_sha` is the sha256 of the README at the pin (`null` without a state) |
@@ -107,13 +136,20 @@ roadmap, a comment for a folder that is not a roadmap, an unparseable comment. T
 | Field | |
 |---|---|
 | `id` | `depends:<source>-><target>` |
-| `kind` | `depends`; direction is the atlas's, prerequisite → consumer. Note `brain/SCHEMA.md`'s `depends` runs consumer → prerequisite, so an importer into the Brain must flip it |
-| `source`, `target` | roadmap or layer ids (ours, after mapping atlas stage ids) |
-| `evidence` | the first verified pointer by (path, line); `more_evidence` holds the rest |
+| `kind` | `depends`, in `brain/SCHEMA.md`'s direction |
+| `source`, `target` | roadmap or layer ids (ours, after mapping atlas stage ids): `source` is the consumer, `target` the prerequisite |
+| `evidence` | the first verified pointer by (path, line); `more_evidence` holds the rest. Each carries `evidence_input`: `tauceti_roadmap` (a pointer into the pin) or `atlas_embedded` (`{evidence_input, atlas_sha256, source_path, path, line}`: that line of the atlas's own README copy) |
 | `via` | `atlas`; `atlas_kinds` lists the atlas edge kinds merged into the row |
 
-Candidates are the atlas's `edges` and `stageEdges`. An evidence item is verified only if, at the
-pinned commit: its file exists and is the README of one endpoint's roadmap; its line exists;
+**There is one direction convention**, the Brain's: consumer → prerequisite. The atlas writes
+the opposite (`atlas_direction`: its `source` is the prerequisite and its `target` the
+consumer); the build flips every edge, and only rejected `edge` rows keep the atlas's raw ids,
+as `atlas_source`/`atlas_target`.
+
+Candidates are the atlas's `edges` and `stageEdges`. An evidence item is verified first at the
+TauCetiRoadmap pin and, if that fails, at the same line of the README copy the atlas embeds
+under the evidence's own `sourcePath` string (exact key; nothing is searched or relocated), by
+the same test. It is verified only if: its file exists and is the README of one endpoint's roadmap; its line exists;
 the line holds the atlas's `match` text when the atlas gives one (the atlas's `sourceLine` then
 points at the heading, so the lines of its quoted block are searched for the match); and the line
 **names the other endpoint's roadmap**: its folder's last component appears with no letter or
@@ -137,8 +173,11 @@ One row per (layer or roadmap, Lean name).
 |---|---|
 | `id` | `<layer id or roadmap id>::<name>` |
 | `name`, `roadmap`, `layer` (`null` for a roadmap-level name) | |
-| `resolution` | `mathlib`, `tauceti`, `stated` or `planned` |
-| `resolved_by` | list of `{input, sha256}` the resolution used; `null` for `planned` |
+| `resolution` | `mathlib`, `tauceti`, `unqualified` or `planned` (never formalized nor planned: `unqualified`) |
+| `resolved_by` | input names (`mathlib_decls`, `tauceti_decls`), keys of the manifest's `resolved_by`, which holds each one's path, sha256 and pin; `null` otherwise |
+| `via_namespace`, `resolved_name` | only on a name resolved through a declared scope: the scope and the full name |
+| `candidates`, `candidates_total`, `candidate_libraries` | only on `unqualified`: the sorted full names (at most 8), how many, and their libraries |
+| `stated`, `stated_reason` | only on `tauceti`: `true` (its proof is `sorry`) or `false` from trough's `deps.json`, only when trough's `source.json` `rev` equals the Tau Ceti `docs_commit`; else `null` with `docs_commit_unknown`, `commit_mismatch` or `not_in_deps` |
 | `evidence` | pointer to the first occurrence; `occurrences` counts them |
 
 Names come from (1) inline code spans in a README, outside fenced blocks, whose whole content
@@ -157,13 +196,26 @@ markdown heading inside a `/-! ... -/` module doc; a marker whose key is a uniqu
 key gives that layer, any other marker gives the roadmap (a marker key with no README layer is
 also logged as rejected).
 
-Resolution is exact string equality against the `declarations` keys, in this order: Mathlib's
-`.bmp` → `mathlib`; Tau Ceti's `.bmp` → `stated` if trough's `deps.json` entry for the name has
-`sorry: true`, else `tauceti`; otherwise `planned`. No similarity, case-folding, prefix or suffix
-matching: `Nat.Succ_le` and `Nat.succ_le_iff` stay `planned` next to a real `Nat.succ_le`.
+Resolution is against the `declarations` keys of both `.bmp`s, indexed once per build (every
+non-final name component; entries by last component). After the rejections below, in order:
+1. **Exact**: an entry → `mathlib` (Mathlib first) or `tauceti`.
+2. **Declared scope**, Lean's own resolution: the roadmap's scopes are every `namespace N`
+   (full nested name) and `open N ...` / `open N in` (as written, several names allowed) in
+   `Suggested.lean` and in README fenced code blocks, each with its parent prefixes. Exactly one
+   entry `N.n` → its library, with `via_namespace: N`. Several → `unqualified`.
+3. **`local_term`** (rejected): a dotted name whose first segment is no namespace component of
+   any entry (`hf.ne'`). Read as "any non-final component", so it never hides a suffix match.
+4. **`unqualified`**: the name is an entry with whole leading components removed.
+5. Otherwise `planned`.
+
+Declarations `Suggested.lean` makes are full names and resolve only exactly (step 1). No
+similarity or case-folding, and no partial components: `Nat.Succ_le` and `Nat.succ_le_iff`
+stay `planned` next to a real `Nat.succ_le`, and `ucc_le` is no suffix of it.
 Rejected rather than `planned`: a name ending in a file suffix (`Foo.lean`), an exact module
-name in either `.bmp`'s `modules`, an unmatched `Mathlib.*` name, and the roadmap repo's own
-modules (`TauCetiRoadmap.<Folder>[.Suggested]`).
+name in either `.bmp`'s `modules`, an unmatched `Mathlib.*` name, the roadmap repo's own
+modules (`TauCetiRoadmap.<Folder>[.Suggested]`), and `local_term`. As written, `local_term` also
+catches planned names in namespaces that do not exist yet (`BarsottiTate.exact_levels`); the
+rejected rows keep the candidate, so a narrower rule can recover them.
 
 ### `xrefs.jsonl`
 
@@ -187,18 +239,38 @@ rejected as `invalid_arxiv_id`, and old-style ids (`math/0601001`) as `old_style
 ### `rejected.jsonl`
 
 Every dropped candidate: `kind` (`coverage`, `edge`, `edge_evidence`, `decl_ref`, `xref`,
-`lean_marker`, `roadmap`), `reason`, what was dropped (`candidate`, `source`/`target`,
+`lean_marker`, `roadmap`), `reason`, what was dropped (`candidate`, `atlas_source`/`atlas_target`
+for an `edge` in the atlas's direction, `source`/`target` for `edge_evidence` in ours,
 `layer_key`) and a pointer where there is one. `id` is `<kind>:<first 20 hex of the sha256 of the
 canonical row>`; identical rejections are one row with `count`.
 
 ### `manifest.json`
 
 `schema`, `producer` (name, version), `inputs` (each pin: commit or sha256, URL, `fetched_at`,
-and the extra facts above), `files` (rows, bytes, sha256 of each JSONL), `counts` (layers by
-state, decl refs by resolution, xrefs by system, rejections by `kind/reason`), `clock_fields`,
+and the extra facts above), `resolved_by` (by input name: path, sha256, pin), `files` (rows,
+bytes, sha256 of each JSONL), `counts` (layers by state, decl refs by resolution, Tau Ceti refs
+by `stated`, xrefs by system, rejections by `kind/reason`), `clock_fields`,
 `attribution`, and `logical_root`: the sha256 of the canonical JSON of the manifest without
 `logical_root` and with every `fetched_at` removed. A refetch of identical bytes therefore keeps
 the root. The atlas's `exported_at` is part of its pinned bytes, not a clock of ours, and stays in.
+
+## Counts at run 1's pins (2026-11-19)
+
+Inputs: TauCetiRoadmap `96a11793`, trough `1ae5ca9f`, the atlas, Mathlib and Tau Ceti `.bmp`s of
+2026-11-18. `logical_root` `5470f58d4684747a090362b3fd16e879e51ab4c0244be0ddee84ed5091f6eb62`.
+
+| File | Rows | Bytes |
+|---|---|---|
+| `roadmaps.jsonl` | 465 | 155,610 |
+| `layers.jsonl` | 3,717 (done 487, partial 589, untouched 406, unassessed 2,235) | 2,333,439 |
+| `edges.jsonl` | 2,348 (all roadmap → roadmap; 7 verified only at the atlas copy) | 1,587,417 |
+| `decl_refs.jsonl` | 75,229 (mathlib 24,608, tauceti 27,620, unqualified 2,235, planned 20,766) | 43,041,083 |
+| `xrefs.jsonl` | 4,930 (stacks 2,648, arxiv 2,282) | 2,270,981 |
+| `rejected.jsonl` | 26,592 rows (`decl_ref/local_term` 10,358 occurrences) | 10,556,934 |
+
+All 27,620 `tauceti` rows have `stated: null` (`docs_commit_unknown`: `PINS.txt` records no docs
+commit). Edges: 609 `line_does_not_name_target` remain, and no layer → layer edge survives (they
+fail on endpoints or have no line).
 
 ## Licence
 
