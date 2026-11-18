@@ -172,5 +172,6 @@ run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" s
 run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scripts/test_revoke_github_tokens.py
 run_check "Tau Ceti plans: text rules" "$PYTHON_BIN" scripts/tauceti_plans/test_parse.py
 run_check "Tau Ceti plans: fixture build" "$PYTHON_BIN" scripts/tauceti_plans/test_build.py
+run_check "Tau Ceti plans: offline fetch" "$PYTHON_BIN" scripts/tauceti_plans/test_fetch.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"

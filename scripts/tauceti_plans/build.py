@@ -54,16 +54,22 @@ class BuildError(Exception):
 # ---------------------------------------------------------------- inputs
 
 def read_pins(inputs: str) -> dict:
-    """Pins written by `fetch` (PINS.json), else run.sh's PINS.txt. Returns
-    {input: {sha256?, fetched_at?}} keyed by the names in URLS."""
-    pj = os.path.join(inputs, "PINS.json")
-    if os.path.exists(pj):
-        with open(pj, encoding="utf-8") as f:
-            return json.load(f)["inputs"]
-    pt = os.path.join(inputs, "PINS.txt")
+    """Pins written by `fetch` (PINS.json), else run.sh's PINS.txt, else none."""
+    for name in ("PINS.json", "PINS.txt"):
+        if os.path.exists(os.path.join(inputs, name)):
+            return read_pins_file(os.path.join(inputs, name))
+    return {k: {} for k in URLS}
+
+
+def read_pins_file(pt: str) -> dict:
+    """A PINS.json, or run 1's PINS.txt (`<name> <commit>` and `<sha256>  <path>` lines).
+    Returns {input: {commit?, sha256?, docs_commit?, fetched_at?}} keyed by the names in URLS."""
+    with open(pt, encoding="utf-8") as f:
+        head = f.read(1)
+    if head == "{":
+        with open(pt, encoding="utf-8") as f:
+            return {k: {} for k in URLS} | json.load(f)["inputs"]
     pins: dict = {k: {} for k in URLS}
-    if not os.path.exists(pt):
-        return pins
     names = {"atlas-data.json": "atlas", "mathlib.bmp": "mathlib_decls", "tauceti.bmp": "tauceti_decls"}
     fetched = None
     with open(pt, encoding="utf-8") as f:
@@ -497,10 +503,19 @@ def resolve(name: str, ctx: dict, scopes: set[str] = frozenset(), exact_only: bo
     if res == "mathlib":
         return r, ["mathlib_decls"]
     if res == "tauceti":
-        if ctx["sorry"].get(r.get("resolved_name", name)) is True:
-            return {**r, "resolution": "stated"}, ["tauceti_decls", "trough_deps"]
-        return r, ["tauceti_decls"]
+        return {**r, **stated(r.get("resolved_name", name), ctx)}, ["tauceti_decls"]
     return r, None
+
+
+def stated(full: str, ctx: dict) -> dict:
+    """Whether a Tau Ceti declaration is only stated (its proof is `sorry`), read from
+    trough's deps.json, and only when trough analysed the commit the Tau Ceti docs show."""
+    if ctx["stated_reason"]:
+        return {"stated": None, "stated_reason": ctx["stated_reason"]}
+    sorry = ctx["sorry"].get(full)
+    if not isinstance(sorry, bool):
+        return {"stated": None, "stated_reason": "not_in_deps"}
+    return {"stated": sorry}
 
 
 class Collector:
@@ -672,7 +687,7 @@ def build(inputs: str, out: str) -> dict:
         scopes[rid] = with_parents(found)
     ctx = {"roadmap_modules": roadmap_modules, "commit": commit, "modules": inp["modules"],
            "resolver": Resolver(inp["mathlib"], inp["tauceti"]), "scopes": scopes,
-           "sorry": sorry}
+           "sorry": sorry, "stated_reason": stated_reason(inp)}
     decls, xrefs = Collector(), Collector()
     for rid in sorted(parsed):
         readme_path, lines, hs = parsed[rid]
@@ -735,6 +750,9 @@ def build(inputs: str, out: str) -> dict:
     counts = {
         "layers_by_state": dict(sorted(Counter(r["state"] for r in layer_rows).items())),
         "decl_refs_by_resolution": dict(sorted(Counter(r["resolution"] for r in decls.rows.values()).items())),
+        "tauceti_decl_refs_by_stated": dict(sorted(Counter(
+            str(r["stated"]).lower() if r["stated"] is not None else f"null/{r['stated_reason']}"
+            for r in decls.rows.values() if r["resolution"] == "tauceti").items())),
         "xrefs_by_system": dict(sorted(Counter(r["system"] for r in xrefs.rows.values()).items())),
         "rejected_by_reason": dict(sorted(Counter(f"{r['kind']}/{r['reason']}" for r in rejected).items())),
     }
@@ -765,6 +783,20 @@ def strip_clocks(obj):
 def logical_root(manifest: dict) -> str:
     body = {k: v for k, v in manifest.items() if k != "logical_root"}
     return sha256_bytes(dumps(strip_clocks(body)).encode("utf-8"))
+
+
+def tauceti_docs_commit(inp: dict) -> str | None:
+    c = (inp["pins"].get("tauceti_decls") or {}).get("docs_commit")
+    return c if isinstance(c, str) and re.fullmatch(r"[0-9a-f]{40}", c) else None
+
+
+def stated_reason(inp: dict) -> str | None:
+    """None when trough's deps.json describes the Tau Ceti commit the docs were built from."""
+    docs = tauceti_docs_commit(inp)
+    if docs is None:
+        return "docs_commit_unknown"
+    rev = json.loads(inp["trough_files"]["source.json"]).get("rev")
+    return None if rev == docs else "commit_mismatch"
 
 
 def make_manifest(inp: dict, data: dict, counts: dict) -> dict:
@@ -798,10 +830,11 @@ def make_manifest(inp: dict, data: dict, counts: dict) -> dict:
                                                 "publicly_available": False},
                       "fetched_at": fetched("atlas")},
             "mathlib_decls": {"url": URLS["mathlib_decls"], "path": "decls/mathlib.bmp",
-                              "sha256": shas["mathlib_decls"], "docs_commit": None,
+                              "sha256": shas["mathlib_decls"],
+                              "docs_commit": (pins.get("mathlib_decls") or {}).get("docs_commit"),
                               "fetched_at": fetched("mathlib_decls")},
             "tauceti_decls": {"url": URLS["tauceti_decls"], "path": "decls/tauceti.bmp",
-                              "sha256": shas["tauceti_decls"], "docs_commit": None,
+                              "sha256": shas["tauceti_decls"], "docs_commit": tauceti_docs_commit(inp),
                               "fetched_at": fetched("tauceti_decls")},
         },
         # What a decl_refs row's `resolved_by` names, keyed by input name.

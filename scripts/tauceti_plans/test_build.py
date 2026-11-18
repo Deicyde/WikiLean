@@ -236,12 +236,33 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(d[f"{L0}::Nat.succ_le"]["resolution"], "mathlib")
         self.assertEqual(d[f"{L0}::Nat.succ_le"]["resolved_by"], ["mathlib_decls"])
         self.assertEqual(self.manifest["resolved_by"]["mathlib_decls"]["path"], "decls/mathlib.bmp")
-        self.assertEqual(d[f"{L0}::TauCeti.Foo.bar"]["resolution"], "tauceti")
-        self.assertEqual(d[f"{L0}::TauCeti.Foo.sorried"]["resolution"], "stated")
-        self.assertEqual(d[f"{L0}::TauCeti.Foo.sorried"]["resolved_by"], ["tauceti_decls", "trough_deps"])
+        for name in ("TauCeti.Foo.bar", "TauCeti.Foo.sorried"):
+            row = d[f"{L0}::{name}"]
+            self.assertEqual((row["resolution"], row["resolved_by"]), ("tauceti", ["tauceti_decls"]))
+            # The fixture pins record no Tau Ceti docs commit, so deps.json cannot be matched to it.
+            self.assertEqual((row["stated"], row["stated_reason"]), (None, "docs_commit_unknown"))
+        self.assertNotIn("stated", d[f"{L0}::Nat.succ_le"])
         for near in ("Nat.Succ_le", "Nat.succ_le_iff", "TauCeti.Foo.ba"):
             self.assertEqual(d[f"{L0}::{near}"]["resolution"], "planned", near)
             self.assertIsNone(d[f"{L0}::{near}"]["resolved_by"])
+
+    def test_stated_needs_the_docs_commit(self):
+        rev = "cd41bffcb343151b3e58c89392e206b11fe78c1c"  # fixture trough source.json
+        for docs, want in ((rev, {"TauCeti.Foo.sorried": (True, None), "TauCeti.Foo.bar": (False, None)}),
+                           ("1" * 40, {"TauCeti.Foo.sorried": (None, "commit_mismatch")})):
+            with tempfile.TemporaryDirectory() as tmp:
+                inputs = make_inputs(tmp)
+                with open(os.path.join(inputs, "PINS.json")) as f:
+                    pins = json.load(f)
+                pins["inputs"]["tauceti_decls"]["docs_commit"] = docs
+                with open(os.path.join(inputs, "PINS.json"), "w") as f:
+                    json.dump(pins, f)
+                m = B.build(inputs, os.path.join(tmp, "out"))
+                self.assertEqual(m["inputs"]["tauceti_decls"]["docs_commit"], docs)
+                d = {r["id"]: r for r in read_rows(os.path.join(tmp, "out"), "decl_refs.jsonl")}
+                for name, (st, why) in want.items():
+                    row = d[f"{L0}::{name}"]
+                    self.assertEqual((row["stated"], row.get("stated_reason")), (st, why), (docs, name))
 
     def test_scoped_and_relative_names(self):
         d = self.by_id("decl_refs.jsonl")
