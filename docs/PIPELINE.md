@@ -456,6 +456,11 @@ span text only — never from an item, a statement or a model — and uses stage
 docs/STATEMENTS.md section 5a), and `--store-out` writes the map one `<pageid>.json` a
 page, which `build_store.py --carry` publishes at `articles/v1/carry/<pageid>.json` so
 the reader can show the tags of the cut before it.
+A run no challenge ran over is tallied with `--unchallenged`: every record a
+challenge would judge is `not_required`, which the pages show as not re-checked, so the export
+has a challenge value for each and a coverage claim upgrades nothing; a subject passage's
+records still carry the article's QID (Jack, 2026-11-13). It is refused beside
+`--challenge-run`, and contribute mode's seal takes it too.
 
 **What is proved.** From batch 1's four corpora,
 `reports/locate-outcomes.loc-tierA-b1a.jsonl` (549 rows) and `.loc-tierA-b1b.jsonl` (5,242
