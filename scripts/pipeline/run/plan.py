@@ -206,7 +206,8 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
          candidates: Path | None = None,
          index: Path | None = None, search: Path | None = None,
          per_task: int = PER_TASK,
-         inventory_run: str = "", status_rule: int = vocab.STATUS_RULE_BROAD,
+         inventory_run: str = "", statement_set: dict | None = None,
+         status_rule: int = vocab.STATUS_RULE_BROAD,
          span_end_rule: int = 3, statement_cut_rule: int = 4, judgment_rules: int = 5,
          model: str = "", max_cost: float = 0.0, source_ids: Iterable[str] = (),
          prompts: Path | None = None, render_prompts: bool = False,
@@ -219,12 +220,20 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
     cut below is used. Either way this function owns the root: the manifests, the staged
     gate, the prompts and ``run.json``.
 
+    ``statement_set`` is ``{set_id, seal_sha256}`` when the cut came from a sealed
+    ``wikilean.statement-set/1`` rather than a harvested run (docs/STATEMENTS.md); it is
+    recorded in ``run.json`` and changes nothing else; the task manifests of a run planned
+    from a published cut are the manifests of a run planned from the cut itself but for
+    the quote, which a statement set seals as the format's capped head
+    (docs/STATEMENTS.md section 2).
+
     ``sources_as``, ``candidates_as`` and ``index_as`` are what ``gate.json`` **names**,
-    where that is not where this machine holds them: a package carries the plan and no
-    article text, so a coordinator plans against its own rendered sources and the plan
-    names ``../sources``, which the contributor fills by refetching the pinned
-    revisions. The view shas are still read from the real directory, so the plan pins
-    the bytes the coordinator saw and the contributor's gate refuses anything else.
+    where that is not where this machine holds them: a coordinator plans against its own
+    rendered sources and the plan names ``../sources``, which the contributor fills by
+    rendering the fetched bytes the package ships (``contribute/package.py``) or by
+    refetching the pinned revisions. The view shas are still read from the real
+    directory, so the plan pins the bytes the coordinator saw and the contributor's gate
+    refuses anything else.
     """
     if mode not in vocab.MODES:
         raise PlanProblem(f"a batch is planned in one of {sorted(vocab.MODES)}, "
@@ -413,6 +422,7 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
             "universe": {"id": universe_doc.get("id"),
                          "sha256": universe_doc.get("universe_sha256")},
             "inventory_run": inventory_run or None,
+            "statement_set": dict(statement_set) if statement_set else None,
             "challenged_runs": [],
             "passages": planned_passages,
             "per_task": per_task,

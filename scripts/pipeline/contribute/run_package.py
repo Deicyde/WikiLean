@@ -39,10 +39,12 @@ the unique commit plus the read-back is.
 never sends its staged directories — they hold its copy of the article text), calls the
 worker once per task through the sandbox, runs the gate out of tree as the runner's own
 validation call, retries once on a refusal, and harvests what passed into a corpus with
-a receipt. What a contributor supplies by hand is what the package cannot carry: the
-sources refetched at their pinned revisions, the candidates, the declaration index and
-the search corpus. ``--stage run`` names any that are missing and runs nothing without
-them.
+a receipt. A package can carry each source's fetched bytes, its candidates and the
+inventory run it was cut from; ``--stage run`` renders the bytes, checks every sha the
+gate will check, and installs the inventory before it stages anything. What a
+contributor supplies by hand is the declaration index and the search corpus (and, for a
+package that ships no bytes, the sources refetched at their pinned revisions and the
+candidates). ``--stage run`` names any that are missing and runs nothing without them.
 
 **The seal.** ``--stage seal`` (:mod:`seal`) is stage 8 and stage 6 on this machine: the
 harvested documents become outcome rows, the rows become a sealed record set, and the
@@ -305,9 +307,10 @@ def staged_notice(log=print) -> None:
     log("# next: `--stage run` materialises the package, stages each task's working")
     log("# directory from YOUR files, calls a worker per task, runs the gate out of")
     log("# tree and harvests what passed with a receipt.")
-    log("# Before it, fill what the plan names and the package cannot carry: the")
-    log("# sources refetched at their pinned revisions, the candidates, the")
-    log("# declaration index and the search corpus. `--stage run` names any missing.")
+    log("# Before it, fill what the plan names and the package does not carry: the")
+    log("# declaration index and the search corpus, and for a package that ships no")
+    log("# fetched bytes, the sources refetched at their pins and the candidates.")
+    log("# `--stage run` names any missing, and renders and checks what it ships.")
     log("# Run it WITHOUT --execute first: it stages everything and checks every path")
     log("# the prompts name, free, and calls no model.")
     log("# Workers read staged inputs and write their own results; the runner runs the gate.")
@@ -338,9 +341,9 @@ def run_stage(*, repo: Path, workdir: Path, package: str, worker_command: str = 
 def seal_stage(*, repo: Path, workdir: Path, package: str, set_id: str, campaign: str,
                producer_commit: str, created: str, index: Path | None = None,
                out: Path | None = None, sourceset: str = "",
-               challenge_runs: tuple[str, ...] = (), runs: Path | None = None,
-               byte_budget: int = 0, machine: str = "", received_at: str = "",
-               log=print) -> dict:
+               challenge_runs: tuple[str, ...] = (), unchallenged: bool = False,
+               runs: Path | None = None, byte_budget: int = 0, machine: str = "",
+               received_at: str = "", log=print) -> dict:
     """``--stage seal``: tally, export and check a set on this machine (:mod:`seal`).
 
     The set is written and then put straight through the intake contract, so the
@@ -369,7 +372,8 @@ def seal_stage(*, repo: Path, workdir: Path, package: str, set_id: str, campaign
                          manifest=manifest, out=out, set_id=set_id, campaign=campaign,
                          producer_commit=producer_commit, created=created, index=index,
                          sourceset=sourceset, challenge_runs=challenge_runs,
-                         runs=runs, byte_budget=byte_budget, log=log)
+                         unchallenged=unchallenged, runs=runs, byte_budget=byte_budget,
+                         log=log)
     # the intake contract, here, before anything is pushed: the same answer the
     # coordinator and the endpoint will give, with the rule's own name on a refusal
     submission = results_mod.verify_record_set(
@@ -426,7 +430,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--challenge-run", action="append", default=[],
                         help="with --stage seal: a challenge run whose verdicts apply. "
                              "Nothing leaves this pipeline without a challenge value, "
-                             "so a set with no challenge run exports no record")
+                             "so a set with neither this nor --unchallenged exports "
+                             "no record")
+    parser.add_argument("--unchallenged", action="store_true",
+                        help="with --stage seal: seal a run no challenge ran over. Every "
+                             "record reads not_required, which the pages show as "
+                             "unchallenged; the campaign names no challenge run")
     parser.add_argument("--runs", type=Path, default=None,
                         help="with --stage seal: where this machine's own runs are — "
                              "its cut and its challenge runs "
@@ -507,7 +516,8 @@ def main(argv: list[str] | None = None) -> int:
                 campaign=args.campaign, producer_commit=args.producer_commit,
                 created=args.created, index=args.index, out=args.set_out,
                 sourceset=args.sourceset,
-                challenge_runs=tuple(args.challenge_run), runs=args.runs,
+                challenge_runs=tuple(args.challenge_run),
+                unchallenged=args.unchallenged, runs=args.runs,
                 byte_budget=args.byte_budget, machine=machine)
             if record_set is None:
                 record_set = Path(sealed["set_dir"])

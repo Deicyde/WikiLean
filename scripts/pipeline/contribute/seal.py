@@ -11,10 +11,11 @@ Three steps of WikiLean's own pipeline, in order, over the run the contributor j
 finished:
 
 1. **stage 8, the tally** (``scripts/pipeline/tally.py``): the harvested documents
-   become outcome rows under the challenge's verdicts, with the proof statuses joined
-   from the declaration index, and then the rows the exporter takes — each passage's
-   quote cut out of **this machine's** rendered layer, which is the one value only the
-   layer can give;
+   become outcome rows under the challenge's verdicts, or unchallenged when no challenge
+   ran (every record ``not_required``), with the proof statuses joined from the
+   declaration index, and then the rows the exporter takes — each passage's quote cut
+   out of **this machine's** rendered layer, which is the one value only the layer can
+   give;
 2. **stage 6, the export** (``scripts/pipeline/export_records.py``): those rows become
    ``SEAL.json``, ``universe.json``, ``sources.jsonl``, ``records/*.jsonl`` and
    ``receipts/*.json`` — the same bytes the coordinator's own export would write from
@@ -141,28 +142,31 @@ def pins(root: Path, manifest: dict) -> dict:
 
 
 def tally(*, root: Path, workdir: Path, run_id: str, index: Path, universe: Path,
-          runs: Path | None = None,
-          challenge_runs: tuple[str, ...] = ()) -> tuple[dict, list[dict], list[str]]:
+          runs: Path | None = None, challenge_runs: tuple[str, ...] = (),
+          unchallenged: bool = False) -> tuple[dict, list[dict], list[str]]:
     """Stage 8 over the contributor's own corpus: ``(built, export rows, refusals)``.
 
     ``require_gate`` is on and is not optional here: a contributor seals what the gate
-    passed and the harvest reconciled, or it seals nothing.
+    passed and the harvest reconciled, or it seals nothing. ``unchallenged`` tallies a
+    run no challenge ran over (``tally.build``'s).
     """
     root, workdir = Path(root), Path(workdir)
     corpus = workdir / work_mod.CORPUS_DIR
-    # A locate run is tallied against the frozen inventory it was cut from, and that
-    # inventory is the contributor's own stage-9b run over the same pinned revisions —
-    # not something the package can carry, because its passages are article text. Say
-    # so here rather than letting the tally say it about a path nobody recognises.
+    # A locate run is tallied against the frozen inventory it was cut from. A package
+    # can carry that run's harvested corpus, and `--stage run` installs it here
+    # (work.install_inventory); otherwise it is the contributor's own stage-9b run over
+    # the same pinned revisions. Say so here rather than letting the tally say it about
+    # a path nobody recognises.
     inventory_run = str(((work_mod.run_config(root).get("locate") or {})
                          .get("inventory_run")) or "")
     if inventory_run and not (corpus / inventory_run).is_dir():
         raise SealProblem(
             f"the plan was cut from inventory run {inventory_run!r} and this machine's "
             f"corpus has no {corpus / inventory_run}. A set is sealed against the "
-            "inventory its passages were cut from: run the cut (stage 9b) over the "
-            "same pinned revisions into this corpus, or ask the coordinator for the "
-            "inventory run's harvested corpus.")
+            "inventory its passages were cut from: `--stage run` installs it when the "
+            "package carries it; otherwise run the cut (stage 9b) over the same pinned "
+            "revisions into this corpus, or ask the coordinator for the inventory run's "
+            "harvested corpus.")
     workspace = ContributorWorkspace(corpus, root, run_id, runs_dir=runs,
                                      sources_dir=work_mod.sources_dir(root))
     frozen = tally_mod.Universe.load(Path(universe))
@@ -170,7 +174,7 @@ def tally(*, root: Path, workdir: Path, run_id: str, index: Path, universe: Path
     try:
         built = tally_mod.build(workspace, run_id, challenge_runs=list(challenge_runs),
                                 universe=frozen, declarations=declarations,
-                                require_gate=True)
+                                require_gate=True, unchallenged=unchallenged)
     finally:
         declarations.close()
     rows, refused = tally_mod.export_rows(built, workspace)
@@ -180,7 +184,8 @@ def tally(*, root: Path, workdir: Path, run_id: str, index: Path, universe: Path
 def seal(*, root: Path, workdir: Path, package_dir: Path, manifest: dict, out: Path,
          set_id: str, campaign: str, producer_commit: str, created: str, index: Path,
          sourceset: str = "", challenge_runs: tuple[str, ...] = (),
-         runs: Path | None = None, byte_budget: int = 0, log=print) -> dict:
+         unchallenged: bool = False, runs: Path | None = None, byte_budget: int = 0,
+         log=print) -> dict:
     """Tally and export. Returns what was sealed; the caller verifies it."""
     root, workdir, out = Path(root), Path(workdir), Path(out)
     if not COMMIT_RE.match(producer_commit or ""):
@@ -188,12 +193,20 @@ def seal(*, root: Path, workdir: Path, package_dir: Path, manifest: dict, out: P
             f"--producer-commit is the 40-hex commit of the WikiLean checkout that "
             f"produced this set, and {producer_commit!r} is not one "
             "(`git -C <your clone> rev-parse HEAD`)")
+    if unchallenged and challenge_runs:
+        raise SealProblem("--unchallenged seals a run no challenge ran over, so it is "
+                          "refused beside --challenge-run")
+    if unchallenged and "+" in (campaign or ""):
+        # the pages read a run token's second half as the challenge run, and this set
+        # has none
+        raise SealProblem(f"an unchallenged set's campaign names no challenge run: "
+                          f"'run:<run>', not {campaign!r}")
     pinned = pins(root, manifest)
     run_id = pinned["run_id"]
     universe = package_universe(package_dir)
     built, rows, refused = tally(root=root, workdir=workdir, run_id=run_id,
                                  index=index, universe=universe, runs=runs,
-                                 challenge_runs=challenge_runs)
+                                 challenge_runs=challenge_runs, unchallenged=unchallenged)
     log(f"  tally    : {len(built['rows'])} finding row(s), {len(rows)} exportable")
     for text in refused[:10]:
         log(f"    not exportable: {text}")
@@ -230,7 +243,8 @@ def seal(*, root: Path, workdir: Path, package_dir: Path, manifest: dict, out: P
             f"the export refused every row, so the set at {out} holds no record and "
             "is not worth sending. The usual cause is that no challenge run's verdicts "
             "were applied — nothing leaves this pipeline without a challenge value, so "
-            "run stage 9d over this run and name it with --challenge-run. The export's "
+            "run stage 9d over this run and name it with --challenge-run, or seal it "
+            "with --unchallenged, which the pages show as not re-checked. The export's "
             "own reasons are above.")
     return {"pins": pinned, "export": report, "rows": len(rows),
             "not_exportable": refused, "tally_problems": built["problems"],

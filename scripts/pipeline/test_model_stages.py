@@ -38,8 +38,12 @@ import agent as agent_mod  # noqa: E402
 import candidates as candidates_mod  # noqa: E402
 import challenge as challenge_mod  # noqa: E402
 import cut as cut_mod  # noqa: E402
+import export_records  # noqa: E402
+import export_statements  # noqa: E402
 import harvest as harvest_mod  # noqa: E402
 import locate as locate_mod  # noqa: E402
+import records as records_mod  # noqa: E402
+import statements as statements_mod  # noqa: E402
 import plan as plan_mod  # noqa: E402
 import prompts as prompts_mod  # noqa: E402
 import sourceset as sourceset_mod  # noqa: E402
@@ -600,6 +604,33 @@ class ChallengePlanTests(unittest.TestCase):
 class EndToEndTests(unittest.TestCase):
     """A sourceset -> the cut -> locate -> the gate -> harvest -> the tally -> 9d."""
 
+    def _cut(self, root: Path, ws: "Workspace", corpus: Path) -> Path:
+        """Stage 9b end to end: plan, a stub worker, the gate, the harvest.
+
+        The worker is a local command writing the recorded inventory document, run
+        through the same entry a model call takes. Returns the harvested corpus
+        directory, which is the frozen cut every later stage reads.
+        """
+        inv_root = root / "inv"
+        inv = cut_mod.plan_inventory(run_id=fixture.INV_RUN, out=inv_root,
+                                     sourceset_dir=ws.ss.dir,
+                                     universe=ws.universe, render_prompts=True)
+        inv_task = inv["tasks"][0]["task_id"]
+        self._stub(root, inv_root, inv_task, fixture.good_inventory_document(),
+                   fixture.INV_RUN)
+        worktree = inv_root / "work" / inv_task
+        self.assertEqual(
+            gate.main(["--gate-config", str(inv_root / "gate" / "gate.json"),
+                       "--root", str(worktree),
+                       "--findings-dir", str(worktree / "findings")],
+                      env={"TEND_TASK_ID": inv_task}), gate.EXIT_OK)
+        receipt = harvest_mod.harvest(
+            run_id=fixture.INV_RUN, source=worktree / "findings",
+            dest=corpus / fixture.INV_RUN, usage=inv_root / "usage",
+            gate_log=inv_root / "gate-log")
+        self.assertTrue(receipt["complete"], harvest_mod.describe(receipt))
+        return corpus / fixture.INV_RUN
+
     def test_one_synthetic_article_from_the_sourceset_to_a_challenge_plan(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -607,26 +638,9 @@ class EndToEndTests(unittest.TestCase):
             corpus = root / "corpus"
             runs = root / "runs"
 
-            # --- 9b: the cut. The worker is a local command writing the recorded
-            # inventory document, run through the same entry a model call takes.
+            # --- 9b: the cut
+            self._cut(root, ws, corpus)
             inv_root = root / "inv"
-            inv = cut_mod.plan_inventory(run_id=fixture.INV_RUN, out=inv_root,
-                                         sourceset_dir=ws.ss.dir,
-                                         universe=ws.universe, render_prompts=True)
-            inv_task = inv["tasks"][0]["task_id"]
-            self._stub(root, inv_root, inv_task, fixture.good_inventory_document(),
-                       fixture.INV_RUN)
-            worktree = inv_root / "work" / inv_task
-            self.assertEqual(
-                gate.main(["--gate-config", str(inv_root / "gate" / "gate.json"),
-                           "--root", str(worktree),
-                           "--findings-dir", str(worktree / "findings")],
-                          env={"TEND_TASK_ID": inv_task}), gate.EXIT_OK)
-            receipt = harvest_mod.harvest(
-                run_id=fixture.INV_RUN, source=worktree / "findings",
-                dest=corpus / fixture.INV_RUN, usage=inv_root / "usage",
-                gate_log=inv_root / "gate-log")
-            self.assertTrue(receipt["complete"], harvest_mod.describe(receipt))
 
             # --- 9c: the retrieval, the tasks and the prompts
             loc_root = root / "loc"
@@ -704,6 +718,234 @@ class EndToEndTests(unittest.TestCase):
             # nothing was paid for: every call was a local command
             for path in (inv_root / "usage").glob("*.json"):
                 self.assertIsNone(json.loads(path.read_text())["total_cost_usd"])
+
+    def test_the_same_run_planned_from_a_sealed_statement_set(self):
+        """R16 again, from a **published** cut: 9b -> 6b -> 9c -> the gate -> harvest ->
+        the tally -> 6, with the statement set standing where the harvested run stood.
+
+        What it holds: the locate task manifests are **byte for byte** those of a run
+        planned from the harvested cut, so nothing downstream knows which it was handed;
+        and the record set's ``passage_key`` on every record is the statement set's, so
+        a tag written on a statement in phase 1 is the row the location fills in.
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ws = Workspace(root / "ws")
+            corpus = root / "corpus"
+            runs = root / "runs"
+            cut_dir = self._cut(root, ws, corpus)
+
+            # --- 6b: seal the harvested cut as a statement set
+            report = export_statements.from_cut(
+                inventory_dir=cut_dir, sourceset_dir=ws.ss.dir, out=root / "set",
+                set_id="stmt-test", campaign=f"run:{fixture.INV_RUN}",
+                producer_commit="ab" * 20, created="2026-11-12T00:00:00Z")
+            self.assertEqual(report["refused"], [])
+            sealed = statements_mod.read_set(root / "set")
+
+            # --- 9c: the same tasks, from the published cut and from the harvested one
+            plans = {}
+            for name, over in (("harvested", {"inventory": cut_dir}),
+                               ("published", {"statement_set": root / "set"})):
+                plans[name] = locate_mod.plan_locate(
+                    run_id=fixture.RUN, out=root / f"loc-{name}", sourceset_dir=ws.ss.dir,
+                    universe=ws.universe, index=ws.index, candidates=ws.candidates,
+                    retrieve=True, **over)
+            # Everything but the quote is identical, task for task and passage for
+            # passage. The quote differs by design: a harvested cut hands the worker the
+            # words IT was cut at, and a published one hands the format's capped head
+            # (records.cut_passage), which is the quote the record will carry and the
+            # reader already showed. So a run from a harvested cut is unchanged.
+            quotes = {}
+            for name, plan in plans.items():
+                for task in plan["tasks"]:
+                    for document in task["documents"]:
+                        for passage in document["passages"]:
+                            quotes.setdefault(name, {})[passage["item"]] = \
+                                passage.pop("quote")
+            self.assertEqual(plans["harvested"], plans["published"])
+            self.assertNotEqual(quotes["harvested"], quotes["published"])
+            for item, quote in quotes["published"].items():
+                span = next(p["span"] for p in plans["published"]["tasks"][0]["documents"][0]
+                            ["passages"] if p["item"] == item)
+                self.assertEqual(quote,
+                                 dict(records_mod.cut_passage(fixture.LAYER, span).quote))
+            manifests = {name: [json.loads(path.read_text(encoding="utf-8"))
+                                for path in sorted((root / f"loc-{name}" / "tasks")
+                                                   .glob("*.json"))]
+                         for name in ("harvested", "published")}
+            for plan in manifests.values():
+                for task in plan:
+                    for document in task["documents"]:
+                        for passage in document["passages"]:
+                            passage.pop("quote")
+            self.assertEqual(manifests["harvested"], manifests["published"])
+            # run.json says which cut it was planned from, and nothing else differs
+            configs = {name: json.loads((root / f"loc-{name}" / "run.json")
+                                        .read_text(encoding="utf-8"))
+                       for name in ("harvested", "published")}
+            self.assertIsNone(configs["harvested"]["locate"]["statement_set"])
+            self.assertEqual(configs["published"]["locate"]["statement_set"],
+                             {"set_id": "stmt-test", "seal_sha256": sealed.seal_sha256})
+            # The staged gate pins each task manifest by sha, and those differ in the
+            # quote alone (above); gate.json itself, and everything else the gate block
+            # names, is the same.
+            staged = {name: configs[name]["gate"].pop("files")
+                      for name in ("harvested", "published")}
+            self.assertEqual({k: v for k, v in staged["harvested"].items()
+                              if not k.startswith("tasks/")},
+                             {k: v for k, v in staged["published"].items()
+                              if not k.startswith("tasks/")})
+            self.assertEqual(sorted(staged["harvested"]), sorted(staged["published"]))
+            for config in configs.values():
+                config["locate"].pop("statement_set")
+            self.assertEqual(configs["harvested"], configs["published"])
+
+            # --- the gate, the harvest and the tally over the published plan
+            loc_root = root / "loc-published"
+            loc_task = sorted(path.stem for path in (loc_root / "tasks").glob("*.json"))[0]
+            document = fixture.good_locate_document()
+            document["task_id"] = loc_task
+            handed = {p["item"] for p in json.loads(
+                (loc_root / "tasks" / f"{loc_task}.json").read_text(encoding="utf-8")
+            )["documents"][0]["passages"]}
+            document["passages"] = [p for p in document["passages"] if p["item"] in handed]
+            self._stub(root, loc_root, loc_task, document, fixture.RUN)
+            worktree = loc_root / "work" / loc_task
+            self.assertEqual(
+                gate.main(["--gate-config", str(loc_root / "gate" / "gate.json"),
+                           "--root", str(worktree),
+                           "--findings-dir", str(worktree / "findings")],
+                          env={"TEND_TASK_ID": loc_task}), gate.EXIT_OK)
+            receipt = harvest_mod.harvest(
+                run_id=fixture.RUN, source=worktree / "findings", dest=corpus / fixture.RUN,
+                usage=loc_root / "usage", gate_log=loc_root / "gate-log",
+                run_config=json.loads((loc_root / "run.json").read_text(encoding="utf-8")))
+            self.assertTrue(receipt["complete"], harvest_mod.describe(receipt))
+            (runs / fixture.RUN).mkdir(parents=True)
+            for name in ("run.json", "planned.json"):
+                shutil.copyfile(loc_root / name, runs / fixture.RUN / name)
+            (runs / fixture.INV_RUN).mkdir(parents=True)
+            _write(runs / fixture.INV_RUN / "run.json",
+                   {"run_id": fixture.INV_RUN, "mode": vocab.MODE_INVENTORY,
+                    "locate": {"mode": vocab.MODE_INVENTORY,
+                               "status_rule": vocab.STATUS_RULE_BROAD}})
+            import index as index_mod  # noqa: PLC0415
+
+            workspace = tally_mod.Workspace(corpus, runs, ws.ss.dir / "sources")
+            built = tally_mod.build(workspace, fixture.RUN,
+                                    universe=tally_mod.Universe.load(ws.universe),
+                                    declarations=index_mod.JsonlIndex.load(ws.index))
+            self.assertEqual(built["counts"]["problems"], 0)
+
+            # --- 6: the record set, its cut taken from the published one
+            rows, refused = tally_mod.export_rows(built, workspace)
+            self.assertEqual(refused, [])
+            # No challenge run here (9d is the test above), and nothing leaves the
+            # pipeline without a challenge value: stamp the one a plan gives a record no
+            # rule requires. What this test is about is the cut and the keys.
+            for row in rows:
+                for part in (row, *(row.get("locations") or []), row.get("absence"),
+                             row.get("coverage")):
+                    if isinstance(part, dict) and not part.get("challenge"):
+                        part["challenge"] = vocab.CHALLENGE_NOT_REQUIRED
+            statements_mod.frozen_inventory(sealed, ws.ss.dir / "sources")
+            exported = export_records.build_set(
+                rows=rows, sources=[entry()], universe=UNIVERSE, set_id="rec-test",
+                campaign=f"run:{fixture.RUN}", sourceset=ws.ss.id,
+                sourceset_manifest="cd" * 32, producer_commit="ab" * 20,
+                created="2026-11-12T01:00:00Z", status_rule=vocab.STATUS_RULE_BROAD,
+                layers={fixture.SOURCE: fixture.LAYER}, statement_cuts=sealed.cuts(),
+                statement_spans=sealed.spans(), out=root / "recordset")
+            self.assertEqual(exported["refused"], [])
+            published = {row["item"]: row["passage_key"]
+                         for row in sealed.statements[fixture.SOURCE]}
+            keyed = 0
+            for line in (root / "recordset" / "records" / f"{fixture.SOURCE}.jsonl"
+                         ).read_text(encoding="utf-8").splitlines():
+                record = json.loads(line)
+                ext = record["extensions"][vocab.LOCATE]
+                self.assertEqual(ext["passage_key"], published[ext["item"]])
+                keyed += 1
+            self.assertEqual(keyed, exported["exported"]["records"])
+
+    def test_a_row_whose_cut_is_not_the_published_one_is_refused(self):
+        """The check that makes the two phases one row: a row whose own cut disagrees
+        with the sealed statement is refused by name, rather than re-keying the passage."""
+        cuts = {(fixture.SOURCE, "In-text #00000001"):
+                records_mod.Cut({"exact": "a", "prefix": "", "suffix": ""}, "aa" * 32)}
+        row = {"source_id": fixture.SOURCE, "item": "In-text #00000001",
+               "cut": {"quote": {"exact": "b", "prefix": "", "suffix": ""},
+                       "span_sha256": "bb" * 32}}
+        with self.assertRaises(records_mod.RecordProblem) as caught:
+            export_records.row_cut(row, cuts)
+        self.assertIn("the row's cut is not the published one", str(caught.exception))
+        self.assertEqual(export_records.row_cut({**row, "cut": None}, cuts),
+                         cuts[(fixture.SOURCE, "In-text #00000001")])
+        with self.assertRaises(records_mod.RecordProblem) as caught:
+            export_records.row_cut({**row, "item": "In-text #00000002"}, cuts)
+        self.assertIn("the statement set holds no statement", str(caught.exception))
+
+    def test_a_row_whose_span_is_not_the_published_one_is_refused(self):
+        """A record carries its ROW's span beside the set's span_sha256 (records.subject_end),
+        so the span is held to the sealed one too — including for a row with no cut of its
+        own, which takes the sealed quote and hash unquestioned."""
+        key = (fixture.SOURCE, "In-text #00000001")
+        cuts = {key: records_mod.Cut({"exact": "a", "prefix": "", "suffix": ""}, "aa" * 32)}
+        spans = {key: [10, 40]}
+        row = {"source_id": fixture.SOURCE, "item": "In-text #00000001", "span": [10, 40],
+               "cut": {"quote": {"exact": "a", "prefix": "", "suffix": ""},
+                       "span_sha256": "aa" * 32}}
+        self.assertEqual(export_records.row_cut(row, cuts, spans), cuts[key])
+        for over in ({"span": [10, 41]}, {"span": None}, {"span": [10, 40], "cut": None}):
+            moved = {**row, **over}
+            if moved.get("span") == [10, 40]:
+                continue
+            with self.subTest(span=moved.get("span")):
+                with self.assertRaises(records_mod.RecordProblem) as caught:
+                    export_records.row_cut(moved, cuts, spans)
+                self.assertIn("is not the published", str(caught.exception))
+        # A row with no cut of its own still has to be at the sealed span.
+        with self.assertRaises(records_mod.RecordProblem) as caught:
+            export_records.row_cut({**row, "cut": None, "span": [0, 7]}, cuts, spans)
+        self.assertIn("is not the published", str(caught.exception))
+        self.assertEqual(export_records.row_cut({**row, "cut": None}, cuts, spans), cuts[key])
+        # Without the set's spans the row's own span stands, as it always has.
+        self.assertEqual(export_records.row_cut({**row, "span": [0, 7]}, cuts), cuts[key])
+
+    def test_a_locate_run_is_planned_from_one_cut(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ws = Workspace(root / "ws")
+            for over in ({}, {"inventory": root / "a", "statement_set": root / "b"}):
+                with self.subTest(over=sorted(over)):
+                    with self.assertRaises(locate_mod.LocateProblem) as caught:
+                        locate_mod.plan_locate(run_id=fixture.RUN, out=root / "loc",
+                                               sourceset_dir=ws.ss.dir,
+                                               universe=ws.universe, **over)
+                    self.assertIn("planned from one cut", str(caught.exception))
+
+    def test_a_sourceset_that_moved_on_from_the_sealed_cut_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ws = Workspace(root / "ws")
+            corpus = root / "corpus"
+            cut_dir = self._cut(root, ws, corpus)
+            export_statements.from_cut(
+                inventory_dir=cut_dir, sourceset_dir=ws.ss.dir, out=root / "set",
+                set_id="stmt-test", campaign=f"run:{fixture.INV_RUN}",
+                producer_commit="ab" * 20, created="2026-11-12T00:00:00Z")
+            # another sourceset, pinning other bytes of the same page
+            other = sourceset_mod.Sourceset.create(root / "ss-other", "ss-other", "enwiki",
+                                                   created="2026-01-01T00:00:00Z")
+            other.write_version({fixture.SOURCE: entry(html_sha256="e" * 64)},
+                                created="2026-01-02T00:00:00Z")
+            shutil.copytree(ws.ss.dir / "sources", other.dir / "sources")
+            with self.assertRaises(locate_mod.LocateProblem) as caught:
+                locate_mod.plan_locate(run_id=fixture.RUN, out=root / "loc",
+                                       statement_set=root / "set", sourceset_dir=other.dir,
+                                       universe=ws.universe)
+            self.assertIn("the set was cut from html_sha256", str(caught.exception))
 
     def _stub(self, root: Path, run_root: Path, task: str, document: dict,
               run_id: str) -> None:

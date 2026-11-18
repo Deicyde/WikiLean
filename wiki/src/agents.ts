@@ -176,7 +176,8 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
     const now = Date.now();
     // Its pending proposals go stale with it: the queue and the resolver read
     // the proposals table, a decision checks the row is still pending, and the
-    // next AI save of the article drops the entry from moderation_state.
+    // next AI save of the article drops the entry from moderation_state. Its
+    // live claims on work packages end (claims.ts, migration 0023).
     const [r] = await c.env.DB.batch([
       c.env.DB.prepare(
         "UPDATE agent_tokens SET revoked_at = ? WHERE agent_id = ? AND owner_id = ? AND revoked_at IS NULL",
@@ -184,6 +185,10 @@ export function registerAgentRoutes(app: Hono<{ Bindings: Env }>): void {
       c.env.DB.prepare(
         "UPDATE proposals SET status = 'stale', decided_at = ? WHERE proposed_by = ? AND status = 'pending' " +
           "AND EXISTS (SELECT 1 FROM agent_tokens WHERE agent_id = ? AND owner_id = ?)",
+      ).bind(now, id, id, user.id),
+      c.env.DB.prepare(
+        "UPDATE contrib_claims SET state = 'revoked', ended_at = ?, end_reason = 'revoked' WHERE agent_id = ? " +
+          "AND state = 'live' AND EXISTS (SELECT 1 FROM agent_tokens WHERE agent_id = ? AND owner_id = ?)",
       ).bind(now, id, id, user.id),
     ]);
     if ((r.meta?.changes ?? 0) === 0) {

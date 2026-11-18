@@ -101,6 +101,7 @@ Repository `Deicyde/WikiLean`. `ci.yml` uses none of them (validation only).
 | `wrangler login` (OAuth) | wrangler's local auth store | nightly KV pushes, promoter, `d1 execute` | broad account scopes by default; prefer a scoped `CLOUDFLARE_API_TOKEN` exported only for the command |
 | `CLOUDFLARE_API_TOKEN` (local) | operator | promoter (`site/ops/brain-promote-release.sh`), `brain/acquire-d1-snapshot.sh` (needs only D1 Read) | export for the one command; never in a file the nightly reads |
 | `WIKILEAN_ARTICLES_R2_ACCESS_KEY_ID`, `WIKILEAN_ARTICLES_R2_SECRET_ACCESS_KEY` (the S3 pair of an R2 API token) | Jack | `scripts/articles/upload_store.py`, publishing the articles store (`scripts/articles/UPLOAD.md`) | Object Read & Write on the articles bucket only, with an expiry (add it to the register below); from the environment or a 0600 file on the operator machine only, never argv, Actions or the fleet host; not created yet |
+| `WIKILEAN_CONTRIB_R2_ACCESS_KEY_ID`, `WIKILEAN_CONTRIB_R2_SECRET_ACCESS_KEY` (the S3 pair of a second R2 API token) | Jack | `scripts/articles/upload_contrib.py`, putting index bundles and work packages in the contributor bucket `wikilean-contrib` | Object Read & Write on that bucket only, with an expiry (add it to the register below). Its own token, not the articles one: R2 scopes a token to buckets, and the articles upload must not be able to overwrite a bundle. From the environment or a 0600 file on the operator machine only, never argv, Actions or the fleet host; not created yet |
 | age private key (`wikilean-backup.key`) | Jack, offline | decrypting backups | never on GitHub or a runner (`docs/BACKUP.md`) |
 | `gh auth` login | operator | `bot/poll.py --decide`, maintainer commands below | — |
 | `ANTHROPIC_API_KEY` | — | must be **unset** for Max auth | `WIKILEAN_KEEP_API_KEY=1` is the explicit API-billing opt-in |
@@ -185,8 +186,13 @@ and `cd wiki && npx wrangler secret list` (names only).
     sharing its `.git`, and `WIKILEAN_PROTECTED_ROOTS`, `:`-separated), the home directory
     or `/` is refused. Agent 2's cwd comes from `WIKILEAN_MATHLIB`, so a mis-set variable
     now fails instead of exposing `wiki/.dev.vars`.
-  - `bot/triage.py` is the one CLI agent: `--tools ""`, `--setting-sources ""`,
-    `--strict-mcp-config`; the test requires those flags on any pipeline `claude` argv.
+  - `bot/triage.py` is the one pipeline CLI agent: `--tools ""`, `--setting-sources ""`,
+    `--strict-mcp-config`; the test requires those flags on any pipeline `claude` argv. The
+    contributor CLI (`worker/`) makes its one call on a volunteer's machine with the same flags,
+    WebSearch and WebFetch at most (none with `--no-web`), an environment allowlist without the
+    agent token, and an empty temporary working directory. Fetch is open (Jack, 2026-11-12): it
+    refuses localhost, dotless names and plain HTTP but not an HTTPS page the volunteer's network
+    reaches, so the CLI and its README tell anyone on an office network or VPN to pass `--no-web`.
   - The production host still runs `claude-agent-sdk` 0.2.82; the helper refuses an SDK
     without `tools=`. `SANDBOX_VERSION` is hashed into `prompt_sha`, so the sandboxed cohort
     is distinguishable in research data.

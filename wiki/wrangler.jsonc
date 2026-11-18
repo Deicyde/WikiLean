@@ -147,6 +147,17 @@
     {
       "binding": "ARTICLES",
       "bucket_name": "wikilean-articles"
+    },
+    // The contributor bucket (src/bundles.ts): the declaration-index bundles outside
+    // contributors download with an agent token, under index/v1/<manifest sha256>/,
+    // which scripts/articles/upload_contrib.py puts there with its own R2 token.
+    // Private, with no r2.dev URL and no custom domain; the Worker only reads it. It
+    // must exist under this name before a deploy that carries this binding. Until a
+    // bundle is registered and the index_downloads lever (migration 0022) is opened,
+    // the download routes answer 404 or 503 and nothing else changes.
+    {
+      "binding": "CONTRIB",
+      "bucket_name": "wikilean-contrib"
     }
   ]
 }

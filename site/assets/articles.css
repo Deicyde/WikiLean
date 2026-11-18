@@ -11,6 +11,21 @@
 [data-status="statement_only"] { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dashed; }
 [data-status="partial"]        { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dotted; }
 [data-status="not_formalized"] { --st: var(--c-not_formalized); --st-ink: var(--c-not_formalized-ink); --st-bg: var(--c-not_formalized-bg); --st-line: double; }
+/* Phase 1's statements: a neutral grey, never one of the three status colours, with its own
+   dashed grey stroke, its own hatched swatch below, and the page's ink (not the muted grey)
+   on its wash, so the pill and its counts keep AA contrast in both themes. The wash is
+   TRANSLUCENT, like the other three, so the reader's selected highlight — which paints the
+   wash three times over — still reads as selected. "unchecked" is the word a store's reader
+   mark carries (the passage's outcome); "not_checked" is the summary status the pages count —
+   both paint the same. */
+[data-status="not_checked"],
+[data-status="unchecked"]      { --st: var(--c-untouched);      --st-ink: var(--ink);                  --st-bg: rgba(154, 145, 131, 0.22); --st-line: dashed; }
+[data-theme="dark"] [data-status="not_checked"],
+[data-theme="dark"] [data-status="unchecked"] { --st-bg: rgba(154, 144, 129, 0.26); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) [data-status="not_checked"],
+  :root:not([data-theme]) [data-status="unchecked"] { --st-bg: rgba(154, 144, 129, 0.26); }
+}
 [data-status="unresolved"]     { --st: var(--c-untouched);      --st-ink: var(--muted);                --st-bg: transparent;                --st-line: groove; }
 
 .articles-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
@@ -84,6 +99,9 @@
 .articles-clear { font: inherit; font-size: 12px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--accent); border-radius: 6px; padding: 1px 8px; cursor: pointer; }
 
 .articles-bar { display: flex; height: 12px; margin: 6px 0 4px; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; background: var(--surface); }
+/* Nothing checked: the empty track, dashed so it reads as waiting rather than as a bar
+   that failed to draw (the statement-set design, section 3). */
+.articles-bar.is-empty { border-style: dashed; border-color: var(--c-untouched); }
 .articles-seg { display: block; height: 100%; box-shadow: inset -2px 0 0 var(--surface); }
 .articles-seg:last-child { box-shadow: none; }
 /* The swatch is the bar's legend: the same fill, inside each status chip. */
@@ -92,6 +110,10 @@
 .articles-seg[data-status="statement_only"], .articles-swatch[data-status="statement_only"] { background: repeating-linear-gradient(135deg, var(--c-partial) 0 3px, transparent 3px 6px); }
 .articles-seg[data-status="partial"], .articles-swatch[data-status="partial"] { background: radial-gradient(circle, var(--c-partial) 1.4px, transparent 1.8px) 0 0 / 5px 5px; }
 .articles-seg[data-status="not_formalized"], .articles-swatch[data-status="not_formalized"] { background: repeating-linear-gradient(45deg, var(--c-not_formalized) 0 2px, transparent 2px 5px), repeating-linear-gradient(-45deg, var(--c-not_formalized) 0 2px, transparent 2px 5px); }
+/* Not checked yet: a grey HORIZONTAL hatch — its own pattern, told apart from every status
+   fill above and from the undecided vertical hatch below without colour. */
+.articles-seg[data-status="not_checked"], .articles-swatch[data-status="not_checked"] { background: repeating-linear-gradient(0deg, var(--c-untouched) 0 1.5px, transparent 1.5px 5px); }
+.articles-seg[data-status="not_checked"] { box-shadow: inset 0 0 0 1px var(--c-untouched); }
 /* Undecided is a visible grey vertical hatch, never an empty-looking track. */
 .articles-seg[data-status="unresolved"], .articles-swatch[data-status="unresolved"] { background: repeating-linear-gradient(90deg, var(--c-untouched) 0 1.5px, transparent 1.5px 4px); }
 .articles-seg[data-status="unresolved"] { box-shadow: inset 0 0 0 1px var(--c-untouched); }
@@ -258,6 +280,10 @@
 .articles-fb-signin { font-size: 12px; }
 .articles-fb-help { font-size: 12px; max-width: 75ch; }
 
+/* A statement no library has been searched for: the neutral counterpart of the absence box,
+   dashed grey rather than the absence's double red, because it is not a finding. */
+.articles-unchecked { margin: 10px 0 0; padding: 8px 12px; border: 1.5px dashed var(--c-untouched); border-radius: 6px; font-size: 13px; color: var(--ink); }
+.articles-unchecked > .articles-ico { color: var(--muted); margin-right: 4px; }
 .articles-absence { margin: 10px 0 0; padding: 8px 12px; border-radius: 6px; font-size: 13px; }
 .articles-absence { border: 3px double var(--c-not_formalized); }
 .articles-absence > .articles-ico { color: var(--c-not_formalized-ink); margin-right: 4px; }
@@ -331,7 +357,8 @@
 }
 
 @media (prefers-contrast: more) {
-  .articles-passage, .articles-card, .articles-chip, .articles-table { border-color: var(--ink); }
+  .articles-passage, .articles-card, .articles-chip, .articles-table, .articles-unchecked { border-color: var(--ink); }
+  .articles-unchecked > .articles-ico { color: var(--ink); }
   .articles-muted, .articles-meta, .articles-ns, .articles-module, .articles-coverage-parts, .articles-prov, .articles-about,
   .articles-prov > summary, .articles-about > summary, .articles-ref, .articles-sig-full { color: var(--ink); }
   .articles-sig { border-color: var(--ink); }

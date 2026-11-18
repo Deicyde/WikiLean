@@ -170,6 +170,82 @@ private status receipt. Acceptance retains the set for publication; it does not
 publish it or authorize the agent to decide its own review. Daily and pending
 submission quotas are shared across all agents belonging to one owner.
 
+## Downloading the declaration index
+
+The pipeline needs the frozen universe's declaration index and search corpus,
+about half a gigabyte per universe. The same owned agent token downloads it from
+the Worker, which streams it from the private contributor bucket
+(`src/bundles.ts`; Jack, 2026-11-11, "Token-gated download"):
+
+```sh
+# the live bundles; each is named by the sha256 of its MANIFEST.json
+curl -s -H @- https://wikilean.jackmccarthy.org/api/index/bundles <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+# its manifest, then each file it lists (resume a cut download with Range)
+curl -s -H @- -o MANIFEST.json https://wikilean.jackmccarthy.org/api/index/bundles/<sha> <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+curl -s -H @- -o decl-index.jsonl https://wikilean.jackmccarthy.org/api/index/bundles/<sha>/files/index/decl-index.jsonl <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+```
+
+Check the manifest's sha256 against the URL and every file against the
+manifest. The person who minted the agent must have accepted the CC0
+agreement. All of one person's agents share a daily quota (4 GiB, the
+`index_downloads` table, which is also the download log; no IP is kept), and a
+download answers 503 until a maintainer opens the `index_downloads` lever.
+Each bundle carries its libraries' licence texts under `licences/`; read
+`LICENCES.md` before using it, since some libraries restrict use (ATLAS's
+licence says it is "not intended for use to train, fine-tune, distill,
+evaluate, or otherwise develop ML models").
+
+Operator side: `scripts/pipeline/package_index.py --licence-texts` builds a
+bundle, `scripts/articles/upload_contrib.py` uploads it, and
+`POST /api/index/bundles {"manifest_sha256": …}` with the pipeline bearer
+registers it. Retire one with
+`UPDATE index_bundles SET state='retired' WHERE manifest_sha256='…'`, and close
+every download with `UPDATE site_settings SET value='closed' WHERE key='index_downloads'`.
+
+## Claiming a work package
+
+The coordinator publishes work packages, each one planned locate run, and an
+agent claims one, so two contributors never run the same package
+(`src/claims.ts`; Jack, 2026-11-11, "Build a claims API"):
+
+```sh
+# the open packages, oldest first, and whether each is free
+curl -s -H @- https://wikilean.jackmccarthy.org/api/packages <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+# claim the oldest free one, or add "run_id": "<run>" to name one; request_key is 32
+# lowercase hex digits you choose, so a retried request answers with the same claim
+curl -s -H @- -H 'Content-Type: application/json' -d '{"request_key": "<32 hex>"}' \
+  https://wikilean.jackmccarthy.org/api/claims <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+# the package's bytes: check their sha256 against the claim's package.envelope_sha256
+curl -s -H @- -o package.json https://wikilean.jackmccarthy.org/api/claims/<claim id>/package <<< "Authorization: Bearer $WIKILEAN_AGENT_TOKEN"
+```
+
+A claim is a 24-hour lease. Renew it as you work
+(`POST /api/claims/<id>/renew`); no claim lasts more than 7 days. After each
+sealed set goes through intake, link its receipt to the claim
+(`POST /api/claims/<id>/submissions {"submission_id": "sub-…"}`, at most 20):
+the coordinator collects a run's results from those links, and a receipt cannot
+be linked once its claim has ended. Then release the claim:
+`POST /api/claims/<id>/release {"reason": "done"}` once a receipt is linked, or
+`sources_mismatch`, `gave_up` or `other`, with an optional `note` of up to 500
+characters, to give the package back. All of one person's agents together hold
+at most 2 live claims and make at most 10 claims a UTC day. A NEW claim answers
+503 until a maintainer opens the `claims` lever; closing it leaves the claims
+already held workable to the end of their lease, and the site-wide write brake
+is what stops those too. Revoking an agent at `/agents` ends its live claims,
+and a lapsed lease frees the package for the next claim.
+
+Operator side: upload the package's transport envelope to
+`packages/v1/<sha256>.json` in the contributor bucket, then publish it with the
+pipeline bearer: `POST /api/packages` with `run_id`, `envelope_sha256`, `bytes`,
+`bundle_sha256` (a live bundle of the same universe), `universe_sha256`,
+`index_sha256` (or null), `campaign` (`run:<run>` or `run:<run>+<challenge run>`),
+`mode`, `tasks`, `sources` and `max_cost` (or null). A package is published once
+and never replaced. `POST /api/packages/<run>/state {"state": "open"|"done"|"retired"}`
+moves it and ends any live claim on it, so re-opening an open package frees it
+from a claimant who stopped. `GET /api/packages/<run>/claims` lists its claims
+with their linked receipts. Close new claims with
+`UPDATE site_settings SET value='closed' WHERE key='claims'`.
+
 ## Proposing a change to a human annotation (annotation plane, retired for agents)
 
 > Editing is off at `/:slug` for every account but the pipeline bearer, so an
@@ -260,7 +336,7 @@ The build-side version of this table, with the line references, is in
   closing the site-wide write brake:
   `UPDATE site_settings SET value = 'locked', updated_at = <now in ms> WHERE key = 'site_write_mode'`.
 - The owner revokes a token at `/agents`. The agent's account and edits stay;
-  its pending proposals are retired.
+  its pending proposals are retired and its live claims end.
 - An admin stops one agent, or everyone a person minted, by blocking a row:
 
 ```bash
@@ -280,6 +356,9 @@ cd wiki && npx wrangler d1 execute wikilean --remote \
 
 Migrations `0017_agent_tokens.sql` and `0018_proposals_proposed_by.sql` must be
 on D1 before a Worker with this feature is promoted, and
-`0019_article_tags.sql` before one that carries the overlay; the promoter
+`0019_article_tags.sql` before one that carries the overlay, and
+`0022_index_bundles.sql` before one that carries the index download, and
+`0023_contrib_claims.sql` before one that carries the claims API; the promoter
 refuses until they are. Each file's header gives the apply and verify
-commands.
+commands. The download also needs the R2 bucket `wikilean-contrib` to exist
+before the deploy, as the articles bucket does.
