@@ -39,10 +39,12 @@ the unique commit plus the read-back is.
 never sends its staged directories — they hold its copy of the article text), calls the
 worker once per task through the sandbox, runs the gate out of tree as the runner's own
 validation call, retries once on a refusal, and harvests what passed into a corpus with
-a receipt. What a contributor supplies by hand is what the package cannot carry: the
-sources refetched at their pinned revisions, the candidates, the declaration index and
-the search corpus. ``--stage run`` names any that are missing and runs nothing without
-them.
+a receipt. A package can carry each source's fetched bytes, its candidates and the
+inventory run it was cut from; ``--stage run`` renders the bytes, checks every sha the
+gate will check, and installs the inventory before it stages anything. What a
+contributor supplies by hand is the declaration index and the search corpus (and, for a
+package that ships no bytes, the sources refetched at their pinned revisions and the
+candidates). ``--stage run`` names any that are missing and runs nothing without them.
 
 **The seal.** ``--stage seal`` (:mod:`seal`) is stage 8 and stage 6 on this machine: the
 harvested documents become outcome rows, the rows become a sealed record set, and the
@@ -305,9 +307,10 @@ def staged_notice(log=print) -> None:
     log("# next: `--stage run` materialises the package, stages each task's working")
     log("# directory from YOUR files, calls a worker per task, runs the gate out of")
     log("# tree and harvests what passed with a receipt.")
-    log("# Before it, fill what the plan names and the package cannot carry: the")
-    log("# sources refetched at their pinned revisions, the candidates, the")
-    log("# declaration index and the search corpus. `--stage run` names any missing.")
+    log("# Before it, fill what the plan names and the package does not carry: the")
+    log("# declaration index and the search corpus, and for a package that ships no")
+    log("# fetched bytes, the sources refetched at their pins and the candidates.")
+    log("# `--stage run` names any missing, and renders and checks what it ships.")
     log("# Run it WITHOUT --execute first: it stages everything and checks every path")
     log("# the prompts name, free, and calls no model.")
     log("# Workers read staged inputs and write their own results; the runner runs the gate.")

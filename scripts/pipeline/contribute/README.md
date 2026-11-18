@@ -49,9 +49,11 @@ python3 scripts/pipeline/contribute/publish_package.py --run-id loc-7 \
 python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
     --stage claim --execute
 
-#   ... refetch the pinned revisions and render them into <workdir>/root/sources/,
-#   ... put the candidates in <workdir>/root/candidates/, the declaration index and
-#   ... the search corpus under <workdir>/root/index/. `--stage run` names any missing.
+#   ... put the declaration index and the search corpus under <workdir>/root/index/.
+#   ... A package that ships its sources' fetched bytes (--sources-dir) is rendered and
+#   ... checked by `--stage run`; for one that ships none, refetch the pinned revisions
+#   ... into <workdir>/root/sources/ and the candidates into <workdir>/root/candidates/.
+#   ... `--stage run` names whatever is missing.
 
 # free: stage every task's working directory and check every path the prompts name
 python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \
@@ -84,8 +86,34 @@ A planned root carries `work/<task-id>/` — the manifest, the article's rendere
 the candidates and the declaration search, and the one directory the worker may write
 in. **A package deliberately leaves them behind** (`package.NOT_PACKAGED`): they hold
 the coordinator's own copy of the article text. So `--stage run` stages them again here,
-through `run/workdir.py`, out of the pages this machine refetched. Full source-layer files stay out of the transport; returned findings still contain
-the passage quotations needed to identify their claims.
+through `run/workdir.py`, out of this machine's own rendering of the sources.
+
+**What a package can ship instead of a refetch** (Jack's ruling of 2026-11-13): each
+pinned source's fetched bytes at `sources/<sid>/source.raw.html` (the raw
+`action=parse` response), its candidates at `candidates/<sid>.json`, and the harvested
+inventory run at `inputs/inventory/<run>/`. A refetch of an old revision expands
+templates as they are now, and two of three in the 2026-11-07 Mac check rendered
+another layer (docs/CONTRIBUTE-MAC-CHECKS.md). The publisher checks all three before it
+ships them (`publish_package.py --sources-dir --candidates-dir --inventory-corpus`): each
+source renders to the plan's pins, its candidates were made from that rendering and the
+gate's index, and the inventory is a complete, gated harvest of the plan's inventory run
+over the same renderings. Before staging anything, `--stage run` installs the inventory
+where the seal reads it (`work.install_inventory`), renders the shipped bytes with the
+frozen renderer and holds every view to the pins before it is written
+(`work.render_sources`), and makes the gate's own sha comparisons of the layer, the
+pinned views and the index, and of the candidates when the plan pins them
+(`work.check_pins`). A mismatch stops the run: the coordinator re-plans, and nobody
+changes a pin to make a package pass. A package never carries a rendered view, nor
+anything a run writes in its root (`index/`, `work/`, `findings/`, `gate-log/`,
+`attempts/`, `usage/`).
+
+**The claims API's packages** travel as one envelope (`envelope.py`,
+`wikilean.contribute.package-transport/1`): `package.json` and every file it names,
+base64, in canonical JSON, stored in the private bucket under the envelope's sha256.
+`publish_package.py --envelope` builds one, `scripts/articles/upload_contrib.py package`
+uploads it, and `publish_package.py --register` publishes it (`--set-state` moves it).
+A contributor's machine unpacks one only after checking every path, key and sha, into
+a fresh directory moved into place last.
 
 `--stage run` then drives each task through `run/task.py`, which is the same module the
 coordinator's run host uses: the worker call, the mechanical passage ids, **the runner's
@@ -123,10 +151,13 @@ Two checks that cost nothing and are worth running before any paid call:
 
 ## What never travels
 
-- **Into a package**: no text layer, no canonical or raw HTML, no candidates file. The
-  contributor refetches each page at its pinned revision and every sha is checked. No
-  path of the coordinator's machine either — a package that names one is refused, never
-  rewritten.
+- **Into a package**: no rendered view (text layer, canonical HTML and the rest), and
+  a source's fetched bytes and candidates only at their own paths, checked by the
+  publisher; the contributor renders the bytes against the pins again, and
+  `package.json`'s shas pin every file on the way. No path of the
+  coordinator's machine in the plan either — a package that names one is refused, never
+  rewritten. (The shipped inventory's receipt keeps the paths it was harvested at: it
+  travels byte for byte, because the tally pins its sha.)
 - **Out of a result**: the named full source-layer files are refused by `results.py`.
   Gated findings and sealed records contain passage quotations. Filename refusal is
   not a general content filter for arbitrary files.
@@ -168,16 +199,17 @@ Two preconditions worth knowing before you try it:
   re-checked; a coverage claim then upgrades nothing, a subject passage's records still
   carry the article's Wikidata QID, and the campaign names no challenge run (`run:<run>`);
 * **the inventory run** the plan was cut from, in the same corpus. It is your own stage
-  9b over the same pinned revisions; the package cannot carry it, because its passages
-  are article text.
+  9b over the same pinned revisions, unless the package carries the coordinator's
+  harvest of it, which `--stage run` installs there.
 
 ## What is not built yet
 
-Fetching the package's sources at their pinned revisions and rendering them (stage 9a),
-and regenerating the candidates (9c's retrieval), are still by hand: `--stage run` names
-what is missing but does not go and get it. Everything else between `claim` and
-`results` — staging, the agent calls, the gate, the retry, the harvest and the seal — is
-built and tested.
+For a package that ships no fetched bytes, refetching its sources at their pinned
+revisions and rendering them (stage 9a), and regenerating the candidates (9c's
+retrieval), are still by hand: `--stage run` names what is missing but does not go and
+get it. Installing the declaration index is by hand too. Everything else between
+`claim` and `results` — rendering shipped bytes, staging, the agent calls, the gate, the
+retry, the harvest and the seal — is built and tested.
 
 ## What only a real Mac can prove
 

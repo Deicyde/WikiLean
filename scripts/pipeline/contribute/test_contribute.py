@@ -15,7 +15,10 @@ transport is exercised without a network and without a Mac:
   root by its real path, which is checked over a symlinked directory standing in for
   ``/var`` → ``/private/var``, and ``bridge.sh`` writes one settings file per call from
   the template, by ``pwd -P``, and exits 78 rather than run an agent unsandboxed;
-* **what never travels**: article text in a package or in a result, by name.
+* **what never travels**: a rendered view in a package, or article text in a result,
+  by name; and **what does**, since 2026-11-13: a source's fetched bytes, its candidates
+  and the inventory run, each checked by the publisher (the bytes rendered again by the
+  contributor), and the envelope that carries a package through the claims API.
 
 What only a real Mac can prove is docs/PIPELINE.md section 9, and nothing here claims
 otherwise: these tests cover the transport, not Claude Code's own sandbox.
@@ -24,6 +27,9 @@ Run: python3 scripts/pipeline/contribute/test_contribute.py
 """
 from __future__ import annotations
 
+import base64
+import copy
+import hashlib
 import io
 import json
 import os
@@ -43,6 +49,7 @@ for _path in (str(HERE), str(PIPELINE)):
     sys.path.insert(0, _path)
 
 import collect_results  # noqa: E402
+import envelope  # noqa: E402
 import package as package_mod  # noqa: E402
 import publish_package  # noqa: E402
 import results as results_mod  # noqa: E402
@@ -754,6 +761,533 @@ class StagingTests(MiddleTests):
             self.assertTrue(json.loads(path.read_text())["dry_run"])
         self.assertEqual(done["passed"], [])
         self.assertFalse(any((root / "findings").rglob("*.json")))
+
+
+#: A body the frozen renderer turns into a source a contributor can stage: the shipped
+#: package's raw ``action=parse`` response carries it.
+RAW_BODY = ('<div class="mw-parser-output"><p>A <b>sprocket</b> is a gadget that turns a '
+            'widget.</p><p>Every sprocket is finite, and every finite gadget is a '
+            'sprocket.</p></div>')
+
+
+def sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+class ShippedCase(WorkRepoCase):
+    """A package that ships its sources' fetched bytes, their candidates and the inventory.
+
+    Jack's ruling of 2026-11-13: the bytes travel, because a refetch of an old revision
+    can render another layer than the pinned one. The publisher renders each source and
+    holds it to the plan's pins before shipping it; the contributor renders it again and
+    makes the gate's comparisons before it stages anything.
+    """
+
+    def shipped_plan(self, run_id: str = "loc-7"):
+        """``(plan root, workspace, sources.jsonl, raw)``: a plan over a real rendering."""
+        for path in (str(PIPELINE / "run"), str(PIPELINE / "gate"), str(ROOT / "site")):
+            if path not in sys.path:
+                sys.path.insert(0, path)
+        import plan as plan_mod  # noqa: PLC0415
+        import render_web  # noqa: PLC0415
+        import test_run as run_tests  # noqa: PLC0415
+
+        workspace = run_tests.Workspace(self.tmp / "ws" / run_id)
+        self.sid, self.inventory_run = run_tests.fixture.SOURCE, run_tests.fixture.INV_RUN
+        raw = json.dumps({"parse": {"revid": 1000000007, "text": {"*": RAW_BODY}}},
+                         sort_keys=True).encode("utf-8")
+        source = workspace.sources / self.sid
+        shutil.rmtree(source)
+        source.mkdir()
+        (source / package_mod.RAW_FILE).write_bytes(raw)
+        rendering = render_web.render(render_web.canonical_body(raw))
+        render_web.write_rendering(source, rendering)
+        entry = json.loads(workspace.manifest.read_text(encoding="utf-8"))
+        entry.update(raw_sha256=sha(raw), html_sha256=rendering.html_sha256,
+                     layer_sha256=rendering.layer_sha256, renderer=render_web.RENDERER)
+        # the inventory was cut from the same rendering the plan pins
+        for path in (workspace.corpus / self.inventory_run).rglob(f"{self.sid}.json"):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            document.update(source_sha=rendering.html_sha256,
+                            layer_sha256=rendering.layer_sha256)
+            path.write_text(json.dumps(document), encoding="utf-8")
+        workspace.manifest.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+        sources = self.tmp / f"sources-{run_id}.jsonl"
+        sources.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+        (workspace.candidates / f"{self.sid}.json").write_text(json.dumps(
+            {"source_id": self.sid, "source_sha": rendering.html_sha256,
+             "index": {"sha256": sha(workspace.index.read_bytes())},
+             "curated": [], "lexical": []}), encoding="utf-8")
+        plan_root = self.tmp / "plan" / run_id
+        plan_mod.plan(run_id=run_id, mode="locate", out=plan_root,
+                      inventory=workspace.corpus / self.inventory_run,
+                      inventory_run=self.inventory_run,
+                      universe=workspace.universe, manifest=workspace.manifest,
+                      sources=workspace.sources, candidates=workspace.candidates,
+                      index=workspace.index, per_task=8, render_prompts=True,
+                      sources_as="../sources", candidates_as="../candidates",
+                      index_as="../index/decls.jsonl")
+        return plan_root, workspace, sources, raw
+
+    def shipped_fields(self, plan_root: Path, workspace, sources: Path) -> dict:
+        return {"plan": plan_root, "sources": sources, "universe": workspace.universe,
+                "sources_dir": workspace.sources, "candidates_dir": workspace.candidates,
+                "inventory_dir": workspace.corpus / self.inventory_run}
+
+    def publish_shipped(self, run_id: str = "loc-7"):
+        plan_root, workspace, sources, raw = self.shipped_plan(run_id)
+        manifest = self.publish(run_id, **self.shipped_fields(plan_root, workspace, sources))
+        return manifest, workspace, raw
+
+    def claimed(self):
+        """A contributor's clone and workdir holding the shipped package, claimed."""
+        manifest, workspace, raw = self.publish_shipped()
+        clone = self.contributor("mac-one")
+        workdir = self.tmp / "w1"
+        quiet(run_package.claim, repo=clone, workdir=workdir, machine="mac-one",
+              package="loc-7", execute=True)
+        return clone, workdir, workspace
+
+
+class ShippedTests(ShippedCase):
+    def test_a_package_ships_each_sources_bytes_its_candidates_and_the_inventory(self):
+        manifest, workspace, raw = self.publish_shipped()
+        files = manifest["files"]
+        self.assertEqual(files[package_mod.raw_path(self.sid)], sha(raw))
+        self.assertIn(package_mod.candidates_path(self.sid), files)
+        self.assertIn(f"inputs/inventory/{self.inventory_run}/RECEIPT.json", files)
+        self.assertEqual(manifest["sources"][0]["raw_sha256"], sha(raw))
+        # still no rendered view: the contributor renders the bytes
+        self.assertFalse([rel for rel in files if rel.endswith("layer.txt")])
+        directory = package_mod.package_dir(self.coordinator, "loc-7")
+        self.assertEqual(package_mod.read(directory)["files"], files)
+
+    def test_the_publisher_refuses_bytes_that_do_not_reproduce_the_pins(self):
+        plan_root, workspace, sources, raw = self.shipped_plan()
+        fields = self.shipped_fields(plan_root, workspace, sources)
+        other = raw.replace(b"widget", b"gizmo")
+        (workspace.sources / self.sid / package_mod.RAW_FILE).write_bytes(other)
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-7", **fields)
+        self.assertIn("not the bytes the sourceset recorded", str(caught.exception))
+        # the entry names the new bytes, and they render to another layer than the plan's
+        entry = json.loads(sources.read_text(encoding="utf-8"))
+        entry["raw_sha256"] = sha(other)
+        sources.write_text(json.dumps(entry) + "\n", encoding="utf-8")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-7", **fields)
+        self.assertIn("layer_sha256 renders to", str(caught.exception))
+
+    def test_the_publisher_refuses_candidates_of_another_rendering(self):
+        plan_root, workspace, sources, _raw = self.shipped_plan()
+        path = workspace.candidates / f"{self.sid}.json"
+        value = json.loads(path.read_text(encoding="utf-8"))
+        value["source_sha"] = "0" * 64
+        path.write_text(json.dumps(value), encoding="utf-8")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-7", **self.shipped_fields(plan_root, workspace, sources))
+        self.assertIn("another rendering", str(caught.exception))
+
+    def test_the_publisher_refuses_an_inventory_that_is_not_a_complete_gated_harvest(self):
+        plan_root, workspace, sources, _raw = self.shipped_plan()
+        receipt = workspace.corpus / self.inventory_run / "RECEIPT.json"
+        receipt.write_text(json.dumps({"complete": False, "gate": {"ok": True}}),
+                           encoding="utf-8")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-7", **self.shipped_fields(plan_root, workspace, sources))
+        self.assertIn("not complete", str(caught.exception))
+
+    def test_the_publisher_refuses_an_inventory_cut_from_another_rendering(self):
+        plan_root, workspace, sources, _raw = self.shipped_plan()
+        for path in (workspace.corpus / self.inventory_run).rglob(f"{self.sid}.json"):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            document["layer_sha256"] = "0" * 64
+            path.write_text(json.dumps(document), encoding="utf-8")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-7", **self.shipped_fields(plan_root, workspace, sources))
+        self.assertIn("other renderings", str(caught.exception))
+
+    def test_a_package_is_its_plans_run(self):
+        plan_root, workspace, sources, _raw = self.shipped_plan("loc-7")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            self.publish("loc-8", **self.shipped_fields(plan_root, workspace, sources))
+        self.assertIn("a package is its plan's run", str(caught.exception))
+
+    def test_where_a_file_may_sit_holds_on_a_case_insensitive_disk(self):
+        good = {"source_id": "enwiki-1-2"}
+        for files, problem in (
+                ({"Work/t1/x.json": "x"}, "never carries work/"),
+                ({"Index/search/declarations.tsv": "x"}, "never carries index/"),
+                ({"Findings/t1/x.json": "x"}, "never carries findings/"),
+                ({"gate-log/loc-7.jsonl": "x"}, "never carries gate-log/"),
+                ({"tasks/Layer.txt": "x"}, "article text"),
+                ({"tasks/paragraphs.json": "x"}, "article text"),
+                ({"tasks/a.json": "x", "tasks/A.json": "x"}, "case-insensitive disk"),
+                ({"sources//enwiki-1-2/source.raw.html": "x"}, "not a plain path"),
+                ({"a b/c.json": "x"}, "not a plain path")):
+            with self.subTest(files=files):
+                problems = package_mod.shape({"sources": [good], "files": files})
+                self.assertTrue([p for p in problems if problem in p], problems)
+        for sid in ("/private/tmp/victim", "../escape", "enwiki-1"):
+            with self.subTest(source_id=sid):
+                problems = package_mod.shape({"sources": [{"source_id": sid}], "files": {}})
+                self.assertIn(f"{sid!r} is not a source id", problems)
+        self.assertTrue(package_mod.shape({"sources": "enwiki-1-2", "files": {}}))
+        self.assertEqual(package_mod.shape({"sources": [good], "files": {"run.json": "x"}}), [])
+
+    def test_a_symlink_anywhere_in_a_package_is_refused(self):
+        manifest, _workspace, _raw = self.publish_shipped()
+        directory = package_mod.package_dir(self.coordinator, "loc-7")
+        elsewhere = self.tmp / "elsewhere"
+        elsewhere.mkdir()
+        (elsewhere / "token.json").write_text("{}", encoding="utf-8")
+        link = directory / "inputs" / "linked"
+        os.symlink(elsewhere, link)
+        self.assertIn("inputs/linked: a symlink", package_mod.check(directory, manifest))
+        link.unlink()
+        self.assertEqual(package_mod.check(directory, manifest), [])
+
+    def test_a_package_carries_no_view_and_nothing_under_index_or_work(self):
+        manifest, _workspace, _raw = self.publish_shipped()
+        directory = package_mod.package_dir(self.coordinator, "loc-7")
+        for rel in (f"sources/{self.sid}/layer.txt", "work/t1/stray.json",
+                    "index/decls.jsonl", "candidates/other.json"):
+            with self.subTest(rel=rel):
+                path = directory / rel
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_bytes(b"x")
+                named = {**manifest, "files": {**manifest["files"], rel: sha(b"x")}}
+                self.assertTrue([p for p in package_mod.check(directory, named)
+                                 if p.startswith(rel)], rel)
+                # and unnamed, it is found wherever it sits, work/ included
+                self.assertIn(f"{rel}: not in package.json",
+                              package_mod.check(directory, manifest))
+                path.unlink()
+        # bytes for some sources and not others is not a package
+        more = copy.deepcopy(manifest)
+        more["sources"].append({**more["sources"][0], "source_id": "enwiki-1-2"})
+        self.assertIn("the package ships fetched bytes for 1 of its 2 source(s)",
+                      package_mod.check(directory, more))
+
+    def test_the_contributor_renders_the_bytes_and_stages_without_a_refetch(self):
+        clone, workdir, workspace = self.claimed()
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        root = done["root"]
+        self.assertEqual(done["refused"], [])
+        for name in workdir_mod.WORKER_VIEWS:
+            self.assertTrue((root / "sources" / self.sid / name).is_file(), name)
+        self.assertTrue((root / "candidates" / f"{self.sid}.json").is_file())
+        # the inventory is where the seal reads it
+        self.assertTrue((workdir / work_mod.CORPUS_DIR / self.inventory_run /
+                         "RECEIPT.json").is_file())
+        # what is left is the declaration index, which travels as a bundle of its own
+        self.assertEqual(len(done["missing_inputs"]), 1, done["missing_inputs"])
+        self.assertIn("declaration index", done["missing_inputs"][0])
+        self.assertEqual(done["staged"], {})
+        (root / "index").mkdir(exist_ok=True)
+        shutil.copyfile(workspace.index, root / "index" / "decls.jsonl")
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertEqual((done["refused"], done["missing_inputs"]), ([], []))
+        self.assertTrue(done["staged"])
+
+    def test_an_index_that_is_not_the_pinned_one_stops_the_run_before_staging(self):
+        clone, workdir, _workspace = self.claimed()
+        root = work_mod.materialise(package_mod.package_dir(clone, "loc-7"), workdir)
+        (root / "index").mkdir(exist_ok=True)
+        (root / "index" / "decls.jsonl").write_text("{}\n", encoding="utf-8")
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertTrue([line for line in done["refused"] if "declaration index" in line],
+                        done["refused"])
+        self.assertEqual(done["staged"], {})
+        self.assertFalse(done["harvested"])
+
+    def test_bytes_that_do_not_render_to_the_pins_leave_no_view(self):
+        clone, workdir, _workspace = self.claimed()
+        directory = package_mod.package_dir(clone, "loc-7")
+        root = work_mod.materialise(directory, workdir)
+        manifest = copy.deepcopy(package_mod.read(directory))
+        manifest["sources"][0]["layer_sha256"] = "0" * 64
+        problems = work_mod.render_sources(root, manifest, log=lambda *_: None)
+        self.assertTrue(problems and "layer_sha256 renders to" in problems[0], problems)
+        self.assertFalse((root / "sources" / self.sid / "layer.txt").exists())
+
+    def test_a_dotfile_beside_the_installed_inventory_stops_nothing(self):
+        clone, workdir, _workspace = self.claimed()
+        quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        installed = workdir / work_mod.CORPUS_DIR / self.inventory_run
+        (installed / ".DS_Store").write_bytes(b"\0")
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertEqual(done["refused"], [])
+
+    def test_a_missing_view_is_blamed_on_the_package_only_when_it_shipped_the_bytes(self):
+        clone, workdir, _workspace = self.claimed()
+        root = work_mod.materialise(package_mod.package_dir(clone, "loc-7"), workdir)
+        shipped = work_mod.missing_inputs(root, shipped={self.sid})
+        self.assertIn("did not render to its pins", shipped[0])
+        unshipped = work_mod.missing_inputs(root)
+        self.assertIn("refetch revision", unshipped[0])
+
+    def test_an_inventory_already_there_with_other_bytes_is_never_overwritten(self):
+        clone, workdir, _workspace = self.claimed()
+        mine = workdir / work_mod.CORPUS_DIR / self.inventory_run
+        mine.mkdir(parents=True)
+        (mine / "RECEIPT.json").write_text("{}", encoding="utf-8")
+        done = quiet(run_package.run_stage, repo=clone, workdir=workdir, package="loc-7")
+        self.assertTrue([line for line in done["refused"] if "move it aside" in line])
+        self.assertEqual((mine / "RECEIPT.json").read_text(encoding="utf-8"), "{}")
+
+
+class EnvelopeTests(ShippedCase):
+    """The claims API's transport: one canonical file, checked before anything is written."""
+
+    def envelope_of_the_package(self) -> tuple[bytes, dict]:
+        manifest, _workspace, _raw = self.publish_shipped()
+        data = envelope.encode(package_mod.package_dir(self.coordinator, "loc-7"))
+        return data, manifest
+
+    def test_an_envelope_round_trips_and_its_bytes_name_one_package(self):
+        data, manifest = self.envelope_of_the_package()
+        self.assertEqual(data, envelope.encode(package_mod.package_dir(self.coordinator,
+                                                                       "loc-7")))
+        run_id, files = envelope.decode(data)
+        self.assertEqual(run_id, "loc-7")
+        self.assertEqual(set(files), set(manifest["files"]) | {package_mod.PACKAGE_JSON})
+        target, read_back = envelope.unpack(data, self.tmp / "unpacked")
+        self.assertEqual(target, self.tmp / "unpacked" / "loc-7")
+        self.assertEqual(read_back["files"], manifest["files"])
+        for rel, blob in files.items():
+            self.assertEqual((target / rel).read_bytes(), blob, rel)
+        # the same envelope again finds its package in place and changes nothing
+        self.assertEqual(envelope.unpack(data, self.tmp / "unpacked")[0], target)
+
+    def test_an_envelope_is_refused_before_anything_lands(self):
+        data, manifest = self.envelope_of_the_package()
+        value = json.loads(data)
+
+        def changed(edit, named=None) -> bytes:
+            other = copy.deepcopy(value)
+            edit(other["files"])
+            if named is not None:
+                carried = json.loads(base64.b64decode(other["files"]["package.json"]))
+                carried["files"].update(named)
+                other["files"]["package.json"] = base64.b64encode(
+                    json.dumps(carried).encode("utf-8")).decode("ascii")
+            return envelope.canonical(other)
+
+        stray = base64.b64encode(b"x").decode("ascii")
+        view = f"sources/{self.sid}/layer.txt"
+        cases = {
+            "not canonical": json.dumps(value, indent=1).encode("utf-8"),
+            "another key": envelope.canonical({**value, "note": "hello"}),
+            "another schema": envelope.canonical({**value, "schema": "other/1"}),
+            "another run": envelope.canonical({**value, "run_id": "loc-8"}),
+            "a key twice": data.replace(b'{"files":', b'{"files":{},"files":', 1),
+            "outside the package": changed(lambda f: f.__setitem__("../escape", stray),
+                                           named={"../escape": sha(b"x")}),
+            "base64 spelt another way": changed(lambda f: f.__setitem__("tasks/pad.json", "eB=="),
+                                                named={"tasks/pad.json": sha(b"x")}),
+            "a case twin": changed(lambda f: (f.__setitem__("tasks/twin.json", stray),
+                                              f.__setitem__("tasks/TWIN.json", stray)),
+                                   named={"tasks/twin.json": sha(b"x"),
+                                          "tasks/TWIN.json": sha(b"x")}),
+            "carried, not named": changed(lambda f: f.__setitem__("tasks/extra.json", stray)),
+            "not base64": changed(lambda f: f.__setitem__("run.json", "%%%")),
+            "other bytes": changed(lambda f: f.__setitem__("run.json", stray)),
+            "a rendered view": changed(lambda f: f.__setitem__(view, stray),
+                                       named={view: sha(b"x")}),
+        }
+        packages = self.tmp / "refused"
+        for name, bad in cases.items():
+            with self.subTest(name), self.assertRaises(package_mod.PackageProblem):
+                envelope.unpack(bad, packages)
+        self.assertEqual(list(packages.iterdir()) if packages.exists() else [], [])
+        self.assertFalse((self.tmp / "escape").exists())
+        # the right bytes in the canonical spelling do decode: the cases above fail for
+        # their own reason
+        self.assertEqual(envelope.decode(changed(lambda f: f.__setitem__("tasks/pad.json", "eA=="),
+                                                 named={"tasks/pad.json": sha(b"x")}))[0],
+                         "loc-7")
+        with patch.object(envelope, "MAX_FILES", 3), \
+                self.assertRaises(package_mod.PackageProblem) as caught:
+            envelope.decode(data)
+        self.assertIn("files, over 3", str(caught.exception))
+
+    def test_a_plain_path_is_a_relative_path_of_plain_segments(self):
+        for rel in ("run.json", "gate/verify_locate.py", "inputs/inventory/inv-1/RECEIPT.json"):
+            self.assertTrue(package_mod.plain(rel), rel)
+        for rel in ("", "/abs", "../x", "a/../b", "a//b", ".hidden/x", "a b", "a/", "x" * 301,
+                    "tasks/\u00e9.json", "a\\b"):
+            self.assertFalse(package_mod.plain(rel), rel)
+
+    def test_a_directory_holding_another_package_is_never_overwritten(self):
+        data, _manifest = self.envelope_of_the_package()
+        held = self.tmp / "unpacked" / "loc-7"
+        held.mkdir(parents=True)
+        (held / "notes.txt").write_text("mine", encoding="utf-8")
+        with self.assertRaises(package_mod.PackageProblem):
+            envelope.unpack(data, self.tmp / "unpacked")
+        self.assertEqual((held / "notes.txt").read_text(encoding="utf-8"), "mine")
+
+
+class PublishApiTests(ShippedCase):
+    """``publish_package.py --envelope``, ``--register`` and ``--set-state``."""
+
+    COMMIT = "a" * 40
+    CREATED = "2026-11-14T00:00:00Z"
+
+    def bundle(self, workspace, name: str, **override) -> Path:
+        """An index bundle of the workspace's universe, holding the index the gate pins."""
+        out = self.tmp / "bundle" / name
+        (out / "index").mkdir(parents=True, exist_ok=True)
+        data = workspace.index.read_bytes()
+        (out / "index" / "decls.jsonl").write_bytes(data)
+        universe = json.loads(workspace.universe.read_text(encoding="utf-8"))
+        manifest = {"schema": "wikilean.pipeline.index-bundle/2",
+                    "universe": {"id": universe.get("id"),
+                                 "universe_sha256": override.get(
+                                     "universe_sha256", universe.get("universe_sha256"))},
+                    "index": {"path": "index/decls.jsonl",
+                              "sha256": override.get("index_sha256", sha(data))},
+                    "files": {"index/decls.jsonl": {"sha256": sha(data), "bytes": len(data)}}}
+        (out / "MANIFEST.json").write_text(json.dumps(manifest, indent=1, sort_keys=True)
+                                           + "\n", encoding="utf-8")
+        return out
+
+    def envelope_fields(self, run_id: str = "loc-7", bundle: dict | None = None) -> dict:
+        plan_root, workspace, sources, _raw = self.shipped_plan(run_id)
+        return {"run_id": run_id, "plan": plan_root, "sources": sources,
+                "universe": workspace.universe, "out": self.tmp / "out" / f"{run_id}.json",
+                "sources_dir": workspace.sources, "candidates_dir": workspace.candidates,
+                "inventory_dir": workspace.corpus / self.inventory_run,
+                "bundle_dir": self.bundle(workspace, run_id, **(bundle or {})),
+                "producer_commit": self.COMMIT, "created": self.CREATED, "max_cost": 20.0}
+
+    def test_an_envelope_names_its_bundle_and_campaign_and_registers_eleven_fields(self):
+        fields = self.envelope_fields()
+        manifest = publish_package.publish_envelope(**fields)
+        data = fields["out"].read_bytes()
+        self.assertEqual(manifest["envelope"]["sha256"], sha(data))
+        # the same inputs write the same bytes, so a package's sha is a function of them
+        self.assertEqual(publish_package.publish_envelope(**fields)["envelope"]["sha256"],
+                         sha(data))
+        self.assertEqual(manifest["seal"], {"campaign": "run:loc-7", "unchallenged": True})
+        self.assertEqual(manifest["tasks"], work_mod.tasks_of(fields["plan"]))
+        body = publish_package.registration(data)
+        self.assertEqual(sorted(body), sorted(
+            ["run_id", "envelope_sha256", "bytes", "bundle_sha256", "universe_sha256",
+             "index_sha256", "campaign", "mode", "tasks", "sources", "max_cost"]))
+        bundle = (fields["bundle_dir"] / "MANIFEST.json").read_bytes()
+        self.assertEqual((body["bundle_sha256"], body["bytes"], body["sources"]),
+                         (sha(bundle), len(data), 1))
+        self.assertEqual(body["index_sha256"],
+                         sha(fields["bundle_dir"].joinpath("index", "decls.jsonl")
+                             .read_bytes()))
+        self.assertEqual(body["tasks"], len(manifest["tasks"]))
+
+    def test_a_bundle_of_another_universe_or_index_is_refused(self):
+        for run_id, override in (("loc-8", {"universe_sha256": "e" * 64}),
+                                 ("loc-9", {"index_sha256": "f" * 64})):
+            with self.subTest(override=override):
+                fields = self.envelope_fields(run_id, bundle=override)
+                with self.assertRaises(package_mod.PackageProblem) as caught:
+                    publish_package.publish_envelope(**fields)
+                self.assertIn("index bundle", str(caught.exception))
+                self.assertFalse(fields["out"].exists())
+
+    def test_what_the_claims_api_would_refuse_is_refused_before_anything_is_written(self):
+        fields = self.envelope_fields()
+        for over, problem in (({"mode": "Locate"}, "not a package mode"),
+                              ({"max_cost": float("inf")}, "finite number"),
+                              ({"max_cost": -1.0}, "finite number")):
+            with self.subTest(over=over), self.assertRaises(package_mod.PackageProblem) as caught:
+                publish_package.publish_envelope(**{**fields, **over})
+            self.assertIn(problem, str(caught.exception))
+        self.assertFalse(fields["out"].exists())
+        # a hand-made envelope with another campaign is refused by registration too
+        publish_package.publish_envelope(**fields)
+        value = json.loads(fields["out"].read_bytes())
+        carried = json.loads(base64.b64decode(value["files"]["package.json"]))
+        carried["seal"]["campaign"] = "run:another"
+        value["files"]["package.json"] = base64.b64encode(
+            json.dumps(carried).encode("utf-8")).decode("ascii")
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            publish_package.registration(envelope.canonical(value))
+        self.assertIn("the campaign is 'run:another'", str(caught.exception))
+
+    def test_a_plan_made_for_another_universe_is_refused(self):
+        fixture_universe = json.loads((FIXTURE_SET / "universe.json").read_text())
+        fields = self.envelope_fields(bundle={
+            "universe_sha256": fixture_universe["universe_sha256"]})
+        fields["universe"] = self.universe_file()
+        with self.assertRaises(package_mod.PackageProblem) as caught:
+            publish_package.publish_envelope(**fields)
+        self.assertIn("the plan was made for universe", str(caught.exception))
+
+    def test_register_sends_the_body_as_the_pipeline_bearer_and_dry_runs_by_default(self):
+        fields = self.envelope_fields()
+        publish_package.publish_envelope(**fields)
+        import contrib_transport  # noqa: PLC0415 — publish_package put scripts/articles on the path
+
+        sent = []
+
+        def fake_call(base, path, token, payload=None, **_kw):
+            sent.append((base, path, token, payload))
+            return {"ok": True, "package": {"run_id": payload.get("run_id")}}
+
+        with patch.object(contrib_transport, "call", fake_call):
+            dry = quiet(publish_package.register, fields["out"])
+            self.assertTrue(dry["dry_run"])
+            self.assertEqual(sent, [])
+            os.environ.pop("PIPELINE_TOKEN", None)
+            with self.assertRaises(package_mod.PackageProblem):
+                publish_package.register(fields["out"], execute=True)
+            os.environ["PIPELINE_TOKEN"] = "pipeline-test-token"
+            publish_package.register(fields["out"], base="http://127.0.0.1:9", execute=True)
+            publish_package.set_state("loc-7", "retired", base="http://127.0.0.1:9",
+                                      execute=True)
+        self.assertEqual([(path, token) for _base, path, token, _body in sent],
+                         [("/api/packages", "pipeline-test-token"),
+                          ("/api/packages/loc-7/state", "pipeline-test-token")])
+        self.assertEqual(sent[0][3], publish_package.registration(fields["out"].read_bytes()))
+        self.assertEqual(sent[1][3], {"state": "retired"})
+
+        def no_request(*_args, **_kwargs):
+            raise AssertionError("a refused command sends nothing")
+
+        with patch.object(contrib_transport, "call", no_request):
+            with self.assertRaises(package_mod.PackageProblem):
+                publish_package.set_state("loc-7", "deleted", execute=True)
+            # a pasted zero-width space would reach http.client, whose encoding error
+            # quotes the whole header; it is refused first, and named only by its variable
+            os.environ["PIPELINE_TOKEN"] = "pipeline\u200btoken"
+            with self.assertRaises(package_mod.PackageProblem) as caught:
+                publish_package.register(fields["out"], execute=True)
+            self.assertNotIn("pipeline\u200btoken", str(caught.exception))
+            self.assertIn("PIPELINE_TOKEN", str(caught.exception))
+
+    def test_the_command_line_writes_an_envelope_and_registers_it_as_a_dry_run(self):
+        fields = self.envelope_fields()
+        argv = ["--run-id", "loc-7", "--plan", str(fields["plan"]),
+                "--sources", str(fields["sources"]), "--universe", str(fields["universe"]),
+                "--sources-dir", str(fields["sources_dir"]),
+                "--candidates-dir", str(fields["candidates_dir"]),
+                "--inventory-corpus", str(fields["inventory_dir"]),
+                "--bundle-dir", str(fields["bundle_dir"]),
+                "--producer-commit", self.COMMIT, "--created", self.CREATED,
+                "--envelope", str(fields["out"])]
+        with io.StringIO() as sink, redirect_stdout(sink):
+            self.assertEqual(publish_package.main(argv), 0)
+            printed = sink.getvalue()
+        self.assertIn("their fetched bytes shipped", printed)
+        self.assertIn(sha(fields["out"].read_bytes()), printed)
+        with io.StringIO() as sink, redirect_stdout(sink):
+            self.assertEqual(publish_package.main(["--register", str(fields["out"])]), 0)
+            self.assertIn('"campaign": "run:loc-7"', sink.getvalue())
+        # an envelope without a producer commit is refused: the package's gate code runs
+        # on a contributor's machine, and the commit names where it comes from
+        self.assertEqual(quiet(publish_package.main,
+                               argv[:argv.index("--producer-commit")]
+                               + argv[argv.index("--created"):]), 2)
 
 
 class SealTests(MiddleTests):
