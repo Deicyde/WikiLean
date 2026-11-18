@@ -264,19 +264,23 @@ class Credentials:
     source: str = ""
 
 
-def make_credentials(values: Mapping[str, str], source: str) -> Credentials:
-    for name in CREDENTIAL_VARS:
+def make_credentials(values: Mapping[str, str], source: str,
+                     names: tuple[str, str] = CREDENTIAL_VARS) -> Credentials:
+    """``names`` are the access key's and the secret's variable names: this bucket's by
+    default, another bucket's for an uploader that reuses this client (upload_contrib.py)."""
+    access_var, secret_var = names
+    for name in names:
         if not values.get(name):
-            raise Refused(f"{name} is not set in {source}. Set both {ACCESS_KEY_VAR} and {SECRET_KEY_VAR} "
+            raise Refused(f"{name} is not set in {source}. Set both {access_var} and {secret_var} "
                           "(the R2 token's S3 credentials), or pass --credentials-file with a 0600 file "
                           "holding them; never on the command line")
         if not CREDENTIAL_RE.match(values[name]):
             raise Refused(f"{name} in {source} is not an R2 credential (16 to 256 characters of "
                           "A-Z a-z 0-9 + / = . _ ~ -, no spaces or quotes)")
-    return Credentials(values[ACCESS_KEY_VAR], values[SECRET_KEY_VAR], source)
+    return Credentials(values[access_var], values[secret_var], source)
 
 
-def credentials_from_file(path: Path) -> Credentials:
+def credentials_from_file(path: Path, names: tuple[str, str] = CREDENTIAL_VARS) -> Credentials:
     """NAME=value lines (blank lines, # comments and a leading `export` allowed); never echoed."""
     try:
         fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
@@ -317,22 +321,23 @@ def credentials_from_file(path: Path) -> Credentials:
         name, value = name.strip(), value.strip()
         if not equals or not NAME_RE.match(name):
             raise Refused(f"line {number} of the credentials file {path} is not NAME=value")
-        if name not in CREDENTIAL_VARS:
+        if name not in names:
             raise Refused(f"line {number} of the credentials file {path} sets a name this script does not "
-                          f"read; it reads {ACCESS_KEY_VAR} and {SECRET_KEY_VAR} only")
+                          f"read; it reads {names[0]} and {names[1]} only")
         if name in values:
             raise Refused(f"line {number} of the credentials file {path} sets {name} a second time")
         if len(value) >= 2 and value[0] == value[-1] and value[0] in "'\"":
             value = value[1:-1]
         values[name] = value
-    return make_credentials(values, f"the credentials file {path}")
+    return make_credentials(values, f"the credentials file {path}", names)
 
 
-def load_credentials(path: Path | None, environ: Mapping[str, str]) -> Credentials:
+def load_credentials(path: Path | None, environ: Mapping[str, str],
+                     names: tuple[str, str] = CREDENTIAL_VARS) -> Credentials:
     if path is not None:
-        return credentials_from_file(path)
-    return make_credentials({name: environ.get(name, "").strip() for name in CREDENTIAL_VARS},
-                            "the environment")
+        return credentials_from_file(path, names)
+    return make_credentials({name: environ.get(name, "").strip() for name in names},
+                            "the environment", names)
 
 
 @dataclass(frozen=True)
