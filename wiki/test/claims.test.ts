@@ -315,7 +315,9 @@ describe("working on a claim", () => {
     const res = await fetchPackage(a.token);
     expect(res.status).toBe(200);
     expect(new Uint8Array(await res.arrayBuffer())).toEqual(bytes);
-    expect(res.headers.get("Content-Digest")).toBe(sha256(bytes));
+    // RFC 9530: the algorithm, then the raw digest in base64 between colons.
+    expect(res.headers.get("Content-Digest")).toBe(`sha-256=:${createHash("sha256").update(bytes).digest("base64")}:`);
+    expect(res.headers.get("ETag")).toBe(`"${sha256(bytes)}"`);
     expect(res.headers.get("Content-Type")).toBe("application/json");
     expect(res.headers.get("Cache-Control")).toBe("private, no-store");
     expect((await fetchPackage(b.token)).status).toBe(404);
@@ -332,6 +334,18 @@ describe("working on a claim", () => {
     expect(await code(ended)).toBe("lease");
     (h.env as unknown as { CONTRIB?: Bucket }).CONTRIB = undefined;
     expect(await code(await fetchPackage(a.token))).toBe("not_configured");
+  });
+
+  it("refuses a package the bucket no longer holds at its published size", async () => {
+    const { h, bucket } = world();
+    await publish(h, bucket, "loc-1");
+    const a = await agent(h);
+    const held = (await claim(h, a.token)).body.claim!;
+    const key = `packages/v1/${sha256(envelope("loc-1"))}.json`;
+    bucket.objects.set(key, encoder.encode(JSON.stringify({ replaced: "with other bytes, of another length" })));
+    const res = await get(h.env, held.package_url, { bearer: a.token });
+    expect(res.status).toBe(503);
+    expect(await code(res)).toBe("package_missing");
   });
 
   it("renews up to the claim's hard lifetime, and not once the lease has lapsed", async () => {

@@ -89,6 +89,12 @@ function object(value: unknown): value is Record<string, unknown> {
 function onlyKeys(value: Record<string, unknown>, keys: readonly string[]): boolean {
   return Object.keys(value).every(key => keys.includes(key));
 }
+// A 64-hex sha256 as RFC 9530 carries one in Content-Digest: base64 of the 32 raw bytes.
+export function contentDigest(hex: string): string {
+  let bin = "";
+  for (let i = 0; i < hex.length; i += 2) bin += String.fromCharCode(parseInt(hex.slice(i, i + 2), 16));
+  return btoa(bin);
+}
 async function first<T>(c: Ctx, sql: string, ...values: unknown[]): Promise<T | null> {
   const { results } = await c.env.DB.prepare(sql).bind(...values).all<T>();
   return results[0] ?? null;
@@ -340,7 +346,11 @@ export function registerClaimRoutes(app: Hono<{ Bindings: Env }>): void {
     }
     const sha = own.pkg.envelope_sha256;
     const headers = new Headers({
-      "Content-Type": "application/json", "Content-Length": String(own.pkg.bytes), "Content-Digest": sha,
+      // Content-Digest as RFC 9530 writes one: the algorithm, then the raw digest in
+      // base64 between colons. The same sha256 is the ETag's hex and the claim's
+      // package.envelope_sha256, which is what a client checks the bytes against.
+      "Content-Type": "application/json", "Content-Length": String(own.pkg.bytes),
+      "Content-Digest": `sha-256=:${contentDigest(sha)}:`,
       "ETag": `"${sha}"`, "Cache-Control": "private, no-store",
     });
     // A HEAD request reaches this handler too, and is answered from D1 alone.
@@ -349,6 +359,15 @@ export function registerClaimRoutes(app: Hono<{ Bindings: Env }>): void {
     if (!stored || !("body" in stored)) {
       console.log(JSON.stringify({ event: "package-missing", run_id: own.pkg.run_id, envelope_sha256: sha }));
       return refuse(c, "package_missing", "the bucket does not hold this package; a maintainer must re-upload it", 503);
+    }
+    // Publication checked the object's size; if it has been replaced since, say so rather
+    // than send a body of another length under the header above.
+    if (stored.size !== own.pkg.bytes) {
+      console.log(JSON.stringify({ event: "package-size", run_id: own.pkg.run_id, envelope_sha256: sha,
+        published: own.pkg.bytes, bucket: stored.size }));
+      await stored.body.cancel();
+      return refuse(c, "package_missing", `the bucket's copy of this package is ${stored.size} bytes, not the ` +
+        `${own.pkg.bytes} it was published at; a maintainer must re-upload it`, 503);
     }
     return new Response(stored.body, { headers });
   });

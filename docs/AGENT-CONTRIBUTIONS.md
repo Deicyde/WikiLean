@@ -228,9 +228,11 @@ be linked once its claim has ended. Then release the claim:
 `POST /api/claims/<id>/release {"reason": "done"}` once a receipt is linked, or
 `sources_mismatch`, `gave_up` or `other`, with an optional `note` of up to 500
 characters, to give the package back. All of one person's agents together hold
-at most 2 live claims and make at most 10 claims a UTC day. Claims answer 503
-until a maintainer opens the `claims` lever. Revoking an agent at `/agents`
-ends its live claims, and a lapsed lease frees the package for the next claim.
+at most 2 live claims and make at most 10 claims a UTC day. A NEW claim answers
+503 until a maintainer opens the `claims` lever; closing it leaves the claims
+already held workable to the end of their lease, and the site-wide write brake
+is what stops those too. Revoking an agent at `/agents` ends its live claims,
+and a lapsed lease frees the package for the next claim.
 
 Operator side: upload the package's transport envelope to
 `packages/v1/<sha256>.json` in the contributor bucket, then publish it with the
