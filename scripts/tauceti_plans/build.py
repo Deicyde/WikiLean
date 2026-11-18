@@ -475,11 +475,11 @@ def resolve(name: str, ctx: dict, scopes: set[str] = frozenset(), exact_only: bo
     r = ctx["resolver"].resolve(name, scopes, exact_only)
     res = r["resolution"]
     if res == "mathlib":
-        return r, [ctx["by"]["mathlib_decls"]]
+        return r, ["mathlib_decls"]
     if res == "tauceti":
         if ctx["sorry"].get(r.get("resolved_name", name)) is True:
-            return {**r, "resolution": "stated"}, [ctx["by"]["tauceti_decls"], ctx["by"]["deps"]]
-        return r, [ctx["by"]["tauceti_decls"]]
+            return {**r, "resolution": "stated"}, ["tauceti_decls", "trough_deps"]
+        return r, ["tauceti_decls"]
     return r, None
 
 
@@ -548,7 +548,23 @@ def add_decl(rid, lid, name, ev, ctx, decls, rejected, why=None, *, declared=Fal
 
 # ---------------------------------------------------------------- main build
 
+def git_work_tree_holding(path: str) -> str | None:
+    """The git work tree `path` would lie in (its nearest ancestor holding `.git`), if any."""
+    cur = os.path.abspath(path)
+    while True:
+        if os.path.exists(os.path.join(cur, ".git")):
+            return cur
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            return None
+        cur = parent
+
+
 def build(inputs: str, out: str) -> dict:
+    # The export is never committed: it is far over GitHub's 100 MB file limit.
+    tree_root = git_work_tree_holding(out)
+    if tree_root is not None:
+        raise BuildError(f"--out {out} lies inside the git work tree {tree_root}; write the export elsewhere")
     inp = load_inputs(inputs)
     tree: GitTree = inp["roadmap_tree"]
     commit = tree.commit
@@ -617,10 +633,6 @@ def build(inputs: str, out: str) -> dict:
 
     deps = json.loads(inp["trough_files"]["deps.json"])
     sorry = {k: v.get("sorry") for k, v in deps.get("declarations", {}).items() if isinstance(v, dict)}
-    by = {"mathlib_decls": {"input": "decls/mathlib.bmp", "sha256": inp["shas"]["mathlib_decls"]},
-          "tauceti_decls": {"input": "decls/tauceti.bmp", "sha256": inp["shas"]["tauceti_decls"]},
-          "deps": {"input": "trough/data/tauceti/deps.json",
-                   "sha256": sha256_bytes(inp["trough_files"]["deps.json"])}}
     # The roadmap repo's own Lean modules (`TauCetiRoadmap.Foo`, `TauCetiRoadmap.Foo.Suggested`).
     roadmap_modules = set()
     for fo in folders:
@@ -639,7 +651,7 @@ def build(inputs: str, out: str) -> dict:
         scopes[rid] = with_parents(found)
     ctx = {"roadmap_modules": roadmap_modules, "commit": commit, "modules": inp["modules"],
            "resolver": Resolver(inp["mathlib"], inp["tauceti"]), "scopes": scopes,
-           "sorry": sorry, "by": by}
+           "sorry": sorry}
     decls, xrefs = Collector(), Collector()
     for rid in sorted(parsed):
         readme_path, lines, hs = parsed[rid]
@@ -765,6 +777,16 @@ def make_manifest(inp: dict, data: dict, counts: dict) -> dict:
             "tauceti_decls": {"url": URLS["tauceti_decls"], "path": "decls/tauceti.bmp",
                               "sha256": shas["tauceti_decls"], "docs_commit": None,
                               "fetched_at": fetched("tauceti_decls")},
+        },
+        # What a decl_refs row's `resolved_by` names, keyed by input name.
+        "resolved_by": {
+            "mathlib_decls": {"path": "decls/mathlib.bmp", "sha256": shas["mathlib_decls"],
+                              "pin": {"sha256": shas["mathlib_decls"]}},
+            "tauceti_decls": {"path": "decls/tauceti.bmp", "sha256": shas["tauceti_decls"],
+                              "pin": {"sha256": shas["tauceti_decls"]}},
+            "trough_deps": {"path": "trough/data/tauceti/deps.json",
+                            "sha256": sha256_bytes(inp["trough_files"]["deps.json"]),
+                            "pin": {"repo": "Deicyde/trough", "commit": inp["trough_tree"].commit}},
         },
         "files": {name: {"rows": blob.count(b"\n"), "sha256": sha256_bytes(blob), "bytes": len(blob)}
                   for name, blob in sorted(data.items())},

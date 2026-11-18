@@ -117,6 +117,12 @@ class BuildFixture(unittest.TestCase):
         for name in B.FILES:
             self.assertEqual(m["files"][name]["rows"], len(self.rows[name]))
 
+    def test_out_inside_git_work_tree_refuses(self):
+        inside = os.path.join(self.inputs, "TauCetiRoadmap", "export")
+        with self.assertRaisesRegex(B.BuildError, "inside the git work tree"):
+            B.build(self.inputs, inside)
+        self.assertFalse(os.path.exists(inside))
+
     def test_sha_mismatch_refuses(self):
         inputs2 = os.path.join(self.tmp, "inputs-bad")
         shutil.copytree(self.inputs, inputs2)
@@ -217,11 +223,11 @@ class BuildFixture(unittest.TestCase):
     def test_four_resolutions(self):
         d = self.by_id("decl_refs.jsonl")
         self.assertEqual(d[f"{L0}::Nat.succ_le"]["resolution"], "mathlib")
-        self.assertEqual(d[f"{L0}::Nat.succ_le"]["resolved_by"][0]["input"], "decls/mathlib.bmp")
+        self.assertEqual(d[f"{L0}::Nat.succ_le"]["resolved_by"], ["mathlib_decls"])
+        self.assertEqual(self.manifest["resolved_by"]["mathlib_decls"]["path"], "decls/mathlib.bmp")
         self.assertEqual(d[f"{L0}::TauCeti.Foo.bar"]["resolution"], "tauceti")
         self.assertEqual(d[f"{L0}::TauCeti.Foo.sorried"]["resolution"], "stated")
-        self.assertEqual([x["input"] for x in d[f"{L0}::TauCeti.Foo.sorried"]["resolved_by"]],
-                         ["decls/tauceti.bmp", "trough/data/tauceti/deps.json"])
+        self.assertEqual(d[f"{L0}::TauCeti.Foo.sorried"]["resolved_by"], ["tauceti_decls", "trough_deps"])
         for near in ("Nat.Succ_le", "Nat.succ_le_iff", "TauCeti.Foo.ba"):
             self.assertEqual(d[f"{L0}::{near}"]["resolution"], "planned", near)
             self.assertIsNone(d[f"{L0}::{near}"]["resolved_by"])
