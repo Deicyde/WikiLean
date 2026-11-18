@@ -8,7 +8,9 @@ import type { Env } from "../src/env.js";
 import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
 import { installBrainFixture } from "../test/helpers/brain-fixture.js";
-import { articlesBundleFiles, articlesReaderFiles, bindArticles } from "../test/helpers/articles.js";
+import {
+  articlesBuiltMixedFiles, articlesBundleFiles, articlesReaderFiles, articlesStatementReaderFiles, bindArticles,
+} from "../test/helpers/articles.js";
 import { FORMULA_SLUG, SEED_ANNOTATIONS, WP_FIXTURE, WP_FORMULA_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
 
 const HOST = "127.0.0.1";
@@ -196,10 +198,34 @@ const bundleServer = serve({ fetch: (request) => fetch(request, bundleEnv), host
   console.log(`WikiLean articles-bundle browser harness listening on http://${HOST}:${info.port}`);
 });
 
+// Phase 1 (e2e/articles.spec.ts, "statements"): a fifth loopback listener holding a store of
+// ONE statement-only article and its marked revision (test/helpers/articles.ts
+// articlesStatementReaderFiles), so the other listeners keep their located fixtures.
+const STATEMENTS_PORT = PORT + 4;
+const statementsEnv: Env = { ...harness.env };
+bindArticles(statementsEnv, articlesStatementReaderFiles());
+const statementsServer = serve({ fetch: (request) => fetch(request, statementsEnv), hostname: HOST, port: STATEMENTS_PORT }, (info) => {
+  console.log(`WikiLean statements browser harness listening on http://${HOST}:${info.port}`);
+});
+
+// Phase 1's two halves joined (e2e/articles.spec.ts, "the built mixed store"): a sixth
+// loopback listener over the store the PYTHON BUILDER writes — the record set beside the
+// pipeline's sealed cut, with the cut's marked revision — committed at
+// scripts/articles/fixtures/store-mixed and rebuilt byte for byte by the builder's own test.
+// Every other listener serves a fixture written by hand in test/helpers/articles.ts.
+const BUILT_PORT = PORT + 5;
+const builtEnv: Env = { ...harness.env };
+bindArticles(builtEnv, articlesBuiltMixedFiles());
+const builtServer = serve({ fetch: (request) => fetch(request, builtEnv), hostname: HOST, port: BUILT_PORT }, (info) => {
+  console.log(`WikiLean built-store browser harness listening on http://${HOST}:${info.port}`);
+});
+
 function shutdown(): void {
   oauthServer.close();
   readerServer.close();
   bundleServer.close();
+  statementsServer.close();
+  builtServer.close();
   server.close(() => {
     globalThis.fetch = runtimeFetch;
     harness.db.close();
