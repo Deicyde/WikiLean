@@ -23,6 +23,10 @@ wikilean work --loop  # one unit a round, until you stop it
 Run bare `wikilean` for a dashboard of what is open and a launcher. Piped, it
 prints the same survey and exits, so it is safe in a script.
 
+Your Claude may search the web and fetch pages while it judges, to check a
+declaration's exact name and statement; `wikilean work --no-web` turns that off
+(see Safety).
+
 Requires Python 3.12 or later and [Claude Code](https://claude.com/claude-code),
 logged in. Read [docs/START-CONTRIBUTING.md](../docs/START-CONTRIBUTING.md)
 first: it is the honest account of what is open and what is not.
@@ -68,9 +72,13 @@ passage, so `tag` runs only when there is no review work in the articles the
 round looked at.
 
 `--unit review|tag|locate` pins the unit. `--dry-run` prints the exact request
-and sends nothing — and settles nothing either, whatever the model answered, so
-the first real round still gets the passage the dry run showed you. `--loop`
-keeps going, waiting between rounds and backing off when the site says to.
+and sends nothing to WikiLean — and settles nothing either, whatever the model
+answered, so the first real round still gets the passage the dry run showed you.
+The model call itself still runs, so your Claude may still search and fetch
+unless you add `--no-web`. `--loop` keeps going, waiting between rounds and
+backing off when the site says to. A passage that gets no usable answer twice
+(the call times out, or the reply is not the agreed JSON) is set aside like a
+judged one, so a loop never spends every round on it.
 
 ### What it sends, exactly
 
@@ -103,16 +111,30 @@ These are the rules the code keeps, each with a test in `worker/tests/`.
 
 **The model never sees your WikiLean token.** The prompt carries a quotation
 from a Wikipedia revision — text anybody may edit — so the `claude` child gets
-no tools, no project or user settings, no MCP servers and no session
-(`--tools "" --setting-sources "" --strict-mcp-config --no-session-persistence
---safe-mode`, the form `bot/triage.py` already uses, and the form
-`site/test_agent_sandbox.py` holds every `claude` call in this repository to).
-Its environment is an **allowlist** that cannot contain
-`WIKILEAN_AGENT_TOKEN`, and the prompt goes in on stdin, so no quoted text is
-visible in `ps` either. The allowlist does pass `HOME`, because Claude Code
-needs your own credentials — and the token file lives under it, so what stands
-between the model and the file on disk is `--tools ""`. That is the same
-posture `bot/triage.py` takes, and it is why the flags are not negotiable.
+web search and web fetch and no other tool: nothing that reads a file, runs a
+command or edits anything. It also gets no project or user settings, no MCP
+servers and no session (`--tools WebSearch,WebFetch --allowedTools
+WebSearch,WebFetch --setting-sources "" --strict-mcp-config
+--no-session-persistence --safe-mode`), and it runs in an empty temporary
+directory, so what Claude Code tells it about its surroundings names neither the
+directory you ran `wikilean` in nor that directory's git branch and commits.
+`wikilean work --no-web`, or `"web": false` in the config, takes the two web
+tools away too (`--tools ""`, the form `bot/triage.py` uses); a config.json the
+CLI cannot read turns them off and says so. `site/test_agent_sandbox.py` holds
+this call to web search and fetch at most. Its environment is an **allowlist**
+that cannot contain `WIKILEAN_AGENT_TOKEN`, and the prompt goes in on stdin, so
+no quoted text is visible in `ps` either. The allowlist does pass `HOME`,
+because Claude Code needs your own credentials — and the token file lives under
+it, so what stands between the model and the file on disk is that it has no
+file tool. That is why the tool list is not negotiable.
+
+**On an office network or a VPN, run with `--no-web`.** Fetch can open any
+HTTPS page your machine can reach. It refuses `localhost`, names without a dot
+and plain HTTP, so on a home connection a planted instruction can at worst
+send what is already in the prompt, which is public. Behind a company network
+it could have the model read an internal page and send what it says to an
+outside address, or put it in a tag's note. `wikilean work` prints this
+warning whenever the web is on, and `wikilean doctor` shows whether it is.
 
 **WikiLean never sees your model credentials.** This CLI never asks for a model
 key and has nowhere to put one. Your Claude subscription is yours.
@@ -189,6 +211,7 @@ It is local. Nothing uploads it. Tokens are redacted on the way in.
   "model": "",
   "interval": 90.0,
   "model_timeout": 300.0,
+  "web": true,
   "skip_pageids": [],
   "locate_enabled": false,
   "locate_checkout": "",

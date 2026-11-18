@@ -185,8 +185,13 @@ and `cd wiki && npx wrangler secret list` (names only).
     sharing its `.git`, and `WIKILEAN_PROTECTED_ROOTS`, `:`-separated), the home directory
     or `/` is refused. Agent 2's cwd comes from `WIKILEAN_MATHLIB`, so a mis-set variable
     now fails instead of exposing `wiki/.dev.vars`.
-  - `bot/triage.py` is the one CLI agent: `--tools ""`, `--setting-sources ""`,
-    `--strict-mcp-config`; the test requires those flags on any pipeline `claude` argv.
+  - `bot/triage.py` is the one pipeline CLI agent: `--tools ""`, `--setting-sources ""`,
+    `--strict-mcp-config`; the test requires those flags on any pipeline `claude` argv. The
+    contributor CLI (`worker/`) makes its one call on a volunteer's machine with the same flags,
+    WebSearch and WebFetch at most (none with `--no-web`), an environment allowlist without the
+    agent token, and an empty temporary working directory. Fetch is open (Jack, 2026-11-12): it
+    refuses localhost, dotless names and plain HTTP but not an HTTPS page the volunteer's network
+    reaches, so the CLI and its README tell anyone on an office network or VPN to pass `--no-web`.
   - The production host still runs `claude-agent-sdk` 0.2.82; the helper refuses an SDK
     without `tools=`. `SANDBOX_VERSION` is hashed into `prompt_sha`, so the sandboxed cohort
     is distinguishable in research data.
