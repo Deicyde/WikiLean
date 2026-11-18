@@ -26,6 +26,10 @@ class Anchors(unittest.TestCase):
         self.assertEqual([h["line"] for h in hs], [1, 5])
         self.assertEqual(hs[1]["title"], "Layer 0: a b.c")
 
+    def test_fence_closes_only_on_a_bare_fence_as_long(self):
+        mask = parse.fence_mask(["````", "```lean", "## Layer 1: x", "```", "````", "## Layer 2: y"])
+        self.assertEqual(mask, [True, True, True, True, True, False])
+
 
 class LayerKeys(unittest.TestCase):
     def test_keys(self):
@@ -39,7 +43,8 @@ class LayerKeys(unittest.TestCase):
 
     def test_non_layers(self):
         for title in ("Layer 3 prerequisites: x", "F0.1 constructions", "Scope and ownership",
-                      "Layers and lanes", "N1.Tensor. Completed", "0.1 Unramified"):
+                      "Layers and lanes", "N1.Tensor. Completed", "0.1 Unramified",
+                      "F0–F1: finiteness", "R7.1–R7.8. Curvature", "T1 - T2: x"):
             self.assertIsNone(parse.layer_key(title), title)
 
 
@@ -70,6 +75,24 @@ class LeanNames(unittest.TestCase):
         self.assertEqual([d["name"] for d in decls], ["A.B.t1", "A.B.C.d", "Z.w", "A.B.named", "Top"])
         self.assertEqual(markers, [{"line": 2, "title": "Layer 0: x"}])
 
+    def test_lean_scan_scopes_strings_universes(self):
+        text = (
+            "namespace A\n"
+            "@[expose] public section\n"
+            "def f.{u} : Type u := PUnit\n"
+            "end\n"
+            "def g : Nat := 0\n"
+            "namespace B.C\n"
+            "end B.C\n"
+            "def s : String := \"/- -- \\\" \"\n"
+            "theorem t : True := trivial\n"
+            "namespace D\nnamespace E\nend D.E\n"
+            "def h : Nat := 1\n"
+            "end A\n"
+        )
+        decls, _ = parse.lean_scan(text)
+        self.assertEqual([d["name"] for d in decls], ["A.f", "A.g", "A.s", "A.t", "A.h"])
+
 
 class Xrefs(unittest.TestCase):
     def test_stacks(self):
@@ -78,7 +101,9 @@ class Xrefs(unittest.TestCase):
         self.assertEqual(parse.stacks_tags("1234 0A1B but no keyword"), [])
         self.assertEqual(parse.stacks_tags("tags 0A1B lowercase prose"), [])
         self.assertEqual(parse.stacks_tags("https://stacks.math.columbia.edu/tag/01AB"), [("01AB", None)])
-        self.assertEqual(parse.stacks_tags("Tag word followed by NOTE and SL2Z."), [("SL2Z", None)])
+        self.assertEqual(parse.stacks_tags("Tag word followed by NOTE and SL2Z."), [("SL2Z", "not_stacks_tag_shape")])
+        self.assertEqual(parse.stacks_tags("[Stacks 0A1B]; [GK02]; More on Flatness line 4197"),
+                         [("0A1B", None), ("GK02", "not_stacks_tag_shape"), ("4197", "not_stacks_tag_shape")])
         self.assertEqual(parse.stacks_tags("[Stacks, 0A1B]; arXiv 1507.01234, doi 10.1507/x"), [("0A1B", None)])
 
     def test_arxiv(self):

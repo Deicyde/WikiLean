@@ -66,7 +66,8 @@ A layer is a README heading (level 2 to 6, outside code fences) whose rendered t
 a **key**: `Layer|Milestone|Stage|Part|Lane|Phase|Level|Step <token>` (`Layer 5`, `Layer 2.1`,
 `Layer AI-0`, `Part A`) or a bare code `[A-Z]{1,4}<digits>(.<digits>)*[a-z]?` (`Y1`, `R2.3`).
 The key must end the heading or be followed by `:`, a dash, `. `, `(`, `)` or `,`; so
-`Layer 3 prerequisites` and `F0.1 constructions` are not layers. The vocabulary is the one the
+`Layer 3 prerequisites` and `F0.1 constructions` are not layers, and a dash followed by another
+key makes a range (`F0–F1`, `R7.1–R7.8`), not a layer. The vocabulary is the one the
 coverage comments use.
 
 | Field | |
@@ -106,7 +107,7 @@ roadmap, a comment for a folder that is not a roadmap, an unparseable comment. T
 | Field | |
 |---|---|
 | `id` | `depends:<source>-><target>` |
-| `kind` | `depends`; direction is the atlas's, prerequisite → consumer |
+| `kind` | `depends`; direction is the atlas's, prerequisite → consumer. Note `brain/SCHEMA.md`'s `depends` runs consumer → prerequisite, so an importer into the Brain must flip it |
 | `source`, `target` | roadmap or layer ids (ours, after mapping atlas stage ids) |
 | `evidence` | the first verified pointer by (path, line); `more_evidence` holds the rest |
 | `via` | `atlas`; `atlas_kinds` lists the atlas edge kinds merged into the row |
@@ -117,9 +118,11 @@ the line holds the atlas's `match` text when the atlas gives one (the atlas's `s
 points at the heading, so the lines of its quoted block are searched for the match); and the line
 **names the other endpoint's roadmap**: its folder's last component appears with no letter or
 digit either side (a relative link to the folder satisfies this; `GammaRay` does not name
-`Gamma`). The atlas's evidence paths are mapped: `content/tau-ceti/X` → `TauCetiRoadmap/X` (or
+`Gamma`). When two roadmaps share that last component (`Completed/IntegralLattices` and
+`TauCetiRoadmap/IntegralLattices`), only the full folder path or a markdown link that resolves,
+relative to the README, into that folder counts. The atlas's evidence paths are mapped: `content/tau-ceti/X` → `TauCetiRoadmap/X` (or
 `Completed/...`), `https://github.com/TauCetiProject/TauCetiRoadmap/blob/<ref>/<path>` →
-`<path>`. The line number is the atlas's, not searched for: a line that moved since the atlas
+`<path>`; evidence in a personal fork's URL is `unrecognized_evidence_path`. The line number is the atlas's, not searched for: a line that moved since the atlas
 snapshot fails. An edge is kept when one of its items verifies. A dropped edge goes to
 `rejected.jsonl` (`kind: edge`); a failed item of a kept edge goes there as `kind: edge_evidence`.
 Stage edges whose evidence is only "README order" or reviewer quotes have no line and are
@@ -143,7 +146,9 @@ is one dotted Lean name (`Foo.bar`, segments not starting with a digit; a leadin
 dropped); and (2) declarations in the roadmap's `Suggested.lean` (`theorem`, `lemma`, `def`,
 `abbrev`, `structure`, `class`, `inductive`, named `instance`, `axiom`, `opaque`, after any
 attributes and modifiers), with `namespace X` ... `end` prefixed, `section` scopes adding
-nothing, `_root_.` making a name absolute, and comments skipped.
+nothing (attributes and `public`/`private`/`noncomputable` allowed before `section`), `end A.B`
+closing one scope per component, universe parameters (`.{u}`) not part of the name,
+`_root_.` making a name absolute, and comments and string literals skipped.
 
 Attachment: a README line belongs to the innermost layer whose section holds it (a section runs
 from its heading to the next heading of the same or a higher level); lines outside every layer
@@ -173,7 +178,9 @@ Scanned: every line of the README (fenced blocks included) and of `Suggested.lea
 for `decl_refs`. **Stacks**: a four-character token of `0-9A-Z` with at least one digit, not part
 of a longer word or of a decimal, after the word `Stacks`, `Tag` or `Tags` (case-sensitive) or a
 `stacks.math.columbia.edu/tag/` URL on the same line. An all-digit token from 1900 to 2099 is
-rejected as a year. **arXiv**: on a line that says `arXiv` (any case), `yymm.nnnn` (to 1412) or
+rejected as a year, and a token not starting with `0` as `not_stacks_tag_shape`: every Stacks
+tag issued so far starts with `0`, and this drops citation keys (`GK02`, `BMS1`) and line
+numbers (`4197`) sharing a line with the keyword. Revisit if the Stacks project passes `0ZZZ`. **arXiv**: on a line that says `arXiv` (any case), `yymm.nnnn` (to 1412) or
 `yymm.nnnnn` (from 1501), month 01-12, from 0704 on, version dropped; any other shape is
 rejected as `invalid_arxiv_id`, and old-style ids (`math/0601001`) as `old_style_arxiv_id`.
 

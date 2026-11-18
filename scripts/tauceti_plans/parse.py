@@ -28,13 +28,15 @@ def fence_mask(lines: list[str]) -> list[bool]:
         m = _FENCE.match(ln)
         if open_fence is None:
             if m:
-                open_fence = m.group(1)[0] * 3
+                open_fence = m.group(1)
                 mask.append(True)
                 continue
             mask.append(False)
         else:
             mask.append(True)
-            if m and m.group(1).startswith(open_fence):
+            # A closing fence repeats the opener's character, at least as long, and has no info string.
+            if m and m.group(1)[0] == open_fence[0] and len(m.group(1)) >= len(open_fence) \
+                    and not ln[m.end():].strip():
                 open_fence = None
     return mask
 
@@ -103,14 +105,15 @@ def headings(lines: list[str]) -> list[dict]:
 _WORD_KEY = r"(?:Layer|Milestone|Stage|Part|Lane|Phase|Level|Step)[ \t]+(?>[A-Za-z0-9]+(?:[.\-][A-Za-z0-9]+)*)"
 _CODE_KEY = r"(?>[A-Z]{1,4}[0-9]+(?:\.[0-9]+)*[a-z]?)"
 _KEY = re.compile(
-    rf"^(?:\*\*)?(?P<key>{_WORD_KEY}|{_CODE_KEY})(?=[ \t]*(?:[:—–)(,]|\.(?:[ \t]|$)|-[ \t]|\*\*|$))"
+    rf"^(?:\*\*)?(?P<key>{_WORD_KEY}|{_CODE_KEY})(?=[ \t]*(?:[:)(,]|[—–](?![ \t]*(?:[A-Z]{{1,4}})?[0-9])|\.(?:[ \t]|$)|-[ \t](?![ \t]*(?:[A-Z]{{1,4}})?[0-9])|\*\*|$))"
 )
 
 
 def layer_key(title: str) -> str | None:
     """`Layer 5: foo` -> `Layer 5`; `Y1 — bar` -> `Y1`; `Part A. baz` -> `Part A`.
     The key must be followed by a separator (`:`, dash, `. `, `(`, `)`, `,`) or end the
-    heading, so `Layer 3 prerequisites` and `F0.1 constructions` are not layers."""
+    heading, so `Layer 3 prerequisites` and `F0.1 constructions` are not layers; a dash
+    followed by another key (`F0–F1`, `R7.1–R7.8`) is a range, not a layer."""
     m = _KEY.match(title)
     if not m:
         return None
@@ -143,11 +146,11 @@ _LEAN_DECL = re.compile(
     r"^[ \t]*(?:@\[[^\]]*\][ \t]*)*"
     r"(?:(?:private|protected|noncomputable|nonrec|partial|unsafe|scoped|local)[ \t]+)*"
     r"(?:theorem|lemma|def|abbrev|structure|class(?:[ \t]+inductive)?|inductive|instance|axiom|opaque)"
-    r"(?:[ \t]*\([^)]*\))?[ \t]+(?P<name>[^\s:({\[⦃]+)"
+    r"(?:[ \t]*\([^)]*\))?[ \t]+(?P<name>[^\s:({\[⦃]+?)(?=\.\{|[\s:({\[⦃]|$)"
 )
 _LEAN_NS = re.compile(r"^[ \t]*namespace[ \t]+(?P<name>\S+)")
-_LEAN_SECTION = re.compile(r"^[ \t]*(?:noncomputable[ \t]+)?section\b")
-_LEAN_END = re.compile(r"^[ \t]*end\b")
+_LEAN_SECTION = re.compile(r"^[ \t]*(?:@\[[^\]]*\][ \t]*)*(?:(?:noncomputable|public|private)[ \t]+)*section\b")
+_LEAN_END = re.compile(r"^[ \t]*end\b(?:[ \t]+(?P<name>\S+))?")
 _MD_HEAD_IN_DOC = re.compile(r"^[ \t]*(?:/-!)?[ \t]*(#{1,6})[ \t]+(.*?)[ \t]*(?:-/)?[ \t]*$")
 
 
@@ -184,6 +187,13 @@ def lean_scan(text: str) -> tuple[list[dict], list[dict]]:
                 continue
             if raw.startswith("--", j):
                 break
+            if raw[j] == '"':
+                k = j + 1
+                while k < len(raw) and raw[k] != '"':
+                    k += 2 if raw[k] == "\\" else 1
+                code.append(raw[j:k + 1])
+                j = k + 1
+                continue
             code.append(raw[j])
             j += 1
         if in_moddoc or (raw.lstrip().startswith("/-!")):
@@ -195,14 +205,17 @@ def lean_scan(text: str) -> tuple[list[dict], list[dict]]:
             continue
         m = _LEAN_NS.match(line)
         if m:
-            scopes.append(m.group("name"))
+            scopes.extend(m.group("name").split("."))
             continue
         if _LEAN_SECTION.match(line):
             scopes.append(None)
             continue
-        if _LEAN_END.match(line):
-            if scopes:
-                scopes.pop()
+        m = _LEAN_END.match(line)
+        if m:
+            # `end A.B` closes one scope per component, as Lean does.
+            for _ in range(len(m.group("name").split(".")) if m.group("name") else 1):
+                if scopes:
+                    scopes.pop()
             continue
         m = _LEAN_DECL.match(line)
         if m:
@@ -210,7 +223,7 @@ def lean_scan(text: str) -> tuple[list[dict], list[dict]]:
             if name.startswith("_root_."):
                 full = name[len("_root_."):]
             else:
-                full = ".".join([s for s in scopes if s] + [name])
+                full = ".".join([sc for sc in scopes if sc] + [name])
             decls.append({"name": full, "line": i})
     return decls, markers
 
@@ -238,6 +251,10 @@ def stacks_tags(line: str) -> list[tuple[str, str | None]]:
             continue
         if tag.isdigit() and 1900 <= int(tag) <= 2099:
             out.append((tag, "looks_like_year"))
+        elif tag[0] != "0":
+            # Every Stacks tag issued so far starts with 0; this drops citation keys
+            # (`GK02`, `BMS1`) and line numbers (`4197`) that share a line with the keyword.
+            out.append((tag, "not_stacks_tag_shape"))
         else:
             out.append((tag, None))
     return out

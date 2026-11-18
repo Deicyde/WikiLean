@@ -195,6 +195,16 @@ class BuildFixture(unittest.TestCase):
         dropped = self.rejected_where(kind="edge_evidence", source=BETA, target=ALPHA)
         self.assertEqual([r["evidence"]["line"] for r in dropped], [8])
 
+    def test_shared_folder_name_needs_path_or_link(self):
+        shared = {"IntegralLattices"}
+        here = "TauCetiRoadmap/X/README.md"
+        f = B._names_folder
+        self.assertFalse(f("**Completed IntegralLattices** Layer 1", "TauCetiRoadmap/IntegralLattices", here, shared))
+        self.assertTrue(f("see Completed/IntegralLattices", "Completed/IntegralLattices", here, shared))
+        self.assertTrue(f("[L](../IntegralLattices/README.md)", "TauCetiRoadmap/IntegralLattices", here, shared))
+        self.assertFalse(f("[L](../../Completed/IntegralLattices/)", "TauCetiRoadmap/IntegralLattices", here, shared))
+        self.assertTrue(f("uses Beta.", "TauCetiRoadmap/Beta", here, shared))
+
     # -- declaration references
 
     def test_four_resolutions(self):

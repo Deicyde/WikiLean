@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import posixpath
 import re
 import tomllib
 from collections import Counter, defaultdict
@@ -249,8 +250,27 @@ def apply_coverage(tree, texts, roadmaps, layers_by_rm, readme_sha, rejected):
 
 # ---------------------------------------------------------------- edges
 
-def _names_folder(line: str, folder: str) -> bool:
-    return re.search(rf"(?<![A-Za-z0-9]){re.escape(folder)}(?![A-Za-z0-9])", line) is not None
+_MD_LINK_TARGET = re.compile(r"\]\(([^)\s]+)")
+
+
+def _names_folder(line: str, other_folder: str, readme_path: str, shared_basenames: set[str]) -> bool:
+    """Does the line name the roadmap folder `other_folder` (e.g. `Completed/Gamma`)?
+    Its last component, with no letter or digit either side, is enough unless two roadmaps
+    share that component; then only the full folder path or a link that resolves into it counts."""
+    base = other_folder.rsplit("/", 1)[1]
+    if base not in shared_basenames:
+        return re.search(rf"(?<![A-Za-z0-9]){re.escape(base)}(?![A-Za-z0-9])", line) is not None
+    if re.search(rf"(?<![A-Za-z0-9/]){re.escape(other_folder)}(?![A-Za-z0-9])", line):
+        return True
+    here = posixpath.dirname(readme_path)
+    for m in _MD_LINK_TARGET.finditer(line):
+        target = m.group(1).split("#", 1)[0]
+        if not target or "://" in target:
+            continue
+        resolved = posixpath.normpath(posixpath.join(here, target))
+        if resolved == other_folder or resolved.startswith(other_folder + "/"):
+            return True
+    return False
 
 
 def _atlas_path(source_path: str) -> str | None:
@@ -290,7 +310,7 @@ def _evidence_candidates(edge: dict) -> list[dict] | str:
     return out or "no_evidence_line"
 
 
-def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache) -> dict | str:
+def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared) -> dict | str:
     """A verified pointer for one atlas evidence item, or the reason it fails. The line must
     exist at the pinned commit, sit in one endpoint's README, hold the atlas's `match` text
     when it gives one, and name the other endpoint's roadmap folder."""
@@ -304,7 +324,7 @@ def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache) -> dict | s
     if owner not in (rs, rt):
         return "evidence_not_in_endpoint_roadmap"
     other = rt if owner == rs else rs
-    folder = other.split(":", 1)[1].rsplit("/", 1)[1]
+    other_folder = other.split(":", 1)[1]
     if path not in lines_cache:
         lines_cache[path] = parse.lines_of(texts[path].decode("utf-8"))
     lines = lines_cache[path]
@@ -315,7 +335,7 @@ def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache) -> dict | s
         span = [n for n in span if c["match"] in lines[n - 1]]
         if not span:
             return "match_not_at_line"
-    hit = next((n for n in span if _names_folder(lines[n - 1], folder)), None)
+    hit = next((n for n in span if _names_folder(lines[n - 1], other_folder, path, shared)), None)
     if hit is None:
         return "line_does_not_name_target"
     return pointer(commit, path, hit)
@@ -324,6 +344,8 @@ def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache) -> dict | s
 def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, rejected):
     commit = tree.commit
     lines_cache: dict[str, list[str]] = {}
+    base_count = Counter(rid.rsplit("/", 1)[1] for rid in roadmaps)
+    shared = {b for b, n in base_count.items() if n > 1}
     kept: dict[tuple[str, str], dict] = {}
     candidates = [(e, e.get("kind") or "edge") for e in atlas.get("edges", [])]
     candidates += [(e, e.get("kind") or "stage_edge") for e in atlas.get("stageEdges", [])]
@@ -352,7 +374,7 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
         rs, rt = s.split("#")[0], t.split("#")[0]
         good, failed = [], []
         for c in cands:
-            result = _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache)
+            result = _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared)
             (failed if isinstance(result, str) else good).append((c, result))
         reasons = sorted({why for _c, why in failed})
         if good:
