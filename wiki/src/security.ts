@@ -375,6 +375,8 @@ export const MAX_JSON_BODY_BYTES = {
   submission: 4 * 1024 * 1024, // exact transport bytes are hashed before UTF-8 decoding
   submissionVerdict: 16 * 1024,
   indexBundle: 4 * 1024, // {"manifest_sha256": <64 hex>}, bundles.ts
+  claims: 4 * 1024, // claim, link, release and package-state bodies, claims.ts
+  contribPackage: 16 * 1024, // POST /api/packages, claims.ts
 } as const;
 
 export type JsonBody = { ok: true; value: unknown } | { ok: false; response: Response };

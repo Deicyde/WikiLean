@@ -61,6 +61,7 @@ import { slugEditingAllowed } from "./site-settings.js";
 import { registerVersionRoutes } from "./version.js";
 import { registerSubmissionRoutes } from "./submissions.js";
 import { registerBundleRoutes } from "./bundles.js";
+import { registerClaimRoutes } from "./claims.js";
 import type { Annotation } from "./engine/types.js";
 import type { Env } from "./env.js";
 import {
@@ -147,6 +148,7 @@ registerSecurityHeaders(app); // first: middleware must wrap every route below
 registerAuthRoutes(app);
 registerSubmissionRoutes(app);
 registerBundleRoutes(app);
+registerClaimRoutes(app);
 registerReviewRoutes(app);
 registerDeclRoutes(app);
 registerBrainEditRoutes(app);

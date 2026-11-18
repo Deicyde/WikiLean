@@ -127,6 +127,8 @@ const SAMPLE_PATHS: Record<string, string> = {
   "/api/submissions/:id/body": "/api/submissions/sub-" + "a".repeat(64) + "/body",
   "/api/index/bundles/:sha{[0-9a-f]{64}}": "/api/index/bundles/" + "a".repeat(64),
   "/api/index/bundles/:sha{[0-9a-f]{64}}/files/:path{.+}": "/api/index/bundles/" + "a".repeat(64) + "/files/index/decl-index.jsonl",
+  "/api/claims/:id/package": "/api/claims/clm-" + "a".repeat(32) + "/package",
+  "/api/packages/:run_id/claims": "/api/packages/loc-1/claims",
   "/:slug": `/${SLUG}`,
   "/:slug/history": `/${SLUG}/history`,
   "/:slug/diff/:fromId/:toId": `/${SLUG}/diff/1/1`,
