@@ -3306,6 +3306,32 @@ class D1RequiredColumnsTests(unittest.TestCase):
                         sql.index("CREATE TABLE IF NOT EXISTS pipeline_submission_chunks"))
         self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "pipeline_submission_chunks")
 
+    def test_index_download_migration_creates_its_log_last(self) -> None:
+        """0022 seeds its lever and creates the bundles before the download log the
+        gate checks, so the log existing means the whole file ran."""
+        migration = "wiki/migrations/0022_index_bundles.sql"
+        sql = (self.REPO / migration).read_text(encoding="utf-8")
+        self.assertLess(sql.index("INSERT OR IGNORE INTO site_settings"),
+                        sql.index("CREATE TABLE IF NOT EXISTS index_bundles"))
+        self.assertLess(sql.index("CREATE TABLE IF NOT EXISTS index_bundles"),
+                        sql.index("CREATE TABLE IF NOT EXISTS index_downloads"))
+        self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "index_downloads")
+
+    def test_claims_migration_creates_its_links_last(self) -> None:
+        """0023 seeds its lever and creates packages and claims before the links table the
+        gate checks, so the links table existing means the lever and every table are there."""
+        migration = "wiki/migrations/0023_contrib_claims.sql"
+        sql = (self.REPO / migration).read_text(encoding="utf-8")
+        order = [sql.index(text) for text in (
+            "INSERT OR IGNORE INTO site_settings",
+            "CREATE TABLE IF NOT EXISTS contrib_packages",
+            "CREATE TABLE IF NOT EXISTS contrib_claims",
+            "CREATE TABLE IF NOT EXISTS contrib_claim_submissions",
+            "CREATE INDEX IF NOT EXISTS idx_contrib_claim_submissions_claim",
+        )]
+        self.assertEqual(order, sorted(order))
+        self.assertEqual(promote.D1_REQUIRED_COLUMNS[migration][0], "contrib_claim_submissions")
+
 
 if __name__ == "__main__":
     unittest.main()

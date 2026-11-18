@@ -35,7 +35,9 @@ async function hash(bytes: Uint8Array): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", bytes);
   return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, "0")).join("");
 }
-function refuse(c: Ctx, code: string, error: string, status: 400 | 401 | 403 | 404 | 409 | 413 | 415 | 422 | 429 | 503) {
+// The refusal shape every pipeline-facing route answers with (bundles.ts too).
+export function refuse(c: Ctx, code: string, error: string,
+  status: 400 | 401 | 403 | 404 | 409 | 413 | 415 | 416 | 422 | 429 | 503) {
   return c.json({ ok: false, code, error, retryable: status === 429 || status === 503 }, status);
 }
 function receipt(c: Ctx, row: Row, status: 200 | 202 = 200) {
@@ -52,17 +54,22 @@ async function rowById(c: Ctx, id: string): Promise<Row | null> {
   const { results } = await c.env.DB.prepare("SELECT * FROM pipeline_submissions WHERE id = ?").bind(id).all<Row>();
   return results[0] ?? null;
 }
-async function pipeline(c: Ctx): Promise<AuthUser | Response> {
+// The PIPELINE_TOKEN bearer AND its `pipeline` users row (the row is the kill switch),
+// refused in the caller's words. Contributor laptops never hold this credential.
+export async function requirePipeline(c: Ctx, code: string, what: string): Promise<AuthUser | Response> {
   const authz = c.req.header("Authorization");
   const token = authz?.startsWith("Bearer ") ? authz.slice(7) : null;
   if (!token || !c.env.PIPELINE_TOKEN || !await bearerMatches(token, c.env.PIPELINE_TOKEN)) {
-    return refuse(c, "validator_required", "the intake validator credential is required", 403);
+    return refuse(c, code, `the ${what} credential is required`, 403);
   }
   const user = await getUser(c);
   if (!user || user.id !== "pipeline" || user.role !== "bot") {
-    return refuse(c, "validator_required", "the intake validator account is unavailable", 403);
+    return refuse(c, code, `the ${what} account is unavailable`, 403);
   }
   return user;
+}
+function pipeline(c: Ctx): Promise<AuthUser | Response> {
+  return requirePipeline(c, "validator_required", "intake validator");
 }
 
 export function registerSubmissionRoutes(app: Hono<{ Bindings: Env }>): void {
