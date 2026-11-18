@@ -155,6 +155,11 @@ class BuildFixture(unittest.TestCase):
         self.assertIsNone(lay[L1]["atlas_id"])  # agrees
         self.assertNotIn(f"{ALPHA}#0-1-a-subsection", lay)
 
+    def test_layer_ordinals(self):
+        lay = self.by_id("layers.jsonl")
+        self.assertEqual([lay[x]["ordinal"] for x in (L0, L1, L2)], [0, 1, 2])
+        self.assertEqual(lay[f"{BETA}#layer-0-base"]["ordinal"], 0)
+
     def test_states_and_unassessed_fallback(self):
         lay = self.by_id("layers.jsonl")
         self.assertEqual(lay[L0]["state"], "done")
@@ -173,18 +178,20 @@ class BuildFixture(unittest.TestCase):
 
     def test_edges_reverified(self):
         e = self.by_id("edges.jsonl")
-        self.assertEqual(sorted(e), [f"depends:{BETA}#layer-0-base->{L1}", f"depends:{BETA}->{ALPHA}"])
-        rm = e[f"depends:{BETA}->{ALPHA}"]
+        # Consumer -> prerequisite: Alpha (and its Layer 1) build on Beta.
+        self.assertEqual(sorted(e), sorted([f"depends:{ALPHA}->{BETA}", f"depends:{L1}->{BETA}#layer-0-base"]))
+        rm = e[f"depends:{ALPHA}->{BETA}"]
+        self.assertEqual((rm["source"], rm["target"]), (ALPHA, BETA))
         self.assertEqual(rm["evidence"]["line"], 7)
         self.assertEqual(rm["more_evidence"], [])
         self.assertEqual(rm["via"], "atlas")
-        st = e[f"depends:{BETA}#layer-0-base->{L1}"]
+        st = e[f"depends:{L1}->{BETA}#layer-0-base"]
         self.assertEqual(st["evidence"]["line"], 26)  # the match line inside the quoted block
 
     def test_edges_rejected(self):
         def reason(src, tgt):
             got = [r["reason"] for r in self.rejected if r["kind"] == "edge"
-                   and r["source"] == src and r["target"] == tgt]
+                   and r["atlas_source"] == src and r["atlas_target"] == tgt]
             self.assertEqual(len(got), 1, (src, tgt))
             return got[0]
         self.assertEqual(reason(GAMMA, ALPHA), "line_does_not_name_target")  # `GammaRay` is not Gamma
@@ -192,7 +199,7 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(reason("tauceti:TauCetiRoadmap/Nope", ALPHA), "endpoint_not_at_pin")
         self.assertEqual(reason(BETA, GAMMA), "no_evidence")
         self.assertEqual(reason(f"{ALPHA}#layer-0-abhyankar-s-lemma", L1), "no_evidence_line")
-        dropped = self.rejected_where(kind="edge_evidence", source=BETA, target=ALPHA)
+        dropped = self.rejected_where(kind="edge_evidence", source=ALPHA, target=BETA)
         self.assertEqual([r["evidence"]["line"] for r in dropped], [8])
 
     def test_shared_folder_name_needs_path_or_link(self):

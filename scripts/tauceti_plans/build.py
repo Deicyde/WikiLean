@@ -154,7 +154,8 @@ def build_layers(rid: str, readme_path: str, hs: list[dict], commit: str) -> lis
         key = parse.layer_key(h["title"])
         if key is None or h["level"] == 1:
             continue
-        layers.append({"id": f"{rid}#{h['anchor']}", "roadmap": rid, "key": key, "title": h["title"],
+        layers.append({"id": f"{rid}#{h['anchor']}", "roadmap": rid, "ordinal": len(layers),
+                       "key": key, "title": h["title"],
                        "anchor": h["anchor"], "level": h["level"], "line": h["line"],
                        "source": pointer(commit, readme_path, h["line"])})
     return layers
@@ -350,8 +351,9 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
     candidates = [(e, e.get("kind") or "edge") for e in atlas.get("edges", [])]
     candidates += [(e, e.get("kind") or "stage_edge") for e in atlas.get("stageEdges", [])]
     for edge, akind in candidates:
+        # The atlas writes prerequisite -> consumer; rejected rows keep its ids as atlas_*.
         src, tgt = edge.get("source"), edge.get("target")
-        base = {"kind": "edge", "atlas_kind": akind, "source": src, "target": tgt}
+        base = {"kind": "edge", "atlas_kind": akind, "atlas_source": src, "atlas_target": tgt}
 
         def endpoint(x):
             if not isinstance(x, str):
@@ -381,16 +383,17 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
             for c, why in failed:
                 path = _atlas_path(c["src"]) if isinstance(c["src"], str) else None
                 ev = pointer(commit, path, c["line"]) if path and isinstance(c["line"], int) else None
-                rejected.append({**base, "kind": "edge_evidence", "reason": why, "source": s, "target": t,
+                rejected.append({**base, "kind": "edge_evidence", "reason": why, "source": t, "target": s,
                                  "evidence": ev})
         good = [ptr for _c, ptr in good]
         if not good:
             rejected.append({**base, "reason": reasons[0] if len(reasons) == 1 else "no_evidence_verified",
                              "evidence_reasons": reasons})
             continue
-        key = (s, t)
-        row = kept.setdefault(key, {"id": f"depends:{s}->{t}", "kind": "depends", "source": s,
-                                    "target": t, "via": "atlas", "atlas_kinds": [], "_ev": []})
+        # brain/SCHEMA.md's direction: source is the consumer (atlas target), target the prerequisite.
+        key = (t, s)
+        row = kept.setdefault(key, {"id": f"depends:{t}->{s}", "kind": "depends", "source": t,
+                                    "target": s, "via": "atlas", "atlas_kinds": [], "_ev": []})
         row["atlas_kinds"] = sorted(set(row["atlas_kinds"]) | {akind})
         row["_ev"].extend(good)
     rows = []
@@ -677,7 +680,7 @@ def build(inputs: str, out: str) -> dict:
     layer_rows = []
     for ls in layers_by_rm.values():
         for l in ls:
-            layer_rows.append({k: l[k] for k in ("id", "roadmap", "key", "title", "state", "status_source",
+            layer_rows.append({k: l[k] for k in ("id", "roadmap", "ordinal", "key", "title", "state", "status_source",
                                                  "status_readme_current", "status_tauceti_rev",
                                                  "atlas_id", "source")})
     rej_rows = {}
