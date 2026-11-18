@@ -87,8 +87,10 @@ scripts/pipeline/keys.py            stage 2: the revision-free keys, canonical J
 scripts/pipeline/vocab.py           the locate vocabulary (relations, verdicts, rules)
 scripts/pipeline/status.py          stage 3: the derived status, rules 1, 2 and 3
 scripts/pipeline/readback.py        stage 4: a sealed set read back into outcome rows
+scripts/pipeline/statements.py      stage 4b: a sealed statement set read back
 scripts/pipeline/records.py         stage 5: the Literature Links records of one passage
 scripts/pipeline/export_records.py  stage 6: the sealed set, written and verified
+scripts/pipeline/export_statements.py  stage 6b: the sealed statement set, written
 scripts/pipeline/gate/              stage 7: the out-of-tree gate
   gate/verify_locate.py               rules 1 to 10, with the 0/1/3 exit vocabulary
   gate/locate_text.py                 the head rule, the quote, the span end, the blocks
@@ -289,6 +291,7 @@ widened only until the quote is unique).
 | refuses a target inside the skill repo or a companion | refuses a target inside this checkout, a symlink, or a non-empty directory that is not an earlier set |
 | the licence check reads `registry/sources.yaml` | the licence check reads the source row's own `licence_class` against `scripts/pipeline/sources.py`'s table (stage 9a); until that stage lands, `--licence-class` states it and the export refuses a class that may not be quoted |
 | writes `reports/export.<set-id>.json` into the workspace | writes the same report to `--report <file>`, or stdout |
+| — | `--statement-set <dir> --rendered-sources <dir>` (new, and the two go together): the run was planned from a published cut, so every passage's quote and `span_sha256` are the **set's**, checked against the pinned render and against the sources this export seals, and a row whose own cut states another is refused (STATEMENTS.md section 5) |
 
 The seal's `schema` stays `cf-locate-recordset/1` or `/2` and its keys stay exactly the agreed
 ones. **The format is the contract, not the producer's name**: a seal that said
@@ -298,6 +301,27 @@ seal names formal-companion; `skill_commit` is a 40-hex commit of whatever produ
 and the field keeps its name because renaming it is a format change on both sides at once
 (ARTICLES.md contract note 10). **Question for Jack (Q2):** whether to rename it
 `producer_commit` in a future `/3`.
+
+**Cost.** None; deterministic, offline.
+
+### Stages 6b and 4b — the statement set (`export_statements.py`, `statements.py`)
+
+**What it is.** Phase 1 of the maintainer's 2026-11-12 split: a harvested **cut** (stage
+9b) sealed and published on its own, before any locate run, as
+`wikilean.statement-set/1`. The format and every refusal are
+[STATEMENTS.md](STATEMENTS.md); the short of it is a sibling of the record set, not a
+profile of it, built from the same parts — `keys.py`'s recipes, the canonical spelling,
+the seal grammar, the quote cap — and carrying no universe, no receipts, no `challenge`
+and no status, because a cut judged none of those. Nothing shared with formal-companion
+changes.
+
+**New code**, not ported: formal-companion has no such format.
+
+`statements.py` reads one back into the `{source_id: [passage]}` shape
+`cut.frozen_inventory` returns, **recomputing every `span_sha256` and `passage_key`
+against the pinned revision's own render and refusing on any difference**, so the keys
+cannot drift between the phases and a tag written on a statement in phase 1 is the row
+the pipeline's location fills in in phase 2.
 
 **Cost.** None; deterministic, offline.
 
@@ -428,7 +452,15 @@ a database the producer happens to hold — where WikiLean's own copy lives is s
 question 3, still open. The bundle's conjuncts are computed here, in the one place that holds
 both the inventory's conjuncts and the parts' clauses. Carry-over is computed from spans and
 span text only — never from an item, a statement or a model — and uses stage 2's
-`passage_key`.
+`passage_key`. **Either side may be a sealed statement set** (`--from-set`/`--to-set`,
+docs/STATEMENTS.md section 5a), and `--store-out` writes the map one `<pageid>.json` a
+page, which `build_store.py --carry` publishes at `articles/v1/carry/<pageid>.json` so
+the reader can show the tags of the cut before it.
+A run no challenge ran over is tallied with `--unchallenged`: every record a
+challenge would judge is `not_required`, which the pages show as not re-checked, so the export
+has a challenge value for each and a coverage claim upgrades nothing; a subject passage's
+records still carry the article's QID (Jack, 2026-11-13). It is refused beside
+`--challenge-run`, and contribute mode's seal takes it too.
 
 **What is proved.** From batch 1's four corpora,
 `reports/locate-outcomes.loc-tierA-b1a.jsonl` (549 rows) and `.loc-tierA-b1b.jsonl` (5,242
@@ -501,7 +533,10 @@ lookup and nothing else — and it binds gate rule 4: a worker must accept or re
 with a reason. A **lexical** hit is a hint: a deterministic token-overlap search over the
 index's declaration names and modules, scored by Sørensen–Dice, because this pipeline has no
 full-text engine to rank by and a plan must be reproducible. The task cut, the manifests,
-`gate.json` and the root stay stage 10's.
+`gate.json` and the root stay stage 10's. The cut it plans over is a harvested run
+(`--inventory`) or a sealed statement set (`--statement-set`, refused beside it:
+stages 6b and 4b above), and the task manifests are the same either way but for the
+quote handed to the worker.
 *Source:* `scripts/locate/{plan,candidates,prompts,presets}.py`.
 
 **This is narrower than formal-companion's retrieval, deliberately and at a cost.** Batch 1's

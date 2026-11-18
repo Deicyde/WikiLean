@@ -338,9 +338,9 @@ def run_stage(*, repo: Path, workdir: Path, package: str, worker_command: str = 
 def seal_stage(*, repo: Path, workdir: Path, package: str, set_id: str, campaign: str,
                producer_commit: str, created: str, index: Path | None = None,
                out: Path | None = None, sourceset: str = "",
-               challenge_runs: tuple[str, ...] = (), runs: Path | None = None,
-               byte_budget: int = 0, machine: str = "", received_at: str = "",
-               log=print) -> dict:
+               challenge_runs: tuple[str, ...] = (), unchallenged: bool = False,
+               runs: Path | None = None, byte_budget: int = 0, machine: str = "",
+               received_at: str = "", log=print) -> dict:
     """``--stage seal``: tally, export and check a set on this machine (:mod:`seal`).
 
     The set is written and then put straight through the intake contract, so the
@@ -369,7 +369,8 @@ def seal_stage(*, repo: Path, workdir: Path, package: str, set_id: str, campaign
                          manifest=manifest, out=out, set_id=set_id, campaign=campaign,
                          producer_commit=producer_commit, created=created, index=index,
                          sourceset=sourceset, challenge_runs=challenge_runs,
-                         runs=runs, byte_budget=byte_budget, log=log)
+                         unchallenged=unchallenged, runs=runs, byte_budget=byte_budget,
+                         log=log)
     # the intake contract, here, before anything is pushed: the same answer the
     # coordinator and the endpoint will give, with the rule's own name on a refusal
     submission = results_mod.verify_record_set(
@@ -426,7 +427,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--challenge-run", action="append", default=[],
                         help="with --stage seal: a challenge run whose verdicts apply. "
                              "Nothing leaves this pipeline without a challenge value, "
-                             "so a set with no challenge run exports no record")
+                             "so a set with neither this nor --unchallenged exports "
+                             "no record")
+    parser.add_argument("--unchallenged", action="store_true",
+                        help="with --stage seal: seal a run no challenge ran over. Every "
+                             "record reads not_required, which the pages show as "
+                             "unchallenged; the campaign names no challenge run")
     parser.add_argument("--runs", type=Path, default=None,
                         help="with --stage seal: where this machine's own runs are — "
                              "its cut and its challenge runs "
@@ -507,7 +513,8 @@ def main(argv: list[str] | None = None) -> int:
                 campaign=args.campaign, producer_commit=args.producer_commit,
                 created=args.created, index=args.index, out=args.set_out,
                 sourceset=args.sourceset,
-                challenge_runs=tuple(args.challenge_run), runs=args.runs,
+                challenge_runs=tuple(args.challenge_run),
+                unchallenged=args.unchallenged, runs=args.runs,
                 byte_budget=args.byte_budget, machine=machine)
             if record_set is None:
                 record_set = Path(sealed["set_dir"])

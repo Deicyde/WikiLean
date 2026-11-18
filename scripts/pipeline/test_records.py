@@ -13,7 +13,7 @@ text, no real page, no real declaration). What is checked:
 * the revision-free keys recomputed rather than copied, and a row that states another
   refused;
 * decision B5: only a subject passage's records carry the article's QID, and not a
-  record a prominence overturn reopened;
+  record a prominence overturn reopened; a record of an unchallenged run carries it;
 * every refusal the export reports passage by passage.
 
 Run: python3 scripts/pipeline/test_records.py
@@ -318,6 +318,13 @@ class ArticleQidTests(unittest.TestCase):
         record = build(row(prominence="subject",
                            locations=[location("1", challenge="challenge_pending")]))[0][0]
         self.assertNotIn("identifiers", record["subject"][0])
+
+    def test_a_record_of_an_unchallenged_run_carries_it(self):
+        # tally.py --unchallenged stamps every record not_required, and the locate
+        # worker's subject call stands without a challenger (Jack, 2026-11-13).
+        record = build(row(prominence="subject",
+                           locations=[location("1", challenge="not_required")]))[0][0]
+        self.assertEqual(record["subject"][0]["identifiers"], {"wikidata": "Q99999001"})
 
     def test_a_wikidata_value_that_is_no_qid_is_refused(self):
         cut = records.cut_passage(LAYER, SECOND)

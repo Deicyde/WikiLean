@@ -313,12 +313,13 @@ export interface ArticlesArticle {
   // records), and the mapping under `mapping`, CC0-1.0. Absent from stores built before it.
   licence?: { text: string | null; mapping: string } | null;
   // A /2 store's seal summary (build_store.seal_summary), which the page's
-  // Details cite; absent from /1 stores. The seal records no model or operator.
+  // Details cite; absent from /1 stores. The seal records no model or operator,
+  // and no producer: `producer` is the name the build gave (build_store --producer).
   // A statement set's seal names no status rule and names its producer_commit
   // (the cut's own commit) where a record set names formal-companion's.
   seal?: {
     set_id: string; schema: string; created: string;
-    status_rule?: number; skill_commit?: string; producer_commit?: string;
+    status_rule?: number; skill_commit?: string; producer_commit?: string; producer?: string;
   } | null;
   // Optional (build_store --provenance): the runs that made this article's
   // records, which the Details folds cite by model, operator and date, and the
@@ -394,6 +395,8 @@ export interface ArticlesRecordSet {
   byte_budget?: number;
   schema?: string;
   status_rule?: number;
+  // The set's producer when the build names it (build_store --producer); SEAL.json does not.
+  producer?: string;
 }
 
 export interface IndexEntry {
