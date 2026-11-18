@@ -292,6 +292,18 @@ describe("downloading", () => {
     expect(size).toBeGreaterThan(3);
   });
 
+  it("refuses a file the bucket no longer holds at the manifest's size", async () => {
+    const { h, bundle, bucket, a, base } = await ready();
+    const path = `${base}/files/index/decl-index.jsonl`;
+    bucket.objects.set(`index/v1/${bundle.sha}/index/decl-index.jsonl`,
+      encoder.encode(bundle.contents["index/decl-index.jsonl"] + "a replacement's extra bytes\n"));
+    for (const headers of [{}, { Range: "bytes=0-3" }] as Array<Record<string, string>>) {
+      const res = await fetchFile(h, path, a.token, headers);
+      expect(res.status).toBe(503);
+      expect((await res.json() as { code: string }).code).toBe("bundle_incomplete");
+    }
+  });
+
   it("answers 503 not configured without the bucket", async () => {
     const { h, a, base } = await ready();
     (h.env as unknown as { CONTRIB?: Bucket }).CONTRIB = undefined;

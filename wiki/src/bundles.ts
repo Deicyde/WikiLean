@@ -52,6 +52,10 @@ interface BundleRow {
   index_sha256: string; manifest_bytes: number; bytes: number; files_json: string;
   restricted_json: string; state: string; registered_at: number;
 }
+// What `describe` answers with: every column of a bundle row but its file list, which is a
+// megabyte of a row nothing outside a download reads.
+type BundleCard = Omit<BundleRow, "manifest_bytes" | "files_json" | "state">;
+const CARD_COLUMNS = "manifest_sha256,bundle,universe_sha256,index_path,index_sha256,bytes,restricted_json,registered_at";
 interface FileEntry { sha256: string; bytes: number }
 interface Manifest {
   bundle: string; universe_sha256: string; index_path: string; index_sha256: string;
@@ -136,7 +140,7 @@ export function byteRange(header: string | undefined, ifRange: string | undefine
   return { offset: start, length: Math.min(end, size - 1) - start + 1 };
 }
 
-function describe(row: BundleRow) {
+function describe(row: BundleCard) {
   return {
     manifest_sha256: row.manifest_sha256, bundle: row.bundle, universe_sha256: row.universe_sha256,
     index_path: row.index_path, index_sha256: row.index_sha256, bytes: row.bytes,
@@ -239,6 +243,15 @@ async function serve(c: Ctx, sha: string, rel: string | null): Promise<Response>
     console.log(JSON.stringify({ event: "index-download-missing", bundle: sha, path }));
     return refuse(c, "bundle_incomplete", "the bucket does not hold that file; a maintainer must re-upload the bundle", 503);
   }
+  // Content-Length came from the manifest, which registration checked against the bucket.
+  // If the object has been replaced since, say so rather than send a body of another
+  // length under that header. R2 gives the whole object's size, range read or not.
+  if (object.size !== entry.bytes) {
+    console.log(JSON.stringify({ event: "index-download-size", bundle: sha, path, manifest: entry.bytes, bucket: object.size }));
+    await object.body.cancel();
+    return refuse(c, "bundle_incomplete", `the bucket's copy of that file is ${object.size} bytes, not the ` +
+      `${entry.bytes} its manifest gives; a maintainer must re-upload the bundle`, 503);
+  }
   console.log(JSON.stringify({ event: "index-download", agent_id: user.id, owner_id: user.ownerId,
     bundle: sha, path, start: offset, bytes: length }));
   return new Response(object.body, { status, headers });
@@ -266,9 +279,11 @@ export function registerBundleRoutes(app: Hono<{ Bindings: Env }>): void {
 
   app.get("/api/index/bundles", async c => {
     const user = await agentRead(c); if (user instanceof Response) return user;
+    // Not SELECT *: files_json is up to a megabyte a row, and fifty of those would be
+    // tens of megabytes read out of D1 to answer with none of it.
     const { results } = await c.env.DB.prepare(
-      "SELECT * FROM index_bundles WHERE state='live' ORDER BY registered_at DESC, manifest_sha256 LIMIT 50",
-    ).all<BundleRow>();
+      `SELECT ${CARD_COLUMNS} FROM index_bundles WHERE state='live' ORDER BY registered_at DESC, manifest_sha256 LIMIT 50`,
+    ).all<BundleCard>();
     return c.json({ ok: true, configured: !!c.env.CONTRIB, downloads_open: await leverOpen(c.env, INDEX_DOWNLOADS_LEVER),
       daily_bytes: INDEX_DAILY_BYTES, bundles: results.map(describe) });
   });
