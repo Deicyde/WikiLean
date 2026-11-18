@@ -26,7 +26,7 @@ describe("public entry pages", () => {
     const h = setup();
     await h.renderCache.put("page:home:v12", "old landing without the example");
     await h.renderCache.put("page:about:v4", "old entry shell");
-    for (const [path, key] of [["/", "page:home:v13"], ["/about", "page:about:v5"]]) {
+    for (const [path, key] of [["/", "page:home:v14"], ["/about", "page:about:v5"]]) {
       const first = await (await get(h.env, path)).text();
       expect(first).toContain("<!doctype html>");
       expect(h.renderCache.store.get(key)).toBe(first);

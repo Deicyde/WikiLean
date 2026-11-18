@@ -152,19 +152,21 @@ def tally(*, root: Path, workdir: Path, run_id: str, index: Path, universe: Path
     """
     root, workdir = Path(root), Path(workdir)
     corpus = workdir / work_mod.CORPUS_DIR
-    # A locate run is tallied against the frozen inventory it was cut from, and that
-    # inventory is the contributor's own stage-9b run over the same pinned revisions —
-    # not something the package can carry, because its passages are article text. Say
-    # so here rather than letting the tally say it about a path nobody recognises.
+    # A locate run is tallied against the frozen inventory it was cut from. A package
+    # can carry that run's harvested corpus, and `--stage run` installs it here
+    # (work.install_inventory); otherwise it is the contributor's own stage-9b run over
+    # the same pinned revisions. Say so here rather than letting the tally say it about
+    # a path nobody recognises.
     inventory_run = str(((work_mod.run_config(root).get("locate") or {})
                          .get("inventory_run")) or "")
     if inventory_run and not (corpus / inventory_run).is_dir():
         raise SealProblem(
             f"the plan was cut from inventory run {inventory_run!r} and this machine's "
             f"corpus has no {corpus / inventory_run}. A set is sealed against the "
-            "inventory its passages were cut from: run the cut (stage 9b) over the "
-            "same pinned revisions into this corpus, or ask the coordinator for the "
-            "inventory run's harvested corpus.")
+            "inventory its passages were cut from: `--stage run` installs it when the "
+            "package carries it; otherwise run the cut (stage 9b) over the same pinned "
+            "revisions into this corpus, or ask the coordinator for the inventory run's "
+            "harvested corpus.")
     workspace = ContributorWorkspace(corpus, root, run_id, runs_dir=runs,
                                      sources_dir=work_mod.sources_dir(root))
     frozen = tally_mod.Universe.load(Path(universe))

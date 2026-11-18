@@ -63,7 +63,7 @@ describe("the cached pages", () => {
     const h = setup();
     const moved: Array<[path: string, key: string, before: string[]]> = [
       [`/${SLUG}`, `render:v21:${SLUG}:1`, ["render:v19:", "render:v20:"]],
-      ["/", "page:home:v13", ["page:home:v12"]],
+      ["/", "page:home:v14", ["page:home:v12", "page:home:v13"]],
       ["/about", "page:about:v5", ["page:about:v4"]],
       ["/stats", "page:stats:v8", ["page:stats:v7"]],
       ["/wikifunctions", "page:wikifunctions:v4", ["page:wikifunctions:v3"]],

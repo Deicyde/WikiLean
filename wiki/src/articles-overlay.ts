@@ -29,7 +29,7 @@ import type { AuthUser } from "./auth.js";
 import type { ArticlesArticle, ArticlesLocation, ArticlesPassage, SummaryStatus } from "./articles.js";
 import {
   BUNDLE_PART_RELATION, coverageStatus as bundleStandInStatus, locationStatus,
-  MAX_BUNDLE_PARTS, MIN_BUNDLE_PARTS,
+  MAX_BUNDLE_PARTS, MIN_BUNDLE_PARTS, passageStatus,
 } from "./articles-render.js";
 export { BUNDLE_PART_RELATION, MAX_BUNDLE_PARTS, MIN_BUNDLE_PARTS } from "./articles-render.js";
 // The brake lives in a module of its own so the Brain's write paths can read
@@ -55,9 +55,9 @@ const BUNDLE_RELATION_SET = new Set(BUNDLE_RELATIONS);
 // needs no runtime import from articles.ts, which would make an import cycle
 // (test/articles-tag.test.ts pins the two lists against each other).
 const STATUS_RANK: Record<string, number> = {
-  formalized: 0, statement_only: 1, partial: 2, not_formalized: 3, unresolved: 4,
+  formalized: 0, statement_only: 1, partial: 2, not_formalized: 3, not_checked: 4, unresolved: 5,
 };
-export const OVERLAY_STATUSES: readonly string[] = ["formalized", "statement_only", "partial", "not_formalized", "unresolved"];
+export const OVERLAY_STATUSES: readonly string[] = ["formalized", "statement_only", "partial", "not_formalized", "not_checked", "unresolved"];
 
 export const MAX_DECLARATION_CHARS = 240;
 export const MAX_TAG_NOTE_CHARS = 500;
@@ -520,7 +520,7 @@ export function mergedStatus(
   // (mergeOverlay computes them; a bundle that does not count gives null).
   bundleStatuses: ReadonlyArray<SummaryStatus | null> = [],
 ): SummaryStatus {
-  const sealed = passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
+  const sealed = passageStatus(passage);
   if (sealed === "unresolved") return sealed;
   let best: SummaryStatus | null = null;
   for (const loc of live) {
@@ -538,12 +538,14 @@ export function mergedStatus(
   }
   // Nothing in the universe states it any more: the editors removed every
   // location that counted. "Not formalized" is what that means, and it is the
-  // status an absence carries.
-  return best ?? "not_formalized";
+  // status an absence carries — but only where something was searched. A statement no
+  // library has been searched for stays not_checked, whatever the editors do with it:
+  // the overlay may give it a Lean declaration, never a claim that there is none.
+  return best ?? (sealed === "not_checked" ? "not_checked" : "not_formalized");
 }
 
 function emptyCounts(): Record<SummaryStatus, number> {
-  return { formalized: 0, statement_only: 0, partial: 0, not_formalized: 0, unresolved: 0 };
+  return { formalized: 0, statement_only: 0, partial: 0, not_formalized: 0, not_checked: 0, unresolved: 0 };
 }
 
 // Merge one article's sealed view model with its overlay rows. The sealed view
@@ -576,7 +578,7 @@ export function mergeOverlay(
     else live += 1;
   }
   for (const passage of list(article.passages)) {
-    const sealedStatus = passage.outcome === "unresolved" ? "unresolved" : asStatus(passage.status);
+    const sealedStatus = passageStatus(passage);
     const merged: MergedLocation[] = [];
     const seen = new Set<string>();
     for (const loc of list(passage.locations)) {

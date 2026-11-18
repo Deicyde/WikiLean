@@ -726,8 +726,14 @@ verification before posting. Here verification is a step of the command:
    symlinks into /private. Relative Write paths fail closed. Native Mac client
    checks cover inside writes and outside, relative and symlink refusals.
 
-**Full source layers are not packaged.** A package omits the layer, canonical body,
-raw response and candidates file; the contributor refetches and regenerates pinned inputs.
+**Full source layers are not packaged.** A package carries no rendered view: no layer and
+no canonical body. Since 2026-11-13 it can carry each source's raw response, its candidates
+and the harvested inventory run. The publisher checks them before it ships them (each source
+renders to the plan's pins, its candidates match that rendering and the gate's index, the
+inventory is a complete, gated harvest of the plan's inventory run over the same renderings),
+and the contributor renders the bytes and makes the gate's sha comparisons before it stages
+anything (`work.render_sources`, `work.check_pins`). For a package that ships none,
+the contributor refetches and regenerates pinned inputs.
 Results carry gated findings and receipts, including passage quotations, and refuse the
 named source-layer files. This filename check does not filter arbitrary file contents.
 
@@ -931,8 +937,9 @@ check report for article/revision counts and the retained-body control.
 ## 10. What is not done
 
 - Two of the three real refetched sources need fresh source plans after their
-  pinned hashes failed to reproduce. The source check refuses them before any
-  model call. One article's subscription allowance consumption remains unmeasured.
+  pinned hashes failed to reproduce. `--stage run` refuses them before any model
+  call (`work.check_pins`), and a package that ships its sources' fetched bytes needs
+  no refetch. One article's subscription allowance consumption remains unmeasured.
 - The declaration-index/search bundle is built and coverage-tested, but controlled
   publication and access still require the operator's licence review and upload.
 - The submission endpoint and automatic validation are implemented; see
