@@ -351,15 +351,16 @@ def _check_evidence(c, texts, roadmaps, rs, rt, commit, lines_cache, shared, emb
             lines_cache[path] = parse.lines_of(texts[path].decode("utf-8"))
         why = _verify_at(lines_cache[path], c, path, other_folder, shared)
         if not isinstance(why, str):
-            return {**pointer(commit, path, why), "evidence_input": "tauceti_roadmap"}
+            return {**pointer(commit, path, why), "evidence_input": "tauceti_roadmap", "evidence_public": True}
     else:
         why = "evidence_file_missing"
     copy = embedded["lines"].get(c["src"])
     if copy is not None:
         hit = _verify_at(copy, c, path, other_folder, shared)
         if not isinstance(hit, str):
-            return {"evidence_input": "atlas_embedded", "atlas_sha256": embedded["sha256"],
-                    "source_path": c["src"], "path": path, "line": hit}
+            # Not followable to a public commit: never present this as a public citation.
+            return {"evidence_input": "atlas_embedded", "evidence_public": False,
+                    "atlas_sha256": embedded["sha256"], "source_path": c["src"], "path": path, "line": hit}
     return why
 
 
@@ -424,10 +425,12 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
         row["_ev"].extend(good)
     rows = []
     for row in kept.values():
+        # Public pointers first, so the row's evidence is public whenever any public pointer exists.
         evs = sorted({dumps(e): e for e in row.pop("_ev")}.values(),
-                     key=lambda e: (e["path"], e["line"], e["evidence_input"]))
+                     key=lambda e: (not e["evidence_public"], e["path"], e["line"], e["evidence_input"]))
         row["evidence"] = evs[0]
         row["more_evidence"] = evs[1:]
+        row["evidence_public"] = evs[0]["evidence_public"]
         rows.append(row)
     return rows
 

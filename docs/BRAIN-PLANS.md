@@ -138,7 +138,8 @@ roadmap, a comment for a folder that is not a roadmap, an unparseable comment. T
 | `id` | `depends:<source>-><target>` |
 | `kind` | `depends`, in `brain/SCHEMA.md`'s direction |
 | `source`, `target` | roadmap or layer ids (ours, after mapping atlas stage ids): `source` is the consumer, `target` the prerequisite |
-| `evidence` | the first verified pointer by (path, line); `more_evidence` holds the rest. Each carries `evidence_input`: `tauceti_roadmap` (a pointer into the pin) or `atlas_embedded` (`{evidence_input, atlas_sha256, source_path, path, line}`: that line of the atlas's own README copy) |
+| `evidence` | the first verified pointer, public pointers first, then by (path, line); `more_evidence` holds the rest. Each carries `evidence_input`: `tauceti_roadmap` (a pointer into the pin, `evidence_public: true`) or `atlas_embedded` (`{evidence_input, evidence_public: false, atlas_sha256, source_path, path, line}`: that line of the atlas's own README copy, which no reader can follow to a public commit) |
+| `evidence_public` | `true` when `evidence` is a `tauceti_roadmap` pointer. A row with `false` rests only on the atlas's copies: keep it out of anything presented as a public citation. When a later TauCetiRoadmap pin carries the same line, the next build verifies it at the pin first and the row turns `true` on its own |
 | `via` | `atlas`; `atlas_kinds` lists the atlas edge kinds merged into the row |
 
 **There is one direction convention**, the Brain's: consumer → prerequisite. The atlas writes
@@ -257,13 +258,13 @@ the root. The atlas's `exported_at` is part of its pinned bytes, not a clock of 
 ## Counts at run 1's pins (2026-11-19)
 
 Inputs: TauCetiRoadmap `96a11793`, trough `1ae5ca9f`, the atlas, Mathlib and Tau Ceti `.bmp`s of
-2026-11-18. `logical_root` `5470f58d4684747a090362b3fd16e879e51ab4c0244be0ddee84ed5091f6eb62`.
+2026-11-18. `logical_root` `15a117f573f2bcc002261a920b9e3288c531e2a235194a5491bdea486f412d3d`.
 
 | File | Rows | Bytes |
 |---|---|---|
 | `roadmaps.jsonl` | 465 | 155,610 |
 | `layers.jsonl` | 3,717 (done 487, partial 589, untouched 406, unassessed 2,235) | 2,333,439 |
-| `edges.jsonl` | 2,348 (all roadmap → roadmap; 7 verified only at the atlas copy) | 1,587,417 |
+| `edges.jsonl` | 2,348 (all roadmap → roadmap; 2,341 `evidence_public: true`, 7 `false`, verified only at the atlas copy; pointers: 4,267 `tauceti_roadmap`, 7 `atlas_embedded`) | 1,739,737 |
 | `decl_refs.jsonl` | 75,229 (mathlib 24,608, tauceti 27,620, unqualified 2,235, planned 20,766) | 43,041,083 |
 | `xrefs.jsonl` | 4,930 (stacks 2,648, arxiv 2,282) | 2,270,981 |
 | `rejected.jsonl` | 26,592 rows (`decl_ref/local_term` 10,358 occurrences) | 10,556,934 |

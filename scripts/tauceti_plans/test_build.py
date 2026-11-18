@@ -198,10 +198,19 @@ class BuildFixture(unittest.TestCase):
     def test_edges_verified_at_the_atlas_copy(self):
         e = self.by_id("edges.jsonl")
         g = e[f"depends:{GAMMA}->{BETA}"]  # line 3 at our pin is a heading; the atlas's copy names Beta
-        self.assertEqual(g["evidence"], {"evidence_input": "atlas_embedded", "atlas_sha256": self.manifest[
-            "inputs"]["atlas"]["sha256"], "source_path": "content/tau-ceti/Completed/Gamma/README.md",
+        self.assertEqual(g["evidence"], {"evidence_input": "atlas_embedded", "evidence_public": False,
+            "atlas_sha256": self.manifest["inputs"]["atlas"]["sha256"],
+            "source_path": "content/tau-ceti/Completed/Gamma/README.md",
             "path": "Completed/Gamma/README.md", "line": 3})
-        self.assertEqual(e[f"depends:{ALPHA}->{BETA}"]["evidence"]["evidence_input"], "tauceti_roadmap")
+        self.assertIs(g["evidence_public"], False)  # never a public citation
+        a = e[f"depends:{ALPHA}->{BETA}"]
+        self.assertEqual(a["evidence"]["evidence_input"], "tauceti_roadmap")
+        self.assertIs(a["evidence"]["evidence_public"], True)
+        self.assertIs(a["evidence_public"], True)
+        for row in e.values():  # a row is public exactly when its first pointer is
+            self.assertIs(row["evidence_public"], row["evidence"]["evidence_public"])
+            if not row["evidence_public"]:
+                self.assertTrue(all(not m["evidence_public"] for m in row["more_evidence"]))
         self.assertNotIn(f"depends:{GAMMA}->{ALPHA}", e)  # the copy's line names no Alpha
         self.assertEqual(self.manifest["inputs"]["atlas"]["atlas_snapshot_commit"]["publicly_available"], False)
 
