@@ -8,7 +8,7 @@ import type { Env } from "../src/env.js";
 import { app } from "../src/index.js";
 import { migrateLegacyItems } from "../src/native-companion.js";
 import { installBrainFixture } from "../test/helpers/brain-fixture.js";
-import { articlesReaderFiles, bindArticles } from "../test/helpers/articles.js";
+import { articlesBundleFiles, articlesReaderFiles, bindArticles } from "../test/helpers/articles.js";
 import { FORMULA_SLUG, SEED_ANNOTATIONS, WP_FIXTURE, WP_FORMULA_FIXTURE, REVID, setup } from "../test/helpers/fixture.js";
 
 const HOST = "127.0.0.1";
@@ -184,9 +184,22 @@ const readerServer = serve({ fetch: (request) => fetch(request, readerEnv), host
   console.log(`WikiLean articles-reader browser harness listening on http://${HOST}:${info.port}`);
 });
 
+// The community coverage bundle (issue #173): a fourth loopback listener, the same database,
+// serving the /2 store the overlay needs with the Gadget's covered theorem stripped of its
+// sealed claim (test/helpers/articles.ts articlesBundleFiles) — two hasPart links and nothing
+// saying they together state the passage, which is the shape the bundle form is for. The other
+// listeners keep the committed /1 store, where no overlay form is offered at all.
+const BUNDLE_PORT = PORT + 3;
+const bundleEnv: Env = { ...harness.env };
+bindArticles(bundleEnv, articlesBundleFiles());
+const bundleServer = serve({ fetch: (request) => fetch(request, bundleEnv), hostname: HOST, port: BUNDLE_PORT }, (info) => {
+  console.log(`WikiLean articles-bundle browser harness listening on http://${HOST}:${info.port}`);
+});
+
 function shutdown(): void {
   oauthServer.close();
   readerServer.close();
+  bundleServer.close();
   server.close(() => {
     globalThis.fetch = runtimeFetch;
     harness.db.close();

@@ -53,11 +53,11 @@ import type {
 import {
   libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl, type LibraryEntry, type LibraryInfo, type UniverseLibrary,
 } from "./libraries.js";
-import type { MergedArticle, MergedLocation } from "./articles-overlay.js";
+import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=12";
-export const ARTICLES_JS = "/assets/articles.js?v=7";
+export const ARTICLES_CSS = "/assets/articles.css?v=13";
+export const ARTICLES_JS = "/assets/articles.js?v=8";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
 export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=6";
@@ -145,6 +145,9 @@ const NOTE_LABEL: Record<string, string> = {
 };
 // The page's legend of the relation words, in the record's order of strength.
 const RELATION_ORDER = ["exactMatch", "closeMatch", "broadMatch", "narrowMatch", "hasPart", "relatedMatch"];
+// A coverage bundle's own relation is one of the strong three (its weakest
+// part's), in the same order (articles-overlay BUNDLE_RELATIONS).
+const BUNDLE_RELATION_ORDER = ["exactMatch", "closeMatch", "broadMatch"];
 const RELATION_LEGEND: Record<string, string> = {
   exactMatch: "states the passage exactly",
   closeMatch: "states it up to a convention or a difference the note names",
@@ -208,6 +211,15 @@ type LocatedStatus = "formalized" | "statement_only" | "partial";
 const LOCATED_RANK: Record<LocatedStatus, number> = { formalized: 0, statement_only: 1, partial: 2 };
 
 const STATUS_RULE_BROAD = 3;
+// Status rule 2 makes a survived bundle one more location of its own relation;
+// under rule 1 it is one more exactMatch (build_store STATUS_RULE_BUNDLE,
+// COVERAGE_ACTS_AS). Every part of a bundle is a hasPart location, and there
+// are at least two of them (COVERAGE_RELATION, MIN_COVERAGE_PARTS).
+const STATUS_RULE_BUNDLE = 2;
+export const COVERAGE_ACTS_AS = "exactMatch";
+export const BUNDLE_PART_RELATION = "hasPart";
+export const MIN_BUNDLE_PARTS = 2;
+export const MAX_BUNDLE_PARTS = 5;
 
 function theoremRow(loc: ArticlesLocation, statusRule: number): LocatedStatus {
   if (PART_RELATIONS.has(loc.relation)) return "partial";
@@ -236,6 +248,59 @@ export function locationStatus(kind: string, loc: ArticlesLocation, statusRule =
   const rows: LocatedStatus[] = [];
   if (THEOREM_KINDS.has(kind) || EITHER_KINDS.has(kind)) rows.push(theoremRow(loc, statusRule));
   if (DEFINITION_KINDS.has(kind) || EITHER_KINDS.has(kind)) rows.push(definitionRow(loc, statusRule));
+  return rows.length ? rows.reduce((a, b) => (LOCATED_RANK[b] < LOCATED_RANK[a] ? b : a)) : null;
+}
+
+// ---- the coverage stand-in (decision D1, round three) ------------------------
+//
+// A survived coverage claim counts, for the derived status, as ONE more
+// location: a fixed stand-in rather than any one of its parts. The builder's
+// own port of it is scripts/articles/build_store.py part_finished /
+// coverage_location / coverage_status, and this is the Worker's, pinned against
+// the shared parity tables (test/articles.test.ts, "derived status rows").
+//
+// The store's own claims are not recomputed here — the builder stamped their
+// status into the view model and the overlay reads it (articles-overlay.ts
+// coverageStatus). This port is what a COMMUNITY bundle is judged by (issue
+// #173), where there is no precomputed status and the parts may be a mix of
+// sealed locations and community rows.
+
+// A part is finished when it is proved, or data (a definition without the
+// library index's statement flag). Unfinished: statement_only, wanted or
+// axiom_dependent, or a Prop-valued definition (the flag set) whatever its
+// proof status — it states a clause and proves none.
+export function partFinished(loc: Pick<ArticlesLocation, "proof_status" | "statement">): boolean {
+  return loc.proof_status === "proved" || (loc.proof_status === "definition" && loc.statement !== true);
+}
+
+// The one location a claim acts as, on the theorem or the definition row: a
+// proved declaration (theorem row) or data (definition row) when every part is
+// finished, a statement_only declaration on both rows otherwise.
+function coverageLocation(row: "theorem" | "definition", finished: boolean, relation: string): ArticlesLocation {
+  const proof = finished ? (row === "theorem" ? "proved" : "definition") : "statement_only";
+  return { relation, proof_status: proof, statement: false } as ArticlesLocation;
+}
+
+// The status a coverage bundle gives a passage of `kind` on its own; null when
+// it gives none (fewer than two parts, or a part that is not a hasPart
+// location). Its relation is exactMatch under status rule 1 and the bundle's
+// own under rules 2 and 3 (build_store.coverage_status, COVERAGE_ACTS_AS).
+export function coverageStatus(
+  kind: string,
+  parts: Array<Pick<ArticlesLocation, "relation" | "proof_status" | "statement">>,
+  bundleRelation: string,
+  statusRule = 1,
+): LocatedStatus | null {
+  if (parts.length < MIN_BUNDLE_PARTS || !parts.every((part) => part.relation === BUNDLE_PART_RELATION)) return null;
+  const finished = parts.every(partFinished);
+  const relation = statusRule >= STATUS_RULE_BUNDLE ? bundleRelation : COVERAGE_ACTS_AS;
+  const rows: LocatedStatus[] = [];
+  if (THEOREM_KINDS.has(kind) || EITHER_KINDS.has(kind)) {
+    rows.push(theoremRow(coverageLocation("theorem", finished, relation), statusRule));
+  }
+  if (DEFINITION_KINDS.has(kind) || EITHER_KINDS.has(kind)) {
+    rows.push(definitionRow(coverageLocation("definition", finished, relation), statusRule));
+  }
   return rows.length ? rows.reduce((a, b) => (LOCATED_RANK[b] < LOCATED_RANK[a] ? b : a)) : null;
 }
 
@@ -1308,6 +1373,127 @@ function cardActions(m: MergedLocation, ctx: CardContext, passageKey: string): s
     `<span class="articles-tag-msg" role="status"></span></div>`;
 }
 
+// ---- community coverage bundles (issue #173) --------------------------------
+//
+// "These together state the passage": the overlay's answer to a passage two or
+// more declarations state between them. Each link is then a hasPart, which on
+// its own leaves the passage partial; the bundle says the parts together state
+// every clause, and the merge counts it as one more location by the builder's
+// own stand-in (articles-overlay mergedStatus). It is shown as one group, not
+// as a card: the cards above it are the parts themselves.
+
+// Who wrote a bundle, linked, as byLine does for a tag's card.
+function bundleByLine(b: MergedBundle, verb: string): string {
+  const author = b.author;
+  const who = author
+    ? `<a href="/u/${attr(encodeURIComponent(author.id))}">${text(author.name)}</a>`
+    : `<span>${text(b.bundle.added_by)}</span>`;
+  const owner = author && author.actor === "agent" && author.ownerId
+    ? ` — owned by <a href="/u/${attr(encodeURIComponent(author.ownerId))}">${text(author.ownerName ?? author.ownerId)}</a>`
+    : "";
+  const day = dayOfMs(verb === "Withdrawn by" ? b.bundle.removed_at : b.bundle.updated_at);
+  return `${text(verb)} ${who}${owner}${day ? ` on ${text(day)}` : ""}`;
+}
+
+// What a live bundle does to the passage, in words: the same three readings the
+// store's own claim gets (coverageBlock), plus the one a withdrawn part leaves.
+function bundleLead(b: MergedBundle): string {
+  const n = b.parts.length;
+  const relation = b.bundle.relation !== "exactMatch"
+    ? ` (${RELATION_WORD[b.bundle.relation] ?? b.bundle.relation})` : "";
+  if (!b.counts) {
+    // A row whose parts cannot be read at all (nothing the route writes, but a
+    // hand-written one) says so rather than counting to nothing out loud.
+    if (n < MIN_BUNDLE_PARTS) return "This coverage claim no longer names the parts it was made of";
+    return b.locations.some((m) => m === null)
+      ? `These ${int(n)} parts no longer state the passage together: one of them is no longer a link here`
+      : `These ${int(n)} parts no longer state the passage together: one of them no longer states part of it`;
+  }
+  if (b.status === "formalized") return `Formalized by ${int(n)} parts together${relation}`;
+  if (b.status === "statement_only") return `Stated by ${int(n)} parts together${relation}, not all of them finished`;
+  return `Covered by ${int(n)} parts together${relation}, not all of which count toward the status`;
+}
+
+// One live bundle: who said it, what it does, its parts and the clause each
+// states, and the button that withdraws it.
+function bundleBlock(b: MergedBundle, ctx: CardContext): string {
+  const badge = b.bundle.actor_type === "agent" ? `${COMMUNITY_BADGE} ${AGENT_BADGE}` : COMMUNITY_BADGE;
+  const withdrawn = b.state === "removed";
+  const line = withdrawn
+    ? `<p class="articles-overlay-line is-removed">${badge} ${bundleByLine(b, "Withdrawn by")}` +
+      `${b.bundle.removed_reason ? `: ${text(b.bundle.removed_reason)}` : ""}</p>`
+    : `<p class="articles-overlay-line">${badge} ${bundleByLine(b, "Added by")}</p>`;
+  const items = b.parts.map((key, i) => {
+    const m = b.locations[i];
+    const states = b.conjuncts.filter((c) => c.part === key)
+      .map((c) => `<li>${text(c.text)}</li>`).join("");
+    const clauses = states
+      ? `<ul class="articles-conjuncts" aria-label="Clauses this part states">${states}</ul>` : "";
+    if (!m) return `<li class="is-gone"><span class="articles-muted">A link that is no longer here</span>${clauses}</li>`;
+    const loc = m.loc;
+    const info = ctx.libs.get(loc.library)?.info ?? libraryInfo(loc.repo, null);
+    const part = loc.relation === BUNDLE_PART_RELATION ? "" :
+      ` <span class="articles-muted">(${text(RELATION_WORD[loc.relation] ?? loc.relation)}, not a part)</span>`;
+    return `<li>${declName(String(loc.declaration ?? ""))} ` +
+      `<span class="articles-lib" title="${attr(`${info.name} · ${info.repo}`)}">${text(info.short)}</span> ` +
+      `<span class="articles-muted">(${text(proofOf(loc).label)})</span>${part}${clauses}</li>`;
+  }).join("");
+  const actions = ctx.overlay?.canEdit && ctx.overlay.show
+    ? `<div class="articles-tag-actions" data-bundle-key="${attr(b.bundle.bundle_key)}" ` +
+      `data-version="${int(b.bundle.version)}">` +
+      (withdrawn
+        ? `<button type="button" class="articles-tag-btn" data-action="bundle-restore">Put this back</button>`
+        : `<button type="button" class="articles-tag-btn" data-action="bundle-withdraw" aria-expanded="false">Withdraw this</button>`) +
+      `<span class="articles-tag-msg" role="status"></span></div>`
+    : "";
+  return `<div class="articles-coverage articles-bundle${withdrawn ? " is-removed" : ""}" ` +
+    `data-bundle-key="${attr(b.bundle.bundle_key)}" data-coverage-status="${attr(b.status ?? "none")}" ` +
+    `data-counts="${b.counts ? "true" : "false"}">` +
+    `${line}<p class="articles-why">${text(bundleLead(b))}:</p>` +
+    `<ol class="articles-coverage-parts">${items}</ol>${actions}</div>`;
+}
+
+// "These together state the passage": offered only where it can be true — a
+// signed-in editor, the merged view, and two or more links that each state part
+// of this passage. One clause per part, which is the shape a bundle's conjuncts
+// take (each part states at least one).
+function bundleForm(passage: ArticlesPassage, parts: MergedLocation[], ctx: CardContext): string {
+  const overlay = ctx.overlay;
+  const key = typeof passage.passage_key === "string" ? passage.passage_key : "";
+  if (!overlay?.show || !overlay.canEdit || key === "" || parts.length < MIN_BUNDLE_PARTS) return "";
+  const hex = passageHex(passage) || key.slice(0, 8);
+  // Every candidate is offered, not the first five: a bundle names at most five
+  // parts, and which five is the editor's choice. The script holds them to the
+  // count, and the route refuses more.
+  const rows = parts.map((m, i) => {
+    const loc = m.loc;
+    const info = ctx.libs.get(loc.library)?.info ?? libraryInfo(loc.repo, null);
+    const box = `bundlepart-${attr(hex)}-${i}`;
+    const clause = `bundleclause-${attr(hex)}-${i}`;
+    return `<li><label for="${box}"><input type="checkbox" id="${box}" name="part" value="${attr(String(loc.pair_key ?? ""))}"> ` +
+      `${declName(String(loc.declaration ?? ""))} <span class="articles-lib">${text(info.short)}</span></label>` +
+      `<label for="${clause}">What it states</label>` +
+      `<input id="${clause}" type="text" name="clause" maxlength="${MAX_TAG_NOTE}" autocomplete="off" ` +
+      `placeholder="the clause this one states">` +
+      `</li>`;
+  }).join("");
+  const rels = BUNDLE_RELATION_ORDER.map((rel) =>
+    `<option value="${attr(rel)}"${rel === "exactMatch" ? " selected" : ""}>${text(RELATION_WORD[rel] ?? rel)} — ${text(RELATION_LEGEND[rel])}</option>`).join("");
+  return `<div class="articles-bundle-new" data-passage-key="${attr(key)}">
+<button type="button" class="articles-tag-open" aria-expanded="false" aria-controls="bundleform-${attr(hex)}">These together state the passage</button>
+<form class="articles-bundle-form" id="bundleform-${attr(hex)}" hidden>
+<fieldset><legend>Say which parts together state this passage</legend>
+<p class="articles-muted">Tick the links that each state one part of this passage — two to ${MAX_BUNDLE_PARTS} of them — and say what each of them states. WikiLean then counts them together, instead of counting each as a part and leaving the passage partial. Your edit goes live at once, attributed to you, and anyone can correct it.</p>
+<ol class="articles-bundle-parts">${rows}</ol>
+<label for="bundlerel-${attr(hex)}">How the parts together match the passage</label>
+<select id="bundlerel-${attr(hex)}" name="relation">${rels}</select>
+<div class="articles-tag-buttons"><button type="submit" class="articles-tag-btn is-primary">Save</button><button type="button" class="articles-tag-btn articles-tag-cancel">Cancel</button></div>
+<p class="articles-tag-msg" role="status"></p>
+</fieldset>
+</form>
+</div>`;
+}
+
 // "Tag this passage": the one new write of release R1. The form is server
 // rendered and inert until the page's script wires it, and it carries no inline
 // handler and no inline script (articlesCsp lists neither).
@@ -1688,6 +1874,15 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
       `Removed by an editor (${int(gravestones.length)})</summary>` +
       `<div class="articles-cards is-removed">${gravestones.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div></details>`);
   }
+  // The community's coverage bundles over the cards above (issue #173), and the
+  // form that makes one. Both are the merged view's: "As published" shows the
+  // sealed set alone, which has no bundle of this kind in it.
+  const merged = ctx.overlay?.show ? ctx.overlay.merged.byPassage.get(passage.id) : null;
+  for (const bundle of merged?.bundles ?? []) parts.push(bundleBlock(bundle, ctx));
+  const bundleParts = liveShown.filter((m) => m.loc.relation === BUNDLE_PART_RELATION
+    && typeof m.loc.pair_key === "string" && m.loc.pair_key !== "");
+  const bundling = bundleForm(passage, bundleParts, ctx);
+  if (bundling) parts.push(bundling);
   const form = tagForm(passage, ctx);
   if (form) parts.push(form);
   if (panel) {

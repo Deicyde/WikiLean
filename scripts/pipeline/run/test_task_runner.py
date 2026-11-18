@@ -431,5 +431,83 @@ class InventoryRunnerTests(unittest.TestCase):
         self.assertIn("only an inventory", got["skipped"])
 
 
+class ChallengeRunnerTests(unittest.TestCase):
+    """Stage 9d through the runner, and what the retry cap costs (issue #175).
+
+    Judgment rules 5 refuse a verdict the record it judges does not support, which is
+    a refusal a worker can answer only by writing a different verdict. A worker that
+    writes the refused one again is called ``--max-attempts`` times and no more, and
+    nothing it wrote is promoted: the cost of a rule nobody satisfies is bounded by
+    the attempt cap, not by the gate.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmp.cleanup)
+        self.dir = Path(self._tmp.name)
+        self.ws = run_fixture.Workspace(self.dir / "ws")
+        self.root = self.dir / "run"
+        self.task = fixture.CHL_TASK
+        entry = json.loads(self.ws.manifest.read_text(encoding="utf-8").strip())
+        import plan as plan_mod  # noqa: PLC0415
+
+        plan_mod.plan(
+            run_id=fixture.CHL_RUN, mode=vocab.MODE_CHALLENGE, out=self.root,
+            universe=self.ws.universe, manifest=self.ws.manifest,
+            sources=self.ws.sources, entries={fixture.SOURCE: entry},
+            index=self.ws.index, render_prompts=True,
+            task_documents=[{"task_id": self.task, "run_id": fixture.CHL_RUN,
+                             "mode": vocab.MODE_CHALLENGE,
+                             "documents": [{"source_id": fixture.SOURCE,
+                                            "source_sha": entry["html_sha256"],
+                                            "layer_sha256": entry["layer_sha256"],
+                                            "renderer": entry["renderer"],
+                                            "records": fixture.challenge_records()}]}])
+        self.work = self.root / "work" / self.task
+        self.findings = workdir_mod.findings_dir(self.root, self.task)
+
+    def command(self, *, legal: bool) -> str:
+        document = fixture.good_challenge_document()
+        document["task_id"] = self.task
+        if not legal:
+            # a confirm that runs none of the three checks: no record supports it, and
+            # no second call can make one
+            for verdict in document["verdicts"]:
+                verdict.pop("checks", None)
+        script = self.dir / f"stub-chl-{legal}.py"
+        script.write_text(STUB_SOURCE.format(
+            paths=[str(HERE), str(PIPELINE), str(PIPELINE / "gate"), str(REPO / "site")],
+            cwd=str(self.work), write_dir=str(self.findings),
+            document=json.dumps(document)), encoding="utf-8")
+        return f"{sys.executable} {script}"
+
+    def test_the_planned_run_gates_at_judgment_rules_five(self):
+        config = json.loads((self.root / "gate" / "gate.json").read_text())
+        self.assertEqual(config["judgment_rules"], 5)
+        self.assertEqual(config["mode"], vocab.MODE_CHALLENGE)
+
+    def test_a_challenge_document_that_answers_the_rules_is_gated_and_promoted(self):
+        record = task_mod.run_task(root=self.root, task_id=self.task,
+                                   sources=self.ws.sources, worker_command=
+                                   self.command(legal=True), reviewer=False)
+        self.assertEqual(len(record["attempts"]), 1, record["gate"]["output"])
+        self.assertTrue(record["gate"]["ok"], record["gate"]["output"])
+        self.assertEqual(record["promoted"], [f"{fixture.SOURCE}.json"])
+
+    def test_the_retry_cap_bounds_a_verdict_nobody_can_write_legally(self):
+        for attempts in (1, 2, 3):
+            with self.subTest(max_attempts=attempts):
+                record = task_mod.run_task(
+                    root=self.root, task_id=self.task, sources=self.ws.sources,
+                    worker_command=self.command(legal=False), reviewer=False,
+                    max_attempts=attempts)
+                self.assertEqual(len(record["attempts"]), attempts)
+                self.assertEqual(record["gate"]["exit"], task_mod.GATE_REJECTED)
+                self.assertIn("runs the three checks", record["gate"]["output"])
+                self.assertEqual(record["promoted"], [])
+                self.assertFalse(
+                    (self.root / workdir_mod.FINDINGS / self.task).exists())
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

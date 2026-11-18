@@ -87,8 +87,10 @@ scripts/pipeline/keys.py            stage 2: the revision-free keys, canonical J
 scripts/pipeline/vocab.py           the locate vocabulary (relations, verdicts, rules)
 scripts/pipeline/status.py          stage 3: the derived status, rules 1, 2 and 3
 scripts/pipeline/readback.py        stage 4: a sealed set read back into outcome rows
+scripts/pipeline/statements.py      stage 4b: a sealed statement set read back
 scripts/pipeline/records.py         stage 5: the Literature Links records of one passage
 scripts/pipeline/export_records.py  stage 6: the sealed set, written and verified
+scripts/pipeline/export_statements.py  stage 6b: the sealed statement set, written
 scripts/pipeline/gate/              stage 7: the out-of-tree gate
   gate/verify_locate.py               rules 1 to 10, with the 0/1/3 exit vocabulary
   gate/locate_text.py                 the head rule, the quote, the span end, the blocks
@@ -289,6 +291,7 @@ widened only until the quote is unique).
 | refuses a target inside the skill repo or a companion | refuses a target inside this checkout, a symlink, or a non-empty directory that is not an earlier set |
 | the licence check reads `registry/sources.yaml` | the licence check reads the source row's own `licence_class` against `scripts/pipeline/sources.py`'s table (stage 9a); until that stage lands, `--licence-class` states it and the export refuses a class that may not be quoted |
 | writes `reports/export.<set-id>.json` into the workspace | writes the same report to `--report <file>`, or stdout |
+| — | `--statement-set <dir> --rendered-sources <dir>` (new, and the two go together): the run was planned from a published cut, so every passage's quote and `span_sha256` are the **set's**, checked against the pinned render and against the sources this export seals, and a row whose own cut states another is refused (STATEMENTS.md section 5) |
 
 The seal's `schema` stays `cf-locate-recordset/1` or `/2` and its keys stay exactly the agreed
 ones. **The format is the contract, not the producer's name**: a seal that said
@@ -298,6 +301,27 @@ seal names formal-companion; `skill_commit` is a 40-hex commit of whatever produ
 and the field keeps its name because renaming it is a format change on both sides at once
 (ARTICLES.md contract note 10). **Question for Jack (Q2):** whether to rename it
 `producer_commit` in a future `/3`.
+
+**Cost.** None; deterministic, offline.
+
+### Stages 6b and 4b — the statement set (`export_statements.py`, `statements.py`)
+
+**What it is.** Phase 1 of the maintainer's 2026-11-12 split: a harvested **cut** (stage
+9b) sealed and published on its own, before any locate run, as
+`wikilean.statement-set/1`. The format and every refusal are
+[STATEMENTS.md](STATEMENTS.md); the short of it is a sibling of the record set, not a
+profile of it, built from the same parts — `keys.py`'s recipes, the canonical spelling,
+the seal grammar, the quote cap — and carrying no universe, no receipts, no `challenge`
+and no status, because a cut judged none of those. Nothing shared with formal-companion
+changes.
+
+**New code**, not ported: formal-companion has no such format.
+
+`statements.py` reads one back into the `{source_id: [passage]}` shape
+`cut.frozen_inventory` returns, **recomputing every `span_sha256` and `passage_key`
+against the pinned revision's own render and refusing on any difference**, so the keys
+cannot drift between the phases and a tag written on a statement in phase 1 is the row
+the pipeline's location fills in in phase 2.
 
 **Cost.** None; deterministic, offline.
 
@@ -345,6 +369,62 @@ rest of the time writing one compound passage with a conjunct per structure. The
 records predate the check, and `gate/audit_sentences.py` measures an exported record set
 against it without re-running anything.
 
+**Judgment rules 5 — a challenge verdict faces the relation rules (issue #175).** Until
+rules 5 the whole challenge branch of rule 9 was `rule9_verdict`: a `confirm` owed a
+non-empty witness and nothing else, so every relation rule the challenge prompt states —
+a strong relation names every clause, a `closeMatch` names a convention, a `hasPart` says
+what it alone entails, a strong note that admits a missing clause — bound a locate
+document and nothing a challenger wrote. At rules 5 the gate builds **the location the
+verdict leaves** (`_verdict_location`): the record from the task manifest, under the
+relation a `downgrade` names, with every judgment field the verdict writes replacing the
+record's and every field the new relation does not take dropped as `tally._fit_fields`
+drops it. `rule9_location` then runs over it, with the record's `conjuncts` as the clause
+ids. Levels 0 to 4 are untouched, so a replay of a run pinned at 4 gates exactly as it
+did.
+
+**The note the verdict leaves is the note the record keeps.** The one legal answer to "a
+strong record whose own note admits a clause it does not state, and the note is wrong" is
+a `confirm` that writes its own `note` — the gate holds that note and the planner refutes
+such a record by default on the strength of the old one. So from plan rule 2 the tally
+takes a verdict's `note` onto the location it leaves, beside its `step`, `convention` and
+`instantiation` (`tally.VERDICT_NOTE_FIELDS`). Before it, a verdict's note reached a
+record only through `records.downgrade_note`, on a downgrade to `closeMatch` over a
+location with none: on every other verdict the worker's note stood, the export carried a
+strong relation whose note said it stated less than the passage, and the next plan
+refuted the record by default again for ever. It is gated on the **challenge run's own
+`plan_rule`**, which the tally reads from `challenge-plan.json`, so a replay of a run
+drawn under rule 1 yields the rows it always did; draw at plan rule 2 when you gate at
+judgment rules 5. The note is free-text checked at export like any other
+(`records.check_free_text`).
+
+Rules 5 also add **three checks** (`rule9_checks`), in the prompt and the gate in one
+commit, on every verdict that leaves a strong relation or a `hasPart`:
+
+- **`reading` and `states`** — the facts the passage asserts in the challenger's own
+  words, 1 to `MAX_CONJUNCTS` of them, and the positions of that reading the declaration
+  itself states. A strong relation stands only when it states every one; a `hasPart` that
+  states none is a `relatedMatch`. This is the clause check the inventory's ids cannot
+  make: a passage cut as simple has one clause id, so naming it says nothing.
+- **`direction`** on a `broadMatch` (the record's own or a part's `conjunct_relation`) —
+  the instantiation that yields the passage, and every hypothesis the passage does not
+  have, or a line beginning with the word `none`. A named hypothesis is at most a
+  `narrowMatch` (R2, PD4).
+- **`kind_check`** — whether the passage is a notation passage or a worked example, which
+  the judgment rules now read the same way in both prompts: on a notation passage the
+  declaration that is the operation the notation denotes is a `relatedMatch`, because what
+  the passage asserts is the notation.
+
+A `checks` block on a verdict that leaves a weaker relation is extra and no refusal: the
+tally drops it with every other field that relation does not take. The tally keeps the
+block beside the location it credits, for the audit; nothing of it is exported.
+
+Rules 5 also keep the prompt's one outstanding promise about the index: a downgrade to
+`relatedMatch` names `bridge`, "the lemma the connection needs, which the gate looks up
+in the index", and until now nothing looked anything up. `rule9_bridge` holds the field
+to `{library, declaration, why}` and runs the same index lookup rule 3 runs over a
+location, naming the item as `<item> (bridge)`. Only on a verdict that leaves a
+`relatedMatch`, which is where the tally keeps the field.
+
 **What is not ported, and is TODO** (`verify_locate.TODO_CHECKS`, which `--self-check`
 prints): rule 8's prose floor; rule 9's signature-driven instance-binder check and its
 naturals-for-integers tripwire, both of which need the declaration index to carry
@@ -372,7 +452,11 @@ a database the producer happens to hold — where WikiLean's own copy lives is s
 question 3, still open. The bundle's conjuncts are computed here, in the one place that holds
 both the inventory's conjuncts and the parts' clauses. Carry-over is computed from spans and
 span text only — never from an item, a statement or a model — and uses stage 2's
-`passage_key`. A run no challenge ran over is tallied with `--unchallenged`: every record a
+`passage_key`. **Either side may be a sealed statement set** (`--from-set`/`--to-set`,
+docs/STATEMENTS.md section 5a), and `--store-out` writes the map one `<pageid>.json` a
+page, which `build_store.py --carry` publishes at `articles/v1/carry/<pageid>.json` so
+the reader can show the tags of the cut before it.
+A run no challenge ran over is tallied with `--unchallenged`: every record a
 challenge would judge is `not_required`, which the pages show as not re-checked, so the export
 has a challenge value for each and a coverage claim upgrades nothing; a subject passage's
 records still carry the article's QID (Jack, 2026-11-13). It is refused beside
@@ -449,7 +533,10 @@ lookup and nothing else — and it binds gate rule 4: a worker must accept or re
 with a reason. A **lexical** hit is a hint: a deterministic token-overlap search over the
 index's declaration names and modules, scored by Sørensen–Dice, because this pipeline has no
 full-text engine to rank by and a plan must be reproducible. The task cut, the manifests,
-`gate.json` and the root stay stage 10's.
+`gate.json` and the root stay stage 10's. The cut it plans over is a harvested run
+(`--inventory`) or a sealed statement set (`--statement-set`, refused beside it:
+stages 6b and 4b above), and the task manifests are the same either way but for the
+quote handed to the worker.
 *Source:* `scripts/locate/{plan,candidates,prompts,presets}.py`.
 
 **This is narrower than formal-companion's retrieval, deliberately and at a cost.** Batch 1's
@@ -472,6 +559,30 @@ records no task held. The verdict vocabulary is `vocab.py`'s and the verdict sem
 `tally.py`'s, both already proved on batch 1's real verdicts.
 *Source:* `scripts/locate/challenge_plan.py`.
 
+**Plan rule 2 (issue #175).** Which rules a plan was drawn under is its `plan_rule`, in
+`challenge-plan.json`. Rule 1 is what the first runs were drawn with. Rule 2 changes two
+things, both on supporting passages: a **basis is required whatever its relation** (under
+rule 1 only a strong basis was, so a `hasPart` that alone made a passage `partial` fell to
+its stratum at `sample_rate`), and `hasPart` and `narrowMatch` **draw at
+`strong_sample_rate`** — the review behind the issue found 18 of its 22 wrong partial
+links sampled out at 0.2. Rule 2 also reads a location's own status under the **run's**
+status rule when it asks whether it is a basis: the command line never passed
+`--status-rule` on to `bases()`, so every plan was drawn with bases computed under status
+rule 1, and a `broadMatch` that alone makes a passage `formalized` under status rule 3 —
+the relation the issue found wrong most often — was not seen as a basis at all. On a
+synthetic corpus of 4,000 passages shaped like the issue's own counts that is 11% of the
+bases. Rule 1 keeps the old reading, so a replay is unchanged. It also adds one
+model-free refusal by default: a `hasPart`
+**on a passage with no conjuncts**, since R4 gives a part to a passage that says several
+things and the inventory read this one as saying one, so either the cut is wrong or the
+part is a `relatedMatch`. That rule reads a passage's `conjuncts`, so it applies only on
+a run that reads bundles; on one that does not, no row carries them and "no conjuncts"
+would mean every passage. `challenge.py`'s `--plan-rule` defaults to 2 and
+`challenge.plan()`'s argument to 1, so a replay of an older plan passes the rule it was
+drawn with and gets the same records back. The rule is also what the tally reads to
+decide whether a verdict's own `note` replaces the worker's (stage 7 above): a plan drawn
+under rule 2 is a run whose verdicts were written and gated under judgment rules 5.
+
 **The prompts (`scripts/pipeline/prompts/`).** WikiLean's own, rendered from the run's own
 paths by `prompts.py`, which refuses a template with an unfilled slot. Four files per root:
 a shared `worker-system.md`, the mode's `worker.md`, and the two reviewer prompts. Three
@@ -479,7 +590,7 @@ differences from formal-companion's worth stating:
 
 - **No conditional arms.** formal-companion's templates carry `{{#if}}` blocks for the rule
   versions a plan may run under; WikiLean's are written for the one set its gate enforces —
-  span-end rule 3, statement-cut rule 4, judgment rules 4 — and a change of rule is a change
+  span-end rule 3, statement-cut rule 4, judgment rules 5 — and a change of rule is a change
   of prompt in the same commit as the gate.
 - **The judgment rules are one text.** R1 to R7, the policy defaults and the readings live in
   `prompts/judgment-rules.md.part`, which both the locate and the challenge prompt render.

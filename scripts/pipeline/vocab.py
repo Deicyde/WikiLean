@@ -32,6 +32,25 @@ SEAL_SCHEMAS = {STATUS_RULE_D1: SEAL_SCHEMA,
                 STATUS_RULE_BUNDLE: SEAL_SCHEMA_BUNDLE,
                 STATUS_RULE_BROAD: SEAL_SCHEMA_BUNDLE}
 
+#: The statement set's schema (docs/STATEMENTS.md): a **sibling** of the record set, not
+#: a profile of it. It states what a cut found and nothing about Lean, so it carries no
+#: universe, no receipts, no challenge value and no status.
+STATEMENT_SET_SCHEMA = "wikilean.statement-set/1"
+#: Its seal's keys, exactly. ``producer_commit`` is the name ``skill_commit`` should have
+#: had (docs/PIPELINE.md question Q2) and can be right here because nothing shared reads it.
+STATEMENT_SEAL_KEYS = ("schema", "set_id", "campaign", "sourceset", "producer_commit",
+                       "created", "cut_rules", "files")
+#: The rules the cut ran under, which the seal records so a re-cut can be compared.
+STATEMENT_CUT_RULE_KEYS = ("span_end_rule", "statement_cut_rule")
+#: What a sealed statement carries, exactly: ``run.plan``'s :data:`LOCATE_PASSAGE_KEYS`
+#: less ``text_span`` (which the reader recomputes from the local render's layer map),
+#: plus the two keys and the cut's own ``fragment``, ``scope`` and ``finder``.
+STATEMENT_KEYS = ("item", "passage_key", "span", "span_sha256", "head_words", "quote",
+                  "section", "fragment", "passage_kind", "prominence", "scope",
+                  "statement", "finder")
+#: ``conjuncts`` and ``shape`` ride together, on a compound ``formal_math`` statement only.
+STATEMENT_OPTIONAL = ("conjuncts", "shape")
+
 #: A passage's own kind (proposal section 2.2).
 KINDS = frozenset({"definition", "theorem", "conjecture", "example", "construction", "notation", "other"})
 #: Which row of the derived-status table judges a passage of that kind. A construction or
@@ -95,6 +114,19 @@ JUDGMENT_LOCATION_FIELDS = ("clauses", "instantiation", "step", "convention",
                             "conjunct_relation", "tests", "pd6")
 #: What a downgrade to ``relatedMatch`` says of the record it leaves (judgment rules 4).
 BRIDGE_FIELDS = ("bridge", "incomparable")
+#: What a ``bridge`` names: the lemma the connection needs, which the gate looks up in
+#: the declaration index, and what it adds.
+BRIDGE_KEYS = ("library", "declaration", "why")
+#: The three checks a challenge verdict runs under judgment rules 5 (issue #175): the
+#: facts the passage asserts in the challenger's own words and which of them the
+#: declaration states (``reading``, ``states``), R2's instantiation and the hypotheses
+#: the passage lacks (``direction``, on a ``broadMatch``), and whether the passage is a
+#: notation passage or a worked example (``kind_check``).
+CHECKS_FIELD = "checks"
+CHECKS_KEYS = ("reading", "states", "direction", "kind_check")
+#: The relations whose verdict carries them: the ones that credit the declaration with
+#: a fact the passage asserts. A weaker relation credits it with none.
+CHECKED_RELATIONS = STRONG_RELATIONS | {HAS_PART}
 
 #: A declaration's proof status, decided mechanically at index time, never by a model.
 PROOF_STATUSES = frozenset({"proved", "statement_only", "axiom_dependent", "wanted", "definition"})
@@ -126,6 +158,9 @@ CUT_FLAG_NOT_A_STATEMENT = "not_a_statement"
 CUT_FLAG_SEVERAL_STATEMENTS = "several_statements"
 CUT_FLAGS = frozenset({CUT_FLAG_NOT_A_STATEMENT, CUT_FLAG_SEVERAL_STATEMENTS})
 
+#: The carry-over map's schema, which the store publishes a page at a time at
+#: ``articles/v1/carry/<pageid>.json`` (scripts/pipeline/carry.py).
+CARRY_SCHEMA = "wikilean.pipeline.carry/1"
 #: What a re-cut did to one passage of the old cut (the carry-over map, stage 8).
 #: ``unchanged`` is the only fate a verdict, a gold label or a known answer carries over.
 CARRY_UNCHANGED = "unchanged"
@@ -153,6 +188,12 @@ STATUS_RANK = {status: rank for rank, status in enumerate(STATUSES)}
 NOT_FORMALIZED = "not_formalized"
 #: What the store counts a passage with no derived status as.
 UNRESOLVED = "unresolved"
+#: And what it counts a passage of a published cut as: no library has been searched for
+#: it, which is never ``unresolved`` (a locate run ran and settled nothing) and never
+#: ``not_formalized``. The consumer's words — this pipeline derives neither — kept here
+#: so the two sides spell them the same (docs/STATEMENTS.md, docs/ARTICLES.md section 4).
+OUTCOME_UNCHECKED = "unchecked"
+NOT_CHECKED = "not_checked"
 
 #: A record's challenge value. The last three are records no challenge judged;
 #: ``challenge_pending`` is one a prominence overturn put under a rule after the
@@ -195,6 +236,16 @@ CHALLENGE_RULES = frozenset({CHALLENGE_RULE_REFUTE, CHALLENGE_RULE_HUNT,
 CHALLENGE_TARGETS = frozenset({"location", "absence", "unresolved", "scope", "prominence",
                                "coverage"})
 VERDICT_ACTIONS = frozenset({"confirm", "uphold", "downgrade", "refute", "overturn"})
+#: Which rules a challenge plan was drawn under, written into ``challenge-plan.json``.
+#: 1 — the rules the first runs were planned under: only a **strong** location can be a
+#: basis, and only the strong relations draw at ``strong_sample_rate``. 2 — issue #175: a
+#: weak relation that sets a passage's status on its own is a basis too, ``hasPart`` and
+#: ``narrowMatch`` on a supporting passage draw at ``strong_sample_rate``, and a
+#: ``hasPart`` on a passage with no conjuncts is refuted by default. A plan is replayed
+#: under the rule it was drawn with, never under the newest.
+CHALLENGE_PLAN_RULE_STRONG_BASIS = 1
+CHALLENGE_PLAN_RULE_WEAK_BASIS = 2
+CHALLENGE_PLAN_RULES = (CHALLENGE_PLAN_RULE_STRONG_BASIS, CHALLENGE_PLAN_RULE_WEAK_BASIS)
 #: The three rates a plan draws its strata at, by the names ``challenge-plan.json`` uses.
 CHALLENGE_SAMPLE_RATE = 0.2
 CHALLENGE_STRONG_SAMPLE_RATE = 0.5

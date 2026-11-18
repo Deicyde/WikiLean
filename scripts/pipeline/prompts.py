@@ -20,7 +20,7 @@ turn:
 
 **No conditional blocks.** formal-companion's templates carry `{{#if}}` arms for the
 rule versions a plan may run under; WikiLean's prompts are written for the one set its
-gate enforces — span-end rule 3, statement-cut rule 4, judgment rules 4 — and a change
+gate enforces — span-end rule 3, statement-cut rule 4, judgment rules 5 — and a change
 of rule is a change of prompt, in the same commit as the gate. :func:`render` refuses a
 template with an unfilled slot, so a prompt can never reach a worker with a literal
 ``{{tasks_dir}}`` in it.

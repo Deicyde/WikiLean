@@ -51,7 +51,13 @@ names its rule:
    one; a ``hasPart`` or ``narrowMatch`` says what the declaration alone entails; a strong
    location writes its two-way ``tests`` and its ``instantiation``; an absence's receipt
    tags every query with the claims it targets and gives each claim a query of its own; a
-   challenge verdict carries what its action owes;
+   challenge verdict carries what its action owes; and, at rules 5, **the location a
+   challenge verdict leaves standing is held to every one of those relation rules**
+   (:func:`_verdict_location`, issue #175), the missing-clause check included, and to
+   the three checks of :func:`rule9_checks` — the facts the passage asserts and which
+   of them the declaration states, a ``broadMatch``'s direction, and the passage's kind
+   — and the ``bridge`` of a ``relatedMatch`` is the lemma the prompt promises the gate
+   looks up in the index (:func:`rule9_bridge`);
 10. the statement cut, for a run whose ``gate.json`` names ``statement_cut_rule``: the
     spans of an inventory are disjoint, one text one passage; no span ends inside a
     formula; a span runs past its block only within the bound the rule allows;
@@ -217,7 +223,7 @@ class GateConfig:
         self.min_absence_queries = self._count("min_absence_queries", 3)
         self.span_end_rule = self._rule("span_end_rule", lt.SPAN_END_RULES, 1)
         self.statement_cut_rule = self._rule("statement_cut_rule", (0, 1, 2, 3, 4), 0)
-        self.judgment_rules = self._rule("judgment_rules", (0, 1, 2, 3, 4), 0)
+        self.judgment_rules = self._rule("judgment_rules", (0, 1, 2, 3, 4, 5), 0)
         self.inventory_run = str((data.get("inventory") or {}).get("run_id") or "")
         self.challenged_runs = [str(r) for r in data.get("challenged_runs") or []]
         pin = data.get("index")
@@ -1041,6 +1047,175 @@ def rule9_location(location: dict, where: str, item: str, cfg: GateConfig,
                                    f"{', '.join(sorted(vocab.CONJUNCT_RELATIONS_PART))}")
 
 
+#: What a verdict may say of the location it leaves, beside the action's own fields.
+#: They are the judgment fields a locate document writes, so a verdict replaces the
+#: record's one at a time and the rest of the record stands.
+VERDICT_LOCATION_FIELDS = ("relation", "note", "clauses", "instantiation", "step",
+                           "convention", "conjunct_relation", "tests")
+#: Which of them the tally takes from a verdict only when it is a non-empty string
+#: (``tally._judged_fields``): a blank one leaves the record's own standing, so the gate
+#: holds the record's too — otherwise ``"note": ""`` would answer the missing-clause
+#: rule with a field the tally throws away.
+VERDICT_TEXT_FIELDS = ("note", "instantiation", "step", "convention")
+
+
+def _written(verdict: dict, key: str) -> bool:
+    """Whether the verdict writes ``key`` over the record's, as the tally reads it."""
+    value = verdict.get(key)
+    if value is None:
+        return False
+    if key in VERDICT_TEXT_FIELDS:
+        return isinstance(value, str) and bool(value.strip())
+    return True
+
+
+def _verdict_location(record: dict, verdict: dict) -> dict:
+    """The location a challenge verdict leaves standing (judgment rules 5).
+
+    A challenge document carries no locations of its own: the relation a ``confirm``
+    leaves is the **record's**, which the task manifest carries, and a ``downgrade``'s is
+    the one it names. Every judgment field the verdict writes replaces the record's, and
+    a field the relation it leaves does not take is dropped exactly as the tally drops it
+    (``tally._fit_fields``) — so the gate holds the location the tally will write, and
+    refuses no convention or clause list the tally itself would throw away. "Writes" is
+    the tally's reading of it (:func:`_written`): a blank string is no field, and the
+    record's own stands, so a verdict cannot answer a rule about its record's note by
+    blanking the note.
+
+    Without this the judgment rules hold of a locate document and of nothing a challenger
+    writes: a ``confirm`` owed a non-empty witness and nothing else (issue #175).
+    """
+    left = {key: record.get(key) for key in VERDICT_LOCATION_FIELDS}
+    if verdict.get("action") == "downgrade":
+        left["relation"] = verdict.get("relation")
+    for key in VERDICT_LOCATION_FIELDS[1:]:
+        if _written(verdict, key):
+            left[key] = verdict[key]
+    left = {key: value for key, value in left.items() if value is not None}
+    relation = left.get("relation")
+    if relation != vocab.HAS_PART:
+        left.pop("conjunct_relation", None)
+    if relation != vocab.CLOSE_MATCH \
+            and left.get("conjunct_relation") != vocab.CLOSE_MATCH:
+        left.pop("convention", None)
+    if relation not in vocab.STEP_RELATIONS:
+        left.pop("step", None)
+    if relation == vocab.RELATED_MATCH and verdict.get("clauses") is None:
+        # the record's clauses are the relation it no longer has; a clause list the
+        # verdict writes itself is its own claim, and rule 9 holds it to it
+        left.pop("clauses", None)
+    return left
+
+
+def _says_none(line: Any) -> bool:
+    """Whether a ``direction.hypotheses`` line says there is no such hypothesis.
+
+    Its first word, and nothing else about it: a challenger told to write ``none``
+    writes "none", "None." or "none — it assumes nothing the passage does not", and
+    refusing the last two would spend a model call on their punctuation. One that names
+    a hypothesis begins with the hypothesis.
+    """
+    first = re.search(r"[a-z]+", str(line or "").casefold())
+    return first is not None and first.group(0) == "none"
+
+
+def rule9_checks(verdict: dict, left: dict, where: str, item: str,
+                 problems: Problems) -> None:
+    """Judgment rules 5: the clause, direction and kind checks a verdict owes.
+
+    The clause check is the one the inventory's ids cannot make: a passage the inventory
+    read as simple has one clause id, so naming it says nothing about the facts the
+    passage asserts. ``reading`` is the challenger's own decomposition in its own words
+    and ``states`` says which of those facts the declaration itself states — every one of
+    them for a strong relation, at least one for a ``hasPart``. ``direction`` is R2's
+    instantiation on a ``broadMatch``, with every hypothesis the passage does not have
+    (PD4). ``kind_check`` is the notation-or-worked-example reading of the passage.
+
+    A ``checks`` block on a verdict that leaves a weaker relation is extra and not a
+    refusal — the tally drops a field the relation does not take, and a refusal here
+    would spend a model call removing something that harms nothing.
+    """
+    relation = left.get("relation")
+    if relation not in vocab.CHECKED_RELATIONS:
+        return
+    held = relation
+    if relation == vocab.HAS_PART and left.get("conjunct_relation") in \
+            vocab.CONJUNCT_RELATIONS_PART:
+        held = left["conjunct_relation"]
+    checks = verdict.get(vocab.CHECKS_FIELD)
+    if not isinstance(checks, dict):
+        problems.add(9, where, f"{item}: a verdict that leaves a {relation} runs the three "
+                               "checks (`reading`, `states`, `kind_check`)")
+        return
+    # every check of the three is reported together: a worker answers one gate run with
+    # one rewrite, and the retry cap is what a second refusal costs (issue #175)
+    reading = checks.get("reading")
+    if not isinstance(reading, list) or not 1 <= len(reading) <= vocab.MAX_CONJUNCTS \
+            or not all(_one_line(line) for line in reading):
+        problems.add(9, where, f"{item}: `reading` is 1 to {vocab.MAX_CONJUNCTS} one-line "
+                               "facts the passage asserts, in your own words")
+    else:
+        states = checks.get("states")
+        places = set(range(1, len(reading) + 1))
+        if not isinstance(states, list) or not all(type(s) is int and s in places
+                                                   for s in states):
+            problems.add(9, where, f"{item}: `states` names the positions of `reading` the "
+                                   f"declaration states, each in 1..{len(reading)}")
+        elif relation in vocab.STRONG_RELATIONS and set(states) != places:
+            problems.add(9, where, f"{item}: a {relation} states every fact of the passage, "
+                                   f"and `states` names {sorted(set(states))} of "
+                                   f"{sorted(places)}; downgrade to hasPart")
+        elif relation == vocab.HAS_PART and not states:
+            problems.add(9, where, f"{item}: a hasPart that states no fact of the passage is "
+                                   "a relatedMatch")
+    if held == vocab.BROAD_MATCH:
+        direction = checks.get("direction")
+        if not isinstance(direction, dict) or not _nonempty(direction.get("instance")) \
+                or not _nonempty(direction.get("hypotheses")):
+            problems.add(9, where, f"{item}: a broadMatch gives `direction`: the "
+                                   "instantiation that yields the passage, and the "
+                                   "hypotheses the passage does not have (a line "
+                                   "beginning `none` when there are none)")
+        elif not _says_none(direction["hypotheses"]):
+            problems.add(9, where, f"{item}: `direction.hypotheses` names a hypothesis the "
+                                   "passage does not have, which makes this at most a "
+                                   "narrowMatch (R2, PD4); a line that begins with the "
+                                   "word `none` says there is none")
+    if not _nonempty(checks.get("kind_check")):
+        problems.add(9, where, f"{item}: `kind_check` says in one line whether the passage "
+                               "is a notation passage or a worked example, and what that "
+                               "asks of the declaration")
+
+
+def rule9_bridge(verdict: dict, left: dict, where: str, item: str, cfg: GateConfig,
+                 ctx: Context, problems: Problems) -> None:
+    """The lemma a ``relatedMatch`` names, looked up in the declaration index.
+
+    The challenge prompt says a downgrade to ``relatedMatch`` names "the lemma the
+    connection needs, which the gate looks up in the index", and until judgment rules 5
+    nothing looked anything up: a bridge was free text the tally carried through to the
+    audit. A bridge the universe does not hold is no bridge — the connection it claims
+    to need is one nobody can check — and the prompt's way out is to write no ``bridge``
+    and name the gap in the witness.
+
+    Only on a verdict that leaves a ``relatedMatch``, which is where the tally keeps the
+    field; on any other relation it drops it, so a lookup there would refuse a verdict
+    over a field nobody reads.
+    """
+    bridge = verdict.get("bridge")
+    if bridge is None or left.get("relation") != vocab.RELATED_MATCH:
+        return
+    if not isinstance(bridge, dict) \
+            or not all(_nonempty(bridge.get(key)) for key in vocab.BRIDGE_KEYS) \
+            or not _one_line(bridge.get("why")):
+        problems.add(9, where, f"{item}: a bridge is {{{', '.join(vocab.BRIDGE_KEYS)}}}: "
+                               "the lemma the connection needs, and one line on what it "
+                               "adds")
+        return
+    rule3_declaration({key: bridge[key] for key in ("library", "declaration")},
+                      where, f"{item} (bridge)", cfg, ctx, problems)
+
+
 def _normal_query(query: str) -> str:
     return " ".join(str(query).split()).casefold()
 
@@ -1301,11 +1476,28 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
     placed = rule2_passages(doc, where, cfg, view, problems, frozen=frozen)
 
     if mode == vocab.MODE_CHALLENGE:
+        records = _frozen_records(ctx, task_id, source_id)
         for number, verdict in enumerate(doc.get("verdicts") or []):
             if not isinstance(verdict, dict):
                 problems.add(1, where, f"verdicts[{number}] is not an object")
                 continue
             rule9_verdict(verdict, where, cfg, problems)
+            item = str(verdict.get("item") or "(no item)")
+            record = records.get((item, verdict.get("location_key")))
+            if record is not None and cfg.judgment_rules >= 5 \
+                    and verdict.get("target") == "location" \
+                    and verdict.get("action") in ("confirm", "downgrade"):
+                # the relation a verdict leaves is held to every rule a locate note
+                # faces, the missing-clause check included (issue #175)
+                left = _verdict_location(record, verdict)
+                # a downgrade that names no relation of the vocabulary, and a record
+                # that carries none, are rule9_verdict's refusal and only its one:
+                # these rules are about a relation, and there is none to hold
+                if vocab.member(left.get("relation"), vocab.LOCATION_RELATIONS):
+                    rule9_location(left, where, item, cfg, problems,
+                                   _clause_ids(record), challenger=True)
+                    rule9_checks(verdict, left, where, item, problems)
+                    rule9_bridge(verdict, left, where, item, cfg, ctx, problems)
             for location in verdict.get("locations") or []:
                 if isinstance(location, dict):
                     rule3_declaration(location, where, str(verdict.get("item")), cfg, ctx,
@@ -1340,6 +1532,28 @@ def check_document(rel: str, doc: Any, cfg: GateConfig, ctx: Context, problems: 
         if cfg.judgment_rules >= 1:
             rule9_receipt(passage, where, item, cfg, problems, ids,
                           passage_kind=base.get("passage_kind"))
+
+
+def _frozen_records(ctx: Context, task_id: str, source_id: str) -> dict:
+    """``{(item, location_key): record}`` of the challenge task this document answers.
+
+    A challenge task manifest holds ``records`` where a locate one holds ``passages``: a
+    record carries the relation the verdict judges, what the worker wrote of it, and —
+    on a run that reads bundles — the passage's ``conjuncts``. A manifest with no
+    records (an older plan, or a task nobody staged) leaves the verdict rules to
+    :func:`rule9_verdict` alone, which is what this gate did before rules 5.
+    """
+    manifest = ctx.task_manifest(task_id)
+    if manifest is None:
+        return {}
+    out: dict = {}
+    for document in manifest.get("documents") or []:
+        if str(document.get("source_id")) != source_id:
+            continue
+        for record in document.get("records") or []:
+            if isinstance(record, dict):
+                out[(str(record.get("item")), record.get("location_key"))] = record
+    return out
 
 
 def _frozen_passages(ctx: Context, task_id: str, source_id: str) -> dict:

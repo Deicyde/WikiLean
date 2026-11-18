@@ -856,3 +856,71 @@ test.describe("the article reader", () => {
     expect(errors).toEqual([]);
   });
 });
+
+// ---- the community coverage bundle (issue #173) ----------------------------------------------
+//
+// The fourth harness listener (e2e/server.ts) serves the /2 store with the Gadget's covered
+// theorem stripped of its sealed claim: two proved hasPart links, published "partial". An
+// editor says the two together state the passage, and the merged status becomes "formalized"
+// without any link being described more strongly than it is.
+test.describe("the coverage bundle form", () => {
+  const BUNDLE = `http://127.0.0.1:${Number.parseInt(process.env.WIKILEAN_E2E_PORT ?? "4173", 10) + 3}`;
+  test.use({ baseURL: BUNDLE });
+  // The covered theorem's passage on the card list.
+  const PASSAGE = "#p-a41f6c2e";
+
+  test("an editor says two parts together state the passage, and the status follows", async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await page.goto(`/login?returnTo=${encodeURIComponent(GADGET)}`);
+    // The title's brackets are the page's, not a pattern's.
+    await expect(page).toHaveURL(new RegExp(`${GADGET.replace(/[()]/g, "\\$&")}$`));
+    const passage = page.locator(PASSAGE);
+    await expect(passage).toHaveAttribute("data-status", "partial");
+    await expectNoSeriousViolations(page);
+
+    await passage.getByRole("button", { name: "These together state the passage" }).click();
+    const form = passage.locator(".articles-bundle-form");
+    await expect(form).toBeVisible();
+    await expectNoSeriousViolations(page);
+    const rows = form.locator(".articles-bundle-parts > li");
+    await expect(rows).toHaveCount(2);
+    await rows.nth(0).locator('input[type="checkbox"]').check();
+    await rows.nth(0).locator('input[type="text"]').fill("a gadget is connected");
+    await rows.nth(1).locator('input[type="checkbox"]').check();
+    await rows.nth(1).locator('input[type="text"]').fill("its basepoint has finite degree");
+    await form.getByLabel("How the parts together match the passage").selectOption("exactMatch");
+
+    // The first edit asks for the licence, as a first tag does.
+    await form.getByRole("button", { name: "Save", exact: true }).click();
+    const agreement = page.locator("#articles-cc0");
+    await expect(agreement).toBeVisible();
+    await agreement.locator("#articles-cc0-box").check();
+    await form.getByRole("button", { name: "Save", exact: true }).click();
+
+    // The page reloads: the bundle is one group under the two cards, and the
+    // passage is formalized by them together.
+    await expect(page.locator(`${PASSAGE} .articles-bundle`)).toHaveCount(1);
+    await expect(page.locator(PASSAGE)).toHaveAttribute("data-status", "formalized");
+    await expect(page.locator(`${PASSAGE} .articles-bundle .articles-why`))
+      .toHaveText("Formalized by 2 parts together:");
+    await expect(page.locator(`${PASSAGE} .articles-bundle`)).toContainText("a gadget is connected");
+    await expectNoSeriousViolations(page);
+
+    // "As published" is the sealed set, with no bundle and the published status.
+    await page.goto(`${GADGET}?overlay=off`);
+    await expect(page.locator(`${PASSAGE} .articles-bundle`)).toHaveCount(0);
+    await expect(page.locator(PASSAGE)).toHaveAttribute("data-status", "partial");
+
+    // Withdrawing it puts the passage back, and leaves the gravestone.
+    await page.goto(GADGET);
+    await page.locator(`${PASSAGE} .articles-bundle`).getByRole("button", { name: "Withdraw this" }).click();
+    await page.locator(`${PASSAGE} .articles-card-form textarea`).fill("they leave a clause out");
+    await page.locator(`${PASSAGE} .articles-card-form`).getByRole("button", { name: "Withdraw this" }).click();
+    await expect(page.locator(PASSAGE)).toHaveAttribute("data-status", "partial");
+    await expect(page.locator(`${PASSAGE} .articles-bundle.is-removed`)).toContainText("they leave a clause out");
+    // The only failed request is the licence gate's own 403 on the first save,
+    // which is what brings the agreement up; nothing else went wrong.
+    expect(errors.filter((e) => !e.includes("403"))).toEqual([]);
+    expect(errors.filter((e) => e.startsWith("response 403: ") && e.endsWith("/api/articles/coverage"))).toHaveLength(1);
+  });
+});

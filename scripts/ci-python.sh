@@ -92,6 +92,7 @@ run_check "Pipeline locate vocabulary parity" "$PYTHON_BIN" scripts/pipeline/tes
 run_check "Pipeline derived-status parity (rules 1, 2 and 3)" "$PYTHON_BIN" scripts/pipeline/test_status.py
 run_check "Pipeline record builder tests" "$PYTHON_BIN" scripts/pipeline/test_records.py
 run_check "Pipeline sealed record set read back and re-exported" "$PYTHON_BIN" scripts/pipeline/test_record_sets.py
+run_check "Pipeline sealed statement set, written and read back" "$PYTHON_BIN" scripts/pipeline/test_statement_sets.py
 run_check "Pipeline tally, challenge semantics and carry-over" "$PYTHON_BIN" scripts/pipeline/test_tally.py
 run_check "Pipeline web-html/3 renderer, a use of the site text layer" "$PYTHON_BIN" scripts/pipeline/test_render_web.py
 run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/pipeline/test_sourceset.py
@@ -146,6 +147,7 @@ run_check "Brain deployment journal tests" "$PYTHON_BIN" site/ops/test_brain_dep
 run_check "Brain public asset baseline tests" "$PYTHON_BIN" site/ops/test_brain_public_baseline.py
 run_check "Brain exact-release promoter tests" "$PYTHON_BIN" site/ops/test_brain_promote_release.py
 run_check "Release-neutral path policy tests" "$PYTHON_BIN" site/ops/test_brain_release_authority.py
+run_check "Code-only release policy, record and Brain surface fence tests" "$PYTHON_BIN" site/ops/test_brain_code_only_release.py
 run_check "Brain activation CI evidence tests" "$PYTHON_BIN" site/ops/test_brain_activation_ci.py
 run_check "Brain activation evidence bundle tests" "$PYTHON_BIN" site/ops/test_brain_activation_bundle.py
 run_check "Brain activation evidence integration test" "$PYTHON_BIN" site/ops/test_brain_activation_bundle_integration.py
