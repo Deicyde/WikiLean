@@ -219,6 +219,18 @@ class BuildFixture(unittest.TestCase):
             self.assertEqual(d[f"{L0}::{near}"]["resolution"], "planned", near)
             self.assertIsNone(d[f"{L0}::{near}"]["resolved_by"])
 
+    def test_scoped_and_relative_names(self):
+        d = self.by_id("decl_refs.jsonl")
+        via = d[f"{ALPHA}::Foo.bar"]  # `open TauCeti in` in a README code block
+        self.assertEqual((via["resolution"], via["via_namespace"], via["resolved_name"]),
+                         ("tauceti", "TauCeti", "TauCeti.Foo.bar"))
+        un = d[f"{BETA}#layer-0-base::Foo.bar"]  # Beta declares no scope
+        self.assertEqual((un["resolution"], un["candidates"], un["candidates_total"],
+                          un["candidate_libraries"]), ("unqualified", ["TauCeti.Foo.bar"], 1, ["tauceti"]))
+        self.assertIsNone(un["resolved_by"])
+        self.assertEqual(self.rejected_where(kind="decl_ref", candidate="hf.ne'")[0]["reason"], "local_term")
+        self.assertNotIn(f"{ALPHA}::hf.ne'", d)
+
     def test_decl_attachment(self):
         d = self.by_id("decl_refs.jsonl")
         self.assertEqual(d[f"{L0}::Nat.pred"]["layer"], L0)  # subsection of Layer 0
@@ -251,6 +263,56 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(x[f"{L0}::lit:2101.01234"]["evidence"]["line"], 15)
         reasons = {(r["candidate"], r["reason"]) for r in self.rejected if r["kind"] == "xref"}
         self.assertEqual(reasons, {("2019", "looks_like_year"), ("math/0601001", "old_style_arxiv_id")})
+
+
+class ResolverTest(unittest.TestCase):
+    def setUp(self):
+        self.r = B.Resolver({"Nat.succ_le", "A.B.x", "A.B.y", "P.z", "Q.z", "Exact.w", "Q.Exact.w"}
+                            | {f"N{i}.amb" for i in range(10)}, {"TauCeti.Foo.bar"})
+
+    def test_unique_suffix_is_unqualified(self):
+        got = self.r.resolve("Foo.bar")
+        self.assertEqual(got, {"resolution": "unqualified", "candidates": ["TauCeti.Foo.bar"],
+                               "candidates_total": 1, "candidate_libraries": ["tauceti"]})
+
+    def test_ambiguous_suffix_capped(self):
+        got = self.r.resolve("amb")
+        self.assertEqual(got["candidates_total"], 10)
+        self.assertEqual(got["candidates"], sorted(f"N{i}.amb" for i in range(10))[:8])
+
+    def test_exact_beats_scope_and_suffix(self):
+        self.assertEqual(self.r.resolve("Exact.w", {"Q"}), {"resolution": "mathlib"})
+
+    def test_via_namespace_with_parents(self):
+        scopes = B.with_parents({"A.B"})
+        self.assertEqual(scopes, {"A", "A.B"})
+        self.assertEqual(self.r.resolve("B.x", scopes)["via_namespace"], "A")
+        self.assertEqual(self.r.resolve("x", scopes)["via_namespace"], "A.B")
+
+    def test_open_line_gives_scope(self):
+        from scripts.tauceti_plans import parse
+        found = parse.code_scopes(["open scoped TauCeti Other in", "namespace A.B -- c"])
+        self.assertEqual(found, {"TauCeti", "Other", "A.B"})
+        found2 = set()
+        parse.lean_scan("namespace A\nnamespace B\nopen P hiding q\nend B\nend A\n", found2)
+        self.assertEqual(found2, {"A", "A.B", "P"})
+        got = self.r.resolve("Foo.bar", B.with_parents(found))
+        self.assertEqual((got["resolution"], got["via_namespace"]), ("tauceti", "TauCeti"))
+
+    def test_two_scope_matches_are_unqualified(self):
+        got = self.r.resolve("z", {"P", "Q"})
+        self.assertEqual((got["resolution"], got["candidates"]), ("unqualified", ["P.z", "Q.z"]))
+
+    def test_local_term(self):
+        self.assertEqual(self.r.resolve("hf.ne'"), {"resolution": "local_term"})
+
+    def test_partial_component_stays_planned(self):
+        self.assertEqual(self.r.resolve("ucc_le"), {"resolution": "planned"})
+        for near in ("Nat.Succ_le", "Nat.succ_le_iff", "TauCeti.Foo.ba"):
+            self.assertEqual(self.r.resolve(near), {"resolution": "planned"}, near)
+
+    def test_declared_names_resolve_only_exactly(self):
+        self.assertEqual(self.r.resolve("Foo.bar", exact_only=True), {"resolution": "planned"})
 
 
 if __name__ == "__main__":

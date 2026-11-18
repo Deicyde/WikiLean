@@ -33,3 +33,9 @@ The Stacks Project, Tags 0B3C and 0C4D.
 ## References
 
 `Nat.add_comm` belongs to the roadmap.
+
+`Foo.bar` resolves in the scope below; `hf.ne'` is a local term.
+
+```lean
+open TauCeti in
+```

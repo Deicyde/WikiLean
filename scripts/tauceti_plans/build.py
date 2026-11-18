@@ -405,14 +405,79 @@ def verify_edges(atlas, tree, texts, roadmaps, atlas_to_layer, layer_ids, reject
 
 # ---------------------------------------------------------------- decl refs and xrefs
 
-def resolve(name: str, ctx: dict) -> tuple[str, list | None]:
-    if name in ctx["mathlib"]:
-        return "mathlib", [ctx["by"]["mathlib_decls"]]
-    if name in ctx["tauceti"]:
-        if ctx["sorry"].get(name) is True:
-            return "stated", [ctx["by"]["tauceti_decls"], ctx["by"]["deps"]]
-        return "tauceti", [ctx["by"]["tauceti_decls"]]
-    return "planned", None
+MAX_CANDIDATES = 8
+
+
+def with_parents(scopes) -> set[str]:
+    """Each namespace with every parent prefix of it: `A.B` gives `A.B` and `A`."""
+    out = set()
+    for n in scopes:
+        parts = n.split(".")
+        out.update(".".join(parts[:i]) for i in range(1, len(parts) + 1))
+    return out
+
+
+class Resolver:
+    """Resolves a written name against both `.bmp` indexes, built once per build.
+
+    Order: exact entry; else exactly one `N.name` for a declared scope N (`via_namespace`);
+    else, for a dotted name whose first segment is no entry's namespace component, the
+    rejection `local_term`; else `unqualified` when the name is an entry with whole leading
+    components removed; else `planned`."""
+
+    def __init__(self, mathlib: set[str], tauceti: set[str]):
+        self.mathlib, self.tauceti = mathlib, tauceti
+        self.components: set[str] = set()
+        self.by_last: dict[str, list[str]] = defaultdict(list)
+        for name in sorted(mathlib | tauceti):
+            parts = name.split(".")
+            self.components.update(parts[:-1])
+            if len(parts) > 1:
+                self.by_last[parts[-1]].append(name)
+
+    def library(self, name: str) -> str | None:
+        return "mathlib" if name in self.mathlib else "tauceti" if name in self.tauceti else None
+
+    def libraries(self, name: str) -> list[str]:
+        return [lib for lib, s in (("mathlib", self.mathlib), ("tauceti", self.tauceti)) if name in s]
+
+    def resolve(self, name: str, scopes: set[str] = frozenset(), exact_only: bool = False) -> dict:
+        lib = self.library(name)
+        if lib:
+            return {"resolution": lib}
+        if exact_only:
+            return {"resolution": "planned"}
+        hits = {}
+        for ns in sorted(scopes):
+            full = f"{ns}.{name}"
+            if self.library(full):
+                hits.setdefault(full, ns)
+        if len(hits) == 1:
+            full, ns = next(iter(hits.items()))
+            return {"resolution": self.library(full), "via_namespace": ns, "resolved_name": full}
+        parts = name.split(".")
+        if not hits and len(parts) > 1 and parts[0] not in self.components:
+            return {"resolution": "local_term"}
+        found = sorted(set(hits) | {f for f in self.by_last.get(parts[-1], ())
+                                    if f.endswith("." + name)})
+        if found:
+            libs = sorted({lib for f in found for lib in self.libraries(f)})
+            return {"resolution": "unqualified", "candidates": found[:MAX_CANDIDATES],
+                    "candidates_total": len(found), "candidate_libraries": libs}
+        return {"resolution": "planned"}
+
+
+def resolve(name: str, ctx: dict, scopes: set[str] = frozenset(), exact_only: bool = False
+            ) -> tuple[dict, list | None]:
+    r = ctx["resolver"].resolve(name, scopes, exact_only)
+    res = r["resolution"]
+    if res == "mathlib":
+        return r, [ctx["by"]["mathlib_decls"]]
+    if res == "tauceti":
+        if ctx["sorry"].get(r.get("resolved_name", name)) is True:
+            return {**r, "resolution": "stated"}, [ctx["by"]["tauceti_decls"], ctx["by"]["deps"]]
+        return r, [ctx["by"]["tauceti_decls"]]
+    return r, None
 
 
 class Collector:
@@ -457,20 +522,25 @@ def scan_text_refs(rid, path, lines, owner_of, ctx, decls, xrefs, rejected, *, f
                 xrefs.add(rid, lid, f"lit:{aid}", {"xref": f"lit:{aid}", "system": "arxiv"}, ev)
 
 
-def add_decl(rid, lid, name, ev, ctx, decls, rejected, why=None):
-    res, by = resolve(name, ctx)
-    if why is None and res == "planned":
+def add_decl(rid, lid, name, ev, ctx, decls, rejected, why=None, *, declared=False):
+    """`declared`: the name is a declaration Suggested.lean makes (its full name), so only an
+    exact entry resolves it; scope and suffix resolution apply to names a README writes."""
+    r, by = resolve(name, ctx, ctx["scopes"].get(rid, frozenset()), exact_only=declared)
+    res = r["resolution"]
+    if why is None and res in ("planned", "local_term", "unqualified"):
         if name in ctx["modules"]:
             why = "module_name"
         elif name.split(".")[0] == "Mathlib":
             why = "module_path"
         elif name in ctx["roadmap_modules"]:
             why = "roadmap_module"
+        elif res == "local_term":
+            why = "local_term"
     if why:
         rejected.append({"kind": "decl_ref", "reason": why, "candidate": name, "roadmap": rid,
                          "layer": lid, "evidence": ev})
         return
-    decls.add(rid, lid, name, {"name": name, "resolution": res, "resolved_by": by}, ev)
+    decls.add(rid, lid, name, {"name": name, **r, "resolved_by": by}, ev)
 
 
 # ---------------------------------------------------------------- main build
@@ -554,8 +624,19 @@ def build(inputs: str, out: str) -> dict:
         if fo.startswith("TauCetiRoadmap/"):
             mod = fo.replace("/", ".")
             roadmap_modules |= {mod, mod + ".Suggested"}
-    ctx = {"roadmap_modules": roadmap_modules, "commit": commit, "mathlib": inp["mathlib"], "tauceti": inp["tauceti"],
-           "modules": inp["modules"], "sorry": sorry, "by": by}
+    # Each roadmap's declared scopes: `namespace`/`open` in Suggested.lean and README code blocks.
+    scopes = {}
+    for rid in sorted(parsed):
+        readme_path, lines, _hs = parsed[rid]
+        mask = parse.fence_mask(lines)
+        found = parse.code_scopes([ln for ln, f in zip(lines, mask) if f])
+        sug_path = readme_path[:-len("README.md")] + "Suggested.lean"
+        if sug_path in texts:
+            parse.lean_scan(texts[sug_path].decode("utf-8"), found)
+        scopes[rid] = with_parents(found)
+    ctx = {"roadmap_modules": roadmap_modules, "commit": commit, "modules": inp["modules"],
+           "resolver": Resolver(inp["mathlib"], inp["tauceti"]), "scopes": scopes,
+           "sorry": sorry, "by": by}
     decls, xrefs = Collector(), Collector()
     for rid in sorted(parsed):
         readme_path, lines, hs = parsed[rid]
@@ -590,7 +671,7 @@ def build(inputs: str, out: str) -> dict:
 
             for d in found:
                 add_decl(rid, lean_owner(d["line"]), d["name"], pointer(commit, sug_path, d["line"]),
-                         ctx, decls, rejected)
+                         ctx, decls, rejected, declared=True)
             scan_text_refs(rid, sug_path, sl, lean_owner, ctx, decls, xrefs, rejected)
 
     layer_rows = []

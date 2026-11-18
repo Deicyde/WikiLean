@@ -149,17 +149,52 @@ _LEAN_DECL = re.compile(
     r"(?:[ \t]*\([^)]*\))?[ \t]+(?P<name>[^\s:({\[⦃]+?)(?=\.\{|[\s:({\[⦃]|$)"
 )
 _LEAN_NS = re.compile(r"^[ \t]*namespace[ \t]+(?P<name>\S+)")
+_LEAN_OPEN = re.compile(r"^[ \t]*open[ \t]+(?P<rest>.*)$")
+_LEAN_NAME = re.compile(r"^[^\W\d][\w'!?]*(?:\.[^\W\d][\w'!?]*)*$")
+
+
+def open_names(rest: str) -> list[str]:
+    """The namespaces an `open` line names: `open A B`, `open scoped A`, `open A in`,
+    `open A hiding x`, `open A (x y)`, `open A renaming x → y` all name what precedes the keyword."""
+    out = []
+    for tok in rest.split():
+        if tok == "scoped":
+            continue
+        if tok in ("in", "hiding", "renaming") or tok.startswith("("):
+            break
+        tok = tok.removeprefix("_root_.")
+        if _LEAN_NAME.match(tok):
+            out.append(tok)
+    return out
+
+
+def code_scopes(lines: list[str]) -> set[str]:
+    """Namespaces declared (`namespace N`) or opened (`open N ...`) on the given code lines,
+    literally as written; no nesting is tracked."""
+    out = set()
+    for raw in lines:
+        line = raw.split("--", 1)[0]
+        m = _LEAN_NS.match(line)
+        if m:
+            out.add(m.group("name").removeprefix("_root_."))
+            continue
+        m = _LEAN_OPEN.match(line)
+        if m:
+            out.update(open_names(m.group("rest")))
+    return out
 _LEAN_SECTION = re.compile(r"^[ \t]*(?:@\[[^\]]*\][ \t]*)*(?:(?:noncomputable|public|private)[ \t]+)*section\b")
 _LEAN_END = re.compile(r"^[ \t]*end\b(?:[ \t]+(?P<name>\S+))?")
 _MD_HEAD_IN_DOC = re.compile(r"^[ \t]*(?:/-!)?[ \t]*(#{1,6})[ \t]+(.*?)[ \t]*(?:-/)?[ \t]*$")
 
 
-def lean_scan(text: str) -> tuple[list[dict], list[dict]]:
+def lean_scan(text: str, scopes_out: set | None = None) -> tuple[list[dict], list[dict]]:
     """Scan a Lean file. Returns (declarations, markers).
 
     declarations: {name (full), line}; namespaces opened by `namespace` and closed by `end`
     are prefixed, `section` scopes add nothing, `_root_.` makes a name absolute.
-    markers: {line, title} for each markdown heading inside a `/-! ... -/` module doc."""
+    markers: {line, title} for each markdown heading inside a `/-! ... -/` module doc.
+    scopes_out, when given, collects every namespace the file declares (its full nested name)
+    or opens (as written)."""
     lines = lines_of(text)
     decls, markers, scopes = [], [], []
     depth = 0  # block-comment nesting
@@ -205,7 +240,14 @@ def lean_scan(text: str) -> tuple[list[dict], list[dict]]:
             continue
         m = _LEAN_NS.match(line)
         if m:
+            if scopes_out is not None:
+                scopes_out.add(".".join([sc for sc in scopes if sc] + [m.group("name")]))
             scopes.extend(m.group("name").split("."))
+            continue
+        m = _LEAN_OPEN.match(line)
+        if m:
+            if scopes_out is not None:
+                scopes_out.update(open_names(m.group("rest")))
             continue
         if _LEAN_SECTION.match(line):
             scopes.append(None)
