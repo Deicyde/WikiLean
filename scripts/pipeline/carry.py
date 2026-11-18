@@ -34,9 +34,16 @@ and a document — rather than a workspace lookup, so the map can be computed by
 contributor who holds neither; and the reader takes paths, as the rest of this pipeline
 does.
 
-    python3 scripts/pipeline/carry.py --from-run inv-1 --to-run inv-2 \\
-        --corpus <dir> --runs <dir> --sources <dir> [--out <file>] \\
+    python3 scripts/pipeline/carry.py (--from-run inv-1 | --from-set <dir>) \\
+        (--to-run inv-2 | --to-set <dir>) --sources <dir> \\
+        [--corpus <dir> --manifest <file>] [--out <file>] [--store-out <dir>] \\
         [--rows <file> --rows-out <file>]
+
+A side is a harvested inventory run or a sealed ``wikilean.statement-set/1``
+(docs/STATEMENTS.md): the map is computed from spans and span text, and neither is a
+fact about where the cut was published. ``--store-out`` writes one document a page, the
+shape the store publishes at ``articles/v1/carry/<pageid>.json`` so the reader can show
+the tags of an earlier cut in a fold.
 """
 from __future__ import annotations
 
@@ -55,7 +62,7 @@ import corpus as corpus_mod  # noqa: E402
 import keys  # noqa: E402
 import vocab  # noqa: E402
 
-CARRY_SCHEMA = "wikilean.pipeline.carry/1"
+CARRY_SCHEMA = vocab.CARRY_SCHEMA
 
 
 class CarryRefused(Exception):
@@ -84,11 +91,33 @@ class _Keyed:
     span: tuple[int, int]
     scope: str | None
     conjuncts: str
+    #: the capped quote of the passage's span, DERIVED from the layer the same way a
+    #: record's and a sealed statement's are (``records.cut_passage``), so a published
+    #: map shows an orphaned tag with the very words the reader saw. Taking a harvested
+    #: document's own quote instead would show the words the worker was cut at, which
+    #: nothing ever displayed. None when the span cannot be cut.
+    quote: dict | None = None
 
     def ref(self) -> dict:
         """A new passage as an entry's ``into`` names it, with the scope the new cut gave it."""
         return {"passage_key": self.key, "item": self.item, "span": list(self.span),
                 "scope": self.scope}
+
+
+def span_quote(layer: str, span: tuple[int, int]) -> dict | None:
+    """The span's capped quote on ``layer``, as a record and a sealed statement carry it.
+
+    Derived, never copied from the document: the words the reader was shown are the
+    format's capped head, and a harvested cut's own quote is whatever the worker wrote.
+    None when the span cannot be cut uniquely, which is a fact about the layer and never
+    a reason to refuse the map.
+    """
+    import records as records_mod  # noqa: PLC0415 — only the published map needs it
+
+    try:
+        return dict(records_mod.cut_passage(layer, list(span)).quote)
+    except records_mod.RecordProblem:
+        return None
 
 
 def conjuncts_sha256(passage: dict) -> str:
@@ -120,7 +149,8 @@ def _keyed(cut: Cut, which: str) -> list[_Keyed]:
             raise CarryRefused(f"two passages of the {which} cut share one passage_key "
                                f"({seen[key]} and {item}: the same text)")
         seen[key] = item
-        out.append(_Keyed(key, item, span, row.get("scope"), conjuncts_sha256(row)))
+        out.append(_Keyed(key, item, span, row.get("scope"), conjuncts_sha256(row),
+                          span_quote(cut.layer, span)))
     return sorted(out, key=lambda passage: (passage.span, passage.item))
 
 
@@ -193,7 +223,8 @@ def map_page(old: Cut, new: Cut) -> dict:
         entered.update(other.key for other in into)
         entries.append({
             "passage_key": passage.key, "item": passage.item, "span": list(passage.span),
-            "scope": passage.scope, "fate": fate, "into": [other.ref() for other in into],
+            "scope": passage.scope, "quote": passage.quote,
+            "fate": fate, "into": [other.ref() for other in into],
             # nothing went in: nothing to compare (a removed or changed passage)
             "scope_changed": any(other.scope != passage.scope for other in into)
             if into else None,
@@ -219,13 +250,59 @@ def map_page(old: Cut, new: Cut) -> dict:
 
 @dataclass
 class Side:
-    """One inventory run as the map reads it: its documents by page, and its layers."""
+    """One cut as the map reads it: its documents by page, and its layers.
+
+    A side is a harvested inventory run (:func:`read_side`) or a sealed statement set
+    (:func:`statement_side`): the map is computed from spans and span text, and neither
+    is a fact about where the cut was published.
+    """
 
     run_id: str
     #: ``{pageid: [(source_id, document)]}``
     pages: dict[int, list[tuple[str, dict]]]
     #: ``{source_id: layer}``, read once
     layers: dict[str, str]
+    #: how the carry document names this side: ``{"inventory_run": <id>}``, or
+    #: ``{"statement_set": {set_id, seal_sha256}}`` for a published cut
+    origin: dict | None = None
+
+    def named(self) -> dict:
+        return dict(self.origin) if self.origin else {"inventory_run": self.run_id}
+
+
+def statement_side(st, sources_dir: Path) -> Side:
+    """A sealed statement set as a side of the map (docs/STATEMENTS.md).
+
+    The published cut of a page and a harvested one are the same thing to :func:`map_page`
+    — spans and span text on one layer — so a re-cut can be mapped against what was
+    published, which is the case the reader's orphaned-tag fold is for.
+    """
+    pages: dict[int, list[tuple[str, dict]]] = {}
+    layers: dict[str, str] = {}
+    for source_id, rows in sorted(st.statements.items()):
+        source = st.sources[source_id]
+        pages.setdefault(int(source["pageid"]), []).append((source_id, {
+            "mode": vocab.MODE_INVENTORY, "source_id": source_id,
+            "layer_sha256": source["layer_sha256"],
+            "passages": [dict(row) for row in rows]}))
+        path = Path(sources_dir) / source_id / "layer.txt"
+        if path.is_file():
+            layer = path.read_text(encoding="utf-8")
+            layers[source_id] = layer
+            # The map's keys are recomputed from the layer (_keyed), never read off the
+            # sealed bytes, so a set whose sealed span_sha256 is not the layer's would be
+            # mapped under keys the store never published and the reader's fold would find
+            # no tag of them. Refuse instead of substituting our own.
+            for row in rows:
+                span = list(row["span"])
+                if keys.span_sha256(layer, span) != row["span_sha256"]:
+                    raise CarryRefused(
+                        f"{source_id} {row['item']}: the set seals span_sha256 "
+                        f"{str(row['span_sha256'])[:12]}… at {span}, and the render's layer "
+                        "hashes to another: the published keys are not this layer's")
+    return Side(st.set_id, pages, layers,
+                origin={"statement_set": {"set_id": st.set_id,
+                                          "seal_sha256": st.seal_sha256}})
 
 
 def read_side(corpus_dir: Path, run_id: str, sources_dir: Path,
@@ -312,13 +389,76 @@ def build(old: Side, new: Side, *, source_ids: Iterable[str] = ()) -> dict:
         for fate, number in page["counts"].items():
             totals[fate] = totals.get(fate, 0) + number
     return {"schema": CARRY_SCHEMA,
-            "old": {"inventory_run": old.run_id},
-            "new": {"inventory_run": new.run_id},
+            "old": old.named(),
+            "new": new.named(),
             "sources": named or None,
             "pages": pages, "refused": refused,
             "unpaired": {"old": sorted(considered & set(old.pages) - set(new.pages)),
                          "new": sorted(considered & set(new.pages) - set(old.pages))},
             "counts": {"pages": len(pages), **dict(sorted(totals.items()))}}
+
+
+# ---- the map, as the store publishes it -------------------------------------------------
+
+
+def page_documents(doc: dict) -> dict[int, dict]:
+    """``{pageid: the page's own carry document}`` — one file per page for the store.
+
+    The reader publishes these at ``articles/v1/carry/<pageid>.json`` so it can show the
+    tags of an earlier cut in a fold — "from an earlier cut of this article", with the
+    fate and the old quote — and let an editor re-apply one in a click. **Nothing
+    auto-moves:** a tag carries only on ``unchanged``, where the key is byte-identical
+    and nothing has to move (:func:`carries`); on every other fate the text changed and
+    no mechanical re-pairing is honest. The D1 row is not deleted, it simply stops
+    appearing, because the overlay merge is driven by the store's passages.
+
+    Each document is the page's entry of :func:`build`'s, with the schema and both sides'
+    names folded in, so one file says everything about one page and holds no time and no
+    path: a re-run writes the same bytes.
+    """
+    out: dict[int, dict] = {}
+    for page in doc.get("pages") or []:
+        pageid = int(page["pageid"])
+        if pageid in out:
+            raise CarryRefused(f"the carry document holds page {pageid} twice")
+        out[pageid] = {"schema": CARRY_SCHEMA, "pageid": pageid,
+                       "old": {**(doc.get("old") or {}), **page["old"]},
+                       "new": {**(doc.get("new") or {}), **page["new"]},
+                       "same_layer": page["same_layer"], "passages": page["passages"],
+                       "new_passages": page["new_passages"], "counts": page["counts"]}
+    return out
+
+
+def write_page_documents(doc: dict, out_dir: Path) -> list[Path]:
+    """Write :func:`page_documents` as ``<out_dir>/<pageid>.json``, canonically.
+
+    The directory holds this map and nothing else: a store input is not a place to leave
+    a document from the run before, where a page that dropped out of the map would go on
+    being published. A non-empty directory that holds anything but these documents is
+    refused, and the ones it holds are replaced.
+    """
+    out_dir = Path(out_dir)
+    pages = page_documents(doc)
+    if out_dir.exists():
+        if not out_dir.is_dir() or out_dir.is_symlink():
+            raise CarryRefused(f"{out_dir} is not a directory")
+        stray = sorted(path.name for path in out_dir.iterdir()
+                       if path.is_symlink() or not path.is_file()
+                       or not path.name.endswith(".json")
+                       or not (path.stem.isascii() and path.stem.isdecimal()))
+        if stray:
+            raise CarryRefused(f"{out_dir} holds {', '.join(stray[:5])}; --store-out writes "
+                               "one <pageid>.json a page and the directory holds those alone")
+        for path in sorted(out_dir.iterdir()):
+            if int(path.stem) not in pages:
+                path.unlink()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    written = []
+    for pageid, page in sorted(pages.items()):
+        path = out_dir / f"{pageid}.json"
+        path.write_text(keys.canonical_line(page), encoding="utf-8")
+        written.append(path)
+    return written
 
 
 # ---- rows keyed by passage_key ------------------------------------------------------------
@@ -406,28 +546,66 @@ def _pageid_of(manifest: Path | None) -> dict[str, int]:
     return out
 
 
+def _side(which: str, run: str | None, statement_set: Path | None, corpus: Path | None,
+          sources: Path, pageid_of: dict[str, int]) -> Side:
+    """One side of the map: a harvested run, or a sealed statement set."""
+    if statement_set is not None:
+        import statements as statements_mod  # noqa: PLC0415 — only a sealed side needs it
+
+        try:
+            return statement_side(statements_mod.read_set(statement_set), sources)
+        except statements_mod.StatementSetProblem as exc:
+            raise CarryRefused(f"the {which} statement set: {exc}") from None
+    return read_side(corpus, run, sources, pageid_of)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--from-run", required=True, help="the old inventory run")
-    parser.add_argument("--to-run", required=True, help="the new inventory run")
-    parser.add_argument("--corpus", required=True, type=Path, help="the corpus root")
+    parser.add_argument("--from-run", help="the old inventory run")
+    parser.add_argument("--to-run", help="the new inventory run")
+    parser.add_argument("--from-set", type=Path,
+                        help="a sealed wikilean.statement-set/1 as the old cut, instead of "
+                             "--from-run (docs/STATEMENTS.md)")
+    parser.add_argument("--to-set", type=Path, help="the same as the new cut")
+    parser.add_argument("--corpus", type=Path,
+                        help="the corpus root; required for a --from-run or --to-run side")
     parser.add_argument("--sources", required=True, type=Path,
                         help="the sourceset's rendered sources (<dir>/<source-id>/layer.txt)")
-    parser.add_argument("--manifest", required=True, type=Path,
-                        help="the sourceset manifest, for each source's page id")
+    parser.add_argument("--manifest", type=Path,
+                        help="the sourceset manifest, for each source's page id; required "
+                             "for a harvested side (a statement set names its own)")
     parser.add_argument("--source", action="append", default=[],
                         help="map only this source's page (repeatable)")
     parser.add_argument("--out", type=Path, help="write the carry document here")
+    parser.add_argument("--store-out", type=Path,
+                        help="write one <pageid>.json per page here, the shape the store "
+                             "publishes at articles/v1/carry/<pageid>.json")
     parser.add_argument("--rows", type=Path, help="rows keyed by passage_key to carry")
     parser.add_argument("--rows-out", type=Path, help="write the carried rows here")
     args = parser.parse_args(argv)
 
     if bool(args.rows) != bool(args.rows_out):
         parser.error("--rows and --rows-out go together")
+    for which, flag, run, sealed in (("old", "from", args.from_run, args.from_set),
+                                     ("new", "to", args.to_run, args.to_set)):
+        if (run is None) == (sealed is None):
+            parser.error(f"name the {which} cut once: --{flag}-run (a harvested run) or "
+                         f"--{flag}-set (a sealed statement set)")
+    harvested = args.from_run is not None or args.to_run is not None
+    if harvested and (args.corpus is None or args.manifest is None):
+        parser.error("a harvested side needs --corpus and --manifest")
+    if args.store_out and args.source:
+        # --store-out writes the WHOLE map: the directory holds this map and nothing
+        # else, so a page that dropped out of the re-cut stops being published. Under
+        # --source the map is only the pages named, and publishing it would delete every
+        # other page's document — a page nobody mapped would read as a page nothing moved
+        # on. Map the corpus in one run, or write --out documents and assemble them.
+        parser.error("--store-out publishes the whole map, and --source maps some of it: "
+                     "the store directory would lose every page this run did not name")
     pageid_of = _pageid_of(args.manifest)
     try:
-        old = read_side(args.corpus, args.from_run, args.sources, pageid_of)
-        new = read_side(args.corpus, args.to_run, args.sources, pageid_of)
+        old = _side("old", args.from_run, args.from_set, args.corpus, args.sources, pageid_of)
+        new = _side("new", args.to_run, args.to_set, args.corpus, args.sources, pageid_of)
         doc = build(old, new, source_ids=args.source)
     except (CarryRefused, corpus_mod.CorpusProblem, keys.KeyProblem) as exc:
         print(str(exc), file=sys.stderr)
@@ -435,17 +613,32 @@ def main(argv: list[str] | None = None) -> int:
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(doc, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"carry {args.from_run} -> {args.to_run}: " +
+    print(f"carry {old.run_id} -> {new.run_id}: " +
           ", ".join(f"{key} {value}" for key, value in doc["counts"].items()))
     for case in doc["refused"][:10]:
-        print(f"  refused page {case['pageid']}: {case['reason']}")
+        print(f"  refused page {case['pageid']}: {case['reason']}", file=sys.stderr)
+    if args.store_out:
+        # A refused page and a page that was never re-cut are indistinguishable in the
+        # store, so a map with a refusal in it is never published: the store would say
+        # "nothing moved here" of a page nobody could map.
+        if doc["refused"]:
+            print(f"--store-out refuses to publish a map with {len(doc['refused'])} refused "
+                  "page(s): a page nobody could map must not read as a page nothing moved on",
+                  file=sys.stderr)
+            return 2
+        try:
+            written = write_page_documents(doc, args.store_out)
+        except CarryRefused as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+        print(f"  {len(written)} page document(s) -> {args.store_out}")
     if args.rows:
         rows, counts = carry_rows(doc, read_rows(args.rows))
         args.rows_out.parent.mkdir(parents=True, exist_ok=True)
         args.rows_out.write_text("".join(keys.canonical_line(row) for row in rows),
                                  encoding="utf-8")
         print("  rows: " + ", ".join(f"{key} {value}" for key, value in counts.items()))
-    return 0
+    return 1 if doc["refused"] else 0
 
 
 if __name__ == "__main__":

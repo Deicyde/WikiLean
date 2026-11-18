@@ -76,6 +76,8 @@ class Options:
     dry_run: bool = False
     enable_locate: bool = False
     verbose: bool = True
+    # `work --no-web` turns the web tools off for this run whatever the config says.
+    web: bool = True
 
 
 @dataclass
@@ -208,18 +210,26 @@ def run_round(site: Site, config: Config, options: Options, *, log=print) -> Out
         return Outcome(EX_NOTHING, summary="no eligible review or tag work in the articles looked at")
 
     candidate, libraries = found.candidate, found.libraries
+    web = config.web and options.web
     log(f"\n{candidate.unit}: {candidate.label()}")
     journal.write("round-start", unit=candidate.unit, reason=candidate.reason, pageid=candidate.pageid,
                   passage=candidate.passage.get("item"), pair_key=candidate.pair_key, run_id=run_id,
-                  dry_run=options.dry_run)
+                  dry_run=options.dry_run, web=web)
 
-    prompt = (review_prompt(candidate) if candidate.unit == "review"
-              else tag_prompt(candidate, libraries))
+    prompt = (review_prompt(candidate, web=web) if candidate.unit == "review"
+              else tag_prompt(candidate, libraries, web=web))
     try:
-        answer = ask(prompt, model=config.model, timeout=config.model_timeout)
+        answer = ask(prompt, model=config.model, timeout=config.model_timeout, web=web)
     except ModelError as exc:
         journal.write("round", ok=False, unit=candidate.unit, stage="model", error=str(exc), run_id=run_id)
         log(f"  the model call failed: {exc}")
+        # A passage that never gets a usable answer (a planted instruction that
+        # keeps the model searching until the timeout, say) must not take every
+        # round. A missing or logged-out `claude` is not the passage's fault.
+        if exc.passage and not options.dry_run and \
+                state.note_failure(_seen_key(candidate)) >= state.MAX_MODEL_FAILURES:
+            state.mark_seen(_seen_key(candidate))
+            log(f"  set aside: it got no usable answer {state.MAX_MODEL_FAILURES} times")
         return Outcome(EX_FAILED, unit=candidate.unit, summary=f"model call failed: {exc}", candidate=candidate)
 
     try:

@@ -44,7 +44,7 @@ Mission = three routine AI operations: (1) generate annotations for new articles
 | Coverage bundles (the same overlay) | "These 2 to 5 links together state this passage" (issue #173): table `article_coverage` (migration **0021**), `POST /api/articles/coverage` and `…/coverage/:bundle_key/state`, keyed by `bundle_key` = sha256 of the passage key and the sorted part pair keys. Same auth, CC0, brake, caps and agent rules as a tag. It counts only when every part is a live merged location whose relation is `hasPart`, judged by the TS port of the builder's stand-in (`articles-render.ts` `coverageStatus`, pinned against `scripts/articles/fixtures/status_parity{,-2,-3}.json`). Doc: `docs/ARTICLES.md` section 10a, "The coverage bundle" |
 | Index downloads | `wiki/src/bundles.ts`: the declaration-index bundles outside contributors download with an owned agent token (`GET /api/index/bundles`, `…/<manifest sha256>`, `…/<sha>/files/<path>` with Range), streamed from the private R2 bucket `wikilean-contrib` (binding `CONTRIB`, read-only; unbound → 503). Registered by the pipeline bearer (`POST /api/index/bundles`) after `scripts/articles/upload_contrib.py` uploads one; migration 0022 (`index_bundles`, `index_downloads`, the download log and per-owner daily byte quota). The `index_downloads` row of `site_settings` is a lever that stays shut unless opened (`leverOpen`): migration 0022 seeds it `closed`. Doc: `docs/AGENT-CONTRIBUTIONS.md` |
 | Pipeline submissions | `wiki/src/submissions.ts`: owned-agent uploads and private receipts at `/api/submissions`; `scripts/articles/submit.py` is the laptop client, `scripts/articles/intake_worker.py` is the trusted non-LLM validator. Migration 0020 creates private staging tables. Validation uses the existing Literature Links checker; acceptance never publishes or changes human rows. Contract: `docs/INTAKE.md`. |
-| Contributor CLI | `worker/` — the `wikilean` command a volunteer installs with `uv tool install "git+https://github.com/Deicyde/WikiLean#subdirectory=worker"`. Standard library Python 3.12; one unit of work a round (review → tag → locate) against the public routes with the volunteer's own agent token and their own Claude Code login. The token never reaches the model call (allowlisted child environment, `bot/triage.py`'s tool-less form) and every model answer is validated against the locate vocabulary and the decl index before a write. Release-neutral. Doc: `worker/README.md` |
+| Contributor CLI | `worker/` — the `wikilean` command a volunteer installs with `uv tool install "git+https://github.com/Deicyde/WikiLean#subdirectory=worker"`. Standard library Python 3.12; one unit of work a round (review → tag → locate) against the public routes with the volunteer's own agent token and their own Claude Code login. The token never reaches the model call, which gets an allowlisted environment, an empty temporary working directory and web search and fetch as its only tools (`--tools WebSearch,WebFetch`, or none with `--no-web`; office networks and VPNs should use `--no-web`), and every model answer is validated against the locate vocabulary and the decl index before a write. Release-neutral. Doc: `worker/README.md` |
 | Plans/docs | `docs/` — `ROADMAP.md` canonical |
 | Mathlib checkout | External, read-only, and host-configured through `WIKILEAN_MATHLIB` / `BRAIN_MATHLIB_CHECKOUT`; the bot's checkout must never be edited |
 
@@ -177,7 +177,8 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
   at most and never Bash (search CLIs ride validated in-process MCP tools, `site/search_tools.py`),
   never `bypassPermissions`, cwd outside every checkout. A pipeline `claude` CLI call takes
   `bot/triage.py`'s tool-less form (`--tools ""`, `--setting-sources ""`, `--strict-mcp-config`).
-  `site/test_agent_sandbox.py` enforces both.
+  The contributor CLI's call (`worker/`, on a volunteer's machine) keeps those flags and may name
+  WebSearch and WebFetch and nothing else. `site/test_agent_sandbox.py` enforces all three.
 - **Max-auth gotcha**: unset `ANTHROPIC_API_KEY` before `claude`/SDK calls or they fail silently
   ("error result: success", 0 tokens).
 - Never take custody of others' API keys. Never edit the mathlib4 checkout; do Lean work in a
@@ -208,9 +209,13 @@ brain/acquire-wikidata-entities.sh /absolute/private/request-plan.json \
 - Worker source and config, `wiki/scripts/`, `wiki/package*.json`, lockfiles, non-test
   `site/*.py` and site assets are release-affecting; `site/ops/brain_release_authority.py` is
   the exact list. A change there ships only in
-  a new release built at the new commit, with a fresh P1B and Jack's approval; no Worker-only
-  hotfix path exists (whether to add one is open: "Worker-only hotfix path" in the ROADMAP's
-  Waiting on Jack list). Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
+  a new release built at the new commit, with a fresh P1B and Jack's approval — unless the
+  change is website-only, in which case it takes the **code-only release**
+  (`site/ops/brain_code_only_release.py`, runbook section "Code-only release"): the same
+  promoter, journal, canary and rollback, reusing the live frozen Brain release byte for
+  byte instead of rebuilding it. Eligibility is deny-by-default and
+  `site/build_brain_page.py` is blocking, because the `/brain` page is a release artifact.
+  Nightly jobs never deploy: the 02:20 Brain job is shadow-only and
   rejects nonzero `WIKILEAN_BRAIN_DEPLOY`.
 - Edit asset **sources** (`site/assets/*`, `wiki/assets/editor.js`), freeze/verify a Brain release,
   then run build-public from `wiki/` with its explicit manifest and directory; never edit
