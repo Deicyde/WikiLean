@@ -5642,7 +5642,11 @@ async function submitCommunityEdge(payload) {
     const r = await fetch("/api/brain/edge", {
       method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(payload)});
     if (r.ok) return {ok: true};
-    return {ok: false, error: ((await r.json().catch(() => ({}))).error) || ("HTTP " + r.status)};
+    const j = await r.json().catch(() => ({}));
+    // 403 {cc0_required} = the first-edit licence grant, asked once (the same
+    // answer the reader's tag form gets); cc0_text is the wording to show.
+    return {ok: false, error: j.error || ("HTTP " + r.status),
+            cc0Required: j.cc0_required === true, cc0Text: j.cc0_text || ""};
   } catch (e) { return {ok: false, error: String(e)}; }
 }
 async function deleteCommunityEdge(edgeId) {
@@ -5736,6 +5740,12 @@ async function renderCommunity(apiId, panelId) {
           XREF_DB_OPTIONS.map(([k, l]) => `<option value="${k}">${esc(l)}</option>`).join("")}</select></label>
         <label>Identifier<input id="cf-value" type="text" placeholder="e.g. group.abelian"></label></div>
       <label>Evidence note <span class="cf-opt">(optional)</span><input id="cf-note" type="text" placeholder="why is this connection valid?"></label>
+      <p class="note" style="margin:0">Connections and their notes are published as public-domain (CC0 1.0) data.</p>
+      <div id="cf-cc0" style="display:none">
+        <label style="display:flex;gap:6px;align-items:flex-start">
+          <input type="checkbox" id="cf-cc0-box" style="margin-top:3px">
+          <span id="cf-cc0-text" class="note">I release what I add here into the public domain under CC0 1.0,
+            and I confirm it is mine to release.</span></label></div>
       <button id="cf-submit">Add connection</button><span id="cf-msg" class="note"></span></div></details>`;
     // ADD A NODE (introduce a new Wikidata concept — no edge)
     html += `<details class="caddform"><summary>＋ Add a Wikidata concept (node)</summary><div class="cform">
@@ -5811,11 +5821,23 @@ function wireCommunity(apiId, panelId) {
       dst = tid.value;
       if (!dst) { msg.textContent = "pick a target from the search results"; return; }
     }
+    const payload = {src: apiId, dst, kind, evidence: {note}};
+    const cc0Box = $("#cf-cc0-box");
+    if (cc0Box && cc0Box.checked) payload.cc0 = true;
     submit.disabled = true; msg.textContent = "saving…";
-    const res = await submitCommunityEdge({src: apiId, dst, kind, evidence: {note}});
+    const res = await submitCommunityEdge(payload);
     submit.disabled = false;
-    if (res.ok) { if (lastPanelId === panelId) renderCommunity(apiId, panelId); }
-    else msg.textContent = res.error || "could not add";
+    if (res.ok) { if (lastPanelId === panelId) renderCommunity(apiId, panelId); return; }
+    if (res.cc0Required) {
+      // First connection: show the licence the server quoted, then resubmit.
+      const block = $("#cf-cc0");
+      if (!block) { msg.textContent = res.error || "could not add"; return; }
+      block.style.display = "";
+      if (res.cc0Text) $("#cf-cc0-text").textContent = res.cc0Text;
+      msg.textContent = "Agree to the licence above, then press Add connection again.";
+      return;
+    }
+    msg.textContent = res.error || "could not add";
   });
 
   // ---- "Add a Wikidata concept" (a NEW node, no edge) ----------------------

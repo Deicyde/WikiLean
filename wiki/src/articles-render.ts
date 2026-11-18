@@ -31,6 +31,15 @@
 // out, never filled in. The data's audit status is said once per page, in one
 // line under the header (ARTICLES_NOTICE), never as a badge on a card; what an audit
 // measured, or that nothing has measured it, is in the page's "About" fold.
+//
+// The article first (the reader-polish pass, 2026-11-11). An article page opens with its
+// title, ONE line of counts (countsLine: "3 passages · 1 formalized · 1 statement only ·
+// 1 not formalized") and the status legend, which is also the filter (statusKey). Every
+// other figure — the pinned revision, the WikiProject assessment, the libraries searched,
+// the article's own statements, what an audit measured, the runs, how the text is shown —
+// is in ONE closed "About this page" fold (aboutFold) under it. The words a reader meets
+// outside that fold are plain: "libraries searched", "pinned revision", never "universe",
+// "frozen", "central", "campaign" or "coverage claim".
 
 import { siteNav, SITE_TOOLS } from "./site-nav.js";
 import { htmlEscape } from "./engine/html.js";
@@ -44,16 +53,16 @@ import type {
 import {
   libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl, type LibraryEntry, type LibraryInfo, type UniverseLibrary,
 } from "./libraries.js";
-import type { MergedArticle, MergedLocation } from "./articles-overlay.js";
+import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=11";
-export const ARTICLES_JS = "/assets/articles.js?v=6";
+export const ARTICLES_CSS = "/assets/articles.css?v=13";
+export const ARTICLES_JS = "/assets/articles.js?v=8";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
-export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=5";
-export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=4";
-const STYLE_CSS = "/assets/style.css?v=10";
+export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=6";
+export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=5";
+const STYLE_CSS = "/assets/style.css?v=11";
 
 const text = (s: string) => htmlEscape(String(s ?? ""), false);
 const attr = (s: string) => htmlEscape(String(s ?? ""), true);
@@ -95,8 +104,7 @@ const STATUS_ORDER: SummaryStatus[] = ["formalized", "statement_only", "partial"
 // The statuses the pages show. A passage with no status ("unresolved" in the store) gets no
 // highlight and no status until someone reads it (the maintainer's decision, 2026-11-02, after
 // PD5): the article views set it aside (articleParts), and the dashboard and the article box leave
-// it out of their counts and their statuses, saying only how many more passages there are
-// (unreadSentence). The store's JSON keeps it.
+// it out of their counts and their statuses, and do not count it either. The store's JSON keeps it.
 const ARTICLE_STATUSES: SummaryStatus[] = STATUS_ORDER.filter((s) => s !== "unresolved");
 
 // A store's counts by status as the pages show them: the statuses a passage can be given, and
@@ -107,12 +115,16 @@ function shownStatusCounts(raw: Partial<Record<SummaryStatus, number>> | null | 
   return counts;
 }
 
-// How many more passages the counts leave out because they have no status yet.
-function unreadSentence(n: number, short = false): string {
-  if (short) return n === 1 ? "1 more passage has no status yet." : `${int(n)} more passages have no status yet.`;
-  return n === 1 ? "1 more passage has no status yet; it is left out until someone reads it."
-    : `${int(n)} more passages have no status yet; they are left out until someone reads them.`;
-}
+
+// What each status means, in a reader's words: the legend's second column, the
+// title of each filter button, and the sentence the reader's highlight legend gives.
+const READER_LEGEND: Record<SummaryStatus, string> = {
+  formalized: "a Lean declaration states it, proved, or a Lean definition defines it",
+  statement_only: "Lean states it, but the proof is not finished",
+  partial: "Lean states part of it, or a more general or special form",
+  not_formalized: "searched every library and not found",
+  unresolved: "nobody has read it yet; not counted as not formalized",
+};
 
 const RELATION_WORD: Record<string, string> = {
   exactMatch: "exact match",
@@ -133,6 +145,9 @@ const NOTE_LABEL: Record<string, string> = {
 };
 // The page's legend of the relation words, in the record's order of strength.
 const RELATION_ORDER = ["exactMatch", "closeMatch", "broadMatch", "narrowMatch", "hasPart", "relatedMatch"];
+// A coverage bundle's own relation is one of the strong three (its weakest
+// part's), in the same order (articles-overlay BUNDLE_RELATIONS).
+const BUNDLE_RELATION_ORDER = ["exactMatch", "closeMatch", "broadMatch"];
 const RELATION_LEGEND: Record<string, string> = {
   exactMatch: "states the passage exactly",
   closeMatch: "states it up to a convention or a difference the note names",
@@ -196,6 +211,15 @@ type LocatedStatus = "formalized" | "statement_only" | "partial";
 const LOCATED_RANK: Record<LocatedStatus, number> = { formalized: 0, statement_only: 1, partial: 2 };
 
 const STATUS_RULE_BROAD = 3;
+// Status rule 2 makes a survived bundle one more location of its own relation;
+// under rule 1 it is one more exactMatch (build_store STATUS_RULE_BUNDLE,
+// COVERAGE_ACTS_AS). Every part of a bundle is a hasPart location, and there
+// are at least two of them (COVERAGE_RELATION, MIN_COVERAGE_PARTS).
+const STATUS_RULE_BUNDLE = 2;
+export const COVERAGE_ACTS_AS = "exactMatch";
+export const BUNDLE_PART_RELATION = "hasPart";
+export const MIN_BUNDLE_PARTS = 2;
+export const MAX_BUNDLE_PARTS = 5;
 
 function theoremRow(loc: ArticlesLocation, statusRule: number): LocatedStatus {
   if (PART_RELATIONS.has(loc.relation)) return "partial";
@@ -224,6 +248,59 @@ export function locationStatus(kind: string, loc: ArticlesLocation, statusRule =
   const rows: LocatedStatus[] = [];
   if (THEOREM_KINDS.has(kind) || EITHER_KINDS.has(kind)) rows.push(theoremRow(loc, statusRule));
   if (DEFINITION_KINDS.has(kind) || EITHER_KINDS.has(kind)) rows.push(definitionRow(loc, statusRule));
+  return rows.length ? rows.reduce((a, b) => (LOCATED_RANK[b] < LOCATED_RANK[a] ? b : a)) : null;
+}
+
+// ---- the coverage stand-in (decision D1, round three) ------------------------
+//
+// A survived coverage claim counts, for the derived status, as ONE more
+// location: a fixed stand-in rather than any one of its parts. The builder's
+// own port of it is scripts/articles/build_store.py part_finished /
+// coverage_location / coverage_status, and this is the Worker's, pinned against
+// the shared parity tables (test/articles.test.ts, "derived status rows").
+//
+// The store's own claims are not recomputed here — the builder stamped their
+// status into the view model and the overlay reads it (articles-overlay.ts
+// coverageStatus). This port is what a COMMUNITY bundle is judged by (issue
+// #173), where there is no precomputed status and the parts may be a mix of
+// sealed locations and community rows.
+
+// A part is finished when it is proved, or data (a definition without the
+// library index's statement flag). Unfinished: statement_only, wanted or
+// axiom_dependent, or a Prop-valued definition (the flag set) whatever its
+// proof status — it states a clause and proves none.
+export function partFinished(loc: Pick<ArticlesLocation, "proof_status" | "statement">): boolean {
+  return loc.proof_status === "proved" || (loc.proof_status === "definition" && loc.statement !== true);
+}
+
+// The one location a claim acts as, on the theorem or the definition row: a
+// proved declaration (theorem row) or data (definition row) when every part is
+// finished, a statement_only declaration on both rows otherwise.
+function coverageLocation(row: "theorem" | "definition", finished: boolean, relation: string): ArticlesLocation {
+  const proof = finished ? (row === "theorem" ? "proved" : "definition") : "statement_only";
+  return { relation, proof_status: proof, statement: false } as ArticlesLocation;
+}
+
+// The status a coverage bundle gives a passage of `kind` on its own; null when
+// it gives none (fewer than two parts, or a part that is not a hasPart
+// location). Its relation is exactMatch under status rule 1 and the bundle's
+// own under rules 2 and 3 (build_store.coverage_status, COVERAGE_ACTS_AS).
+export function coverageStatus(
+  kind: string,
+  parts: Array<Pick<ArticlesLocation, "relation" | "proof_status" | "statement">>,
+  bundleRelation: string,
+  statusRule = 1,
+): LocatedStatus | null {
+  if (parts.length < MIN_BUNDLE_PARTS || !parts.every((part) => part.relation === BUNDLE_PART_RELATION)) return null;
+  const finished = parts.every(partFinished);
+  const relation = statusRule >= STATUS_RULE_BUNDLE ? bundleRelation : COVERAGE_ACTS_AS;
+  const rows: LocatedStatus[] = [];
+  if (THEOREM_KINDS.has(kind) || EITHER_KINDS.has(kind)) {
+    rows.push(theoremRow(coverageLocation("theorem", finished, relation), statusRule));
+  }
+  if (DEFINITION_KINDS.has(kind) || EITHER_KINDS.has(kind)) {
+    rows.push(definitionRow(coverageLocation("definition", finished, relation), statusRule));
+  }
   return rows.length ? rows.reduce((a, b) => (LOCATED_RANK[b] < LOCATED_RANK[a] ? b : a)) : null;
 }
 
@@ -668,6 +745,14 @@ const QUOTE_CONTINUES = `<span class="articles-affix" data-quote-cut=""><span ar
 // otherwise set the headline (build_store._prominence_counts).
 const CENTRAL_PROMINENCES = ["subject", "central"];
 
+// The record's prominence in a reader's words, for the eyebrow over a passage. The
+// store's own token stays in data-prominence, where the scripts read it.
+const PROMINENCE_WORD: Record<string, string> = {
+  subject: "the article's subject",
+  central: "main statement",
+  supporting: "supporting",
+};
+
 function emptyStatusCounts(): Record<SummaryStatus, number> {
   return Object.fromEntries(STATUS_ORDER.map((s) => [s, 0])) as Record<SummaryStatus, number>;
 }
@@ -1036,6 +1121,10 @@ export interface OverlayView {
   // Their first overlay edit: the form carries the CC0 checkbox (decision 11)
   // and, when a site key is configured, the Turnstile widget.
   needsAgreement: boolean;
+  // Their grant is on file but no Turnstile check cleared it, and a secret is
+  // configured: the tag route asks for the check, so the form carries the
+  // widget (and no checkbox — the licence is already granted).
+  needsVerification: boolean;
   // The article's record set carries the /2 keys an overlay needs. A /1 set
   // cannot take a tag, so the page offers none and asks for no agreement.
   taggable: boolean;
@@ -1127,10 +1216,13 @@ function relationBadge(relation: string): string {
   return `<span class="articles-rel" data-relation="${attr(relation)}" title="${attr(`${capital(RELATION_PHRASE[relation] ?? relation)} (${relation})`)}">${text(word)}</span>`;
 }
 
-// The relation words, each beside what it means, under the Passages heading.
+// The relation words, each beside what it means, folded away under the Passages
+// heading: the badges carry the word itself, and each one's title says what it means,
+// so the list is for the reader who wants it and not a wall above the first passage.
 function relationLegend(): string {
   const items = RELATION_ORDER.map((rel) => `<li>${relationBadge(rel)} ${text(RELATION_LEGEND[rel])}</li>`).join("");
-  return `<div class="articles-legend-rel"><p class="articles-muted">How each Lean declaration relates to its passage:</p><ul>${items}</ul></div>`;
+  return `<details class="articles-legend-rel"><summary>What “exact match”, “more general” and the other labels mean</summary>` +
+    `<ul>${items}</ul></details>`;
 }
 
 // The location's signature when the store has one (--signatures), checked to be
@@ -1291,6 +1383,127 @@ function cardActions(m: MergedLocation, ctx: CardContext, passageKey: string): s
     `<span class="articles-tag-msg" role="status"></span></div>`;
 }
 
+// ---- community coverage bundles (issue #173) --------------------------------
+//
+// "These together state the passage": the overlay's answer to a passage two or
+// more declarations state between them. Each link is then a hasPart, which on
+// its own leaves the passage partial; the bundle says the parts together state
+// every clause, and the merge counts it as one more location by the builder's
+// own stand-in (articles-overlay mergedStatus). It is shown as one group, not
+// as a card: the cards above it are the parts themselves.
+
+// Who wrote a bundle, linked, as byLine does for a tag's card.
+function bundleByLine(b: MergedBundle, verb: string): string {
+  const author = b.author;
+  const who = author
+    ? `<a href="/u/${attr(encodeURIComponent(author.id))}">${text(author.name)}</a>`
+    : `<span>${text(b.bundle.added_by)}</span>`;
+  const owner = author && author.actor === "agent" && author.ownerId
+    ? ` — owned by <a href="/u/${attr(encodeURIComponent(author.ownerId))}">${text(author.ownerName ?? author.ownerId)}</a>`
+    : "";
+  const day = dayOfMs(verb === "Withdrawn by" ? b.bundle.removed_at : b.bundle.updated_at);
+  return `${text(verb)} ${who}${owner}${day ? ` on ${text(day)}` : ""}`;
+}
+
+// What a live bundle does to the passage, in words: the same three readings the
+// store's own claim gets (coverageBlock), plus the one a withdrawn part leaves.
+function bundleLead(b: MergedBundle): string {
+  const n = b.parts.length;
+  const relation = b.bundle.relation !== "exactMatch"
+    ? ` (${RELATION_WORD[b.bundle.relation] ?? b.bundle.relation})` : "";
+  if (!b.counts) {
+    // A row whose parts cannot be read at all (nothing the route writes, but a
+    // hand-written one) says so rather than counting to nothing out loud.
+    if (n < MIN_BUNDLE_PARTS) return "This coverage claim no longer names the parts it was made of";
+    return b.locations.some((m) => m === null)
+      ? `These ${int(n)} parts no longer state the passage together: one of them is no longer a link here`
+      : `These ${int(n)} parts no longer state the passage together: one of them no longer states part of it`;
+  }
+  if (b.status === "formalized") return `Formalized by ${int(n)} parts together${relation}`;
+  if (b.status === "statement_only") return `Stated by ${int(n)} parts together${relation}, not all of them finished`;
+  return `Covered by ${int(n)} parts together${relation}, not all of which count toward the status`;
+}
+
+// One live bundle: who said it, what it does, its parts and the clause each
+// states, and the button that withdraws it.
+function bundleBlock(b: MergedBundle, ctx: CardContext): string {
+  const badge = b.bundle.actor_type === "agent" ? `${COMMUNITY_BADGE} ${AGENT_BADGE}` : COMMUNITY_BADGE;
+  const withdrawn = b.state === "removed";
+  const line = withdrawn
+    ? `<p class="articles-overlay-line is-removed">${badge} ${bundleByLine(b, "Withdrawn by")}` +
+      `${b.bundle.removed_reason ? `: ${text(b.bundle.removed_reason)}` : ""}</p>`
+    : `<p class="articles-overlay-line">${badge} ${bundleByLine(b, "Added by")}</p>`;
+  const items = b.parts.map((key, i) => {
+    const m = b.locations[i];
+    const states = b.conjuncts.filter((c) => c.part === key)
+      .map((c) => `<li>${text(c.text)}</li>`).join("");
+    const clauses = states
+      ? `<ul class="articles-conjuncts" aria-label="Clauses this part states">${states}</ul>` : "";
+    if (!m) return `<li class="is-gone"><span class="articles-muted">A link that is no longer here</span>${clauses}</li>`;
+    const loc = m.loc;
+    const info = ctx.libs.get(loc.library)?.info ?? libraryInfo(loc.repo, null);
+    const part = loc.relation === BUNDLE_PART_RELATION ? "" :
+      ` <span class="articles-muted">(${text(RELATION_WORD[loc.relation] ?? loc.relation)}, not a part)</span>`;
+    return `<li>${declName(String(loc.declaration ?? ""))} ` +
+      `<span class="articles-lib" title="${attr(`${info.name} · ${info.repo}`)}">${text(info.short)}</span> ` +
+      `<span class="articles-muted">(${text(proofOf(loc).label)})</span>${part}${clauses}</li>`;
+  }).join("");
+  const actions = ctx.overlay?.canEdit && ctx.overlay.show
+    ? `<div class="articles-tag-actions" data-bundle-key="${attr(b.bundle.bundle_key)}" ` +
+      `data-version="${int(b.bundle.version)}">` +
+      (withdrawn
+        ? `<button type="button" class="articles-tag-btn" data-action="bundle-restore">Put this back</button>`
+        : `<button type="button" class="articles-tag-btn" data-action="bundle-withdraw" aria-expanded="false">Withdraw this</button>`) +
+      `<span class="articles-tag-msg" role="status"></span></div>`
+    : "";
+  return `<div class="articles-coverage articles-bundle${withdrawn ? " is-removed" : ""}" ` +
+    `data-bundle-key="${attr(b.bundle.bundle_key)}" data-coverage-status="${attr(b.status ?? "none")}" ` +
+    `data-counts="${b.counts ? "true" : "false"}">` +
+    `${line}<p class="articles-why">${text(bundleLead(b))}:</p>` +
+    `<ol class="articles-coverage-parts">${items}</ol>${actions}</div>`;
+}
+
+// "These together state the passage": offered only where it can be true — a
+// signed-in editor, the merged view, and two or more links that each state part
+// of this passage. One clause per part, which is the shape a bundle's conjuncts
+// take (each part states at least one).
+function bundleForm(passage: ArticlesPassage, parts: MergedLocation[], ctx: CardContext): string {
+  const overlay = ctx.overlay;
+  const key = typeof passage.passage_key === "string" ? passage.passage_key : "";
+  if (!overlay?.show || !overlay.canEdit || key === "" || parts.length < MIN_BUNDLE_PARTS) return "";
+  const hex = passageHex(passage) || key.slice(0, 8);
+  // Every candidate is offered, not the first five: a bundle names at most five
+  // parts, and which five is the editor's choice. The script holds them to the
+  // count, and the route refuses more.
+  const rows = parts.map((m, i) => {
+    const loc = m.loc;
+    const info = ctx.libs.get(loc.library)?.info ?? libraryInfo(loc.repo, null);
+    const box = `bundlepart-${attr(hex)}-${i}`;
+    const clause = `bundleclause-${attr(hex)}-${i}`;
+    return `<li><label for="${box}"><input type="checkbox" id="${box}" name="part" value="${attr(String(loc.pair_key ?? ""))}"> ` +
+      `${declName(String(loc.declaration ?? ""))} <span class="articles-lib">${text(info.short)}</span></label>` +
+      `<label for="${clause}">What it states</label>` +
+      `<input id="${clause}" type="text" name="clause" maxlength="${MAX_TAG_NOTE}" autocomplete="off" ` +
+      `placeholder="the clause this one states">` +
+      `</li>`;
+  }).join("");
+  const rels = BUNDLE_RELATION_ORDER.map((rel) =>
+    `<option value="${attr(rel)}"${rel === "exactMatch" ? " selected" : ""}>${text(RELATION_WORD[rel] ?? rel)} — ${text(RELATION_LEGEND[rel])}</option>`).join("");
+  return `<div class="articles-bundle-new" data-passage-key="${attr(key)}">
+<button type="button" class="articles-tag-open" aria-expanded="false" aria-controls="bundleform-${attr(hex)}">These together state the passage</button>
+<form class="articles-bundle-form" id="bundleform-${attr(hex)}" hidden>
+<fieldset><legend>Say which parts together state this passage</legend>
+<p class="articles-muted">Tick the links that each state one part of this passage — two to ${MAX_BUNDLE_PARTS} of them — and say what each of them states. WikiLean then counts them together, instead of counting each as a part and leaving the passage partial. Your edit goes live at once, attributed to you, and anyone can correct it.</p>
+<ol class="articles-bundle-parts">${rows}</ol>
+<label for="bundlerel-${attr(hex)}">How the parts together match the passage</label>
+<select id="bundlerel-${attr(hex)}" name="relation">${rels}</select>
+<div class="articles-tag-buttons"><button type="submit" class="articles-tag-btn is-primary">Save</button><button type="button" class="articles-tag-btn articles-tag-cancel">Cancel</button></div>
+<p class="articles-tag-msg" role="status"></p>
+</fieldset>
+</form>
+</div>`;
+}
+
 // "Tag this passage": the one new write of release R1. The form is server
 // rendered and inert until the page's script wires it, and it carries no inline
 // handler and no inline script (articlesCsp lists neither).
@@ -1335,14 +1548,19 @@ function tagForm(passage: ArticlesPassage, ctx: CardContext): string {
 // wording in a way that needs re-acceptance is a version bump.
 function agreementBlock(ctx: CardContext): string {
   const overlay = ctx.overlay;
-  if (!overlay?.canEdit || !overlay.needsAgreement || !overlay.taggable || !overlay.show) return "";
+  if (!overlay?.canEdit || !overlayAsksAgreement(overlay) || !overlay.taggable || !overlay.show) return "";
   const widget = overlay.turnstileSiteKey
     ? `<div class="cf-turnstile" data-sitekey="${attr(overlay.turnstileSiteKey)}"></div>`
     : "";
+  // The licence is asked for only when it is not already granted; a grant that
+  // never passed a Turnstile check brings the widget alone.
+  const heading = overlay.needsAgreement ? "Before your first edit" : "One check before your next edit";
+  const licence = overlay.needsAgreement
+    ? `<p><label><input type="checkbox" id="articles-cc0-box"> ${text(overlay.cc0Text)}</label></p>\n`
+    : "";
   return `<section class="articles-cc0" id="articles-cc0" data-version="${attr(overlay.cc0Version)}" hidden aria-labelledby="articles-cc0-h">
-<h2 class="articles-h2" id="articles-cc0-h">Before your first edit</h2>
-<p><label><input type="checkbox" id="articles-cc0-box"> ${text(overlay.cc0Text)}</label></p>
-${widget}<p class="articles-tag-msg" role="status" id="articles-cc0-msg"></p>
+<h2 class="articles-h2" id="articles-cc0-h">${text(heading)}</h2>
+${licence}${widget}<p class="articles-tag-msg" role="status" id="articles-cc0-msg"></p>
 </section>`;
 }
 
@@ -1364,10 +1582,18 @@ const MAX_TAG_NOTE = 500;
 // which articlesCsp lists only for a page that renders the widget.
 export const TURNSTILE_SCRIPT = "https://challenges.cloudflare.com/turnstile/v0/api.js";
 
+// Does this page carry the agreement block at all? Either the licence is not
+// granted yet, or it is but no Turnstile check cleared it on a deployment that
+// asks for one.
+function overlayAsksAgreement(overlay: OverlayView): boolean {
+  return overlay.needsAgreement || overlay.needsVerification;
+}
+
 // Does this page render the Turnstile widget? (The agreement block, which only
-// a signed-in person making their first edit sees, and only with a site key.)
+// a signed-in person who still owes the licence or the check sees, and only
+// with a site key.)
 export function pageNeedsTurnstile(overlay: OverlayView | null | undefined): boolean {
-  return !!overlay && overlay.canEdit && overlay.needsAgreement && overlay.taggable && overlay.show
+  return !!overlay && overlay.canEdit && overlayAsksAgreement(overlay) && overlay.taggable && overlay.show
     && !!overlay.turnstileSiteKey;
 }
 
@@ -1538,7 +1764,8 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
   const hex = passageHex(passage);
   const subject = isSubject(passage);
   // A subject passage says so in its own tag, so its eyebrow is the kind alone.
-  const eyebrow = [capital(passage.kind), subject ? "" : passage.prominence].filter(Boolean).join(" · ");
+  const eyebrow = [capital(passage.kind), subject ? "" : PROMINENCE_WORD[String(passage.prominence ?? "")] ?? passage.prominence]
+    .filter(Boolean).join(" · ");
   const section = Array.isArray(passage.section) && passage.section.length ? passage.section.join(" › ") : "";
   const context = inContextUrl(passage);
   const quote = passage.quote;
@@ -1628,8 +1855,9 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
   if (passage.absence) {
     const a = passage.absence;
     parts.push(`<p class="articles-absence"><span class="articles-ico" aria-hidden="true">✕</span>` +
-      `Searched ${int(a.libraries)} libraries in universe <a href="/articles/universe/${attr(a.universe_sha256)}">${text(a.universe)}</a> ` +
-      `(${text(article.universe.frozen)}) — not found.</p>`);
+      `Searched ${int(a.libraries)} libraries — not found. ` +
+      `<a href="/articles/universe/${attr(a.universe_sha256)}">Which libraries, at which commits</a> ` +
+      `(pinned ${text(article.universe.frozen)}).</p>`);
     const runs = campaignRuns(ctx.campaign);
     const searched = ctx.runs ? `Searched ${runCite(ctx.runs.locate, "locate")}`
       : runs ? `Searched in locate run <code>${text(runs.locate)}</code>` : `Searched in campaign <code>${text(ctx.campaign)}</code>`;
@@ -1656,6 +1884,15 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
       `Removed by an editor (${int(gravestones.length)})</summary>` +
       `<div class="articles-cards is-removed">${gravestones.map((m) => locationCard(m, ctx, ownKey)).join("\n")}</div></details>`);
   }
+  // The community's coverage bundles over the cards above (issue #173), and the
+  // form that makes one. Both are the merged view's: "As published" shows the
+  // sealed set alone, which has no bundle of this kind in it.
+  const merged = ctx.overlay?.show ? ctx.overlay.merged.byPassage.get(passage.id) : null;
+  for (const bundle of merged?.bundles ?? []) parts.push(bundleBlock(bundle, ctx));
+  const bundleParts = liveShown.filter((m) => m.loc.relation === BUNDLE_PART_RELATION
+    && typeof m.loc.pair_key === "string" && m.loc.pair_key !== "");
+  const bundling = bundleForm(passage, bundleParts, ctx);
+  if (bundling) parts.push(bundling);
   const form = tagForm(passage, ctx);
   if (form) parts.push(form);
   if (panel) {
@@ -1681,6 +1918,85 @@ function chip(filter: string, label: string, n: number, title: string, status?: 
     `${mark}${text(label)} <span class="articles-n">${int(n)}</span></button>`;
 }
 
+// ---- the head of an article page: counts, legend, filters, About ------------
+//
+// Between the pieces of the counts line: a dot seen and not read, so the line
+// reads "3 passages 1 formalized 1 not formalized" rather than "3 passages
+// middle dot 1 formalized".
+const COUNT_DOT = `<span class="articles-dot" aria-hidden="true">·</span>`;
+
+// The one line under the title: how many passages the page shows, then each status
+// it shows them with. A status no passage has is left out; the passages with no
+// status yet are counted apart, in the muted tail, as they are everywhere else.
+// `lead` replaces the passage count at its head (the list page leads with its articles).
+function countsLine(byStatus: Record<SummaryStatus, number>, nUnread: number, lead: string[] = []): string {
+  const total = ARTICLE_STATUSES.reduce((sum, s) => sum + count(byStatus[s]), 0);
+  const head = lead.length ? lead : [`<b>${plural(total, "passage", "passages")}</b>`];
+  const parts = ARTICLE_STATUSES.filter((s) => count(byStatus[s]) > 0).map((s) =>
+    `<span class="articles-mini" data-status="${s}"><span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>` +
+    `${int(byStatus[s])} ${text(STATUS[s].plural)}</span>`);
+  return `<p class="articles-counts" id="articles-counts">${[...head, ...parts].join(COUNT_DOT)}</p>`;
+}
+
+// The legend under that line, which is also the filter: one swatch, icon and word
+// per status, pressable (both scripts read data-filter and set aria-pressed). A
+// status no passage has is inert, as a zero chip always was, and what each status
+// means is the button's title and the "About this page" fold's first section.
+function statusKey(byStatus: Record<SummaryStatus, number>): string {
+  const chips = ARTICLE_STATUSES.map((s) => {
+    const mark = `${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>`;
+    if (count(byStatus[s]) === 0) {
+      return `<span class="articles-chip is-static is-zero" data-status="${s}">${mark}${text(STATUS[s].label)}</span>`;
+    }
+    return `<button type="button" class="articles-chip" data-filter="status:${s}" data-status="${s}" aria-pressed="false"` +
+      ` title="${attr(`${STATUS[s].label}: ${READER_LEGEND[s]}. Show only these passages.`)}">${mark}${text(STATUS[s].label)}</button>`;
+  }).join("");
+  return `<div class="articles-chips articles-key" role="group" aria-label="Show passages by status">${chips}</div>`;
+}
+
+// The line a filter writes, and the button that clears it. The reader's script finds
+// them by id, the card list's by class; both are here so the two pages read alike.
+function filterNote(ids: boolean): string {
+  return `<p class="articles-filter-note" role="status"><span class="articles-filter-text"${ids ? ` id="atlr-filter-text"` : ""}></span> ` +
+    `<button type="button" class="articles-clear"${ids ? ` id="atlr-clear"` : ""} hidden>Show all passages</button></p>`;
+}
+
+// The filters that are not the legend — by library, and, in the reader, the
+// article's own statements and the dimming of the text around them — folded away,
+// so the page opens with the article and not with a bar of eleven buttons.
+function moreFilters(libraryChips: string, extra: string): string {
+  if (!libraryChips && !extra) return "";
+  const row = (id: string, label: string, chips: string) =>
+    `<div class="articles-strip-row"><span class="articles-strip-h" id="${id}">${text(label)}</span>` +
+    `<div class="articles-chips" role="group" aria-labelledby="${id}">${chips}</div></div>`;
+  return `<details class="articles-filters"><summary>More ways to filter</summary>` +
+    (libraryChips ? row("articles-h-where", "Library", libraryChips) : "") +
+    (extra ? row("articles-h-more", "Passages", extra) : "") + `</details>`;
+}
+
+// What the status colours mean, with a sample of each: the legend's long form.
+function colourLegend(): string {
+  return `<ul class="articles-meanings">${ARTICLE_STATUSES.map((s) =>
+    `<li><span class="articles-sample" data-status="${s}"><span aria-hidden="true">${STATUS[s].icon} </span>${text(STATUS[s].label)}</span> ` +
+    `${text(READER_LEGEND[s])}</li>`).join("")}</ul>`;
+}
+
+// One "About this page" fold, closed, holding every figure that is not the counts:
+// the pinned revision, the libraries searched, what an audit measured, the runs and
+// how the text is shown. Empty sections are left out rather than shown empty.
+function aboutFold(sections: Array<{ h: string; body: string; id?: string }>, summary = "About this page"): string {
+  const body = sections.filter((section) => section.body).map((section) =>
+    `<section class="articles-about-sec"${section.id ? ` aria-labelledby="${section.id}"` : ""}>` +
+    `<h2 class="articles-about-h"${section.id ? ` id="${section.id}"` : ""}>${text(section.h)}</h2>${section.body}</section>`).join("");
+  return `<details class="articles-about articles-page-about" id="articles-about"><summary>${text(summary)}</summary>` +
+    `<div class="articles-about-body">${body}</div></details>`;
+}
+
+// A list of "About" lines, the shape detailsFold gives them inside its own fold.
+function provList(lines: string[]): string {
+  return lines.length ? `<ul class="articles-prov-list">${lines.map((line) => `<li>${line}</li>`).join("")}</ul>` : "";
+}
+
 // ---- the article coverage page ---------------------------------------------
 
 export interface ArticlePageInput {
@@ -1699,10 +2015,11 @@ export interface ArticlePageInput {
   overlay?: OverlayView | null;
 }
 
-// What the card list and the reader share: the card context and the pieces of the page head
-// and the coverage strip, each exactly as the card list has always rendered it.
+// What the card list and the reader share: the card context, and the pieces of the page
+// head — the counts line, the legend that filters, the library chips and the one
+// "About this page" fold — which the two views then place in their own layouts.
 function articleParts(input: ArticlePageInput) {
-  const { article, universe, user, verdicts, selfHref } = input;
+  const { article, universe, user, verdicts, selfHref, wikileanSlug } = input;
   const readerHref = input.readerHref ?? null;
   const libs = libraryViews(universe, list(article.passages).flatMap((p) => list(p?.locations)));
   const seal = article.seal && typeof article.seal === "object" ? article.seal : null;
@@ -1752,8 +2069,8 @@ function articleParts(input: ArticlePageInput) {
   const assessed = assessment && (assessment.class || assessment.importance)
     ? `WikiProject Mathematics: ${[assessment.class ? `${assessment.class}-class` : "", assessment.importance ? `${importanceLabel(assessment.importance)} importance` : ""].filter(Boolean).join(", ")}`
     : "";
-  const statusChips = ARTICLE_STATUSES.map((s) => chip(`status:${s}`, STATUS[s].label, byStatus[s],
-    `Show only ${STATUS[s].plural} passages`, s, STATUS[s].icon)).join("");
+  const counts = countsLine(byStatus, nUnread);
+  const key = statusKey(byStatus);
   const libraryChips = [...libs.values()]
     .filter((view) => summary.by_library?.[view.id])
     .map((view) => {
@@ -1770,10 +2087,12 @@ function articleParts(input: ArticlePageInput) {
     }).join("");
   const nLibraries = int(article.universe.libraries);
   const nExcluded = universe ? list(universe.excluded).length : 0;
+  // Plain words, in the About fold: how many Lean libraries were searched, at which
+  // day's commits, and how many were left out — never "universe" or "frozen".
   const searched = universe
-    ? `Searched <a href="/articles/universe/${attr(article.universe.sha256)}">universe ${text(article.universe.id)}</a>: ${nLibraries} libraries, frozen ${text(article.universe.frozen)}${nExcluded ? `, ${int(nExcluded)} excluded` : ""}`
-    : `Universe ${text(article.universe.id)} (${nLibraries} libraries, frozen ${text(article.universe.frozen)})`;
-  // The article's subject passages, named in the strip with a link to each.
+    ? `Searched <a href="/articles/universe/${attr(article.universe.sha256)}">${nLibraries} Lean libraries</a>, pinned ${text(article.universe.frozen)}${nExcluded ? `, ${int(nExcluded)} left out` : ""} (library set <code>${text(article.universe.id)}</code>).`
+    : `Searched ${nLibraries} Lean libraries, pinned ${text(article.universe.frozen)} (library set <code>${text(article.universe.id)}</code>).`;
+  // The article's subject passages, named in the About fold with a link to each.
   // A capped head's ellipsis follows the closing quotation mark, outside the quote.
   const subjects = passages.filter(isSubject).map((passage) => {
     const hex = passageHex(passage);
@@ -1782,21 +2101,47 @@ function articleParts(input: ArticlePageInput) {
     return `<li>${hex ? `<a href="#p-${hex}">${label}</a>` : label} ${pill(shownStatus(passage, ctx))}</li>`;
   });
   const subjectRow = subjects.length
-    ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-subject">Subject</span><ul class="articles-subject-list" aria-labelledby="articles-h-subject">${subjects.join("")}</ul></div>\n`
+    ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-subject">Subject</span><ul class="articles-subject-list" aria-labelledby="articles-h-subject">${subjects.join("")}</ul></div>`
     : "";
   const central = centralFromPassages(passages, (passage) => shownStatus(passage, ctx));
-  const centralHtml = central ? centralLine(central, n, { object: "the article's subject or a named result or definition", articles: null }) : "";
-  const centralRow = centralHtml ? `${centralHtml}\n` : "";
+  const centralRow = central ? centralLine(central, n, { object: "the article's subject or a named result or definition", articles: null }) : "";
   const nText = [...texts.values()].filter((view) => view !== null).length;
-  const about = detailsFold("articles-about", "About this data", [...auditLines(article.audit),
-    ...recordSetLines(String(article.campaign ?? ""), seal, String(article.record_set ?? ""), runs !== null),
-    ...(runs ? [...(runs.inventory ? [runLine(runs.inventory)] : []), runLine(runs.locate),
-      ...(runs.challenge ? [runLine(runs.challenge, recheckTallies(passages), "In this article it")] : [])] : [UNRECORDED]),
-    ...supplementLines(supplements, nText, n)]);
-  const lead = `${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.` +
-    (nUnread ? ` <span class="articles-muted" id="articles-unread">${unreadSentence(nUnread)}</span>` : "");
+  const lead = `${plural(n, "passage", "passages")} checked${nLocations ? `, ${plural(nLocations, "Lean location", "Lean locations")}` : ""}${nRelated ? ` (and ${plural(nRelated, "related declaration", "related declarations")})` : ""}.`;
   const revisionLink = `<a href="${attr(wikipediaRevisionUrl(article.pageid, article.revision))}" rel="noopener">${int(article.revision)}</a>`;
   const description = `Where ${article.title} is formalized in Lean: ${int(summary.by_status?.formalized)} of ${plural(n, "passage", "passages")} formalized.`;
+  // How the passages are shown: in full from the store's verified text, or as the
+  // export's capped quote; and where a card's Lean code comes from. Both views say it
+  // in the About fold, never above the article.
+  const anyCapped = passages.some((passage) => texts.get(passage) === null && quoteCapped(passage));
+  const nContext = [...texts.values()].filter((view) => view !== null && (view.before !== "" || view.after !== "")).length;
+  const textNote = nText
+    ? `<p>${nText === n ? "Each passage is" : `${plural(nText, "passage is", "passages are")}`} shown in full, as revision ${int(article.revision)} states it (checked against its record&#x27;s span hash when the store was built).` +
+      (nContext ? ` Where a passage is only part of a sentence, it is highlighted and the rest of the sentence is shown in grey around it, from the same copy of the revision; a list item also shows the sentence that introduces it.` : "") +
+      ` Formulas are drawn from their TeX; hover one to see it.</p>`
+    : "";
+  const anySignature = passages.some((passage) => list(passage.locations).some((loc) => signatureOf(loc) !== null));
+  const sigNote = anySignature && ctx.signatures
+    ? `<p>Each card&#x27;s Lean code is its declaration&#x27;s type as Lean prints it, from the declaration corpus of library set ${text(String(ctx.signatures.universe ?? ""))} at the card&#x27;s commit, laid out as a header: binders before the colon, then the hypotheses as arrows (the corpus keeps no hypothesis names) and the conclusion, in Mathlib&#x27;s notation (𝓝, π, R[X], Type*). It is not the source text; Source opens that.</p>`
+    : "";
+  const quoteNote = anyCapped
+    ? `<p>Quotes show at most the first ${QUOTE_MAX_WORDS} words of a passage (the record format's quotation cap; a formula's MathML text counts toward it). A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. Hover a formula for its TeX.</p>`
+    : "";
+  const about = aboutFold([
+    { h: "This page", body: provList([
+      `Wikipedia revision ${revisionLink}, pinned: the text here is that revision, not today&#x27;s article.`,
+      ...(assessed ? [text(assessed)] : []),
+      ...(wikileanSlug ? [`<a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>.`] : []),
+      lead,
+    ]) + centralRow + subjectRow },
+    { h: "What the colours mean", body: colourLegend() },
+    { h: "Libraries searched", body: `<p>${searched}</p>` },
+    { h: "How these links were made", body: provList([...auditLines(article.audit),
+      ...recordSetLines(String(article.campaign ?? ""), seal, String(article.record_set ?? ""), runs !== null),
+      ...(runs ? [...(runs.inventory ? [runLine(runs.inventory)] : []), runLine(runs.locate),
+        ...(runs.challenge ? [runLine(runs.challenge, recheckTallies(passages), "In this article it")] : [])] : [UNRECORDED]),
+      ...supplementLines(supplements, nText, n)]) },
+    { h: "How the text is shown", body: `${textNote}${sigNote}${quoteNote}` },
+  ]);
   // The "As published" / "With community edits" control, offered only once the
   // article has an edit; the agreement block, rendered once per page.
   const overlay = ctx.overlay;
@@ -1804,11 +2149,9 @@ function articleParts(input: ArticlePageInput) {
     ? `${overlaySwitch(selfHref, overlay.show, overlay.merged.live, overlay.merged.removed)}\n`
     : "";
   const agreement = agreementBlock(ctx);
-  return {
-    libs, seal, statusRule, supplements, runs, texts, ctx, summary, n, assessed, statusChips, libraryChips, searched,
-    subjectRow, centralRow, nText, about, lead, revisionLink, description, readerHref, passages, nUnread, byStatus,
-    overlayRow, agreement,
-  };
+  // Only what a view places: the figures themselves are already built into `counts`,
+  // `key` and `about` above, so neither page can say one of them a second time.
+  return { ctx, n, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread, overlayRow, agreement };
 }
 
 // The two views of an article with a marked revision, as a segmented control: the article
@@ -1820,40 +2163,21 @@ function viewSwitch(readerHref: string, current: "article" | "cards"): string {
 }
 
 export function articlesArticlePage(input: ArticlePageInput): string {
-  const { article, user, wikileanSlug, selfHref } = input;
+  const { article, user, selfHref } = input;
   const {
-    ctx, n, assessed, statusChips, libraryChips, searched, subjectRow, centralRow,
-    nText, texts, about, lead, revisionLink, description, readerHref, passages, nUnread, byStatus,
+    ctx, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
     overlayRow, agreement,
   } = articleParts(input);
-  // The quote note is for the passages that show a quote; the text note for those shown in full.
-  const anyCapped = passages.some((passage) => texts.get(passage) === null && quoteCapped(passage));
-  const nContext = [...texts.values()].filter((view) => view !== null && (view.before !== "" || view.after !== "")).length;
-  const textNote = nText
-    ? `<p class="articles-muted" id="articles-text-note">${nText === n ? "Each passage is" : `${plural(nText, "passage is", "passages are")}`} shown in full, as revision ${int(article.revision)} states it (checked against its record&#x27;s span hash when the store was built).` +
-      (nContext ? ` Where a passage is only part of a sentence, it is highlighted and the rest of the sentence is shown in grey around it, from the same copy of the revision; a list item also shows the sentence that introduces it.` : "") +
-      ` Formulas are drawn from their TeX; hover one to see it.</p>\n`
-    : "";
-  const anySignature = passages.some((passage) => list(passage.locations).some((loc) => signatureOf(loc) !== null));
-  const sigNote = anySignature && ctx.signatures
-    ? `<p class="articles-muted" id="articles-sig-note">Each card&#x27;s Lean code is its declaration&#x27;s type as Lean prints it, from universe ${text(String(ctx.signatures.universe ?? ""))}&#x27;s declaration corpus at the card&#x27;s commit, laid out as a header: binders before the colon, then the hypotheses as arrows (the corpus keeps no hypothesis names) and the conclusion, in Mathlib&#x27;s notation (𝓝, π, R[X], Type*). It is not the source text; Source opens that.</p>\n`
-    : "";
   const main = `<main class="wl-articles" id="articles-article" data-pageid="${int(article.pageid)}" data-campaign="${attr(article.campaign)}">
 <nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="articles-h1">${text(article.title)}</h1>
-<p class="articles-meta">Wikipedia revision ${revisionLink}${assessed ? ` · ${text(assessed)}` : ""}${wikileanSlug ? ` · <a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>` : ""}</p>
-<p class="articles-meta">${searched}</p>
+${counts}
+${key}
+${filterNote(false)}
+${moreFilters(libraryChips, "")}
 ${about}
-<section class="articles-strip" aria-labelledby="articles-h-coverage">
-<h2 class="articles-h2" id="articles-h-coverage">Coverage</h2>
-<p class="articles-strip-lead">${lead}</p>
-${statusBar(byStatus, "passage", "passages")}
-${subjectRow}<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-status">Status</span><div class="articles-chips" role="group" aria-labelledby="articles-h-status">${statusChips}</div></div>
-${centralRow}${libraryChips ? `<div class="articles-strip-row"><span class="articles-strip-h" id="articles-h-where">Where</span><div class="articles-chips" role="group" aria-labelledby="articles-h-where">${libraryChips}</div></div>` : ""}
-<p class="articles-filter-note" role="status"><span class="articles-filter-text"></span> <button type="button" class="articles-clear" hidden>Show all passages</button></p>
-${overlayRow}</section>
-${agreement ? `${agreement}\n` : ""}<h2 class="articles-h2" id="articles-h-passages">Passages</h2>
-${textNote}${sigNote}${anyCapped ? `<p class="articles-muted" id="articles-quote-note">Quotes show at most the first ${QUOTE_MAX_WORDS} words of a passage (the record format's quotation cap; a formula's MathML text counts toward it). A … after the highlighted quote means the passage continues; “Read it in context on Wikipedia” shows the rest. Hover a formula for its TeX.</p>\n` : ""}${passages.length ? `${relationLegend()}\n` : ""}${passages.length ? `<ol class="articles-passages" aria-labelledby="articles-h-passages">\n${passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : nUnread ? `<p>No passage of this revision has a status yet.</p>` : `<p>No formal passages were found in this revision.</p>`}
+${overlayRow}${agreement ? `${agreement}\n` : ""}<h2 class="articles-h2" id="articles-h-passages">Passages</h2>
+${passages.length ? `${relationLegend()}\n` : ""}${passages.length ? `<ol class="articles-passages" aria-labelledby="articles-h-passages">\n${passages.map((p) => passageBlock(p, article, ctx)).join("\n")}\n</ol>` : nUnread ? `<p>No passage of this revision has a status yet.</p>` : `<p>No formal passages were found in this revision.</p>`}
 <p class="articles-data">Data: <a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a></p>
 ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they audit the locate and challenge runs.</p>` : ""}
 </main>`;
@@ -1873,15 +2197,6 @@ ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is ri
 
 // ---- the article reader ------------------------------------------------------
 
-// What each status means, beside a sample of its highlight, in the reader's legend.
-const READER_LEGEND: Record<SummaryStatus, string> = {
-  formalized: "a Lean declaration states it, proved, or a Lean definition defines it",
-  statement_only: "Lean states it, but the proof is not finished",
-  partial: "Lean states part of it, or a more general or special form",
-  not_formalized: "searched every library of the universe and not found",
-  unresolved: "the locate run did not settle it; not counted as not formalized",
-};
-
 // The order the passages read in: the article's own (each passage's first mark), any passage
 // the revision leaves unmarked after them, in the store's order.
 function readingOrder(passages: ArticlesPassage[], html: string): ArticlesPassage[] {
@@ -1895,7 +2210,10 @@ function readingOrder(passages: ArticlesPassage[], html: string): ArticlesPassag
 }
 
 // The panel's index with nothing selected: the passages under the article's section headings,
-// in reading order, each row its status, its first words and its lead declaration.
+// in reading order, each row its status, its first words and its lead declaration. A row's
+// words wrap and are cut at a word, never in the middle of one (articles-reader.css clamps
+// them to two lines), and the row's title carries the whole of what the quote has, for a
+// reader who hovers or focuses it.
 function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: CardContext): string {
   const groups: { label: string; rows: string[] }[] = [];
   for (const passage of passages) {
@@ -1908,7 +2226,8 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
     const leadHtml = head
       ? `<code>${text(String(head.loc.declaration ?? "").split(".").pop() ?? "")}</code>${head.more ? ` +${int(head.more)}` : ""}`
       : status === "not_formalized" ? "not found" : "";
-    groups[groups.length - 1].rows.push(`<li><a class="atlr-row" href="#p-${hex}" data-p="${hex}" data-status="${status}">` +
+    groups[groups.length - 1].rows.push(`<li><a class="atlr-row" href="#p-${hex}" data-p="${hex}" data-status="${status}"` +
+      ` title="${attr(plainHead(passage, 220))}">` +
       `<span class="atlr-swatch" data-status="${status}" aria-hidden="true"></span>` +
       `<span class="atlr-row-text"><span class="articles-sr">${text(STATUS[status].label)}: </span>${exact}</span>` +
       `<span class="atlr-row-lead">${leadHtml}${placed.has(hex) ? "" : ` <span class="atlr-row-note">not marked in the text</span>`}</span></a></li>`);
@@ -1924,19 +2243,19 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
 // the note and the closed Details. The revision's HTML is served as the builder checked it;
 // every value around it goes through text() and attr() like the card list's.
 export function articlesReaderPage(input: ArticlePageInput & { html: string }): string {
-  const { article, user, wikileanSlug, selfHref, html } = input;
+  const { article, user, selfHref, html } = input;
   const parts = articleParts({ ...input, readerHref: selfHref });
-  const { ctx, n, assessed, statusChips, libraryChips, searched, subjectRow, centralRow, about, lead, revisionLink, description, byStatus, overlayRow, agreement } = parts;
+  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement } = parts;
   const passages = readingOrder(parts.passages, html);
   const placed = new Set<string>();
   for (const m of html.matchAll(/<mark class="atl" data-p="([0-9a-f]{8,16})"/g)) placed.add(m[1]);
   const nCentral = passages.filter((p) => p.prominence === "subject" || p.prominence === "central").length;
-  const centralChip = chip("central", "Central only", nCentral, "Show only the subject and central passages (the article's own statements)");
+  // The two filters that are not a status or a library, folded away with them.
+  const extraChips = chip("central", "The article's own statements", nCentral,
+    "Show only the passages that state the article's subject or a named result or definition") +
+    `<button type="button" class="articles-chip atlr-dim-chip" data-filter="dim" aria-pressed="false" title="Fade the article text outside the passages">Dim the rest of the text</button>`;
   const headerRow = `<div class="atlr-bar">${viewSwitch(selfHref, "article")}` +
-    `<div class="atlr-chips" role="group" aria-label="Show passages">${statusChips}${centralChip}${libraryChips}` +
-    `<button type="button" class="articles-chip atlr-dim-chip" data-filter="dim" aria-pressed="false" title="Fade the article text outside the passages">Dim other text</button></div></div>`;
-  const legend = `<ul class="atlr-legend">${ARTICLE_STATUSES.map((s) =>
-    `<li><span class="atlr-sample" data-status="${s}"><span aria-hidden="true">${STATUS[s].icon} </span>${text(STATUS[s].label)}</span> ${text(READER_LEGEND[s])}</li>`).join("")}</ul>`;
+    `<button type="button" class="atlr-panel-toggle" id="atlr-panel-toggle" aria-controls="atlr-panel" aria-expanded="true">Hide the passage list</button></div>`;
   const unplaced = passages.filter((p) => !placed.has(passageHex(p))).length;
   const main = `<div class="atlr-layout" id="articles-reader" data-pageid="${int(article.pageid)}" data-self="${attr(selfHref)}" data-passages="${int(n)}">
 <main class="atlr-main" id="atlr-main">
@@ -1944,9 +2263,12 @@ export function articlesReaderPage(input: ArticlePageInput & { html: string }): 
 ${NOTICE_LINE}
 <nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="articles-h1">${text(article.title)}</h1>
-<p class="articles-meta">Wikipedia revision ${revisionLink} (pinned)${assessed ? ` · ${text(assessed)}` : ""}${wikileanSlug ? ` · <a href="/${attr(encodeURIComponent(wikileanSlug))}">Annotated article on WikiLean</a>` : ""}</p>
-<p class="articles-meta">${searched}</p>
-<p class="atlr-hint">The ${plural(n, "highlighted passage is the formal statement", "highlighted passages are the formal statements")} WikiLean checked against ${int(article.universe.libraries)} Lean libraries${unplaced ? ` (${plural(unplaced, "passage is", "passages are")} listed in the panel only)` : ""}. Select one to see where it is formalized; the <a href="#atlr-legend">legend</a> says what each highlight means.</p>
+${counts}
+${key}
+${filterNote(true)}
+${moreFilters(libraryChips, extraChips)}
+${about}
+<p class="atlr-hint">Select a highlighted passage to see where Lean formalizes it${unplaced ? `. ${plural(unplaced, "passage is", "passages are")} listed in the panel only` : ""}.</p>
 </div>
 <article class="wl-article-body atlr-article" id="atlr-article" lang="en" aria-label="${attr(article.title)}, Wikipedia revision ${int(article.revision)}">
 <div class="atlr-mbar" id="atlr-mbar" aria-hidden="true" hidden></div>
@@ -1959,14 +2281,8 @@ ${html}
 <div class="atlr-index" id="atlr-index">
 <h2 class="articles-h2 atlr-h2" id="atlr-h-index">Passages</h2>
 <p class="atlr-missing" id="atlr-missing" role="status" hidden></p>
-<p class="articles-strip-lead">${lead}</p>
-${statusBar(byStatus, "passage", "passages")}
-${subjectRow}${centralRow}<p class="atlr-filter-note" role="status"><span id="atlr-filter-text"></span> <button type="button" class="articles-clear" id="atlr-clear" hidden>Show all passages</button></p>
-${overlayRow}${agreement ? `${agreement}\n` : ""}<nav class="atlr-toc" aria-labelledby="atlr-h-index">${readerIndex(passages, placed, ctx)}</nav>
-<h3 class="atlr-h3" id="atlr-legend">Legend</h3>
-${legend}
-${relationLegend()}
-${about}
+<nav class="atlr-toc" aria-labelledby="atlr-h-index">${readerIndex(passages, placed, ctx)}</nav>
+${overlayRow}${agreement ? `${agreement}\n` : ""}${relationLegend()}
 <p class="articles-data">Data: <a href="/api/articles/article/${int(article.pageid)}">view model (JSON)</a> · <a href="/api/articles/records/${int(article.pageid)}">Literature Links records (JSONL)</a> · <a href="${attr(selfHref)}?view=cards">card list</a></p>
 ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is right as stated (library, declaration and relation); Report says it is wrong. A report can carry a short note, which the WikiLean maintainers read when they audit the locate and challenge runs.</p>` : ""}
 <p class="atlr-keys"><kbd>←</kbd> <kbd>→</kbd> previous and next passage · <kbd>Esc</kbd> back to this list</p>
@@ -2021,12 +2337,42 @@ function passagesShown(passages: unknown, unresolved: unknown): number {
   return Math.max(0, count(passages) - count(unresolved));
 }
 
-function libraryTags(ids: string[], libs: Map<string, LibraryView>): string {
-  if (!ids.length) return `<span class="articles-muted">none</span>`;
-  return ids.map((id) => {
-    const view = libs.get(id);
-    return `<span class="articles-libtag" title="${attr(view ? `${view.info.name} · ${view.info.repo}` : id)}">${text(view?.info.short ?? id)}</span>`;
-  }).join(" ");
+// A title folded for the script's search: the shape articles.js folds a typed query to.
+function foldTitle(title: string): string {
+  return String(title).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
+}
+
+// The article list's columns: a name, a bar of its statuses, how many passages were
+// checked and how many libraries hold one of its matches — not a spreadsheet of eight
+// numbers. Each head carries the key articles.js sorts by; it turns the head into a
+// button and sets aria-sort. Without the script they are plain headings over rows the
+// server has already put in title order.
+const LIST_COLUMNS: ReadonlyArray<{ key: string; label: string; num: boolean; title: string }> = [
+  { key: "title", label: "Article", num: false, title: "Sort by title" },
+  { key: "formalized", label: "Formalized", num: false, title: "Sort by how much of the article is formalized" },
+  { key: "passages", label: "Passages", num: true, title: "Sort by how many passages were checked" },
+  { key: "libraries", label: "Libraries", num: true, title: "Sort by how many libraries hold a match" },
+];
+
+function listHeads(): string {
+  return LIST_COLUMNS.map((col) => `<th scope="col" class="${col.num ? "num " : ""}articles-sortable"` +
+    ` data-sort="${col.key}" data-sort-title="${attr(col.title)}">${text(col.label)}</th>`).join("");
+}
+
+// One row of that list. Every key the script sorts by is a data attribute, so sorting
+// never re-reads a cell, and the library names a row counts are its cell's title.
+function listRow(row: DashboardRow, libs: Map<string, LibraryView>): string {
+  const byStatus = shownStatusCounts(row as unknown as Partial<Record<SummaryStatus, number>>);
+  const shown = passagesShown(row.passages, row.unresolved);
+  const ids = list(row.libraries);
+  const names = ids.map((id) => libs.get(id)?.info.short ?? id).join(", ");
+  return `<tr data-title="${attr(foldTitle(row.title))}" data-passages="${int(shown)}" data-formalized="${int(byStatus.formalized)}"` +
+    ` data-libraries="${int(ids.length)}" data-importance="${attr(String(row.importance ?? ""))}">` +
+    `<th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th>` +
+    `<td class="articles-cov">${statusBar(byStatus, "passage", "passages") || `<span class="articles-muted">no status yet</span>`}</td>` +
+    `<td class="num">${int(shown)}</td>` +
+    `<td class="num">${ids.length ? `<span title="${attr(names)}">${plural(ids.length, "library", "libraries")}</span>`
+      : `<span class="articles-muted">none</span>`}</td></tr>`;
 }
 
 // The dashboard's "About this build": the build's campaign and date, then each
@@ -2127,7 +2473,7 @@ export function articlesDashboardPage(input: DashboardInput): string {
     .map(([key, bucket]) => `<tr><th scope="row">${text(importanceLabel(key))}</th><td class="num">${int(bucket?.articles)}</td><td class="num">${int(passagesShown(bucket?.passages, bucket?.by_status?.unresolved))}</td>${statusCells(bucket?.by_status)}</tr>`)
     .join("");
   const hasImportance = Object.keys(counts.by_importance ?? {}).some((key) => key !== "unknown");
-  const list = rows.map((row) => `<tr data-title="${attr(row.title.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase())}"><th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th><td class="num">${int(passagesShown(row.passages, row.unresolved))}</td>${statusCells(row as unknown as Record<SummaryStatus, number>)}<td>${libraryTags(row.libraries ?? [], libs)}</td><td>${text(importanceLabel(row.importance))}</td></tr>`).join("\n");
+  const list = rows.map((row) => listRow(row, libs)).join("\n");
   const shown = rows.length;
   const showing = q
     ? `${matched} of ${total} articles match “${text(q)}”${matched > shown ? `; showing the first ${shown}` : ""}.`
@@ -2135,35 +2481,31 @@ export function articlesDashboardPage(input: DashboardInput): string {
   // id → short name, for rows articles.js builds from the index shards.
   const libraryNames = JSON.stringify(Object.fromEntries([...libs.values()].map((view) => [view.id, view.info.short])));
   const nRelated = count(counts.related);
+  const about = aboutFold([
+    { h: "Totals", id: "articles-h-totals", body:
+      `<p>${plural(count(counts.articles), "article", "articles")} · ${plural(nPassages, "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}</p>\n` +
+      `${statusBar(byStatus, "passage", "passages")}\n` +
+      `<div class="articles-chips articles-legend">${ARTICLE_STATUSES.map((s) => `<span class="articles-chip is-static" data-status="${s}">${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="articles-n">${int(byStatus[s])}</span></span>`).join("")}</div>${centralRow}` },
+    { h: "What the colours mean", body: colourLegend() },
+    { h: "Which libraries were searched", id: "articles-h-libs", body:
+      `<p class="articles-meta">${universe ? `<a href="/articles/universe/${attr(current.universe.sha256)}">${int(current.universe.libraries)} Lean libraries</a>` : `${int(current.universe.libraries)} Lean libraries`}, pinned ${text(current.universe.frozen)} (library set <code>${text(current.universe.id)}</code>)</p>\n` +
+      `${libraryTable}${held.length ? `\n<p class="articles-muted">A passage counts toward every library that states it. Complete locations are proved declarations or definitions; incomplete ones are stated without a finished proof (statement only, wanted, or axiom-dependent). “Related only” declarations state something else and are not counted as locations.</p>` : ""}${emptyLibraries}` },
+    { h: "How these links were made", body: provList(buildLines(current)) },
+    ...(hasImportance ? [{ h: "By WikiProject importance", id: "articles-h-imp", body:
+      tableWrap("By WikiProject importance", `<table class="articles-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads()}</tr></thead><tbody>${importance}</tbody></table>`) }] : []),
+  ], "About this build");
   const main = `<main class="wl-articles" id="articles-dashboard">
 <h1 class="articles-h1" id="articles-h-list">Articles</h1>
 <p class="articles-lead">Explore mathematical statements and their Lean matches. Choose an article to inspect the evidence, confirm a link, or add a missing declaration. <a href="/contribute">How to contribute</a>.</p>
+${countsLine(byStatus, nUnread, [`<b>${plural(count(counts.articles), "article", "articles")}</b>`, plural(nPassages, "passage", "passages")])}
+${about}
 <section aria-labelledby="articles-h-list">
 <form class="articles-search" method="get" action="/articles" role="search"><label for="articles-q">Search covered articles</label> <input id="articles-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
 <p class="articles-count" id="articles-count" role="status">${showing}</p>
-${tableWrap("Articles", `<table class="articles-table articles-list" id="articles-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr><th scope="col">Article</th><th scope="col" class="num">Passages</th>${statusHeads()}<th scope="col">Libraries</th><th scope="col">Importance</th></tr></thead><tbody>
+${tableWrap("Articles", `<table class="articles-table articles-list" id="articles-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr>${listHeads()}</tr></thead><tbody>
 ${list}
 </tbody></table>`)}
 </section>
-<details class="articles-about" id="articles-coverage">
-<summary>Coverage and build details</summary>
-<p class="articles-meta">${universe ? `<a href="/articles/universe/${attr(current.universe.sha256)}">Universe ${text(current.universe.id)}</a>` : `Universe ${text(current.universe.id)}`}: ${int(current.universe.libraries)} libraries, frozen ${text(current.universe.frozen)}</p>
-${detailsFold("articles-about", "About this build", buildLines(current))}
-<section class="articles-strip" aria-labelledby="articles-h-totals">
-<h2 class="articles-h2" id="articles-h-totals">Totals</h2>
-<p class="articles-strip-lead">${plural(count(counts.articles), "article", "articles")} · ${plural(nPassages, "passage", "passages")} · ${plural(count(counts.locations), "Lean location", "Lean locations")}${nRelated ? ` · ${plural(nRelated, "related declaration", "related declarations")}` : ""}${nUnread ? ` <span class="articles-muted" id="articles-unread">${unreadSentence(nUnread)}</span>` : ""}</p>
-${statusBar(byStatus, "passage", "passages")}
-<div class="articles-chips articles-legend">${ARTICLE_STATUSES.map((s) => `<span class="articles-chip is-static" data-status="${s}">${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>${text(STATUS[s].label)} <span class="articles-n">${int(byStatus[s])}</span></span>`).join("")}</div>${centralRow}
-</section>
-<section aria-labelledby="articles-h-libs">
-<h2 class="articles-h2" id="articles-h-libs">By library</h2>
-${libraryTable}${held.length ? `\n<p class="articles-muted">A passage counts toward every library that states it. Complete locations are proved declarations or definitions; incomplete ones are stated without a finished proof (statement only, wanted, or axiom-dependent). “Related only” declarations state something else and are not counted as locations.</p>` : ""}${emptyLibraries}
-</section>
-${hasImportance ? `<section aria-labelledby="articles-h-imp">
-<h2 class="articles-h2" id="articles-h-imp">By WikiProject importance</h2>
-${tableWrap("By WikiProject importance", `<table class="articles-table"><thead><tr><th scope="col">Importance</th><th scope="col" class="num">Articles</th><th scope="col" class="num">Passages</th>${statusHeads()}</tr></thead><tbody>${importance}</tbody></table>`)}
-</section>` : ""}
-</details>
 <p class="articles-data">Data: <a href="/api/articles/current">current build (JSON)</a></p>
 </main>`;
   return shell({
@@ -2196,15 +2538,15 @@ export function articlesUniversePage(universe: ArticlesUniverse): string {
     ? `<h2 class="articles-h2">Excluded</h2><ul class="articles-excluded">${excludedItems.map((item) => `<li><b>${text(item.id)}</b>: ${text(item.reason)}</li>`).join("")}</ul>`
     : "";
   const main = `<main class="wl-articles" id="articles-universe">
-<nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>Universe ${text(universe.id)}</span></nav>
-<h1 class="articles-h1">Universe ${text(universe.id)}</h1>
-<p class="articles-meta">${int(libraries.length)} libraries, frozen ${text(universe.frozen)} · sha256 <code>${text(universe.sha256)}</code></p>
+<nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>Libraries searched</span></nav>
+<h1 class="articles-h1">The libraries searched</h1>
+<p class="articles-meta">${int(libraries.length)} Lean libraries, pinned ${text(universe.frozen)} · library set <code>${text(universe.id)}</code> · sha256 <code>${text(universe.sha256)}</code></p>
 <p>A “not found” here means exactly this: the passage was searched for in these libraries at these commits and nothing stating it was found. It says nothing about other libraries or later commits.</p>
-${tableWrap(`Libraries of universe ${universe.id}`, `<table class="articles-table"><thead><tr><th scope="col">Library</th><th scope="col">Repository</th><th scope="col">Commit</th><th scope="col">Toolchain</th><th scope="col">Licence</th></tr></thead><tbody>${rows}</tbody></table>`)}
+${tableWrap(`Libraries of set ${universe.id}`, `<table class="articles-table"><thead><tr><th scope="col">Library</th><th scope="col">Repository</th><th scope="col">Commit</th><th scope="col">Toolchain</th><th scope="col">Licence</th></tr></thead><tbody>${rows}</tbody></table>`)}
 ${excluded}
-<p class="articles-data">Data: <a href="/api/articles/universe/${attr(universe.sha256)}">universe (JSON)</a></p>
+<p class="articles-data">Data: <a href="/api/articles/universe/${attr(universe.sha256)}">library set (JSON)</a></p>
 </main>`;
-  return shell({ title: `Articles universe ${universe.id}`, description: `The Lean libraries and commits of articles universe ${universe.id}.`, main });
+  return shell({ title: `Articles · libraries searched (${universe.id})`, description: `The Lean libraries and commits searched for the WikiLean formalization reader (library set ${universe.id}).`, main });
 }
 
 // ---- the article page's summary box ------------------------------------------
@@ -2228,7 +2570,7 @@ export function articlesSummaryBox(entry: IndexEntry, href: string, pageRevision
   const found = checked === 0 && nUnread > 0
     ? `WikiLean found ${plural(nUnread, "passage", "passages")} in Wikipedia revision ${int(revision)}, none with a status yet.`
     : `WikiLean checked ${plural(checked, "passage", "passages")} of Wikipedia revision ${int(revision)} against Lean libraries: ${parts || "none yet"}.` +
-      (nUnread ? ` ${unreadSentence(nUnread, true)}` : "");
+      "";
   return `<link rel="stylesheet" href="${ARTICLES_CSS}">\n` +
     `<aside class="wl-articles-box" aria-label="Formalization">` +
     `<span class="wl-articles-box-h">Formalization</span> ` +

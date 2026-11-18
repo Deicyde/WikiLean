@@ -366,6 +366,10 @@ export const MAX_JSON_BODY_BYTES = {
   reviewPost: 1024 * 1024,
   articlesFeedback: 4 * 1024,
   articlesTag: 4 * 1024,
+  // A coverage bundle carries up to five 64-hex part keys and five clauses of
+  // up to 500 characters each, which in a non-Latin script is three bytes a
+  // character: 16 KiB leaves that room and still bounds the body.
+  articlesCoverage: 16 * 1024,
   agents: 4 * 1024,
   nativeMigration: 4 * 1024,
   submission: 4 * 1024 * 1024, // exact transport bytes are hashed before UTF-8 decoding

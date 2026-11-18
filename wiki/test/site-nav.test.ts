@@ -62,9 +62,9 @@ describe("the cached pages", () => {
   it("each moved to a new key, and its cached bytes carry the link", async () => {
     const h = setup();
     const moved: Array<[path: string, key: string, before: string[]]> = [
-      [`/${SLUG}`, `render:v20:${SLUG}:1`, ["render:v18:", "render:v19:"]],
-      ["/", "page:home:v12", ["page:home:v11"]],
-      ["/about", "page:about:v4", ["page:about:v3"]],
+      [`/${SLUG}`, `render:v21:${SLUG}:1`, ["render:v19:", "render:v20:"]],
+      ["/", "page:home:v13", ["page:home:v12"]],
+      ["/about", "page:about:v5", ["page:about:v4"]],
       ["/stats", "page:stats:v8", ["page:stats:v7"]],
       ["/wikifunctions", "page:wikifunctions:v4", ["page:wikifunctions:v3"]],
       ["/wikifunctions/verify", "page:wikifunctions-verify:v4", ["page:wikifunctions-verify:v3"]],

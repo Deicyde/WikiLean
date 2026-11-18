@@ -1,7 +1,12 @@
 // Public entry pages. Reader counts and provenance live with the reader, where
-// their Wikipedia revisions and searched library versions can be understood.
+// their Wikipedia revisions and searched library versions can be understood — with
+// one exception: the home page shows ONE real example (a passage of a real article
+// beside the Lean declaration that formalizes it) and the published build's own
+// totals, both read from the articles store at request time (articles.ts
+// articlesExample) and never written in this repository. No store, no block.
 import { htmlEscape } from "./engine/html.js";
 import { siteNav, SITE_TOOLS } from "./site-nav.js";
+import type { ArticlesExample } from "./articles.js";
 
 export interface SitemapRow { slug: string; updatedAt: number }
 const SITE_ORIGIN = "https://wikilean.jackmccarthy.org";
@@ -44,12 +49,23 @@ p,ol,ul { max-width:720px; }
 .paths { display:grid; grid-template-columns:1fr 1fr; gap:32px; border-top:1px solid var(--line); margin-top:48px; }
 .paths h2 { margin-top:24px; }
 .note { color:var(--muted); font-size:.92rem; }
+/* One real example from the published store: the passage, then the Lean declaration
+   that formalizes it (the Lean code leads the card, as it does in the reader). */
+.example { border-top:1px solid var(--line); margin-top:40px; }
+.example h2 { margin-top:24px; }
+.example-pair { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; max-width:720px; }
+.example-text { margin:0; }
+.example-text blockquote { margin:0; padding:0 0 0 14px; border-left:3px solid var(--line); font-family:Charter,'Iowan Old Style',Georgia,serif; font-size:1.05rem; }
+.example-text figcaption { margin-top:8px; color:var(--muted); font-size:.85rem; }
+.example-card { padding:12px 14px; border:1px solid var(--line); border-radius:6px; background:var(--surface); }
+.example-card code { display:block; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9rem; overflow-wrap:anywhere; }
+.example-card .note { margin:8px 0 0; }
 li { margin:10px 0; }
 footer { max-width:960px; margin:auto; border-top:1px solid var(--line); padding:24px 24px 40px; color:var(--muted); font-size:.85rem; }
 footer p { margin:6px 0; }
 .skip { position:absolute; left:16px; top:-100px; padding:8px; background:var(--surface); }
 .skip:focus { top:8px; }
-@media(max-width:600px) { main { padding-top:40px; } .paths { grid-template-columns:1fr; gap:0; } .wl-nav { gap:12px 18px; } }
+@media(max-width:600px) { main { padding-top:40px; } .paths, .example-pair { grid-template-columns:1fr; } .paths { gap:0; } .wl-nav { gap:12px 18px; } }
 </style>
 </head>
 <body>
@@ -66,13 +82,47 @@ footer p { margin:6px 0; }
 </html>`;
 }
 
-export function landingPage(): string {
+// How a relation reads on the example card, in the reader's own words.
+const EXAMPLE_RELATION: Record<string, string> = {
+  exactMatch: "states this exactly",
+  closeMatch: "states this up to a convention difference",
+  broadMatch: "states a more general result",
+  narrowMatch: "states a special case",
+  hasPart: "states part of this",
+  relatedMatch: "states something related",
+};
+
+// One real passage beside its Lean declaration, and the build's own totals. Every
+// value is the store's; an unavailable store leaves the whole block out.
+function exampleBlock(example: ArticlesExample | null): string {
+  if (!example) return "";
+  const relation = EXAMPLE_RELATION[example.relation] ?? "matches this";
+  const share = example.passages > 0 ? Math.round((100 * example.formalized) / example.passages) : 0;
+  return `
+<section class="example" aria-labelledby="example-h">
+<h2 id="example-h">What a link looks like</h2>
+<div class="example-pair">
+<figure class="example-text">
+<blockquote>${esc(example.quote)}</blockquote>
+<figcaption>From <a href="${esc(example.href)}">${esc(example.title)}</a>, Wikipedia revision ${esc(String(example.revision))}</figcaption>
+</figure>
+<div class="example-card">
+<code>${esc(example.declaration)}</code>
+<p class="note">${esc(example.library)} — ${esc(relation)}</p>
+</div>
+</div>
+<p class="note">${esc(String(example.articles))} articles · ${esc(String(example.passages))} passages checked · ${esc(String(example.formalized))} formalized (${esc(String(share))}%).</p>
+</section>`;
+}
+
+export function landingPage(example: ArticlesExample | null = null): string {
   return publicPage("Connect mathematics to Lean", "/", "Find Lean formalizations of Wikipedia mathematics, check the matches, and contribute missing links.", `
 <h1>Connect mathematics<br>to Lean.</h1>
 <p class="lead">Read a mathematical statement. Find its formalization. Help make the connection clearer for the next reader.</p>
 <p>WikiLean links passages in Wikipedia’s mathematics articles to declarations in Lean libraries. Every match is something you can inspect, question, and improve.</p>
 <div class="actions"><a class="button" href="/articles">Browse articles</a><a href="/contribute">Start contributing →</a></div>
 <p class="note">Matches are preliminary. A Lean proof checks the formal statement; people still need to check that it matches the article.</p>
+${exampleBlock(example)}
 <div class="paths">
 <section><h2>Improve a link</h2><p>Confirm a match, report a problem, or add a missing declaration. Contributions are public and attributed to your account.</p><a href="/contribute">How to contribute</a></section>
 <section><h2>Explore the connections</h2><p>The Brain connects mathematical concepts, formal code, reference databases, and literature.</p><a href="/brain">Explore the Brain →</a></section>

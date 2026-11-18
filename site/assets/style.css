@@ -108,6 +108,15 @@ body {
 /* The original Wikipedia content uses .mw-parser-output as its top-level wrapper. */
 .wl-article-body .mw-parser-output { line-height: 1.65; }
 
+/* The article's own links take the page's accent in both themes. Without this they
+   fall back to the browser's default blue (#0000ee), which on the dark surface is
+   nearly unreadable and well under 4.5:1; the thin underline keeps colour from being
+   the only thing that marks a link. The formalization reader's copy of the revision
+   has had the same rule (articles-reader.css) since it shipped. */
+.wl-article-body a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.wl-article-body a:hover { text-decoration-thickness: 2px; }
+.wl-article-body a:visited { color: var(--accent); }
+
 /* Serif display headings for the article content — typography only, no layout
    rules (Vector-2022-style serif headings, from system stacks). */
 .wl-article-body h1,

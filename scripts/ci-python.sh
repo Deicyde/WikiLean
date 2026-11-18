@@ -92,6 +92,7 @@ run_check "Pipeline locate vocabulary parity" "$PYTHON_BIN" scripts/pipeline/tes
 run_check "Pipeline derived-status parity (rules 1, 2 and 3)" "$PYTHON_BIN" scripts/pipeline/test_status.py
 run_check "Pipeline record builder tests" "$PYTHON_BIN" scripts/pipeline/test_records.py
 run_check "Pipeline sealed record set read back and re-exported" "$PYTHON_BIN" scripts/pipeline/test_record_sets.py
+run_check "Pipeline sealed statement set, written and read back" "$PYTHON_BIN" scripts/pipeline/test_statement_sets.py
 run_check "Pipeline tally, challenge semantics and carry-over" "$PYTHON_BIN" scripts/pipeline/test_tally.py
 run_check "Pipeline web-html/3 renderer, a use of the site text layer" "$PYTHON_BIN" scripts/pipeline/test_render_web.py
 run_check "Pipeline sourceset, the append-only manifest" "$PYTHON_BIN" scripts/pipeline/test_sourceset.py
@@ -146,6 +147,7 @@ run_check "Brain deployment journal tests" "$PYTHON_BIN" site/ops/test_brain_dep
 run_check "Brain public asset baseline tests" "$PYTHON_BIN" site/ops/test_brain_public_baseline.py
 run_check "Brain exact-release promoter tests" "$PYTHON_BIN" site/ops/test_brain_promote_release.py
 run_check "Release-neutral path policy tests" "$PYTHON_BIN" site/ops/test_brain_release_authority.py
+run_check "Code-only release policy, record and Brain surface fence tests" "$PYTHON_BIN" site/ops/test_brain_code_only_release.py
 run_check "Brain activation CI evidence tests" "$PYTHON_BIN" site/ops/test_brain_activation_ci.py
 run_check "Brain activation evidence bundle tests" "$PYTHON_BIN" site/ops/test_brain_activation_bundle.py
 run_check "Brain activation evidence integration test" "$PYTHON_BIN" site/ops/test_brain_activation_bundle_integration.py
@@ -159,6 +161,10 @@ run_check "Bot state branch tests" "$PYTHON_BIN" bot/test_state_branch.py
 run_check "Bot settle trim tests" "$PYTHON_BIN" bot/test_split.py
 run_check "Bot tag refresh refuses a truncated list" "$PYTHON_BIN" bot/test_refresh_tagged.py
 run_check "Queue publisher keeps the bearer off argv" "$PYTHON_BIN" bot/test_publish_queue.py
+run_check "Contributor CLI: token storage and redaction" "$PYTHON_BIN" worker/tests/test_token.py
+run_check "Contributor CLI: the model boundary and answer validation" "$PYTHON_BIN" worker/tests/test_model_boundary.py
+run_check "Contributor CLI: one round against a loopback site" "$PYTHON_BIN" worker/tests/test_round.py
+run_check "Contributor CLI: the locate opt-ins and the read-only commands" "$PYTHON_BIN" worker/tests/test_locate_and_cli.py
 run_check "Workflow credential handling and backup Wrangler pin" "$PYTHON_BIN" scripts/test_workflow_credentials.py
 run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scripts/test_revoke_github_tokens.py
 

@@ -67,6 +67,18 @@ recommendation. Remove an item once its decision is recorded below.
    statement closes every community write surface and every agent write — and the signed
    plan's decision 3 accepts it as that substitute *for those surfaces*. It is not a hotfix
    path for anything else, so this item stays open.
+   **Answered 2026-11-13: define one — the code-only release.** Jack approved designing
+   a faster path for a website-only change. It is not a lane that skips review: it is
+   the full promotion with the Brain rebuild removed, because the frozen release
+   production serves is reused byte for byte. Eligibility is decided by
+   `site/ops/brain_code_only_release.py` (policy `wikilean.code-only-release-paths/v1`,
+   deny-by-default), and the promoter measures the claim rather than trusting it: every
+   Brain-owned byte it is about to publish is fetched back from production and must
+   match, modulo the selector's `audited_at`. `site/build_brain_page.py` is blocking —
+   the `/brain` page is a release artifact — so a change there still takes the full
+   path. Commands: `docs/BRAIN-RELEASE-RUNBOOK.md`, "Code-only release". The
+   `site_settings` write brake stays the instant lever; this shortens the ~5.5-hour
+   exposure for everything else to roughly the 30–45 minutes the evidence phases take.
 9. **`annotation_events.actor_type` literal.** AI decisions record `'pipeline'`, not `'ai'`
     (flagged 2026-08-07; binding decisions above). Options: keep `'pipeline'`, or rebuild the
     table to allow `'ai'`.
@@ -234,7 +246,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 |---|---|---|
 | 1 | Which plane carries community tagging | the formalization reader's overlay |
 | 2 | Anonymous editing | an account is required (two clicks of an OAuth button); an anonymous suggestion queue is an R6 option. IP-attributed editing is refused: migration 0013 scrubbed the last IP hashes and keeping them again would reverse that |
-| 3 | The Worker-only hotfix path (Waiting on Jack item 8) | **still open.** Signed off for now is the `site_settings` write brake as its substitute: one D1 statement closes every community write surface and every agent write in a second, where a release takes about 5.5 hours |
+| 3 | The Worker-only hotfix path (Waiting on Jack item 8) | **answered 2026-11-13: define one — the code-only release** (item 8 above; runbook section "Code-only release"). The `site_settings` write brake remains the one-second lever for community and agent writes; the code-only path cuts a website-only release from ~5.5 hours to the evidence phases alone |
 | 4 | Does an edit move the published status? | yes — merged by default, with "As published" one click away. Otherwise editing has no visible effect and nobody does it twice |
 | 5 | The retirement conflict: the plan copies the old plane's furniture, and that plane is being deleted | **take editing off `/:slug` now** (it has had 23 human revisions ever, from one account), keep the routes read-only, and **cut over only once R2 has given the overlay history, diffs and revert**. Nothing is reversed, only sequenced. R1 does the first half |
 | 6 | Revert open to established editors | yes, in R2; patroller-only is a queue with no patrollers |
@@ -242,7 +254,7 @@ claimed by merge order, not by authorship order. A branch that finds its number 
 | 8 | Who may hold an agent token | keep the self-service minting already shipped, with its caps and its named owner; use the brake rather than a gate if it is abused |
 | 9 | Contribute mode's trigger | native Mac boundary and offline checks passed; real refetch matched one of three old packages, so two need new source plans; one-article subscription usage and controlled index access remain |
 | 10 | Where the declaration index and search corpus are published | a bucket behind a short-lived signed URL, issued per contributor, with a per-library licence manifest beside it. Not git, under any option |
-| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`. Each person accepts at their first edit |
+| 11 | The CC0 agreement | a checkbox at a person's first edit, recorded with a timestamp. **Jack kept the existing wording (2026-11-07)**, version `cc0-1.0/2026-11`; `cc0-1.1/2026-11` then named Brain connections and their notes. The reader's tag routes and pipeline submissions take either (`CC0_ACCEPTED_VERSIONS` — 1.0's words describe their data exactly); the Brain's two text-storing writes take 1.1 only (`CC0_BRAIN_VERSIONS`) and ask a contributor on 1.0 once. Each person accepts at their first edit |
 | 12 | Announcement | after R2, not after R1: an announcement into a site with no history or revert is the window decision 5 exists to close |
 | 13 | The agent-token work (PR #126) | merge it, then extend it. R1 opens its `agent` role to the two tag routes and keeps every other refusal, the reader's confirm/report included |
 
@@ -1458,6 +1470,17 @@ then run build-public with that release; never edit `wiki/public/assets/` direct
 
 ## Status log
 
+- 2026-11-16 (UTC): **The articles reader redesign, Brain community-write fixes and
+  community coverage bundles are live.** Promoted `6a95c8b9` (PRs #178, #179, #180,
+  #181, #184 and #185) at 21:01 UTC as Brain release `sha256:de37737b…`, Worker
+  `8afdb303…`, deployment `da76ba1b…`. The exact promoter closed with `deployed` and
+  a passing live canary. Migration `0021` adds only the empty `article_coverage`
+  table and its five indexes; an encrypted backup and two in-memory rehearsals passed
+  first. Wrangler's output for the file import was not JSON, so, as for `0020` on
+  2026-11-10, a read-only reconciliation confirmed the schema and the file was not
+  applied again. Two full private builds qualified the candidate on 2026-11-13, and
+  the semantic diff against `47e3b307` found no change to Brain data. The freeze on
+  `main` set for this release was lifted after activation.
 - 2026-11-10 (UTC): **Self-service pipeline intake is live.** [PR #168](https://github.com/Deicyde/WikiLean/pull/168)
   deployed at 03:22 UTC from `3b32c8cb`, release `sha256:47e3b307…`,
   Worker `89e1f1a4…`, deployment `8fcc8d11…`. The exact promoter closed with

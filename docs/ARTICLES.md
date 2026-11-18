@@ -238,6 +238,15 @@ Records follow proposal §2.7, with these points of the agreement:
   `challenge_pending` marks a record that a prominence overturn to `subject` or `central`
   put under a challenge rule after the challenge ran: a challenge is owed and none has
   judged it. The pages say "not challenged yet (a challenge is pending)".
+  What `survived` is worth depends on the rules the challenge ran under. Under judgment
+  rules 4 and below a `confirm` owed a witness and nothing else, and the 2026-11-09
+  community review changed 82 links that carried `challenge: survived` (issue #175).
+  From judgment rules 5 the gate holds the location a verdict leaves to every relation
+  rule and to the three checks — the facts the passage asserts and which of them the
+  declaration states, a `broadMatch`'s direction, and the passage's kind
+  (docs/PIPELINE.md, stage 7). A set says which rules it was produced under through its
+  run's `gate.json`, not through the record: the record's `challenge` value is the same
+  word either way.
 - **An absence's receipt counts** are `receipt: {sha256, queries, candidates}`, where
   `queries` and `candidates` are the lengths of the receipt file's `queries` and
   `candidates` lists, a repeated entry included (contract note 3).
@@ -765,6 +774,36 @@ producer's maintainer before the first real set is published (section 14, item 7
     (`smoke-2-d1`, `smoke-2-d1c`, `smoke-2-d1e`) build byte for byte the stores the previous
     builder built.
 
+### One sentence, one passage: the producer's sentence check (issue #172)
+
+A passage of a set is one span of one layer, and the store and the overlay both take the
+producer's cut as given: `passage_key` is the sha256 of the page id and the span
+(above), the overlay groups tags by that key (§10a), and `mergedStatus` derives a
+passage's status from that passage's own locations. **Nothing downstream joins two
+passages of one sentence**, so a set that cuts a sentence into fragments gives each
+fragment a status, links and a tag key of its own, and the reader counts one sentence as
+two to four passages. Issue #172 found 20 such sentences (43 passages, 10 articles) in
+the published records: a link that formalizes the sentence's claim sitting on a fragment
+that states nothing ("If x and y are integers,"), and reviewers unable to correct one
+fragment without mismarking the rest.
+
+The fix is in the producer, where the cut is made: the locate gate's **statement-cut
+rule 4** (`scripts/pipeline/gate/`, docs/PIPELINE.md stage 7) refuses a passage that
+starts inside a sentence anywhere the inventory's own rules do not cut — after a bare
+"and" or "or", at a list comma, or at the step from a hypothesis to its conclusions —
+and names the passage before it too, since the span-end rule ends that one where this
+one starts. A refusal calls the inventory worker again to re-cut, exactly as every other
+span fault does; `wikilean.articles.article/1` and the overlay are unchanged, and the
+builder checks nothing new.
+
+**The 48 published articles keep their fragments.** A sealed set is never rewritten and
+this check cannot re-cut one: those passages stay as they are, with their keys, statuses
+and community tags, until a new locate run re-cuts and re-locates those articles and a
+new set is built and published — which is the operator's decision, not a consequence of
+the check. `python3 scripts/pipeline/gate/audit_sentences.py --record-set <dir>
+--sources <dir>` measures a set against the check first, read-only, printing passage
+keys and counts and no article text.
+
 ## 4. The store (v1)
 
 ```
@@ -775,7 +814,11 @@ articles/v1/articles/<pageid>.json          the article's view model (below)
 articles/v1/records/<pageid>.jsonl          that article's records, byte for byte as sealed
 articles/v1/index/<shard>.json              title -> page id and summary counts, sharded
 articles/v1/reader/<pageid>.html            optional (--reader-html): the article's pinned revision, its passages marked
+articles/v1/carry/<pageid>.json             optional (--carry): what a re-cut did to each passage of the cut before it
 ```
+
+An article built from a statement set (§4a) has no `records/<pageid>.jsonl`: its
+passages are unchecked, and there is no record to copy.
 
 - **Article view model** (`wikilean.articles.article/1`): `pageid`, `title`, `revision`,
   `source_id`, `wikidata`, `assessment`, `campaign`, `universe {id, sha256, frozen,
@@ -868,11 +911,124 @@ articles/v1/reader/<pageid>.html            optional (--reader-html): the articl
   central passages are the article's statements, and the pages count them apart from the
   supporting ones (worked examples, setup sentences): on smoke 2's real set, 204 of 331
   passages are supporting, and they set the headline of the bar over all passages.
+## 4a. A published cut in the store: `unchecked` passages (phase 1)
+
+The maintainer's ruling of 2026-11-12 split the **cut** (which sentences state something,
+and where their edges are) from **locate** (whether Lean has them) and publishes the
+first alone. A sealed `wikilean.statement-set/1` ([STATEMENTS.md](STATEMENTS.md)) holds a
+cut and nothing about Lean, and `build_store.py --statement-set <dir> --tagging-universe
+<file>` builds it into the same store as a record set:
+
+```bash
+python3 scripts/articles/build_store.py --statement-set <cut> --tagging-universe <universe.json> --out <store>
+python3 scripts/articles/build_store.py --record-set <set> --statement-set <cut> \
+    --tagging-universe <set>/universe.json --campaign <id> --out <store>      # mixed
+```
+
+**The mixed-build rule.** #177's combine rule holds, with one clause added: **every set
+of a build resolves to one `universe.json`, byte for byte**. A statement set carries
+none, so `--tagging-universe` supplies its bytes, and in a mixed build those must be the
+record sets' own file — pass `<set>/universe.json`. Page ids and title keys stay disjoint
+across every set. The schema, sourceset, `skill_commit` and status-rule agreement is a
+**record-set** rule only: a cut has none of those to agree on.
+
+**The tagging universe is not decoration.** `POST /api/articles/tag` requires `library`
+to be in the article's universe and derives `pair_key` from that library's `repo`
+(§10a). So the rule is: **the tagging universe's `(library id, repo)` pairs must be the
+ones phase 2 will search.** Commits may differ — `pair_key` has no commit in it. The
+builder cannot check that and does not try; the operator holds it.
+
+### Exactly what the store carries
+
+Everything below is **within v1**: the schema strings do not change, and a store with no
+statement set is byte for byte the store it always was (test
+`test_a_build_with_no_statement_set_is_byte_for_byte_the_build_it_was`). The fields
+appear only in a build that holds at least one statement set.
+
+**Per passage** (`passages[]` of `articles/v1/articles/<pageid>.json`), beside the
+fields every passage has:
+
+| field | value | note |
+|---|---|---|
+| `outcome` | `"unchecked"` | the fourth outcome, beside `located`, `absent` and `unresolved` |
+| `status` | `null` | nothing derived a status, because nothing searched |
+| `locations` | `[]` | |
+| `absence`, `basis`, `coverage`, `unresolved` | `null` | |
+| `statement` | the worker's one-sentence restatement of the passage | **new**: a located passage has nowhere to put it. Not to be confused with a *location*'s `statement`, which is the Prop-valued-definition flag |
+| `conjuncts` | `[{id, text}, …]` on a compound, else `null` | 2 to 5, ids distinct |
+| `shape` | one of `existence_uniqueness`, `iff`, `cases`, `conclusions`, `equations` on a compound, else `null` | **an addition beyond the design's list**, which named `statement` and `conjuncts`; a reader that does not know it is unaffected |
+
+`passage_key`, `id`, `item`, `kind`, `section`, `prominence`, `quote`, `quote_capped`,
+`passage_ends_in_suffix` and `subject_uri` are what they are on any passage. The quote is
+the sealed one, which is the format's capped head (`records.cut_passage`), so a passage
+reads the same before and after it is checked. `subject_uri` is the revision's permalink,
+derived from the `enwiki-<pageid>-<revision>` source id rather than read off a record,
+since there is no record.
+
+**Only `formal_math` statements are published.** A locate run searches those and no
+others, so publishing them and only them is what makes "0 of 89 checked" the same 89
+phase 2 will answer for. A set's `expository` and `non_math` statements stay in the
+sealed set.
+
+**Per article** (`articles/v1/articles/<pageid>.json`):
+
+| field | value |
+|---|---|
+| `checked` | `false` for an article built from a statement set, `true` for one built from a record set. Present on **every** article of a build that holds a statement set, and on none otherwise |
+| `records_sha256` | `null`, and **no `articles/v1/records/<pageid>.jsonl` is written**: there is no record |
+| `record_set` | the statement set's `SEAL.json` sha256, as a record-set article's is its own seal's |
+| `licence` | `{"text": "CC-BY-SA-4.0", "mapping": "CC0-1.0"}` — the source family's licence, since no record names one |
+| `universe` | the **tagging** universe, in the usual `{id, sha256, frozen, libraries}` shape |
+| `seal` | `{set_id, schema: "wikilean.statement-set/1", created, producer_commit, cut_rules: {span_end_rule, statement_cut_rule}}`. No `status_rule` and no `byte_budget`; `producer_commit` is **not** written as `skill_commit`, because the cut was produced by WikiLean's pipeline and not by formal-companion |
+| `summary.by_status` | gains a sixth key, `not_checked` |
+| `summary.by_prominence.<p>.by_status` | the same |
+
+**Per store**:
+
+| where | what |
+|---|---|
+| `current.json` `counts.by_status`, `counts.by_prominence.*.by_status`, `counts.by_importance.*.by_status` | each gains `not_checked` |
+| `current.json` `record_set` / `record_sets[]` | a statement set's entry is `{seal_sha256, sourceset, set_id, schema, created, producer_commit, cut_rules}` — no `skill_commit`, no `byte_budget`, no `status_rule` |
+| index shards | `fields` gains `"not_checked"` **appended after `libraries`**, and each row gains the count in that position. The Worker looks a field up by name (`raw.fields.indexOf`), so appending is the v1-safe move |
+
+**`not_checked` is never folded into `not_formalized`** — not in a list, not on an
+article, not on the dashboard — and never into `unresolved` either. The three mean
+different things: nothing searched, a locate run ran and settled nothing, and every
+library was searched and it is not there.
+
+**What an older Worker does with it.** `articles-render.ts`'s `asStatus` degrades a
+status outside its vocabulary to `unresolved`, and a passage with a null status is
+already set aside — "No status yet", uncounted and unhighlighted. `shownStatusCounts`
+builds a fixed-key object, so a sixth `by_status` key is ignored. So an early upload is
+survivable; the Worker should ship first anyway.
+
+**The side files beside a cut.** A build may hold a statement set and the five side files
+(§5, "Supplements") together — one store is what the operator uploads, and a published cut
+must not cost the located articles what their side files say about them. Each side file
+describes what it is about:
+
+- **`--reader-html`** publishes a cut article's marked revision like any other's. A
+  statement set seals every statement's span on the pinned layer, which is all the side
+  file joins on, and each mark carries the passage's own outcome, `data-status="unchecked"`
+  — the design's neutral highlight, which the Worker styles exactly as it styles
+  `not_checked`. A statement the store does not publish (`expository`, `non_math`: no
+  locate run will ever search it) is not a passage of the article, so the body may not mark
+  it, and the marked text must still be the span the cut sealed.
+- **`--passage-text`** attaches to a cut article's passages on the same sealed spans.
+- **`--signatures`** describes the declarations a card links; a cut article has no card, so
+  nothing of it attaches there.
+- **`--provenance`** describes the locate runs that made the records: a cut has none, so it
+  says nothing of a statement set and a cut's article carries no `provenance`. Its own
+  provenance is the `seal` the article already carries (set id, cut rules, producer commit).
+- **`--audit-summary`** lists the seal sha256 of every sealed set of the build, a cut's
+  among them.
+
 - **Changing v1.** A field is added within v1 only when a store without it still reads
   correctly: the schema strings stay `…/1`, and the Worker treats the field as optional,
   falling back to what an older store allows. So `basis`, `coverage`, `statement`,
   `quote_capped`, `passage_ends_in_suffix` and `by_prominence` are absent from stores built
-  before them; without `quote_capped` the page reads a 12-word quote as a head, without
+  before them, and `checked`, `not_checked`, a passage's `statement`/`conjuncts`/`shape`
+  and the `unchecked` outcome are absent from a store with no statement set (§4a); without `quote_capped` the page reads a 12-word quote as a head, without
   `passage_ends_in_suffix` it reads a head's passage as going on past its suffix, and without
   `counts.by_prominence` the dashboard leaves out its central-statements line (the article
   page counts its own passages). Removing or redefining a field, or changing the shard key,
@@ -896,6 +1052,7 @@ articles/v1/reader/<pageid>.html            optional (--reader-html): the articl
 python3 scripts/articles/build_store.py --record-set <set> --out <store>            # new directory only
 python3 scripts/articles/build_store.py --record-set <set> --out <store> --check    # compare, write nothing
 python3 scripts/articles/build_store.py --record-set <set> --out <store> --replace  # rebuild in place
+python3 scripts/articles/build_store.py --statement-set <cut> --tagging-universe <file> --out <store>  # a published cut (§4a)
 ```
 
 The builder runs only under CPython 3.12.13 or a later 3.12 (CI runs a later 3.12;
@@ -948,6 +1105,66 @@ cites the set's commit as its "producer commit" without naming a producer.
 python3 scripts/articles/build_store.py --record-set <batch-1> --record-set <batch-2> --campaign <id> \
     --producer <batch-1-set-id>=formal-companion --producer <batch-2-set-id>=WikiLean --out <store>
 ```
+
+### `--carry`: the map of an earlier cut
+
+A re-cut of an article retires the `passage_key`s of the cut before it, so the community
+tags written on those passages stop appearing: the overlay merge is driven by the
+store's passages, and the sealed store no longer holds them. The D1 rows are not
+deleted.
+
+`scripts/pipeline/carry.py` maps an old cut onto a new one from spans and span text
+alone (docs/STATEMENTS.md section 5a), and `--store-out <dir>` writes one
+`<pageid>.json` a page. `build_store.py --carry <dir>` publishes those at
+`articles/v1/carry/<pageid>.json`, canonically, beside the article each is a map of:
+
+```bash
+python3 scripts/articles/build_store.py --record-set <set> --carry <dir> --out <store>
+```
+
+Each document is `wikilean.pipeline.carry/1`, eight keys exactly: `schema`, `pageid`,
+`old` and `new` (each `{source_id, layer_sha256, cut_id}` plus the cut it came from —
+`inventory_run` or `statement_set`), `same_layer`, `passages` (one entry per passage of
+the **old** cut: `passage_key`, `item`, `span`, `scope`, its old `quote`, its `fate` and
+the new passages it went `into`, with `scope_changed` and `conjuncts_changed`),
+`new_passages` and `counts`. So the reader can show an orphaned tag in a fold — "from an
+earlier cut of this article", with the fate and the words it was written on (the quote is
+derived from the old layer, so it is words the reader really showed) — and an editor can
+re-apply one. **Nothing auto-moves:** a tag carries only on the `unchanged` fate, where
+the key is byte-identical and nothing has to move; every other fate means the text
+changed, and no mechanical re-pairing is honest.
+
+What the builder refuses, so that a document filed under a page id is a map of *that*
+article's previous cut and not arbitrary JSON:
+
+- a file that is not a `<pageid>.json` named by an ASCII decimal page id, a symlink, or
+  a `--carry` path that is not a directory;
+- a `pageid` that is not the integer the file name is (`1001.0` is not a page id);
+- a page the build does not hold;
+- a schema that is not the carry schema, a missing or stray top-level key, a
+  `same_layer` that is not a boolean, a side missing `source_id`/`layer_sha256`/`cut_id`
+  or carrying a sha that is not 64 hex;
+- a `same_layer` that is not what the two sides' own `layer_sha256` say: the document
+  states both layers, so the claim is read off them rather than taken;
+- **a `new` side whose `source_id` and `layer_sha256` are not the article's own** — the
+  new side is the cut this store was built from, or the map is of some other history;
+- an entry with a stray or missing key, a `passage_key` that is not 64 hex, a fate
+  outside the vocabulary (`new_passages` takes `new` alone), or no `into` list;
+- an `into` entry that is not `{passage_key, item, span, scope}` with a 64-hex key, or a
+  fate whose `into` is not the shape that fate means (`carry.py`'s own `_fate`):
+  `unchanged` is **one** new passage **with the entry's own `passage_key`** — which is
+  the whole basis for carrying a tag on it and nothing else — `split` is two or more,
+  `removed` and `changed` none, and `end_moved`, `merged` and `reshaped` exactly one;
+- a `scope_changed` or `conjuncts_changed` that is not a boolean where the passage went
+  somewhere, or not null where it went nowhere (there was nothing to compare);
+- `counts` that are not the entries' own fates, recomputed: the fold shows the counts
+  without reading the entries, so they are not taken on trust.
+
+A page of the build with no document is normal (it was never re-cut). `current.json`
+gains `carry: {pages}` **when there is a map to publish**; `--carry` over a directory
+with nothing in it builds the store it would have built, so an operator who always passes
+the flag gets no difference on the runs with no re-cut. Optional within v1: a build
+without `--carry` is byte for byte the build it always was.
 
 ### Supplements: five optional side files
 
@@ -1002,8 +1219,10 @@ python3 scripts/articles/build_store.py --record-set <set> --out <store> \
   header (binders before the colon, no proof or value), `type` the whole corpus type when the
   header was shortened (`elided`).
 - **`--provenance`** (`wikilean.articles.provenance/1`): `runs` by run id, `record_sets` by
-  set id and `records` by page id, one entry per records line. Every set of the build must be
-  described: its seal sha and campaign, and the runs its campaign token names, and the
+  set id and `records` by page id, one entry per records line. Every **record** set of the
+  build must be
+  described (a statement set has no locate run and no records, and is not described here): its
+  seal sha and campaign, and the runs its campaign token names, and the
   inventory run its locate run names (`inventory_run`, the run that chose the passages, each
   one's kind and its prominence), when it names one. Each run must check: its mode (locate,
   locate-challenge for the challenge run, whose `challenged_runs` name the locate run, or
@@ -1081,7 +1300,10 @@ python3 scripts/articles/build_store.py --record-set <set> --out <store> \
     with at most a space between two of them; each mark carries its passage's status, none
     nests in another or crosses an element boundary, and only a passage's first mark carries
     its id; a passage with no status (an unresolved one) has no mark at all: it gets no
-    highlight until it is read (the maintainer's decision, 2026-11-02), so `unplaced` lists it;
+    highlight until it is read (the maintainer's decision, 2026-11-02), so `unplaced` lists it.
+    On an article built from a statement set the status every mark carries is `unchecked`, the
+    passage's own outcome (§4a) — a neutral highlight, not the absence of one — and a statement
+    the store does not publish is not a passage of the article, so the body may not mark it;
   - `unplaced` lists, as `{item, reason}`, exactly the passages the html leaves unmarked, and
     `marks` and `passages`, when given, are the html's;
   - no file that is not free (`reader_images`): every file the html fetches (an image's `src` and
@@ -1148,7 +1370,7 @@ python3 scripts/articles/build_store.py --record-set <set> --out <store> \
   (letters, digits, spaces and `,.()·/+:;'&%_-`, at most 160 characters) and an id a token,
   each id once. Any other key is refused. Every article and `current.json` gain `audit:
   {run_id, operator, started, ended, models, blind, independent, items, figures}`, which the
-  "About this data" folds cite (section 8); without it they say the build carries no accuracy
+  "How these links were made" sections of the About folds cite (section 8); without it they say the build carries no accuracy
   figure. The audit's maker writes the summary from the audit's own records.
 
 Every article of a build with any of them carries `supplements` (each side file's schema and
@@ -1255,7 +1477,9 @@ is a remote write, and only the maintainer runs it, from the operator Mac (secti
 | `GET /api/articles/feedback/export` | section 10 | `no-store` |
 | `POST /api/articles/tag` | section 10a: add a Lean declaration to a passage, or change the relation or note of a location | `no-store` |
 | `POST /api/articles/tag/:pair_key/state` | section 10a: a soft delete that leaves a gravestone, and its undo | `no-store` |
-| `GET /api/articles/overlay/:pageid` | section 10a: one article's community rows; takes the meta budget | `no-store` |
+| `POST /api/articles/coverage` | section 10a: "these 2 to 5 links together state this passage" (migration 0021) | `no-store` |
+| `POST /api/articles/coverage/:bundle_key/state` | section 10a: withdrawing a bundle, with a gravestone, and its undo | `no-store` |
+| `GET /api/articles/overlay/:pageid` | section 10a: one article's community rows, tags and bundles; takes the meta budget | `no-store` |
 | `ALL /atlas`, `/atlas/*`, `/api/atlas/*` | **301** to the same path under `/articles` or `/api/articles/`, query string kept (`index.ts atlasRedirect`; section 0). Reads nothing, so it answers whether or not `ARTICLES` is bound | none |
 
 Two paths under these prefixes are **not** this plane's and are untouched: the exact
@@ -1328,10 +1552,66 @@ so a second run is a no-op.
 
 The UI is server-rendered (`wiki/src/articles-render.ts`) with one small vanilla enhancement
 (`site/assets/articles.js`) and one stylesheet (`site/assets/articles.css`), both copied by
-`wiki/scripts/build-public.ts`. The pages work without JavaScript, except Confirm/Report
-and the live list filter.
+`wiki/scripts/build-public.ts`. The pages work without JavaScript, except Confirm/Report,
+the live list filter and the list's column sorting.
 
-- **Coverage strip.** Under a "Coverage" heading: passages checked and Lean locations, a
+### The article first (the reader-polish pass, 2026-11-11)
+
+The maintainer's verdict on the pages as they stood was "right now it is kinda slop": an
+article opened with a wall of pipeline metadata, a bar of eleven status and library chips,
+the same counts again in the side panel, and a banner over all of it. What an article page
+shows now, in this order:
+
+1. the breadcrumb and the title;
+2. **one line of counts** (`countsLine`): "3 passages · ✓1 formalized · ◐1 statement only ·
+   ✕1 not formalized · 1 with no status yet". A status no passage has is left out; the
+   passages with no status are counted apart, in the muted tail, as everywhere else;
+3. **the legend, which is also the filter** (`statusKey`): one swatch, icon and word per
+   status, each a button the scripts press (`data-filter="status:<s>"`, `aria-pressed`).
+   It carries no counts — the line above it does — and what each status means is the
+   button's `title` and the About fold's "What the colours mean";
+4. the line a filter writes, and its "Show all passages" button;
+5. **"More ways to filter"**, a closed fold holding the library chips and, in the reader,
+   "The article's own statements" and "Dim the rest of the text";
+6. **"About this page"**, ONE closed fold (`aboutFold`) holding every other figure: the
+   pinned revision and the WikiProject assessment, the article's own statements and its
+   subject passages, what the colours mean, the libraries searched, what an audit measured
+   and which runs made the links, and how the text and the Lean code are shown;
+7. then the article itself (the reader) or the passages (the card list).
+
+The words outside that fold are a reader's: "libraries searched", "pinned revision", "main
+statement". The pipeline's own — universe, frozen, central, campaign, coverage — stay
+inside it, in the card Details folds, and in `data-*` attributes, which is where the store's
+tokens belong. `test/articles.test.ts` (`outsideAbout`) holds that line.
+
+The article list (`/articles`) is one row per article: its name, a stacked bar of its
+statuses (one image whose accessible name is "3 passages: 1 formalized, 1 statement only,
+1 not formalized"), how many passages were checked, and how many libraries hold a match
+(named in the cell's title). Its four heads carry the key `articles.js` sorts by; without
+the script they are plain words over the server's own title order. The per-status columns,
+the per-row library chips and the importance column are gone; importance stays as a table
+inside the list's "About this build" fold.
+
+The reader's side panel is a narrower column (`clamp(300px, 26vw, 400px)`), can be folded
+away ("Hide the passage list", remembered in `localStorage` under `wl-atlr-panel`, wrapped
+in try/catch), and comes back when a passage is selected, because that is where its cards
+are. Its rows wrap to two lines and are cut at the end of a line, never inside a word; the
+whole of a row's first words is its `title`. On a phone the panel is the bottom sheet it
+always was.
+
+The home page (`wiki/src/home.ts`) shows one real example — a passage of a real article
+beside the Lean declaration that formalizes it — and the published build's own totals, both
+read from the store at request time (`articles.ts` `articlesExample`, chosen
+deterministically: the first index shard, its article with the most formalized passages,
+that article's first formalized passage, its best-ranked location). Nothing of it is written
+in the repository, and an unbound, unpublished or unreadable store simply leaves the block
+out.
+
+What follows describes the pieces themselves; where it says "strip", the pieces now sit in
+the head and the About fold above.
+
+- **Coverage figures.** Formerly a "Coverage" strip, now the counts line, the legend and the
+  About fold: passages checked and Lean locations, a
   coverage bar whose segments are filled with patterns (solid, hatched, dotted,
   cross-hatched), and filter chips by status and by
   library. Each status chip carries a swatch of its fill, so the chips are the bar's
@@ -1442,8 +1722,8 @@ and the live list filter.
   states the dataset's audit status, so it is never a badge on a card, and it is these pages'
   own line: the article box (section 9) does not carry it. The notice changes only with a
   release.
-- **Accuracy.** What an audit measured is in the "About this data" fold (the dashboard's "About
-  this build"), first, and changes with a store build. With an audit summary in the store
+- **Accuracy.** What an audit measured is in the "About this page" fold's "How these links were
+  made" section (the list's fold is "About this build"), first, and changes with a store build. With an audit summary in the store
   (`--audit-summary`, section 5) the fold says how the audit stood to the runs it judged ("blind,
   not independent"), gives each figure as the estimate it is, with its interval and what it rests
   on ("…: 80% (95% interval 62–91%), from 16 drawn of 400, weighted by relation and library, an
@@ -1622,14 +1902,15 @@ checks its bytes against the view's `reader.sha256`; a missing or different file
 list, which `?view=cards` always gives.
 
 - **Layout.** WikiLean's header with a second row: an "Article | Card list" switch (which
-  carries the selected `#p-<hex>` across), the card list's status and library chips, "Central
-  only" and "Dim other text". Below it, the revision in WikiLean's `.wl-article-body` (its
-  headings, figures, tables and MathML formulas as the parse output gives them, links to
-  Wikipedia or, for an articles article, to its reader), and a sticky panel beside it,
-  `clamp(380px, 34vw, 520px)` wide. Below 1000px the article is the page and the panel a bottom
+  carries the selected `#p-<hex>` across) and the "Hide the passage list" button. Below it, the
+  page head (title, counts line, legend-filter, the two folds — see "The article first" above),
+  the revision in WikiLean's `.wl-article-body` (its headings, figures, tables and MathML
+  formulas as the parse output gives them, links to Wikipedia or, for an articles article, to
+  its reader), and a sticky panel beside it, `clamp(300px, 26vw, 400px)` wide. Below 1000px the
+  article is the page and the panel a bottom
   sheet (46% of the screen, 52% below 600px) that a tap opens; a "N passages" button opens it on
   the index, from its top. With the sheet open the header drops its second row (the switch and
-  chips come back when it closes), the sheet's handle, nav and ✕ share one strip, and it leaves
+  the button come back when it closes), the sheet's handle, nav and ✕ share one strip, and it leaves
   out the passage's text, which the article shows just above it; below 600px the header leaves
   out the search box and the "Articles" title link (the breadcrumb names it). Every
   in-page jump, Wikipedia's own `[1]`, `↑` and section links among them, stops below the sticky
@@ -1657,9 +1938,10 @@ list, which `?view=cards` always gives.
   draws the viewer's 4px bar in the margin from its first line to its last, writes `#p-<hex>`
   with `replaceState` and fills the panel. A filtered-out passage reads as plain text.
 - **Panel.** With nothing selected: the passages in the article's reading order under its
-  section headings (status, first words, lead declaration and "+N", or "not found"), the
-  coverage bar and central-statements line, the legend of the four highlights and of the
-  relations, "About this data" and the data links. With a passage selected: "← All passages",
+  section headings (status, first words over two lines with the whole of them as the row's
+  `title`, lead declaration and "+N", or "not found"), the community-edit switch when the
+  article has one, the fold of relation labels and the data links. The counts, the legend
+  and every other figure are in the page head beside the article, said once. With a passage selected: "← All passages",
   a stepper "‹ 2 of 58 ›" over the passages the filters show, and the passage's section, which
   the server renders hidden for every passage: the card list's own block (heading, status pill
   and sentence, the passage's text clamped to three lines with "Show all", then exactly the
@@ -1881,7 +2163,8 @@ overlay, always; and the default view is both, merged, labelled.**
   editing worth doing; the passage says both, "With community edits: … As published it is …". **"As published"** (`?overlay=off`) shows the sealed statuses
   and the sealed cards; the merged view is the default, because otherwise an edit has no
   visible effect and nobody makes a second one.
-- A community removal of one part of a survived coverage claim withdraws the claim.
+- A community removal of one part of a survived coverage claim withdraws the claim. The
+  community can also make a coverage claim of its own ("The coverage bundle", below).
 - **Caching, and the trap it avoids.** `/api/articles/article/:pageid` stays the sealed view
   model verbatim, `public, max-age=300`, cacheable and hash-checkable: the overlay is **not**
   merged into it. The merge happens server-side, per request, on pages that send no
@@ -1890,6 +2173,79 @@ overlay, always; and the default view is both, merged, labelled.**
   leads, provenance sits behind a closed Details fold, and no voting data is shown. A
   community card carries no Confirm/Report: those are a verdict on a *sealed* location, and
   their `provenance` CHECK keeps that column honest.
+
+### The coverage bundle (issue #173, migration 0021)
+
+> **New after release R1** (2026-11-12). Migration **0021**, table `article_coverage`, routes
+> `POST /api/articles/coverage` and `POST /api/articles/coverage/:bundle_key/state`.
+
+A community tag is one declaration with one relation, so until this the overlay had no way to
+say **"these declarations together state this passage"**. When two declarations each state one
+clause and together state all of it, the honest relation on each link is `hasPart` — and
+`hasPart` alone is always partial (the §2.6 table, both rows). So an editor correcting the
+relations the pipeline overstated made the *status* wrong, and leaving them overstated kept the
+status right while misdescribing every link. The 2026-11-09 review held back ten relation
+changes on eight passages for exactly that reason.
+
+The store has had the concept since decision D1: a **coverage claim** over a passage's `hasPart`
+locations, which counts as one more location through a fixed stand-in (section 3, check 6, and
+the D1 notes above). The overlay now mirrors it.
+
+**The row.** One per `bundle_key`, which is
+`sha256` of the passage key and the parts' pair keys, **sorted, one per line** — the producer's
+own recipe (`build_store.bundle_key`, cflib.hashing). Sorted, so the same parts named in either
+order are the same bundle and the same row; revision- and commit-free, like the other two keys,
+so a bundle survives a rebuild. Columns mirror `article_tags`: `parts` (JSON, 2 to 5 pair keys),
+`conjuncts` (JSON, 2 to 5 `{id, text, part}`), `relation`, `state`, `version`, `added_by`,
+`actor_type`, `removed_reason`, and the copied `campaign`, `revision`, `record_set` and
+`universe_sha256`.
+
+**What the route checks.** Every part is a pair key **of that passage** — a sealed location, or
+a community tag nobody has removed (404 otherwise); 2 to 5 of them, each named once; 2 to 5
+clauses, `c1`..`cN` in order, each naming one part, each part stating at least one, each text one
+plain line of at most 500 characters (the tag note's cap, not the producer's 1,000); and
+`relation` one of the three **strong** relations, `exactMatch`, `closeMatch` or `broadMatch` —
+the bundle's own, its weakest part's. The route does **not** require the parts to be `hasPart`
+yet: relabelling and bundling are two edits and may be made in either order, so the answer says
+`counts` instead, and the page says so in words.
+
+**The merge.** A live bundle counts only when **every part is a live merged location whose
+relation, after any community override, is `hasPart`**. Removing a part withdraws it, as it
+withdraws a sealed claim; relabelling a part away from `hasPart` withdraws it too, because it is
+then a part of nothing. A bundle that counts is judged by a **TypeScript port of the builder's
+own stand-in** (`part_finished` / `coverage_location` / `coverage_status`,
+`scripts/articles/build_store.py`), in `articles-render.ts` `coverageStatus`: every part finished
+(proved, or data) makes it a proved declaration on the theorem row and data on the definition
+row; any unfinished part makes it `statement_only` on both. Its relation is `exactMatch` under
+status rule 1 and the bundle's own under rules 2 and 3. The port is pinned against the shared
+parity tables both languages already run (`scripts/articles/fixtures/status_parity{,-2,-3}.json`:
+Python through `build_store.derive_passage_status`, TypeScript through the port —
+`wiki/test/articles.test.ts`, "the coverage stand-in agrees with the builder").
+
+Each part keeps **its own** proof status: a pipeline part keeps the sealed one, and a
+community-added part is `statement_only` (the same `COMMUNITY_PROOF_STATUS` a community card
+gets; #169 proposes looking its real status up). So a bundle holding any community-added part is
+unfinished and gives **statement only at best** — the rule that a community edit never mints a
+formalization claim holds here too.
+
+The **sealed** claim's own reading is unchanged: the builder stamped its status into the view
+model and `coverageStatus` reads it, withdrawing it when a part is removed. A sealed claim is
+not re-judged against overridden relations; only a community bundle is.
+
+**The reader.** A bundle is one group under the cards it is made of — not a card of its own,
+because the parts *are* the cards above it. It says who added it, what it does ("Formalized by 2
+parts together", "Stated by 2 parts together, not all of them finished", or "These 2 parts no
+longer state the passage together: …"), lists each part with the clause it states, and carries
+**Withdraw this** for any signed-in editor (an agent may not withdraw a person's bundle, exactly
+as it may not remove a person's tag). The form, "These together state the passage", is offered
+only where it can be true: the merged view, a signed-in editor, and two or more live links that
+each state part of this passage. It takes one clause per ticked part. Nothing here is cached:
+the merge is per request, so no render key is bumped, and `/api/articles/article/:pageid` stays
+the sealed view model.
+
+`GET /api/articles/overlay/:pageid` lists the bundles beside the tags, parts and conjuncts
+parsed. Both coverage routes answer **503** until migration 0021 is applied; everything else,
+tags included, works without it.
 
 ### Abuse controls (§2.5, §2.6, decision 3)
 
@@ -1938,7 +2294,28 @@ overlay they are shown a checkbox and the write is refused (403 `{cc0_required: 
 cc0_version, cc0_text}`) until they tick it. The acceptance is one row in `user_agreements`
 with its **timestamp** and the wording's version id, and it is never asked for again. The
 wording is in `wiki/src/articles-overlay.ts` (`CC0_AGREEMENT_TEXT`); changing it in a way
-that needs re-acceptance is a version bump.
+that needs re-acceptance is a version bump. **Which versions a gate takes is per surface**:
+`agreementStands` reads `CC0_ACCEPTED_VERSIONS` for these tag routes and for
+`submissions.ts` — the superseded `cc0-1.0/2026-11` said "the mapping data I add here —
+the declaration names, relations and notes", which is exactly what they store, so those
+acceptances keep standing and nobody is asked again.
+
+The same row governs the Brain's two text-storing writes, `POST /api/brain/edge` and
+`POST /api/brain/quickstatements`: one gate (`requireAgreement`), one table, both planes
+(`docs/BRAIN-EDITS-ROADMAP.md`). Those two take `CC0_BRAIN_VERSIONS`, which is the current
+version alone: only the 1.1 wording names Brain connections and their evidence notes, so a
+contributor still on 1.0 is asked once there, with the same `cc0: true` checkbox, and an
+agent whose owner is on 1.0 is refused until the owner accepts the update at `/agents`
+(which says one is waiting). Accepting an update rewrites the row's version in place and
+**keeps the original `accepted_at`** — the table's one timestamp records when the person
+first gave the grant — so the moment an update was taken is not recorded.
+
+The Brain's pages carry no Turnstile widget, so an acceptance taken there records
+`verified_at` NULL. That is **not** a way past the check this plane makes: when a secret is
+configured, a tag route asks an unverified acceptance for the challenge at its next edit
+and stamps `verified_at` once it passes (the reader renders the widget, without the
+checkbox, for exactly that state). A deployment with no secret skips the check as before,
+and the acceptance stays unverified.
 
 **An agent cannot agree to a licence; its owner can, and must have.** An agent's write is
 refused until the person who minted it has accepted, which is the second reason every agent
@@ -2099,7 +2476,7 @@ recommendation.
    pages from the public baseline, so this change leaves them as they are.
 9. **The notice.** *Decided (Jack, 2026-11-02):* one line under the header of every page of the plane,
    "Preliminary: these links have not yet had an independent audit.", never a badge on a card.
-   The figures an audit measured go in the "About this data" fold, from the store (section 8,
+   The figures an audit measured go in the About fold, from the store (section 8,
    "Accuracy").
 10. **Audit before upload.** *Decided (Jack, 2026-11-02):* a blind audit of a sample of batch
     1's links runs before its store is uploaded. Its figures reach the pages through the store's
@@ -2332,6 +2709,26 @@ recommendation.
   highest z-index inside the revision covering neither the header, the panel, the page head nor
   the footer (and on a phone neither the header nor the panel's button), the switch to the card
   list and back, and Confirm from the panel.
+- `wiki/test/articles-coverage.test.ts` (in `npm run test:ci`) covers the community coverage
+  bundle (issue #173) on a fixture whose sealed claim is stripped, so the two `hasPart` parts
+  alone publish "partial": the row and its key (the same parts in either order one row), every
+  validation refusal (parts, clauses, their ids and their parts, the strong relations, the
+  caps), the gates (anonymous, blocked, cross-origin, the pipeline bearer, the brake, the burst
+  and daily caps counting tags and bundles together, the CC0 first edit, an agent whose owner
+  has not accepted, an agent against a person's row and a person against an agent's), the CAS,
+  a `/1` set, an unbound store, a body over the cap, the route's 503 without migration 0021
+  while tags still save, withdrawal and restoring, and the merge (a bundle putting the passage
+  back to formalized, a removed part and a relabelled part each withdrawing it, a
+  community-added part capping it at statement only, the page's group and its clauses, and "As
+  published" showing none of it). The stand-in itself is pinned cross-language in
+  `wiki/test/articles.test.ts`, "the coverage stand-in agrees with the builder": every coverage
+  case of the three shared parity tables, which Python runs through
+  `build_store.derive_passage_status`, through the TypeScript port, one status rule per table.
+  `wiki/test/authz.test.ts` carries both coverage routes in the matrix, and
+  `wiki/e2e/articles.spec.ts` drives the form on a fourth harness listener (port + 3, the
+  bundle store): tick two parts, say what each states, accept the licence, and the passage
+  becomes formalized, with axe clean at each step, "As published" unchanged, and withdrawal
+  putting it back.
 - `wiki/test/request-limits.test.ts` puts the feedback route in the shared table of JSON
   body caps and scans `wiki/src` so that no route reads a JSON body except through
   `readJsonCapped` with its own `MAX_JSON_BODY_BYTES` entry.

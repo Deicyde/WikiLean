@@ -15,8 +15,6 @@
 .atlr-switch a:hover { color: var(--accent); }
 /* The surface colour on the accent: white on light, near black on the lighter dark-mode accent. */
 .atlr-switch a[aria-current="page"] { background: var(--accent); color: var(--surface); font-weight: 600; }
-.atlr-chips { display: flex; flex: 1 1 0; min-width: 0; flex-wrap: wrap; gap: 6px; align-items: center; }
-.atlr-chips .articles-chip { min-height: 26px; padding: 1px 9px; }
 .atlr-skip { position: absolute; left: 8px; top: -60px; z-index: 300; padding: 6px 12px; background: var(--surface); color: var(--accent); border: 2px solid var(--accent); border-radius: 6px; font-size: 13px; }
 .atlr-skip:focus { top: 8px; }
 
@@ -27,11 +25,19 @@
 :root:has(> body.atlr-body) { scroll-padding-top: 128px; }
 /* Whatever a rule below lays out, hidden stays hidden. */
 .atlr-body [hidden] { display: none !important; }
-.atlr-layout { display: grid; grid-template-columns: minmax(0, 1fr) clamp(380px, 34vw, 520px); align-items: start; }
+/* The article column takes the room: the panel is a column beside it, not half the page.
+   Hidden ("Hide the passage list"), the article has the whole width; the script remembers
+   which, per reader, in localStorage. */
+.atlr-layout { display: grid; grid-template-columns: minmax(0, 1fr) clamp(300px, 26vw, 400px); align-items: start; }
+.atlr-body.atlr-no-panel .atlr-layout { grid-template-columns: minmax(0, 1fr); }
+.atlr-body.atlr-no-panel .atlr-panel { display: none; }
 .atlr-main { min-width: 0; }
 .atlr-head { max-width: 860px; margin: 0 auto; padding: 18px 28px 0; box-sizing: border-box; color: var(--ink); font-size: 15px; line-height: 1.55; }
 .atlr-head a, .atlr-panel a, .atlr-foot a { color: var(--accent); text-underline-offset: 2px; }
 .atlr-hint { margin: 6px 0 0; font-size: 13px; color: var(--muted); max-width: 75ch; }
+/* Shown only where there is a column to hide: on a phone the panel is the bottom sheet. */
+.atlr-panel-toggle { margin-left: auto; font: inherit; font-size: 12px; color: var(--accent); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 3px 11px; cursor: pointer; }
+.atlr-panel-toggle:hover { border-color: var(--accent); }
 /* The notice line heads the article column here, beside the sticky panel, not above it. */
 .atlr-head > .articles-notice { margin: 0 0 10px; padding: 0 0 6px; background: none; text-align: left; }
 /* The revision is contained (paint containment): nothing in it paints outside the article's box, it
@@ -174,35 +180,27 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
 .atlr-stepbtn:disabled { opacity: .45; cursor: default; }
 .atlr-pos { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .atlr-h2 { margin: 0 0 4px; }
-.atlr-h3 { font-family: var(--serif); font-size: 1rem; margin: 18px 0 6px; }
 .atlr-missing { margin: 4px 0 8px; padding: 6px 10px; border: 1.5px dashed var(--c-partial); border-radius: 6px; color: var(--c-partial-ink); font-size: 13px; }
-.atlr-filter-note { margin: 6px 0 0; min-height: 1em; font-size: 12px; color: var(--muted); }
 .atlr-toc { margin: 8px 0 0; }
 .atlr-groups, .atlr-rows { list-style: none; margin: 0; padding: 0; }
 .atlr-group + .atlr-group { margin-top: 8px; }
 .atlr-group-h { margin: 8px 0 2px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.atlr-row { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 8px; align-items: baseline; padding: 4px 6px; border-radius: 4px; color: var(--ink) !important; text-decoration: none !important; }
+/* A compact row: the swatch, then the passage's first words over two lines and its
+   lead declaration under them. The words are cut at the end of a line, never in the
+   middle of a word, and the row's title carries them whole. */
+.atlr-row { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 1px 8px; align-items: start; padding: 5px 6px; border-radius: 4px; color: var(--ink) !important; text-decoration: none !important; }
 .atlr-row:hover, .atlr-row.is-hover { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); }
-.atlr-swatch { align-self: center; width: 12px; height: 12px; border-radius: 2px; background: var(--st-bg); border: 1.5px var(--st-line) var(--st); box-sizing: border-box; }
+.atlr-swatch { grid-row: 1 / span 2; margin-top: 3px; width: 12px; height: 12px; border-radius: 2px; background: var(--st-bg); border: 1.5px var(--st-line) var(--st); box-sizing: border-box; }
 .atlr-swatch[data-status="not_formalized"] { border-width: 3px; }
 .atlr-swatch[data-status="unresolved"] { border: 1.5px dashed var(--c-untouched); }
-.atlr-row-text { font-family: var(--serif); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.atlr-row-text { font-family: var(--serif); font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
 .atlr-row-text .articles-math-display { display: inline; }
-.atlr-row-lead { max-width: 15em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 12px; }
-.atlr-row-lead code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--ink); }
+.atlr-row-lead { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 11.5px; }
+.atlr-row-lead code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; color: var(--ink); }
 .atlr-row-note { color: var(--c-partial-ink); }
-.atlr-legend { list-style: none; margin: 0 0 10px; padding: 0; font-size: 13px; color: var(--muted); }
-.atlr-legend li { margin: 4px 0; }
-.atlr-sample { padding: 0 3px; color: var(--ink); font-family: var(--serif); background: var(--st-bg); border-bottom: 1.5px var(--st-line) var(--st); }
-.atlr-sample[data-status="partial"] { border-bottom-width: 2px; }
-.atlr-sample[data-status="not_formalized"] { border-bottom-width: 3px; }
-.atlr-sample[data-status="unresolved"] { background: none; border-bottom: 0; text-decoration: underline wavy var(--c-untouched); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
 .atlr-keys { margin: 14px 0 0; font-size: 12px; color: var(--muted); }
 .atlr-keys kbd { display: inline-block; min-width: 1.2em; padding: 0 4px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--surface); font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: center; }
-.atlr-panel .articles-strip-lead { margin: 2px 0 4px; }
-.atlr-panel .articles-strip-row { margin-top: 6px; }
-.atlr-panel .articles-strip-h { flex-basis: 100%; }
-.atlr-panel .articles-legend-rel { margin-top: 6px; }
+.atlr-panel .articles-legend-rel { margin-top: 10px; }
 
 /* The selected passage: the card list's block, under a 3 px accent bar, its text clamped. */
 .atlr-pp.articles-passage { margin: 0; padding: 10px 14px 12px; border: 1px solid var(--line-strong); border-left: 3px solid var(--accent); border-radius: 6px; scroll-margin-top: 0; }
@@ -233,9 +231,9 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
   .atlr-article figure[typeof~="mw:File/Thumb"], .atlr-article figure[typeof~="mw:File/Frame"], .atlr-article .infobox, .atlr-article .sidebar { float: none; max-width: 100%; margin: .6em 0; }
   .atlr-article table { display: block; max-width: 100%; overflow-x: auto; }
   .atlr-panel { position: static; height: auto; overflow: visible; border-left: 0; border-top: 1px solid var(--line-strong); padding: 12px 16px 24px; }
-  .atlr-bar { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; }
-  .atlr-chips { flex-wrap: nowrap; }
-  .atlr-chips .articles-chip { flex: none; white-space: nowrap; }
+  /* The panel is the bottom sheet here, so there is no column to hide. */
+  .atlr-panel-toggle { display: none; }
+  .atlr-body.atlr-no-panel .atlr-panel { display: block; }
   .atlr-js .atlr-panel { position: fixed; left: 0; right: 0; bottom: 0; top: auto; z-index: 140; height: 46vh; overflow-y: auto; padding: 0 16px 20px; border-top: 1px solid var(--line-strong); border-radius: 12px 12px 0 0; box-shadow: 0 -6px 18px rgba(40, 30, 10, .18); transform: translateY(105%); visibility: hidden; transition: transform .2s ease, visibility 0s linear .2s; }
   .atlr-js.atlr-sheet-open .atlr-panel { transform: none; visibility: visible; transition: transform .2s ease; }
   /* The sheet's top strip is one row: the handle over it, the nav (or the index heading) and ✕. */
@@ -268,5 +266,5 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
 }
 @media (prefers-contrast: more) {
   .atlr-panel, .atlr-pp.articles-passage, .atlr-switch { border-color: var(--ink); }
-  .atlr-hint, .atlr-keys, .atlr-row-lead, .atlr-pos, .atlr-legend { color: var(--ink); }
+  .atlr-hint, .atlr-keys, .atlr-row-lead, .atlr-pos { color: var(--ink); }
 }

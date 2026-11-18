@@ -30,7 +30,8 @@ import {
   MATHLIB_REPO, pairedPassage, WIDGET_PAGEID,
 } from "./helpers/articles.js";
 import {
-  CC0_AGREEMENT_VERSION, DAILY_CAP, OVERLAY_STATUSES, TAG_RELATIONS, pairKey, validDeclaration,
+  CC0_AGREEMENT_VERSION, DAILY_CAP, OVERLAY_STATUSES, TAG_RELATIONS, TURNSTILE_VERIFY_URL, pairKey,
+  validDeclaration,
 } from "../src/articles-overlay.js";
 import { SUMMARY_STATUSES } from "../src/articles.js";
 import { BRAKE_MESSAGE } from "../src/site-settings.js";
@@ -427,6 +428,10 @@ describe("the site-wide write brake", () => {
 
   it("refuses an agent's Brain writes too, and leaves a person's alone", async () => {
     const h = braked();
+    // The owner has accepted CC0, so the agent's refusal below is the brake
+    // and not the Brain's own first-edit gate, and the person's write gets
+    // past that gate to the reason this test is about.
+    agreed(h);
     const edge = { src: "Q1", dst: "Q2", kind: "relates" };
     expect((await post(h.env, "/api/brain/edge", edge, AGENT)).status).toBe(503);
     // A person's Brain write is not an R1 surface and is not braked: it fails
@@ -545,6 +550,104 @@ describe("the first edit", () => {
     expect((await post(h.env, TAG, tagBody({ cc0: true }), { user: "u-human" })).status).toBe(200);
     const row = h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown>;
     expect(row.verified_at).toBeNull();
+  });
+
+  it("takes an acceptance of the superseded wording, which named this plane's data", async () => {
+    const h = bound();
+    h.db.prepare("INSERT INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+      .run("u-human", "cc0-1.0/2026-11", Date.now());
+    expect((await post(h.env, TAG, tagBody(), { user: "u-human" })).status).toBe(200);
+    // Not rewritten: a passage tag is exactly what those words released.
+    const row = h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown>;
+    expect(row.cc0_version).toBe("cc0-1.0/2026-11");
+  });
+});
+
+// An acceptance taken on a form that carries no Turnstile widget — the Brain's
+// two write pages, or any edit made before a secret was configured — is
+// recorded with verified_at NULL. It must not buy a way past the check this
+// plane makes at a new account's first edit.
+describe("an acceptance that no Turnstile check cleared", () => {
+  // The acceptance a Brain write records: current wording, unverified.
+  function unverified(h: Harness, at = Date.now()): void {
+    h.db.prepare("INSERT OR REPLACE INTO user_agreements (user_id, cc0_version, accepted_at, verified_at) VALUES (?,?,?,NULL)")
+      .run("u-human", CC0_AGREEMENT_VERSION, at);
+  }
+
+  async function withTurnstile<T>(success: boolean, fn: () => Promise<T>): Promise<T> {
+    const prev = globalThis.fetch;
+    globalThis.fetch = (async (url: RequestInfo | URL) => {
+      expect(String(url)).toBe(TURNSTILE_VERIFY_URL);
+      return new Response(JSON.stringify({ success }), { status: 200 });
+    }) as typeof fetch;
+    try { return await fn(); } finally { globalThis.fetch = prev; }
+  }
+
+  it("still owes the check at the next overlay tag, which then records it", async () => {
+    const h = setup({ turnstileSecret: "test-secret" });
+    bindArticles(h.env, articlesPairedFiles());
+    const acceptedAt = Date.now() - 86_400_000;
+    unverified(h, acceptedAt);
+
+    // No token: refused, and nothing is written (blockNetwork would throw if
+    // the refusal cost a round trip).
+    const refused = await post(h.env, TAG, tagBody(), { user: "u-human" });
+    expect(refused.status).toBe(403);
+    expect((await jsonOf(refused)).turnstile_required).toBe(true);
+    expect(tagRows(h)).toHaveLength(0);
+
+    // A failed challenge is refused the same way.
+    const failed = await withTurnstile(false, () =>
+      post(h.env, TAG, tagBody({ turnstile_token: "bad" }), { user: "u-human" }));
+    expect(failed.status).toBe(403);
+    expect(tagRows(h)).toHaveLength(0);
+
+    // Passing it saves the tag and stamps the acceptance already on file: the
+    // version and the original acceptance time are left alone.
+    const ok = await withTurnstile(true, () =>
+      post(h.env, TAG, tagBody({ turnstile_token: "good" }), { user: "u-human" }));
+    expect(ok.status).toBe(200);
+    expect(tagRows(h)).toHaveLength(1);
+    const row = h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown>;
+    expect(row).toMatchObject({ cc0_version: CC0_AGREEMENT_VERSION, accepted_at: acceptedAt });
+    expect(typeof row.verified_at).toBe("number");
+
+    // Asked once: the next tag needs no token.
+    expect((await post(h.env, TAG, tagBody({ declaration: "Widget.second" }), { user: "u-human" })).status).toBe(200);
+  });
+
+  it("does not stop the owner's agents, which answer no challenge on any surface", async () => {
+    const h = setup({ turnstileSecret: "test-secret" });
+    bindArticles(h.env, articlesPairedFiles());
+    unverified(h);
+    mintAgent(h);
+    // An agent cannot solve a challenge; it is authenticated by its token and
+    // held to its own caps, and its owner's grant is what the gate wants.
+    expect((await post(h.env, TAG, tagBody({ base_version: 0 }), AGENT)).status).toBe(200);
+    const row = h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown>;
+    expect(row.verified_at).toBeNull();
+  });
+
+  it("is left alone on a deployment with no secret, where the check is skipped", async () => {
+    const h = bound();
+    unverified(h);
+    expect((await post(h.env, TAG, tagBody(), { user: "u-human" })).status).toBe(200);
+    expect(tagRows(h)).toHaveLength(1);
+    const row = h.db.prepare("SELECT * FROM user_agreements WHERE user_id = 'u-human'").get() as Record<string, unknown>;
+    expect(row.verified_at).toBeNull();
+  });
+
+  it("brings the widget back to the reader, so the check can be passed", async () => {
+    const h = setup({ turnstileSecret: "test-secret", turnstileSiteKey: "0xSITEKEY" });
+    bindArticles(h.env, articlesPairedFiles());
+    unverified(h);
+    const res = await get(h.env, WIDGET_PATH, { user: "u-human" });
+    const html = await res.text();
+    expect(html).toContain('id="articles-cc0"');
+    expect(html).toContain('data-sitekey="0xSITEKEY"');
+    // The licence is already granted, so only the check is asked for.
+    expect(html).not.toContain('id="articles-cc0-box"');
+    expect(res.headers.get("Content-Security-Policy") ?? "").toContain("frame-src https://challenges.cloudflare.com");
   });
 });
 

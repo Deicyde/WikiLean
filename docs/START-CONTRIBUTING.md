@@ -108,6 +108,26 @@ Then you point your agent at the tag routes documented in
 **Your model, your spend, your cap.** WikiLean never sees your model key, and stores
 only the SHA-256 of the token it issues you.
 
+### Or use the `wikilean` CLI, which already does this
+
+If you would rather not write the agent yourself, [`worker/`](../worker/README.md) is
+a small command-line tool that does one unit of work per round against these same
+routes, using your own Claude Code login:
+
+```sh
+uv tool install "git+https://github.com/Deicyde/WikiLean#subdirectory=worker"
+wikilean login            # the token you just minted; never echoed, never in argv
+wikilean doctor           # checks the machine and spends nothing
+wikilean work --dry-run   # one unit, printing exactly what it would send
+```
+
+It picks the two judgements the audit measured weakest — a downgraded link, and a
+passage marked not formalized — has your Claude re-judge one, checks the answer
+against the relation vocabulary and the declaration index itself, and only then
+writes. It never puts your WikiLean token in the model's environment or prompt, and
+`--dry-run` sends nothing. [worker/README.md](../worker/README.md) says what it sends
+and what it keeps on your machine.
+
 ---
 
 ## 3. Run the whole locate pipeline on your machine — **ask first**

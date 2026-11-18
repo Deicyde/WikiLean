@@ -105,7 +105,7 @@ describe("legend popover (P2)", () => {
 describe("trust signals through the app", () => {
   blockNetwork();
 
-  it("article pages carry the badge and cache under render:v20", async () => {
+  it("article pages carry the badge and cache under render:v21", async () => {
     const h = setup();
     const res = await get(h.env, `/${SLUG}`);
     expect(res.status).toBe(200);
@@ -114,7 +114,7 @@ describe("trust signals through the app", () => {
     expect(html).toContain(">0/2 human-reviewed<");
     expect(html).toContain('id="wl-legend-btn"');
     const keys = [...h.renderCache.store.keys()];
-    expect(keys.some((k) => k.startsWith("render:v20:"))).toBe(true);
+    expect(keys.some((k) => k.startsWith("render:v21:"))).toBe(true);
     expect(keys.some((k) => k.startsWith("render:v18:") || k.startsWith("render:v19:"))).toBe(false);
   });
 

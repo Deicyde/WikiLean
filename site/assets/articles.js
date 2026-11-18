@@ -1,7 +1,8 @@
 // Articles-plane pages (docs/ARTICLES.md, "UI"): a small enhancement over
 // server-rendered HTML that already works without it. It wires the theme
-// toggle, the coverage-strip filter chips, the per-location Confirm / Report
-// controls, and live filtering of the dashboard's article list.
+// toggle, the status legend and the library chips that filter an article's
+// passages, the per-location Confirm / Report controls, and the article list's
+// live filter and sortable columns.
 //
 // XSS: every string from the page or from the API is written with
 // textContent or setAttribute; nothing is parsed as HTML.
@@ -308,8 +309,10 @@
       });
     });
 
-    // Per-card actions: change this link, say it is wrong, or put it back.
-    Array.prototype.forEach.call(article.querySelectorAll(".articles-tag-actions"), function (box) {
+    // Per-card actions: change this link, say it is wrong, or put it back. A
+    // coverage bundle's own actions carry a bundle key instead and are wired
+    // below, so this selector names the per-location ones exactly.
+    Array.prototype.forEach.call(article.querySelectorAll(".articles-tag-actions[data-pair-key]"), function (box) {
       var msg = box.querySelector(".articles-tag-msg");
       var buttons = box.querySelectorAll("button");
       var key = box.getAttribute("data-pair-key");
@@ -391,6 +394,126 @@
         });
       });
     });
+
+    // ---- coverage bundles: "these together state the passage" ----
+    // The server renders one row per link that states part of the passage; the
+    // editor ticks the ones that together state all of it and says what each
+    // states. The body carries the parts in the order they are ticked and one
+    // conjunct per part, c1..cN, which is the shape the route checks.
+    Array.prototype.forEach.call(article.querySelectorAll(".articles-bundle-new"), function (wrap) {
+      var open = wrap.querySelector(".articles-tag-open");
+      var form = wrap.querySelector(".articles-bundle-form");
+      if (!open || !form) return;
+      var msg = form.querySelector(".articles-tag-msg");
+      var cancel = form.querySelector(".articles-tag-cancel");
+      var show = function (on) {
+        form.hidden = !on;
+        open.setAttribute("aria-expanded", on ? "true" : "false");
+        if (on) {
+          var first = form.querySelector("input, select");
+          if (first) first.focus();
+        } else {
+          open.focus();
+        }
+      };
+      open.addEventListener("click", function () { show(form.hidden); });
+      if (cancel) cancel.addEventListener("click", function () { show(false); });
+      form.addEventListener("keydown", function (e) { if (e.key === "Escape") show(false); });
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var parts = [];
+        var conjuncts = [];
+        var incomplete = false;
+        Array.prototype.forEach.call(form.querySelectorAll(".articles-bundle-parts > li"), function (row) {
+          var box = row.querySelector('input[type="checkbox"]');
+          var clause = row.querySelector('input[type="text"]');
+          if (!box || !box.checked) return;
+          var said = clause ? clause.value.trim() : "";
+          if (!said) { incomplete = true; return; }
+          parts.push(box.value);
+          conjuncts.push({ id: "c" + (conjuncts.length + 1), text: said, part: box.value });
+        });
+        // A ticked link with no clause is the commoner mistake, and it also
+        // makes the count look short, so it is the message that comes first.
+        if (incomplete) {
+          if (msg) msg.textContent = "Say what each ticked link states.";
+          return;
+        }
+        if (parts.length < 2) {
+          if (msg) msg.textContent = "Tick at least two links that together state this passage.";
+          return;
+        }
+        if (parts.length > 5) {
+          if (msg) msg.textContent = "A bundle names at most five parts.";
+          return;
+        }
+        postTag("/api/articles/coverage", {
+          pageid: pageid,
+          campaign: campaign,
+          passage_key: wrap.getAttribute("data-passage-key"),
+          parts: parts,
+          conjuncts: conjuncts,
+          relation: form.querySelector('[name="relation"]').value
+        }, msg, form.querySelectorAll("button"));
+      });
+    });
+
+    // Withdrawing a bundle and putting it back, with the reason a withdrawal needs.
+    Array.prototype.forEach.call(article.querySelectorAll(".articles-tag-actions[data-bundle-key]"), function (box) {
+      var msg = box.querySelector(".articles-tag-msg");
+      var buttons = box.querySelectorAll("button");
+      var key = box.getAttribute("data-bundle-key");
+      var version = Number(box.getAttribute("data-version")) || 0;
+      var url = "/api/articles/coverage/" + encodeURIComponent(key) + "/state";
+      var closeForm = function () {
+        var open = box.parentNode.querySelector(".articles-card-form");
+        if (open) open.remove();
+        Array.prototype.forEach.call(buttons, function (b) { b.setAttribute("aria-expanded", "false"); });
+      };
+      var openForm = function (button) {
+        if (box.parentNode.querySelector(".articles-card-form")) { closeForm(); return; }
+        var form = el("form", "articles-card-form");
+        var field = document.createElement("textarea");
+        field.maxLength = 500;
+        field.rows = 2;
+        field.id = "bundlefield-" + key.slice(0, 12);
+        var label = el("label", null, "Why do these parts not state the passage? (required, at most 500 characters)");
+        label.setAttribute("for", field.id);
+        var submit = el("button", "articles-tag-btn is-primary", "Withdraw this");
+        submit.type = "submit";
+        var cancel = el("button", "articles-tag-btn", "Cancel");
+        cancel.type = "button";
+        cancel.addEventListener("click", closeForm);
+        var row = el("div", "articles-tag-buttons");
+        row.appendChild(submit);
+        row.appendChild(cancel);
+        form.appendChild(label);
+        form.appendChild(field);
+        form.appendChild(row);
+        form.addEventListener("keydown", function (e) { if (e.key === "Escape") closeForm(); });
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var reason = field.value.trim();
+          if (!reason) { if (msg) msg.textContent = "Say why these parts do not state it."; return; }
+          postTag(url, {
+            pageid: pageid, campaign: campaign, state: "removed", reason: reason, base_version: version
+          }, msg, form.querySelectorAll("button"));
+        });
+        box.parentNode.appendChild(form);
+        button.setAttribute("aria-expanded", "true");
+        field.focus();
+      };
+      Array.prototype.forEach.call(buttons, function (button) {
+        var action = button.getAttribute("data-action");
+        button.addEventListener("click", function () {
+          if (action === "bundle-restore") {
+            postTag(url, { pageid: pageid, campaign: campaign, state: "live", base_version: version }, msg, buttons);
+          } else if (action === "bundle-withdraw") {
+            openForm(button);
+          }
+        });
+      });
+    });
   }
 
   // ---- dashboard: live article filter ----
@@ -419,38 +542,64 @@
     var titleKey = function (t) {
       return String(t).normalize("NFC").replace(/[ \t\n\r\f\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000_]+/g, " ").replace(/^ +| +$/g, "");
     };
-    var importance = function (v) {
-      if (!v || v === "unknown") return "Not assessed";
-      if (v === "na") return "N/A";
-      return v.charAt(0).toUpperCase() + v.slice(1);
+    // The status words the bar's accessible name uses, as articles-render.ts writes them.
+    var STATUS_WORDS = {
+      formalized: "formalized", statement_only: "statement only",
+      partial: "partial", not_formalized: "not formalized"
+    };
+    // One row's coverage bar, the same element the server renders: a segment per status,
+    // each its share of the width, and the whole bar one image with the counts as its name.
+    var barFor = function (entry) {
+      var total = 0;
+      STATUSES.forEach(function (s) { total += Number(entry[s]) || 0; });
+      if (!total) return el("span", "articles-muted", "no status yet");
+      var bar = el("div", "articles-bar");
+      var words = [];
+      STATUSES.forEach(function (s) {
+        var n = Number(entry[s]) || 0;
+        if (!n) return;
+        var seg = el("span", "articles-seg");
+        seg.setAttribute("data-status", s);
+        seg.style.width = ((n / total) * 100).toFixed(2) + "%";
+        seg.setAttribute("title", n + " " + STATUS_WORDS[s]);
+        bar.appendChild(seg);
+        words.push(n + " " + STATUS_WORDS[s]);
+      });
+      bar.setAttribute("role", "img");
+      bar.setAttribute("aria-label", total + (total === 1 ? " passage: " : " passages: ") + words.join(", "));
+      return bar;
     };
     var rowFor = function (entry) {
       var tr = el("tr");
+      var shown = Math.max(0, (Number(entry.passages) || 0) - (Number(entry.unresolved) || 0));
+      var ids = Array.isArray(entry.libraries) ? entry.libraries : [];
       tr.setAttribute("data-title", fold(entry.title));
+      tr.setAttribute("data-passages", String(shown));
+      tr.setAttribute("data-formalized", String(Number(entry.formalized) || 0));
+      tr.setAttribute("data-libraries", String(ids.length));
+      tr.setAttribute("data-importance", String(entry.importance || ""));
       var th = el("th");
       th.setAttribute("scope", "row");
       var a = el("a", null, entry.title);
       a.href = "/articles/" + entry.pageid + "/" + encodeURIComponent(titleKey(entry.title).replace(/ /g, "_"));
       th.appendChild(a);
       tr.appendChild(th);
-      var shown = (Number(entry.passages) || 0) - (Number(entry.unresolved) || 0);
-      var passagesCell = el("td", "num", shown > 0 ? shown : 0);
-      tr.appendChild(passagesCell);
-      STATUSES.forEach(function (s) {
-        var td = el("td", "num", entry[s] || 0);
-        td.setAttribute("data-status", s);
-        tr.appendChild(td);
-      });
-      var libs = el("td");
-      var ids = Array.isArray(entry.libraries) ? entry.libraries : [];
-      if (!ids.length) libs.appendChild(el("span", "articles-muted", "none"));
-      ids.forEach(function (id, i) {
-        if (i) libs.appendChild(document.createTextNode(" "));
-        var name = Object.prototype.hasOwnProperty.call(libraryNames, id) ? libraryNames[id] : id;
-        libs.appendChild(el("span", "articles-libtag", name));
-      });
+      var cov = el("td", "articles-cov");
+      cov.appendChild(barFor(entry));
+      tr.appendChild(cov);
+      tr.appendChild(el("td", "num", shown));
+      var libs = el("td", "num");
+      if (!ids.length) {
+        libs.appendChild(el("span", "articles-muted", "none"));
+      } else {
+        var names = ids.map(function (id) {
+          return Object.prototype.hasOwnProperty.call(libraryNames, id) ? libraryNames[id] : id;
+        });
+        var cell = el("span", null, ids.length + (ids.length === 1 ? " library" : " libraries"));
+        cell.setAttribute("title", names.join(", "));
+        libs.appendChild(cell);
+      }
       tr.appendChild(libs);
-      tr.appendChild(el("td", null, importance(entry.importance)));
       return tr;
     };
     var loadAll = function (then) {
@@ -478,12 +627,66 @@
         then();
       }).catch(function () { loading = false; });
     };
+    // ---- sortable columns ----
+    // Progressive enhancement: the server has already put the rows in title order and the
+    // heads are plain words. With the script each head is a button, the row carries every
+    // key as a data attribute, and the column in force says so with aria-sort.
+    var heads = Array.prototype.slice.call(table.querySelectorAll("thead th[data-sort]"));
+    var sortKey = "title";
+    var sortDir = 1;
+    var sortValue = function (tr, key) {
+      if (key === "title") return tr.getAttribute("data-title") || "";
+      if (key === "formalized") {
+        var passages = Number(tr.getAttribute("data-passages")) || 0;
+        // An article with nothing checked sorts below one that is 0% formalized.
+        return passages ? (Number(tr.getAttribute("data-formalized")) || 0) / passages : -1;
+      }
+      return Number(tr.getAttribute("data-" + key)) || 0;
+    };
+    var applySort = function () {
+      var rows = Array.prototype.slice.call(tbody.querySelectorAll("tr"));
+      rows.sort(function (a, b) {
+        var va = sortValue(a, sortKey), vb = sortValue(b, sortKey);
+        if (va < vb) return -sortDir;
+        if (va > vb) return sortDir;
+        var ta = a.getAttribute("data-title") || "", tb = b.getAttribute("data-title") || "";
+        return ta < tb ? -1 : ta > tb ? 1 : 0;
+      });
+      rows.forEach(function (tr) { tbody.appendChild(tr); });
+      heads.forEach(function (th) {
+        var on = th.getAttribute("data-sort") === sortKey;
+        if (on) th.setAttribute("aria-sort", sortDir === 1 ? "ascending" : "descending");
+        else th.removeAttribute("aria-sort");
+        var mark = th.querySelector(".articles-sort-mark");
+        if (mark) mark.textContent = sortDir === 1 ? "▲" : "▼";
+      });
+    };
+    heads.forEach(function (th) {
+      var key = th.getAttribute("data-sort");
+      var button = el("button", "articles-sort", th.textContent);
+      button.type = "button";
+      button.setAttribute("title", th.getAttribute("data-sort-title") || "");
+      var mark = el("span", "articles-sort-mark", "▲");
+      mark.setAttribute("aria-hidden", "true");
+      button.appendChild(mark);
+      th.textContent = "";
+      th.appendChild(button);
+      button.addEventListener("click", function () {
+        if (sortKey === key) sortDir = -sortDir;
+        // A name reads best from A; a measure reads best from the most.
+        else { sortKey = key; sortDir = key === "title" ? 1 : -1; }
+        applySort();
+      });
+    });
+    if (heads.length) applySort();
+
     var render = function () {
       var q = fold(input.value.trim());
       if (all) {
         var hits = q ? all.filter(function (e) { return e.key.indexOf(q) !== -1; }) : all;
         tbody.textContent = "";
         hits.slice(0, LIMIT).forEach(function (e) { tbody.appendChild(rowFor(e)); });
+        applySort();
         if (count) count.textContent = (q ? hits.length + " of " + all.length + " articles match." : all.length + " articles.") +
           (hits.length > LIMIT ? " Showing the first " + LIMIT + "." : "");
         return;

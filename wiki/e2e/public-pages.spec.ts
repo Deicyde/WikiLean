@@ -36,7 +36,7 @@ test("a new visitor can reach an article and find the contribution instructions"
   await page.goto("/");
   await page.getByRole("link", { name: "Browse articles", exact: true }).click();
   await expect(page.locator("#articles-q")).toBeVisible();
-  await expect(page.locator("#articles-coverage")).not.toHaveAttribute("open");
+  await expect(page.locator("#articles-about")).not.toHaveAttribute("open");
   await expect(page.getByRole("region", { name: "Table: By library" })).toBeHidden();
   await page.locator("#articles-list").getByRole("link", { name: "Widget lemma", exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Widget lemma");

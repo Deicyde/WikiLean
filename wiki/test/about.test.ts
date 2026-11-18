@@ -24,9 +24,9 @@ describe("public entry pages", () => {
 
   it("replaces cached landing and About pages from the retired workflow", async () => {
     const h = setup();
-    await h.renderCache.put("page:home:v11", "old graph landing");
-    await h.renderCache.put("page:about:v3", "old editor instructions");
-    for (const [path, key] of [["/", "page:home:v12"], ["/about", "page:about:v4"]]) {
+    await h.renderCache.put("page:home:v12", "old landing without the example");
+    await h.renderCache.put("page:about:v4", "old entry shell");
+    for (const [path, key] of [["/", "page:home:v13"], ["/about", "page:about:v5"]]) {
       const first = await (await get(h.env, path)).text();
       expect(first).toContain("<!doctype html>");
       expect(h.renderCache.store.get(key)).toBe(first);

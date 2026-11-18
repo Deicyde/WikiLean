@@ -10,6 +10,12 @@ A record marked `conditional: "prominence"` is judged **only** beside an overtur
 
 **The passage's clauses are the inventory's**, and you write no claim list: a compound statement's clause ids are its `conjuncts`' ids, and a simple statement's one clause is `{{simple_clause}}`. Every `clauses`, `query_clauses` and `unstated` you write names those ids. Every verdict rests on them — a refute, a downgrade and an uphold as much as a confirm.
 
+**The three checks.** A verdict that leaves a strong relation ({{strong_relations}}) or a `hasPart` carries a `checks` block, and the gate refuses it without one. The checks name no clause ids: they are your own reading, beside the `clauses` above, never a replacement for them. On a verdict that leaves any weaker relation a `checks` block is ignored.
+
+1. **Clauses.** `reading`: the facts the passage asserts, one line each in your own words, 1 to {{max_conjuncts}} of them — one line per conjunct in id order when the inventory gave `conjuncts`, and your own decomposition of the single clause when it gave none, because a passage the inventory read as simple may still assert several facts. `states`: the 1-based positions of `reading` that the declaration itself states. A strong relation stands only when `states` is every position of `reading`; otherwise downgrade to `hasPart`. A `hasPart` whose `states` is empty is a `relatedMatch`.
+2. **Direction.** A verdict that leaves a `broadMatch` — the record's own, or a part's `conjunct_relation` — gives `direction`: `instance`, the instantiation that yields the passage from the declaration, and `hypotheses`, every hypothesis the declaration has and the passage does not, checked on each axis of generality (domain, codomain, hypotheses), or a line beginning with the word `none` when there is none. A declaration that holds only of some of the passage's objects has one: by R2 and PD4 that is at most a `narrowMatch`, so downgrade.
+3. **Kind.** `kind_check`, one line. A **notation** passage needs a declaration that carries the notation the passage names: the library's own notation for the same operation is `relatedMatch`, since what the passage asserts is the notation and not the operation. An **example or worked computation** needs the declaration that states its own result; a lemma used in one step of it is `relatedMatch`. For any other passage, say which of the two it is not.
+
 **Before any downgrade or refute**: check the record against the passage's clauses, keep definitionally linked declarations consistent (two declarations on one passage defined one from the other, or one object in two encodings, get the same relation unless their statements differ — your task holds every required location of a passage, and each location record shows the others), and remember that a trivial special case is `narrowMatch`, never a refute.
 
 ### A location — refuted by default
@@ -17,11 +23,12 @@ A record marked `conditional: "prominence"` is judged **only** beside an overtur
 Check it against the passage's clauses, read the declaration itself, and either **confirm** it with a quoted fragment that states the passage, **downgrade** its relation to the one it really has, or **refute** it when it does not state the passage at all.
 
 - A verdict that leaves a relation that counts names the clause ids the declaration states, in `clauses`; a strong relation ({{strong_relations}}) stands only when it names every clause — otherwise downgrade to `hasPart` — and a downgrade to `relatedMatch` names none.
-- **A verdict that keeps or leaves a strong relation gives your own two-way test as `tests`.** The worker's is a claim; a challenge that checked only the worker's test confirmed wrong records.
+- **A verdict that keeps or leaves a strong relation gives your own two-way test as `tests`**, and its own `instantiation` when the record carries none. The worker's is a claim; a challenge that checked only the worker's test confirmed wrong records.
+- **The gate holds the location your verdict leaves to every rule above**, with the record's own fields where your verdict writes none: a `confirm` leaves the record's relation, clauses, note, convention and step, and a `downgrade` leaves them under the relation you name. So a verdict that leaves a relation the record's own fields do not support is refused, and the fix is to write the field yourself or to downgrade.
 - A verdict on a `hasPart` part of a compound statement may give a `conjunct_relation`, never stronger than the record's, and is held by the one it leaves: when that is strong, the verdict gives your own `tests` of the conjuncts the part states and is held to the ℕ-for-ℤ tripwire.
-- A record whose own `note` says the declaration does not state a clause is, by its own account, a `hasPart` — unless you find the note itself wrong: check it.
+- A record whose own `note` says the declaration does not state a clause is, by its own account, a `hasPart` — unless you find the note itself wrong: check it. A verdict that leaves a strong relation over such a record **writes its own `note`** in place of it, since a strong relation whose standing note says a clause is unstated is refused.
 - Instantiate the declaration at the passage's objects. If its setting neither contains nor is contained in the passage's, downgrade to `relatedMatch`; if its setting is a special case of the passage's, it is `narrowMatch`, never `relatedMatch`.
-- **A downgrade of a strong record to `relatedMatch`** says why, by exactly one of `bridge` (`{"library", "declaration", "why"}`, the named lemma the connection needs, which the gate looks up in the index) or `incomparable` (one line on why the two settings neither contain one another). When the lemma you would name only links two definitions of one notion, it is no bridge: keep the relation.
+- **A downgrade of a strong record to `relatedMatch`** says why, by exactly one of `bridge` (`{"library", "declaration", "why"}`, the named lemma the connection needs, which the gate looks up in the index — so spell the declaration as the index spells it, and when the lemma is in no library of the universe write no `bridge` and say so in your witness) or `incomparable` (one line on why the two settings neither contain one another). When the lemma you would name only links two definitions of one notion, it is no bridge: keep the relation.
 - A `hasPart` or `narrowMatch` stands only when the declaration **alone** entails what it is credited with. A verdict that leaves one says in `step` what that is.
 - A record whose `convention` is `junk_value` was judged under an older rule: decide which of the three PD7 readings it is, and say so in the witness.
 - An overturn location carries its own `clauses`, `instantiation`, `tests`, `step` and, on a part, `conjunct_relation`, exactly as a worker's does.
@@ -68,10 +75,15 @@ Write `<source-id>.json` for each source of the manifest, into `{{findings_dir}}
    {"item": "<item>", "target": "location", "location_key": "<from the manifest>",
     "action": "confirm", "clauses": ["{{simple_clause}}"],
     "tests": {"r2": "<how the passage follows from the declaration>", "r3": "<why it needs nothing more>"},
+    "checks": {"reading": ["<a fact the passage asserts>", "<another>"], "states": [1, 2],
+               "direction": {"instance": "<what yields the passage>", "hypotheses": "none"},
+               "kind_check": "<neither a notation passage nor a worked example, because …>"},
     "witness": "<quoted signature fragment and why it states the passage>"},
    {"item": "<item>", "target": "location", "location_key": "<from the manifest>",
     "action": "downgrade", "relation": "hasPart", "clauses": ["c1"], "conjunct_relation": "broadMatch",
     "step": "<what it alone entails>",
+    "checks": {"reading": ["<fact one>", "<fact two>"], "states": [1],
+               "direction": {"instance": "<…>", "hypotheses": "none"}, "kind_check": "<…>"},
     "tests": {"r2": "<how c1 follows from the declaration>", "r3": "<…>"}, "witness": "<why>"},
    {"item": "<item>", "target": "location", "location_key": "<from the manifest>",
     "action": "downgrade", "relation": "relatedMatch", "clauses": [],
@@ -106,6 +118,7 @@ Write `<source-id>.json` for each source of the manifest, into `{{findings_dir}}
 ```
 
 - One verdict per record of the manifest, and only for those records, except a `conditional` record, which takes one exactly when you overturn its passage's prominence to `subject` or `central`. `action` is one of {{verdict_actions}} (a coverage claim takes `confirm` or `refute` only); every verdict carries a non-empty `witness`.
+- `checks` belongs to every verdict that leaves a strong relation or a `hasPart`; `direction` inside it belongs to a `broadMatch`. `reading` is your own and names no clause id; `clauses` stays the inventory's.
 - No `claims` and no `part_clauses`. A downgrade to `closeMatch` gives `convention` — one of {{conventions}} — and `note`: what the declaration does by it, not what the passage leaves out. Without a `note`, the first sentence of your `witness` that copies no more than {{quote_max_words}} consecutive words of the article becomes the record's note, so make that sentence name the difference. A `convention` belongs only to a verdict that leaves a `closeMatch`, and a `step` only to one that leaves a `hasPart` or `narrowMatch`.
 - Your own note on a verdict that leaves an `exactMatch` or `closeMatch` never says the declaration is stronger, more general, a generalisation, a special case or a weakening: each names another relation.
 - Copy `item`, `location_key`, the source's shas and `renderer` from the manifest exactly; write no commit and no `proof_status`.

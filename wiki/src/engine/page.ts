@@ -186,7 +186,7 @@ export function renderArticlePage(input: PageInput): string {
 var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
 document.documentElement.dataset.theme=t;}catch(e){}})();
 </script>
-<link rel="stylesheet" href="/assets/style.css?v=10">
+<link rel="stylesheet" href="/assets/style.css?v=11">
 <style>
 /* Use the article-stylesheet's tokens so the attribution footer recolors in
    dark mode along with the rest of the chrome. */
