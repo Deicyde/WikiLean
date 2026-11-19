@@ -418,6 +418,25 @@ class ReviewMerge(unittest.TestCase):
         self.assertEqual(report['rejections'], [{'item': 'aabbccddeeff', 'ref': 'u0',
                                                  'reason': 'the article no longer states this'}])
 
+    def test_a_dispute_the_agent_did_not_word_still_reaches_the_editor(self):
+        # {"ref": "u0", "reject": true} is an objection. Honouring only a
+        # non-empty string dropped it in silence, so the human who decides
+        # whether the selection stays never heard about it.
+        stored = item(links=[], unlinked=[occurrence()])
+        for reject in (True, 1, ['no'], '   '):
+            with self.subTest(reject=reject):
+                merged, report = nr.merge_native_review(
+                    [stored], [item(links=[], unlinked=[{'ref': 'u0', 'reject': reject}])])
+                self.assertEqual(merged[0]['unlinked'], stored['unlinked'])
+                self.assertEqual(report['rejections'],
+                                 [{'item': 'aabbccddeeff', 'ref': 'u0', 'reason': ''}])
+        for quiet in (False, None, '', 0):
+            with self.subTest(reject=quiet):
+                merged, report = nr.merge_native_review(
+                    [stored], [item(links=[], unlinked=[{'ref': 'u0', 'reject': quiet}])])
+                self.assertEqual(merged[0]['unlinked'], stored['unlinked'])
+                self.assertEqual(report['rejections'], [])
+
     def test_an_omitted_item_or_link_is_carried_forward_not_deleted(self):
         # 2026-11-18 Algebraic_number_field: one omitted item failed the article.
         stored = [item(), item(id='001122334455', links=[], unlinked=[occurrence('Other')])]

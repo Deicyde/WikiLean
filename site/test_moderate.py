@@ -885,6 +885,21 @@ def test_process_review_dry_run_no_agents_no_writes():
     assert rec["ids"]["human_restored_wire"] == 0
 
 
+def test_process_review_dry_run_reports_a_tripwire_failure_like_the_live_path():
+    # L3: the dry run ran finalize_for_post outside the try/except the live
+    # path has, so one stored article the tripwire cannot pass — here two
+    # id-less native items whose anchor signatures collide — raised out of
+    # process_review instead of being that article's error.
+    twins = [{"links": [], "unlinked": [], "provenance": "ai"},
+             {"links": [], "unlinked": [], "provenance": "ai"}]
+    rec, t, ctx = _run_review([], dry_run=True, get_payload={
+        "annotations": twins, "version": 7, "wikipedia_title": "T Article", "revid": 1})
+    assert rec["error"].startswith("native_output_needs_review: ")
+    assert "ambiguous native work items" in rec["error"]
+    assert t.calls == [] and ctx._state["agent_calls"] == 0
+    assert "dry_run" not in rec
+
+
 def test_process_review_reports_what_the_native_merge_carried():
     # The merge carries stored selections and items forward itself, so what it
     # carried has to reach the run log — a silently unreviewed item is a finding.

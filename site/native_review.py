@@ -353,10 +353,14 @@ def _merge_item(old: dict, fresh: dict, report: dict,
         if reference not in slots:
             raise _unresolvable(reference, owner)
         reason = entry.get("reject")
-        if isinstance(reason, str) and reason.strip():
+        if reason:
             # A disputed selection is kept; removing one is the editor's call.
-            report["rejections"].append({"item": old.get("id"), "ref": reference,
-                                         "reason": reason.strip()[:300]})
+            # Any truthy reject is a dispute: {"ref": "u0", "reject": true}
+            # says the agent objects, and dropping it for want of a sentence
+            # would keep the objection from the human who decides.
+            report["rejections"].append(
+                {"item": old.get("id"), "ref": reference,
+                 "reason": reason.strip()[:300] if isinstance(reason, str) else ""})
     # Every stored selection the agent did not link stays unlinked, as stored.
     merged["unlinked"] = [deepcopy(end) for reference, (end, carrier) in slots.items()
                           if carrier is end and reference not in promoted] + authored

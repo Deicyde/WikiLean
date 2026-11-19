@@ -1225,7 +1225,13 @@ async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore"
               f"the legacy/live HTML", flush=True)
 
     if ctx.dry_run:
-        posted, wire = finalize_for_post(existing, existing)
+        # The same guard the live path has: a stored article the tripwire
+        # cannot pass is one article's error, not an aborted run.
+        try:
+            posted, wire = finalize_for_post(existing, existing)
+        except native.NativeAnnotationError as exc:
+            rec["error"] = f"native_output_needs_review: {exc}"
+            return rec
         meta = build_meta(ctx, {}, wire)
         print(f"  DRY-RUN {slug}: would POST base_version={base_version} "
               f"annotations={len(posted)} revid_reviewed={target_revid} "
