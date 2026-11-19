@@ -58,11 +58,11 @@ import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-ove
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
 export const ARTICLES_CSS = "/assets/articles.css?v=16";
-export const ARTICLES_JS = "/assets/articles.js?v=9";
+export const ARTICLES_JS = "/assets/articles.js?v=10";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
 export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=10";
-export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=8";
+export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=9";
 // The shared layer (the restyle of 2026-11-19): the token set, the one site header and
 // the status token. home.ts and pages.ts pin the same version.
 const STYLE_CSS = "/assets/style.css?v=12";
@@ -121,6 +121,22 @@ const ARTICLE_STATUSES: SummaryStatus[] = STATUS_ORDER.filter((s) => s !== "unre
 // counts. A statement nothing has searched for is in neither — it is not a shade of
 // "not formalized", so it never takes a share of the bar.
 const CHECKED_STATUSES: SummaryStatus[] = ARTICLE_STATUSES.filter((s) => s !== "not_checked");
+
+// The table above, as the page's own data, for the two scripts that draw a status after
+// load: articles.js rebuilds the list's rows from the index shards, and articles-reader.js
+// names a passage and writes the hover peek. They read this instead of keeping a second
+// copy of the glyphs and the words, so STATUS is the one definition of both and a script
+// cannot drift from the HTML around it (the ✕ → ∅ change of 2026-11-19 left two such
+// copies behind). It rides a data attribute rather than a <script type="application/json">
+// block because the plane's policy (security.ts articlesCsp) admits inline script by hash
+// alone: a data block would be reported as a violation on every page of the plane.
+//
+// A page carries exactly the statuses it shows (shownStatuses), never the whole table: a
+// build with nothing unchecked must not say "not checked yet" anywhere, in text or in
+// data, and "no status yet" is never a status a page offers at all.
+export function statusData(statuses: SummaryStatus[] = CHECKED_STATUSES): string {
+  return JSON.stringify(Object.fromEntries(statuses.map((s) => [s, STATUS[s]])));
+}
 
 // The statuses a page's legend, columns and chips offer, given its counts: the four a check can
 // give, always, and "not checked yet" only where something is not checked (a page of checked
@@ -988,6 +1004,8 @@ function shell(opts: {
   // plane loads, and only on this one page state. articlesCsp(origin, true)
   // widens script-src, frame-src and connect-src by exactly that origin.
   turnstile?: boolean;
+  // The statuses this page shows, for the scripts that redraw one (statusData).
+  statuses?: SummaryStatus[];
 }): string {
   // aria-current="page" only on /articles itself: an article or universe page is
   // inside the plane but is not the page the nav link opens.
@@ -1004,7 +1022,7 @@ ${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : "
 <link rel="stylesheet" href="${ARTICLES_CSS}">
 ${opts.readerCss ? `<link rel="stylesheet" href="${ARTICLES_READER_CSS}">\n` : ""}<style>${SEARCHBOX_CSS}</style>
 </head>
-<body class="articles-body${opts.bodyClass ? ` ${attr(opts.bodyClass)}` : ""}">
+<body class="articles-body${opts.bodyClass ? ` ${attr(opts.bodyClass)}` : ""}" data-wl-status="${attr(statusData(opts.statuses))}">
 ${opts.skip ? `${opts.skip}\n` : ""}${siteHeader({
     current: opts.dashboard ? "/articles" : "",
     context: { label: "Articles", href: "/articles", cls: "articles-home" },
@@ -1949,7 +1967,10 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
   // it, and the community card beside it says who disagreed.
   if (passage.absence) {
     const a = passage.absence;
-    parts.push(`<p class="articles-absence"><span class="articles-ico" aria-hidden="true">✕</span>` +
+    // The glyph is the status's own (∅, the Ledger restyle): "searched and not found" is
+    // exactly the not-formalized claim, so the notice is marked as that status is, never
+    // with a cross that would read as "this is wrong".
+    parts.push(`<p class="articles-absence"><span class="articles-ico" aria-hidden="true">${STATUS.not_formalized.icon}</span>` +
       `Searched ${int(a.libraries)} libraries — not found. ` +
       `<a href="/articles/universe/${attr(a.universe_sha256)}">Which libraries, at which commits</a> ` +
       `(pinned ${text(article.universe.frozen)}).</p>`);
@@ -2290,7 +2311,7 @@ function articleParts(input: ArticlePageInput) {
   // `key` and `about` above, so neither page can say one of them a second time.
   return {
     ctx, n, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
-    overlayRow, agreement, unchecked, noun,
+    overlayRow, agreement, unchecked, noun, statuses: shownStatuses(byStatus),
   };
 }
 
@@ -2324,7 +2345,7 @@ export function articlesArticlePage(input: ArticlePageInput): string {
   const { article, user, selfHref } = input;
   const {
     ctx, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
-    overlayRow, agreement, unchecked, noun,
+    overlayRow, agreement, unchecked, noun, statuses,
   } = articleParts(input);
   // A page of statements nothing has searched for calls them statements, here as in its
   // counts line; every other page is a page of passages, as it always was. With no card on
@@ -2360,7 +2381,7 @@ ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is ri
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main, fullText: nText > 0, footer,
-    turnstile: pageNeedsTurnstile(ctx.overlay),
+    turnstile: pageNeedsTurnstile(ctx.overlay), statuses,
     ...(readerHref
       ? {
         readerCss: true,
@@ -2424,7 +2445,7 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
 export function articlesReaderPage(input: ArticlePageInput & { html: string }): string {
   const { article, user, selfHref, html } = input;
   const parts = articleParts({ ...input, readerHref: selfHref });
-  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement, unchecked, noun } = parts;
+  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement, unchecked, noun, statuses } = parts;
   const passages = readingOrder(parts.passages, html);
   const placed = new Set<string>();
   for (const m of html.matchAll(/<mark class="atl" data-p="([0-9a-f]{8,16})"/g)) placed.add(m[1]);
@@ -2495,7 +2516,7 @@ ${passages.map((p) => passageBlock(p, article, ctx, true)).join("\n")}
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main,
     readerCss: true, readerJs: true, bodyClass: "atlr-body", contextStrip: strip, footer, noticeInMain: true,
-    turnstile: pageNeedsTurnstile(ctx.overlay),
+    turnstile: pageNeedsTurnstile(ctx.overlay), statuses,
     skip: `<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`,
   });
 }
@@ -2744,6 +2765,7 @@ ${list}
     canonical: "https://wikilean.jackmccarthy.org/articles",
     main,
     dashboard: true,
+    statuses: buildStatuses,
   });
 }
 

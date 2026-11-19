@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { CSP_REPORT_ONLY, SECURITY_HEADERS, articlesCsp } from "../src/security.js";
 
 // The formalization reader's pages over the golden fixture store
@@ -26,6 +26,14 @@ async function openAbout(page: Page, name = "About this page"): Promise<void> {
   const fold = page.locator("#articles-about");
   await fold.getByText(name, { exact: true }).click();
   await expect(fold).toHaveAttribute("open", "");
+}
+
+// One attribute of every element a locator matches, in document order.
+async function attributes(locator: Locator, name: string): Promise<Array<string | null>> {
+  const count = await locator.count();
+  const values: Array<string | null> = [];
+  for (let i = 0; i < count; i++) values.push(await locator.nth(i).getAttribute(name));
+  return values;
 }
 
 async function expectNoSeriousViolations(page: Page): Promise<void> {
@@ -352,6 +360,38 @@ test("the dashboard filters its list as you type", async ({ page }) => {
   await expect(page.locator("#articles-list tbody tr:visible td").nth(2)).toHaveText("1 library");
 });
 
+// The list is server-rendered and then kept live: a search for more than the rows the
+// server sent makes articles.js build them again from the index shards. A rebuilt row has
+// to be the row the server would have sent — the bar, the count words under it and their
+// status tokens — and the map Key above the list has to stay where it was. Both were lost
+// once (the finishing pass, 2026-11-19), so both are pinned here.
+test("a row rebuilt from the index shards is the row the server sent, and the Key stays", async ({ page }) => {
+  const errors = collectPageErrors(page);
+  const cov = (p: Page) => p.locator("#articles-list tbody tr").filter({ hasText: "Widget lemma" }).locator("td.articles-cov");
+  const shape = async (p: Page) => ({
+    bar: await cov(p).locator(".articles-bar").getAttribute("aria-label"),
+    segments: await attributes(cov(p).locator(".articles-seg"), "title"),
+    statuses: await attributes(cov(p).locator(".articles-cov-n"), "data-status"),
+    words: await cov(p).locator(".articles-cov-n").allTextContents(),
+  });
+  await page.goto("/articles");
+  await expect(page.locator(".wl-key")).toBeVisible();
+  await expect(cov(page).locator(".articles-cov-words")).toHaveText("✓1 formalized◐1 statement only∅1 not formalized");
+  const sent = await shape(page);
+  // A query the page the server sent cannot answer from its own rows: it rendered none at
+  // all, so the script fetches the shards and builds the matching rows itself.
+  await page.goto("/articles?q=zzzz");
+  await expect(page.locator("#articles-list tbody tr")).toHaveCount(0);
+  await page.getByLabel("Search covered articles").fill("widget");
+  await expect(page.locator("#articles-list tbody tr")).toHaveCount(1);
+  expect(await shape(page)).toEqual(sent);
+  // The glyphs are the server's own, which the page hands both scripts (STATUS_DATA).
+  await expect(cov(page).locator('.wl-tok[data-status="not_formalized"]')).toHaveText("∅");
+  await expect(page.locator(".wl-key")).toBeVisible();
+  await expect(page.locator('.wl-key .wl-tok[data-status="not_formalized"]')).toHaveText("∅");
+  expect(errors).toEqual([]);
+});
+
 test("an article the reader covers shows the summary box", async ({ page }) => {
   await page.goto("/Widget_lemma");
   const box = page.getByRole("complementary", { name: "Formalization" });
@@ -641,6 +681,28 @@ test.describe("the article reader", () => {
     await page.locator('a.atlr-row[data-p="91aa02de"]').click();
     await expect(panelPassage(page)).toHaveAttribute("id", "atlr-pp-91aa02de");
     await expect(page).toHaveURL(new RegExp(`${WIDGET}#p-91aa02de$`));
+  });
+
+  // Everything a status is drawn with has one definition, the server's STATUS table, which
+  // the page hands the script (STATUS_DATA on <body data-wl-status>). After the script has
+  // run, the line the server wrote still says ∅ for "not formalized", the notice inside the
+  // card says it too, and so does the peek the script writes itself.
+  test("after the script has run, 'not formalized' is ∅ in the counts line, the notice and the peek", async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await page.goto(WIDGET);
+    await expect(page.locator("#articles-counts"))
+      .toHaveText("3 passages·✓1 formalized·◐1 statement only·∅1 not formalized");
+    await expect(page.locator("#articles-counts")).not.toContainText("✕");
+    await page.locator('#atlr-article mark.atl[data-p="91aa02de"]').hover();
+    await expect(page.locator("#atlr-peek")).toHaveText("∅ Not formalized · searched 5 libraries");
+    await page.locator('#atlr-article mark.atl[data-p="91aa02de"]').click();
+    await expect(panelPassage(page).locator(".articles-pill")).toHaveText("∅Not formalized");
+    // The absence notice is marked with the status it states, not with a cross.
+    await expect(panelPassage(page).locator(".articles-absence .articles-ico")).toHaveText("∅");
+    // The one ✕ the reader still shows is the phone sheet's close icon, which is not a status.
+    await expect(page.locator(".articles-absence")).not.toContainText("✕");
+    await expect(page.locator("#atlr-close")).toHaveText("✕");
+    expect(errors).toEqual([]);
   });
 
   test("the hover peek names the status and the lead declaration", async ({ page }) => {

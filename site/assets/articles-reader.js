@@ -63,13 +63,22 @@
   // The statuses a passage can be shown with. A passage with no status is set aside by the page and
   // never reaches the panel; a section without one of these is ignored, never labelled.
   // not_checked is phase 1's: the statement was cut and no library has been searched for it.
-  var STATUS = {
-    formalized: ["\u2713", "Formalized"],
-    statement_only: ["\u25d0", "Statement only"],
-    partial: ["\u25d4", "Partial"],
-    not_formalized: ["\u2205", "Not formalized"],
-    not_checked: ["\u25cb", "Not checked yet"]
-  };
+  // The glyph and the word of each are the server's own, read from <body data-wl-status>
+  // (articles-render.ts STATUS_DATA), so this script and the HTML around it cannot say
+  // different things about one status; they are two readings of one table. A page without
+  // the attribute keeps the five statuses and loses only their glyphs.
+  var STATUS_IDS = ["formalized", "statement_only", "partial", "not_formalized", "not_checked"];
+  var STATUS = (function () {
+    var data = {};
+    try { data = JSON.parse((document.body && document.body.getAttribute("data-wl-status")) || "{}") || {}; }
+    catch (e) { data = {}; }
+    var out = {};
+    STATUS_IDS.forEach(function (s) {
+      var d = data[s] && typeof data[s] === "object" ? data[s] : {};
+      out[s] = [typeof d.icon === "string" ? d.icon : "", d.label ? String(d.label) : s.replace(/_/g, " ")];
+    });
+    return out;
+  })();
   var phone = window.matchMedia ? window.matchMedia("(max-width: 999px)") : { matches: false };
   var finePointer = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)") : { matches: true };
   var calm = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
@@ -714,7 +723,7 @@
   function showPeek(p, mark) {
     var st = STATUS[p.status];
     peek.textContent = "";
-    var word = el("span", "atlr-peek-st", st[0] + " " + st[1]);
+    var word = el("span", "atlr-peek-st", (st[0] ? st[0] + " " : "") + st[1]);
     word.setAttribute("data-status", p.status);
     peek.appendChild(word);
     if (p.lead) {

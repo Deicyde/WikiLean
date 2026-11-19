@@ -26,7 +26,7 @@ import {
 } from "../src/articles.js";
 import {
   ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, NO_LOCATE_RUN, UNMEASURED, articlesSummaryBox,
-  campaignLabel, campaignRuns, challengeSentence, coverageStatus, locationStatus, plainHead,
+  campaignLabel, campaignRuns, challengeSentence, coverageStatus, locationStatus, plainHead, statusData,
 } from "../src/articles-render.js";
 import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
@@ -336,7 +336,7 @@ describe("articles pages with the fixture store", () => {
       expect(html).toContain(`<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
-    expect(html).toContain('<script src="/assets/articles.js?v=9"></script>');
+    expect(html).toContain('<script src="/assets/articles.js?v=10"></script>');
     expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=16">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
@@ -2395,7 +2395,7 @@ describe("articles security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/articles.js?v=9"></script>');
+      expect(html, path).toContain('<script src="/assets/articles.js?v=10"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/articles.css');
@@ -2505,6 +2505,36 @@ describe("articles security headers and CSP", () => {
     for (const [env, path] of [[h.env, "/articles"], [h.env, WIDGET_PATH], [reader.env, WIDGET_PATH]] as const) {
       const html = await (await get(env, path)).text();
       expect(html.match(/\/assets\/style\.css\?v=[^"]+/g), path).toEqual([site![1]]);
+    }
+  });
+
+  // The two scripts redraw a status after the page has loaded: articles.js rebuilds the
+  // list's rows from the index shards, and articles-reader.js names a passage and writes
+  // the hover peek. They read the server's own STATUS table off the page instead of
+  // keeping a copy, so a glyph is defined once and the ✕ → ∅ change of 2026-11-19 cannot
+  // leave a script behind saying the old thing.
+  it("hands the scripts the one status table, and neither script keeps a second copy of the glyphs", async () => {
+    const h = setup();
+    bindArticles(h.env, articlesFixtureFiles());
+    const html = await (await get(h.env, "/articles")).text();
+    const data = /<body class="articles-body[^"]*" data-wl-status="([^"]*)">/.exec(html);
+    expect(data, "the status table on <body>").not.toBeNull();
+    const table = JSON.parse(data![1].replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&")) as
+      Record<string, { label: string; icon: string; plural: string }>;
+    expect(table.not_formalized).toEqual({ label: "Not formalized", icon: "∅", plural: "not formalized" });
+    expect(table.formalized).toEqual({ label: "Formalized", icon: "✓", plural: "formalized" });
+    // Only the statuses the build shows: nothing in this one is unchecked, so the page
+    // carries no "not checked yet" in its data either, exactly as it carries none in its text.
+    expect(Object.keys(table)).toEqual(["formalized", "statement_only", "partial", "not_formalized"]);
+    const cut = setup();
+    bindArticles(cut.env, articlesStatementFiles());
+    const cutHtml = await (await get(cut.env, "/articles")).text();
+    expect(cutHtml).toContain("&quot;not_checked&quot;:{&quot;label&quot;:&quot;Not checked yet&quot;,&quot;icon&quot;:&quot;○&quot;");
+    for (const name of ["articles.js", "articles-reader.js"]) {
+      const source = readFileSync(new URL(`../../site/assets/${name}`, import.meta.url), "utf8");
+      expect(source, name).toContain('getAttribute("data-wl-status")');
+      // Not one status glyph of its own, in code or in a comment: the icons live in STATUS.
+      for (const glyph of ["✓", "◐", "◔", "∅", "○", "✕"]) expect(source, `${name} ${glyph}`).not.toContain(glyph);
     }
   });
 
@@ -3305,7 +3335,8 @@ describe("the article reader", () => {
     expect(html).toContain(readerHtml());
     expect(html).toContain(`<link rel="stylesheet" href="${ARTICLES_READER_CSS}">`);
     expect(html).toContain(`<script src="${ARTICLES_JS}"></script>\n<script src="${ARTICLES_READER_JS}"></script>`);
-    expect(html).toContain(`<body class="articles-body atlr-body">\n<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`);
+    expect(html).toContain(`<body class="articles-body atlr-body" data-wl-status="${statusData().replaceAll('"', "&quot;")}">\n` +
+      `<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`);
     // The view switch, the article current; the card list one link away.
     expect(html).toContain(`<nav class="atlr-switch" aria-label="View"><a id="atlr-to-article" href="${WIDGET_PATH}" aria-current="page">Article</a>` +
       `<a id="atlr-to-cards" href="${WIDGET_PATH}?view=cards">Card list</a></nav>`);

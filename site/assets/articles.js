@@ -49,6 +49,32 @@
     return node;
   }
 
+  // ---- the status vocabulary, as the server rendered it ----
+  // articles-render.ts writes its own STATUS table on <body data-wl-status>
+  // (STATUS_DATA): one definition of every glyph and word, shared by the HTML and by this
+  // script, so a row this script rebuilds cannot name a status differently from the row
+  // the server sent. A page without the attribute (an old cached one) loses the glyphs,
+  // never the words: nothing here keeps a second copy of the vocabulary to drift from it.
+  var STATUS = (function () {
+    try { return JSON.parse((document.body && document.body.getAttribute("data-wl-status")) || "{}") || {}; }
+    catch (e) { return {}; }
+  })();
+  function statusIcon(s) {
+    return STATUS[s] && typeof STATUS[s].icon === "string" ? STATUS[s].icon : "";
+  }
+  function statusPlural(s) {
+    return STATUS[s] && STATUS[s].plural ? String(STATUS[s].plural) : String(s).replace(/_/g, " ");
+  }
+  // The 18px status token the server writes beside a count (articles-render.ts tok).
+  function statusTok(s) {
+    var icon = statusIcon(s);
+    if (!icon) return null;
+    var node = el("span", "wl-tok", icon);
+    node.setAttribute("data-status", s);
+    node.setAttribute("aria-hidden", "true");
+    return node;
+  }
+
   // ---- article coverage page ----
   var article = document.getElementById("articles-article");
   if (article) {
@@ -547,11 +573,6 @@
     var titleKey = function (t) {
       return String(t).normalize("NFC").replace(/[ \t\n\r\f\v\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000_]+/g, " ").replace(/^ +| +$/g, "");
     };
-    // The status words the bar's accessible name uses, as articles-render.ts writes them.
-    var STATUS_WORDS = {
-      formalized: "formalized", statement_only: "statement only",
-      partial: "partial", not_formalized: "not formalized"
-    };
     // One row's coverage bar, the same element the server renders: a segment per status,
     // each its share of the width, and the whole bar one image with the counts as its name.
     var barFor = function (entry) {
@@ -577,13 +598,38 @@
         var seg = el("span", "articles-seg");
         seg.setAttribute("data-status", s);
         seg.style.width = ((n / total) * 100).toFixed(2) + "%";
-        seg.setAttribute("title", n + " " + STATUS_WORDS[s]);
+        seg.setAttribute("title", n + " " + statusPlural(s));
         bar.appendChild(seg);
-        words.push(n + " " + STATUS_WORDS[s]);
+        words.push(n + " " + statusPlural(s));
       });
       bar.setAttribute("role", "img");
       bar.setAttribute("aria-label", total + noun + (total === 1 ? ": " : "s: ") + words.join(", "));
       return bar;
+    };
+    // Under the bar: the row's counts in words, each with its status token, exactly the
+    // cell the server renders (articles-render.ts covWords) — a status the article has
+    // none of is left out, and "not checked yet" comes last and apart, because nothing
+    // has searched for those statements. Without it a rebuilt row would be a bar and no
+    // words, which is not what the page was sent as.
+    var covWords = function (entry, notChecked) {
+      var words = el("span", "articles-cov-words");
+      var any = false;
+      var add = function (s, n) {
+        var part = el("span", "articles-cov-n");
+        part.setAttribute("data-status", s);
+        var tok = statusTok(s);
+        if (tok) part.appendChild(tok);
+        part.appendChild(el("span", "articles-n", String(n)));
+        part.appendChild(document.createTextNode(" " + statusPlural(s)));
+        words.appendChild(part);
+        any = true;
+      };
+      STATUSES.forEach(function (s) {
+        var n = Number(entry[s]) || 0;
+        if (n > 0) add(s, n);
+      });
+      if (notChecked > 0) add("not_checked", notChecked);
+      return any ? words : null;
     };
     var rowFor = function (entry) {
       var tr = el("tr");
@@ -605,6 +651,8 @@
       tr.appendChild(th);
       var cov = el("td", "articles-cov");
       cov.appendChild(barFor(entry));
+      var words = covWords(entry, notChecked);
+      if (words) cov.appendChild(words);
       tr.appendChild(cov);
       tr.appendChild(el("td", "num", notChecked ? checked + " of " + shown + " checked" : checked));
       var libs = el("td", "num");
