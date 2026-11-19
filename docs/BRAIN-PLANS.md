@@ -166,6 +166,20 @@ Stage edges whose evidence is only "README order" or reviewer quotes have no lin
 rejected (`no_evidence_line`). The same rule applies within one roadmap, so an intra-roadmap
 stage edge is kept only if its line names the roadmap's own folder.
 
+**Why there are no layer → layer edges.** Every atlas stage edge is rejected, for one of two
+reasons:
+- its endpoint is outside the pin (`endpoint_not_at_pin`): a proposed roadmap, or an atlas stage
+  that maps to no layer here;
+- its evidence carries no line (`no_evidence_line`): "README order", which is sequence and
+  appears as `ordinal`, or a reviewer's quote.
+
+The atlas's embedded README copies do not help. Its evidence cites
+`https://github.com/TauCetiProject/TauCetiRoadmap/blob/…` URLs, while the copies are keyed by
+`content/tau-ceti/…`, so the exact `sourcePath` key never matches (7 roadmap edges verify there).
+Matching the copies by the repo path both strings name would recover only 17 more edges, none
+of them public, at the cost of a path-mapping rule, so it is not done. The rejected rows keep
+their reasons. Layer-level dependencies need line-level evidence in the roadmaps themselves.
+
 ### `decl_refs.jsonl`
 
 One row per (layer or roadmap, Lean name).
@@ -204,8 +218,15 @@ non-final name component; entries by last component). After the rejections below
    (full nested name) and `open N ...` / `open N in` (as written, several names allowed) in
    `Suggested.lean` and in README fenced code blocks, each with its parent prefixes. Exactly one
    entry `N.n` → its library, with `via_namespace: N`. Several → `unqualified`.
-3. **`local_term`** (rejected): a dotted name whose first segment is no namespace component of
-   any entry (`hf.ne'`). Read as "any non-final component", so it never hides a suffix match.
+3. **`local_term`** (rejected): a dotted name whose first segment is neither a namespace
+   component of any entry (read as "any non-final component", so it never hides a suffix match)
+   nor a namespace the roadmaps declare (`hf.ne'`). The roadmaps' declared namespaces are taken
+   across all roadmaps: every component of a declared scope (step 2) and every non-final
+   component of a name `Suggested.lean` declares. A name under such a namespace that no library
+   has yet is a planned declaration in a planned namespace, and stays `planned`. A namespace
+   named only in README prose is not declared, so its names stay `local_term` (for example
+   `BarsottiTate.*`, `Prismatic.*`, `Perf.*` at run 1's pins) until a roadmap declares the
+   namespace or a reviewed proposal promotes them.
 4. **`unqualified`**: the name is an entry with whole leading components removed.
 5. Otherwise `planned`.
 
@@ -214,9 +235,8 @@ similarity or case-folding, and no partial components: `Nat.Succ_le` and `Nat.su
 stay `planned` next to a real `Nat.succ_le`, and `ucc_le` is no suffix of it.
 Rejected rather than `planned`: a name ending in a file suffix (`Foo.lean`), an exact module
 name in either `.bmp`'s `modules`, an unmatched `Mathlib.*` name, the roadmap repo's own
-modules (`TauCetiRoadmap.<Folder>[.Suggested]`), and `local_term`. As written, `local_term` also
-catches planned names in namespaces that do not exist yet (`BarsottiTate.exact_levels`); the
-rejected rows keep the candidate, so a narrower rule can recover them.
+modules (`TauCetiRoadmap.<Folder>[.Suggested]`), and `local_term`. Rejected rows keep their
+candidate name.
 
 ### `xrefs.jsonl`
 
@@ -258,16 +278,16 @@ the root. The atlas's `exported_at` is part of its pinned bytes, not a clock of 
 ## Counts at run 1's pins (2026-11-19)
 
 Inputs: TauCetiRoadmap `96a11793`, trough `1ae5ca9f`, the atlas, Mathlib and Tau Ceti `.bmp`s of
-2026-11-18. `logical_root` `15a117f573f2bcc002261a920b9e3288c531e2a235194a5491bdea486f412d3d`.
+2026-11-18. `logical_root` `e81cdc6ba03e9c54d3df48ef18d304bf88fcad3b87b985e02e1a0dd8ae95acb9`.
 
 | File | Rows | Bytes |
 |---|---|---|
 | `roadmaps.jsonl` | 465 | 155,610 |
 | `layers.jsonl` | 3,717 (done 487, partial 589, untouched 406, unassessed 2,235) | 2,333,439 |
 | `edges.jsonl` | 2,348 (all roadmap → roadmap; 2,341 `evidence_public: true`, 7 `false`, verified only at the atlas copy; pointers: 4,267 `tauceti_roadmap`, 7 `atlas_embedded`) | 1,739,737 |
-| `decl_refs.jsonl` | 75,229 (mathlib 24,608, tauceti 27,620, unqualified 2,235, planned 20,766) | 43,041,083 |
+| `decl_refs.jsonl` | 77,967 (mathlib 24,608, tauceti 27,620, unqualified 2,235, planned 23,504) | 44,543,559 |
 | `xrefs.jsonl` | 4,930 (stacks 2,648, arxiv 2,282) | 2,270,981 |
-| `rejected.jsonl` | 26,592 rows (`decl_ref/local_term` 10,358 occurrences) | 10,556,934 |
+| `rejected.jsonl` | 22,535 rows (`decl_ref/local_term` 6,263 occurrences, 4,303 distinct names) | 8,663,133 |
 
 All 27,620 `tauceti` rows have `stated: null` (`docs_commit_unknown`: `PINS.txt` records no docs
 commit). Edges: 609 `line_does_not_name_target` remain, and no layer → layer edge survives (they

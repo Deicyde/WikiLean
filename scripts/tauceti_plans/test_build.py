@@ -360,6 +360,13 @@ class ResolverTest(unittest.TestCase):
     def test_local_term(self):
         self.assertEqual(self.r.resolve("hf.ne'"), {"resolution": "local_term"})
 
+    def test_planned_namespace_is_not_local_term(self):
+        r = B.Resolver({"Nat.succ_le"}, {"TauCeti.Foo.bar"}, declared={"BarsottiTate"})
+        # A namespace the roadmaps declare but no library has yet: a planned declaration.
+        self.assertEqual(r.resolve("BarsottiTate.exact_levels"), {"resolution": "planned"})
+        self.assertEqual(r.resolve("hf.ne'"), {"resolution": "local_term"})  # still rejected
+        self.assertEqual(self.r.resolve("BarsottiTate.exact_levels"), {"resolution": "local_term"})
+
     def test_partial_component_stays_planned(self):
         self.assertEqual(self.r.resolve("ucc_le"), {"resolution": "planned"})
         for near in ("Nat.Succ_le", "Nat.succ_le_iff", "TauCeti.Foo.ba"):

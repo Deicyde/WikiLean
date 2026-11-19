@@ -453,12 +453,15 @@ class Resolver:
     """Resolves a written name against both `.bmp` indexes, built once per build.
 
     Order: exact entry; else exactly one `N.name` for a declared scope N (`via_namespace`);
-    else, for a dotted name whose first segment is no entry's namespace component, the
-    rejection `local_term`; else `unqualified` when the name is an entry with whole leading
-    components removed; else `planned`."""
+    else, for a dotted name whose first segment is neither an entry's namespace component nor
+    a namespace the roadmaps declare (`declared`), the rejection `local_term`; else
+    `unqualified` when the name is an entry with whole leading components removed; else
+    `planned`. A name under a declared namespace that no library has yet is a planned
+    declaration in a planned namespace, so it stays `planned`."""
 
-    def __init__(self, mathlib: set[str], tauceti: set[str]):
+    def __init__(self, mathlib: set[str], tauceti: set[str], declared: set[str] = frozenset()):
         self.mathlib, self.tauceti = mathlib, tauceti
+        self.declared = frozenset(declared)
         self.components: set[str] = set()
         self.by_last: dict[str, list[str]] = defaultdict(list)
         for name in sorted(mathlib | tauceti):
@@ -488,7 +491,8 @@ class Resolver:
             full, ns = next(iter(hits.items()))
             return {"resolution": self.library(full), "via_namespace": ns, "resolved_name": full}
         parts = name.split(".")
-        if not hits and len(parts) > 1 and parts[0] not in self.components:
+        if (not hits and len(parts) > 1 and parts[0] not in self.components
+                and parts[0] not in self.declared):
             return {"resolution": "local_term"}
         found = sorted(set(hits) | {f for f in self.by_last.get(parts[-1], ())
                                     if f.endswith("." + name)})
@@ -679,17 +683,25 @@ def build(inputs: str, out: str) -> dict:
             mod = fo.replace("/", ".")
             roadmap_modules |= {mod, mod + ".Suggested"}
     # Each roadmap's declared scopes: `namespace`/`open` in Suggested.lean and README code blocks.
+    # Namespace components the roadmaps declare, across all roadmaps: every component of a
+    # declared scope, and every non-final component of a name Suggested.lean declares. These
+    # keep `local_term` from rejecting planned names in planned namespaces.
     scopes = {}
+    declared_ns: set[str] = set()
     for rid in sorted(parsed):
         readme_path, lines, _hs = parsed[rid]
         mask = parse.fence_mask(lines)
         found = parse.code_scopes([ln for ln, f in zip(lines, mask) if f])
         sug_path = readme_path[:-len("README.md")] + "Suggested.lean"
         if sug_path in texts:
-            parse.lean_scan(texts[sug_path].decode("utf-8"), found)
+            sug_decls, _markers = parse.lean_scan(texts[sug_path].decode("utf-8"), found)
+            for d in sug_decls:
+                declared_ns.update(d["name"].split(".")[:-1])
         scopes[rid] = with_parents(found)
+        for s in scopes[rid]:
+            declared_ns.update(s.split("."))
     ctx = {"roadmap_modules": roadmap_modules, "commit": commit, "modules": inp["modules"],
-           "resolver": Resolver(inp["mathlib"], inp["tauceti"]), "scopes": scopes,
+           "resolver": Resolver(inp["mathlib"], inp["tauceti"], declared_ns), "scopes": scopes,
            "sorry": sorry, "stated_reason": stated_reason(inp)}
     decls, xrefs = Collector(), Collector()
     for rid in sorted(parsed):
