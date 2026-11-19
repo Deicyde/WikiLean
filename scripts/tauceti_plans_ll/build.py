@@ -13,7 +13,8 @@ import re
 import subprocess
 from collections import Counter, defaultdict
 
-from scripts.brain_producers.common import BuildError, GitTree, _git_env, dumps, sha256_bytes, sha256_file
+from scripts.brain_producers.common import (OFFLINE_ARGS, BuildError, GitTree, dumps, offline_env,
+                                            sha256_bytes, sha256_file)
 from scripts.tauceti_plans import parse
 from scripts.tauceti_plans.build import FILES as EXPORT_FILES
 from scripts.tauceti_plans.build import SCHEMA as EXPORT_SCHEMA
@@ -165,9 +166,8 @@ def suggested_end(name: str, module: str, commit: str) -> dict:
 def title_at(repo: str, rev: str, readme: str, folder: str) -> str | None:
     """The roadmap title the plans producer's rule reads from `readme` at commit `rev`, or None
     when the commit or the file is absent. Offline: never fetches a missing object."""
-    r = subprocess.run(["git", "-C", repo, "-c", "core.quotepath=off", "show", f"{rev}:{readme}"],
-                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                       env=_git_env() | {"GIT_NO_LAZY_FETCH": "1"})
+    r = subprocess.run(["git", "-C", repo, "-c", "core.quotepath=off", *OFFLINE_ARGS, "show", f"{rev}:{readme}"],
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=offline_env())
     if r.returncode != 0:
         return None
     lines = parse.lines_of(r.stdout.decode("utf-8"))

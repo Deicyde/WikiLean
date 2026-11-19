@@ -55,19 +55,31 @@ def git(repo: str, *args: str, data: bytes | None = None, env: dict | None = Non
     ).stdout
 
 
+# Every read a build makes is offline, on every git version. `GIT_NO_LAZY_FETCH` exists only
+# from git 2.45; older git (Apple's 2.39, for one) ignores it and would lazily fetch a missing
+# blob from the remote. `protocol.allow=never` forbids every transport, so on any version that
+# lazy fetch fails, and the blob is reported missing instead. `fetch` never uses these.
+OFFLINE_ARGS = ("-c", "protocol.allow=never")
+
+
+def offline_env() -> dict:
+    return _git_env() | {"GIT_NO_LAZY_FETCH": "1"}
+
+
 class GitTree:
     """Reads files exactly as committed at HEAD, so a dirty working tree cannot leak in.
 
     Reading is offline: `fetch` clones with `--filter=blob:none`, so a blob outside the sparse
-    set is absent, and git would lazily fetch it from the remote. `GIT_NO_LAZY_FETCH=1` stops
-    that, and the missing blob becomes a BuildError naming the file.
+    set is absent, and git would lazily fetch it from the remote. `OFFLINE_ARGS` and
+    `offline_env()` stop that on every git version, and the missing blob becomes a BuildError
+    naming the file.
     """
 
     def __init__(self, repo: str):
         self.repo = repo
         try:
-            self.commit = git(repo, "rev-parse", "HEAD").decode().strip()
-            out = git(repo, "ls-tree", "-r", "-z", "--full-tree", self.commit)
+            self.commit = git(repo, *OFFLINE_ARGS, "rev-parse", "HEAD", env=offline_env()).decode().strip()
+            out = git(repo, *OFFLINE_ARGS, "ls-tree", "-r", "-z", "--full-tree", self.commit, env=offline_env())
         except (subprocess.CalledProcessError, OSError) as e:
             raise BuildError(f"{os.path.basename(repo)}: cannot read the checkout at {repo} ({e}); "
                              "run this producer's fetch") from None
@@ -88,16 +100,24 @@ class GitTree:
         if not paths:
             return {}
         req = "".join(self.blobs[p] + "\n" for p in paths).encode()
-        out = git(self.repo, "cat-file", "--batch", data=req,
-                  env=_git_env() | {"GIT_NO_LAZY_FETCH": "1"})
+        try:
+            out = git(self.repo, *OFFLINE_ARGS, "cat-file", "--batch", data=req, env=offline_env())
+        except subprocess.CalledProcessError:
+            # Older git cannot report a missing blob in batch mode once lazy fetching is
+            # forbidden: it exits instead. Check each blob on its own and name the missing one.
+            for p in paths:
+                if subprocess.run(["git", "-C", self.repo, *OFFLINE_ARGS, "cat-file", "-e", self.blobs[p]],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                  env=offline_env()).returncode != 0:
+                    raise self._missing(p) from None
+            raise BuildError(f"{os.path.basename(self.repo)}: git cat-file failed reading "
+                             f"{len(paths)} blobs at {self.commit}") from None
         result, pos = {}, 0
         for p in paths:
             nl = out.index(b"\n", pos)
             header = out[pos:nl].decode().split(" ")
             if len(header) < 3:  # `<oid> missing`: a partial clone without the blob, and no fetch
-                raise BuildError(f"{os.path.basename(self.repo)}: {p} is committed at {self.commit} "
-                                 f"but its blob {self.blobs[p]} is not in this partial clone; run "
-                                 "this producer's fetch")
+                raise self._missing(p)
             size = int(header[2])
             result[p] = out[nl + 1: nl + 1 + size]
             pos = nl + 1 + size + 1
@@ -105,3 +125,8 @@ class GitTree:
 
     def read(self, path: str) -> bytes:
         return self.read_many([path])[path]
+
+    def _missing(self, path: str) -> BuildError:
+        return BuildError(f"{os.path.basename(self.repo)}: {path} is committed at {self.commit} "
+                          f"but its blob {self.blobs[path]} is not in this partial clone; run "
+                          "this producer's fetch")
