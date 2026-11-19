@@ -61,7 +61,7 @@ export const ARTICLES_CSS = "/assets/articles.css?v=15";
 export const ARTICLES_JS = "/assets/articles.js?v=9";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
-export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=8";
+export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=9";
 export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=7";
 // The shared layer (the restyle of 2026-11-19): the token set, the one site header and
 // the status token. home.ts and pages.ts pin the same version.

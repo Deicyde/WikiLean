@@ -37,21 +37,24 @@
 .atlr-body.atlr-no-panel .atlr-layout { grid-template-columns: minmax(0, 1fr); }
 .atlr-body.atlr-no-panel .atlr-panel { display: none; }
 .atlr-main { min-width: 0; }
-.atlr-head { max-width: 860px; margin: 0 auto; padding: 18px 28px 0; box-sizing: border-box; color: var(--ink); font-size: 15px; line-height: 1.55; }
+.atlr-head { max-width: 860px; margin: 0 auto; padding: var(--s5) var(--s5) 0; box-sizing: border-box; color: var(--ink); font-size: var(--t-s); line-height: 1.6; }
 .atlr-head a, .atlr-panel a, .atlr-foot a { color: var(--accent); text-underline-offset: 2px; }
-.atlr-hint { margin: 6px 0 0; font-size: 13px; color: var(--muted); max-width: 75ch; }
+.atlr-hint { margin: var(--s2) 0 0; font: var(--t-xs)/1.6 var(--sans); color: var(--muted); max-width: 75ch; }
 /* Shown only where there is a column to hide: on a phone the panel is the bottom sheet. */
-.atlr-panel-toggle { margin-left: auto; font: inherit; font-size: 12px; color: var(--accent); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 3px 11px; cursor: pointer; }
-.atlr-panel-toggle:hover { border-color: var(--accent); }
-/* The notice line heads the article column here, beside the sticky panel, not above it. */
-.atlr-head > .articles-notice { margin: 0 0 10px; padding: 0 0 6px; background: none; text-align: left; }
+.atlr-panel-toggle { font: var(--t-xs)/1.6 var(--sans); color: var(--muted); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 3px; padding: 3px 10px; cursor: pointer; }
+.atlr-panel-toggle:hover { border-color: var(--accent); color: var(--accent); }
+/* The notice closes the article column's head: one quiet line under the hint, never a
+   banner over the page, and never a border across it. */
+.atlr-head > .articles-notice { margin: var(--s3) 0 0; padding: 0; border: 0; background: none; text-align: left; }
 /* The revision is contained (paint containment): nothing in it paints outside the article's box, it
    is a stacking context of its own, and it is the containing block of anything positioned in it.
    So an absolutely positioned element of the revision, whatever its z-index, never covers the
    header, the panel, the page head above it or the footer, and a wide table is cut at the
    article's edge instead of running under the panel. */
-.wl-article-body.atlr-article { position: relative; contain: paint; max-width: 860px; min-height: 0; margin: 12px auto 0; padding: 20px 28px 60px; box-sizing: border-box; border-top: 1px solid var(--line); color: var(--ink); }
-.atlr-panel { position: sticky; top: var(--atlr-top); height: calc(100vh - var(--atlr-top)); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: 12px 18px 28px; border-left: 1px solid var(--line-strong); background: var(--paper); color: var(--ink); font-size: 14px; line-height: 1.5; }
+.wl-article-body.atlr-article { position: relative; contain: paint; max-width: 860px; min-height: 0; margin: var(--s4) auto 0; padding: var(--s5) var(--s5) var(--s8); box-sizing: border-box; border-top: 1px solid var(--line); color: var(--ink); font-family: var(--serif); }
+/* The rail is quieter than the article it sits beside: a hairline, the page's own
+   paper, and the UI sans - nothing that competes with the prose. */
+.atlr-panel { position: sticky; top: var(--atlr-top); height: calc(100vh - var(--atlr-top)); overflow-y: auto; overscroll-behavior: contain; box-sizing: border-box; padding: var(--s5) var(--s5) var(--s6); border-left: 1px solid var(--line); background: var(--paper); color: var(--ink); font: var(--t-s)/1.55 var(--sans); }
 .atlr-panel:focus { outline: none; }
 .atlr-panel:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .atlr-foot { max-width: none; }
@@ -62,11 +65,11 @@
 .atlr-images li { overflow-wrap: anywhere; }
 
 /* ---- the revision itself (MediaWiki parse HTML; its TemplateStyles stay inline) ---- */
-.atlr-article .mw-parser-output { font-size: 16px; line-height: 1.65; }
+.atlr-article .mw-parser-output { font-size: var(--t-base); line-height: 1.72; }
 .atlr-article { overflow-wrap: break-word; }
 .atlr-article pre, .atlr-article .mw-highlight, .atlr-article .numblk { max-width: 100%; overflow-x: auto; }
-.atlr-article h2 { font-size: 1.45rem; margin: 1.4em 0 .4em; padding-bottom: .15em; border-bottom: 1px solid var(--line); font-weight: 600; }
-.atlr-article h3 { font-size: 1.15rem; margin: 1.2em 0 .3em; }
+.atlr-article h2 { font-family: var(--serif); font-size: var(--t-lg); margin: 1.8em 0 .5em; padding-bottom: .15em; border-bottom: 1px solid var(--line); font-weight: 500; }
+.atlr-article h3 { font-family: var(--serif); font-size: var(--t-md); margin: 1.4em 0 .4em; font-weight: 600; }
 .atlr-article h4 { font-size: 1rem; margin: 1em 0 .3em; }
 /* Links keep a thin underline, as on WikiLean's article pages: colour alone does not set them apart. */
 .atlr-article a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
@@ -182,8 +185,8 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
 
 /* ---- the panel: nav strip, index, selected passage ---- */
 .atlr-sheet-head { display: none; }
-.atlr-nav { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: -12px -18px 10px; padding: 8px 18px; background: var(--paper); border-bottom: 1px solid var(--line); }
-.atlr-back, .atlr-stepbtn, .atlr-copy, .atlr-more, .atlr-close { font: inherit; font-size: 13px; color: var(--accent); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.atlr-nav { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: var(--s2); margin: calc(-1 * var(--s5)) calc(-1 * var(--s5)) var(--s3); padding: var(--s2) var(--s5); background: var(--paper); border-bottom: 1px solid var(--line); }
+.atlr-back, .atlr-stepbtn, .atlr-copy, .atlr-more, .atlr-close { font: var(--t-xs)/1.6 var(--sans); color: var(--accent); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 3px; padding: 3px 10px; cursor: pointer; }
 .atlr-back:hover, .atlr-stepbtn:hover, .atlr-copy:hover, .atlr-more:hover { border-color: var(--accent); }
 .atlr-step { display: inline-flex; align-items: center; gap: 6px; }
 .atlr-stepbtn { min-width: 32px; padding: 2px 8px; font-size: 16px; line-height: 1.2; }
@@ -194,27 +197,30 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
 .atlr-toc { margin: 8px 0 0; }
 .atlr-groups, .atlr-rows { list-style: none; margin: 0; padding: 0; }
 .atlr-group + .atlr-group { margin-top: 8px; }
-.atlr-group-h { margin: 8px 0 2px; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.atlr-group-h { margin: var(--s4) 0 var(--s1); font: 700 var(--t-xs)/1.4 var(--sans); letter-spacing: .07em; text-transform: uppercase; color: var(--faint); }
 /* A compact row: the swatch, then the passage's first words over two lines and its
    lead declaration under them. The words are cut at the end of a line, never in the
    middle of a word, and the row's title carries them whole. */
-.atlr-row { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 1px 8px; align-items: start; padding: 5px 6px; border-radius: 4px; color: var(--ink) !important; text-decoration: none !important; }
-.atlr-row:hover, .atlr-row.is-hover { background: var(--surface); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.atlr-row { display: grid; grid-template-columns: 14px minmax(0, 1fr); gap: 1px var(--s2); align-items: start; padding: 5px 6px 5px 2px; border-radius: 2px; color: var(--ink) !important; text-decoration: none !important; }
+.atlr-row:hover, .atlr-row.is-hover { background: var(--accent-soft); }
 .atlr-swatch { grid-row: 1 / span 2; margin-top: 3px; width: 12px; height: 12px; border-radius: 2px; background: var(--st-bg); border: 1.5px var(--st-line) var(--st); box-sizing: border-box; }
 .atlr-swatch[data-status="not_formalized"] { border-width: 3px; }
 .atlr-swatch[data-status="not_checked"] { border-style: dashed; }
 .atlr-swatch[data-status="unresolved"] { border: 1.5px dashed var(--c-untouched); }
-.atlr-row-text { font-family: var(--serif); font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
+.atlr-row-text { font-family: var(--serif); font-size: var(--t-xs); line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: break-word; }
 .atlr-row-text .articles-math-display { display: inline; }
-.atlr-row-lead { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 11.5px; }
-.atlr-row-lead code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; color: var(--ink); }
+.atlr-row-lead { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--faint); font: 0.7rem/1.45 var(--mono); }
+.atlr-row-lead code { font: inherit; color: var(--muted); }
 .atlr-row-note { color: var(--c-partial-ink); }
-.atlr-keys { margin: 14px 0 0; font-size: 12px; color: var(--muted); }
-.atlr-keys kbd { display: inline-block; min-width: 1.2em; padding: 0 4px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--surface); font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; text-align: center; }
+.atlr-keys { margin: var(--s4) 0 0; font: var(--t-xs)/1.6 var(--sans); color: var(--muted); }
+.atlr-keys kbd { display: inline-block; min-width: 1.2em; padding: 0 4px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 3px; background: var(--surface); font: 11px/1.5 var(--mono); text-align: center; }
 .atlr-panel .articles-legend-rel { margin-top: 10px; }
 
 /* The selected passage: the card list's block, under a 3 px accent bar, its text clamped. */
-.atlr-pp.articles-passage { margin: 0; padding: 10px 14px 12px; border: 1px solid var(--line-strong); border-left: 3px solid var(--accent); border-radius: 6px; scroll-margin-top: 0; }
+/* The open card leads the rail, above the still-visible index: a 2px rule in the
+   passage's own status over a plain surface, so the card says its status before a word
+   of it is read. */
+.atlr-pp.articles-passage { margin: 0; padding: var(--s3) var(--s4) var(--s4); border: 1px solid var(--line); border-top: 2px solid var(--st); border-radius: 0 0 3px 3px; box-shadow: 0 1px 2px rgba(0, 0, 0, .04); scroll-margin-top: 0; }
 .atlr-pp.is-subject { box-shadow: none; }
 .atlr-pp .articles-p-h:focus { outline: none; }
 .atlr-pp .articles-p-h:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -226,7 +232,7 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
 .atlr-more { margin: 2px 0 0; padding: 1px 8px; font-size: 12px; }
 .atlr-related { margin: 12px 0 0; }
 .atlr-related > summary { cursor: pointer; width: max-content; max-width: 100%; }
-.atlr-links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 12px 0 0; padding-top: 8px; border-top: 1px solid var(--line); font-size: 13px; }
+.atlr-links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s1) var(--s2); margin: var(--s4) 0 0; padding-top: var(--s3); border-top: 1px solid var(--line); font-size: var(--t-xs); }
 .atlr-copy { padding: 1px 8px; font-size: 12.5px; }
 .atlr-copy-msg { color: var(--muted); font-size: 12px; }
 .atlr-fab { display: none; }
