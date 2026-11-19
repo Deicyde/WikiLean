@@ -38,6 +38,19 @@ class ListsTest(unittest.TestCase):
         got = [(e["entry"], e["value"]) for e in L.entries("100", text)]
         self.assertEqual(got, [("1", "A.b"), ("2", "C.d"), ("2", "E.f"), ("3", "I.j"), ("3", "K.l")])
 
+    def test_a_quoted_key_is_a_key_not_the_line_above_s_value(self):
+        """A quoted key after a key with no value of its own (its parent, or an empty one) is
+        still a mapping line: its value must not be read as the previous key's value."""
+        text = ("General algebra:\n  Numbers:\n    \"$p$-adic number\": 'A.b'\n"
+                "    empty: ''\n    'quoted key': \"C.d\"\n    plain: 'E.f'\n")
+        self.assertEqual([(e["value"], e["line"]) for e in L.entries("overview", text)],
+                         [("A.b", 3), ("C.d", 5), ("E.f", 6)])
+
+    def test_a_value_on_the_next_line_still_resolves(self):
+        text = "Top:\n  Sub:\n    long one:\n      'A.b'\n    after: 'C.d'\n"
+        self.assertEqual([(e["value"], e["line"]) for e in L.entries("overview", text)],
+                         [("A.b", 4), ("C.d", 5)])
+
 
 class BuildFixture(unittest.TestCase):
     @classmethod

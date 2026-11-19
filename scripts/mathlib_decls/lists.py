@@ -90,12 +90,10 @@ def entries(list_name: str, text: str) -> list[dict]:
                     for part in v[1:-1].split(","):
                         add(scalar(part))
             continue
-        if body[0] in "'\"" and pending:
-            add(scalar(body))  # the value of the key on the line above
-            pending = False
-            continue
         kv = _key_value(body)
         if kv is None:
+            if pending and body[0] in "'\"":
+                add(scalar(body))  # the value of the key on the line above
             pending = False
             continue
         _key, value = kv
