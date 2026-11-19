@@ -410,7 +410,32 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
         if key not in seen:
             report["carried_items"] += 1
             result.append(deepcopy(old))
+    _report_lost_legacy(existing, result, report)
     return result, report
+
+
+def _report_lost_legacy(existing: list[dict], result: list[dict], report: dict) -> None:
+    """Say so when a legacy (non-native) review item left the article.
+
+    The reference contract only protects native items, and a human-owned item
+    is restored on the wire by ``moderate.finalize_for_post``; a legacy
+    ``ai``/``ai-moderated`` item the agent did not echo is simply not in the
+    output. Carrying it forward by identity would duplicate it whenever an
+    agent legitimately converts it to the native shape, so it is reported
+    rather than carried — a silent disappearance is the one thing it must not
+    be.
+    """
+    kept_ids = {item["id"] for item in result if isinstance(item.get("id"), str) and item["id"]}
+    kept_sigs = {native.anchor_sig(item) for item in result}
+    for stored in existing:
+        if not isinstance(stored, dict) or is_reviewable(stored) or stored.get("provenance") == "human":
+            continue
+        identity = stored["id"] if isinstance(stored.get("id"), str) and stored["id"] else None
+        if (identity is not None and identity in kept_ids) or native.anchor_sig(stored) in kept_sigs:
+            continue
+        report["skipped_items"].append({
+            "item": identity,
+            "reason": "a legacy review item the agent omitted is not carried forward"})
 
 
 def merge_reports(*reports: dict) -> dict:

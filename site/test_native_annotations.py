@@ -430,6 +430,27 @@ class ReviewMerge(unittest.TestCase):
         self.assertEqual(merged[0]['links'], item()['links'])
         self.assertEqual((merged[0]['status'], report['carried_links']), ('rejected', 1))
 
+    def test_a_legacy_item_the_agent_omits_is_reported_not_lost_in_silence(self):
+        # The reference contract protects native items only, so a legacy
+        # ai-owned item the agent does not echo leaves the article. It is not
+        # carried forward (that would duplicate a legitimate conversion to the
+        # native shape), but it may not disappear without a word either.
+        stored = [old_item(id='001122334455'), item()]
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed')])
+        self.assertEqual([entry.get('id') for entry in merged], ['aabbccddeeff'])
+        self.assertEqual(report['skipped_items'], [
+            {'item': '001122334455',
+             'reason': 'a legacy review item the agent omitted is not carried forward'}])
+        # Echoed back it survives, and then there is nothing to report.
+        legacy = old_item(id='001122334455')
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed'), legacy])
+        self.assertIn(legacy, merged)
+        self.assertEqual(report['skipped_items'], [])
+        # A human legacy item is restored on the wire instead, so it is not one of these.
+        _merged, report = nr.merge_native_review(
+            [old_item(id='001122334455', provenance='human'), item()], [item(note='reviewed')])
+        self.assertEqual(report['skipped_items'], [])
+
     def test_one_mangled_item_is_kept_unchanged_instead_of_failing_the_article(self):
         stored = [item(), item(id='001122334455', links=[], unlinked=[occurrence('Other')])]
         for broken in ({'id': '001122334455', 'links': [{'id': 'x', 'annotation': {'subject': [{'ref': 'u7'}],
