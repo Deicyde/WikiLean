@@ -7,6 +7,7 @@ import { isNativeItem, legacyAnchorOccurrences } from "../native-companion.js";
 import { formalLinks } from "./formal-links.js";
 import { htmlEscape } from "./html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./searchbox.js";
+import { siteHeader } from "../site-shell.js";
 import type { Annotation } from "./types.js";
 
 export const BASE_URL = "https://wikilean.jackmccarthy.org";
@@ -186,7 +187,7 @@ export function renderArticlePage(input: PageInput): string {
 var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
 document.documentElement.dataset.theme=t;}catch(e){}})();
 </script>
-<link rel="stylesheet" href="/assets/style.css?v=11">
+<link rel="stylesheet" href="/assets/style.css?v=12">
 <style>
 /* Use the article-stylesheet's tokens so the attribution footer recolors in
    dark mode along with the rest of the chrome. */
@@ -215,24 +216,15 @@ document.documentElement.dataset.theme=t;}catch(e){}})();
 ${SEARCHBOX_CSS}</style>
 </head>
 <body class="show-all">
-<header class="wl-header">
-  <div class="wl-title">
-    <a class="wl-brand" href="/">WikiLean</a>
-    <span class="wl-sep">·</span>
-    <span class="wl-article">${title}</span>
-    <span class="wl-nav">
-      ${SEARCHBOX_HTML}
-      <a class="wl-navlink" href="/articles">Articles</a>
-      <a class="wl-navlink" href="/brain">Brain</a>
-      <a class="wl-navlink" href="/recent-changes">Recent changes</a>
-      <a class="wl-navlink" href="/stats">Stats</a>
-      <a class="wl-navlink" href="/about">About</a>
-      <a class="wl-navlink" href="/${encodeURIComponent(slug)}/history">History</a>
-      <a class="wl-wikilink" href="https://en.wikipedia.org/wiki/${wpLink}" target="_blank" rel="noopener">view on Wikipedia ↗</a>
-      <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
-    </span>
-  </div>
-  <div class="wl-controls">
+${siteHeader({
+  context: { label: title },
+  search: SEARCHBOX_HTML,
+  extraNav:
+    `<a class="wl-navlink" href="/recent-changes">Recent changes</a>\n` +
+    `      <a class="wl-navlink" href="/stats">Stats</a>\n` +
+    `      <a class="wl-navlink" href="/${encodeURIComponent(slug)}/history">History</a>\n` +
+    `      <a class="wl-wikilink" href="https://en.wikipedia.org/wiki/${wpLink}" target="_blank" rel="noopener">view on Wikipedia ↗</a>`,
+}, `  <div class="wl-controls">
     <span class="wl-coverage">
       <span class="wl-badge wl-formalized">${counts.formalized} formalized</span>
       <span class="wl-badge wl-partial">${counts.partial} partial</span>
@@ -259,8 +251,7 @@ ${SEARCHBOX_CSS}</style>
       <button data-mode="not_formalized" aria-pressed="false">Not-formalized only</button>
       <button data-mode="dim" aria-pressed="false">Dim unannotated</button>
     </span>
-  </div>
-</header>
+  </div>`)}
 <main class="wl-article-body">
 ${body}
 </main>

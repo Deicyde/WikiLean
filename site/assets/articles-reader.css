@@ -7,15 +7,20 @@
    its own stroke under the text (solid, dashed, dotted, double, wavy grey), an icon and a word
    in the peek, the panel and the legend. */
 
-/* ---- the view switch (reader and card list) and the reader's header row ---- */
-.atlr-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; margin: 8px 0 0; font-size: 12px; }
-.atlr-switch { display: inline-flex; flex: none; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; }
-.atlr-switch a { padding: 4px 11px; color: var(--ink); background: var(--surface); text-decoration: none; font-size: 12px; line-height: 1.4; }
+/* ---- the view switch and the context strip (reader and card list) ---- */
+/* The reader used to stack a second header row (.atlr-bar) under the site header. It
+   does not any more: the breadcrumb, the article's name, the view switch and the panel
+   toggle all ride ONE context strip (site-shell.ts contextStrip, styled in style.css),
+   which sticks under the header. The script measures both and publishes --atlr-hdr (the
+   header alone) and --atlr-top (the whole chrome), so the strip and the passage panel
+   each know where to stop. */
+.atlr-body .wl-ctx { position: sticky; top: var(--atlr-hdr, 0px); z-index: 90; }
+.atlr-switch { display: inline-flex; flex: none; border: 1px solid var(--line-strong); border-radius: 3px; overflow: hidden; }
+.atlr-switch a { padding: 3px 10px; color: var(--muted); background: var(--surface); text-decoration: none; font: var(--t-xs)/1.6 var(--sans); }
 .atlr-switch a + a { border-left: 1px solid var(--line-strong); }
 .atlr-switch a:hover { color: var(--accent); }
-/* The surface colour on the accent: white on light, near black on the lighter dark-mode accent. */
-.atlr-switch a[aria-current="page"] { background: var(--accent); color: var(--surface); font-weight: 600; }
-.atlr-skip { position: absolute; left: 8px; top: -60px; z-index: 300; padding: 6px 12px; background: var(--surface); color: var(--accent); border: 2px solid var(--accent); border-radius: 6px; font-size: 13px; }
+.atlr-switch a[aria-current="page"] { background: var(--accent); color: var(--on-accent); font-weight: 600; }
+.atlr-skip { position: absolute; left: 8px; top: -60px; z-index: 300; padding: 6px 12px; background: var(--surface); color: var(--accent); border: 2px solid var(--accent); border-radius: 4px; font-size: var(--t-s); }
 .atlr-skip:focus { top: 8px; }
 
 /* ---- layout: the article column and the sticky panel ---- */
@@ -251,8 +256,8 @@ mark.atl.is-off, mark.atl.is-off .mwe-math-element-block { background: none; bor
   .atlr-js .atlr-index .atlr-h2 { padding-right: 44px; }
   /* The passage's text is in the article just above the sheet: the sheet goes straight to its status and cards. */
   .atlr-js .atlr-pp.atlr-in-text .atlr-clamp, .atlr-js .atlr-pp.atlr-in-text .atlr-more { display: none; }
-  /* With the sheet open the header keeps its first row; the chips come back when it closes. */
-  .atlr-js.atlr-sheet-open .atlr-body .atlr-bar { display: none; }
+  /* With the sheet open the header keeps its one row; the strip comes back when it closes. */
+  .atlr-js.atlr-sheet-open .atlr-body .wl-ctx { display: none; }
   .atlr-js .atlr-fab { position: fixed; right: 16px; bottom: 16px; z-index: 130; display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--accent); border-radius: 999px; background: var(--accent); color: var(--surface); font: 600 14px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; box-shadow: 0 2px 8px rgba(40, 30, 10, .25); cursor: pointer; }
   .atlr-js .atlr-fab[hidden], .atlr-js.atlr-sheet-open .atlr-fab { display: none; }
   .atlr-peek { display: none; }

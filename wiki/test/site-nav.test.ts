@@ -62,12 +62,12 @@ describe("the cached pages", () => {
   it("each moved to a new key, and its cached bytes carry the link", async () => {
     const h = setup();
     const moved: Array<[path: string, key: string, before: string[]]> = [
-      [`/${SLUG}`, `render:v21:${SLUG}:1`, ["render:v19:", "render:v20:"]],
-      ["/", "page:home:v14", ["page:home:v12", "page:home:v13"]],
-      ["/about", "page:about:v5", ["page:about:v4"]],
-      ["/stats", "page:stats:v8", ["page:stats:v7"]],
-      ["/wikifunctions", "page:wikifunctions:v4", ["page:wikifunctions:v3"]],
-      ["/wikifunctions/verify", "page:wikifunctions-verify:v4", ["page:wikifunctions-verify:v3"]],
+      [`/${SLUG}`, `render:v22:${SLUG}:1`, ["render:v20:", "render:v21:"]],
+      ["/", "page:home:v15", ["page:home:v13", "page:home:v14"]],
+      ["/about", "page:about:v6", ["page:about:v5"]],
+      ["/stats", "page:stats:v9", ["page:stats:v8"]],
+      ["/wikifunctions", "page:wikifunctions:v5", ["page:wikifunctions:v4"]],
+      ["/wikifunctions/verify", "page:wikifunctions-verify:v5", ["page:wikifunctions-verify:v4"]],
     ];
     for (const [path, key, before] of moved) {
       expect((await get(h.env, path)).status, path).toBe(200);

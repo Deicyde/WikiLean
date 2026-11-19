@@ -507,11 +507,15 @@ test.describe("the article reader", () => {
     const notice = page.locator(".atlr-head > #articles-notice");
     await expect(notice).toHaveText("Preliminary: these links have not yet had an independent audit.");
     const header = await page.locator(".wl-header").boundingBox();
+    const strip = await page.locator(".wl-ctx").boundingBox();
     const box = await notice.boundingBox();
     expect(header && box && box.y >= header.y + header.height).toBe(true);
-    // The sticky panel starts under the header and ends at the window's bottom edge.
+    // The chrome is the one header and the context strip that sticks under it; the sticky
+    // panel starts under both and ends at the window's bottom edge.
+    const chromeBottom = (header?.y ?? 0) + (header?.height ?? 0) + (strip?.height ?? 0);
+    expect(strip && header && Math.abs(strip.y - (header.y + header.height)) <= 1).toBe(true);
     const panel = await page.locator("#atlr-panel").boundingBox();
-    expect(panel && header && Math.abs(panel.y - (header.y + header.height)) <= 1).toBe(true);
+    expect(panel && Math.abs(panel.y - chromeBottom) <= 1).toBe(true);
     expect(panel && panel.y + panel.height <= 800 + 1).toBe(true);
   });
 
@@ -716,21 +720,27 @@ test.describe("the article reader", () => {
     });
     expect(saved).toEqual([null, "not_formalized"]);
     await page.getByRole("button", { name: "Show all passages" }).click();
-    // On a phone, the sheet leaves the article the screen above it: one header row, the passage's
-    // text not repeated; its button reopens the index from the top.
+    // On a phone, the sheet leaves the article the screen above it: the site header alone,
+    // with the context strip folded away, and the passage's text not repeated; its button
+    // reopens the index from the top. The chrome is the header plus the strip (the Ledger
+    // restyle, 2026-11-19) — never a second header row.
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto(WIDGET);
-    const closed = await page.locator(".wl-header").boundingBox();
+    const chrome = async () => {
+      const header = await page.locator(".wl-header").boundingBox();
+      const strip = await page.locator(".wl-ctx").boundingBox();
+      return (header?.height ?? 0) + (strip?.height ?? 0);
+    };
+    const closed = await chrome();
     await page.locator('#atlr-article mark.atl[data-p="91aa02de"]').click();
     await expect(panelPassage(page)).toHaveAttribute("id", "atlr-pp-91aa02de");
-    await expect(page.locator(".atlr-bar")).toBeHidden();
+    await expect(page.locator(".wl-ctx")).toBeHidden();
     await expect(panelPassage(page).locator(".atlr-clamp")).toBeHidden();
     await expect(panelPassage(page).locator(".articles-absence")).toBeVisible();
-    const open = await page.locator(".wl-header").boundingBox();
-    expect(closed && open && open.height < closed.height - 20).toBe(true);
+    expect(await chrome()).toBeLessThan(closed - 20);
     await page.locator("#atlr-panel").evaluate((panel) => { panel.scrollTop = 200; });
     await page.getByRole("button", { name: "Close the panel" }).click();
-    await expect(page.locator(".atlr-bar")).toBeVisible();
+    await expect(page.locator(".wl-ctx")).toBeVisible();
     await page.locator("#atlr-fab").click();
     await expect(page.locator("#atlr-index")).toBeVisible();
     expect(await page.locator("#atlr-panel").evaluate((panel) => panel.scrollTop)).toBe(0);

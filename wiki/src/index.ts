@@ -227,7 +227,9 @@ async function renderArticleBase(env: Env, row: ArticleRow): Promise<string> {
   // v21: style.css?v=11, which gives the links inside the rendered article the
   // page's accent in both themes (they were the browser's default blue, unreadable
   // on the dark surface).
-  const cacheKey = `render:v21:${slug}:${row.version}`;
+  // v22: the Ledger restyle — the page template carries the shared site header
+  // (src/site-shell.ts) instead of its own copy, and links style.css?v=12.
+  const cacheKey = `render:v22:${slug}:${row.version}`;
   const cached = await env.RENDER_CACHE.get(cacheKey);
   if (cached) return cached;
 
@@ -586,7 +588,7 @@ async function runGuardedArticleBatch(
 // beside the Lean declaration that formalizes it, plus the published build's totals.
 // It never throws, and an unbound or unpublished store simply leaves the block out.
 app.get("/", async (c) => {
-  const cacheKey = "page:home:v14"; // v14: "passages checked" excludes phase 1's unchecked statements
+  const cacheKey = "page:home:v15"; // v15: the Ledger restyle — the shared header and style.css?v=12
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = landingPage(await articlesExample(c.env));
@@ -632,7 +634,7 @@ app.get("/api/articles", async (c) => {
 
 // About describes the current workflow; counts stay with their corpus.
 app.get("/about", async (c) => {
-  const cacheKey = "page:about:v5";  // v5: the entry shell carries the home example's styles
+  const cacheKey = "page:about:v6";  // v6: the Ledger restyle — the shared header and style.css?v=12
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = aboutPage();
@@ -681,7 +683,7 @@ app.get("/favicon.ico", (c) =>
 // is KV-cached with a long TTL; bump the cache key suffix when the page or the
 // embedded data changes.
 app.get("/wikifunctions", async (c) => {
-  const cacheKey = "page:wikifunctions:v4";  // v4: the navigation links the formalization reader (/articles)
+  const cacheKey = "page:wikifunctions:v5";  // v5: the Ledger restyle — the shared header and style.css?v=12
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
@@ -695,7 +697,7 @@ app.get("/wikifunctions", async (c) => {
 // cache pattern; bump the suffix when the page copy changes. Registered before
 // the /:slug catch-all (which only matches a single path segment anyway).
 app.get("/wikifunctions/verify", async (c) => {
-  const cacheKey = "page:wikifunctions-verify:v4";  // v4: the navigation links the formalization reader (/articles)
+  const cacheKey = "page:wikifunctions-verify:v5";  // v5: the Ledger restyle — the shared header and style.css?v=12
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsVerifyPage();
@@ -709,7 +711,7 @@ app.get("/wikifunctions/verify", async (c) => {
 // Annotation blobs are never parsed here. KV-cached with TTL-only
 // invalidation (a write can be up to 5 minutes stale — fine for a dashboard).
 app.get("/stats", async (c) => {
-  const cacheKey = "page:stats:v8"; // v8: focused navigation; secondary tools in the footer
+  const cacheKey = "page:stats:v9"; // v9: the Ledger restyle — the shared header and style.css?v=12
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const db = drizzle(c.env.DB);

@@ -41,7 +41,8 @@
 // outside that fold are plain: "libraries searched", "pinned revision", never "universe",
 // "frozen", "central", "campaign" or "coverage claim".
 
-import { siteNav, SITE_TOOLS } from "./site-nav.js";
+import { SITE_TOOLS } from "./site-nav.js";
+import { contextStrip, siteHeader, THEME_BOOTSTRAP } from "./site-shell.js";
 import { htmlEscape } from "./engine/html.js";
 import { passageTextHtml, quoteFragment, quoteSegments, renderQuote } from "./articles-math.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
@@ -60,9 +61,11 @@ export const ARTICLES_CSS = "/assets/articles.css?v=14";
 export const ARTICLES_JS = "/assets/articles.js?v=9";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
-export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=7";
-export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=6";
-const STYLE_CSS = "/assets/style.css?v=11";
+export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=8";
+export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=7";
+// The shared layer (the restyle of 2026-11-19): the token set, the one site header and
+// the status token. home.ts and pages.ts pin the same version.
+const STYLE_CSS = "/assets/style.css?v=12";
 
 const text = (s: string) => htmlEscape(String(s ?? ""), false);
 const attr = (s: string) => htmlEscape(String(s ?? ""), true);
@@ -953,9 +956,10 @@ function shell(opts: {
   // The page shows passages in full, so its JSON download carries their text.
   fullText?: boolean;
   // A page that has the article reader (articlesReaderPage, and its card list's view switch):
-  // its stylesheet, a class on the body, a skip link before the header, a second header
-  // row, its own footer and its script. Absent, the shell is what it always was.
-  readerCss?: boolean; bodyClass?: string; skip?: string; headerRow?: string; footer?: string; readerJs?: boolean;
+  // its stylesheet, a class on the body, a skip link before the header, the context strip
+  // under it, its own footer and its script. Absent, the shell is what it always was.
+  // `contextStrip` is site-shell.ts's one-row strip — NEVER a second header row.
+  readerCss?: boolean; bodyClass?: string; skip?: string; contextStrip?: string; footer?: string; readerJs?: boolean;
   // The page puts the notice line at the top of its own main column (the reader: under the
   // header still, but beside the sticky panel rather than above it, so the panel keeps the
   // viewport's height).
@@ -976,25 +980,18 @@ function shell(opts: {
 <title>WikiLean · ${text(opts.title)}</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="${attr(opts.description)}">
-${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : ""}<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : ""}${THEME_BOOTSTRAP}
 <link rel="stylesheet" href="${STYLE_CSS}">
 <link rel="stylesheet" href="${ARTICLES_CSS}">
 ${opts.readerCss ? `<link rel="stylesheet" href="${ARTICLES_READER_CSS}">\n` : ""}<style>${SEARCHBOX_CSS}</style>
 </head>
 <body class="articles-body${opts.bodyClass ? ` ${attr(opts.bodyClass)}` : ""}">
-${opts.skip ? `${opts.skip}\n` : ""}<header class="wl-header">
-  <div class="wl-title">
-    <a class="wl-brand" href="/">WikiLean</a>
-    <span class="wl-sep">·</span>
-    <a class="wl-article articles-home" href="/articles">Articles</a>
-    <span class="wl-nav">
-      ${SEARCHBOX_HTML}
-      ${siteNav(opts.dashboard ? "/articles" : "")}
-      <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
-    </span>
-  </div>
-${opts.headerRow ? `${opts.headerRow}\n` : ""}</header>
-${opts.noticeInMain ? "" : `${NOTICE_LINE}\n`}${opts.main}
+${opts.skip ? `${opts.skip}\n` : ""}${siteHeader({
+    current: opts.dashboard ? "/articles" : "",
+    context: { label: "Articles", href: "/articles", cls: "articles-home" },
+    search: SEARCHBOX_HTML,
+  })}
+${opts.contextStrip ? `${opts.contextStrip}\n` : ""}${opts.noticeInMain ? "" : `${NOTICE_LINE}\n`}${opts.main}
 ${opts.footer ?? `<footer class="articles-foot">
   <p>Wikipedia text: ${CC_BY_SA}. WikiLean mappings: CC0. Lean code keeps its library’s licence.</p>
   <details class="articles-about"><summary>Sources, licences, and data</summary>
@@ -2343,7 +2340,16 @@ ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is ri
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main, fullText: nText > 0, footer,
     turnstile: pageNeedsTurnstile(ctx.overlay),
-    ...(readerHref ? { readerCss: true, readerJs: true, headerRow: `<div class="atlr-bar">${viewSwitch(readerHref, "cards")}</div>` } : {}),
+    ...(readerHref
+      ? {
+        readerCss: true,
+        readerJs: true,
+        // The view switch rides the context strip, not a second header row. The
+        // card list keeps its own breadcrumb and title in the page body, where
+        // the counts line and the legend follow them.
+        contextStrip: contextStrip({ right: viewSwitch(readerHref, "cards") }),
+      }
+      : {}),
   });
 }
 
@@ -2406,8 +2412,16 @@ export function articlesReaderPage(input: ArticlePageInput & { html: string }): 
   const extraChips = chip("central", "The article's own statements", nCentral,
     "Show only the passages that state the article's subject or a named result or definition") +
     `<button type="button" class="articles-chip atlr-dim-chip" data-filter="dim" aria-pressed="false" title="Fade the article text outside the passages">Dim the rest of the text</button>`;
-  const headerRow = `<div class="atlr-bar">${viewSwitch(selfHref, "article")}` +
-    `<button type="button" class="atlr-panel-toggle" id="atlr-panel-toggle" aria-controls="atlr-panel" aria-expanded="true">Hide the passage list</button></div>`;
+  // One head, not three: the breadcrumb, the article's name, the view switch and the
+  // panel toggle all ride the context strip on the header's own surface. The reader
+  // used to stack the site header, a second bar and the notice banner above the
+  // article; now the notice is one quiet line inside the article column (below).
+  const strip = contextStrip({
+    crumb: `<a href="/articles">Articles</a> <span aria-hidden="true">›</span>`,
+    title: text(article.title),
+    right: `${viewSwitch(selfHref, "article")}` +
+      `<button type="button" class="atlr-panel-toggle" id="atlr-panel-toggle" aria-controls="atlr-panel" aria-expanded="true">Hide the passage list</button>`,
+  });
   const unplaced = passages.filter((p) => !placed.has(passageHex(p))).length;
   // With no card in the panel there is nothing for the relation legend to explain.
   const readerRelations = !unchecked || passages.some((p) => shownLocations(p, ctx).length > 0)
@@ -2415,8 +2429,6 @@ export function articlesReaderPage(input: ArticlePageInput & { html: string }): 
   const main = `<div class="atlr-layout" id="articles-reader" data-pageid="${int(article.pageid)}" data-self="${attr(selfHref)}" data-passages="${int(n)}">
 <main class="atlr-main" id="atlr-main">
 <div class="atlr-head">
-${NOTICE_LINE}
-<nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="articles-h1">${text(article.title)}</h1>
 ${counts}
 ${key}
@@ -2424,6 +2436,7 @@ ${filterNote(true, noun)}
 ${moreFilters(libraryChips, extraChips)}
 ${about}
 <p class="atlr-hint">${unchecked ? "Select a highlighted statement to read it on its own; no library has been searched for it yet" : "Select a highlighted passage to see where Lean formalizes it"}${unplaced ? `. ${plural(unplaced, `${noun.one} is`, `${noun.many} are`)} listed in the panel only` : ""}.</p>
+${NOTICE_LINE}
 </div>
 <article class="wl-article-body atlr-article" id="atlr-article" lang="en" aria-label="${attr(article.title)}, Wikipedia revision ${int(article.revision)}">
 <div class="atlr-mbar" id="atlr-mbar" aria-hidden="true" hidden></div>
@@ -2460,7 +2473,7 @@ ${passages.map((p) => passageBlock(p, article, ctx, true)).join("\n")}
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main,
-    readerCss: true, readerJs: true, bodyClass: "atlr-body", headerRow, footer, noticeInMain: true,
+    readerCss: true, readerJs: true, bodyClass: "atlr-body", contextStrip: strip, footer, noticeInMain: true,
     turnstile: pageNeedsTurnstile(ctx.overlay),
     skip: `<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`,
   });

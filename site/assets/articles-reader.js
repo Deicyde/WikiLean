@@ -57,6 +57,7 @@
   var noteBox = document.querySelector(".articles-filter-note");
   var noun = (noteBox && noteBox.getAttribute("data-noun")) || "passages";
   var header = document.querySelector(".wl-header");
+  var ctx = document.querySelector(".wl-ctx");
   var self = root.getAttribute("data-self") || location.pathname;
 
   // The statuses a passage can be shown with. A passage with no status is set aside by the page and
@@ -359,9 +360,16 @@
   // ---- geometry ----
   var headerH = 0;
   function measure() {
-    headerH = header ? header.getBoundingClientRect().height : 0;
-    // The panel sticks under the header (the body's --atlr-top), and every in-page jump,
-    // Wikipedia's own [1] and back and section links among them, stops below it.
+    // The sticky chrome is two elements now (the Ledger restyle, 2026-11-19): the one
+    // site header and the context strip under it, which carries this page's breadcrumb,
+    // title, view switch and panel toggle. --atlr-hdr is where the strip sticks;
+    // --atlr-top is the whole chrome's height, which is where the panel sticks and where
+    // every in-page jump — Wikipedia's own [1] and back and section links among them —
+    // stops.
+    var hdr = header ? header.getBoundingClientRect().height : 0;
+    var strip = ctx ? ctx.getBoundingClientRect().height : 0;
+    headerH = hdr + strip;
+    document.body.style.setProperty("--atlr-hdr", Math.round(hdr) + "px");
     document.body.style.setProperty("--atlr-top", Math.round(headerH) + "px");
     html.style.scrollPaddingTop = Math.round(headerH + 12) + "px";
   }

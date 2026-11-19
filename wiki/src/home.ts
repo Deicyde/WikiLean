@@ -5,11 +5,15 @@
 // totals, both read from the articles store at request time (articles.ts
 // articlesExample) and never written in this repository. No store, no block.
 import { htmlEscape } from "./engine/html.js";
-import { siteNav, SITE_TOOLS } from "./site-nav.js";
+import { SITE_TOOLS } from "./site-nav.js";
+import { siteHeader, THEME_BOOTSTRAP, themeToggleScript } from "./site-shell.js";
 import type { ArticlesExample } from "./articles.js";
 
 export interface SitemapRow { slug: string; updatedAt: number }
 const SITE_ORIGIN = "https://wikilean.jackmccarthy.org";
+// The shared layer. Bump with any change to site/assets/style.css, in step with
+// articles-render.ts's STYLE_CSS, which links the same file.
+const STYLE_CSS = "/assets/style.css?v=12";
 const esc = (s: string) => htmlEscape(s, true);
 
 // One small shell for home, About and Contribute; no corpus or account data.
@@ -22,62 +26,58 @@ function publicPage(title: string, path: string, description: string, body: stri
 <title>WikiLean — ${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
 <link rel="canonical" href="${SITE_ORIGIN}${path}">
-<script>(function(){try{var s=localStorage.getItem("wl-theme");document.documentElement.dataset.theme=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");}catch(e){}})();</script>
+${THEME_BOOTSTRAP}
+<link rel="stylesheet" href="${STYLE_CSS}">
 <style>
-:root { color-scheme:light; --paper:#f7f4ee; --surface:#fffdf9; --ink:#1f1d1a; --muted:#5f594e; --line:#d8d0bd; --accent:#1a4b8c; }
-[data-theme="dark"] { color-scheme:dark; --paper:#1a1816; --surface:#232020; --ink:#ebe5d8; --muted:#b0a798; --line:#4d4742; --accent:#8fb4e8; }
+/* The shared layer (site/assets/style.css) carries the palette, the type scale,
+   the spacing and the header; these are the entry pages' own components only.
+   The palette is NOT restated here — before the restyle of 2026-11-19 it was,
+   and every token change had to be made twice. */
 * { box-sizing:border-box; }
-body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
-a { color:var(--accent); text-underline-offset:3px; }
-:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
-.wl-header { background:var(--surface); border-bottom:1px solid var(--line); padding:16px max(24px,calc((100% - 1080px)/2)); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px 32px; }
-.wl-brand,h1,h2 { font-family:Charter,'Iowan Old Style',Georgia,serif; }
-.wl-brand { font-size:24px; font-weight:700; color:var(--ink); text-decoration:none; }
-.wl-nav { display:flex; flex-wrap:wrap; align-items:center; gap:12px 24px; }
-.wl-navlink { font-size:.95rem; text-decoration:none; }
-.wl-navlink:hover { text-decoration:underline; }
-.wl-navlink[aria-current] { color:var(--ink); font-weight:600; }
-.wl-theme-toggle { border:1px solid var(--line); background:var(--surface); color:var(--ink); border-radius:50%; min-width:36px; min-height:36px; cursor:pointer; }
-main { max-width:960px; margin:auto; padding:64px 24px 48px; }
-h1 { max-width:760px; font-size:clamp(2.2rem,5vw,3.6rem); line-height:1.13; font-weight:500; margin:0 0 24px; letter-spacing:-.02em; }
-h2 { font-size:1.5rem; line-height:1.3; margin:32px 0 12px; }
-p,ol,ul { max-width:720px; }
-.lead { color:var(--muted); font-size:1.2rem; line-height:1.6; max-width:640px; }
-.actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px 24px; margin:28px 0; }
-.button { display:inline-block; padding:10px 22px; background:var(--accent); color:var(--paper); border-radius:5px; text-decoration:none; font-weight:600; }
-.button:hover { text-decoration:underline; }
-.paths { display:grid; grid-template-columns:1fr 1fr; gap:32px; border-top:1px solid var(--line); margin-top:48px; }
-.paths h2 { margin-top:24px; }
-.note { color:var(--muted); font-size:.92rem; }
+body { font:var(--t-base)/1.62 var(--serif); }
+a { color:var(--accent); text-underline-offset:3px; text-decoration-thickness:1px; }
+a:hover { text-decoration-thickness:2px; }
+h1,h2 { font-family:var(--serif); font-weight:600; letter-spacing:-.012em; }
+main { max-width:var(--page); margin:auto; padding:var(--s8) var(--s5) var(--s7); }
+h1 { max-width:15ch; font-size:clamp(2.1rem,6.2vw,var(--t-3xl)); line-height:1.08; font-weight:500; margin:0 0 var(--s4); letter-spacing:-.02em; }
+h2 { font-size:var(--t-lg); line-height:1.3; margin:var(--s6) 0 var(--s3); font-weight:500; }
+p,ol,ul { max-width:var(--measure); }
+.lead { color:var(--muted); font-size:var(--t-md); line-height:1.56; max-width:58ch; }
+.actions { display:flex; flex-wrap:wrap; align-items:center; gap:var(--s3) var(--s4); margin:var(--s5) 0; }
+.button { display:inline-block; padding:11px var(--s5); background:var(--accent); color:var(--on-accent); border:1px solid var(--accent); border-radius:3px; text-decoration:none; font:600 var(--t-s)/1 var(--sans); }
+.button:hover { filter:brightness(1.1); }
+.paths { display:grid; grid-template-columns:1fr 1fr; gap:var(--s6); border-top:1px solid var(--line); margin-top:var(--s7); }
+.paths h2 { margin-top:var(--s5); }
+.note { color:var(--muted); font:var(--t-s)/1.55 var(--sans); }
 /* One real example from the published store: the passage, then the Lean declaration
    that formalizes it (the Lean code leads the card, as it does in the reader). */
-.example { border-top:1px solid var(--line); margin-top:40px; }
-.example h2 { margin-top:24px; }
-.example-pair { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; max-width:720px; }
+.example { border-top:1px solid var(--line); margin-top:var(--s7); max-width:74ch; }
+.example h2 { margin-top:var(--s5); font-size:var(--t-s); font-family:var(--sans); font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--faint); }
+.example-pair { display:grid; grid-template-columns:1fr 1fr; gap:var(--s5); align-items:start; }
 .example-text { margin:0; }
-.example-text blockquote { margin:0; padding:0 0 0 14px; border-left:3px solid var(--line); font-family:Charter,'Iowan Old Style',Georgia,serif; font-size:1.05rem; }
-.example-text figcaption { margin-top:8px; color:var(--muted); font-size:.85rem; }
-.example-card { padding:12px 14px; border:1px solid var(--line); border-radius:6px; background:var(--surface); }
-.example-card code { display:block; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.9rem; overflow-wrap:anywhere; }
-.example-card .note { margin:8px 0 0; }
-li { margin:10px 0; }
-footer { max-width:960px; margin:auto; border-top:1px solid var(--line); padding:24px 24px 40px; color:var(--muted); font-size:.85rem; }
-footer p { margin:6px 0; }
-.skip { position:absolute; left:16px; top:-100px; padding:8px; background:var(--surface); }
-.skip:focus { top:8px; }
-@media(max-width:600px) { main { padding-top:40px; } .paths, .example-pair { grid-template-columns:1fr; } .paths { gap:0; } .wl-nav { gap:12px 18px; } }
+.example-text blockquote { margin:0; padding:0 0 0 var(--s3); border-left:2px solid var(--line-strong); font-family:var(--serif); font-size:var(--t-md); line-height:1.55; }
+.example-text figcaption { margin-top:var(--s2); color:var(--muted); font:var(--t-xs)/1.5 var(--sans); }
+.example-card { padding:var(--s3) var(--s4); border:1px solid var(--line); border-radius:3px; background:var(--surface); }
+.example-card code { display:block; font:600 var(--t-s)/1.4 var(--mono); overflow-wrap:anywhere; }
+.example-card .note { margin:var(--s2) 0 0; font-size:var(--t-xs); }
+li { margin:var(--s2) 0; }
+footer { max-width:var(--page); margin:auto; border-top:1px solid var(--line); padding:var(--s5) var(--s5) var(--s7); color:var(--muted); font:var(--t-xs)/1.6 var(--sans); }
+footer p { margin:var(--s1) 0; }
+.skip { position:absolute; left:var(--s4); top:-100px; z-index:200; padding:var(--s2) var(--s3); background:var(--surface); border:2px solid var(--accent); border-radius:4px; }
+.skip:focus { top:var(--s2); }
+@media(max-width:680px) { main { padding:var(--s6) var(--s4) var(--s6); } .paths, .example-pair { grid-template-columns:1fr; } .paths { gap:0; } }
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><nav class="wl-nav" aria-label="Site">${siteNav(path)}<button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></nav></header>
+${siteHeader({ current: path })}
 <main id="main">${body}</main>
 <footer>
 <p>${SITE_TOOLS}</p>
 <p><a href="https://github.com/Deicyde/WikiLean">Source on GitHub</a> · A project by <a href="https://jackmccarthy.org">Jack McCarthy</a></p>
 <p>Wikipedia text: <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. WikiLean annotations: <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>. Lean code retains its library’s licence.</p>
 </footer>
-<script>(function(){var b=document.getElementById("wl-theme-toggle");b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
+${themeToggleScript()}
 </body>
 </html>`;
 }

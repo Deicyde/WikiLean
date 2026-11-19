@@ -2556,8 +2556,8 @@ describe("article page summary box", () => {
     expect(html.indexOf("wl-articles-box")).toBeLessThan(html.indexOf('<main class="wl-article-body">'));
     // The publish switch and one index shard, nothing else from the store (each kept a minute).
     expect(h.gets).toEqual(["articles/v1/current.json", "articles/v1/index/1.json"]);
-    // The cached base page (render:v21) does not carry the box.
-    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v21:"));
+    // The cached base page (render:v22) does not carry the box.
+    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v22:"));
     expect(cached).toHaveLength(1);
     expect(String(cached[0][1])).not.toContain("wl-articles-box");
   });
@@ -2792,12 +2792,16 @@ describe("the plane says the links are preliminary, and what measured them", () 
       const res = await get(env.env, path);
       expect(res.status, path).toBe(status);
       const html = await res.text();
-      // The reader heads its article column with it (beside the sticky panel, not above it);
-      // every other page has it right after the header.
+      // The reader closes its article column's head with it — one quiet line under the
+      // hint, never a banner over the page (the Ledger restyle, 2026-11-19). An article
+      // with a reader carries the context strip between the header and the line; every
+      // other page has the line right after the header.
       const line = `<p class="articles-notice" id="articles-notice">${ARTICLES_NOTICE}</p>\n`;
       const reader = path === WIDGET_PATH && status === 200;
-      expect(html, path).toContain(reader ? `</header>\n<div class="atlr-layout"` : `</header>\n${line}`);
-      if (reader) expect(html, path).toContain(`<div class="atlr-head">\n${line}<nav class="articles-crumbs"`);
+      const strip = path === `${WIDGET_PATH}?view=cards` && status === 200;
+      expect(html, path).toContain(reader || strip ? `</header>\n<div class="wl-ctx">` : `</header>\n${line}`);
+      if (strip) expect(html, path).toContain(`</div></div>\n${line}`);
+      if (reader) expect(html, path).toContain(`</p>\n${line}</div>\n<article class="wl-article-body atlr-article"`);
       expect(html.match(/Preliminary/g), path).toHaveLength(1);
       expect(html.match(/independent audit/g), path).toHaveLength(1);
     }
@@ -3446,7 +3450,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=14", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=12", "/assets/articles.css?v=14", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");
