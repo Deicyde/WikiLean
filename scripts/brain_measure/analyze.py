@@ -388,8 +388,10 @@ def run(ctx) -> None:
     t0 = time.monotonic()
     result["sizes"] = sizes(ctx.serving, sidecar)
     result["digest"] = digest_time(ctx.serving, ctx.sidecar)
-    name_index = ctx.scope == "B" and sqlite3.connect(ctx.serving).execute(
+    probe = sqlite3.connect(f"file:{ctx.serving}?mode=ro", uri=True)
+    name_index = ctx.scope == "B" and probe.execute(
         "SELECT 1 FROM sqlite_master WHERE name = 'decl_names'").fetchone() is not None
+    probe.close()
     result["queries"] = queries(ctx.serving, name_index=name_index)
     extra = []
     if name_index:
