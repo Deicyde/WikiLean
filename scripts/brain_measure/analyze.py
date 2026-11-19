@@ -302,6 +302,10 @@ def name_search(db: sqlite3.Connection, q: str) -> dict:
     hot = db.execute("SELECT 1 FROM hot_prefixes WHERE prefix = ?", (q,)).fetchone()
     if hot:
         out["prefix_hot_row"] = timed(db, "SELECT cells, sups, live_sups FROM hot_prefixes WHERE prefix = ?", (q,))
+        out["prefix_range_count_if_not_hot"] = timed(
+            db, "SELECT count(*) FROM name_keys WHERE name_lc > ? AND name_lc < ? || char(1114111)", (q, q))
+        out["prefix_range_count_if_not_hot"]["count"] = db.execute(
+            "SELECT count(*) FROM name_keys WHERE name_lc > ? AND name_lc < ? || char(1114111)", (q, q)).fetchone()[0]
     else:
         out["prefix_range"] = timed(db, "SELECT seq, owner FROM name_keys WHERE name_lc > ? AND "
                                         "name_lc < ? || char(1114111) ORDER BY name_lc LIMIT 1001", (q, q))
@@ -324,7 +328,7 @@ def queries(serving: Path, *, name_index: bool, seed: int = 7) -> dict:
     db = sqlite3.connect(f"file:{serving}?mode=ro", uri=True)
     try:
         out: dict = {"sqlite_version": sqlite3.sqlite_version}
-        out["prefixes"] = {q: name_search(db, q) for q in ("ta", "tau", "tauceti.")}
+        out["prefixes"] = {q: name_search(db, q) for q in ("ta", "tau", "tauceti.", "semig")}
         out["fragments"] = {q: name_search(db, q)["fragment"] for q in FRAGMENTS}
         out["adversarial"] = {q: name_search(db, q)["fragment"] for q in ADVERSARIAL}
         text = "SELECT * FROM (SELECT rowid, bm25(texts) AS s FROM texts WHERE texts MATCH ? LIMIT 2000) " \
