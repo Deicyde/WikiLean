@@ -683,7 +683,11 @@ app.get("/favicon.ico", (c) =>
 // is KV-cached with a long TTL; bump the cache key suffix when the page or the
 // embedded data changes.
 app.get("/wikifunctions", async (c) => {
-  const cacheKey = "page:wikifunctions:v5";  // v5: the Ledger restyle — the shared header and style.css?v=12
+  // v5: bumped with the Ledger restyle. This page is NOT restyled — wikifunctions.ts
+  // still defines its own .wl-header and palette and links no stylesheet — so its bytes
+  // did not change; the bump only costs one miss. Restyling it onto src/site-shell.ts
+  // and /assets/style.css needs another bump.
+  const cacheKey = "page:wikifunctions:v5";
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsPage();
@@ -697,7 +701,9 @@ app.get("/wikifunctions", async (c) => {
 // cache pattern; bump the suffix when the page copy changes. Registered before
 // the /:slug catch-all (which only matches a single path segment anyway).
 app.get("/wikifunctions/verify", async (c) => {
-  const cacheKey = "page:wikifunctions-verify:v5";  // v5: the Ledger restyle — the shared header and style.css?v=12
+  // v5: bumped with the Ledger restyle, which this page did not get either
+  // (wikifunctions-verify.ts keeps its own header and palette). Its bytes are unchanged.
+  const cacheKey = "page:wikifunctions-verify:v5";
   const cached = await c.env.RENDER_CACHE.get(cacheKey);
   if (cached) return c.html(cached);
   const html = wikifunctionsVerifyPage();

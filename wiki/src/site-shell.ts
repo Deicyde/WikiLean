@@ -50,7 +50,11 @@ export interface SiteHeaderOptions {
   current?: string;
   // What sits beside the brand after a "·": the page's own name. `href` makes
   // it a link, `cls` adds a class (the reader marks its own with
-  // "articles-home", which its stylesheet hides on a phone).
+  // "articles-home", which its stylesheet hides on a phone). `label` is PLAIN
+  // TEXT, escaped here — never markup, and never escaped by the caller, or the
+  // entities show through. Both branches escape it the same way: an option that
+  // means one thing with `href` and another without it is how an injection gets
+  // in the next time a caller adds a link.
   context?: { label: string; href?: string; cls?: string };
   // The header search box's markup, where the page carries one.
   search?: string;
@@ -70,7 +74,7 @@ export function siteHeader(opts: SiteHeaderOptions = {}, controls = ""): string 
     ? `\n    <span class="wl-sep" aria-hidden="true">·</span>\n    ` +
       (opts.context.href
         ? `<a class="wl-article${opts.context.cls ? ` ${attr(opts.context.cls)}` : ""}" href="${attr(opts.context.href)}">${text(opts.context.label)}</a>`
-        : `<span class="wl-article${opts.context.cls ? ` ${attr(opts.context.cls)}` : ""}">${opts.context.label}</span>`)
+        : `<span class="wl-article${opts.context.cls ? ` ${attr(opts.context.cls)}` : ""}">${text(opts.context.label)}</span>`)
     : "";
   return `<header class="wl-header">
   <div class="wl-title">

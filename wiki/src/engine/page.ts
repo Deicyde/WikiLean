@@ -217,7 +217,9 @@ ${SEARCHBOX_CSS}</style>
 </head>
 <body class="show-all">
 ${siteHeader({
-  context: { label: title },
+  // Plain text: siteHeader escapes it. `title` above is already escaped for the
+  // <title> element, so passing that here would show the entities through.
+  context: { label: displayTitle },
   search: SEARCHBOX_HTML,
   extraNav:
     `<a class="wl-navlink" href="/recent-changes">Recent changes</a>\n` +
