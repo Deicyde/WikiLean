@@ -72,10 +72,12 @@ index's library (`decl:TauCeti:…`).
 
 `stated` is `deps.json`'s `sorry` only when `source.json`'s `rev` equals the `.bmp`'s pinned
 `docs_commit` (and `deps.json`'s own `tauceti_rev` agrees). Otherwise it is null, with
-`stated_reason` `docs_commit_unknown`, `commit_mismatch`, `deps_rev_mismatch`, or `not_in_deps`
-for a mapped declaration trough has no record of. The manifest's `stated` block records the two
-commits and the reason. When trough places a declaration in another module than the `.bmp`,
-`line`, `signature`, `doc` and `source` are null (`decl/module_mismatch`).
+`stated_reason` `docs_commit_unknown`, `commit_mismatch`, `deps_rev_mismatch`, `not_in_deps`
+for a mapped declaration trough has no record of, or `module_mismatch`. The manifest's `stated`
+block records the two commits and the reason (the first three are the whole export's; the last
+two are per row). When trough places a declaration in another module than the `.bmp`, `line`,
+`signature`, `doc` and `source` are null and so is `stated` (`decl/module_mismatch`): one record
+is either trustworthy or it is not.
 
 ## Producer 3: `wikilean.brain.mathlib-decls/v1`
 

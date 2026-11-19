@@ -70,6 +70,13 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual((baz["module"], baz["kind"], baz["line"], baz["source"]), ("TauCeti.B", "instance", None, None))
         self.assertEqual(self.rejected(reason="module_mismatch")[0]["trough_module"], "TauCeti.Wrong")
 
+    def test_module_mismatch_drops_stated_too(self):
+        """`stated` is read from the same trough record the mismatch rejected, so it is exactly
+        as untrustworthy as the four fields dropped with it — and it is the load-bearing field."""
+        baz = self.rows["decls.jsonl"][BAZ]
+        self.assertEqual((baz["stated"], baz["stated_reason"]), (None, "module_mismatch"))
+        self.assertEqual(self.manifest["counts"]["decls_by_stated"]["null/module_mismatch"], 1)
+
     def test_stated_when_commits_match(self):
         decls = self.rows["decls.jsonl"]
         self.assertIs(decls[FOO]["stated"], True)

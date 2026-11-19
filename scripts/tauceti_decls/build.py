@@ -97,6 +97,10 @@ def build(inputs: str, out: str) -> dict:
                "roadmaps": sorted(on_roadmaps.get(n, ()))}
         if why is not None:
             row.update(stated=None, stated_reason=why)
+        elif isinstance(info, dict) and info.get("module") != modules[n]:
+            # trough's record is of a declaration in another module: `trough_fields` dropped
+            # `line`, `signature`, `doc` and `source` from it, and `sorry` is no more trustworthy.
+            row.update(stated=None, stated_reason="module_mismatch")
         elif not isinstance(info, dict) or not isinstance(info.get("sorry"), bool):
             row.update(stated=None, stated_reason="not_in_deps")
         else:
