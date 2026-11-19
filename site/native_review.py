@@ -25,6 +25,12 @@ from typing import Any
 import native_annotations as native
 
 NativeAnnotationError = native.NativeAnnotationError
+#: What ``review_view`` shows the agents, as a cohort boundary. The view
+#: replaces stored selections with reference stubs, so it changes what the
+#: agents see with no prompt text moving — exactly what
+#: ``agent_sandbox.SANDBOX_VERSION`` marks for the sandbox. ``moderate.
+#: get_prompt_sha`` folds it in; bump it whenever the projection changes.
+VIEW_VERSION = "review-view-v1"
 _SIDES = ("subject", "object")
 _SCHEME = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
 

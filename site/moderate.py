@@ -842,9 +842,12 @@ def get_mathlib_sha() -> str | None:
 
 
 def get_prompt_sha(ba_mod, mode: str) -> str:
-    """First 12 hex of sha256 over the system prompts the mode uses (Agent 1's
-    mode-specific prompt + the shared Agent 2 prompt) and the agents' sandbox
-    version (site/agent_sandbox.py SANDBOX_VERSION)."""
+    """First 12 hex of sha256 over everything that decides what the agents see:
+    Agent 1's mode-specific prompt, the shared Agent 2 prompt, both native
+    prompts, the review-mode proposal guidance when it is on, the agents'
+    sandbox version (site/agent_sandbox.py SANDBOX_VERSION) and the
+    agent-facing view of stored review items (site/native_review.py
+    VIEW_VERSION)."""
     if ba_mod is None:
         return "unavailable"
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
@@ -862,6 +865,11 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
     sandbox = getattr(ba_mod, "SANDBOX_VERSION", "")
     if sandbox:
         parts += "\n" + sandbox
+    # The native review runs on a projection of the stored items, not the
+    # items: review_view hands the agents reference stubs in place of the
+    # selections. That is the same kind of cohort boundary as the sandbox —
+    # the agents saw something different with no prompt text moving.
+    parts += "\n" + native_review.VIEW_VERSION
     return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
 
 

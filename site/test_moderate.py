@@ -930,6 +930,28 @@ def test_prompt_sha_covers_the_native_prompts_the_review_actually_runs():
         assert isinstance(getattr(ba, name), str) and getattr(ba, name)
 
 
+def test_prompt_sha_covers_the_view_that_replaced_the_agents_data():
+    # L2: review_view replaced the selections in the agents' user prompt with
+    # reference stubs — the largest cohort change there is — with no prompt
+    # text moving. prompt_sha must move with it, as it does with the sandbox.
+    import native_review as nr
+    prompts = dict(MODERATE_AGENT1_SYSTEM="a1-review", AGENT1_SYSTEM="a1", AGENT2_SYSTEM="a2")
+    before = SimpleNamespace(**prompts)
+    baseline = {mode: m.get_prompt_sha(before, mode) for mode in ("review", "new")}
+    live = nr.VIEW_VERSION
+    assert isinstance(live, str) and live
+    try:
+        nr.VIEW_VERSION = "review-view-vNEXT"
+        for mode in ("review", "new"):
+            assert m.get_prompt_sha(before, mode) != baseline[mode], mode
+    finally:
+        nr.VIEW_VERSION = live
+    assert m.get_prompt_sha(before, "review") == baseline["review"]
+    # The docstring describes what is actually hashed.
+    doc = m.get_prompt_sha.__doc__
+    assert "VIEW_VERSION" in doc and "SANDBOX_VERSION" in doc
+
+
 def test_process_review_agent_error_short_circuits():
     import tempfile
     with tempfile.TemporaryDirectory() as td:
