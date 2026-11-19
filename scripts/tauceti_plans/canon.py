@@ -4,6 +4,7 @@ blob reader now live. Kept so existing imports (`from .canon import ...`) keep w
 from scripts.brain_producers.common import *  # noqa: F401,F403
 from scripts.brain_producers.common import (  # noqa: F401
     ROADMAP_REPO,
+    BuildError,
     GitTree,
     _git_env,
     dumps,

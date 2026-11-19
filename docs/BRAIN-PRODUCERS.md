@@ -13,8 +13,11 @@ a sealed, pinned export that becomes one D1 serving-dataset slice).
   input on any mismatch, never writing the mismatched bytes and leaving no `PINS.json`. Every
   network call goes through one `Opener` (producer 1's, `scripts/tauceti_plans/fetch.py`), which
   the tests replace with an offline fake.
-- **`build` is offline and deterministic.** It recomputes every pin and refuses (exit 1) one that
-  differs, reads git inputs from the pinned commit (`GitTree`, so a dirty tree cannot leak in),
+- **`build` is offline and deterministic.** It makes no network call: `GitTree` reads blobs with
+  `GIT_NO_LAZY_FETCH=1`, so a file whose blob a `--filter=blob:none` clone never fetched is an
+  error naming the file, not a silent fetch from the remote. It recomputes every pin and refuses
+  (exit 1) one that differs, reads git inputs from the pinned commit (`GitTree`, so a dirty tree
+  cannot leak in),
   and writes canonical JSONL (keys sorted, `ensure_ascii=False`, separators `(",",":")`, LF, rows
   sorted by unique `id`) plus `manifest.json`. Two builds of the same inputs are byte-identical.
 - **`logical_root`** is the sha256 of the canonical JSON of the manifest without `logical_root`
@@ -47,7 +50,8 @@ All three producers may share one inputs directory (producer 1's layout). Produc
 Their `fetch` adds `data/<lib>` to trough's sparse set when the checkout lacks it, and replaces
 only its own entries in a shared `PINS.json` (`trough` and `<lib>_decls`), keeping the others.
 Producer 1's `fetch` does not widen the sparse set, so after a fresh clone by producer 3's
-`fetch`, run producer 2's `fetch` (or producer 1's on a new directory) before building producer 1.
+`fetch`, run producer 2's `fetch` (or producer 1's on a new directory) before building producer 1:
+a build that needs a blob the clone does not hold fails naming the file, since it will not fetch it.
 A `fetch` that moves trough changes the trough pin the other producers then build against;
 `check_pins` on the exports catches exports built from different pins.
 

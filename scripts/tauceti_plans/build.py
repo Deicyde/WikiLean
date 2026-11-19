@@ -16,7 +16,7 @@ import tomllib
 from collections import Counter, defaultdict
 
 from . import parse
-from .canon import ROADMAP_REPO, GitTree, dumps, jsonl_bytes, sha256_bytes, sha256_file
+from .canon import ROADMAP_REPO, BuildError, GitTree, dumps, jsonl_bytes, sha256_bytes, sha256_file
 
 SCHEMA = "wikilean.brain.plans/v1"
 PRODUCER = {"name": "scripts.tauceti_plans", "version": "1.0.0"}
@@ -45,10 +45,6 @@ ATTRIBUTION = [
     {"work": "Mathlib", "url": "https://github.com/leanprover-community/mathlib4", "license": "Apache-2.0",
      "holder": "Mathlib contributors", "use": "declaration names (doc-gen4 index) for resolution"},
 ]
-
-
-class BuildError(Exception):
-    pass
 
 
 # ---------------------------------------------------------------- inputs

@@ -13,7 +13,14 @@ import os
 import re
 from collections import Counter
 
-from scripts.brain_producers.common import GitTree, dumps, jsonl_bytes, sha256_bytes, sha256_file
+from scripts.brain_producers.common import (
+    BuildError,
+    GitTree,
+    dumps,
+    jsonl_bytes,
+    sha256_bytes,
+    sha256_file,
+)
 from scripts.tauceti_plans.build import URLS, git_work_tree_holding, logical_root, read_pins
 
 TROUGH_REPO = "Deicyde/trough"
@@ -21,10 +28,6 @@ CLOCK_KEYS = {"fetched_at"}
 FILES = ["names.jsonl", "decls.jsonl", "deps.jsonl", "rejected.jsonl"]
 DEP_KINDS = (("statement", "uses_in_statement"), ("proof", "uses_in_proof"))
 _DOC_LINK = re.compile(r"^\./((?:[^/#]+/)*[^/#]+)\.html#(.+)$")
-
-
-class BuildError(Exception):
-    pass
 
 
 # ---------------------------------------------------------------- inputs
