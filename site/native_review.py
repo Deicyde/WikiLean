@@ -41,6 +41,20 @@ def _editing_key(span: dict) -> Any:
     return wikilean.get("anchor") if isinstance(wikilean, dict) else None
 
 
+def _without_redundant_base(span: dict) -> dict:
+    """A selection without a ``base_uri`` that resolves nothing.
+
+    A base only resolves a relative reference; beside an absolute one it says
+    nothing, and promoting such a selection into a link drops it (a link
+    wrapper carries the base, and an end may not). Neither spelling changes
+    what the selection selects, so neither may read as a loss or an edit.
+    """
+    uri = span.get("uri")
+    if "base_uri" in span and isinstance(uri, str) and _SCHEME.match(uri):
+        return {key: value for key, value in span.items() if key != "base_uri"}
+    return span
+
+
 def selection_identity(span: dict) -> str:
     """What a source selection selects, however its location happens to be written.
 
@@ -50,6 +64,7 @@ def selection_identity(span: dict) -> str:
     meaning. The identity is therefore the editing key when the end has one,
     and the stored location otherwise (an opaque PDF, LaTeX or generic end).
     """
+    span = _without_redundant_base(span)
     location = span.get("location")
     anchor = (location.get("anchor") if isinstance(location, dict)
               and location.get("profile") == native.ANCHOR_PROFILE else None)
@@ -62,7 +77,7 @@ def selection_identity(span: dict) -> str:
 def _comparable(span: dict) -> dict:
     """A stored selection minus what resolving it against the article writes:
     the editing key in its extensions and the profile's resolution outcome."""
-    result = {key: value for key, value in span.items() if key != "extensions"}
+    result = {key: value for key, value in _without_redundant_base(span).items() if key != "extensions"}
     location = result.get("location")
     if isinstance(location, dict) and location.get("profile") == native.ANCHOR_PROFILE:
         result["location"] = {key: value for key, value in location.items() if key != "resolution"}
@@ -71,11 +86,25 @@ def _comparable(span: dict) -> dict:
 
 def _is_resolution(before: dict, after: dict) -> bool:
     """Whether ``after`` is ``before`` with its WikiLean anchor resolved to a
-    built-in Literature Links location — a projection, not an edit."""
+    built-in Literature Links location — a projection, not an edit.
+
+    The exemption is the pipeline's own rewrite and nothing else: the stored
+    end must carry a WikiLean profile anchor, the resolved end must keep that
+    exact anchor as its editing key, its new location must be one of the two
+    shapes ``anchor_resolve.resolve`` emits, and no other byte of the
+    selection may have moved.
+    """
     location = before.get("location")
-    return (isinstance(location, dict) and location.get("profile") == native.ANCHOR_PROFILE
-            and isinstance(_editing_key(after), dict)
-            and not isinstance((after.get("location") or {}).get("profile"), str))
+    if not (isinstance(location, dict) and location.get("profile") == native.ANCHOR_PROFILE):
+        return False
+    if _editing_key(after) != location.get("anchor"):
+        return False
+    resolved = after.get("location")
+    if not isinstance(resolved, dict) or set(resolved) not in ({"quote"}, {"css"}):
+        return False
+    rest = lambda span: {key: value for key, value in _without_redundant_base(span).items()
+                         if key not in ("location", "extensions")}
+    return rest(before) == rest(after)
 
 
 def _end_identity(end: dict) -> str:
@@ -202,6 +231,13 @@ def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
     for reference, (end, _carrier) in slots.items():
         copies.setdefault(_end_identity(end), reference)
     old_links = {link["id"]: link for link in old["links"]}
+    # The subject ends a stored link already holds. Naming one in a second link
+    # links the same statement twice; it never moves out of the link it is in,
+    # so a re-stated subject that leaves one out is an omission, not a deletion.
+    held: dict[Any, list] = {}
+    for _reference, _container, _position, end, carrier in _slots(old):
+        if carrier is not end:
+            held.setdefault(carrier.get("id"), []).append(end)
     promoted: set[str] = set()
 
     def selections(entries: Any, link: dict) -> list:
@@ -237,6 +273,14 @@ def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
             raise NativeAnnotationError("invalid native link wrapper")
         if "subject" in annotation or previous is None:
             annotation["subject"] = selections(annotation.get("subject"), built)
+            # A subject the agent re-stated keeps every stored end it left out:
+            # a selection already on file can only be linked or disputed.
+            named = {_end_identity(span) for span in annotation["subject"] if isinstance(span, dict)}
+            kept = [deepcopy(end) for end in held.get(link.get("id"), [])
+                    if _end_identity(end) not in named]
+            if kept:
+                annotation["subject"] = kept + annotation["subject"]
+                report["carried_selections"] += len(kept)
             if not annotation["subject"]:
                 raise NativeAnnotationError("a native link needs a source selection")
         if "object" in annotation:
@@ -292,8 +336,8 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
     by_id = {_item_identity(item): item for item in protected}
     if len(by_id) != len(protected):
         raise NativeAnnotationError("ambiguous native work items require stable review IDs before agent edits")
-    report: dict = {"carried_items": 0, "carried_links": 0, "promoted": 0,
-                    "new_selections": 0, "rejections": [], "skipped_items": []}
+    report: dict = {"carried_items": 0, "carried_links": 0, "carried_selections": 0,
+                    "promoted": 0, "new_selections": 0, "rejections": [], "skipped_items": []}
     result, seen = [], set()
     for fresh in produced:
         key = _item_identity(fresh)
@@ -386,19 +430,24 @@ def check_native_output(existing: list[dict], produced: list[dict]) -> list[dict
                               else promoted if side == "subject" else None)
                     annotation[side] = _overlay_ends(before, annotation[side])
         merged["unlinked"] = _overlay_ends(old["unlinked"], merged.get("unlinked"), ("base_uri",))
-        # Unlinked selections have no internal link identity, so nothing else
-        # would notice their loss. Explicit location edits belong to the
+        # A source selection has no identity of its own, inside a link or out
+        # of it, so nothing else would notice its loss: a subject the output
+        # re-states without one of its stored ends drops that end as quietly
+        # as a vanished unlinked span. Explicit location edits belong to the
         # editor/proposal flow; an opaque PDF/LaTeX/generic selection must not
-        # disappear or change on the way to the write.
-        current: dict[str, dict] = {}
+        # disappear or change on the way to the write. Every occurrence of an
+        # identity is a candidate, so an added look-alike cannot stand in for
+        # the stored bytes it shadows.
+        current: dict[str, list] = {}
         for span in native.occurrences(merged):
-            current.setdefault(selection_identity(span), span)
-        for old_span in old["unlinked"]:
-            span = current.get(selection_identity(old_span))
-            if span is None:
-                raise NativeAnnotationError("the output lost an unlinked selection; it must stay unlinked or ride a link")
-            if not _is_resolution(old_span, span) and _comparable(old_span) != _comparable(span):
-                raise NativeAnnotationError("the output changed an unlinked selection; its stored form must ride through")
+            current.setdefault(selection_identity(span), []).append(span)
+        for old_span in native.occurrences(old):
+            spans = current.get(selection_identity(old_span)) or []
+            if not spans:
+                raise NativeAnnotationError("the output lost a stored source selection; it must stay where it is or ride a link")
+            if not any(_comparable(old_span) == _comparable(span) or _is_resolution(old_span, span)
+                       for span in spans):
+                raise NativeAnnotationError("the output changed a stored source selection; its stored form must ride through")
         result.append(merged)
     if by_id.keys() - seen:
         raise NativeAnnotationError("the output lost a native review item; mark it rejected explicitly")

@@ -243,6 +243,80 @@ class ReviewMerge(unittest.TestCase):
             posted, _ = moderate.finalize_for_post([stored], produced)
             self.assertEqual(posted, produced)
 
+    def _two_ended_link(self):
+        pdf = {'type': 'pdf', 'uri': 'https://example.net/p.pdf', 'location': {'page': 2}}
+        return pdf, item(links=[{'id': 'L1', 'annotation': {
+            'subject': [occurrence(), deepcopy(pdf)], 'object': formal('urn:formal:a')}}],
+            unlinked=[occurrence('Other')])
+
+    def test_a_restated_subject_cannot_drop_a_stored_selection(self):
+        # The agent re-states L1's subject naming only u0. The opaque PDF end it
+        # left out is a stored selection, so the merge keeps it in the link.
+        pdf, stored = self._two_ended_link()
+        reply = {'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [{'ref': 'u2'}],
+                 'links': [{'id': 'L1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                       'object': formal('urn:formal:a')}}]}
+        merged, report = nr.merge_native_review([stored], [reply])
+        self.assertEqual(merged[0]['links'][0]['annotation']['subject'], [pdf, occurrence()])
+        self.assertEqual(report['carried_selections'], 1)
+        posted, _ = moderate.finalize_for_post([stored], merged)
+        self.assertEqual(posted, merged)
+
+    def test_the_write_refuses_a_selection_dropped_or_changed_inside_a_link(self):
+        # The tripwire's own floor: a subject end that goes missing or moves on
+        # the way to the POST is as silent a loss as a vanished unlinked span.
+        pdf, stored = self._two_ended_link()
+        dropped = deepcopy(stored)
+        dropped['links'][0]['annotation']['subject'] = [occurrence()]
+        moved = deepcopy(stored)
+        moved['links'][0]['annotation']['subject'][1]['location'] = {'page': 3}
+        for produced in (dropped, moved):
+            with self.subTest(produced=produced), self.assertRaises(n.NativeAnnotationError):
+                moderate.finalize_for_post([stored], [produced])
+
+    def test_a_look_alike_cannot_stand_in_for_the_selection_it_shadows(self):
+        # A span that merely selects the same thing is checked against the
+        # stored bytes too; being first in occurrence order buys it nothing.
+        stored = item(links=[], unlinked=[occurrence(junk=['0 / 0 = 0'])])
+        decoy = {'type': 'html', 'uri': URI, 'location': {'quote': {'exact': 'A finite group'}},
+                 'extensions': {'org.wikilean': {'anchor': occurrence()['location']['anchor']}}}
+        shadowed = {**deepcopy(stored), 'links': [{'id': 'n:1', 'annotation': {
+            'subject': [decoy], 'object': formal('urn:x')}}]}
+        shadowed['unlinked'] = [occurrence(junk=['tampered'])]
+        with self.assertRaises(n.NativeAnnotationError):
+            moderate.finalize_for_post([stored], [shadowed])
+        # With the stored bytes still there the same output is fine.
+        shadowed['unlinked'] = deepcopy(stored['unlinked'])
+        posted, _ = moderate.finalize_for_post([stored], [shadowed])
+        self.assertEqual(posted[0]['unlinked'], stored['unlinked'])
+
+    def test_the_resolution_exemption_only_covers_the_pipelines_own_rewrite(self):
+        # Carrying the stored anchor as an editing key is not a licence to
+        # write any location at all: resolve() emits a quote or a selector.
+        stored = item(links=[], unlinked=[occurrence()])
+        anchor = occurrence()['location']['anchor']
+        for location, other in (({'page': 7}, {}), ({'fragment': 'x'}, {}),
+                                ({'quote': {'exact': 'A finite group'}}, {'type': 'latex'})):
+            forged = {'type': 'html', 'uri': URI, 'location': location,
+                      'extensions': {'org.wikilean': {'anchor': anchor}}, **other}
+            self.assertFalse(nr._is_resolution(stored['unlinked'][0], forged))
+            with self.subTest(location=location), self.assertRaises(n.NativeAnnotationError):
+                moderate.finalize_for_post([stored], [item(links=[], unlinked=[forged])])
+
+    def test_a_base_that_resolves_nothing_may_be_dropped_on_promotion(self):
+        # base_uri only resolves a relative reference, and an end inside a link
+        # may not carry one; losing a redundant base is not losing a selection.
+        stored = item(links=[], unlinked=[{'type': 'pdf', 'uri': 'https://example.net/p.pdf',
+                                           'base_uri': 'https://example.net/', 'location': {'page': 2}}])
+        reply = {'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [],
+                 'links': [{'id': 'n:1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                        'object': formal('urn:x')}}]}
+        merged, _ = nr.merge_native_review([stored], [reply])
+        n.validate_items(merged)
+        self.assertNotIn('base_uri', merged[0]['links'][0]['annotation']['subject'][0])
+        posted, _ = moderate.finalize_for_post([stored], merged)
+        self.assertEqual(posted, merged)
+
     def test_a_lost_or_altered_selection_still_fails_the_write(self):
         stored = item(links=[], unlinked=[occurrence(), occurrence('Other')])
         for produced in ([item(links=[], unlinked=[occurrence()])],
