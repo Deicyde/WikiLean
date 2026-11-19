@@ -186,7 +186,8 @@ class Build(unittest.TestCase):
 
     def test_section_lines_of_layers(self):
         def lines(owner):
-            (loc,) = {json.dumps(a["subject"][0]["location"]) for a in self.by_id[owner]}
+            (loc,) = {json.dumps(a["subject"][0]["location"]) for a in self.by_id[owner]
+                      if "title" in a["subject"][0]}         # not its citing lines
             return json.loads(loc)
         p = "TauCetiRoadmap/Alpha/README.md"
         self.assertEqual(lines(L0), {"path": p, "lines": [5, 16]})    # holds ### and ####
@@ -195,7 +196,7 @@ class Build(unittest.TestCase):
         self.assertEqual(lines(L21), {"path": p, "lines": [28, 31]})
         self.assertEqual(lines(L3), {"path": p, "lines": [36, 38]})   # to the end of the file
         self.assertEqual(lines(ALPHA), {"path": p})                   # a roadmap: the whole README
-        self.assertEqual({a["subject"][0]["title"] for a in self.by_id[L0]}, {"Layer 0: base"})
+        self.assertEqual({a["subject"][0].get("title") for a in self.by_id[L0]}, {"Layer 0: base", None})
 
     def test_status_mapping(self):
         got = {o: {a.get("status") for a in self.by_id[o]} for o in (L0, L1, L2, L21, L3)}
@@ -214,7 +215,8 @@ class Build(unittest.TestCase):
         self.assertEqual(self.manifest["counts"]["layers"], 7)
 
     def test_related_match_objects(self):
-        objs = lambda o: sorted((json.dumps(a["object"], sort_keys=True) for a in self.rel(o, "relatedMatch")))
+        objs = lambda o: sorted((json.dumps(a["object"], sort_keys=True) for a in self.rel(o, "relatedMatch")
+                                 if a["object"][0]["type"] == "lean"))
         m = lambda n: [{"type": "lean", "uri": MATHLIB, "version": MATHLIB_DOCS, "location": {"declaration": n}}]
         t = lambda n: [{"type": "lean", "uri": TAUCETI, "location": {"declaration": n}}]   # no docs commit
         dump = lambda xs: sorted(json.dumps(x, sort_keys=True) for x in xs)
@@ -245,8 +247,9 @@ class Build(unittest.TestCase):
 
     def test_omitted_names_in_extensions(self):
         def ext(owner):
-            carriers = [a for a in self.by_id[owner] if "extensions" in a]
-            self.assertEqual(len(carriers), 1)        # once per subject, on its first annotation
+            # A citation's `occurrences` is its own; omitted names go once per subject, on its first.
+            carriers = [a for a in self.by_id[owner] if set(a.get("extensions", {}).get(L.EXT, {})) - {"occurrences"}]
+            self.assertEqual(len(carriers), 1)
             self.assertIs(carriers[0], self.by_id[owner][0])
             return carriers[0]["extensions"][L.EXT]
         self.assertEqual(ext(L0), {"planned": ["TauCetiRoadmap.Alpha.later"]})
@@ -264,7 +267,7 @@ class Build(unittest.TestCase):
                 self.assertEqual(bool(a["object"]), "relation" in a)
                 for e in a["object"]:
                     self.assertLessEqual(set(e), END_KEYS)
-                    self.assertEqual(e["type"], "lean")
+                    self.assertIn(e["type"], ("lean", "html"))
 
     def test_no_prose(self):
         blob = b"".join(tree_bytes(self.out).values())
@@ -304,6 +307,104 @@ class Build(unittest.TestCase):
             f.write(b"\n")
         with self.assertRaisesRegex(L.BuildError, "layers.jsonl"):
             L.build(bad, self.inputs, os.path.join(self.tmp, "never"))
+
+
+class Citations(unittest.TestCase):
+    """xrefs.jsonl: each row links its citing line to the arXiv paper or Stacks tag it names."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp = tempfile.mkdtemp()
+        cls.export, cls.inputs = make_export(cls.tmp)
+        cls.manifest = L.build(cls.export, cls.inputs, os.path.join(cls.tmp, "out"))
+        anns = [a for f in read_annotations(os.path.join(cls.tmp, "out")).values() for a in f]
+        cls.cites = [a for a in anns if a["object"] and a["object"][0]["type"] == "html"]
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmp)
+
+    def cite(self, uri):
+        (a,) = [a for a in self.cites if a["object"][0]["uri"] == uri]
+        return a
+
+    def test_object_ends(self):
+        self.assertEqual(self.cite("https://arxiv.org/abs/1501.01234")["object"],
+                         [{"type": "html", "uri": "https://arxiv.org/abs/1501.01234",
+                           "identifiers": {"arxiv": "1501.01234"}, "role": "cited"}])
+        self.assertEqual(self.cite("https://stacks.math.columbia.edu/tag/01AB")["object"],
+                         [{"type": "html", "uri": "https://stacks.math.columbia.edu/tag/01AB",
+                           "identifiers": {"stacks": "01AB"}, "role": "cited"}])
+        self.assertTrue(all(a["relation"] == "relatedMatch" and "citation" not in a["object"][0]
+                            and "version" not in a["object"][0] for a in self.cites))
+
+    def test_subject_is_the_citing_line_with_the_owner_id(self):
+        a = self.cite("https://stacks.math.columbia.edu/tag/01AB")
+        # The first of its two lines; no title (the line is not the layer), uri from the defaults.
+        self.assertEqual(a["subject"], [{"location": {"path": "TauCetiRoadmap/Alpha/README.md", "lines": [7, 7]}}])
+        self.assertEqual(a["id"], L0)
+        self.assertEqual(a["status"], "formalized")       # the owner's status, as its other annotations
+        a = self.cite("https://arxiv.org/abs/1501.01234")
+        self.assertEqual((a["id"], a["subject"][0]["location"]["lines"]), (L0, [11, 11]))
+
+    def test_roadmap_level_citation(self):
+        a = self.cite("https://arxiv.org/abs/2101.00001")
+        self.assertEqual((a["id"], a["subject"]), (ALPHA, [{"location": {"path": "TauCetiRoadmap/Alpha/README.md",
+                                                                          "lines": [3, 3]}}]))
+        self.assertNotIn("status", a)
+        a = self.cite("https://arxiv.org/abs/2202.00002")   # cited in Suggested.lean, before any marker
+        self.assertEqual((a["id"], a["subject"][0]["location"]),
+                         (ALPHA, {"path": "TauCetiRoadmap/Alpha/Suggested.lean", "lines": [2, 2]}))
+
+    def test_occurrences_only_above_one(self):
+        self.assertEqual(self.cite("https://stacks.math.columbia.edu/tag/01AB")["extensions"],
+                         {L.EXT: {"occurrences": 2}})
+        self.assertEqual(sum("extensions" in a for a in self.cites), 1)
+        c = self.manifest["counts"]
+        self.assertEqual((c["citations/arxiv"], c["citations/stacks"], c["citations_with_occurrences"]), (3, 1, 1))
+
+    def test_citations_follow_the_owner_annotations(self):
+        anns = read_annotations(os.path.join(self.tmp, "out"))["TauCetiRoadmap/Alpha.jsonl"]
+        alpha = [a for a in anns if a["id"] == ALPHA]
+        self.assertEqual([a["subject"][0].get("location") for a in alpha[-2:]],
+                         [{"path": "TauCetiRoadmap/Alpha/README.md", "lines": [3, 3]},
+                          {"path": "TauCetiRoadmap/Alpha/Suggested.lean", "lines": [2, 2]}])
+        self.assertIn("title", alpha[0]["subject"][0])    # the README subject stays first
+
+    def rejected(self, edit):
+        ex = L.read_export(self.export)
+        inp = L.read_inputs(self.inputs, ex["manifest"])
+        for r in ex["xrefs.jsonl"]:
+            edit(r)
+        by_rm, _d, counts, rejected = L.convert(ex, inp)
+        anns = [a for v in by_rm.values() for a in v if a["object"] and a["object"][0]["type"] == "html"]
+        return anns, counts, rejected
+
+    def test_stale_commit_is_rejected(self):
+        def stale(r):
+            if r["xref"] == "lit:1501.01234":
+                r["evidence"]["commit"] = "0" * 40
+        anns, counts, rejected = self.rejected(stale)
+        self.assertEqual(len(anns), 3)
+        self.assertNotIn("https://arxiv.org/abs/1501.01234", {a["object"][0]["uri"] for a in anns})
+        self.assertEqual(rejected, [{"kind": "xref", "id": f"{L0}::lit:1501.01234", "commit": "0" * 40,
+                                     "path": "TauCetiRoadmap/Alpha/README.md", "line": 11,
+                                     "reason": "evidence_commit_not_export_commit"}])
+        self.assertEqual(counts["xrefs_rejected/evidence_commit_not_export_commit"], 1)
+
+    def test_line_or_path_outside_the_roadmap_is_rejected(self):
+        def move(r):
+            if r["xref"] == "lit:1501.01234":
+                r["evidence"]["line"] = 39                    # the README has 38 lines
+            if r["xref"] == "lit:2101.00001":
+                r["evidence"]["path"] = "Completed/Gamma/README.md"
+        _anns, _c, rejected = self.rejected(move)
+        self.assertEqual(sorted(r["reason"] for r in rejected), ["evidence_path_not_in_roadmap", "line_not_in_file"])
+
+    def test_deterministic(self):
+        out2 = os.path.join(self.tmp, "out2")
+        L.build(self.export, self.inputs, out2)
+        self.assertEqual(tree_bytes(os.path.join(self.tmp, "out")), tree_bytes(out2))
 
 
 class TroughPins(unittest.TestCase):

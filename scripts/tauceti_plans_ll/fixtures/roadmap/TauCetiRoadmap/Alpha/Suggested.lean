@@ -1,5 +1,5 @@
 import Mathlib
-
+-- arXiv 2202.00002
 namespace TauCetiRoadmap.Alpha
 
 /-! ## Layer 0: base -/
