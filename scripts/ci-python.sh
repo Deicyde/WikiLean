@@ -173,5 +173,9 @@ run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scr
 run_check "Tau Ceti plans: text rules" "$PYTHON_BIN" scripts/tauceti_plans/test_parse.py
 run_check "Tau Ceti plans: fixture build" "$PYTHON_BIN" scripts/tauceti_plans/test_build.py
 run_check "Tau Ceti plans: offline fetch" "$PYTHON_BIN" scripts/tauceti_plans/test_fetch.py
+run_check "Tau Ceti declarations: fixture build" "$PYTHON_BIN" scripts/tauceti_decls/test_build.py
+run_check "Mathlib declarations: list reader and fixture build" "$PYTHON_BIN" scripts/mathlib_decls/test_build.py
+run_check "Brain producers: declaration fetch offline" "$PYTHON_BIN" scripts/brain_producers/test_fetch_decls.py
+run_check "Brain producers: exports agree on shared pins" "$PYTHON_BIN" scripts/brain_producers/test_check_pins.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"
