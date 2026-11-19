@@ -57,7 +57,7 @@ import {
 import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=14";
+export const ARTICLES_CSS = "/assets/articles.css?v=15";
 export const ARTICLES_JS = "/assets/articles.js?v=9";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
@@ -753,14 +753,29 @@ function declName(name: string): string {
 // The status word with its icon. The sentence that explains it is visible
 // text beside it (passageBlock), so the pill carries no hover-only title.
 function pill(status: SummaryStatus): string {
-  const meta = STATUS[status];
-  return `<span class="articles-pill" data-status="${status}">` +
-    `<span class="articles-ico" aria-hidden="true">${meta.icon}</span>${text(meta.label)}</span>`;
+  return `<span class="articles-pill" data-status="${status}">${tok(status)}${text(STATUS[status].label)}</span>`;
 }
 
 // A small sample of a status's coverage-bar fill: the bar's legend.
 function swatch(status: SummaryStatus): string {
   return `<span class="articles-swatch" data-status="${status}" aria-hidden="true"></span>`;
+}
+
+// The 18px status token (the Ledger restyle, 2026-11-19; style.css .wl-tok): the
+// status's glyph in a box with its own fill, so a column of them scans straight down.
+// It is always beside the status's word or count — never the only mark.
+function tok(status: SummaryStatus): string {
+  return `<span class="wl-tok" data-status="${status}" aria-hidden="true">${STATUS[status].icon}</span>`;
+}
+
+// The map Key (the Terrain direction's one idea, transplanted): on every page that
+// shows a coverage bar, what each fill means, in words. Nobody has to guess a colour,
+// and "not checked yet" says plainly that it is not a kind of "not formalized".
+function mapKey(byStatus: Record<SummaryStatus, number>): string {
+  const rows = shownStatuses(byStatus).map((s) =>
+    `<li data-status="${s}">${swatch(s)}${tok(s)}<span><b>${text(STATUS[s].label)}</b>` +
+    `<span class="wl-key-mean">${text(READER_LEGEND[s])}</span></span></li>`).join("");
+  return `<div class="wl-key"><h2>Key</h2><ul>${rows}</ul></div>`;
 }
 
 // ---- quotes ----------------------------------------------------------------
@@ -2035,7 +2050,9 @@ function countsLine(byStatus: Record<SummaryStatus, number>, nUnread: number, le
 // gains no fifth, always-empty chip.
 function statusKey(byStatus: Record<SummaryStatus, number>): string {
   const chips = shownStatuses(byStatus).map((s) => {
-    const mark = `${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>`;
+    // The swatch is the coverage bar's fill; the token is the status's sign. Both, so
+    // the chip is the bar's legend and reads at a glance.
+    const mark = `${swatch(s)}${tok(s)}`;
     if (count(byStatus[s]) === 0) {
       return `<span class="articles-chip is-static is-zero" data-status="${s}">${mark}${text(STATUS[s].label)}</span>`;
     }
@@ -2528,6 +2545,21 @@ function listHeads(): string {
     ` data-sort="${col.key}" data-sort-title="${attr(col.title)}">${text(col.label)}</th>`).join("");
 }
 
+// Under a row's bar: its counts in words, each with its status token, so the row says
+// what the fills mean without the reader looking anything up (the Ledger list). A
+// status the article has none of is left out; "not checked yet" is counted apart from
+// every other status, because nothing has searched for those statements.
+function covWords(byStatus: Record<SummaryStatus, number>, notChecked: number): string {
+  const parts = CHECKED_STATUSES.filter((s) => count(byStatus[s]) > 0)
+    .map((s) => `<span class="articles-cov-n" data-status="${s}">${tok(s)}` +
+      `<span class="articles-n">${int(byStatus[s])}</span> ${text(STATUS[s].plural)}</span>`);
+  if (notChecked > 0) {
+    parts.push(`<span class="articles-cov-n" data-status="not_checked">${tok("not_checked")}` +
+      `<span class="articles-n">${int(notChecked)}</span> ${text(STATUS.not_checked.plural)}</span>`);
+  }
+  return parts.length ? `<span class="articles-cov-words">${parts.join("")}</span>` : "";
+}
+
 // One row of that list. Every key the script sorts by is a data attribute, so sorting
 // never re-reads a cell, and the library names a row counts are its cell's title.
 function listRow(row: DashboardRow, libs: Map<string, LibraryView>): string {
@@ -2546,7 +2578,7 @@ function listRow(row: DashboardRow, libs: Map<string, LibraryView>): string {
     `${notChecked ? ` data-not-checked="${int(notChecked)}"` : ""}` +
     ` data-libraries="${int(ids.length)}" data-importance="${attr(String(row.importance ?? ""))}">` +
     `<th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th>` +
-    `<td class="articles-cov">${bar}</td>` +
+    `<td class="articles-cov">${bar}${covWords(byStatus, notChecked)}</td>` +
     `<td class="num">${notChecked > 0 ? `${int(checked)} of ${int(shown)} checked` : int(checked)}</td>` +
     `<td class="num">${ids.length ? `<span title="${attr(names)}">${plural(ids.length, "library", "libraries")}</span>`
       : `<span class="articles-muted">none</span>`}</td></tr>`;
@@ -2695,6 +2727,7 @@ ${about}
 <section aria-labelledby="articles-h-list">
 <form class="articles-search" method="get" action="/articles" role="search"><label for="articles-q">Search covered articles</label> <input id="articles-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
 <p class="articles-count" id="articles-count" role="status">${showing}</p>
+${mapKey(byStatus)}
 ${tableWrap("Articles", `<table class="articles-table articles-list" id="articles-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr>${listHeads()}</tr></thead><tbody>
 ${list}
 </tbody></table>`)}

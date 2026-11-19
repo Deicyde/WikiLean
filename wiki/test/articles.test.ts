@@ -337,7 +337,7 @@ describe("articles pages with the fixture store", () => {
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
     expect(html).toContain('<script src="/assets/articles.js?v=9"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=14">');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=15">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
@@ -743,7 +743,7 @@ describe("articles pages with the fixture store", () => {
     // title, and the pill is not read twice.
     expect(html).toContain('<p class="articles-why">Formalized: Mathlib states this exactly (proved).</p>');
     expect(html).toContain('<p class="articles-why">Statement only: TauCeti states this exactly (statement only: the proof is not finished).</p>');
-    expect(html).toContain('<span class="articles-pill" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>Formalized</span>');
+    expect(html).toContain('<span class="articles-pill" data-status="formalized"><span class="wl-tok" data-status="formalized" aria-hidden="true">✓</span>Formalized</span>');
     expect(html).not.toContain('class="articles-pill" data-status="formalized" title=');
     expect(html.match(/class="articles-why"/g)).toHaveLength(2); // the absence has its own box
     // The producer's item id is markup, not reader-facing text.
@@ -2403,7 +2403,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=14"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=15"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -3450,7 +3450,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=12", "/assets/articles.css?v=14", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=12", "/assets/articles.css?v=15", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");
@@ -3535,7 +3535,7 @@ describe("a statement-only article", () => {
     const h = statements();
     const html = await (await get(h.env, SPROCKET_PATH)).text();
     expect(html.match(/<li class="articles-passage[^"]*" id="p-[0-9a-f]+" data-status="not_checked"/g)).toHaveLength(3);
-    expect(html).toContain('<span class="articles-pill" data-status="not_checked"><span class="articles-ico" aria-hidden="true">○</span>Not checked yet</span>');
+    expect(html).toContain('<span class="articles-pill" data-status="not_checked"><span class="wl-tok" data-status="not_checked" aria-hidden="true">○</span>Not checked yet</span>');
     // The card's exact words (the design, section 3).
     expect(html.match(/Not checked yet — no library has been searched for this statement\./g)).toHaveLength(3);
     // No Confirm/Report: they are a verdict on a sealed location, and there is none.
@@ -3718,22 +3718,30 @@ describe("the article reader on a statement-only article", () => {
     // summary status ("not_checked"). Both must paint, or a highlight goes missing.
     expect(css).toMatch(/mark\.atl\[data-status="unchecked"\], mark\.atl\[data-status="not_checked"\]/);
     const shared = readFileSync(new URL("../../site/assets/articles.css", import.meta.url), "utf8");
-    expect(shared).toMatch(/\[data-status="not_checked"\],\n\[data-status="unchecked"\]/);
+    // The [data-status] -> --st mapping lives in the shared token layer (the Ledger
+    // restyle, 2026-11-19); the fills stay with the components that draw them.
+    const tokens = readFileSync(new URL("../../site/assets/style.css", import.meta.url), "utf8");
+    expect(tokens).toMatch(/\[data-status="not_checked"\],\n\[data-status="unchecked"\]/);
     // Its own swatch fill, told apart from every other status without colour.
     expect(shared).toContain('.articles-seg[data-status="not_checked"], .articles-swatch[data-status="not_checked"]');
     // Its stroke is not one another status uses.
-    const rule = /^\[data-status="not_checked"\],\n\[data-status="unchecked"\]\s*\{([^}]*)\}/m.exec(shared);
+    const rule = /^\[data-status="not_checked"\],\n\[data-status="unchecked"\]\s*\{([^}]*)\}/m.exec(tokens);
     expect(rule, "the two tokens share one rule").not.toBeNull();
     expect(rule![1]).toContain("--st: var(--c-untouched)");
     expect(rule![1]).toContain("--st-line: dashed");
     // Its ink is the page's, not the muted grey: the pill and its count keep their contrast.
     expect(rule![1]).toContain("--st-ink: var(--ink)");
     // Translucent, like the other three: the reader paints the wash three times over on the
-    // selected passage, and an opaque one would not move.
-    expect(rule![1]).toMatch(/--st-bg: rgba\([^)]*0\.\d+\)/);
-    // And a dark-mode value of its own, under both of the theme's selectors.
-    expect(shared).toContain('[data-theme="dark"] [data-status="not_checked"]');
-    expect(shared).toContain(':root:not([data-theme]) [data-status="not_checked"]');
+    // selected passage, and an opaque one would not move. The wash is its own token, so the
+    // two themes set it in one place each.
+    expect(rule![1]).toContain("--st-bg: var(--c-not_checked-bg)");
+    const washes = [...tokens.matchAll(/--c-not_checked-bg:\s*(rgba\([^)]*\));/g)].map((m) => m[1]);
+    expect(washes).toHaveLength(3);
+    for (const wash of washes) expect(wash).toMatch(/0\.\d+\)$/);
+    // Light and dark differ, and dark is set under both of the theme's selectors.
+    expect(new Set(washes).size).toBe(2);
+    expect(washes[1]).toBe(washes[2]);
+    expect(washes[0]).not.toBe(washes[1]);
   });
 });
 

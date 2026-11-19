@@ -364,8 +364,8 @@
     // site header and the context strip under it, which carries this page's breadcrumb,
     // title, view switch and panel toggle. --atlr-hdr is where the strip sticks;
     // --atlr-top is the whole chrome's height, which is where the panel sticks and where
-    // every in-page jump — Wikipedia's own [1] and back and section links among them —
-    // stops.
+    // every in-page jump stops (Wikipedia's own [1] and back and section links among
+    // them).
     var hdr = header ? header.getBoundingClientRect().height : 0;
     var strip = ctx ? ctx.getBoundingClientRect().height : 0;
     headerH = hdr + strip;
