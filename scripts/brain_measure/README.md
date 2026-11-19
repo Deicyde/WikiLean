@@ -29,6 +29,7 @@ measurements to `analysis.json` beside it. Nothing is written inside the checkou
 - `measure.py`: the stages. The harvest lifts `lean_repo.DECL_CAP` in its own process only.
   `git_snapshot` refuses a partial clone, so point `--tauceti` at a full (or shallow) clone.
 - `names.py`: the scope-B name index (`decl_names` plus an FTS5 trigram table).
+- `report.py`: collects both scopes into one `results.json` and prints the A-against-B table.
 - `analyze.py`: `dbstat` sizes, the verify-style digest time (`open_local(full_check=True)`),
   query times, and the offline import plan: the real `site/ops/brain_d1_import.py` importer
   run against a local SQLite stand-in for D1 created from `wiki/migrations-brain/0001_brain.sql`.
