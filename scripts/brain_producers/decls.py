@@ -202,8 +202,8 @@ def seal(out: str, data: dict[str, bytes], manifest: dict) -> dict:
     manifest["logical_root"] = logical_root(manifest)
     os.makedirs(out, exist_ok=True)
     blobs = dict(data)
-    blobs["manifest.json"] = (json.dumps(manifest, sort_keys=True, ensure_ascii=False, indent=1)
-                              + "\n").encode("utf-8")
+    blobs["manifest.json"] = (json.dumps(manifest, sort_keys=True, ensure_ascii=False, indent=1,
+                                         allow_nan=False) + "\n").encode("utf-8")
     for name, blob in blobs.items():
         tmp = os.path.join(out, name + ".tmp")
         with open(tmp, "wb") as f:

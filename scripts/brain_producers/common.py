@@ -15,7 +15,9 @@ class BuildError(Exception):
 
 
 def dumps(obj) -> str:
-    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    # allow_nan=False: NaN and Infinity are not JSON. Python would write them as bare tokens that
+    # the Brain's fold and the D1 import cannot parse, so refuse them when the export is built.
+    return json.dumps(obj, sort_keys=True, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
 
 
 def sha256_bytes(data: bytes) -> str:
