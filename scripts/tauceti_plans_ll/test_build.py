@@ -32,24 +32,50 @@ END_KEYS = {"type", "uri", "location", "version", "sha256", "citation", "identif
             "junk", "extensions"}
 
 
+def _git_env(dest: str) -> dict:
+    return {"PATH": os.environ.get("PATH", ""), "HOME": dest, "GIT_CONFIG_NOSYSTEM": "1",
+            "GIT_AUTHOR_NAME": "f", "GIT_AUTHOR_EMAIL": "f@example.invalid", "GIT_COMMITTER_NAME": "f",
+            "GIT_COMMITTER_EMAIL": "f@example.invalid", "GIT_AUTHOR_DATE": "2026-01-01T00:00:00Z",
+            "GIT_COMMITTER_DATE": "2026-01-01T00:00:00Z"}
+
+
+def _commit(dest: str, message: str) -> None:
+    for args in (["add", "-A"], ["-c", "commit.gpgsign=false", "commit", "-q", "-m", message]):
+        subprocess.run(["git", "-C", dest, *args], check=True, env=_git_env(dest))
+
+
 def _git_repo(src: str, dest: str) -> None:
     shutil.copytree(src, dest)
-    env = {"PATH": os.environ.get("PATH", ""), "HOME": dest, "GIT_CONFIG_NOSYSTEM": "1",
-           "GIT_AUTHOR_NAME": "f", "GIT_AUTHOR_EMAIL": "f@example.invalid", "GIT_COMMITTER_NAME": "f",
-           "GIT_COMMITTER_EMAIL": "f@example.invalid", "GIT_AUTHOR_DATE": "2026-01-01T00:00:00Z",
-           "GIT_COMMITTER_DATE": "2026-01-01T00:00:00Z"}
-    for args in (["init", "-q", "-b", "main"], ["add", "."],
-                 ["-c", "commit.gpgsign=false", "commit", "-q", "-m", "fixture"]):
-        subprocess.run(["git", "-C", dest, *args], check=True, env=env)
+    subprocess.run(["git", "-C", dest, "init", "-q", "-b", "main"], check=True, env=_git_env(dest))
+    _commit(dest, "fixture")
 
 
-def make_export(root: str, tauceti_docs: str | None = None) -> tuple[str, str]:
+def make_export(root: str, tauceti_docs: str | None = None, trough_rev: str | None = None,
+                edit_roadmap=None, extra_trough: tuple = ()) -> tuple[str, str]:
     """Fixture inputs and the plans export built from them; Mathlib has a docs commit, and Tau
-    Ceti has one only when `tauceti_docs` is given."""
+    Ceti has one only when `tauceti_docs` is given.
+
+    trough's `roadmaps.json` names the roadmap repo's first commit as its `rev` (or `trough_rev`).
+    `edit_roadmap(repo)` makes a second roadmap commit after it, so the export is ahead of trough,
+    and `extra_trough` adds roadmap entries to trough's file."""
     inputs = os.path.join(root, "inputs")
     os.makedirs(inputs)
-    _git_repo(os.path.join(FIX, "roadmap"), os.path.join(inputs, "TauCetiRoadmap"))
-    _git_repo(os.path.join(FIX, "trough"), os.path.join(inputs, "trough"))
+    rm = os.path.join(inputs, "TauCetiRoadmap")
+    _git_repo(os.path.join(FIX, "roadmap"), rm)
+    first = P.GitTree(rm).commit
+    if edit_roadmap:
+        edit_roadmap(rm)
+        _commit(rm, "later")
+    trough_src = os.path.join(root, "trough-src")
+    shutil.copytree(os.path.join(FIX, "trough"), trough_src)
+    rj = os.path.join(trough_src, "data", "tauceti", "roadmaps.json")
+    with open(rj, encoding="utf-8") as f:
+        tj = json.load(f)
+    tj["rev"] = first if trough_rev is None else trough_rev
+    tj["roadmaps"] += list(extra_trough)
+    with open(rj, "w", encoding="utf-8") as f:
+        json.dump(tj, f)
+    _git_repo(trough_src, os.path.join(inputs, "trough"))
     shutil.copy(os.path.join(FIX, "atlas-data.json"), inputs)
     shutil.copytree(os.path.join(FIX, "decls"), os.path.join(inputs, "decls"))
     pins = {k: {"fetched_at": "2026-11-18T00:00:00Z"} for k in P.URLS}
@@ -278,6 +304,57 @@ class Build(unittest.TestCase):
             f.write(b"\n")
         with self.assertRaisesRegex(L.BuildError, "layers.jsonl"):
             L.build(bad, self.inputs, os.path.join(self.tmp, "never"))
+
+
+class TroughPins(unittest.TestCase):
+    """trough read the roadmaps at its own rev. Its results attach only to the same roadmap at the
+    export's commit; anything else is rejected with a reason, never re-attached by path."""
+
+    def build(self, **kw):
+        tmp = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, tmp)
+        export, inputs = make_export(tmp, **kw)
+        out = os.path.join(tmp, "out")
+        manifest = L.build(export, inputs, out)
+        anns = [a for f in read_annotations(out).values() for a in f]
+        trough_links = [a for a in anns if a.get("id") == GAMMA and a.get("relation") == "hasPart"]
+        return manifest, trough_links
+
+    def test_same_roadmap_at_an_older_rev_attaches(self):
+        def touch_other(repo):   # the export is ahead of trough, but Gamma is unchanged
+            with open(os.path.join(repo, "TauCetiRoadmap", "Alpha", "README.md"), "a") as f:
+                f.write("\nmore\n")
+        manifest, links = self.build(edit_roadmap=touch_other)
+        self.assertEqual(len(links), 2)
+        self.assertEqual(manifest["rejected"], [])
+
+    def test_a_changed_roadmap_at_the_same_path_is_rejected(self):
+        def retitle(repo):       # a different roadmap now sits at Completed/Gamma
+            p = os.path.join(repo, "Completed", "Gamma", "README.md")
+            with open(p, encoding="utf-8") as f:
+                text = f.read()
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(text.replace("# Gamma", "# Delta", 1))
+        manifest, links = self.build(edit_roadmap=retitle)
+        self.assertEqual(links, [])
+        self.assertEqual([(r["path"], r["reason"]) for r in manifest["rejected"]],
+                         [("Completed/Gamma", "roadmap_changed_since_trough_rev")])
+        self.assertEqual(manifest["counts"]["trough_rejected/roadmap_changed_since_trough_rev"], 1)
+
+    def test_a_path_missing_at_the_export_commit_is_rejected(self):
+        gone = {"id": "Gone", "path": "Completed/Gone", "title": "Gone", "names": ["Nat.succ_le"]}
+        manifest, links = self.build(extra_trough=(gone,))
+        self.assertEqual(len(links), 2)            # Gamma still attaches
+        self.assertEqual([(r["path"], r["reason"]) for r in manifest["rejected"]],
+                         [("Completed/Gone", "roadmap_not_at_export_commit")])
+
+    def test_an_absent_or_malformed_trough_rev_is_rejected(self):
+        manifest, links = self.build(trough_rev="0" * 40)
+        self.assertEqual(links, [])
+        self.assertEqual([r["reason"] for r in manifest["rejected"]], ["readme_not_at_trough_rev"])
+        manifest, links = self.build(trough_rev="main")
+        self.assertEqual(links, [])
+        self.assertEqual([r["reason"] for r in manifest["rejected"]], ["trough_rev_unknown"])
 
 
 class Versions(unittest.TestCase):

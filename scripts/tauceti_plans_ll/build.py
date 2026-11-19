@@ -9,13 +9,15 @@ from __future__ import annotations
 
 import json
 import os
+import re
+import subprocess
 from collections import Counter, defaultdict
 
-from scripts.brain_producers.common import BuildError, GitTree, dumps, sha256_bytes, sha256_file
+from scripts.brain_producers.common import BuildError, GitTree, _git_env, dumps, sha256_bytes, sha256_file
 from scripts.tauceti_plans import parse
 from scripts.tauceti_plans.build import FILES as EXPORT_FILES
 from scripts.tauceti_plans.build import SCHEMA as EXPORT_SCHEMA
-from scripts.tauceti_plans.build import git_work_tree_holding, logical_root
+from scripts.tauceti_plans.build import git_work_tree_holding, logical_root, roadmap_title
 
 SCHEMA = "wikilean.tauceti_plans_ll/v1"
 PRODUCER = {"name": "scripts.tauceti_plans_ll", "version": "1.0.0"}
@@ -160,8 +162,20 @@ def suggested_end(name: str, module: str, commit: str) -> dict:
 
 # ---------------------------------------------------------------- main build
 
-def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict]:
-    """Returns ({roadmap id: annotations}, the `_defaults.json` object, counts)."""
+def title_at(repo: str, rev: str, readme: str, folder: str) -> str | None:
+    """The roadmap title the plans producer's rule reads from `readme` at commit `rev`, or None
+    when the commit or the file is absent. Offline: never fetches a missing object."""
+    r = subprocess.run(["git", "-C", repo, "-c", "core.quotepath=off", "show", f"{rev}:{readme}"],
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                       env=_git_env() | {"GIT_NO_LAZY_FETCH": "1"})
+    if r.returncode != 0:
+        return None
+    lines = parse.lines_of(r.stdout.decode("utf-8"))
+    return roadmap_title(lines, parse.headings(lines), folder)
+
+
+def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict, list[dict]]:
+    """Returns ({roadmap id: annotations}, the `_defaults.json` object, counts, rejected)."""
     manifest = export["manifest"]
     commit = manifest["inputs"]["TauCetiRoadmap"]["commit"]
     tree: GitTree = inp["tree"]
@@ -197,6 +211,7 @@ def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict]
     links = defaultdict(set)       # owner id -> {(relation, canonical object end)}
     omitted = defaultdict(lambda: defaultdict(set))
     counts = Counter()
+    rejected: list[dict] = []
     for rid in sorted(roadmaps):
         readme = roadmaps[rid]["source"]["path"]
         sug = readme[: -len("README.md")] + "Suggested.lean"
@@ -225,10 +240,29 @@ def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict]
                     omitted[owner][res].add(name)
 
     # Roadmap -> its status-named results in trough, when the name is a declaration-index entry.
+    # trough read the roadmaps at its own TauCetiRoadmap rev, usually behind the export's commit.
+    # Its results attach only to the same roadmap: the path must exist at the export's commit, and
+    # the README title, parsed by the producer's own rule, must be equal at both commits. Anything
+    # else is rejected with a reason and never re-attached to whatever now sits at that path.
+    trev = inp["trough_roadmaps"].get("rev")
+    trev = trev if isinstance(trev, str) and re.fullmatch(r"[0-9a-f]{40}", trev) else None
     for t in inp["trough_roadmaps"].get("roadmaps", []):
         rid = f"tauceti:{t['path']}"
+        reason = None
         if rid not in roadmaps:
-            counts["trough_roadmap_not_in_export"] += 1
+            reason = "roadmap_not_at_export_commit"
+        elif trev is None:
+            reason = "trough_rev_unknown"
+        else:
+            then = title_at(tree.repo, trev, roadmaps[rid]["source"]["path"], t["path"])
+            if then is None:
+                reason = "readme_not_at_trough_rev"
+            elif then != roadmaps[rid]["title"]:
+                reason = "roadmap_changed_since_trough_rev"
+        if reason:
+            rejected.append({"kind": "trough_roadmap", "path": t["path"], "reason": reason,
+                             "trough_rev": trev, "names": len(t.get("names", []))})
+            counts[f"trough_rejected/{reason}"] += 1
             continue
         for name in t.get("names", []):
             lib = next((lib for lib in LIBRARIES if name in inp["indexes"][lib]), None)
@@ -269,7 +303,8 @@ def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict]
                 counts[f"omitted_names/{k}"] += len(v)
         out[rid] = anns
     defaults = {"subject": {"type": "generic", "uri": ROADMAP_URI, "version": commit}}
-    return out, defaults, dict(sorted(counts.items()))
+    rejected.sort(key=lambda r: (r["path"], r["reason"]))
+    return out, defaults, dict(sorted(counts.items())), rejected
 
 
 def file_of(rid: str) -> str:
@@ -287,7 +322,7 @@ def build(export: str, inputs: str, out: str) -> dict:
         raise BuildError(f"--out {out} exists and is not an empty directory; stale files would be scanned")
     ex = read_export(export)
     inp = read_inputs(inputs, ex["manifest"])
-    by_rm, defaults, counts = convert(ex, inp)
+    by_rm, defaults, counts, rejected = convert(ex, inp)
 
     blobs: dict[str, bytes] = {f"{ANNOTATIONS}/_defaults.json": (dumps(defaults) + "\n").encode("utf-8")}
     grouped = defaultdict(list)
@@ -315,6 +350,7 @@ def build(export: str, inputs: str, out: str) -> dict:
         "files": {p: {"rows": b.count(b"\n"), "bytes": len(b), "sha256": sha256_bytes(b)}
                   for p, b in sorted(blobs.items())},
         "counts": counts,
+        "rejected": rejected,
         "attribution": src["attribution"] + [ATTRIBUTION],
     }
     manifest["logical_root"] = sha256_bytes(dumps(manifest).encode("utf-8"))

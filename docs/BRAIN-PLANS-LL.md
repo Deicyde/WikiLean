@@ -114,6 +114,21 @@ suffix rule, Mathlib first. The rest go to `unresolved_results`. trough read the
 its own `rev`, recorded in the manifest as `roadmaps_json_rev`; the subject is the README at the
 export's commit.
 
+**trough's results attach only to the same roadmap.** That `rev` is usually behind the export's
+commit, and recording it is not the guard. A roadmap's results attach only when all of these
+hold:
+- its path exists at the export's commit;
+- trough's `rev` is a 40-hex commit present in the pinned TauCetiRoadmap clone;
+- the README's title, read at that `rev` by the plans producer's own rule (`roadmap_title`),
+  equals the export's title at its commit.
+
+Otherwise the roadmap goes to the manifest's `rejected` list, with its path, the reason, the
+`rev` and its result count, and its results attach to nothing. The reasons are
+`roadmap_not_at_export_commit`, `trough_rev_unknown`, `readme_not_at_trough_rev` and
+`roadmap_changed_since_trough_rev`. Results are never re-attached to whatever now sits at a
+path. `test_build.py`'s `TroughPins` covers all four reasons, and also the accepted case, where
+the export is ahead of trough but the roadmap is unchanged.
+
 **Omitted names.** One annotation of each subject, the first in file order, carries the
 extension: sorted names, never candidates or prose. A `planned` name that is a `Suggested.lean`
 declaration is a link, not omitted.
