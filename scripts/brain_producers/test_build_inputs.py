@@ -1,7 +1,9 @@
 """The shared input guards of `build`: it is offline, it refuses an unpinned input, and a bad
 input is a BuildError rather than a traceback. Offline; local git only."""
 
+import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -11,8 +13,10 @@ import unittest
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from scripts.brain_producers import decls as D  # noqa: E402
+from scripts.brain_producers.common import GitTree, sha256_file  # noqa: E402
 from scripts.brain_producers.test_fetch_decls import FakeOpener  # noqa: E402
-from scripts.brain_producers.testing import FIX  # noqa: E402
+from scripts.brain_producers.testing import FIX, make_inputs  # noqa: E402
+from scripts.mathlib_decls import build as B3  # noqa: E402
 from scripts.mathlib_decls import fetch as F3  # noqa: E402
 from scripts.tauceti_decls import build as B2  # noqa: E402
 from scripts.tauceti_plans.test_build import _git_repo  # noqa: E402
@@ -52,6 +56,48 @@ class OfflineBuildTest(unittest.TestCase):
         shutil.rmtree(os.path.join(self.inputs, "trough", ".git"))
         with self.assertRaisesRegex(D.BuildError, "^trough: cannot read the checkout"):
             B2.build(self.inputs, os.path.join(self.tmp, "out"))
+
+
+class UnpinnedInputTest(unittest.TestCase):
+    """`build` recomputes every pin, so an input with no pin at all must stop it: it would
+    otherwise seal a normal-looking export that was never checked against anything. A failed
+    `fetch` leaves exactly that state behind for the inputs it touched."""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.inputs = make_inputs(self.tmp)
+        self.out = os.path.join(self.tmp, "out")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def repin(self, **overrides):
+        with open(os.path.join(self.inputs, "PINS.json")) as f:
+            pins = json.load(f)["inputs"]
+        pins.update(overrides)
+        with open(os.path.join(self.inputs, "PINS.json"), "w") as f:
+            json.dump({"inputs": pins}, f)
+
+    def test_an_unpinned_input_refuses(self):
+        for producer, index, rel in ((B2, "tauceti_decls", "decls/tauceti.bmp"),
+                                     (B3, "mathlib_decls", "decls/mathlib.bmp")):
+            self.repin(trough={})
+            with self.assertRaisesRegex(D.BuildError, "^trough: the pins carry no commit"):
+                producer.build(self.inputs, self.out)
+            self.repin(trough={"commit": GitTree(os.path.join(self.inputs, "trough")).commit},
+                       **{index: {}})
+            with self.assertRaisesRegex(D.BuildError,
+                                        f"^{re.escape(rel)}: the pins carry no sha256"):
+                producer.build(self.inputs, self.out)
+            self.repin(**{index: {"sha256": sha256_file(os.path.join(self.inputs, rel))}})
+            self.assertFalse(os.path.exists(self.out))
+
+    def test_no_pins_file_refuses(self):
+        os.remove(os.path.join(self.inputs, "PINS.json"))
+        for producer in (B2, B3):
+            with self.assertRaisesRegex(D.BuildError, "no PINS.json or PINS.txt"):
+                producer.build(self.inputs, self.out)
+        self.assertFalse(os.path.exists(self.out))
 
 
 if __name__ == "__main__":

@@ -50,11 +50,21 @@ ATTRIBUTION = [
 # ---------------------------------------------------------------- inputs
 
 def read_pins(inputs: str) -> dict:
-    """Pins written by `fetch` (PINS.json), else run.sh's PINS.txt, else none."""
+    """Pins written by `fetch` (PINS.json), else run.sh's PINS.txt. An unpinned build would
+    recompute nothing and still seal a normal-looking export, so refuse one."""
     for name in ("PINS.json", "PINS.txt"):
         if os.path.exists(os.path.join(inputs, name)):
             return read_pins_file(os.path.join(inputs, name))
-    return {k: {} for k in URLS}
+    raise BuildError(f"{inputs}: no PINS.json or PINS.txt; run this producer's fetch first")
+
+
+def pinned(pins: dict, name: str, field: str, where: str) -> str:
+    """The pin `build` must check an input against; an input with none is refused, never built
+    from unchecked (`fetch` pins every input it writes)."""
+    want = (pins.get(name) or {}).get(field)
+    if not want:
+        raise BuildError(f"{where}: the pins carry no {field}; run this producer's fetch first")
+    return want
 
 
 def read_pins_file(pt: str) -> dict:
@@ -91,16 +101,16 @@ def load_inputs(inputs: str) -> dict:
     rm = GitTree(os.path.join(inputs, "TauCetiRoadmap"))
     tr = GitTree(os.path.join(inputs, "trough"))
     for name, tree in (("TauCetiRoadmap", rm), ("trough", tr)):
-        want = pins.get(name, {}).get("commit")
-        if want and want != tree.commit:
+        want = pinned(pins, name, "commit", name)
+        if want != tree.commit:
             raise BuildError(f"{name}: HEAD {tree.commit} does not match pinned {want}")
     files = {"atlas": "atlas-data.json", "mathlib_decls": "decls/mathlib.bmp",
              "tauceti_decls": "decls/tauceti.bmp"}
     shas = {}
     for name, rel in files.items():
         sha = sha256_file(os.path.join(inputs, rel))
-        want = pins.get(name, {}).get("sha256")
-        if want and want != sha:
+        want = pinned(pins, name, "sha256", rel)
+        if want != sha:
             raise BuildError(f"{rel}: sha256 {sha} does not match pinned {want}")
         shas[name] = sha
     trough_files = {}

@@ -6,6 +6,7 @@ import json
 import os
 import shutil
 
+from scripts.brain_producers.common import GitTree, sha256_file
 from scripts.tauceti_plans.build import URLS
 from scripts.tauceti_plans.test_build import _git_repo
 
@@ -26,7 +27,12 @@ def make_inputs(root: str, docs: dict | None = None, fetched_at: str = "2026-11-
 
 
 def write_pins(inputs: str, docs: dict, fetched_at: str, extra: dict | None = None) -> None:
+    """The pins a `fetch` of this directory would have written (build refuses an unpinned
+    input), with `docs` giving each input's docs_commit and `extra` overriding any entry."""
     pins = {k: {"fetched_at": fetched_at} for k in URLS}
+    pins["trough"]["commit"] = GitTree(os.path.join(inputs, "trough")).commit
+    for k, lib in (("mathlib_decls", "mathlib"), ("tauceti_decls", "tauceti")):
+        pins[k]["sha256"] = sha256_file(os.path.join(inputs, "decls", f"{lib}.bmp"))
     for k, v in docs.items():
         pins[k]["docs_commit"] = v
     for k, v in (extra or {}).items():

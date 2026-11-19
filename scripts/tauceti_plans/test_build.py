@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -44,7 +45,13 @@ def make_inputs(root: str, fetched_at: str = "2026-11-18T00:00:00Z") -> str:
 
 
 def write_pins(inputs: str, fetched_at: str) -> None:
+    """The pins a `fetch` of this directory would have written: build refuses an unpinned input."""
     pins = {k: {"fetched_at": fetched_at} for k in B.URLS}
+    for name in ("TauCetiRoadmap", "trough"):
+        pins[name]["commit"] = B.GitTree(os.path.join(inputs, name)).commit
+    for name, rel in (("atlas", "atlas-data.json"), ("mathlib_decls", "decls/mathlib.bmp"),
+                      ("tauceti_decls", "decls/tauceti.bmp")):
+        pins[name]["sha256"] = B.sha256_file(os.path.join(inputs, rel))
     with open(os.path.join(inputs, "PINS.json"), "w") as f:
         json.dump({"inputs": pins}, f)
 
@@ -126,10 +133,36 @@ class BuildFixture(unittest.TestCase):
     def test_sha_mismatch_refuses(self):
         inputs2 = os.path.join(self.tmp, "inputs-bad")
         shutil.copytree(self.inputs, inputs2)
-        with open(os.path.join(inputs2, "PINS.json"), "w") as f:
-            json.dump({"inputs": {"atlas": {"sha256": "0" * 64}}}, f)
-        with self.assertRaises(B.BuildError):
+        self.repin(inputs2, atlas={"sha256": "0" * 64})
+        with self.assertRaisesRegex(B.BuildError, "^atlas-data.json: sha256"):
             B.build(inputs2, os.path.join(self.tmp, "out-bad"))
+
+    def repin(self, inputs, **overrides):
+        with open(os.path.join(inputs, "PINS.json")) as f:
+            pins = json.load(f)["inputs"]
+        for name, value in overrides.items():
+            pins[name] = value
+        with open(os.path.join(inputs, "PINS.json"), "w") as f:
+            json.dump({"inputs": pins}, f)
+
+    def test_an_unpinned_input_refuses(self):
+        """`build` recomputes every pin, so an input with no pin at all must stop it: it would
+        otherwise seal a normal-looking export that was never checked against anything."""
+        inputs2 = os.path.join(self.tmp, "inputs-unpinned")
+        shutil.copytree(self.inputs, inputs2)
+        out = os.path.join(self.tmp, "out-unpinned")
+        for name, where, field in (("TauCetiRoadmap", "TauCetiRoadmap", "commit"),
+                                   ("trough", "trough", "commit"),
+                                   ("atlas", "atlas-data.json", "sha256"),
+                                   ("mathlib_decls", "decls/mathlib.bmp", "sha256")):
+            shutil.copy(os.path.join(self.inputs, "PINS.json"), os.path.join(inputs2, "PINS.json"))
+            self.repin(inputs2, **{name: {}})
+            with self.assertRaisesRegex(B.BuildError, f"^{re.escape(where)}: the pins carry no {field}"):
+                B.build(inputs2, out)
+        os.remove(os.path.join(inputs2, "PINS.json"))
+        with self.assertRaisesRegex(B.BuildError, "no PINS.json or PINS.txt"):
+            B.build(inputs2, out)
+        self.assertFalse(os.path.exists(out))
 
     def test_no_prose_copied(self):
         for name in B.FILES + ["manifest.json"]:

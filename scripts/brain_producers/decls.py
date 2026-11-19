@@ -21,7 +21,7 @@ from scripts.brain_producers.common import (
     sha256_bytes,
     sha256_file,
 )
-from scripts.tauceti_plans.build import URLS, git_work_tree_holding, logical_root, read_pins
+from scripts.tauceti_plans.build import URLS, git_work_tree_holding, logical_root, pinned, read_pins
 
 TROUGH_REPO = "Deicyde/trough"
 CLOCK_KEYS = {"fetched_at"}
@@ -41,9 +41,9 @@ def refuse_out_in_work_tree(out: str) -> None:
 
 def load_trough(inputs: str, pins: dict, lib: str, files: list[str]) -> tuple[GitTree, dict[str, bytes]]:
     """trough at its pinned HEAD, and `data/<lib>/<file>` for each file, read from the commit."""
+    want = pinned(pins, "trough", "commit", "trough")
     tree = GitTree(os.path.join(inputs, "trough"))
-    want = (pins.get("trough") or {}).get("commit")
-    if want and want != tree.commit:
+    if want != tree.commit:
         raise BuildError(f"trough: HEAD {tree.commit} does not match pinned {want}")
     out = {}
     for rel in files:
@@ -57,9 +57,9 @@ def load_trough(inputs: str, pins: dict, lib: str, files: list[str]) -> tuple[Gi
 def load_index(inputs: str, pins: dict, name: str, rel: str) -> tuple[str, dict, set[str]]:
     """A doc-gen4 `.bmp` (JSON): its sha256 (checked against the pin), declarations, modules."""
     path = os.path.join(inputs, rel)
+    want = pinned(pins, name, "sha256", rel)
     sha = sha256_file(path)
-    want = (pins.get(name) or {}).get("sha256")
-    if want and want != sha:
+    if want != sha:
         raise BuildError(f"{rel}: sha256 {sha} does not match pinned {want}")
     with open(path, encoding="utf-8") as f:
         d = json.load(f)
