@@ -341,8 +341,9 @@ path:Plans/TauCeti/<arXiv group>  →  tauceti:<top-level roadmap>  →  <roadma
   `<topic>` is the roadmap's `topic` from `metadata.toml` (an arXiv category, e.g. `math.NT`). A
   top-level roadmap whose `topic` is `null` goes under `path:Plans/TauCeti/unclassified`.
 - The root is source-scoped: `path:Plans` holds one child per planning source, and Tau Ceti's is
-  `path:Plans/TauCeti`, so later planners sit beside it. `brain/SCHEMA.md` reserves the `Plans`
-  root, so no library's module path can ever claim `path:Plans`.
+  `path:Plans/TauCeti`, so later planners sit beside it. The later PR reserves the `Plans`
+  root in `brain/SCHEMA.md`, so that no library's module path can ever claim `path:Plans`;
+  nothing reserves it today.
 - A nested roadmap's parent is its export `parent`, never its own `topic`, which is not
   inherited (a nested roadmap with a different `topic` still sits under its parent roadmap).
 - A layer's parent is its `roadmap`. Layers have no children.
@@ -360,7 +361,7 @@ path:Plans/TauCeti/<arXiv group>  →  tauceti:<top-level roadmap>  →  <roadma
 
 We link to the atlas and never copy it: no atlas text, evidence quote or layout enters a node.
 Layer `state` is the coverage claim the roadmap makes about itself, and it never feeds
-formalization status (`f` bits 4 and 5). Plan nodes take a new `f` bit, `is plan`: bit 16,
+formalization status (`f` bits 4 and 5). Plan nodes would take a new `f` bit, `is plan`: bit 16,
 the first free one (`brain/SCHEMA.md` uses bits 0–15).
 
 **Planned and unqualified names are attributes, never nodes.** A `planned` name is a
@@ -382,7 +383,13 @@ release-affecting PR that moves this section into `brain/SCHEMA.md`.
 |---|---|---|---|
 | `depends` | roadmap → roadmap, consumer → prerequisite, exactly as `edges.jsonl` emits it | `high` | the export's `evidence`, `evidence_public`, `more_evidence`, `atlas_kinds` |
 | `mentions` | layer (or roadmap) → `decl:Mathlib:<n>` or `decl:TauCeti:<n>` | `high` | `{role: "plan", resolution, via_namespace?, resolved_name?, occurrences, pointer}` |
-| `xref` | layer (or roadmap) → `xref:stacks:<TAG>` or `lit:<arXiv id>` | `high` | `{system, occurrences, pointer}` |
+| `xref` | layer (or roadmap) → `xref:stacks:<TAG>` | `high` | `{system, occurrences, pointer}` |
+| `cites` | layer (or roadmap) → `lit:<arXiv id>` | `high` | `{system, occurrences, pointer}` |
+
+Two of these widen an endpoint type `brain/SCHEMA.md` states more narrowly today: it declares
+`depends` **decl → decl** and `mentions` **concept → decl**, and a plan node is neither. The
+later PR that moves this section into `brain/SCHEMA.md` widens those two rows; until it lands,
+plan endpoints are not allowed there.
 
 - **`depends`.** The direction is the Brain's, which is the export's; the build never flips
   it. Only a row with `evidence_public: true` becomes an edge. Showing an edge whose evidence
@@ -393,16 +400,19 @@ release-affecting PR that moves this section into `brain/SCHEMA.md`.
   only. `<n>` is `resolved_name` when present, else `name`. It is the existing citation kind
   and, like annotation citations, is excluded from all formalization-status logic: a roadmap
   naming a declaration claims nothing about it. Method `exact` or `declared-scope`.
-- **`xref`** is built from `xrefs.jsonl`. A `lit:` target is the paper node, never a statement
-  node. Method `pattern-scan`.
+- **`xref` and `cites`** are both built from `xrefs.jsonl`, routed by the row's `system`:
+  a Stacks-family system gives `xref`, which `brain/SCHEMA.md` defines as a cross-reference to
+  an external database page or tag, and `"system": "arxiv"` gives `cites`, which is the kind
+  whose dst is literature. The split needs no information the export does not already carry.
+  A `lit:` target is the paper node, never a statement node. Method `pattern-scan`.
 - The source is the row's `layer`, or its `roadmap` when `layer` is `null` (a roadmap-level
   name or citation).
 
 ### The held-edge rule
 
 Most `mentions` today point at declarations the Brain has not minted: it has about 7.9k of the
-27,620 resolved Tau Ceti names, and many `lit:` and `xref:stacks:` targets are not nodes
-either. The build never drops such an edge silently.
+27,620 resolved Tau Ceti names, and many `xref:stacks:` targets of `xref` and `lit:` targets
+of `cites` are not nodes either. The build never drops such an edge silently.
 
 - An edge whose endpoint node does not exist in the build goes to a **held list**,
   `brain/data/held_edges.jsonl` (gitignored, rebuilt like `edges_links.jsonl`), as
@@ -440,11 +450,11 @@ No new table is expected. The plan nodes map onto the section-4 tables of
 | Table | Carries |
 |---|---|
 | `labels` | one row per plan node, `p` = its `contains` parent, `f` with the plan bit, `libs` `NULL` |
-| `cell_pages` | each plan node's page JSON: the payload fields above and its edges, with `depends` evidence pointers, `mentions` and `xref` lists |
+| `cell_pages` | each plan node's page JSON: the payload fields above and its edges, with `depends` evidence pointers, `mentions`, `xref` and `cites` lists |
 | `supercells` | `path:Plans`, `path:Plans/TauCeti` and the `path:Plans/TauCeti/<topic>` containers, and roadmaps that have children, so the breadcrumb and `kids` work as for any folder |
 | `name_keys` | titles as `label`; layer keys (`Layer 5`, `R2.3`) as `aka` |
 | `aliases` | the atlas id of a layer whose `atlas_id` differs, mapped to our id, so an atlas link resolves |
-| `xrefs` | the `xref` edges, page → node, so `xref:stacks:` and `lit:` pages list the layers that cite them |
+| `xrefs` | the `xref` and `cites` edges, page → node, so `xref:stacks:` and `lit:` pages list the layers that cite them |
 | `synapse_traces` | the `depends` and `mentions` pairs, with their evidence |
 
 Deferred to the build-side PR, and decided there together with the per-source-dataset
