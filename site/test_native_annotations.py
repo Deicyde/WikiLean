@@ -274,6 +274,16 @@ class ReviewMerge(unittest.TestCase):
             with self.subTest(produced=produced), self.assertRaises(n.NativeAnnotationError):
                 moderate.finalize_for_post([stored], [produced])
 
+    def test_a_subject_that_is_not_an_array_still_fails_loudly(self):
+        # Carrying stored ends back into a re-stated subject must not quietly
+        # repair a reply that is not a subject at all.
+        _pdf, stored = self._two_ended_link()
+        broken = {'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [{'ref': 'u2'}],
+                  'links': [{'id': 'L1', 'annotation': {'subject': 'u0', 'object': formal('urn:x')}}]}
+        merged, report = nr.merge_native_review([stored], [broken])
+        self.assertEqual(merged, [stored])
+        self.assertEqual([entry['item'] for entry in report['skipped_items']], ['aabbccddeeff'])
+
     def test_a_look_alike_cannot_stand_in_for_the_selection_it_shadows(self):
         # A span that merely selects the same thing is checked against the
         # stored bytes too; being first in occurrence order buys it nothing.

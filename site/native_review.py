@@ -272,6 +272,8 @@ def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
         if not isinstance(annotation, dict):
             raise NativeAnnotationError("invalid native link wrapper")
         if "subject" in annotation or previous is None:
+            if "subject" in annotation and not isinstance(annotation["subject"], list):
+                raise NativeAnnotationError("a native link subject must be an array of source selections")
             annotation["subject"] = selections(annotation.get("subject"), built)
             # A subject the agent re-stated keeps every stored end it left out:
             # a selection already on file can only be linked or disputed.
