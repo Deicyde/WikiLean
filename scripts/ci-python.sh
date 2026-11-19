@@ -175,5 +175,11 @@ run_check "Tau Ceti plans: fixture build" "$PYTHON_BIN" scripts/tauceti_plans/te
 run_check "Tau Ceti plans: offline fetch" "$PYTHON_BIN" scripts/tauceti_plans/test_fetch.py
 run_check "Articles to Brain: the section 13 rules and the fold's row shapes" "$PYTHON_BIN" scripts/articles_brain/test_build.py
 run_check "Articles to Brain: offline fetch and pinning" "$PYTHON_BIN" scripts/articles_brain/test_fetch.py
+run_check "Tau Ceti declarations: fixture build" "$PYTHON_BIN" scripts/tauceti_decls/test_build.py
+run_check "Mathlib declarations: list reader and fixture build" "$PYTHON_BIN" scripts/mathlib_decls/test_build.py
+run_check "Brain producers: declaration fetch offline" "$PYTHON_BIN" scripts/brain_producers/test_fetch_decls.py
+run_check "Brain producers: exports agree on shared pins" "$PYTHON_BIN" scripts/brain_producers/test_check_pins.py
+run_check "Brain producers: build is offline and refuses a bad input" "$PYTHON_BIN" scripts/brain_producers/test_build_inputs.py
+run_check "Brain step 0 measurement harness" "$PYTHON_BIN" scripts/brain_measure/test_brain_measure.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"
