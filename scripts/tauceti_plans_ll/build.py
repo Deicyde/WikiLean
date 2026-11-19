@@ -31,6 +31,10 @@ LIBRARIES = {  # resolution -> (repository, the export's input whose docs_commit
     "tauceti": ("https://github.com/TauCetiProject/TauCeti", "tauceti_decls"),
 }
 STATUS = {"done": "formalized", "partial": "partial", "untouched": "not_formalized", "unassessed": None}
+CITED = {  # system -> (the export's xref shape, the work's page)
+    "arxiv": (r"lit:(\d{4}\.\d{4,5})", "https://arxiv.org/abs/"),
+    "stacks": (r"xref:stacks:([0-9A-Z]{4})", "https://stacks.math.columbia.edu/tag/"),
+}
 REL_ORDER = {None: 0, "hasPart": 1, "relatedMatch": 2}
 ATTRIBUTION = {"work": "Literature Links (format)", "license": "Apache-2.0",
                "url": "https://github.com/mathlib-initiative/literature-links",
@@ -65,7 +69,7 @@ def read_export(export: str) -> dict:
             raise BuildError(f"{export}: cannot read {name} ({e})") from None
         if sha256_bytes(blob) != want.get("sha256") or blob.count(b"\n") != want.get("rows"):
             raise BuildError(f"{export}: {name} does not match the manifest's sha256 and row count")
-        if name in ("roadmaps.jsonl", "layers.jsonl", "decl_refs.jsonl"):
+        if name in ("roadmaps.jsonl", "layers.jsonl", "decl_refs.jsonl", "xrefs.jsonl"):
             rows[name] = _jsonl(blob)
     return {"manifest": manifest, **rows}
 
@@ -159,6 +163,16 @@ def library_end(resolution: str, name: str, versions: dict) -> dict:
 def suggested_end(name: str, module: str, commit: str) -> dict:
     return {"type": "lean", "uri": ROADMAP_URI, "version": commit,
             "location": {"declaration": name, "module": module}}
+
+
+def citation_end(system: str, xref: str) -> dict | None:
+    """The cited work of an `xrefs.jsonl` row, or None when the row's id does not have its
+    system's exact shape. No version: the README names no arXiv version."""
+    m = CITED.get(system)
+    ident = m and re.fullmatch(m[0], xref)
+    if not ident:
+        return None
+    return {"type": "html", "uri": m[1] + ident[1], "identifiers": {system: ident[1]}, "role": "cited"}
 
 
 # ---------------------------------------------------------------- main build
@@ -275,6 +289,38 @@ def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict,
             counts["trough_results_resolved"] += 1
             counts["objects_without_version"] += "version" not in end
 
+    # Citations: each xrefs.jsonl row (already one per owner and target, with its first citing
+    # line) links that line to the cited work. The line must be in the owner's roadmap README or
+    # its Suggested.lean at the export's commit; a row that is not is rejected, never re-attached.
+    cites = defaultdict(list)      # owner id -> [(line, canonical object end, row)]
+    owner_rm = {rid: rid for rid in roadmaps} | {l["id"]: l["roadmap"] for l in export["layers.jsonl"]}
+    n_lines = {}
+    for r in export["xrefs.jsonl"]:
+        ev, owner = r["evidence"], r["layer"] or r["roadmap"]
+        rid = owner_rm.get(owner)
+        readme = roadmaps[rid]["source"]["path"] if rid == r["roadmap"] else None
+        files = (readme, readme[: -len("README.md")] + "Suggested.lean") if readme else ()
+        end = citation_end(r["system"], r["xref"])
+        if ev["path"] in files and ev["path"] not in n_lines and tree.exists(ev["path"]):
+            n_lines[ev["path"]] = line_count(tree.read(ev["path"]).decode("utf-8"))
+        reason = None
+        if ev["commit"] != commit:
+            reason = "evidence_commit_not_export_commit"
+        elif readme is None:
+            reason = "owner_not_in_export"
+        elif ev["path"] not in files or ev["path"] not in n_lines:
+            reason = "evidence_path_not_in_roadmap"
+        elif not (isinstance(ev["line"], int) and 1 <= ev["line"] <= n_lines[ev["path"]]):
+            reason = "line_not_in_file"
+        elif end is None:
+            reason = "xref_not_system_shape"
+        if reason:
+            rejected.append({"kind": "xref", "id": r["id"], "path": ev["path"], "line": ev["line"],
+                             "commit": ev["commit"], "reason": reason})
+            counts[f"xrefs_rejected/{reason}"] += 1
+            continue
+        cites[owner].append((ev["line"], dumps(end), r))
+
     out: dict[str, list[dict]] = {}
     for rid in sorted(roadmaps):
         anns = []
@@ -295,6 +341,19 @@ def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict,
                 anns.append(a)
                 counts[f"annotations/{rel or 'unlinked'}"] += 1
                 counts["roadmap_annotations" if not is_layer else "layer_annotations"] += 1
+            for line, obj, r in sorted(cites.get(owner, ()), key=lambda x: (x[2]["evidence"]["path"], x[0], x[1])):
+                a = {"subject": [{"location": {"path": r["evidence"]["path"], "lines": [line, line]}}],
+                     "object": [json.loads(obj)], "relation": "relatedMatch", "id": owner}
+                if is_layer and status[owner]:
+                    a["status"] = status[owner]
+                if r["occurrences"] > 1:
+                    a["extensions"] = {EXT: {"occurrences": r["occurrences"]}}
+                anns.append(a)
+                counts["annotations/relatedMatch"] += 1
+                counts[f"citations/{r['system']}"] += 1
+                counts["citations_with_occurrences"] += r["occurrences"] > 1
+                counts["citations_from_suggested_lean"] += r["evidence"]["path"].endswith("/Suggested.lean")
+                counts["roadmap_annotations" if not is_layer else "layer_annotations"] += 1
             if is_layer:
                 counts["layers"] += 1
                 counts[f"layers_by_status/{status[owner] or 'none'}"] += 1
@@ -303,7 +362,7 @@ def convert(export: dict, inp: dict) -> tuple[dict[str, list[dict]], dict, dict,
                 counts[f"omitted_names/{k}"] += len(v)
         out[rid] = anns
     defaults = {"subject": {"type": "generic", "uri": ROADMAP_URI, "version": commit}}
-    rejected.sort(key=lambda r: (r["path"], r["reason"]))
+    rejected.sort(key=lambda r: (r["path"], r["reason"], r["kind"], r.get("id", "")))
     return out, defaults, dict(sorted(counts.items())), rejected
 
 
