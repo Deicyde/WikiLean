@@ -14,9 +14,14 @@ a sealed, pinned export that becomes one D1 serving-dataset slice).
   (`PINS.json` keeps only entries this run never touched, and goes when none are left). Every
   network call goes through one `Opener` (producer 1's, `scripts/tauceti_plans/fetch.py`), which
   the tests replace with an offline fake.
-- **`build` is offline and deterministic.** It makes no network call: `GitTree` reads blobs with
-  `GIT_NO_LAZY_FETCH=1`, so a file whose blob a `--filter=blob:none` clone never fetched is an
-  error naming the file, not a silent fetch from the remote. It recomputes every pin and refuses
+- **`build` is offline and deterministic, on every git version.** It makes no network call.
+  `GitTree`, and the Literature Links converter's reads, run git with `-c protocol.allow=never`,
+  which forbids every transport, and also set `GIT_NO_LAZY_FETCH=1`. That variable only exists
+  from git 2.45: older git (Apple's 2.39, for one) ignores it, and only the protocol block stops
+  the lazy fetch there. So a file whose blob a `--filter=blob:none` clone never fetched is an
+  error naming the file, not a silent fetch from the remote. When old git exits from
+  `cat-file --batch` instead of reporting the blob missing, the reader checks each blob and
+  still names the missing one. It recomputes every pin and refuses
   (exit 1) one that differs **and one an input does not carry** — no pins file, or an input the
   pins do not name, stops the build rather than sealing an export nothing was checked against.
   It reads git inputs from the pinned commit (`GitTree`, so a dirty tree cannot leak in),

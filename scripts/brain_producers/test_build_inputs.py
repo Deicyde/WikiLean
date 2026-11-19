@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
@@ -50,6 +51,33 @@ class OfflineBuildTest(unittest.TestCase):
         oid = D.GitTree(trough).blobs["data/tauceti/deps.json"]
         self.assertEqual(subprocess.run(["git", "-C", trough, "cat-file", "-e", oid],
                                         capture_output=True).returncode, 0)
+
+    def test_protocol_block_alone_stops_the_lazy_fetch(self):
+        """`GIT_NO_LAZY_FETCH` only exists from git 2.45. Without it, as on older git, the
+        `protocol.allow=never` block must still keep the build offline, on any git version."""
+        from scripts.brain_producers import common as C
+        F3.fetch(self.inputs, opener=FakeOpener(self.remote))
+        with mock.patch.object(C, "offline_env", C._git_env):   # as if git ignored the variable
+            with self.assertRaises(D.BuildError) as cm:
+                B2.build(self.inputs, os.path.join(self.tmp, "out"))
+        self.assertIn("data/tauceti/deps.json", str(cm.exception))
+
+    def test_a_batch_read_that_exits_still_names_the_missing_file(self):
+        """Older git exits from `cat-file --batch` when a forbidden lazy fetch fails, instead of
+        printing `missing`. The reader then checks each blob and still names the missing one."""
+        from scripts.brain_producers import common as C
+        F3.fetch(self.inputs, opener=FakeOpener(self.remote))
+        real_git = C.git
+
+        def batch_exits(repo, *args, **kw):
+            if "--batch" in args:
+                raise subprocess.CalledProcessError(128, ["git", *args])
+            return real_git(repo, *args, **kw)
+        with mock.patch.object(C, "git", batch_exits):
+            with self.assertRaises(D.BuildError) as cm:
+                B2.build(self.inputs, os.path.join(self.tmp, "out"))
+        self.assertIn("data/tauceti/deps.json", str(cm.exception))
+        self.assertIn("partial clone", str(cm.exception))
 
     def test_a_trough_that_is_not_a_checkout_is_a_build_error(self):
         F3.fetch(self.inputs, opener=FakeOpener(self.remote))
