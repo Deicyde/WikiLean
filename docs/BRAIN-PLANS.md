@@ -304,6 +304,161 @@ fixtures.
 
 ## Not yet
 
-- No importer: the export is not loaded into D1 or the Brain. The slice's table layout is for
-  the D1 work ([`BRAIN-D1.md`](BRAIN-D1.md)) to fix.
+- No importer: the export is not loaded into D1 or the Brain. The section below proposes how
+  the Brain would carry it; the slice's table layout is for the D1 work
+  ([`BRAIN-D1.md`](BRAIN-D1.md)) to fix.
 - No scheduling: nothing runs `fetch` or `build` on a cadence.
+
+## Proposed Brain schema for plan nodes (not yet in brain/SCHEMA.md)
+
+A proposal, 2026-11-19. Nothing builds or serves it yet, and `brain/SCHEMA.md` stays the
+contract until this section moves there (the last subsection says when). The vocabulary is
+`brain/SCHEMA.md`'s: node types, the `contains` tree, edge records
+`{kind, provenance, confidence, evidence}` and version pins.
+
+### Nodes
+
+A new node type, **`plan`**, with two kinds:
+
+| `plan_kind` | id | from |
+|---|---|---|
+| `roadmap` | the export's id, `tauceti:<folder path>` | `roadmaps.jsonl` |
+| `layer` | the export's id, `<roadmap id>#<anchor>` | `layers.jsonl` |
+
+The ids are the export's, unchanged, so a plan node, its `/brain#<id>` address and the export
+row it came from share one key. `tauceti:` is a prefix no other node type uses (Tau Ceti
+declarations are `decl:TauCeti:*`, their folders `path:TauCeti/*`).
+
+**Placement in `contains`.** Plan nodes join the one strict single-parent tree, mechanically
+derived from the export and never inferred:
+
+```
+path:Plans/<arXiv group>   →  tauceti:<top-level roadmap>  →  <roadmap id>#<anchor>
+                              tauceti:<roadmap>  →  tauceti:<nested roadmap>  →  its layers
+```
+
+- The **arXiv group container** is a `container` node, `path:Plans/<topic>`, where `<topic>` is
+  the roadmap's `topic` from `metadata.toml` (an arXiv category, e.g. `math.NT`). A top-level
+  roadmap whose `topic` is `null` goes under `path:Plans/unclassified`. The containers sit under
+  a root `path:Plans`.
+- A nested roadmap's parent is its export `parent`, never its own `topic`, which is not
+  inherited (a nested roadmap with a different `topic` still sits under its parent roadmap).
+- A layer's parent is its `roadmap`. Layers have no children.
+
+**Fields carried from the export**, in the node payload:
+
+| Field | On | |
+|---|---|---|
+| `label` | both | the export's `title` |
+| `origin`, `topic` | roadmap | as exported |
+| `key`, `state`, `ordinal`, `status_source` | layer | as exported; `ordinal` is sequence and makes no edge |
+| `source` | both | the export's pointer `{repo, commit, path, line}` |
+| `atlas_url` | layer | a deep link, `https://taucetiproject.org/atlas/#view=roadmap&id=<roadmap id>&layer=<atlas_id, else the layer's anchor>` |
+| `planned_names`, `unqualified_names` | both | below |
+
+We link to the atlas and never copy it: no atlas text, evidence quote or layout enters a node.
+Layer `state` is the coverage claim the roadmap makes about itself, and it never feeds
+formalization status (`f` bits 4 and 5). Plan nodes would take a new `f` bit, `is plan`
+(bit 16), chosen when this moves into `brain/SCHEMA.md`.
+
+**Planned and unqualified names are attributes, never nodes.** A `planned` name is a
+declaration that does not exist anywhere, and an `unqualified` name is ambiguous; neither
+passes the existence oracle (design law 1). They stay on the node that cites them:
+`planned_names` is the sorted list of names, and `unqualified_names` is
+`[{name, candidates, candidates_total, candidate_libraries}]`, the candidates exactly as the
+export gives them (at most 8). A candidate never becomes an edge until a reviewed proposal
+chooses it.
+
+### Edges
+
+Every edge is a full edge record. `provenance` is
+`{"source": "tauceti_plans", "method": <per kind>, "pin": <the export's logical_root>}`;
+`tauceti_plans` becomes a key of `catalog/data/source_registry.json` in the same PR.
+
+| kind | src → dst | confidence | evidence |
+|---|---|---|---|
+| `depends` | roadmap → roadmap, consumer → prerequisite, exactly as `edges.jsonl` emits it | `high` | the export's `evidence`, `evidence_public`, `more_evidence`, `atlas_kinds` |
+| `mentions` | layer (or roadmap) → `decl:Mathlib:<n>` or `decl:TauCeti:<n>` | `high` | `{role: "plan", resolution, via_namespace?, resolved_name?, occurrences, pointer}` |
+| `xref` | layer (or roadmap) → `xref:stacks:<TAG>` or `lit:<arXiv id>` | `high` | `{system, occurrences, pointer}` |
+
+- **`depends`.** The direction is the Brain's, which is the export's; the build never flips
+  it. Only a row with `evidence_public: true` may ever be shown as a citation. A `false` row
+  (7 today) is still an edge, but any surface that cites evidence omits it, and the API marks
+  it `evidence_public: false`. Method `atlas-verified-line`.
+- **`mentions`** is built from `decl_refs.jsonl` rows with `resolution` `mathlib` or `tauceti`
+  only. `<n>` is `resolved_name` when present, else `name`. It is the existing citation kind
+  and, like annotation citations, is excluded from all formalization-status logic: a roadmap
+  naming a declaration claims nothing about it. Method `exact` or `declared-scope`.
+- **`xref`** is built from `xrefs.jsonl`. A `lit:` target is the paper node, never a statement
+  node. Method `pattern-scan`.
+- The source is the row's `layer`, or its `roadmap` when `layer` is `null` (a roadmap-level
+  name or citation).
+
+### The held-edge rule
+
+Most `mentions` today point at declarations the Brain has not minted: it has about 7.9k of the
+27,620 resolved Tau Ceti names, and many `lit:` and `xref:stacks:` targets are not nodes
+either. The build never drops such an edge silently.
+
+- An edge whose endpoint node does not exist in the build goes to a **held list**,
+  `brain/data/held_edges.jsonl` (gitignored, rebuilt like `edges_links.jsonl`), as
+  `{edge, reason: "endpoint_missing", missing, logical_root}`: the full edge record, the
+  missing endpoint id and the export's `logical_root`.
+- Every build retries every held edge against that build's nodes, and emits it into the edge
+  files as soon as both endpoints exist. Holding is per build, so no state carries over except
+  through the inputs.
+- `test_acceptance` reports the held count by kind, and fails if an edge held by the previous
+  release's build disappears without being emitted, unless its export row is gone too (a new
+  `logical_root` that drops it). The previous release's held list, or its counts and digest,
+  is recorded with the release so that check has something to compare against.
+
+### Where the inputs come from
+
+`build_snapshot` takes the pinned export as one more input under `--data-dir`, as
+`tauceti_plans/` holding the six JSONL files and `manifest.json` unchanged. It checks every
+file's sha256 against the manifest and recomputes `logical_root` before reading a row, and
+refuses on any mismatch. A release pins the export by `logical_root` and records it in its
+manifest next to the other input pins. The export itself is never committed (it is about
+60 MB and growing); it is staged from a private store, like the D1 snapshot and Wikidata
+bundles. No export, no plan nodes: the build then omits them and says so, never failing on a
+missing optional input and never inventing one.
+
+### Serving on `wikilean-brain`
+
+No new table is expected. The plan nodes map onto the section-4 tables of
+[`BRAIN-D1.md`](BRAIN-D1.md) as follows:
+
+| Table | Carries |
+|---|---|
+| `labels` | one row per plan node, `p` = its `contains` parent, `f` with the plan bit, `libs` `NULL` |
+| `cell_pages` | each plan node's page JSON: the payload fields above and its edges, with `depends` evidence pointers, `mentions` and `xref` lists |
+| `supercells` | `path:Plans` and the `path:Plans/<topic>` containers, and roadmaps that have children, so the breadcrumb and `kids` work as for any folder |
+| `name_keys` | titles as `label`; layer keys (`Layer 5`, `R2.3`) as `aka` |
+| `aliases` | the atlas id of a layer whose `atlas_id` differs, mapped to our id, so an atlas link resolves |
+| `xrefs` | the `xref` edges, page → node, so `xref:stacks:` and `lit:` pages list the layers that cite them |
+| `synapse_traces` | the `depends` and `mentions` pairs, with their evidence |
+
+Flagged for `migrations-brain/0002`, if review wants them:
+- the held list served on D1 (an agent asking "which plans name this missing declaration?");
+  it would be a new table, or it stays local and is never served;
+- a column for `plan_kind` or `state` on `labels`, if the filter must select layers by state
+  without reading `cell_pages`. Both would be additive, under section 4's schema rule.
+
+### Counts at the current export
+
+Root `eea7834b…` (a later export than run 1's above):
+
+| | |
+|---|---|
+| roadmaps | 466 |
+| layers | 3,722 |
+| `depends` | 2,348 (2,341 `evidence_public: true`) |
+| resolved `mentions` candidates | 52,245 (mathlib 24,625, tauceti 27,620) |
+| xrefs | 4,932 |
+
+### What moves later, and when
+
+After the code-only release, this section moves into `brain/SCHEMA.md` in one
+release-affecting PR, together with the `build_snapshot` reader, the held list, the acceptance
+check and the `source_registry.json` key. Until then, `brain/SCHEMA.md` is not touched, because
+the build may read it.
