@@ -843,6 +843,51 @@ def test_process_review_dry_run_no_agents_no_writes():
     assert rec["ids"]["human_restored_wire"] == 0
 
 
+def test_process_review_reports_what_the_native_merge_carried():
+    # The merge carries stored selections and items forward itself, so what it
+    # carried has to reach the run log — a silently unreviewed item is a finding.
+    import tempfile, io, contextlib
+    report = {"carried_items": 1, "promoted": 2,
+              "rejections": [{"item": "aabbccddeeff", "ref": "u3", "reason": "no longer stated"}],
+              "skipped_items": [{"item": "001122334455", "reason": "unknown source-selection reference 'u9'"}]}
+    with tempfile.TemporaryDirectory() as td:
+        ctx = _review_ctx(Path(td))
+        inner = ctx.ba.annotate_one
+
+        async def annotate_one(*a, **kw):
+            return {**await inner(*a, **kw), "native_merge": report}
+
+        ctx.ba = SimpleNamespace(annotate_one=annotate_one, ANNOT=Path(td))
+        out = io.StringIO()
+        with _patched_get(200, {"annotations": [], "version": 7,
+                                "wikipedia_title": "T Article", "revid": 123456789}):
+            with _patched_transport([(200, {"version": 8})]):
+                with contextlib.redirect_stdout(out):
+                    rec = asyncio.run(m.process_review(
+                        {"slug": "T_Article"}, ctx, asyncio.Semaphore(1)))
+    printed = out.getvalue()
+    assert '"carried_items": 1' in printed and "rejections" not in printed
+    assert "u3" in printed and "no longer stated" in printed
+    assert "001122334455" in printed and "unknown source-selection reference" in printed
+    # The report is run-log material; the stored meta ladder keeps its shape.
+    assert m.build_meta(ctx, rec, {})["ladder"] == {
+        "restored": 0, "reinserted": 0, "downgrades_blocked": 0, "moderation_flags": []}
+
+
+def test_prompt_sha_covers_the_native_prompts_the_review_actually_runs():
+    # Every converted article runs the native prompts; a change there has to
+    # move the cohort boundary, or the research data cannot tell the runs apart.
+    prompts = dict(MODERATE_AGENT1_SYSTEM="a1-review", AGENT1_SYSTEM="a1", AGENT2_SYSTEM="a2",
+                   NATIVE_AGENT1_SYSTEM="n1", NATIVE_AGENT2_SYSTEM="n2")
+    for changed in ("NATIVE_AGENT1_SYSTEM", "NATIVE_AGENT2_SYSTEM"):
+        after = SimpleNamespace(**{**prompts, changed: "moved"})
+        for mode in ("review", "new"):
+            assert m.get_prompt_sha(SimpleNamespace(**prompts), mode) != m.get_prompt_sha(after, mode), (changed, mode)
+    import batch_annotate as ba
+    for name in ("NATIVE_AGENT1_SYSTEM", "NATIVE_AGENT2_SYSTEM"):
+        assert isinstance(getattr(ba, name), str) and getattr(ba, name)
+
+
 def test_process_review_agent_error_short_circuits():
     import tempfile
     with tempfile.TemporaryDirectory() as td:

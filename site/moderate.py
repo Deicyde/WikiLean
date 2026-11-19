@@ -63,6 +63,7 @@ import urllib.parse
 from pathlib import Path
 
 import native_annotations as native
+import native_review
 from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
@@ -303,7 +304,7 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
         counted as veto_adjacent_dropped (F6: shifted-anchor and repinned
         resurrections of human vetoes don't reach the wire).
     """
-    produced = native.preserve_native_items(existing, produced)
+    produced = native_review.check_native_output(existing, produced)
     humans = [a for a in existing if a.get("provenance") == "human"]
     tombs = [a for a in existing if a.get("status") == "rejected"]
     h_by_id = {a["id"]: i for i, a in enumerate(humans)
@@ -821,6 +822,10 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
         return "unavailable"
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
     parts = a1 + "\n" + ba_mod.AGENT2_SYSTEM
+    # Native articles run the native prompts instead; they are the live cohort
+    # boundary for every converted article, so they must move the sha too.
+    for native_prompt in ("NATIVE_AGENT1_SYSTEM", "NATIVE_AGENT2_SYSTEM"):
+        parts += "\n" + getattr(ba_mod, native_prompt, "")
     # Step 2: the proposal guidance changes Agent 2's review-mode prompt, so it must
     # move prompt_sha when enabled (else the two cohorts look identical in research).
     if mode == "review" and getattr(ba_mod, "_PROPOSALS", False):
@@ -1200,6 +1205,18 @@ async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore"
         return rec
     # F14: surface harvested agent dissent on human annotations in the run log
     # (it also rides meta.ladder.moderation_flags via build_meta).
+    # The native merge carries stored selections and items forward itself; say
+    # what it carried, so a silently unreviewed item is visible in the run log.
+    merged = arec.get("native_merge") or {}
+    if merged:
+        counts = {key: value for key, value in merged.items() if not isinstance(value, list)}
+        print(f"  ~ {slug}: native merge {json.dumps(counts, ensure_ascii=False)}", flush=True)
+        for entry in merged.get("rejections") or []:
+            print(f"  ⚑ {slug}: agent disputes selection {entry.get('ref')} of "
+                  f"[{entry.get('item')}]: {entry.get('reason')}", flush=True)
+        for entry in merged.get("skipped_items") or []:
+            print(f"  ! {slug}: review item [{entry.get('item')}] kept unchanged: "
+                  f"{entry.get('reason')}", flush=True)
     for pair in (arec.get("ladder") or {}).get("moderation_flags") or []:
         fid, flag = (pair + [None, None])[:2] if isinstance(pair, list) else (None, pair)
         print(f"  ⚑ {slug}: moderation_flag on human annotation "

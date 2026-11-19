@@ -29,6 +29,7 @@ import unicodedata
 from pathlib import Path
 
 import native_annotations as native
+import native_review
 
 # Pop the API key BEFORE importing the SDK so the spawned `claude` subprocess
 # uses the Max-subscription login rather than billing an API account.
@@ -138,13 +139,27 @@ the informal source selection and its object the formal end. No root
 mathlib/decl/module/anchor/anchors. Write every WikiLean anchor in this
 profile form; the pipeline resolves it against the pinned article afterwards.
 An unlinked source selection is one end with no formal object; never invent an
-object to fill it. PDF, LaTeX, HTML and generic imported ends may be opaque:
-retain them exactly.
+object to fill it.
+
+STORED SELECTIONS ARE REFERENCES, NOT TEXT YOU RETYPE. Every selection already
+on file is shown to you as {"ref":"u3","type":"html","selects":{...}} — a name,
+its mode and what it selects. It is read-only. Never copy, edit, re-anchor or
+retype one. Act on it by name:
+  * leave it alone — say nothing about it and it is carried forward unchanged,
+    still unlinked;
+  * link it — put {"ref":"u3"} in the subject of the link you add, which moves
+    it out of unlinked (a selection already inside a link may be referenced too,
+    to link the same statement to a second declaration);
+  * dispute it — put {"ref":"u3","reject":"<one-sentence reason>"} in the item's
+    unlinked array. It is kept; the reason goes to a human editor.
+A selection YOU found yourself is written out in full (type, uri, location) and
+has no ref. Reuse a ref only inside the review item it was shown in.
 Preserve ALL incoming IDs, URIs, base_uri values, legacy archives,
-unfamiliar JSON/extension fields, existing links and review items. Use rejected
-status for a rejected item rather than dropping it. Never translate native data
-back into the legacy shape. Human items must be echoed byte-for-byte; proposed
-changes belong only in moderation_proposal, never in human-owned fields.
+unfamiliar JSON/extension fields, existing links and review items. Omitting a
+review item leaves it unchanged; use rejected status to retract one rather than
+dropping it. Never translate native data back into the legacy shape. Human items
+are shown in full and must be echoed byte-for-byte; proposed changes belong only
+in moderation_proposal, never in human-owned fields.
 Reply only with {"annotations":[<review items>]}.
 """
 
@@ -154,8 +169,8 @@ statement per review item. For new statements use status not_formalized,
 provenance ai, links [], and unlinked source selections using the supplied
 pinned article URI. The WikiLean anchor can be section+snippet,
 theorem_box/value, math_alttext/value or prose_range. Keep all occurrences as
-separate selections. Do not guess formal objects. Review existing selections
-without discarding existing links or unknown data.
+separate selections. Do not guess formal objects. Review existing selections by
+reference, without discarding existing links or unknown data.
 """ + NATIVE_ITEM_GUIDANCE
 
 NATIVE_AGENT2_SYSTEM = """Search the local Mathlib checkout to classify each
@@ -165,12 +180,12 @@ Give the object as [{"type": "lean", "uri":
 "https://github.com/leanprover-community/mathlib4", "location":
 {"declaration": <declaration>, "module": <dotted module>}}]. The object is the
 sole formal-link authority; do not add mathlib/decl/module fields to the
-review item. Reuse each unlinked selection unchanged, including its location,
-as the subject of one Literature Links record per selection and declaration.
+review item. Link a selection by naming it: {"ref":"u3"} is the subject of one
+Literature Links record per selection and declaration.
 Use <item-id>:link:<ordinal> for new internal link IDs and preserve existing
-internal link IDs. Move a newly linked selection out of unlinked; retain
-genuinely unlinked selections there. No declaration means no link, even for a
-review item with a partial status. Keep a short review note.
+internal link IDs. A referenced selection moves out of unlinked by itself; say
+nothing about the selections that stay unlinked. No declaration means no link,
+even for a review item with a partial status. Keep a short review note.
 """ + NATIVE_ITEM_GUIDANCE
 
 
@@ -181,16 +196,19 @@ def _cached_html(cache_slug: str) -> str | None:
 
 def _native_agent_output(produced: list[dict], existing: list[dict], *,
                          title: str | None = None, revid: int | None = None,
-                         html: str | None = None) -> list[dict]:
-    """Validate agent output before writing a native artifact or another prompt.
+                         html: str | None = None) -> tuple[list[dict], dict]:
+    """Merge and validate agent output before writing a native artifact or another prompt.
 
-    With the pinned article ``html``, WikiLean anchors the agents wrote in the
+    The agent names the stored source selections it acts on (see
+    ``native.review_view``); the merge carries them forward from the stored
+    data. With the pinned article ``html``, WikiLean anchors written in the
     profile form are resolved to built-in Literature Links locations.
+    Returns the merged items and the merge report.
     """
     import secrets
     if not isinstance(produced, list) or any(not isinstance(item, dict) for item in produced):
         raise native.NativeAnnotationError("agent annotations must be review objects")
-    preserved = native.preserve_native_items(existing, produced)
+    preserved, report = native_review.merge_native_review(existing, produced)
     used = {item.get("id") for item in preserved if isinstance(item.get("id"), str)}
     for item in preserved:
         if "id" not in item:
@@ -202,9 +220,12 @@ def _native_agent_output(produced: list[dict], existing: list[dict], *,
             used.add(identity)
             item["id"] = identity
     if html is not None:
-        native.resolve_locations(preserved, html)
+        # Human bytes are restored verbatim and posted verbatim; resolving one
+        # would make the pipeline's copy differ from the stored annotation.
+        native.resolve_locations([item for item in preserved
+                                  if item.get("provenance") != "human"], html)
     native.validate_items(preserved, title=title, revid=revid)
-    return preserved
+    return preserved, report
 
 
 # ---------------------------------------------------------------------------
@@ -578,7 +599,7 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                     f"Article: {title}\n\nExtracted sections (JSON):\n"
                     f"{json.dumps(sections['sections'], ensure_ascii=False)}\n\n"
                     f"CURRENT annotations (JSON):\n"
-                    f"{json.dumps(existing, ensure_ascii=False)}\n\n"
+                    f"{json.dumps(native_review.review_view(existing) if native_mode else existing, ensure_ascii=False)}\n\n"
                     "Moderate per the system prompt. Reply with ONLY the JSON object."
                 )
                 a1_system = MODERATE_AGENT1_SYSTEM
@@ -612,10 +633,12 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 # Step 2: proposals ride the ladder ONLY when found — a gated-off /
                 # proposal-free pass keeps the historical ladder shape byte-for-byte.
                 _merge_proposals(ladder, ph1.get("proposals"))
+            merge_report: dict = {}
             if native_mode:
-                # Agent 2 reads and echoes agent 1's selections as written; the
-                # pinned-article resolution happens once, on the final output.
-                annotations = _native_agent_output(annotations, existing, title=title, revid=target_revid or meta.get("revid"))
+                # Agent 2 names agent 1's selections; the pinned-article
+                # resolution happens once, on the final output.
+                annotations, merge_report = _native_agent_output(
+                    annotations, existing, title=title, revid=target_revid or meta.get("revid"))
             envelope = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
                 "schema_version": 4 if native_mode else 3, "revid": target_revid or (meta.get("revid") if native_mode else None), "annotations": [
@@ -638,7 +661,7 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                              f"article's central concept (use as leads, verify): {seed}")
             a2_prompt = (
                 f"Article: {title}\n\nStatements to classify (JSON):\n"
-                f"{json.dumps(annotations, ensure_ascii=False)}{seed_hint}\n\n"
+                f"{json.dumps(native_review.review_view(annotations) if native_mode else annotations, ensure_ascii=False)}{seed_hint}\n\n"
                 "Classify each against Mathlib4 per the system prompt. "
                 "Reply with ONLY the JSON object."
             )
@@ -671,12 +694,17 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
                 PRIORITY = {"human": 3, "ai-moderated": 2, "ai": 1,
                             "ai-agent1": 1, None: 0}
                 pre_a2_prov = {_anchor_sig(a): a.get("provenance") for a in annotations}
+                # A native reply names its selections instead of repeating them,
+                # so the review id — not the anchor — identifies what it echoed.
+                pre_a2_by_id = {a["id"]: a.get("provenance") for a in annotations
+                                if isinstance(a.get("id"), str) and a["id"]}
                 out_annos = []
                 for a in a2_annos:
                     if a.get("provenance") == "human":
                         out_annos.append(a)  # _preserve_human already restored
                         continue
-                    inherited = pre_a2_prov.get(_anchor_sig(a))
+                    inherited = (pre_a2_by_id[a["id"]] if isinstance(a.get("id"), str) and a["id"] in pre_a2_by_id
+                                 else pre_a2_prov.get(_anchor_sig(a)))
                     echoed = a.get("provenance")
                     winner = max((inherited, echoed), key=lambda p: PRIORITY.get(p, 0))
                     if PRIORITY.get(echoed, 0) < PRIORITY.get(inherited, 0):
@@ -685,8 +713,12 @@ async def annotate_one(article: dict, sem: asyncio.Semaphore, seed_decls: dict,
             else:
                 out_annos = [{**a, "provenance": "ai"} for a in a2_annos]
             if native_mode:
-                out_annos = _native_agent_output(out_annos, annotations, title=title, revid=target_revid or meta.get("revid"),
-                                                 html=_cached_html(cache_slug))
+                out_annos, a2_report = _native_agent_output(
+                    out_annos, annotations, title=title, revid=target_revid or meta.get("revid"),
+                    html=_cached_html(cache_slug))
+                merge_report = native_review.merge_reports(merge_report, a2_report)
+                if merge_report:
+                    rec["native_merge"] = merge_report
             final = {
                 "slug": slug, "wikipedia_title": title, "display_title": title,
                 "schema_version": 4 if native_mode else 3, "annotation_style": "theorem_article",
