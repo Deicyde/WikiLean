@@ -4,8 +4,9 @@ Standard library only, so this reads the subset of YAML those four files use rat
 - `100.yaml`, `1000.yaml`: top-level entries (`1:`, `Q11518:`) whose `decl:` or `statement:`
   names one declaration and whose `decls:` lists several (block `- x` items or `[x, y]`);
 - `overview.yaml`, `undergrad.yaml`: nested mappings whose leaf values are names, a value on
-  the line after its key included.
-Scalars may be plain, '…' (with '' for a quote) or "…"; a ` #` comment after a value is dropped.
+  the line after its key included (quoted or plain; the body of a `>`/`|` block is not one).
+Scalars may be plain, '…' (with '' for a quote) or "…"; a comment after a value is dropped, and
+a value that is only a comment is no value.
 """
 
 from __future__ import annotations
@@ -15,12 +16,14 @@ import re
 LISTS = {"100": "100.yaml", "1000": "1000.yaml", "overview": "overview.yaml", "undergrad": "undergrad.yaml"}
 ENTRY_LISTS = {"100", "1000"}
 NAME_FIELDS = {"decl", "statement"}
+# A folded or literal block header (`>`, `>-`, `|2+`, …): its body is prose, and so is it.
+BLOCK = re.compile(r"[>|][0-9]*[-+]?")
 
 
 def scalar(text: str) -> str | None:
     """The value of one YAML scalar written on a line, or None when it is empty or unclosed."""
     t = text.strip()
-    if not t:
+    if not t or t.startswith("#"):  # a comment-only value is no value, not the text of the comment
         return None
     if t[0] == "'":
         out, i = [], 1
@@ -92,12 +95,15 @@ def entries(list_name: str, text: str) -> list[dict]:
             continue
         kv = _key_value(body)
         if kv is None:
-            if pending and body[0] in "'\"":
-                add(scalar(body))  # the value of the key on the line above
+            if pending and not body.startswith("-"):
+                add(scalar(body))  # the value of the key on the line above, quoted or plain
             pending = False
             continue
         _key, value = kv
         v = scalar(value)
+        if v is not None and BLOCK.fullmatch(v):
+            pending = False  # `key: >-` or `key: |`: the lines below are prose, never a name
+            continue
         pending = v is None
         add(v)
     return out

@@ -93,7 +93,8 @@ From trough's `data/mathlib/` (`concept-deps.json`, `yaml/{overview,undergrad,10
   `Counterexamples` modules only (null for `Init`, `Std`, …). No `stated`: Mathlib has no `sorry`.
 - The yaml is read by a small standard-library reader of the subset those files use (`lists.py`):
   `decl:`, `statement:` and `decls:` (block or `[a, b]`) in 100/1000, leaf values (also on the
-  next line) in overview/undergrad. A URL or prose value is `list_entry/not_lean_name`; a
+  next line, quoted or plain) in overview/undergrad. The body of a `>`/`|` block is prose, and a
+  value that is only a comment is no value. A URL or prose value is `list_entry/not_lean_name`; a
   `Mathlib/…/X.html` value is a module, `list_entry/module_entry`.
 - Edges come from `concepts`' `statement` and `proof` lists, as in producer 2.
 - The manifest carries `mathlib_commit` (trough's `source.json` rev), `docs_commit` (the `.bmp`'s)

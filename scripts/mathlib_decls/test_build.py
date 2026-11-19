@@ -51,6 +51,23 @@ class ListsTest(unittest.TestCase):
         self.assertEqual([(e["value"], e["line"]) for e in L.entries("overview", text)],
                          [("A.b", 4), ("C.d", 5)])
 
+    def test_an_unquoted_value_on_the_next_line_is_kept(self):
+        """The docstring promises "a value on the line after its key": an unquoted one is one.
+        A `>`/`|` block is the case that must stay out, so its body is never a candidate."""
+        text = ("Top:\n  Sub:\n    long one:\n      A.b\n    note: >-\n      A folded note naming\n"
+                "      C.d, which is prose.\n    literal: |\n      E.f\n    after: G.h\n")
+        self.assertEqual([(e["value"], e["line"]) for e in L.entries("overview", text)],
+                         [("A.b", 4), ("G.h", 10)])
+
+    def test_a_comment_only_value_is_no_value(self):
+        """`a: # nothing` is a key with no value; the comment is not a candidate name."""
+        self.assertIsNone(L.scalar("# nothing"))
+        self.assertIsNone(L.scalar("#nothing"))
+        self.assertEqual(L.scalar("A.b # nothing"), "A.b")
+        for text in ("Top:\n  a: # nothing\n  b: 'A.b'\n", "Top:\n  a: #nothing\n  b: 'A.b'\n"):
+            self.assertEqual([e["value"] for e in L.entries("overview", text)], ["A.b"])
+        self.assertEqual([e["value"] for e in L.entries("100", "1:\n  decl: # nothing\n")], [])
+
 
 class BuildFixture(unittest.TestCase):
     @classmethod
