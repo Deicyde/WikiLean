@@ -173,6 +173,7 @@ run_check "Leaked GitHub token revocation never shows a token" "$PYTHON_BIN" scr
 run_check "Tau Ceti plans: text rules" "$PYTHON_BIN" scripts/tauceti_plans/test_parse.py
 run_check "Tau Ceti plans: fixture build" "$PYTHON_BIN" scripts/tauceti_plans/test_build.py
 run_check "Tau Ceti plans: offline fetch" "$PYTHON_BIN" scripts/tauceti_plans/test_fetch.py
+run_check "Tau Ceti plans as Literature Links: fixture conversion" "$PYTHON_BIN" scripts/tauceti_plans_ll/test_build.py
 run_check "Articles to Brain: the section 13 rules and the fold's row shapes" "$PYTHON_BIN" scripts/articles_brain/test_build.py
 run_check "Articles to Brain: offline fetch and pinning" "$PYTHON_BIN" scripts/articles_brain/test_fetch.py
 run_check "Tau Ceti declarations: fixture build" "$PYTHON_BIN" scripts/tauceti_decls/test_build.py
