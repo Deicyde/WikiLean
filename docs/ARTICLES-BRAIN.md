@@ -40,7 +40,8 @@ work tree — an export is evidence, never a commit.
 
 It sends `User-Agent: WikiLean-articles-brain/1` and no other identifying header, makes
 one request at a time with a delay between them (`--delay`, 1 s by default), and backs
-off on 429 and 503 honouring a numeric `Retry-After` (five attempts, at most 60 s each).
+off on 429, 500, 502, 503 and 504 honouring a numeric `Retry-After` (five attempts, at
+most 60 s each). Any other status fails the run.
 
 **The store build is the pin.** `PINS.json` records the sha256 of every answer's bytes,
 with the overlay's row count and highest `version` per article. `--pins` replays exactly
@@ -48,10 +49,17 @@ those bytes: on any mismatch it exits 1 naming the input, never overwrites an in
 the mismatched bytes, and leaves no `PINS.json`.
 
 **It refuses to mix two store builds.** Every article must name the build's universe
-sha256 and one of its record-set seals, the index must hold as many pages as
-`current.json` says, and `current.json` is read again at the end and must be byte for
-byte the first answer — a republish mid-run refuses the whole run. `build` re-checks all
-of it against the pinned bytes, because pins can be replayed and edited.
+sha256 and one of its record-set seals, every overlay must be its own article's, the
+index must hold as many pages as `current.json` says, and `current.json` is read again
+at the end and must be byte for byte the first answer — a republish mid-run refuses the
+whole run.
+
+**And it refuses a part of one.** A pins file is data, not trusted configuration: it can
+be replayed and edited, so `build` makes every one of those checks again over the pinned
+bytes, and also requires that the pinned shards are the build's index shards, that the
+pinned pages are exactly the pages that index holds, and that no pin names a file
+outside `--inputs`. An export carries the whole build's identity, so it is built from
+the whole build or not at all.
 
 ## What it emits
 
@@ -132,9 +140,10 @@ library maps to one `brain_lib` token; and **non-Mathlib libraries stay mentions
 All of: the passage is `subject`; the article carries a canonical QID and a title; the
 location stands after the overlay merge; its relation is not `relatedMatch`; its
 declaration is a Lean name; its library's token is `Mathlib` at Mathlib's repository; the
-location came from the **record set**, not the overlay; the passage's `outcome` is
-`located` and its `status` is `formalized`; and **the store's own rule says this one
-location gives the passage `formalized`**.
+location came from the **record set**, not the overlay; **the record set's own relation
+is the one the row rests on**; the passage's `outcome` is `located` and its `status` is
+`formalized`; and **the store's own rule says this one location gives the passage
+`formalized`**.
 
 That last check is not a re-derivation: it *imports*
 `scripts.articles.build_store.location_status` and calls it with the passage's kind and
@@ -150,8 +159,11 @@ Mathlib declarations that each state it gives two rows, each with its own `match
 own token, `closeMatch` or `broadMatch`. SCHEMA.md rule 1 **fuses** concept and decl both
 ways on `match_kind == "exact"`, so only the store's identity claim gets it; rule 2
 attaches a concept to a cell on `generalization`/`special_case`, and how wide that rule
-should be is explicitly Jack's call, so the producer uses a token no Brain rule reads.
-See "Left for Jack".
+should be is explicitly Jack's call, so the producer uses a token that merges nothing.
+It is not quite inert: a `formalizes` edge whose `match_kind` is in neither merge set
+becomes a **synapse** carrying that token as its bond label (`build_cells.py`, rule 3),
+so wiring this in would put `closeMatch`/`broadMatch` bonds in the graph. See "Left for
+Jack".
 
 ### `mentions`: every other library
 
@@ -183,12 +195,22 @@ The producer ports the location half of `wiki/src/articles-overlay.ts` `mergeOve
 - a removed row, on either side, produces nothing (`withdrawn_by_the_overlay`), and a
   community removal of the pipeline's own basis location withdraws the `formalizes` row
   too;
+- a live row that **relabels** a sealed Mathlib location withdraws its `formalizes` row
+  as well (`community_relation_change_on_a_mathlib_location`). The relation *is* the
+  identity claim — rule 1 fuses on `exact` — so one editor's, or one agent's, upgrade of
+  a `closeMatch`, a `broadMatch` or a `relatedMatch` must not mint or strengthen an edge,
+  and their downgrade of an `exactMatch` is a dispute, not a weaker claim to publish.
+  The write route takes any of the six relations at a sealed pair key
+  (`wiki/src/articles.ts`), so this is the ordinary case, not an exotic one. A note-only
+  change leaves the row standing, and the mentions channel is unaffected: there every
+  row is `mentions` whatever its relation;
 - a tag whose `passage_key` is in no passage of the article is rejected
   (`tag_passage_not_in_the_article`).
 
-Because a community location is `statement_only`, a community tag can never make a
-passage `formalized`, so it can never reach the `formalizes` channel. The producer makes
-that explicit: a Mathlib community tag is rejected
+Because a community location is `statement_only`, a community tag *of its own* can never
+make a passage `formalized`, so it can never reach the `formalizes` channel that way
+(relabelling a sealed location is the other way, above). The producer makes that
+explicit: a Mathlib community tag is rejected
 (`mathlib_community_tag_has_no_mentions_channel`) rather than quietly promoted, because
 the fold has no Mathlib mentions channel to put it in. See "Left for Jack".
 
@@ -231,6 +253,7 @@ Every row cites its evidence by pointer, never by copied prose. The block is
 | `pageid`, `passage_key`, `pair_key`, `location_key` | where in it |
 | `prominence`, `passage_kind`, `sealed_status` | the passage, as the store published it |
 | `relation`, `proof_status`, `library`, `brain_lib`, `repo`, `commit` | the location |
+| `base_relation` | the sealed relation, when a live community row changed the location: a row never cites the record set for a relation the record set does not state |
 | `source` | `record_set` or `overlay` |
 | `record_set` | the article's record-set seal sha256 (a sealed location) |
 | `overlay_version`, `overlay_max_version`, `overlay_state`, `overlay_via` | the row's own version and the article's highest (an overlay row) |
@@ -284,8 +307,9 @@ at capped `medium` with no second reader.
    Either add one (a `mathlib_links.jsonl` with the same mentions-only contract) or
    accept that community Mathlib tags never reach the Brain.
 4. **`match_kind` for a non-exact relation.** 22 of run 1's 25 `formalizes` rows rest on
-   a `closeMatch` or a `broadMatch`. They carry the store's own token, which no Brain
-   rule reads, so today they are inert beside the edge itself. Mapping `broadMatch` to
+   a `closeMatch` or a `broadMatch`. They carry the store's own token, which merges
+   nothing — but rule 3 keeps the edge as a synapse labelled `closeMatch` or
+   `broadMatch`, a bond kind outside the Brain's own vocabulary. Mapping `broadMatch` to
    `generalization` and `narrowMatch` to `special_case` would let SCHEMA.md rule 2 attach
    those concepts to a cell; rule 2's width is marked in SCHEMA.md as yours.
 5. **`qid_label`.** The producer claims the article's **title**, which is the only label
@@ -297,6 +321,11 @@ at capped `medium` with no second reader.
 6. **Withdrawal**, above: the mentions channel cannot be withdrawn by absence today.
 
 ## Run 1 (2026-11-19)
+
+The record of one run, not a claim about the current code: it predates the sealed-relation
+gate and the `base_relation` pointer above, both of which change the rejection reasons, the
+bytes of any row a live community row touches, and therefore the `logical_root`. Re-run
+before quoting these figures.
 
 Store build `c3bba3d5…` (`current.json`), campaign `tierA-b1`, universe
 `12e9eacf…`, record sets `23710337…` and `f1e67e43…`; 48 articles, 4,285 passages, 37 of

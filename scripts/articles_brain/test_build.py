@@ -183,6 +183,10 @@ class RuleTest(unittest.TestCase):
         self.assertEqual(row["confidence"], "medium")  # an agent wrote it
         self.assertEqual(row[EVIDENCE_KEY]["actor_type"], "ai")
 
+    def test_a_sealed_related_match_is_never_a_row(self):
+        self.assertNotIn("Widget.unrelated", self.rows_by_decl)
+        self.assertIn("relation_related_match", self.reasons)
+
     def test_a_tag_whose_passage_is_not_in_the_article_is_rejected(self):
         self.assertNotIn("TauCeti.Widget.orphan", self.rows_by_decl)
         self.assertIn("tag_passage_not_in_the_article", self.reasons)
@@ -247,6 +251,115 @@ class RuleTest(unittest.TestCase):
         self.assertFalse(valid_declaration("Nat add"))
         self.assertFalse(valid_declaration("Nat.add​"))
         self.assertFalse(valid_declaration("x" * 241))
+
+
+class CommunityRelabellingTest(unittest.TestCase):
+    """A community row at a sealed Mathlib location's pair key may relabel it, and the
+    relation IS the identity claim (SCHEMA.md rule 1 fuses on `match_kind == exact`).
+    One editor's or one agent's relabelling must never mint or strengthen a
+    `formalizes` edge, and no row may cite the record set for a relation it does not
+    state."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        pages = fixtures.site_bodies()
+        pages["/api/articles/overlay/101"] = fixtures.body(fixtures.relabelled_overlay())
+        _t, _m, self.rows, self.rejected = run_build(self.tmp.name, pages)
+        self.rows_by_decl = by_decl(self.rows)
+        self.reasons = {row["reason"] for row in self.rejected}
+
+    def test_an_upgraded_close_match_never_becomes_an_exact_identity_claim(self):
+        self.assertNotIn("Widget.close", self.rows_by_decl)
+        self.assertIn("community_relation_change_on_a_mathlib_location", self.reasons)
+
+    def test_a_relabelled_related_match_never_becomes_a_formalizes_row(self):
+        self.assertNotIn("Widget.unrelated", self.rows_by_decl)
+
+    def test_no_row_claims_a_match_kind_the_record_set_does_not_state(self):
+        for row in self.rows:
+            found = row[EVIDENCE_KEY]
+            if found["source"] != "record_set":
+                continue
+            self.assertEqual(found.get("base_relation", found["relation"]),
+                             found["relation"], row["decl"])
+
+    def test_a_note_only_change_leaves_the_sealed_row_standing(self):
+        row = self.rows_by_decl["Widget.lemma_one"]
+        self.assertEqual(row["match_kind"], "exact")
+        self.assertEqual(row[EVIDENCE_KEY]["actor_type"], "human")
+        # The merge records the sealed relation whenever a live row changed anything;
+        # here it is the relation the row already carries, which is the whole point.
+        self.assertEqual(row[EVIDENCE_KEY]["base_relation"], "exactMatch")
+
+    def test_the_relabelling_is_recorded_where_it_is_rejected(self):
+        relabelled = [r for r in self.rejected
+                      if r["reason"] == "community_relation_change_on_a_mathlib_location"]
+        self.assertEqual({r["pair_key"] for r in relabelled},
+                         {fixtures.K_MATHLIB_CLOSE, fixtures.K_MATHLIB_RELATED})
+        for row in relabelled:
+            self.assertEqual(row["relation"], "exactMatch")           # what was written
+            self.assertIn(row["base_relation"], ("closeMatch", "relatedMatch"))  # sealed
+
+    def test_no_note_text_rides_along(self):
+        blob = json.dumps(self.rows) + json.dumps(self.rejected)
+        self.assertNotIn("printed statement", blob)
+
+
+class WholeBuildTest(unittest.TestCase):
+    """A pins file is data: it can be replayed and edited, so every check `fetch`
+    makes over the answers the build makes again over the pinned bytes."""
+
+    def edit_pins(self, inputs: str, change) -> None:
+        path = os.path.join(inputs, "PINS.json")
+        pins = read_json(path)
+        change(pins)
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump(pins, handle)
+
+    def test_pins_that_drop_a_page_refuse_the_build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            inputs = acquire(tmp)
+
+            def drop(pins):
+                del pins["inputs"]["articles"]["101"]
+                del pins["inputs"]["overlay"]["101"]
+
+            self.edit_pins(inputs, drop)
+            with self.assertRaises(BuildError) as caught:
+                build(inputs, os.path.join(tmp, "out"))
+            self.assertIn("not the build's pages", str(caught.exception))
+
+    def test_pins_that_drop_an_index_shard_refuse_the_build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            inputs = acquire(tmp)
+            self.edit_pins(inputs, lambda pins: pins["inputs"]["index"].clear())
+            with self.assertRaises(BuildError) as caught:
+                build(inputs, os.path.join(tmp, "out"))
+            self.assertIn("index shards", str(caught.exception))
+
+    def test_another_articles_overlay_refuses_the_build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            inputs = acquire(tmp)
+            self.edit_pins(inputs, lambda pins: pins["inputs"]["overlay"].__setitem__(
+                "101", dict(pins["inputs"]["overlay"]["103"])))
+            with self.assertRaises(BuildError) as caught:
+                build(inputs, os.path.join(tmp, "out"))
+            self.assertIn("not this article's overlay", str(caught.exception))
+
+    def test_a_pin_that_names_a_file_outside_the_inputs_refuses_the_build(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            inputs = acquire(tmp)
+            outside = os.path.join(tmp, "outside.json")
+            with open(os.path.join(inputs, "articles", "101.json"), "rb") as handle:
+                blob = handle.read()
+            with open(outside, "wb") as handle:
+                handle.write(blob)
+            self.edit_pins(inputs, lambda pins: pins["inputs"]["articles"]["101"].update(
+                {"path": os.path.join("..", "outside.json")}))
+            with self.assertRaises(BuildError) as caught:
+                build(inputs, os.path.join(tmp, "out"))
+            self.assertIn("outside --inputs", str(caught.exception))
 
 
 class DeterminismTest(unittest.TestCase):

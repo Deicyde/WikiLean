@@ -115,6 +115,7 @@ K_SUPPORTING = "a4" + "0" * 62
 K_MATHLIB_BROAD = "a7" + "0" * 62
 K_MATHLIB_PART = "a8" + "0" * 62
 K_MATHLIB_CLOSE = "a9" + "0" * 62
+K_MATHLIB_RELATED = "aa" + "0" * 62
 K_NO_QID = "a5" + "0" * 62
 K_MATHLIB_TWO = "a6" + "0" * 62
 K_TAG_LIVE = "b1" + "0" * 62
@@ -140,6 +141,9 @@ def articles() -> dict[int, dict]:
             # many-to-many by construction (brain/SCHEMA.md).
             location("mathlib", MATHLIB, "3" * 40, "Widget.close", "closeMatch",
                      "proved", K_MATHLIB_CLOSE, 5, "Mathlib.Widget.Basic"),
+            # "States something else": never a location, never a mention.
+            location("mathlib", MATHLIB, "3" * 40, "Widget.unrelated", "relatedMatch",
+                     "proved", K_MATHLIB_RELATED, 6, "Mathlib.Widget.Other"),
         ], basis=K_MATHLIB_ONE),
         # A subject passage the store counts as formalized on a broadMatch (status rule 3
         # formalizes a broadMatch to data): a formalizes row that is not an identity claim.
@@ -168,6 +172,27 @@ def articles() -> dict[int, dict]:
         passage("In-text #0006", "subject", P103F, None, [], outcome="unchecked"),
     ], seal=SEAL_TWO)
     return {101: a101, 102: a102, 103: a103}
+
+
+def relabelled_overlay() -> dict:
+    """Page 101's overlay with two live community relabellings of SEALED locations.
+
+    Both are the write route's ordinary behaviour (wiki/src/articles.ts POST
+    /api/articles/tag: a tag at a pair key the pipeline already located IS that
+    location's row, and any of the six relations may be written there). One upgrades
+    a sealed closeMatch to exactMatch, the other a sealed relatedMatch; neither may
+    mint or strengthen a formalizes edge.
+    """
+    return {"ok": True, "pageid": 101, "bundles": [], "tags": [
+        tag(K_MATHLIB_CLOSE, P101A, "mathlib", MATHLIB, "Widget.close", "exactMatch",
+            actor_type="agent", version=9),
+        tag(K_MATHLIB_RELATED, P101A, "mathlib", MATHLIB, "Widget.unrelated", "exactMatch",
+            version=10),
+        # A note-only change at a sealed exactMatch: the relation still stands, so the
+        # row does too.
+        tag(K_MATHLIB_ONE, P101A, "mathlib", MATHLIB, "Widget.lemma_one", "exactMatch",
+            version=11, note="checked against the printed statement"),
+    ]}
 
 
 def overlays() -> dict[int, dict]:

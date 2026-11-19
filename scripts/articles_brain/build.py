@@ -21,7 +21,9 @@ from collections import Counter
 from scripts.articles.build_store import STATUS_RULE_D1, location_status
 
 from .canon import dumps, jsonl_bytes, read_json, sha256_bytes, sha256_file, write_bytes
-from .fetch import PINS_SCHEMA, SHA_RE, FetchError, check_article, store_identity
+from .fetch import (
+    PINS_SCHEMA, SHA_RE, FetchError, check_article, check_overlay, pageids_of, store_identity,
+)
 
 SCHEMA = "wikilean.brain.articles/v1"
 PRODUCER = {"name": "scripts.articles_brain", "version": "1.0.0"}
@@ -113,11 +115,18 @@ def load_inputs(inputs: str) -> dict:
     if not isinstance(groups, dict):
         raise BuildError(f"{pins_path}: the pins carry no inputs")
 
+    root = os.path.abspath(inputs)
+
     def check(entry: dict, what: str) -> str:
         rel, sha = entry.get("path"), entry.get("sha256")
         if not isinstance(rel, str) or not isinstance(sha, str) or not SHA_RE.match(sha):
             raise BuildError(f"{what}: the pin names no path and sha256")
         path = os.path.join(inputs, rel)
+        # A pins file is data, not trusted configuration: a pin names a file of the
+        # input set, never one outside it.
+        resolved = os.path.abspath(path)
+        if os.path.isabs(rel) or not resolved.startswith(root + os.sep):
+            raise BuildError(f"{what}: the pin names {rel}, outside --inputs")
         if not os.path.exists(path):
             raise BuildError(f"{what}: {rel} is missing")
         found = sha256_file(path)
@@ -125,7 +134,7 @@ def load_inputs(inputs: str) -> dict:
             raise BuildError(f"{what}: {rel} has sha256 {found}, pinned {sha}")
         return rel
 
-    loaded: dict = {"pins": pins, "articles": {}, "overlay": {}}
+    loaded: dict = {"pins": pins, "index": {}, "articles": {}, "overlay": {}}
     loaded["current"] = read_json(os.path.join(inputs, check(groups.get("current") or {}, "current")))
     universes = groups.get("universe") or {}
     if len(universes) != 1:
@@ -135,19 +144,47 @@ def load_inputs(inputs: str) -> dict:
     for group in ("index", "articles", "overlay"):
         for name, entry in sorted((groups.get(group) or {}).items()):
             rel = check(entry, f"{group} {name}")
-            if group != "index":
-                loaded[group][name] = read_json(os.path.join(inputs, rel))
+            loaded[group][name] = read_json(os.path.join(inputs, rel))
     if set(loaded["articles"]) != set(loaded["overlay"]):
         raise BuildError("every article must have an overlay and every overlay an article")
     return loaded
 
 
 def check_one_build(loaded: dict) -> dict:
-    """Refuse inputs that straddle two published builds."""
+    """Refuse inputs that straddle two published builds, or are not the whole build.
+
+    Every check `fetch` makes over the answers is made again here over the pinned
+    bytes, because a pins file can be replayed and edited: an edited pins file that
+    names only some of the build's pages, or another page's overlay, would otherwise
+    build a partial export carrying the whole build's identity.
+    """
     try:
         identity = store_identity(loaded["current"])
         for name, article in sorted(loaded["articles"].items()):
             check_article(article, int(name), identity)
+        for name, overlay in sorted(loaded["overlay"].items()):
+            check_overlay(overlay, int(name))
+        index = loaded["current"].get("index") or {}
+        shards = index.get("shards")
+        if not isinstance(shards, list) or not shards:
+            raise BuildError("current.json: the build lists no index shard")
+        if set(loaded["index"]) != {str(shard) for shard in shards}:
+            raise BuildError(f"the pins name index shards {sorted(loaded['index'])}, "
+                             f"the build's are {sorted(str(s) for s in shards)}")
+        pageids: list[int] = []
+        for name in sorted(loaded["index"]):
+            pageids += pageids_of(loaded["index"][name], f"index/{name}.json")
+        pages = {str(pageid) for pageid in pageids}
+        entries = index.get("entries")
+        if isinstance(entries, int) and entries != len(pages):
+            raise BuildError(f"the index shards hold {len(pages)} pages, "
+                             f"current.json says {entries}")
+        if set(loaded["articles"]) != pages:
+            missing = sorted(pages - set(loaded["articles"]))
+            extra = sorted(set(loaded["articles"]) - pages)
+            raise BuildError(f"the pinned articles are not the build's pages: "
+                             f"{len(missing)} missing, {len(extra)} not in the index "
+                             f"({', '.join((missing + extra)[:5])})")
     except (FetchError, ValueError) as error:
         raise BuildError(str(error)) from None
     served = loaded["universe"].get("sha256")
@@ -201,9 +238,12 @@ def community_location(tag: dict, commit: str) -> dict:
 def merge_passage(passage: dict, by_pair: dict, by_passage: dict) -> list[dict]:
     """The location half of wiki/src/articles-overlay.ts mergeOverlay, ported.
 
-    Returns `{loc, origin, state, tag}` per merged location, in the sealed order then the
-    community-only tags by pair key. A community row at a sealed location's `pair_key`
-    IS that location: a removal withdraws it and a live row may change its relation.
+    Returns `{loc, origin, state, tag, base_relation}` per merged location, in the
+    sealed order then the community-only tags by pair key. A community row at a sealed
+    location's `pair_key` IS that location: a removal withdraws it and a live row may
+    change its relation. `base_relation` is the sealed relation when a live row changed
+    the location (the merge's `baseRelation`), so a row never cites the record set for
+    a relation the record set does not state.
     """
     merged: list[dict] = []
     seen: set[str] = set()
@@ -213,7 +253,8 @@ def merge_passage(passage: dict, by_pair: dict, by_passage: dict) -> list[dict]:
         if key:
             seen.add(key)
         if tag is None:
-            merged.append({"loc": loc, "origin": "pipeline", "state": "live", "tag": None})
+            merged.append({"loc": loc, "origin": "pipeline", "state": "live", "tag": None,
+                           "base_relation": None})
             continue
         live = tag.get("state") == "live"
         confirms = live and tag.get("relation") == loc.get("relation") \
@@ -222,6 +263,7 @@ def merge_passage(passage: dict, by_pair: dict, by_passage: dict) -> list[dict]:
         merged.append({
             "loc": {**loc, "relation": tag.get("relation"), "note": tag.get("note")} if changed else loc,
             "origin": "pipeline", "state": tag.get("state"), "tag": tag,
+            "base_relation": loc.get("relation") if changed else None,
         })
     key = passage.get("passage_key") if isinstance(passage.get("passage_key"), str) else ""
     for tag in sorted(by_passage.get(key, []), key=lambda t: str(t.get("pair_key"))):
@@ -230,7 +272,7 @@ def merge_passage(passage: dict, by_pair: dict, by_passage: dict) -> list[dict]:
         commit = next((loc.get("commit") for loc in passage.get("locations") or []
                        if loc.get("library") == tag.get("library")), "")
         merged.append({"loc": community_location(tag, commit or ""), "origin": "community",
-                       "state": tag.get("state"), "tag": tag})
+                       "state": tag.get("state"), "tag": tag, "base_relation": None})
     return merged
 
 
@@ -254,6 +296,7 @@ def pointer(store: str, article: dict, passage: dict, entry: dict, library: dict
         "status_rule": status_rule,
         "location_status": store_status(passage, loc, status_rule),
         "relation": loc.get("relation"),
+        "base_relation": entry.get("base_relation"),
         "proof_status": loc.get("proof_status"),
         "library": loc.get("library"),
         "brain_lib": (library or {}).get("brain_lib"),
@@ -399,6 +442,15 @@ def classify(article: dict, passage: dict, entry: dict, libraries: dict,
             # The fold has no Mathlib mentions channel, and a community tag may never
             # mint an identity claim (docs/ARTICLES-BRAIN.md, "Left for Jack").
             return None, "mathlib_community_tag_has_no_mentions_channel"
+        if entry.get("base_relation") not in (None, loc.get("relation")):
+            # A live community row at a sealed location's pair key may relabel it, and
+            # the relation IS the identity claim: SCHEMA.md rule 1 fuses concept and
+            # decl on `match_kind == exact`. One editor's (or one agent's) relabelling
+            # of a closeMatch, a broadMatch or a relatedMatch must never mint or
+            # strengthen a formalizes edge, which is what "the site never mints a
+            # formalization claim on one editor's word" means here. A note-only change
+            # leaves the row: base_relation then equals the merged relation.
+            return None, "community_relation_change_on_a_mathlib_location"
         if passage.get("outcome") != "located":
             return None, "passage_not_located"
         if passage.get("status") != "formalized":
@@ -483,7 +535,7 @@ def candidates(loaded: dict, include_author: bool) -> tuple[list[dict], list[dic
         for tag in sorted(tags, key=lambda t: str(t.get("pair_key"))):
             if str(tag.get("passage_key")) not in passage_keys:
                 entry = {"loc": community_location(tag, ""), "origin": "community",
-                         "state": tag.get("state"), "tag": tag}
+                         "state": tag.get("state"), "tag": tag, "base_relation": None}
                 found = pointer(store, article, {"passage_key": tag.get("passage_key")},
                                 entry, libraries.get(tag.get("library")), overlay_version,
                                 include_author, status_rule)
