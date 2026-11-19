@@ -113,5 +113,24 @@ class UnpinnedInputTest(unittest.TestCase):
         self.assertFalse(os.path.exists(self.out))
 
 
+class NonFiniteTest(unittest.TestCase):
+    """NaN and Infinity are not JSON: every export writer refuses them instead of writing bare
+    `NaN`/`Infinity` tokens that the fold and the D1 import cannot parse."""
+
+    def test_dumps_refuses_non_finite_floats(self):
+        from scripts.brain_producers.common import dumps, jsonl_bytes
+        for bad in (float("nan"), float("inf"), float("-inf")):
+            with self.assertRaises(ValueError):
+                dumps({"id": "x", "v": [1, {"deep": bad}]})
+            with self.assertRaises(ValueError):
+                jsonl_bytes([{"id": "x", "v": bad}])
+        self.assertEqual(dumps({"b": 1.5, "a": 0.0}), '{"a":0.0,"b":1.5}')  # finite floats unchanged
+
+    def test_canon_reexport_refuses_too(self):
+        from scripts.tauceti_plans.canon import dumps as canon_dumps
+        with self.assertRaises(ValueError):
+            canon_dumps({"v": float("nan")})
+
+
 if __name__ == "__main__":
     unittest.main()

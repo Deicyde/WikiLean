@@ -782,7 +782,7 @@ def build(inputs: str, out: str) -> dict:
     for name, blob in data.items():
         _write(os.path.join(out, name), blob)
     _write(os.path.join(out, "manifest.json"), (json.dumps(manifest, sort_keys=True, ensure_ascii=False,
-                                                           indent=1) + "\n").encode("utf-8"))
+                                                           indent=1, allow_nan=False) + "\n").encode("utf-8"))
     return manifest
 
 
