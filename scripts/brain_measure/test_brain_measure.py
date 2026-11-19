@@ -140,5 +140,40 @@ class AnalyzeTest(unittest.TestCase):
         self.assertEqual(analyze.fts_phrase('a"b'), '"a""b"')
 
 
+class NameSearchTest(unittest.TestCase):
+    """A hot prefix must still time the read its row replaces, not only a count of it."""
+
+    def names_db(self) -> sqlite3.Connection:
+        db = sqlite3.connect(":memory:")
+        db.executescript(
+            "CREATE TABLE name_keys(seq INTEGER PRIMARY KEY, name_lc TEXT NOT NULL, owner TEXT);"
+            "CREATE INDEX name_keys_lc ON name_keys(name_lc);"
+            "CREATE TABLE hot_prefixes(prefix TEXT PRIMARY KEY, cells TEXT, sups TEXT, live_sups TEXT);"
+            "CREATE VIRTUAL TABLE names USING fts5(name, content='', tokenize='trigram');")
+        db.executemany("INSERT INTO name_keys VALUES (?, ?, ?)",
+                       ((i, f"tauceti.d{i:05}", f"cell:{i}") for i in range(1, 2501)))
+        db.execute("INSERT INTO hot_prefixes VALUES ('tau', '[]', '[]', '[]')")
+        return db
+
+    def test_a_hot_prefix_times_the_bounded_read_it_replaces(self):
+        db = self.names_db()
+        got = analyze.name_search(db, "tau")
+        self.assertTrue(got["hot"])
+        # the read the Worker would run without the hot row: the same bounded statement the
+        # non-hot branch times, capped at 1001 rows, NOT the 2,500-row count beside it
+        self.assertEqual(got["prefix_range_if_not_hot"]["rows"], 1001)
+        self.assertEqual(got["prefix_range_count_if_not_hot"]["count"], 2500)
+        self.assertEqual(got["prefix_range_count_if_not_hot"]["rows"], 1)
+        db.close()
+
+    def test_a_cold_prefix_times_the_same_statement(self):
+        db = self.names_db()
+        got = analyze.name_search(db, "tauceti.d000")
+        self.assertFalse(got["hot"])
+        self.assertNotIn("prefix_range_if_not_hot", got)
+        self.assertEqual(got["prefix_range"]["rows"], 99)   # d00001..d00099
+        db.close()
+
+
 if __name__ == "__main__":
     unittest.main()

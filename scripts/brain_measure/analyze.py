@@ -295,6 +295,15 @@ def timed(db: sqlite3.Connection, sql: str, params=(), *, runs: int = 5) -> dict
             "median_ms": round(statistics.median(rest), 3), "max_ms": round(max(rest), 3)}
 
 
+# The Worker's non-hot prefix statement (section 1's Search, step 2) and the row count of the
+# range it walks. The hot and non-hot branches below time the same prefix read, so the hot row
+# and the read it replaces are comparable; the count is a separate statement and is not one the
+# Worker ever runs.
+PREFIX_RANGE_SQL = ("SELECT seq, owner FROM name_keys WHERE name_lc > ? AND "
+                    "name_lc < ? || char(1114111) ORDER BY name_lc LIMIT 1001")
+PREFIX_COUNT_SQL = "SELECT count(*) FROM name_keys WHERE name_lc > ? AND name_lc < ? || char(1114111)"
+
+
 def name_search(db: sqlite3.Connection, q: str) -> dict:
     """The names tier statements for query q, as section 1's Search describes them."""
     q = q.lower()
@@ -302,13 +311,12 @@ def name_search(db: sqlite3.Connection, q: str) -> dict:
     hot = db.execute("SELECT 1 FROM hot_prefixes WHERE prefix = ?", (q,)).fetchone()
     if hot:
         out["prefix_hot_row"] = timed(db, "SELECT cells, sups, live_sups FROM hot_prefixes WHERE prefix = ?", (q,))
-        out["prefix_range_count_if_not_hot"] = timed(
-            db, "SELECT count(*) FROM name_keys WHERE name_lc > ? AND name_lc < ? || char(1114111)", (q, q))
+        out["prefix_range_if_not_hot"] = timed(db, PREFIX_RANGE_SQL, (q, q))
+        out["prefix_range_count_if_not_hot"] = timed(db, PREFIX_COUNT_SQL, (q, q))
         out["prefix_range_count_if_not_hot"]["count"] = db.execute(
-            "SELECT count(*) FROM name_keys WHERE name_lc > ? AND name_lc < ? || char(1114111)", (q, q)).fetchone()[0]
+            PREFIX_COUNT_SQL, (q, q)).fetchone()[0]
     else:
-        out["prefix_range"] = timed(db, "SELECT seq, owner FROM name_keys WHERE name_lc > ? AND "
-                                        "name_lc < ? || char(1114111) ORDER BY name_lc LIMIT 1001", (q, q))
+        out["prefix_range"] = timed(db, PREFIX_RANGE_SQL, (q, q))
     if len(q) >= 3:
         out["fragment"] = timed(db, "SELECT rowid FROM names WHERE names MATCH ? ORDER BY rowid LIMIT 2000",
                                 (fts_phrase(q),))
