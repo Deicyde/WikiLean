@@ -380,6 +380,27 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
     return out, stats
 
 
+def drop_deleted_carried(slug: str, current: list[dict], body: dict) -> list[dict]:
+    """A checkpointed payload's annotations, minus the carried items D1 lost.
+
+    The 409 rebase and the checkpoint flush re-finalize a payload built
+    against an older snapshot. A review item in it that the native merge only
+    carried forward — the agent said nothing about it, so none of it is the
+    agent's — and that the article no longer has was deleted by a person in
+    between; re-posting it gives the deletion a fresh id and brings it back.
+    Nothing the agent authored is dropped; the ids come from the merge
+    report's own record, which build_meta put in meta.native_carried.
+    """
+    meta = body.get("meta")
+    carried = meta.get("native_carried") if isinstance(meta, dict) else None
+    annotations, dropped = native_review.drop_deleted_carried(
+        current, body.get("annotations") or [], carried)
+    for name in dropped:
+        print(f"  {slug}: carried review item [{name}] is gone from the article — "
+              f"deleted since this payload was built; not re-posting it", flush=True)
+    return annotations
+
+
 def resolve_token() -> str | None:
     """WIKILEAN_API_TOKEN env var, else PIPELINE_TOKEN from wiki/.dev.vars."""
     tok = os.environ.get("WIKILEAN_API_TOKEN")
@@ -403,6 +424,11 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
               "moderation_flags": []}  # F14 dissent (+ step-2 proposals when present) ride meta
     ladder.update(rec.get("ladder") or {})
+    # The native review items this payload only carried forward. It rides with
+    # the payload (and so into the checkpoint) because the 409 rebase and the
+    # flush re-finalize it against a newer article and must not resurrect one a
+    # person deleted in between — see native_review.drop_deleted_carried.
+    carried = (rec.get("native_merge") or {}).get("carried_ids") or []
     return {
         "run_id": ctx.run_id,
         "mode": ctx.mode,
@@ -415,6 +441,7 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
         "auth_mode": ctx.auth,
         "ladder": ladder,
         "ids": wire_stats,
+        **({"native_carried": sorted(set(carried))} if carried else {}),
     }
 
 
@@ -1043,9 +1070,10 @@ async def _write_article(ctx, slug: str, body: dict, method: str,
             rebased = True
             art, status = await get_article(ctx.api_base, slug, ctx.token)
             if art is not None:
+                current = art.get("annotations") or []
+                annotations = drop_deleted_carried(slug, current, body)
                 try:
-                    posted, wire = finalize_for_post(
-                        art.get("annotations") or [], body.get("annotations") or [])
+                    posted, wire = finalize_for_post(current, annotations)
                 except native.NativeAnnotationError as exc:
                     print(f"  {slug}: native rebase needs review ({exc}); checkpoint kept", flush=True)
                     return 409, {"error": "native_rebase_needs_review"}, rebased
@@ -1123,9 +1151,10 @@ async def flush_pending(ctx, pending_dir: Path | None = None) -> dict:
             stats["failed"] += 1
             print(f"  {slug}: re-GET failed ({st}) — keeping checkpoint", flush=True)
             continue
+        current = art.get("annotations") or []
         try:
             posted, wire = finalize_for_post(
-                art.get("annotations") or [], body.get("annotations") or [])
+                current, drop_deleted_carried(slug, current, body))
         except native.NativeAnnotationError as exc:
             stats["failed"] += 1
             print(f"  {slug}: native checkpoint needs review ({exc}); kept", flush=True)

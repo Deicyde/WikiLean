@@ -377,7 +377,8 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
     if len(by_id) != len(protected):
         raise NativeAnnotationError("ambiguous native work items require stable review IDs before agent edits")
     report: dict = {"carried_items": 0, "carried_links": 0, "carried_selections": 0,
-                    "promoted": 0, "new_selections": 0, "rejections": [], "skipped_items": []}
+                    "promoted": 0, "new_selections": 0, "carried_ids": [],
+                    "rejections": [], "skipped_items": []}
     slot_maps, owner = _article_slots(protected)
     slots_by_key = dict(zip(by_id.keys(), slot_maps))
     result, seen = [], set()
@@ -409,6 +410,11 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
     for key, old in by_id.items():
         if key not in seen:
             report["carried_items"] += 1
+            if isinstance(old.get("id"), str) and old["id"]:
+                # Nothing of this item is the agent's: a later write that
+                # re-finalizes this payload against a newer article must be
+                # able to tell it apart from what the agent authored.
+                report["carried_ids"].append(old["id"])
             result.append(deepcopy(old))
     _report_lost_legacy(existing, result, report)
     return result, report
@@ -446,6 +452,36 @@ def merge_reports(*reports: dict) -> dict:
             total[key] = (total.get(key, []) + value if isinstance(value, list)
                           else total.get(key, 0) + value)
     return {key: value for key, value in total.items() if value}
+
+
+def drop_deleted_carried(existing: list[dict], produced: list[dict],
+                         carried_ids: Any) -> tuple[list[dict], list[str]]:
+    """Payload items the merge only carried forward, which the article no longer has.
+
+    The 409 rebase and the checkpoint flush re-finalize a payload built
+    against an older snapshot against the article as it is now. An item the
+    merge carried forward unchanged — nothing of it is the agent's; the agent
+    said nothing about it — that is gone from the current state was deleted by
+    a person in between, and re-posting it would resurrect that deletion as a
+    brand-new annotation with a fresh id.
+
+    Only those ids are dropped. An item the agent authored, and every item
+    without an id, rides on: the agent's work is not a human's deletion.
+    Returns the payload to post and the ids dropped, to report.
+    """
+    carried = {name for name in carried_ids or () if isinstance(name, str) and name}
+    if not carried:
+        return produced, []
+    present = {item["id"] for item in existing
+               if isinstance(item, dict) and isinstance(item.get("id"), str) and item["id"]}
+    kept, dropped = [], []
+    for item in produced:
+        name = item.get("id") if isinstance(item, dict) else None
+        if isinstance(name, str) and name in carried and name not in present:
+            dropped.append(name)
+            continue
+        kept.append(item)
+    return kept, dropped
 
 
 def check_native_output(existing: list[dict], produced: list[dict]) -> list[dict]:

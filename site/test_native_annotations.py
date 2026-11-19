@@ -430,6 +430,24 @@ class ReviewMerge(unittest.TestCase):
         self.assertEqual(merged[0]['links'], item()['links'])
         self.assertEqual((merged[0]['status'], report['carried_links']), ('rejected', 1))
 
+    def test_a_carried_item_the_article_has_lost_is_not_resurrected(self):
+        # The merge records which items are purely stored data, so a later
+        # re-finalize against a newer article can tell them from the agent's
+        # work. An item a person hard-deleted in between must not come back.
+        stored = [item(), item(id='001122334455', links=[], unlinked=[occurrence('Other')])]
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed')])
+        self.assertEqual(report['carried_ids'], ['001122334455'])
+        authored = item(id=None, links=[], unlinked=[occurrence('New')])
+        del authored['id']
+        payload = merged + [authored]
+        kept, dropped = nr.drop_deleted_carried([stored[0]], payload, report['carried_ids'])
+        self.assertEqual(dropped, ['001122334455'])
+        self.assertEqual(kept, [merged[0], authored])
+        # Still in the article: carried and kept. Not in the record: kept too.
+        self.assertEqual(nr.drop_deleted_carried(stored, payload, report['carried_ids']),
+                         (payload, []))
+        self.assertEqual(nr.drop_deleted_carried([stored[0]], payload, []), (payload, []))
+
     def test_a_legacy_item_the_agent_omits_is_reported_not_lost_in_silence(self):
         # The reference contract protects native items only, so a legacy
         # ai-owned item the agent does not echo leaves the article. It is not
