@@ -333,14 +333,16 @@ declarations are `decl:TauCeti:*`, their folders `path:TauCeti/*`).
 derived from the export and never inferred:
 
 ```
-path:Plans/<arXiv group>   →  tauceti:<top-level roadmap>  →  <roadmap id>#<anchor>
-                              tauceti:<roadmap>  →  tauceti:<nested roadmap>  →  its layers
+path:Plans/TauCeti/<arXiv group>  →  tauceti:<top-level roadmap>  →  <roadmap id>#<anchor>
+                                     tauceti:<roadmap>  →  tauceti:<nested roadmap>  →  its layers
 ```
 
-- The **arXiv group container** is a `container` node, `path:Plans/<topic>`, where `<topic>` is
-  the roadmap's `topic` from `metadata.toml` (an arXiv category, e.g. `math.NT`). A top-level
-  roadmap whose `topic` is `null` goes under `path:Plans/unclassified`. The containers sit under
-  a root `path:Plans`.
+- The **arXiv group container** is a `container` node, `path:Plans/TauCeti/<topic>`, where
+  `<topic>` is the roadmap's `topic` from `metadata.toml` (an arXiv category, e.g. `math.NT`). A
+  top-level roadmap whose `topic` is `null` goes under `path:Plans/TauCeti/unclassified`.
+- The root is source-scoped: `path:Plans` holds one child per planning source, and Tau Ceti's is
+  `path:Plans/TauCeti`, so later planners sit beside it. `brain/SCHEMA.md` reserves the `Plans`
+  root, so no library's module path can ever claim `path:Plans`.
 - A nested roadmap's parent is its export `parent`, never its own `topic`, which is not
   inherited (a nested roadmap with a different `topic` still sits under its parent roadmap).
 - A layer's parent is its `roadmap`. Layers have no children.
@@ -358,8 +360,8 @@ path:Plans/<arXiv group>   →  tauceti:<top-level roadmap>  →  <roadmap id>#<
 
 We link to the atlas and never copy it: no atlas text, evidence quote or layout enters a node.
 Layer `state` is the coverage claim the roadmap makes about itself, and it never feeds
-formalization status (`f` bits 4 and 5). Plan nodes would take a new `f` bit, `is plan`
-(bit 16), chosen when this moves into `brain/SCHEMA.md`.
+formalization status (`f` bits 4 and 5). Plan nodes take a new `f` bit, `is plan`: bit 16,
+the first free one (`brain/SCHEMA.md` uses bits 0–15).
 
 **Planned and unqualified names are attributes, never nodes.** A `planned` name is a
 declaration that does not exist anywhere, and an `unqualified` name is ambiguous; neither
@@ -373,7 +375,8 @@ chooses it.
 
 Every edge is a full edge record. `provenance` is
 `{"source": "tauceti_plans", "method": <per kind>, "pin": <the export's logical_root>}`;
-`tauceti_plans` becomes a key of `catalog/data/source_registry.json` in the same PR.
+`tauceti_plans` becomes a key of `catalog/data/source_registry.json` in the later,
+release-affecting PR that moves this section into `brain/SCHEMA.md`.
 
 | kind | src → dst | confidence | evidence |
 |---|---|---|---|
@@ -382,9 +385,10 @@ Every edge is a full edge record. `provenance` is
 | `xref` | layer (or roadmap) → `xref:stacks:<TAG>` or `lit:<arXiv id>` | `high` | `{system, occurrences, pointer}` |
 
 - **`depends`.** The direction is the Brain's, which is the export's; the build never flips
-  it. Only a row with `evidence_public: true` may ever be shown as a citation. A `false` row
-  (7 today) is still an edge, but any surface that cites evidence omits it, and the API marks
-  it `evidence_public: false`. Method `atlas-verified-line`.
+  it. Only a row with `evidence_public: true` becomes an edge. Showing an edge whose evidence
+  a reader cannot follow is a claim they cannot check. So a `false` row (7 today) stays in the
+  export, and the build holds it with reason `evidence_not_public` (below) until a later pin
+  gives it a public pointer. Method `atlas-verified-line`.
 - **`mentions`** is built from `decl_refs.jsonl` rows with `resolution` `mathlib` or `tauceti`
   only. `<n>` is `resolved_name` when present, else `name`. It is the existing citation kind
   and, like annotation citations, is excluded from all formalization-status logic: a roadmap
@@ -402,15 +406,20 @@ either. The build never drops such an edge silently.
 
 - An edge whose endpoint node does not exist in the build goes to a **held list**,
   `brain/data/held_edges.jsonl` (gitignored, rebuilt like `edges_links.jsonl`), as
-  `{edge, reason: "endpoint_missing", missing, logical_root}`: the full edge record, the
-  missing endpoint id and the export's `logical_root`.
-- Every build retries every held edge against that build's nodes, and emits it into the edge
-  files as soon as both endpoints exist. Holding is per build, so no state carries over except
-  through the inputs.
-- `test_acceptance` reports the held count by kind, and fails if an edge held by the previous
-  release's build disappears without being emitted, unless its export row is gone too (a new
-  `logical_root` that drops it). The previous release's held list, or its counts and digest,
-  is recorded with the release so that check has something to compare against.
+  `{edge, reason, missing, logical_root}`: the full edge record, the reason, the missing
+  endpoint id (if any) and the export's `logical_root`. There are two reasons:
+  - `endpoint_missing`: an endpoint node does not exist;
+  - `evidence_not_public`: a `depends` row with `evidence_public: false`.
+- Every build retries every held edge, and emits it into the edge files as soon as its reason
+  no longer holds: both endpoints exist, or a public pointer verifies at the pin. Holding is
+  per build, so no state carries over except through the inputs.
+- Each release records the held list's count by kind and reason, and its digest, in its
+  release evidence (step 4's release contract). `test_acceptance` checks, by kind and reason:
+
+      previous held − emitted this build + newly held = current held
+
+  It refuses the build if a held edge disappears without being emitted, unless its export row
+  is gone too (a new `logical_root` that drops it).
 
 ### Where the inputs come from
 
@@ -432,13 +441,14 @@ No new table is expected. The plan nodes map onto the section-4 tables of
 |---|---|
 | `labels` | one row per plan node, `p` = its `contains` parent, `f` with the plan bit, `libs` `NULL` |
 | `cell_pages` | each plan node's page JSON: the payload fields above and its edges, with `depends` evidence pointers, `mentions` and `xref` lists |
-| `supercells` | `path:Plans` and the `path:Plans/<topic>` containers, and roadmaps that have children, so the breadcrumb and `kids` work as for any folder |
+| `supercells` | `path:Plans`, `path:Plans/TauCeti` and the `path:Plans/TauCeti/<topic>` containers, and roadmaps that have children, so the breadcrumb and `kids` work as for any folder |
 | `name_keys` | titles as `label`; layer keys (`Layer 5`, `R2.3`) as `aka` |
 | `aliases` | the atlas id of a layer whose `atlas_id` differs, mapped to our id, so an atlas link resolves |
 | `xrefs` | the `xref` edges, page → node, so `xref:stacks:` and `lit:` pages list the layers that cite them |
 | `synapse_traces` | the `depends` and `mentions` pairs, with their evidence |
 
-Flagged for `migrations-brain/0002`, if review wants them:
+Deferred to the build-side PR, and decided there together with the per-source-dataset
+question (Jack's decision), so that `migrations-brain/0002` is written once. Two candidates:
 - the held list served on D1 (an agent asking "which plans name this missing declaration?");
   it would be a new table, or it stays local and is never served;
 - a column for `plan_kind` or `state` on `labels`, if the filter must select layers by state
@@ -452,7 +462,7 @@ Root `eea7834b…` (a later export than run 1's above):
 |---|---|
 | roadmaps | 466 |
 | layers | 3,722 |
-| `depends` | 2,348 (2,341 `evidence_public: true`) |
+| `depends` | 2,348 export rows: 2,341 become edges, 7 are held (`evidence_not_public`) |
 | resolved `mentions` candidates | 52,245 (mathlib 24,625, tauceti 27,620) |
 | xrefs | 4,932 |
 
