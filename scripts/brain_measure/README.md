@@ -14,6 +14,17 @@ Two scopes:
   declarations still in `tauceti.bmp`; the serving file also gets a prototype name index
   (`names.py`) over both doc-gen4 indexes.
 
+The three input directories, none of which the harness fetches (acquire them first, and nothing
+below touches the network):
+
+| Option | What it names | Where it comes from |
+|---|---|---|
+| `--tauceti` | a full (or shallow, but not partial) clone of `TauCetiProject/TauCeti`, the repo `lean_repo.SPECS["tauceti"]` names, with its `TauCeti/` Lean tree | `git clone` |
+| `--inputs` | the Tau Ceti plans **acquisition** directory: `decls/mathlib.bmp`, `decls/tauceti.bmp` (the doc-gen4 indexes) and `trough/data/tauceti/{deps,selection,roadmaps}.json` | `python3 -m scripts.tauceti_plans fetch --inputs <dir>` — the only networked step, and the one place pins are taken (`docs/BRAIN-PLANS.md`) |
+| `--plans` | the plans **export**, for its `decl_refs.jsonl` | `python3 -m scripts.tauceti_plans build --inputs <that dir> --out <dir>` (offline; `docs/BRAIN-PLANS.md`) |
+
+Scope A needs only `--tauceti`; scope B needs all three.
+
 ```bash
 # heavy steps under a memory cap; numpy is needed by brain/layout.py
 systemd-run --user --scope -p MemoryMax=64G nice -n 10 \
