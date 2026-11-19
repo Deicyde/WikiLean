@@ -30,10 +30,12 @@ def key_rows(scope: dict) -> dict[str, str]:
     proj = i.get("projection_with_name_fts") or i.get("projection") or {}
     q = a.get("queries", {})
     by = s.get("by_table", {})
+    # every stage is optional (`--stages` runs a subset), so read each one's facts defensively
+    graph, cells = f.get("graph", {}), f.get("cells", {})
     return {
         "TauCeti layer decls": f"{f.get('select', {}).get('layer_unique', 0):,}",
-        "nodes / edges": f"{f['graph']['nodes']:,} / {f['graph']['edges']:,}",
-        "cells / synapses": f"{f['cells']['cells']:,} / {f['cells']['synapses']:,}",
+        "nodes / edges": f"{graph.get('nodes', 0):,} / {graph.get('edges', 0):,}",
+        "cells / synapses": f"{cells.get('cells', 0):,} / {cells.get('synapses', 0):,}",
         "serving file": mb(s.get("file_bytes")),
         "cell_pages table": mb(by.get("cell_pages")),
         "names FTS / texts FTS": f"{mb(by.get('names (fts)'))} / {mb(by.get('texts (fts)'))}",

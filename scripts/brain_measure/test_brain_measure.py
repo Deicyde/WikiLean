@@ -15,6 +15,7 @@ sys.path.insert(0, str(HERE))
 import analyze  # noqa: E402
 import measure  # noqa: E402
 import names  # noqa: E402
+import report  # noqa: E402
 
 
 class SelectTest(unittest.TestCase):
@@ -173,6 +174,16 @@ class NameSearchTest(unittest.TestCase):
         self.assertNotIn("prefix_range_if_not_hot", got)
         self.assertEqual(got["prefix_range"]["rows"], 99)   # d00001..d00099
         db.close()
+
+
+class ReportTest(unittest.TestCase):
+    def test_key_rows_survives_a_partial_run(self):
+        """`--stages harvest,select` leaves no graph or cells facts; the table still prints."""
+        scope = {"facts": {"select": {"layer_unique": 7}}, "timings": {}, "analysis": {}}
+        row = report.key_rows(scope)
+        self.assertEqual(row["TauCeti layer decls"], "7")
+        self.assertEqual(row["nodes / edges"], "0 / 0")
+        self.assertEqual(row["cells / synapses"], "0 / 0")
 
 
 if __name__ == "__main__":
