@@ -92,6 +92,19 @@ class UnpinnedInputTest(unittest.TestCase):
             self.repin(**{index: {"sha256": sha256_file(os.path.join(self.inputs, rel))}})
             self.assertFalse(os.path.exists(self.out))
 
+    def test_a_bad_bmp_is_a_build_error_not_a_traceback(self):
+        """`cli.py` catches BuildError only, so a missing or corrupt input must be one."""
+        bmp = os.path.join(self.inputs, "decls", "tauceti.bmp")
+        with open(bmp, "w") as f:
+            f.write("not json")
+        self.repin(tauceti_decls={"sha256": sha256_file(bmp)})
+        with self.assertRaisesRegex(D.BuildError, "^decls/tauceti.bmp: not JSON"):
+            B2.build(self.inputs, self.out)
+        os.remove(bmp)
+        with self.assertRaisesRegex(D.BuildError, "^decls/tauceti.bmp: cannot read it"):
+            B2.build(self.inputs, self.out)
+        self.assertFalse(os.path.exists(self.out))
+
     def test_no_pins_file_refuses(self):
         os.remove(os.path.join(self.inputs, "PINS.json"))
         for producer in (B2, B3):

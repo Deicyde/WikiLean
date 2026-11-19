@@ -58,11 +58,17 @@ def load_index(inputs: str, pins: dict, name: str, rel: str) -> tuple[str, dict,
     """A doc-gen4 `.bmp` (JSON): its sha256 (checked against the pin), declarations, modules."""
     path = os.path.join(inputs, rel)
     want = pinned(pins, name, "sha256", rel)
-    sha = sha256_file(path)
+    try:
+        sha = sha256_file(path)
+    except OSError as e:
+        raise BuildError(f"{rel}: cannot read it ({e}); run this producer's fetch") from None
     if want != sha:
         raise BuildError(f"{rel}: sha256 {sha} does not match pinned {want}")
-    with open(path, encoding="utf-8") as f:
-        d = json.load(f)
+    try:
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+    except (OSError, ValueError) as e:
+        raise BuildError(f"{rel}: not JSON ({e})") from None
     decls = d.get("declarations")
     if not isinstance(decls, dict):
         raise BuildError(f"{rel}: no declarations object")
