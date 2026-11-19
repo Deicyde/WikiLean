@@ -301,7 +301,7 @@ describe("articles pages with the fixture store", () => {
     expect(html).toContain('</span></span></div>\n<p class="articles-strip-lead" id="articles-central"><b>Central statements:</b> 4 of the 6 passages, across 2 articles, ' +
       "state an article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of these 4: " +
       '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>3 formalized</span><span>,</span> ' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">∅</span>1 not formalized</span>.</p>');
     // Complete and incomplete locations are separate columns: TauCeti only
     // states its result, so it is never counted like a proved Mathlib row.
     expect(html).toContain('<th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th>');
@@ -337,7 +337,7 @@ describe("articles pages with the fixture store", () => {
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
     expect(html).toContain('<script src="/assets/articles.js?v=9"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=15">');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=16">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
@@ -354,7 +354,7 @@ describe("articles pages with the fixture store", () => {
       '<span class="articles-dot" aria-hidden="true">·</span>' +
       '<span class="articles-mini" data-status="statement_only"><span class="articles-ico" aria-hidden="true">◐</span>1 statement only</span>' +
       '<span class="articles-dot" aria-hidden="true">·</span>' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span></p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">∅</span>1 not formalized</span></p>');
     // The legend is the filter: a swatch, an icon and a word per status, and no second
     // copy of the counts. What each status means is the button's title.
     const key = html.slice(html.indexOf('<div class="articles-chips articles-key"'), html.indexOf("</div>", html.indexOf('articles-key"')));
@@ -1350,7 +1350,7 @@ describe("articles pages with the fixture store", () => {
     expect(widget).toContain('<p class="articles-strip-lead" id="articles-central"><b>Central statements:</b> 2 of the 3 passages ' +
       "state the article's subject or a named result or definition; the other one is supporting (examples, setup). Of these 2: " +
       '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>1 formalized</span><span>,</span> ' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">∅</span>1 not formalized</span>.</p>');
     const gadget = await (await get(h.env, `/articles/${GADGET_PAGEID}`)).text();
     expect(gadget).toContain("<b>Central statements:</b> 2 of the 3 passages state the article's subject or a named result or definition; " +
       "the other one is supporting (examples, setup). Of these 2: " +
@@ -2403,7 +2403,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=15"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=16"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -3450,7 +3450,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=12", "/assets/articles.css?v=15", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=12", "/assets/articles.css?v=16", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");

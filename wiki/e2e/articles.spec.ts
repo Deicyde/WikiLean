@@ -168,7 +168,7 @@ test("the article's own statements are counted inside the About fold, under what
     await openAbout(page);
     await expect(page.locator("#articles-central")).toHaveText(
       "Central statements: 2 of the 3 passages state the article's subject or a named result or definition; " +
-      "the other one is supporting (examples, setup). Of these 2: ✓1 formalized, ✕1 not formalized.");
+      "the other one is supporting (examples, setup). Of these 2: ✓1 formalized, ∅1 not formalized.");
     // In the fold: what the page is, then the line, then the Subject row.
     expect(await gapBelow(page, '[aria-labelledby="articles-h-subject"]', "#articles-central")).toBeLessThan(0);
     await expectPlainCommaGaps(page);
@@ -177,7 +177,7 @@ test("the article's own statements are counted inside the About fold, under what
     await expect(page.locator("#articles-about .articles-bar")).toHaveCount(1);
     await expect(page.locator("#articles-central")).toHaveText(
       "Central statements: 4 of the 6 passages, across 2 articles, state an article's subject or a named result or definition; " +
-      "the other 2 are supporting (examples, setup). Of these 4: ✓3 formalized, ✕1 not formalized.");
+      "the other 2 are supporting (examples, setup). Of these 4: ✓3 formalized, ∅1 not formalized.");
     expect(await gapBelow(page, ".articles-legend", "#articles-central")).toBeGreaterThanOrEqual(0);
     await expectPlainCommaGaps(page);
   }

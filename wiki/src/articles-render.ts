@@ -57,12 +57,12 @@ import {
 import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=15";
+export const ARTICLES_CSS = "/assets/articles.css?v=16";
 export const ARTICLES_JS = "/assets/articles.js?v=9";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
-export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=9";
-export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=7";
+export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=10";
+export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=8";
 // The shared layer (the restyle of 2026-11-19): the token set, the one site header and
 // the status token. home.ts and pages.ts pin the same version.
 const STYLE_CSS = "/assets/style.css?v=12";
@@ -98,7 +98,11 @@ const STATUS: Record<SummaryStatus, { label: string; icon: string; plural: strin
   formalized: { label: "Formalized", icon: "✓", plural: "formalized" },
   statement_only: { label: "Statement only", icon: "◐", plural: "statement only" },
   partial: { label: "Partial", icon: "◔", plural: "partial" },
-  not_formalized: { label: "Not formalized", icon: "✕", plural: "not formalized" },
+  // The glyph is the empty set, not a cross (the Ledger restyle, 2026-11-19). A cross
+  // reads as "wrong" or "failed"; the status claims that the set of formalizations found
+  // is empty, which is what the empty set says, and it is at home on this site. The word
+  // is unchanged, and so is the meaning.
+  not_formalized: { label: "Not formalized", icon: "∅", plural: "not formalized" },
   // Phase 1 (the statement-set design, section 3): the statement was cut and no library has
   // been searched for it. Shown only where there is one (shownStatuses), and never counted,
   // coloured or worded as "not formalized", which is the opposite claim.

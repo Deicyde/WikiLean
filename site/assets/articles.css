@@ -101,7 +101,9 @@
 .articles-seg[data-status="statement_only"], .articles-swatch[data-status="statement_only"] { background: repeating-linear-gradient(135deg, var(--c-statement_only) 0 2px, transparent 2px 5px), var(--c-statement_only-bg); }
 /* Partly stated: the same amber, stippled, so the two are told apart without colour. */
 .articles-seg[data-status="partial"], .articles-swatch[data-status="partial"] { background: radial-gradient(circle at 50% 50%, var(--c-partial) 1.2px, transparent 1.5px) 0 0 / 4px 4px, var(--c-partial-bg); }
-/* Searched, nothing found: UNPAINTED — a pale ground with a baseline under it, which
+/* The glyph beside this status is the empty set, not a cross (STATUS in
+   articles-render.ts): the claim is that the set of formalizations found is empty.
+   Searched, nothing found: UNPAINTED — a pale ground with a baseline under it, which
    is a reading of the ground rather than a mark against the article. */
 .articles-seg[data-status="not_formalized"] { background: var(--c-not_formalized-bg); box-shadow: inset 0 -2px 0 var(--c-not_formalized); }
 .articles-swatch[data-status="not_formalized"] { background: var(--c-not_formalized-bg); box-shadow: inset 0 0 0 1px var(--line-strong), inset 0 -2px 0 var(--c-not_formalized); }

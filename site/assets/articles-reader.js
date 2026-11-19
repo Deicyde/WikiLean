@@ -67,7 +67,7 @@
     formalized: ["\u2713", "Formalized"],
     statement_only: ["\u25d0", "Statement only"],
     partial: ["\u25d4", "Partial"],
-    not_formalized: ["\u2715", "Not formalized"],
+    not_formalized: ["\u2205", "Not formalized"],
     not_checked: ["\u25cb", "Not checked yet"]
   };
   var phone = window.matchMedia ? window.matchMedia("(max-width: 999px)") : { matches: false };
