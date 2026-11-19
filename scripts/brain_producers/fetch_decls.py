@@ -5,13 +5,14 @@ in the layout producer 1 uses, so all three may share one inputs directory:
   trough/                sparse clone of Deicyde/trough; `fetch` adds data/<lib> to its sparse set
   decls/<lib>.bmp        doc-gen4 declaration-data.bmp (JSON)
   PINS.json              shared: this fetch replaces its own entries (trough, <lib>_decls) and
-                         keeps every other input's
+                         keeps every other input's, on failure as well as on success
 
 Without pins it fetches the newest state (trough's default branch, named explicitly: producer
 1's re-fetch fix). With pins (a PINS.json or PINS.txt) it checks trough out at the pinned commit
 and checks the `.bmp`'s sha256 and docs commit; on any mismatch it raises FetchError naming the
-input, never writes the mismatched bytes, and leaves no PINS.json. Every network call goes
-through one opener (producer 1's `Opener`, plus `ensure_sparse`), so tests inject a fake.
+input, never writes the mismatched bytes, and leaves this producer's inputs unpinned — PINS.json
+keeps only the entries this run never touched, and is removed when none are left. Every network
+call goes through one opener (producer 1's `Opener`, plus `ensure_sparse`), so tests inject a fake.
 """
 
 from __future__ import annotations
@@ -25,7 +26,7 @@ from scripts.tauceti_plans.build import URLS, read_pins_file
 from scripts.tauceti_plans.fetch import FetchError, Opener, _now, docs_commit
 
 PINS_SCHEMA = "wikilean.brain.plans.pins/v1"
-__all__ = ["DeclsOpener", "FetchError", "fetch"]
+__all__ = ["DeclsOpener", "FetchError", "fetch", "write_pins"]
 
 
 class DeclsOpener(Opener):
@@ -39,6 +40,18 @@ class DeclsOpener(Opener):
         listed = git(dest, "sparse-checkout", "list").decode("utf-8").split("\n")
         if path not in listed:
             git(dest, "sparse-checkout", "add", path)
+
+
+def write_pins(out_path: str, inputs: dict) -> None:
+    """Write PINS.json, or remove it when nothing is left pinned."""
+    if not inputs:
+        if os.path.exists(out_path):
+            os.remove(out_path)
+        return
+    with open(out_path + ".tmp", "w", encoding="utf-8") as f:
+        json.dump({"schema": PINS_SCHEMA, "inputs": inputs}, f, indent=1, sort_keys=True)
+        f.write("\n")
+    os.replace(out_path + ".tmp", out_path)
 
 
 def fetch(inputs: str, name: str, lib: str, pins_file: str | None = None,
@@ -55,7 +68,11 @@ def fetch(inputs: str, name: str, lib: str, pins_file: str | None = None,
                 kept = json.load(f).get("inputs") or {}
         except (OSError, ValueError, AttributeError):
             kept = {}
-        os.remove(out_path)  # a failed fetch must leave none
+    # A failed fetch must leave none of its own two inputs pinned, and must not take another
+    # producer's pins down with it: drop only `trough` and `<lib>_decls`, now, and merge below.
+    others = {k: v for k, v in kept.items() if k not in ("trough", name)}
+    if kept:
+        write_pins(out_path, others)
     os.makedirs(os.path.join(inputs, "decls"), exist_ok=True)
 
     def pinned(input_name, key):
@@ -98,9 +115,5 @@ def fetch(inputs: str, name: str, lib: str, pins_file: str | None = None,
     os.replace(path + ".tmp", path)
     pins[name] = {"sha256": sha, "docs_commit": docs, "fetched_at": _now()}
 
-    merged = {k: v for k, v in kept.items() if k not in pins} | pins
-    with open(out_path + ".tmp", "w", encoding="utf-8") as f:
-        json.dump({"schema": PINS_SCHEMA, "inputs": merged}, f, indent=1, sort_keys=True)
-        f.write("\n")
-    os.replace(out_path + ".tmp", out_path)
+    write_pins(out_path, others | pins)
     return pins

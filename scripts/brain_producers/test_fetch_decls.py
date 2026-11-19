@@ -133,6 +133,22 @@ class FetchTest(unittest.TestCase):
         with open(os.path.join(self.inputs, "decls", "tauceti.bmp"), "rb") as f:
             self.assertEqual(f.read(), _read("decls/tauceti.bmp"))
 
+    def test_a_failed_fetch_keeps_the_other_producers_pins(self):
+        """A failed fetch unpins its own two inputs and nothing else: producer 1's entries in a
+        shared PINS.json survive, because re-acquiring them costs another trip to the network."""
+        os.makedirs(self.inputs)
+        p1 = {"TauCetiRoadmap": {"commit": "f" * 40}, "atlas": {"sha256": "1" * 64},
+              "mathlib_decls": {"sha256": "2" * 64}}
+        with open(os.path.join(self.inputs, "PINS.json"), "w") as f:
+            json.dump({"inputs": dict(p1, trough={"commit": "3" * 40},
+                                      tauceti_decls={"sha256": "4" * 64})}, f)
+        txt = os.path.join(self.tmp, "PINS.txt")
+        with open(txt, "w") as f:
+            f.write(f"trough {'0' * 40}\n")
+        with self.assertRaisesRegex(F.FetchError, "^trough: "):
+            F2.fetch(self.inputs, pins_file=txt, opener=FakeOpener(self.remote))
+        self.assertEqual(self.pins_json(), p1)  # its own two are gone, producer 1's three are not
+
     def test_unknown_commit_fails_and_cli_exits_nonzero(self):
         from scripts.brain_producers import cli
         txt = os.path.join(self.tmp, "PINS.txt")
