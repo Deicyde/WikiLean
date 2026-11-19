@@ -40,7 +40,7 @@ import time
 import urllib.error
 import urllib.request
 
-from .canon import dumps, read_json, sha256_bytes, write_bytes
+from .canon import dumps, git_work_tree_holding, read_json, sha256_bytes, write_bytes
 
 USER_AGENT = "WikiLean-articles-brain/1"
 SITE = "https://wikilean.jackmccarthy.org"
@@ -191,6 +191,14 @@ def fetch(
     delay: float = 1.0,
     sleep=time.sleep,
 ) -> dict:
+    # Each overlay answer is stored verbatim, with contributors' names and
+    # their free-text notes, so the input set is never written into a
+    # checkout — the same refusal `build` makes for its `--out`.
+    tree_root = git_work_tree_holding(inputs)
+    if tree_root is not None:
+        raise FetchError(f"--inputs {inputs} lies inside the git work tree {tree_root}; "
+                         "the overlays carry contributors' names and notes — "
+                         "keep them outside the repository")
     session = Session(site, opener or Opener(), delay, sleep)
     want = read_pins_file(pins_file)["inputs"] if pins_file else None
     out_path = os.path.join(inputs, "PINS.json")

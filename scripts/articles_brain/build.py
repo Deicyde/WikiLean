@@ -20,7 +20,9 @@ from collections import Counter
 
 from scripts.articles.build_store import STATUS_RULE_D1, location_status
 
-from .canon import dumps, jsonl_bytes, read_json, sha256_bytes, sha256_file, write_bytes
+from .canon import (
+    dumps, git_work_tree_holding, jsonl_bytes, read_json, sha256_bytes, sha256_file, write_bytes,
+)
 from .fetch import (
     PINS_SCHEMA, SHA_RE, FetchError, check_article, check_overlay, pageids_of, store_identity,
 )
@@ -90,18 +92,6 @@ class BuildError(Exception):
 
 
 # ---------------------------------------------------------------- inputs
-
-def git_work_tree_holding(path: str) -> str | None:
-    """The git work tree `path` would lie in (its nearest ancestor holding `.git`), if any."""
-    cur = os.path.abspath(path)
-    while True:
-        if os.path.exists(os.path.join(cur, ".git")):
-            return cur
-        parent = os.path.dirname(cur)
-        if parent == cur:
-            return None
-        cur = parent
-
 
 def load_inputs(inputs: str) -> dict:
     """Every pinned file, with its sha256 re-checked. A mismatch refuses the build."""
@@ -605,6 +595,14 @@ def build(inputs: str, out: str, include_author: bool = False) -> tuple[str, dic
     if tree_root is not None:
         raise BuildError(f"--out {out} lies inside the git work tree {tree_root}; "
                          "an export is never committed — write it elsewhere")
+    # The inputs are the personal data: each overlay answer is stored verbatim
+    # and carries contributors' names and their free-text notes. The export is
+    # scrubbed, the pinned inputs are not, so they are never committed either.
+    tree_root = git_work_tree_holding(inputs)
+    if tree_root is not None:
+        raise BuildError(f"--inputs {inputs} lies inside the git work tree {tree_root}; "
+                         "the pinned overlays carry contributors' names and notes — "
+                         "keep them outside the repository")
     loaded = load_inputs(inputs)
     identity = check_one_build(loaded)
     rows, rejected, counts = candidates(loaded, include_author)

@@ -24,7 +24,10 @@ python3 scripts/articles_brain/test_build.py
 
 Python 3.12, standard library only. `build` is offline: no network, no clock, no host
 data. It writes the export to `OUT/<logical_root>/` and refuses an `OUT` inside a git
-work tree — an export is evidence, never a commit.
+work tree — an export is evidence, never a commit. `--inputs` is refused inside a git
+work tree too, by both commands: the export is scrubbed, but the pinned overlay answers
+are stored verbatim and carry contributors' names and their free-text notes, so the
+input set belongs outside the repository.
 
 ## Acquisition
 

@@ -43,6 +43,18 @@ def read_json(path: str):
         return json.loads(f.read().decode("utf-8"))
 
 
+def git_work_tree_holding(path: str) -> str | None:
+    """The git work tree `path` would lie in (its nearest ancestor holding `.git`), if any."""
+    cur = os.path.abspath(path)
+    while True:
+        if os.path.exists(os.path.join(cur, ".git")):
+            return cur
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            return None
+        cur = parent
+
+
 def write_bytes(path: str, blob: bytes) -> None:
     tmp = path + ".tmp"
     with open(tmp, "wb") as f:

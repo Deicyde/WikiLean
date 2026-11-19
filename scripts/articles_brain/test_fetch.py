@@ -35,6 +35,18 @@ class FetchTest(unittest.TestCase):
     def test_the_user_agent_is_generic(self):
         self.assertEqual(USER_AGENT, "WikiLean-articles-brain/1")
 
+    def test_it_refuses_an_inputs_directory_inside_a_git_work_tree(self):
+        # Each overlay answer is stored verbatim, with contributors' names and
+        # their free-text notes; it is never written into a checkout.
+        with tempfile.TemporaryDirectory() as tmp:
+            os.makedirs(os.path.join(tmp, ".git"))
+            inputs = os.path.join(tmp, "inputs")
+            with self.assertRaises(FetchError) as caught:
+                run(inputs)
+            self.assertIn("--inputs", str(caught.exception))
+            self.assertIn("git work tree", str(caught.exception))
+            self.assertFalse(os.path.exists(inputs))
+
     def test_a_run_pins_every_file_it_read(self):
         with tempfile.TemporaryDirectory() as tmp:
             pins = run(tmp)

@@ -407,6 +407,20 @@ class DeterminismTest(unittest.TestCase):
                 build(inputs, out)
             self.assertIn("git work tree", str(caught.exception))
 
+    def test_it_refuses_inputs_inside_a_git_work_tree(self):
+        # The export is scrubbed; the pinned inputs are not. Every overlay
+        # answer is stored verbatim, with contributors' names and their notes,
+        # so the input set may no more be committed than the export.
+        with tempfile.TemporaryDirectory() as tmp:
+            inputs = acquire(os.path.join(tmp, "repo"))
+            os.makedirs(os.path.join(tmp, "repo", ".git"))
+            with self.assertRaises(BuildError) as caught:
+                build(inputs, os.path.join(tmp, "out"))
+            self.assertIn("--inputs", str(caught.exception))
+            self.assertIn("git work tree", str(caught.exception))
+            self.assertIn("names and notes", str(caught.exception))
+            self.assertFalse(os.path.exists(os.path.join(tmp, "out")))
+
     def test_it_refuses_inputs_that_straddle_two_builds(self):
         with tempfile.TemporaryDirectory() as tmp:
             inputs = acquire(tmp)
