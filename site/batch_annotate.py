@@ -153,7 +153,9 @@ retype one. Act on it by name:
   * dispute it — put {"ref":"u3","reject":"<one-sentence reason>"} in the item's
     unlinked array. It is kept; the reason goes to a human editor.
 A selection YOU found yourself is written out in full (type, uri, location) and
-has no ref. Reuse a ref only inside the review item it was shown in.
+has no ref. Refs are numbered across the WHOLE reply, so u3 names exactly one
+selection; use a ref only inside the review item it was shown in, because a ref
+belonging to another item is refused and that item is left unchanged.
 Preserve ALL incoming IDs, URIs, base_uri values, legacy archives,
 unfamiliar JSON/extension fields, existing links and review items. Omitting a
 review item leaves it unchanged; use rejected status to retract one rather than

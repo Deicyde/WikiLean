@@ -357,6 +357,36 @@ class ReviewMerge(unittest.TestCase):
         human = item(provenance='human', unlinked=[occurrence('Other')])
         self.assertEqual(nr.review_view([human, old_item()]), [human, old_item()])
 
+    def test_a_reference_from_another_review_item_is_refused_not_mislinked(self):
+        # References are numbered across the whole article, so item B's reply
+        # naming item A's u0 names a real selection the merge can refuse. With
+        # per-item numbering it quietly linked B's own first selection instead.
+        stored = [item(links=[], unlinked=[occurrence('for A')]),
+                  item(id='001122334455', links=[], unlinked=[occurrence('for B')])]
+        view = nr.review_view(stored)
+        self.assertEqual([span['ref'] for span in view[0]['unlinked']], ['u0'])
+        self.assertEqual([span['ref'] for span in view[1]['unlinked']], ['u1'])
+        borrowed = {'id': '001122334455', 'status': 'formalized', 'unlinked': [],
+                    'links': [{'id': 'B:link:1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                                'object': formal('urn:decl:for-A')}}]}
+        disputed = {'id': '001122334455', 'status': 'formalized', 'links': [],
+                    'unlinked': [{'ref': 'u0', 'reject': 'the article no longer states this'}]}
+        for reply in (borrowed, disputed):
+            with self.subTest(reply=reply):
+                merged, report = nr.merge_native_review(stored, [reply])
+                self.assertEqual(merged, [stored[1], stored[0]])
+                self.assertEqual(report['rejections'], [])
+                self.assertEqual([entry['item'] for entry in report['skipped_items']], ['001122334455'])
+                self.assertIn("'u0' belongs to review item [aabbccddeeff]",
+                              report['skipped_items'][0]['reason'])
+        # Its own reference still links the stored selection it names.
+        own = {'id': '001122334455', 'status': 'formalized', 'unlinked': [],
+               'links': [{'id': 'B:link:1', 'annotation': {'subject': [{'ref': 'u1'}],
+                                                           'object': formal('urn:decl:for-B')}}]}
+        merged, report = nr.merge_native_review(stored, [own])
+        self.assertEqual(merged[0]['links'][0]['annotation']['subject'], [stored[1]['unlinked'][0]])
+        self.assertEqual((report['skipped_items'], report['promoted']), ([], 1))
+
     def test_a_reference_promotes_the_stored_selection_not_the_agents_copy(self):
         stored = item(links=[], unlinked=[occurrence(extensions={'org.wikilean': {'anchor': {'snippet': 'key'}}},
                                                      junk=['0 / 0 = 0']), occurrence('Other')])

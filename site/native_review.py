@@ -113,14 +113,16 @@ def _end_identity(end: dict) -> str:
     return selection_identity({key: value for key, value in end.items() if key != "base_uri"})
 
 
-def _slots(item: dict):
+def _slots(item: dict, start: int = 0):
     """``(reference, container, position, end, carrier)`` for every stored source
     selection of one item, in ``occurrences`` order: link subjects, then unlinked.
 
     The reference is the stable name an agent uses for that selection in one
-    review. ``carrier is end`` exactly for an unlinked selection.
+    review. Numbering continues from ``start``, so the names run across the
+    whole article and one name never means two selections.
+    ``carrier is end`` exactly for an unlinked selection.
     """
-    index = 0
+    index = start
     for link in item.get("links", []):
         if not isinstance(link, dict) or not isinstance(link.get("annotation"), dict):
             continue
@@ -153,13 +155,20 @@ def review_view(items: list[dict]) -> list[dict]:
     reference stub — its name, its mode and what it selects — so a review
     never has to round-trip opaque location bytes it cannot author. Human
     items and legacy objects are shown exactly as stored.
+
+    References are numbered continuously across the whole article, so ``u3``
+    names one selection and nothing else. A reference an agent writes in the
+    wrong review item therefore names a selection the merge can recognise and
+    refuse, instead of silently selecting that item's own ``u3``.
     """
-    views = []
+    views, index = [], 0
     for item in items:
         view = deepcopy(item)
         if is_reviewable(item):
-            for (reference, container, position, end, _carrier), anchor in zip(_slots(view), native.anchors(view)):
+            slots = list(_slots(view, index))
+            for (reference, container, position, end, _carrier), anchor in zip(slots, native.anchors(view)):
                 container[position] = _selection_stub(reference, end, anchor)
+            index += len(slots)
         views.append(view)
     return views
 
@@ -216,7 +225,35 @@ def _item_references(item: dict) -> bool:
                for span in list(item.get("unlinked") or []) + ends)
 
 
-def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
+def _article_slots(protected: list[dict]) -> tuple[list[dict], dict[str, str]]:
+    """Per-item ``{reference: (end, carrier)}`` maps plus ``{reference: item id}``
+    for the whole article, numbered continuously in ``review_view``'s order."""
+    maps, owner, index = [], {}, 0
+    for stored in protected:
+        slots = list(_slots(stored, index))
+        maps.append({reference: (end, carrier) for reference, _c, _p, end, carrier in slots})
+        for reference, _c, _p, _end, _carrier in slots:
+            owner[reference] = stored.get("id")
+        index += len(slots)
+    return maps, owner
+
+
+def _unresolvable(reference: str, owner: dict[str, str]) -> NativeAnnotationError:
+    """Why a reference names nothing this review item may act on.
+
+    References run across the whole article, so one written in the wrong item
+    still names a real selection — and linking that item's own selection of
+    the same number instead would be a wrong annotation written in silence.
+    """
+    if reference in owner:
+        return NativeAnnotationError(
+            f"source-selection reference {reference!r} belongs to review item "
+            f"[{owner[reference]}]; a reference may only be used in the item it was shown in")
+    return NativeAnnotationError(f"unknown source-selection reference {reference!r}")
+
+
+def _merge_item(old: dict, fresh: dict, report: dict,
+                slots: dict[str, tuple], owner: dict[str, str]) -> dict:
     """One reviewed item: the agent's judgement over the stored selections."""
     if not native.is_native(fresh):
         raise NativeAnnotationError("agent replaced native data with a legacy object")
@@ -226,7 +263,6 @@ def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
     identities = [link.get("id") for link in fresh_links]
     if any(not isinstance(name, str) or not name for name in identities) or len(set(identities)) != len(identities):
         raise NativeAnnotationError("invalid or duplicate internal link id")
-    slots = {reference: (end, carrier) for reference, _c, _p, end, carrier in _slots(old)}
     copies: dict[str, str] = {}
     for reference, (end, _carrier) in slots.items():
         copies.setdefault(_end_identity(end), reference)
@@ -255,7 +291,7 @@ def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
                     result.append(deepcopy(entry))
                     continue
             if reference not in slots:
-                raise NativeAnnotationError(f"unknown source-selection reference {reference!r}")
+                raise _unresolvable(reference, owner)
             end, carrier = slots[reference]
             if carrier is end:
                 promoted.add(reference)
@@ -309,7 +345,7 @@ def _merge_item(old: dict, fresh: dict, report: dict) -> dict:
                 authored.append(deepcopy(entry))
             continue
         if reference not in slots:
-            raise NativeAnnotationError(f"unknown source-selection reference {reference!r}")
+            raise _unresolvable(reference, owner)
         reason = entry.get("reject")
         if isinstance(reason, str) and reason.strip():
             # A disputed selection is kept; removing one is the editor's call.
@@ -327,7 +363,9 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
     Source selections are carried forward from the stored data, never from the
     agent's copy: the agent names a selection (``{"ref": "u3"}``) to link it,
     disputes it with a reason, or says nothing and it stays unlinked exactly as
-    stored. A review item the agent omits is carried forward unchanged — a
+    stored. The names run across the whole article, so a reference written in
+    the wrong review item is refused and reported rather than linking that
+    item's own selection of the same number. A review item the agent omits is carried forward unchanged — a
     retraction is an explicit ``rejected`` status — and one it mangles is
     carried forward too, reported rather than failing the whole article.
     Returns the merged items and a report of what was carried.
@@ -340,6 +378,8 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
         raise NativeAnnotationError("ambiguous native work items require stable review IDs before agent edits")
     report: dict = {"carried_items": 0, "carried_links": 0, "carried_selections": 0,
                     "promoted": 0, "new_selections": 0, "rejections": [], "skipped_items": []}
+    slot_maps, owner = _article_slots(protected)
+    slots_by_key = dict(zip(by_id.keys(), slot_maps))
     result, seen = [], set()
     for fresh in produced:
         key = _item_identity(fresh)
@@ -362,7 +402,7 @@ def merge_native_review(existing: list[dict], produced: list[dict]) -> tuple[lis
             continue
         seen.add(key)
         try:
-            result.append(_merge_item(old, fresh, report))
+            result.append(_merge_item(old, fresh, report, slots_by_key[key], owner))
         except NativeAnnotationError as exc:
             report["skipped_items"].append({"item": old.get("id"), "reason": str(exc)})
             result.append(deepcopy(old))
