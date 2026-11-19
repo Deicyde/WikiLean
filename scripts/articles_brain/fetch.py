@@ -137,7 +137,7 @@ def read_pins_file(path: str) -> dict:
     return pins
 
 
-def _pageids_of(shard: dict, what: str) -> list[int]:
+def pageids_of(shard: dict, what: str) -> list[int]:
     if shard.get("schema") != INDEX_SCHEMA:
         raise FetchError(f"{what}: schema is not {INDEX_SCHEMA}")
     fields = shard.get("fields")
@@ -230,7 +230,7 @@ def fetch(
         if not isinstance(shard, str) or not SHARD_RE.match(shard):
             raise FetchError(f"current.json: {shard!r} is not an index shard name")
         body = session.get(f"/api/articles/index/{shard}")
-        pageids += _pageids_of(_json(body, f"index/{shard}.json"), f"index/{shard}.json")
+        pageids += pageids_of(_json(body, f"index/{shard}.json"), f"index/{shard}.json")
         store("index", shard, f"index/{shard}.json", body, {})
     pageids = sorted(set(pageids))
     entries = index.get("entries")
@@ -253,8 +253,7 @@ def fetch(
 
         body = session.get(f"/api/articles/overlay/{pageid}")
         overlay = _json(body, f"overlay/{pageid}.json")
-        if overlay.get("ok") is not True or overlay.get("pageid") != pageid:
-            raise FetchError(f"overlay/{pageid}.json: not this article's overlay")
+        check_overlay(overlay, pageid)
         rows = [r for r in (overlay.get("tags") or []) + (overlay.get("bundles") or []) if isinstance(r, dict)]
         versions = [r["version"] for r in rows if isinstance(r.get("version"), int)]
         store("overlay", str(pageid), f"overlay/{pageid}.json", body, {
@@ -295,3 +294,8 @@ def check_article(article: dict, pageid: int, identity: dict) -> None:
     if record_set not in identity["record_set_seals"]:
         raise FetchError(f"{where}: record set {record_set} is not one of the build's "
                          "(two store builds must never be mixed)")
+
+
+def check_overlay(overlay: dict, pageid: int) -> None:
+    if overlay.get("ok") is not True or overlay.get("pageid") != pageid:
+        raise FetchError(f"overlay/{pageid}.json: not this article's overlay")
