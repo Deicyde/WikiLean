@@ -21,7 +21,7 @@ import json
 import os
 import subprocess
 
-from scripts.brain_producers.common import git, sha256_bytes
+from scripts.brain_producers.common import _git_env, git, sha256_bytes
 from scripts.tauceti_plans.build import URLS, read_pins_file
 from scripts.tauceti_plans.fetch import FetchError, Opener, _now, docs_commit
 
@@ -34,7 +34,7 @@ class DeclsOpener(Opener):
 
     def ensure_sparse(self, dest: str, path: str) -> None:
         sparse = subprocess.run(["git", "-C", dest, "config", "--get", "core.sparseCheckout"],
-                                capture_output=True, text=True).stdout.strip()
+                                capture_output=True, text=True, env=_git_env()).stdout.strip()
         if sparse != "true":
             return  # a full checkout already holds every path
         listed = git(dest, "sparse-checkout", "list").decode("utf-8").split("\n")

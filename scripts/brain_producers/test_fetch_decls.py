@@ -149,6 +149,28 @@ class FetchTest(unittest.TestCase):
             F2.fetch(self.inputs, pins_file=txt, opener=FakeOpener(self.remote))
         self.assertEqual(self.pins_json(), p1)  # its own two are gone, producer 1's three are not
 
+    def test_widening_the_sparse_set_reads_config_with_the_sanitized_env(self):
+        """Every git call in the producers runs under common._git_env(); this one is a bare
+        subprocess, so pin it: an ambient GIT_CONFIG_* must not reach it."""
+        F2.fetch(self.inputs, opener=FakeOpener(self.remote))
+        trough = os.path.join(self.inputs, "trough")
+        seen = []
+        real = subprocess.run
+
+        def spy(args, **kw):
+            if args[:2] == ["git", "-C"] and "config" in args:
+                seen.append(kw.get("env"))
+            return real(args, **kw)
+
+        with mock.patch.object(subprocess, "run", spy):
+            F.DeclsOpener().ensure_sparse(trough, "data/mathlib")
+        self.assertTrue(seen)
+        for env in seen:
+            self.assertEqual(env.get("GIT_CONFIG_NOSYSTEM"), "1")
+            self.assertNotIn("GIT_DIR", env)
+        listed = git(trough, "sparse-checkout", "list").decode().split()
+        self.assertEqual(sorted(listed), ["data/mathlib", "data/tauceti"])
+
     def test_unknown_commit_fails_and_cli_exits_nonzero(self):
         from scripts.brain_producers import cli
         txt = os.path.join(self.tmp, "PINS.txt")
