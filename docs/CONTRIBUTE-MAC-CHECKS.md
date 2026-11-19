@@ -103,13 +103,16 @@ freshly pinned source bytes before a contributor runs them. Their original
 proof records and pins stay unchanged. **Do not open path 3 on the assumption
 that every old revision can be reproduced.**
 
-A work package deliberately omits full source layers. The contributor must
-refetch its Wikipedia revisions and render them with the package's producer.
-An old revision can expand templates as they are now, so an unchanged `oldid`
-does not guarantee an identical rendered layer.
+A work package never carries rendered views. Since 2026-11-13 it can carry each
+source's fetched bytes, which the contributor renders with the frozen renderer;
+for a package that ships none, the contributor must refetch its Wikipedia
+revisions and render them with the package's producer. An old revision can expand
+templates as they are now, so an unchanged `oldid` does not guarantee an identical
+rendered layer, which is why the bytes now travel.
 
-Compare every regenerated `layer_sha256` to the package before any model call.
-`package.check_sources()` and the run preview refuse mismatches by source name.
+The run preview compares every rendered `layer_sha256` and pinned view to the
+package before any model call and refuses mismatches by source name
+(`work.render_sources` for shipped bytes, `work.check_pins` for every source).
 Record the article, pinned revision, expected hash and actual hash; the
 coordinator must re-plan a mismatched source. Do not replace a pinned hash to
 make an old package pass.

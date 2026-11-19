@@ -228,11 +228,12 @@ def plan(*, run_id: str, mode: str, out: Path, universe: Path, manifest: Path,
     (docs/STATEMENTS.md section 2).
 
     ``sources_as``, ``candidates_as`` and ``index_as`` are what ``gate.json`` **names**,
-    where that is not where this machine holds them: a package carries the plan and no
-    article text, so a coordinator plans against its own rendered sources and the plan
-    names ``../sources``, which the contributor fills by refetching the pinned
-    revisions. The view shas are still read from the real directory, so the plan pins
-    the bytes the coordinator saw and the contributor's gate refuses anything else.
+    where that is not where this machine holds them: a coordinator plans against its own
+    rendered sources and the plan names ``../sources``, which the contributor fills by
+    rendering the fetched bytes the package ships (``contribute/package.py``) or by
+    refetching the pinned revisions. The view shas are still read from the real
+    directory, so the plan pins the bytes the coordinator saw and the contributor's gate
+    refuses anything else.
     """
     if mode not in vocab.MODES:
         raise PlanProblem(f"a batch is planned in one of {sorted(vocab.MODES)}, "

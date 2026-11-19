@@ -163,6 +163,19 @@ D1_REQUIRED_COLUMNS: dict[str, tuple[str, tuple[str, ...]]] = {
             "removed_reason",
         ),
     ),
+    # 0022 seeds the index_downloads lever, then creates index_bundles and the download
+    # log index_downloads last (the token-gated index download, src/bundles.ts).
+    "wiki/migrations/0022_index_bundles.sql": (
+        "index_downloads",
+        ("id", "owner_id", "agent_id", "bundle_sha256", "path", "range_start", "bytes", "at"),
+    ),
+    # 0023 seeds the claims lever, then creates contrib_packages, contrib_claims and
+    # contrib_claim_submissions last (the claims API, src/claims.ts). Agent revocation ends
+    # an agent's live claims, so that code needs these tables too.
+    "wiki/migrations/0023_contrib_claims.sql": (
+        "contrib_claim_submissions",
+        ("submission_id", "claim_id", "linked_at"),
+    ),
 }
 
 

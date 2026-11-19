@@ -9,6 +9,7 @@ import contextlib
 import gzip
 import io
 import json
+import os
 import socket
 import subprocess
 import sys
@@ -31,6 +32,11 @@ GHU = fake("ghu", 2)
 GHR = fake("ghr", 3, 76)
 PAT = "github_pat_" + ("11AbCdEfGh" * 3)[:22] + "_" + ("Zz9" * 30)[:59]
 OWN = fake("gho", 4)
+
+
+def d1_json(rows: list) -> str:
+    """What `wrangler d1 execute --json` prints for one successful statement."""
+    return json.dumps([{"results": rows, "success": True, "meta": {"duration": 0.1}}])
 
 
 class Response:
@@ -102,7 +108,7 @@ class RevokeTests(unittest.TestCase):
     def test_sources_merge_and_dedupe(self):
         sql = self.write("a.sql", f"'{GHO}' '{PAT}'")
         gz = self.write("b.sql.gz", f"'{GHO}' '{GHU}'", gz=True)
-        self.d1_stdout = json.dumps([{"results": [{"access_token": GHU}, {"access_token": None}]}])
+        self.d1_stdout = d1_json([{"access_token": GHU}, {"access_token": None}])
         code, out = self.run_main("--file", str(sql), "--file", str(gz), "--d1", "wikilean",
                                   "--d1-sql", "SELECT access_token FROM accounts")
         self.assertEqual(code, 0)
@@ -118,11 +124,50 @@ class RevokeTests(unittest.TestCase):
         self.assertIn(rgt.digest(GHO), out)
 
     def test_d1_argv_holds_only_sql_and_disables_wrangler_log_file(self):
-        self.d1_stdout = json.dumps([{"results": [{"t": GHO}]}])
-        self.run_main("--d1", "wikilean", "--d1-sql", "SELECT 1")
+        self.d1_stdout = d1_json([{"t": GHO}])
+        # An inherited WRANGLER_LOG=warn empties wrangler 4.151.3's --json stdout, so it is dropped.
+        with mock.patch.dict(os.environ, {"WRANGLER_LOG": "warn"}):
+            self.run_main("--d1", "wikilean", "--d1-sql", "SELECT 1")
         (argv,) = self.d1_argv
         self.assertEqual(argv[-5:], ["wikilean", "--remote", "--json", "--command", "SELECT 1"])
         self.assertEqual(self.d1_env.get("WRANGLER_WRITE_LOGS"), "false")
+        self.assertNotIn("WRANGLER_LOG", self.d1_env)
+
+    def test_d1_empty_stdout_refuses_instead_of_reporting_no_tokens(self):
+        # What wrangler 4.151.3 does under WRANGLER_LOG=warn: exit 0, nothing on stdout.
+        self.d1_stdout = ""
+        out = io.StringIO()
+        with mock.patch.object(rgt.subprocess, "run", self.fake_run), contextlib.redirect_stdout(out):
+            with self.assertRaises(SystemExit) as raised:
+                rgt.main(["--d1", "wikilean", "--d1-sql", "SELECT 1"])
+        self.assertIsInstance(raised.exception.code, str)  # a message, so the exit status is 1
+        self.assertIn("refusing", raised.exception.code)
+        self.assertNotIn("distinct tokens", out.getvalue())
+
+    def test_d1_output_that_is_not_successful_results_refuses(self):
+        for stdout in ("\n", "null", "{}", "[]", "[1]", f"{GHO}\n", json.dumps({"results": [{"t": GHO}]}),
+                       json.dumps([{"results": [{"t": GHO}]}]),
+                       json.dumps([{"results": [{"t": GHO}], "success": False}]),
+                       json.dumps([{"success": True}]),
+                       d1_json([{"t": GHO}]) + "\ntrailing"):
+            with self.subTest(stdout=rgt.TOKEN.sub("[token]", stdout)[:60]):
+                self.d1_stdout = stdout
+                with self.assertRaises(SystemExit) as raised:
+                    self.run_main("--d1", "wikilean", "--d1-sql", "SELECT 1")
+                self.assertIn("refusing", raised.exception.code)
+                self.assert_no_token(raised.exception.code)
+
+    def test_d1_banner_before_the_json_is_read(self):
+        self.d1_stdout = "wrangler 4.151.3\n" + d1_json([{"t": GHO}])
+        code, out = self.run_main("--d1", "wikilean", "--d1-sql", "SELECT 1")
+        self.assertEqual(code, 0)
+        self.assertIn(rgt.digest(GHO), out)
+
+    def test_d1_no_matching_rows_reports_none(self):
+        self.d1_stdout = d1_json([])
+        code, out = self.run_main("--d1", "wikilean", "--d1-sql", "SELECT 1")
+        self.assertEqual(code, 0)
+        self.assertIn("0 distinct tokens (none)", out)
 
     def test_d1_failure_does_not_echo_a_token(self):
         def failing(argv, **kwargs):

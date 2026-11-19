@@ -10,7 +10,8 @@ and a log all work. `.gz` files are read decompressed, and `--file -` reads stdi
 encrypted backup never has to touch disk (`age -d -i KEY backup.sql.age | … --file -`).
 `--d1` runs `npx wrangler d1 execute <db> --remote --json --command <sql>` from
 `--wiki-dir` (the default is this checkout's wiki/), with wrangler's on-disk debug log
-off, and scans its output.
+off, and scans its output. Output that is not a JSON list of successful results stops
+the run, so a silent wrangler can never read as "no tokens".
 
 Tokens are deduplicated and reported only as their type and the first 12 hex digits of
 their SHA-256. A token is never printed, written to disk, or put on a command line.
@@ -72,16 +73,50 @@ def read_file(path: Path) -> str:
     return data.decode("utf-8", errors="replace")
 
 
+def d1_results(stdout: str) -> list | None:
+    """The result list `wrangler d1 execute --json` printed, or None for anything else.
+
+    A banner line may come before the JSON, as site/ops/brain_d1_import.py allows.
+    """
+    try:
+        value = json.loads(stdout)
+    except ValueError:
+        value, decoder = None, json.JSONDecoder()
+        for match in re.finditer(r"(?m)^\[", stdout):
+            try:
+                candidate, end = decoder.raw_decode(stdout, match.start())
+            except ValueError:
+                continue
+            if not stdout[end:].strip():
+                value = candidate
+                break
+    if not isinstance(value, list) or not value:
+        return None
+    for item in value:
+        if not isinstance(item, dict) or item.get("success") is not True or not isinstance(item.get("results"), list):
+            return None
+    return value
+
+
 def d1_output(db: str, sql: str, wiki_dir: Path) -> str:
-    """The JSON a remote D1 query prints. Only the SQL rides on argv; the rows stay in a pipe."""
+    """The JSON a remote D1 query prints. Only the SQL rides on argv; the rows stay in a pipe.
+
+    Wrangler 4.151.3 prints the --json result through its logger, so WRANGLER_LOG=warn
+    leaves stdout empty and still exits 0. The variable is removed from wrangler's
+    environment, and output that is not a list of successful results is refused.
+    """
+    env = {name: value for name, value in os.environ.items() if name != "WRANGLER_LOG"}
+    env["WRANGLER_WRITE_LOGS"] = "false"
     result = subprocess.run(
         ["npx", "--no-install", "wrangler", "d1", "execute", db, "--remote", "--json", "--command", sql],
-        cwd=wiki_dir, capture_output=True, text=True, timeout=300,
-        env={**os.environ, "WRANGLER_LOG": "warn", "WRANGLER_WRITE_LOGS": "false"},
+        cwd=wiki_dir, capture_output=True, text=True, timeout=300, env=env,
     )
     if result.returncode != 0:
         tail = (result.stderr.strip().splitlines() or ["(no output)"])[-1]
         raise SystemExit(f"wrangler d1 execute failed ({result.returncode}): {TOKEN.sub('[token]', tail)[:300]}")
+    if d1_results(result.stdout) is None:
+        raise SystemExit(f"refusing: wrangler d1 execute exited 0 but its {len(result.stdout)} characters "
+                         "of stdout are not a JSON list of successful results, so its tokens are unknown")
     return result.stdout
 
 

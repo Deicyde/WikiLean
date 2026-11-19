@@ -602,7 +602,10 @@ test.describe("the article reader", () => {
     await page.goto(WIDGET);
     await expect(page.locator("#atlr-article mark.atl[role=button]")).toHaveCount(3);
     const stop = page.locator('#atlr-article mark.atl[data-p="5b0e44a1"][role=button]');
-    await expect(stop).toHaveAccessibleName(/^Moreover, the number of spanning gadgets of a widget is at most: statement only, TauCeti /);
+    // The name holds every word the highlight shows — here the passage's three marks, which
+    // run through a link — and not the store's quote, which the format caps twelve words in
+    // (WCAG 2.5.3; the quote itself is on the card).
+    await expect(stop).toHaveAccessibleName(/^Moreover, the number of spanning gadgets of a widget is at most its rank\.: statement only, TauCeti /);
     await stop.focus();
     await page.keyboard.press("Enter");
     await expect(panelPassage(page)).toHaveAttribute("id", "atlr-pp-5b0e44a1");
@@ -922,5 +925,186 @@ test.describe("the coverage bundle form", () => {
     // which is what brings the agreement up; nothing else went wrong.
     expect(errors.filter((e) => !e.includes("403"))).toEqual([]);
     expect(errors.filter((e) => e.startsWith("response 403: ") && e.endsWith("/api/articles/coverage"))).toHaveLength(1);
+  });
+});
+
+// ---- phase 1: statements, cut and not checked ------------------------------------------------
+//
+// The fifth harness listener (e2e/server.ts) serves a store of one statement-only article and
+// its marked revision: three statements, outcome "unchecked", no status, and a tagging universe
+// nothing has searched. Everything here must hold in light and in dark, with the keyboard.
+test.describe("a statement-only article", () => {
+  const STATEMENTS = `http://127.0.0.1:${Number.parseInt(process.env.WIKILEAN_E2E_PORT ?? "4173", 10) + 4}`;
+  test.use({ baseURL: STATEMENTS });
+  const SPROCKET = "/articles/1005/Sprocket_theorem";
+  const panelPassage = (page: Page) => page.locator("section.atlr-pp:not([hidden])");
+
+  for (const scheme of ["light", "dark"] as const) {
+    test(`the reader, the card list and the list pass axe in ${scheme} mode`, async ({ page }) => {
+      const errors = collectPageErrors(page);
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto(SPROCKET);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sprocket theorem");
+      // Every statement is highlighted — neutrally, not by its absence.
+      await expect(page.locator("#atlr-article mark.atl")).toHaveCount(3);
+      await expectNoSeriousViolations(page);
+      // With a statement selected: the panel's card, its words and its tag form.
+      await page.locator('#atlr-article mark.atl[data-p="a1b2c3d4"]').click();
+      await expect(panelPassage(page)).toHaveCount(1);
+      await expectNoSeriousViolations(page);
+      await page.goto(`${SPROCKET}?view=cards`);
+      await expect(page.getByRole("heading", { name: "Statements", exact: true }).first()).toBeVisible();
+      await expectNoSeriousViolations(page);
+      await page.goto("/articles");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Articles");
+      await expectNoSeriousViolations(page);
+      expect(errors).toEqual([]);
+    });
+  }
+
+  test("the highlight is neutral and visible, and its colour is not a status colour", async ({ page }) => {
+    await page.goto(SPROCKET);
+    const mark = page.locator('#atlr-article mark.atl[data-p="a1b2c3d4"]');
+    const paint = await mark.evaluate((node) => {
+      const style = (Reflect.get(globalThis, "getComputedStyle") as (e: unknown) => Record<string, string>)(node);
+      return [style.backgroundColor, style.borderBottomStyle, style.borderBottomWidth];
+    });
+    // A wash of its own, not the transparent nothing an unread passage gets.
+    expect(paint[0]).not.toBe("rgba(0, 0, 0, 0)");
+    // Its own pattern: a dashed rule under the line.
+    expect(paint[1]).toBe("dashed");
+    expect(Number.parseFloat(paint[2])).toBeGreaterThan(0);
+    // Selecting it deepens the wash, as it does for every other status.
+    const before = paint[0];
+    await mark.click();
+    const selected = await mark.evaluate((node) =>
+      (Reflect.get(globalThis, "getComputedStyle") as (e: unknown) => Record<string, string>)(node).backgroundImage);
+    expect(selected).not.toBe("none");
+    // Not one of the three status colours: the status is never claimed by colour.
+    const statusWash = await page.locator("html").evaluate((root) => {
+      const style = (Reflect.get(globalThis, "getComputedStyle") as (e: unknown) => { getPropertyValue(p: string): string })(root);
+      return ["--c-formalized", "--c-partial", "--c-not_formalized"].map((name) => style.getPropertyValue(name).trim());
+    });
+    expect(statusWash.includes(before)).toBe(false);
+  });
+
+  test("the panel says the statement is not checked, offers the tag form and no verdict buttons", async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await page.goto(`/login?returnTo=${encodeURIComponent(SPROCKET)}`);
+    await expect(page).toHaveURL(new RegExp(`${SPROCKET}$`));
+    await page.locator('#atlr-article mark.atl[data-p="b2c3d4e5"]').click();
+    const shown = panelPassage(page);
+    await expect(shown).toHaveAttribute("id", "atlr-pp-b2c3d4e5");
+    await expect(shown.locator(".articles-pill")).toHaveText("○Not checked yet");
+    await expect(shown.locator(".articles-unchecked")).toHaveText("○Not checked yet — no library has been searched for this statement.");
+    await expect(shown.locator(".articles-fb")).toHaveCount(0);
+    await expect(shown.locator(".articles-card")).toHaveCount(0);
+    await expect(shown.getByRole("button", { name: "Tag this passage" })).toBeVisible();
+    await expectNoSeriousViolations(page);
+    expect(errors).toEqual([]);
+  });
+
+  test("the keyboard selects a statement, steps and goes back", async ({ page }) => {
+    await page.goto(SPROCKET);
+    await expect(page.locator("#atlr-article mark.atl[role=button]")).toHaveCount(3);
+    const stop = page.locator('#atlr-article mark.atl[data-p="a1b2c3d4"][role=button]');
+    await expect(stop).toHaveAccessibleName(/^every sprocket admits a balanced cog: not checked yet$/);
+    await stop.focus();
+    await page.keyboard.press("Enter");
+    await expect(panelPassage(page)).toHaveAttribute("id", "atlr-pp-a1b2c3d4");
+    await expect(page.locator("#atlr-pos")).toHaveText("1 of 3");
+    await page.keyboard.press("ArrowRight");
+    await expect(panelPassage(page)).toHaveAttribute("id", "atlr-pp-b2c3d4e5");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#atlr-index")).toBeVisible();
+  });
+
+  test("the counts line, the legend filter and the list say statements, never not formalized", async ({ page }) => {
+    await page.goto(SPROCKET);
+    await expect(page.locator("#articles-counts")).toHaveText("3 statements·○none checked yet");
+    const chip = page.locator('.articles-key .articles-chip[data-filter="status:not_checked"]');
+    await expect(chip).toBeVisible();
+    await chip.click();
+    await expect(page.locator("#atlr-filter-text")).toHaveText("Showing 3 of 3 statements: Not checked yet.");
+    await page.getByRole("button", { name: "Show all statements" }).click();
+    await expect(page.locator("#atlr-article mark.atl.is-off")).toHaveCount(0);
+    // The list row: nothing checked, and an empty bar rather than a coverage claim.
+    await page.goto("/articles");
+    const row = page.locator('tr[data-title="sprocket theorem"]');
+    await expect(row.locator(".articles-bar.is-empty")).toHaveAttribute("aria-label", "3 statements: none checked yet");
+    await expect(row.locator("td.num").first()).toHaveText("0 of 3 checked");
+    await expect(page.locator("#articles-list")).not.toContainText("not formalized");
+  });
+});
+
+// ---- phase 1's two halves joined: the store the Python builder writes ------------------------
+//
+// Every fixture above is written by hand from the design. The sixth harness listener
+// (e2e/server.ts) serves scripts/articles/fixtures/store-mixed, the committed golden store of a
+// MIXED build — the record set beside the pipeline's synthetic sealed cut, with the cut's first
+// article's marked revision — whose bytes scripts/articles/test_build_store.py rebuilds from
+// its inputs byte for byte. What a reader meets on real builder output, in a browser.
+test.describe("the built mixed store", () => {
+  const BUILT = `http://127.0.0.1:${Number.parseInt(process.env.WIKILEAN_E2E_PORT ?? "4173", 10) + 5}`;
+  test.use({ baseURL: BUILT });
+  const CUT = "/articles/1005/Sprocket_bundle";
+
+  for (const scheme of ["light", "dark"] as const) {
+    test(`the cut's reader page and the mixed list pass axe in ${scheme} mode`, async ({ page }) => {
+      const errors = collectPageErrors(page);
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto(CUT);
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sprocket bundle");
+      // The builder's own marks: one a published statement, each neutral.
+      await expect(page.locator('#atlr-article mark.atl[data-status="unchecked"]')).toHaveCount(4);
+      await expectNoSeriousViolations(page);
+      await page.goto("/articles");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Articles");
+      await expectNoSeriousViolations(page);
+      expect(errors).toEqual([]);
+    });
+  }
+
+  test("a statement of the cut opens its card, and the located article keeps its own", async ({ page }) => {
+    const errors = collectPageErrors(page);
+    await page.goto(CUT);
+    await page.locator('#atlr-article mark.atl[data-p="785c06ff"]').click();
+    const shown = page.locator("section.atlr-pp:not([hidden])");
+    await expect(shown).toHaveAttribute("id", "atlr-pp-785c06ff");
+    await expect(shown.locator(".articles-unchecked"))
+      .toHaveText("○Not checked yet — no library has been searched for this statement.");
+    await expect(shown.locator(".articles-fb")).toHaveCount(0);
+    // The same build's located article is the page it always was: cards with their statuses.
+    await page.goto("/articles/1001/Widget_lemma");
+    await expect(page.locator('.articles-passage[data-status="formalized"]').first()).toBeVisible();
+    await expect(page.locator(".articles-unchecked")).toHaveCount(0);
+    expect(errors).toEqual([]);
+  });
+
+  // The store's quote is the record format's capped head (twelve words); a mark covers the
+  // whole passage. An accessible name built from the quote would leave out text the button
+  // shows — WCAG 2.5.3, which the hand-written fixtures could not catch, because their marks
+  // are exactly their quotes.
+  test("a highlight's accessible name holds all of the text it shows", async ({ page }) => {
+    await page.goto(CUT);
+    const stop = page.locator('#atlr-article mark.atl[data-p="4c9ae6f6"][role=button]');
+    const shown = (await stop.innerText()).replace(/\s+/g, " ").trim();
+    expect(shown).toBe("A sprocket bundle is a widget equipped with a chosen sprocket over each handle.");
+    await expect(stop).toHaveAccessibleName(`${shown}: not checked yet`);
+    // The store's own quote of it stops twelve words in, which is why the name is not it.
+    const quote = page.locator("#atlr-pp-4c9ae6f6 blockquote.articles-quote mark");
+    expect((await quote.textContent())?.trim())
+      .toBe("A sprocket bundle is a widget equipped with a chosen sprocket over");
+  });
+
+  test("the list counts the cut's statements apart from the build's checked passages", async ({ page }) => {
+    await page.goto("/articles");
+    const row = page.locator('tr[data-title="sprocket bundle"]');
+    await expect(row.locator(".articles-bar.is-empty")).toHaveAttribute("aria-label", "4 statements: none checked yet");
+    await expect(row.locator("td.num").first()).toHaveText("0 of 4 checked");
+    // The located rows keep their coverage bars, and the build's totals name both figures.
+    await expect(page.locator('tr[data-title="widget lemma"] .articles-bar:not(.is-empty)')).toHaveCount(1);
+    await expect(page.locator("#articles-h-totals").locator("xpath=following-sibling::p[1]"))
+      .toHaveText("4 articles · 12 passages (6 checked, 6 not checked yet) · 7 Lean locations · 1 related declaration");
   });
 });

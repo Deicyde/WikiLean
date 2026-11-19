@@ -66,6 +66,14 @@ export interface Env {
   // articles box.
   ARTICLES?: R2Bucket;
 
+  // The contributor bucket (src/bundles.ts): the declaration-index bundles outside
+  // contributors download with an agent token, under index/v1/<manifest sha256>/,
+  // which scripts/articles/upload_contrib.py puts there. wrangler.jsonc binds it to
+  // the private bucket wikilean-contrib, a bucket of its own because an R2 token is
+  // scoped to buckets and the articles upload must not be able to overwrite a bundle.
+  // Read-only, and optional: unbound, every download route answers 503 "not configured".
+  CONTRIB?: R2Bucket;
+
   AUTH_MODE: string; // "dev" (cookie stub) | "oauth" (better-auth)
 
   // Cloudflare Turnstile, which gates a NEW account's FIRST overlay edit and
