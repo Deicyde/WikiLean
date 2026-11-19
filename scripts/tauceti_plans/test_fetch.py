@@ -4,6 +4,7 @@ local fixture repositories. Nothing here touches the network."""
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -84,6 +85,22 @@ class FetchTest(unittest.TestCase):
         self.assertEqual(pins["atlas"]["sha256"], sha256_bytes(b'{"meta":{}}'))
         self.assertIn("https://taucetiproject.github.io/TauCeti/docs/TauCeti/Foo.html", op.seen)
         self.assertTrue(os.path.exists(os.path.join(self.inputs, "trough", "data", "tauceti", "deps.json")))
+
+    def test_refetch_follows_the_default_branch(self):
+        F.fetch(self.inputs, opener=FakeOpener(self.repos))
+        remote = self.repos[URLS["TauCetiRoadmap"]]
+        old = git(remote, "rev-parse", "HEAD").decode().strip()
+        env = {"PATH": os.environ.get("PATH", ""), "HOME": self.tmp, "GIT_CONFIG_NOSYSTEM": "1",
+               "GIT_AUTHOR_NAME": "f", "GIT_AUTHOR_EMAIL": "f@example.invalid", "GIT_COMMITTER_NAME": "f",
+               "GIT_COMMITTER_EMAIL": "f@example.invalid", "GIT_AUTHOR_DATE": "2026-01-02T00:00:00Z",
+               "GIT_COMMITTER_DATE": "2026-01-02T00:00:00Z"}
+        for args in (["branch", "aaa-side", old],  # sorts before main
+                     ["-c", "commit.gpgsign=false", "commit", "-q", "--allow-empty", "-m", "next"]):
+            subprocess.run(["git", "-C", remote, *args], check=True, env=env)
+        new = git(remote, "rev-parse", "HEAD").decode().strip()
+        self.assertNotEqual(old, new)
+        F.fetch(self.inputs, opener=FakeOpener(self.repos))  # a re-fetch: HEAD is detached now
+        self.assertEqual(self.pins_json()["TauCetiRoadmap"]["commit"], new)
 
     def test_pinned_fetch_matches(self):
         F.fetch(self.inputs, opener=FakeOpener(self.repos))

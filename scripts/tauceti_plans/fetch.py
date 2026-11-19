@@ -52,11 +52,19 @@ class Opener:
             subprocess.run(args + [url, dest], check=True)
             if sparse:
                 git(dest, "sparse-checkout", "set", sparse)
-        git(dest, "fetch", "--quiet", "origin")
-        if commit and subprocess.run(["git", "-C", dest, "cat-file", "-e", f"{commit}^{{commit}}"],
-                                     capture_output=True).returncode != 0:
-            git(dest, "fetch", "--quiet", "origin", commit)
-        git(dest, "checkout", "--quiet", "--detach", commit or "FETCH_HEAD")
+        if commit:
+            git(dest, "fetch", "--quiet", "origin")
+            if subprocess.run(["git", "-C", dest, "cat-file", "-e", f"{commit}^{{commit}}"],
+                              capture_output=True).returncode != 0:
+                git(dest, "fetch", "--quiet", "origin", commit)
+            target = commit
+        else:
+            # The remote's default branch, named explicitly. After a bare `git fetch origin`
+            # with HEAD detached (any re-fetch), FETCH_HEAD's first line is whichever branch
+            # sorts first, so a refresh could silently build from a PR branch.
+            git(dest, "fetch", "--quiet", "origin", "HEAD")
+            target = "FETCH_HEAD"
+        git(dest, "checkout", "--quiet", "--detach", target)
 
 
 def _now() -> str:
