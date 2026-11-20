@@ -1623,8 +1623,15 @@ def _validate_release_metrics(
 
 
 def _stable_metrics_view(document: Mapping[str, Any]) -> dict[str, Any]:
-    """Remove only observation-time fields before independent remeasurement."""
+    """Remove only observation-time fields before independent remeasurement.
+
+    Numbers compare by value, whatever their Python type. A fresh measurement reports
+    a float such as ``0.0``; the canonical copy of that measurement inside an activation
+    bundle writes it as ``0``, which parses back as an int. Booleans are not numbers here.
+    """
     def normalize(item: Any) -> Any:
+        if isinstance(item, int) and not isinstance(item, bool):
+            return format(decimal.Decimal(item).normalize(), "f")
         if isinstance(item, decimal.Decimal):
             return format(item.normalize(), "f")
         if isinstance(item, float):

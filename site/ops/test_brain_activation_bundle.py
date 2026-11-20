@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import decimal
 import hashlib
 import json
 import os
@@ -1439,6 +1440,53 @@ class BrainActivationBundleTests(unittest.TestCase):
         frozen_metrics = json.loads((frozen.root / "release-metrics.json").read_bytes())
         self.assertEqual(frozen_metrics["duration_ms"], self.fixture.metrics["duration_ms"])
         self.assertNotIn(exact.encode(), (frozen.root / "release-metrics.json").read_bytes())
+
+    def test_freezes_from_a_bundle_copy_of_metrics_with_integer_valued_floats(self):
+        # A code-only release may pass the reused release's bundle copy of
+        # release-metrics.json. Canonical JSON writes the measured 0.0 as 0, an int,
+        # while a fresh measurement still reports the float 0.0.
+        first = self.fixture.freeze()
+        copied = (first.root / "release-metrics.json").read_bytes()
+        self.assertIn(b'"freelist_fraction":0,', copied)
+        self.assertEqual(self.fixture.metrics["database"]["freelist_fraction"], 0.0)
+        source = self.fixture.paths["release_metrics"]
+        source.write_bytes(copied)
+        second = self.fixture.freeze_activation_to(self.fixture.root / "second-store")
+        self.assertEqual(
+            (second.root / "release-metrics.json").read_bytes(),
+            copied,
+        )
+
+    def test_stable_metrics_view_compares_numbers_by_value_and_keeps_booleans_apart(self):
+        measured = json.loads(json.dumps(self.fixture.metrics))
+        copied = bundle._parse_json_bytes(
+            bundle._canonical_json_bytes(bundle._decimalize_measurement(measured)),
+            "bundle copy",
+            require_canonical=True,
+        )
+        self.assertIs(type(copied["database"]["freelist_fraction"]), int)
+        self.assertEqual(
+            bundle._stable_metrics_view(measured), bundle._stable_metrics_view(copied)
+        )
+        for value in (0, 0.0, decimal.Decimal("0.0"), decimal.Decimal("0E+3")):
+            copied["database"]["freelist_fraction"] = value
+            self.assertEqual(
+                bundle._stable_metrics_view(measured), bundle._stable_metrics_view(copied)
+            )
+        copied["database"]["freelist_fraction"] = 1
+        self.assertNotEqual(
+            bundle._stable_metrics_view(measured), bundle._stable_metrics_view(copied)
+        )
+        copied["database"]["freelist_fraction"] = 0
+        copied["database"]["query_only"] = 1
+        self.assertNotEqual(
+            bundle._stable_metrics_view(measured), bundle._stable_metrics_view(copied)
+        )
+        copied["database"]["query_only"] = True
+        copied["counts"]["tables"]["nodes"] += 1
+        self.assertNotEqual(
+            bundle._stable_metrics_view(measured), bundle._stable_metrics_view(copied)
+        )
 
     def test_rejects_weaker_than_nightly_metric_probe_settings(self):
         self.fixture.metrics["queries"]["owner_lookup"]["iterations"] = 1

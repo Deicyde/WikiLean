@@ -325,9 +325,10 @@ against itself would be meaningless; the diff that is frozen is the reviewed
 
 **What is rebuilt at `C`:** the non-Brain public baseline and its committed
 attestation, the staged public tree, the Worker bundle, CI (`npm ci`,
-`npm run test:ci`, `./scripts/ci-python.sh`), `release-metrics.json` (the freezer
-re-measures the SQLite itself), `shadow-public-result.json`, the promoter dry run, the
-build context, the activation bundle, the operator window, the canary and the journal.
+`npm run test:ci`, `./scripts/ci-python.sh`), `release-metrics.json` (measured in
+step 6, and the freezer re-measures the SQLite itself), `shadow-public-result.json`,
+the promoter dry run, the build context, the activation bundle, the operator window,
+the canary and the journal.
 
 **What is dropped, and why that is safe:** the offline pack compile, the two sealed
 builds and the private qualification. All three answer one
@@ -485,11 +486,23 @@ bash site/ops/brain-promote-release.sh sha256:<live-release-hex> \
   --code-only-release "$EVIDENCE_DIR/code-only-eligibility.json" \
   > "$EVIDENCE_DIR/build-context.json"
 
-# 6. Freeze the code-only activation bundle: 12 files, the 11 of the full path plus
-#    code-only-eligibility.json. --semantic-baseline-manifest, --semantic-diff,
-#    --release-result and --release-metrics are the reused release's own evidence,
-#    copied byte for byte from its activation bundle; freeze re-measures the metrics
-#    and recomputes the diff, so a wrong copy fails here.
+# 6. Measure the reused release's SQLite at C. This is the canonical
+#    release-metrics.json: it is rebuilt at C, not copied. The probe settings are
+#    the ones the freezer requires, and --database and --release-manifest must be the
+#    paths the freeze below names.
+"${WIKILEAN_PYTHON:-.venv/bin/python3}" brain/tools/measure_store.py \
+  --database /absolute/releases/<live-manifest-hex>/brain/data/brain.sqlite3 \
+  --release-manifest /absolute/releases/<live-manifest-hex>/release.json \
+  --limit 100 --iterations 5 --warmup 1 --check-limit 100 \
+  > "$EVIDENCE_DIR/release-metrics.json"
+
+#    Then freeze the code-only activation bundle: 12 files, the 11 of the full path
+#    plus code-only-eligibility.json. --semantic-baseline-manifest, --semantic-diff
+#    and --release-result are the reused release's own evidence, copied byte for byte
+#    from its activation bundle. Freeze re-measures the SQLite, rejects
+#    --release-metrics if a stable field differs, and freezes its own measurement; it
+#    also recomputes the diff, so a wrong copy fails here. The release-metrics.json in
+#    the reused release's bundle passes too, but measure fresh as above.
 "${WIKILEAN_PYTHON:-.venv/bin/python3}" site/ops/brain_activation_bundle.py freeze \
   --release-manifest /absolute/releases/<live-manifest-hex>/release.json \
   --semantic-baseline-manifest /absolute/releases/<previous-manifest-hex>/release.json \
