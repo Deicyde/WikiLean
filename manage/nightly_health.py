@@ -7,8 +7,9 @@ reads the gitignored run logs under site/cache/ (no network, no writes):
   .moderate_run.log        one JSON rec per review/new article, with the error text
   .decisions.jsonl         one line per article per pass: ts, run_id, mode, outcome
   .wp_update_report.jsonl  one line per stage-0 article whose anchors failed
+  cron/moderate-*.log      the nightly wrapper's own log, one per run
 
-Two reports:
+Three reports:
 
   1. The last N review runs: articles, errors, tokens, the distinct error strings
      with counts and example slugs, the fastest failing article's elapsed time,
@@ -19,6 +20,10 @@ Two reports:
      over the last D days: re-pinned / (re-pinned + anchors failed), per attempt
      and per distinct slug, plus the slugs that block the wp-update queue head,
      and a warning once one wp-update run nears /api/work's 1000-row cap.
+  3. The multi-library decl fabric (KV libdecls:v1) from the newest moderate
+     log that refreshed it: each enabled library's own-decl count, and a
+     warning for a library at 0, a library whose fetch failed in each of the
+     last 3 refreshes, a failed build and a failed KV put.
 
 Stdlib only and Python 3.9 compatible, so an older checkout can run the current
 version without updating:
@@ -42,6 +47,10 @@ P3_MIN_SLUGS = 20    # fewer distinct drifted slugs than this is too few to judg
 WP_UPDATE_CAP = 1000       # /api/work's wp-update row cap (wiki/src/index.ts)
 WP_UPDATE_WARN_ROWS = 800  # warn when one wp-update run takes this many articles
 OLD_WP_UPDATE_PAGE = 100  # what /api/work served wp-update before its cap was raised
+# site/ops/nightly-moderate.sh's header for site/build_library_decls.py's output.
+DECL_SECTION = "--- refresh multi-library decl fabric (KV libdecls:v1) ---"
+DECL_FAIL_RUNS = 3   # warn once a library's fetch has failed this many refreshes running
+DECL_MAX_LOGS = 30   # nightly-moderate.sh keeps the newest 30 moderate logs
 
 # Ordered: the first matching pattern names the likely cause, matched against
 # the raw (untruncated) error. The names are the "Likely cause" column of the
@@ -275,11 +284,157 @@ def drift_trigger(decisions: list, report: list, days: int, now: float) -> dict:
     }
 
 
+# site/build_library_decls.py prints, for each enabled library, "<key>: N own
+# decls", and before it, when the fetch failed, "<key>: FETCH FAILED (<reason>)"
+# and "<key>: keeping N decls from the previous blob". The FETCH FAILED line goes
+# to stderr, which reaches the log at once, while stdout reaches it when the
+# builder exits, so the lines of one library need not be adjacent.
+_DECL_LINE = re.compile(
+    r"^\s+(?P<key>[^\s:]+): (?:FETCH FAILED \((?P<reason>.*)\)"
+    r"|keeping (?P<kept>\d+) decls from the previous blob|(?P<own>\d+) own decls)\s*$")
+_LOG_DATE = re.compile(r"moderate-(\d{4})(\d{2})(\d{2})T\d{6}\.log$")
+
+
+def _log_date(name: str) -> str:
+    m = _LOG_DATE.search(name)
+    return "-".join(m.groups()) if m else name
+
+
+def decl_section(text: str):
+    """One moderate log's decl fabric section, or None if the log has no
+    finished one.
+
+    Returns {"libraries": {key: {"own", "kept", "reason"}}, "build_failed",
+    "kv_put"}. The section runs from its header to the next "--- " or "=== "
+    line; the wrangler output in it matches none of the patterns. It is
+    finished once the builder printed its "wrote library_decls.json" line or
+    the wrapper its build-failed line: a log read while the builder runs has
+    only the FETCH FAILED lines so far."""
+    lines = text.splitlines()
+    start = next((i for i, line in enumerate(lines) if line.strip() == DECL_SECTION), None)
+    if start is None:
+        return None
+    libs = {}
+    wrote, build_failed, kv_put = False, False, None
+    for line in lines[start + 1:]:
+        if line.startswith(("--- ", "=== ")):
+            break
+        m = _DECL_LINE.match(line)
+        if m:
+            lib = libs.setdefault(m.group("key"), {"own": None, "kept": None, "reason": None})
+            if m.group("reason") is not None:
+                lib["reason"] = m.group("reason")
+            elif m.group("kept") is not None:
+                lib["kept"] = int(m.group("kept"))
+            else:
+                lib["own"] = int(m.group("own"))
+        elif line.startswith("wrote library_decls.json"):
+            wrote = True
+        elif line.startswith("(library-decls build failed"):
+            build_failed = True
+        elif line.startswith("(libdecls kv put returned"):
+            kv_put = line.strip()
+    if not (wrote or build_failed):
+        return None
+    return {"libraries": libs, "build_failed": build_failed, "kv_put": kv_put}
+
+
+def _fetch_failed(lib: dict) -> bool:
+    # The builder prints "keeping" only after a failed fetch, so either line counts.
+    return lib["reason"] is not None or lib["kept"] is not None
+
+
+def decl_fabric(cron: Path, max_logs: int = DECL_MAX_LOGS) -> dict:
+    """The decl fabric's newest refresh, and how many refreshes each library's
+    fetch has failed in a row.
+
+    Reads the newest max_logs moderate logs in cron/ (their names sort by
+    time). The libraries are those the newest section lists, since the builder
+    prints a count for every enabled library and for no other. A failure run
+    counts back from the newest section over the older sections and ends at the
+    first one in which the library fetched or is not listed; a failed build
+    that does not list it says nothing either way and is passed over."""
+    logs = sorted(cron.glob("moderate-*.log"))[-max_logs:] if cron.is_dir() else []
+    refreshes = []
+    for path in logs:
+        try:
+            sec = decl_section(path.read_text(encoding="utf-8", errors="replace"))
+        except OSError:
+            continue
+        if sec is not None:
+            sec["log"] = path.name
+            refreshes.append(sec)
+    fab = {"logs": len(logs), "newest_log": logs[-1].name if logs else None,
+           "refreshes": len(refreshes), "log": None, "libraries": [], "warnings": []}
+    if not refreshes:
+        return fab
+    latest = refreshes[-1]
+    fab["log"] = latest["log"]
+    warnings = fab["warnings"]
+    if latest["build_failed"]:
+        warnings.append("the build failed (site/build_library_decls.py exited non-zero), "
+                        "so KV libdecls:v1 kept its previous copy")
+    for key in sorted(latest["libraries"]):
+        lib = dict(latest["libraries"][key], key=key, run=0, since=None)
+        for sec in reversed(refreshes):
+            seen = sec["libraries"].get(key)
+            if seen is None and sec["build_failed"]:
+                continue
+            if seen is None or not _fetch_failed(seen):
+                break
+            lib["run"] += 1
+            lib["since"] = _log_date(sec["log"])
+        lib["failed"] = lib["run"] > 0
+        lib["reason"] = clean(lib["reason"], 120) if lib["reason"] is not None else None
+        fab["libraries"].append(lib)
+        if lib["own"] == 0:
+            warnings.append(f"{key} has 0 own decls, so /decl/ resolves none of its "
+                            f"declarations")
+        if lib["run"] >= DECL_FAIL_RUNS:
+            since = ("since at least " if lib["run"] == len(refreshes) else "since ") + lib["since"]
+            kept = (f"; the {lib['own']:,} decls it serves are left from an earlier blob"
+                    if lib["own"] else "")
+            warnings.append(f"{key}: fetch failed in each of the last {lib['run']} refreshes, "
+                            f"{since} ({lib['reason'] or 'no reason logged'}){kept}")
+    if latest["kv_put"]:
+        warnings.append(f"{latest['kv_put']}: KV libdecls:v1 is older than this blob")
+    return fab
+
+
+def print_decl_fabric(fab: dict) -> None:
+    print()
+    if fab["log"] is None:
+        where = (f"in the {fab['logs']} moderate logs" if fab["logs"]
+                 else "and no moderate logs")
+        print(f"decl fabric (KV libdecls:v1): no finished refresh section {where} under cron/")
+        return
+    print(f"decl fabric (KV libdecls:v1), {fab['log']} "
+          f"(the newest of {fab['refreshes']} refreshes read):")
+    if fab["newest_log"] != fab["log"]:
+        print(f"  note     the newest log, {fab['newest_log']}, has no finished refresh section "
+              f"(still running, stopped early, or WIKILEAN_LIBDECLS_REFRESH=0)")
+    width = max((len(lib["key"]) for lib in fab["libraries"]), default=0)
+    for lib in fab["libraries"]:
+        own = "?" if lib["own"] is None else f"{lib['own']:,}"
+        line = f"  {lib['key']:<{width}}  {own:>7} own decls"
+        if lib["failed"]:
+            line += f"  fetch failed ({lib['reason'] or 'no reason logged'})"
+            if lib["kept"] is not None:
+                line += f", kept {lib['kept']:,} from the previous blob"
+            line += f"; {lib['run']} refresh{'es' if lib['run'] > 1 else ''} running"
+        print(line)
+    for w in fab["warnings"]:
+        print(f"  WARNING  {w}")
+    if not fab["warnings"]:
+        print(f"  verdict  no library is at 0 own decls or has failed its fetch "
+              f"{DECL_FAIL_RUNS} refreshes running")
+
+
 def _pct(x) -> str:
     return "n/a" if x is None else f"{100 * x:.1f}%"
 
 
-def print_report(runs: list, drift: dict, cache: Path) -> None:
+def print_report(runs: list, drift: dict, cache: Path, decls=None) -> None:
     print(f"WikiLean nightly health: {cache}")
     print()
     if not runs:
@@ -346,6 +501,8 @@ def print_report(runs: list, drift: dict, cache: Path) -> None:
         print(f"  never cleared {drift['never_cleared']} slugs; most-retried:")
         for slug, n in drift["queue_head"]:
             print(f"    {n:>3}x  {slug}")
+    if decls is not None:
+        print_decl_fabric(decls)
 
 
 def main(argv=None) -> int:
@@ -369,7 +526,7 @@ def main(argv=None) -> int:
     runs = review_runs(read_jsonl(cache / ".moderate_run.log"), decisions, args.runs)
     drift = drift_trigger(decisions, read_jsonl(cache / ".wp_update_report.jsonl"),
                           args.days, time.time())
-    print_report(runs, drift, cache)
+    print_report(runs, drift, cache, decl_fabric(cache / "cron"))
     return 0
 
 

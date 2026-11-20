@@ -150,7 +150,11 @@ treat `#` as a comment, so the inline comments in these blocks would break the c
    - a likely cause from the table below.
 
    It also lists the slugs that failed in more than one run, and the drift trigger (last
-   section of this file). The raw records, if you prefer:
+   section of this file). Last, it reads the `--- refresh multi-library decl fabric` section
+   of the newest moderate log that finished one: each enabled library's own-decl count,
+   with a `WARNING` for a library at 0, a library whose fetch failed in each of the last 3
+   refreshes (the builder then serves the previous blob's entries, so the count alone looks
+   fine), a failed build and a failed KV put. The raw records, if you prefer:
 
    ```bash
    tail -n 30 "$C/site/cache/.moderate_run.log" | "$PY" -c '
