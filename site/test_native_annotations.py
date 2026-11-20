@@ -16,6 +16,7 @@ from unittest.mock import AsyncMock, patch
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 os.environ.setdefault('WIKILEAN_SEARCH_TOOLS', '0')
 import native_annotations as n
+import native_review as nr
 import render
 import moderate
 
@@ -224,6 +225,301 @@ class NativeContract(unittest.TestCase):
         self.assertNotEqual(n.anchor_sig(first), n.anchor_sig(old_item()))
 
 
+class ReviewMerge(unittest.TestCase):
+    """The agent names stored selections; the merge carries them forward itself."""
+
+    def test_resolving_a_stored_anchor_is_not_an_agent_edit(self):
+        # The 2026-11-18 nightly: every article failed because the pipeline's own
+        # resolution pass rewrote the stored profile locations it was handed.
+        for snippet, expected in (('A finite group', 'quote'), ('absent from the article', 'profile')):
+            stored = item(links=[], unlinked=[occurrence(snippet)])
+            produced = [deepcopy(stored)]
+            n.resolve_locations(produced, HTML)
+            location = produced[0]['unlinked'][0]['location']
+            self.assertEqual(expected, 'profile' if 'profile' in location else 'quote')
+            self.assertNotEqual(location, stored['unlinked'][0]['location'])
+            self.assertEqual(nr.selection_identity(produced[0]['unlinked'][0]),
+                             nr.selection_identity(stored['unlinked'][0]))
+            posted, _ = moderate.finalize_for_post([stored], produced)
+            self.assertEqual(posted, produced)
+
+    def _two_ended_link(self):
+        pdf = {'type': 'pdf', 'uri': 'https://example.net/p.pdf', 'location': {'page': 2}}
+        return pdf, item(links=[{'id': 'L1', 'annotation': {
+            'subject': [occurrence(), deepcopy(pdf)], 'object': formal('urn:formal:a')}}],
+            unlinked=[occurrence('Other')])
+
+    def test_a_restated_subject_cannot_drop_a_stored_selection(self):
+        # The agent re-states L1's subject naming only u0. The opaque PDF end it
+        # left out is a stored selection, so the merge keeps it in the link.
+        pdf, stored = self._two_ended_link()
+        reply = {'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [{'ref': 'u2'}],
+                 'links': [{'id': 'L1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                       'object': formal('urn:formal:a')}}]}
+        merged, report = nr.merge_native_review([stored], [reply])
+        self.assertEqual(merged[0]['links'][0]['annotation']['subject'], [pdf, occurrence()])
+        self.assertEqual(report['carried_selections'], 1)
+        posted, _ = moderate.finalize_for_post([stored], merged)
+        self.assertEqual(posted, merged)
+
+    def test_the_write_refuses_a_selection_dropped_or_changed_inside_a_link(self):
+        # The tripwire's own floor: a subject end that goes missing or moves on
+        # the way to the POST is as silent a loss as a vanished unlinked span.
+        pdf, stored = self._two_ended_link()
+        dropped = deepcopy(stored)
+        dropped['links'][0]['annotation']['subject'] = [occurrence()]
+        moved = deepcopy(stored)
+        moved['links'][0]['annotation']['subject'][1]['location'] = {'page': 3}
+        for produced in (dropped, moved):
+            with self.subTest(produced=produced), self.assertRaises(n.NativeAnnotationError):
+                moderate.finalize_for_post([stored], [produced])
+
+    def test_a_subject_that_is_not_an_array_still_fails_loudly(self):
+        # Carrying stored ends back into a re-stated subject must not quietly
+        # repair a reply that is not a subject at all.
+        _pdf, stored = self._two_ended_link()
+        broken = {'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [{'ref': 'u2'}],
+                  'links': [{'id': 'L1', 'annotation': {'subject': 'u0', 'object': formal('urn:x')}}]}
+        merged, report = nr.merge_native_review([stored], [broken])
+        self.assertEqual(merged, [stored])
+        self.assertEqual([entry['item'] for entry in report['skipped_items']], ['aabbccddeeff'])
+
+    def test_a_look_alike_cannot_stand_in_for_the_selection_it_shadows(self):
+        # A span that merely selects the same thing is checked against the
+        # stored bytes too; being first in occurrence order buys it nothing.
+        stored = item(links=[], unlinked=[occurrence(junk=['0 / 0 = 0'])])
+        decoy = {'type': 'html', 'uri': URI, 'location': {'quote': {'exact': 'A finite group'}},
+                 'extensions': {'org.wikilean': {'anchor': occurrence()['location']['anchor']}}}
+        shadowed = {**deepcopy(stored), 'links': [{'id': 'n:1', 'annotation': {
+            'subject': [decoy], 'object': formal('urn:x')}}]}
+        shadowed['unlinked'] = [occurrence(junk=['tampered'])]
+        with self.assertRaises(n.NativeAnnotationError):
+            moderate.finalize_for_post([stored], [shadowed])
+        # With the stored bytes still there the same output is fine.
+        shadowed['unlinked'] = deepcopy(stored['unlinked'])
+        posted, _ = moderate.finalize_for_post([stored], [shadowed])
+        self.assertEqual(posted[0]['unlinked'], stored['unlinked'])
+
+    def test_the_resolution_exemption_only_covers_the_pipelines_own_rewrite(self):
+        # Carrying the stored anchor as an editing key is not a licence to
+        # write any location at all: resolve() emits a quote or a selector.
+        stored = item(links=[], unlinked=[occurrence()])
+        anchor = occurrence()['location']['anchor']
+        for location, other in (({'page': 7}, {}), ({'fragment': 'x'}, {}),
+                                ({'quote': {'exact': 'A finite group'}}, {'type': 'latex'})):
+            forged = {'type': 'html', 'uri': URI, 'location': location,
+                      'extensions': {'org.wikilean': {'anchor': anchor}}, **other}
+            self.assertFalse(nr._is_resolution(stored['unlinked'][0], forged))
+            with self.subTest(location=location), self.assertRaises(n.NativeAnnotationError):
+                moderate.finalize_for_post([stored], [item(links=[], unlinked=[forged])])
+
+    def test_a_base_that_resolves_nothing_may_be_dropped_on_promotion(self):
+        # base_uri only resolves a relative reference, and an end inside a link
+        # may not carry one; losing a redundant base is not losing a selection.
+        stored = item(links=[], unlinked=[{'type': 'pdf', 'uri': 'https://example.net/p.pdf',
+                                           'base_uri': 'https://example.net/', 'location': {'page': 2}}])
+        reply = {'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [],
+                 'links': [{'id': 'n:1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                        'object': formal('urn:x')}}]}
+        merged, _ = nr.merge_native_review([stored], [reply])
+        n.validate_items(merged)
+        self.assertNotIn('base_uri', merged[0]['links'][0]['annotation']['subject'][0])
+        posted, _ = moderate.finalize_for_post([stored], merged)
+        self.assertEqual(posted, merged)
+
+    def test_a_lost_or_altered_selection_still_fails_the_write(self):
+        stored = item(links=[], unlinked=[occurrence(), occurrence('Other')])
+        for produced in ([item(links=[], unlinked=[occurrence()])],
+                         [item(links=[], unlinked=[occurrence(), occurrence('Other words')])]):
+            with self.subTest(produced=produced), self.assertRaises(n.NativeAnnotationError):
+                moderate.finalize_for_post([stored], produced)
+        altered = deepcopy(stored)
+        altered['unlinked'][1]['location']['opaque'] = {'keep': 1}
+        with self.assertRaises(n.NativeAnnotationError):
+            moderate.finalize_for_post([altered], [stored])
+
+    def test_the_agent_view_names_every_selection_it_may_not_retype(self):
+        work = item(unlinked=[occurrence('Other', junk=['0 / 0 = 0'])])
+        work['links'].append({'id': 'pdf', 'annotation': {'subject': [{'type': 'pdf', 'uri': 'https://example.net/p.pdf',
+                              'location': {'page': 2}}], 'object': formal('urn:formal:pdf')}})
+        view = nr.review_view([work])[0]
+        self.assertEqual([span['ref'] for span in view['unlinked']], ['u2'])
+        self.assertEqual(view['links'][0]['annotation']['subject'],
+                         [{'ref': 'u0', 'type': 'html', 'selects': {'section': 'Statement', 'snippet': 'A finite group'}}])
+        self.assertEqual(view['links'][1]['annotation']['subject'],
+                         [{'ref': 'u1', 'type': 'pdf', 'uri': 'https://example.net/p.pdf', 'opaque': True}])
+        self.assertNotIn('junk', json.dumps(view))
+        self.assertEqual(view['links'][0]['annotation']['object'], work['links'][0]['annotation']['object'])
+        # Echoing the view back changes nothing at all, and human items are shown as stored.
+        merged, report = nr.merge_native_review([work], [view])
+        self.assertEqual(merged, [work])
+        self.assertEqual(report['rejections'], []) and self.assertEqual(report['skipped_items'], [])
+        human = item(provenance='human', unlinked=[occurrence('Other')])
+        self.assertEqual(nr.review_view([human, old_item()]), [human, old_item()])
+
+    def test_a_reference_from_another_review_item_is_refused_not_mislinked(self):
+        # References are numbered across the whole article, so item B's reply
+        # naming item A's u0 names a real selection the merge can refuse. With
+        # per-item numbering it quietly linked B's own first selection instead.
+        stored = [item(links=[], unlinked=[occurrence('for A')]),
+                  item(id='001122334455', links=[], unlinked=[occurrence('for B')])]
+        view = nr.review_view(stored)
+        self.assertEqual([span['ref'] for span in view[0]['unlinked']], ['u0'])
+        self.assertEqual([span['ref'] for span in view[1]['unlinked']], ['u1'])
+        borrowed = {'id': '001122334455', 'status': 'formalized', 'unlinked': [],
+                    'links': [{'id': 'B:link:1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                                'object': formal('urn:decl:for-A')}}]}
+        disputed = {'id': '001122334455', 'status': 'formalized', 'links': [],
+                    'unlinked': [{'ref': 'u0', 'reject': 'the article no longer states this'}]}
+        for reply in (borrowed, disputed):
+            with self.subTest(reply=reply):
+                merged, report = nr.merge_native_review(stored, [reply])
+                self.assertEqual(merged, [stored[1], stored[0]])
+                self.assertEqual(report['rejections'], [])
+                self.assertEqual([entry['item'] for entry in report['skipped_items']], ['001122334455'])
+                self.assertIn("'u0' belongs to review item [aabbccddeeff]",
+                              report['skipped_items'][0]['reason'])
+        # Its own reference still links the stored selection it names.
+        own = {'id': '001122334455', 'status': 'formalized', 'unlinked': [],
+               'links': [{'id': 'B:link:1', 'annotation': {'subject': [{'ref': 'u1'}],
+                                                           'object': formal('urn:decl:for-B')}}]}
+        merged, report = nr.merge_native_review(stored, [own])
+        self.assertEqual(merged[0]['links'][0]['annotation']['subject'], [stored[1]['unlinked'][0]])
+        self.assertEqual((report['skipped_items'], report['promoted']), ([], 1))
+
+    def test_a_reference_promotes_the_stored_selection_not_the_agents_copy(self):
+        stored = item(links=[], unlinked=[occurrence(extensions={'org.wikilean': {'anchor': {'snippet': 'key'}}},
+                                                     junk=['0 / 0 = 0']), occurrence('Other')])
+        reply = {'id': 'aabbccddeeff', 'status': 'formalized', 'note': 'linked',
+                 'links': [{'id': 'new:1', 'annotation': {'subject': [{'ref': 'u0'}],
+                                                          'object': formal('urn:formal:a')}}],
+                 'unlinked': [{'ref': 'u1'}]}
+        merged, report = nr.merge_native_review([stored], [reply])
+        self.assertEqual(merged[0]['links'][0]['annotation']['subject'], [stored['unlinked'][0]])
+        self.assertEqual(merged[0]['unlinked'], [stored['unlinked'][1]])
+        self.assertEqual(merged[0]['note'], 'linked')
+        self.assertEqual((report['promoted'], report['new_selections']), (1, 0))
+
+    def test_an_agents_own_copy_can_never_change_a_stored_selection(self):
+        stored = item(links=[], unlinked=[occurrence(junk=['0 / 0 = 0'])])
+        rewritten = occurrence('A finite group has an identity')
+        merged, report = nr.merge_native_review([stored], [item(links=[], unlinked=[rewritten])])
+        self.assertEqual(merged[0]['unlinked'], [stored['unlinked'][0], rewritten])
+        self.assertEqual(report['new_selections'], 1)
+        # An exact copy is recognised as the selection it copies, not a second one.
+        merged, _ = nr.merge_native_review([stored], [item(links=[], unlinked=[occurrence()])])
+        self.assertEqual(merged[0]['unlinked'], stored['unlinked'])
+
+    def test_a_disputed_selection_is_kept_and_reported_to_the_editor(self):
+        stored = item(links=[], unlinked=[occurrence()])
+        reply = item(links=[], unlinked=[{'ref': 'u0', 'reject': 'the article no longer states this  '}])
+        merged, report = nr.merge_native_review([stored], [reply])
+        self.assertEqual(merged[0]['unlinked'], stored['unlinked'])
+        self.assertEqual(report['rejections'], [{'item': 'aabbccddeeff', 'ref': 'u0',
+                                                 'reason': 'the article no longer states this'}])
+
+    def test_a_dispute_the_agent_did_not_word_still_reaches_the_editor(self):
+        # {"ref": "u0", "reject": true} is an objection. Honouring only a
+        # non-empty string dropped it in silence, so the human who decides
+        # whether the selection stays never heard about it.
+        stored = item(links=[], unlinked=[occurrence()])
+        for reject in (True, 1, ['no'], '   '):
+            with self.subTest(reject=reject):
+                merged, report = nr.merge_native_review(
+                    [stored], [item(links=[], unlinked=[{'ref': 'u0', 'reject': reject}])])
+                self.assertEqual(merged[0]['unlinked'], stored['unlinked'])
+                self.assertEqual(report['rejections'],
+                                 [{'item': 'aabbccddeeff', 'ref': 'u0', 'reason': ''}])
+        for quiet in (False, None, '', 0):
+            with self.subTest(reject=quiet):
+                merged, report = nr.merge_native_review(
+                    [stored], [item(links=[], unlinked=[{'ref': 'u0', 'reject': quiet}])])
+                self.assertEqual(merged[0]['unlinked'], stored['unlinked'])
+                self.assertEqual(report['rejections'], [])
+
+    def test_an_omitted_item_or_link_is_carried_forward_not_deleted(self):
+        # 2026-11-18 Algebraic_number_field: one omitted item failed the article.
+        stored = [item(), item(id='001122334455', links=[], unlinked=[occurrence('Other')])]
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed')])
+        self.assertEqual(merged[1], stored[1])
+        self.assertEqual(merged[0]['note'], 'reviewed')
+        self.assertEqual(report['carried_items'], 1)
+        merged, report = nr.merge_native_review([item()], [{'id': 'aabbccddeeff', 'status': 'rejected',
+                                                           'links': [], 'unlinked': []}])
+        self.assertEqual(merged[0]['links'], item()['links'])
+        self.assertEqual((merged[0]['status'], report['carried_links']), ('rejected', 1))
+
+    def test_a_carried_item_the_article_has_lost_is_not_resurrected(self):
+        # The merge records which items are purely stored data, so a later
+        # re-finalize against a newer article can tell them from the agent's
+        # work. An item a person hard-deleted in between must not come back.
+        stored = [item(), item(id='001122334455', links=[], unlinked=[occurrence('Other')])]
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed')])
+        self.assertEqual(report['carried_ids'], ['001122334455'])
+        authored = item(id=None, links=[], unlinked=[occurrence('New')])
+        del authored['id']
+        payload = merged + [authored]
+        kept, dropped = nr.drop_deleted_carried([stored[0]], payload, report['carried_ids'])
+        self.assertEqual(dropped, ['001122334455'])
+        self.assertEqual(kept, [merged[0], authored])
+        # Still in the article: carried and kept. Not in the record: kept too.
+        self.assertEqual(nr.drop_deleted_carried(stored, payload, report['carried_ids']),
+                         (payload, []))
+        self.assertEqual(nr.drop_deleted_carried([stored[0]], payload, []), (payload, []))
+
+    def test_a_legacy_item_the_agent_omits_is_reported_not_lost_in_silence(self):
+        # The reference contract protects native items only, so a legacy
+        # ai-owned item the agent does not echo leaves the article. It is not
+        # carried forward (that would duplicate a legitimate conversion to the
+        # native shape), but it may not disappear without a word either.
+        stored = [old_item(id='001122334455'), item()]
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed')])
+        self.assertEqual([entry.get('id') for entry in merged], ['aabbccddeeff'])
+        self.assertEqual(report['skipped_items'], [
+            {'item': '001122334455',
+             'reason': 'a legacy review item the agent omitted is not carried forward'}])
+        # Echoed back it survives, and then there is nothing to report.
+        legacy = old_item(id='001122334455')
+        merged, report = nr.merge_native_review(stored, [item(note='reviewed'), legacy])
+        self.assertIn(legacy, merged)
+        self.assertEqual(report['skipped_items'], [])
+        # A human legacy item is restored on the wire instead, so it is not one of these.
+        _merged, report = nr.merge_native_review(
+            [old_item(id='001122334455', provenance='human'), item()], [item(note='reviewed')])
+        self.assertEqual(report['skipped_items'], [])
+
+    def test_one_mangled_item_is_kept_unchanged_instead_of_failing_the_article(self):
+        stored = [item(), item(id='001122334455', links=[], unlinked=[occurrence('Other')])]
+        for broken in ({'id': '001122334455', 'links': [{'id': 'x', 'annotation': {'subject': [{'ref': 'u7'}],
+                                                                                   'object': formal('urn:x')}}], 'unlinked': []},
+                       {'id': '001122334455', 'links': [{'id': 'x', 'annotation': {'object': formal('urn:x')}}], 'unlinked': []},
+                       {'id': '001122334455', 'links': 'nonsense', 'unlinked': []},
+                       {'id': '001122334455', 'anchor': {'snippet': 'legacy'}}):
+            with self.subTest(broken=broken):
+                merged, report = nr.merge_native_review(stored, [item(note='fine'), broken])
+                self.assertEqual(merged[1], stored[1])
+                self.assertEqual([entry['item'] for entry in report['skipped_items']], ['001122334455'])
+                self.assertEqual(merged[0]['note'], 'fine')
+        # A new item cannot borrow another item's references, and nothing is lost by refusing it.
+        merged, report = nr.merge_native_review(stored, [item(), item(id='ffeeddccbbaa', links=[],
+                                                                     unlinked=[{'ref': 'u0'}])])
+        self.assertEqual(len(merged), 2)
+        self.assertEqual(report['skipped_items'][0]['item'], 'ffeeddccbbaa')
+
+    def test_the_pipeline_never_resolves_a_human_items_selection(self):
+        # A human annotation is posted byte-identical to the stored one, so the
+        # pipeline must not rewrite its anchor on the way past.
+        import batch_annotate as ba
+        stored = [item(provenance='human', links=[], unlinked=[occurrence()]),
+                  item(id='001122334455', links=[], unlinked=[occurrence()])]
+        produced, _ = ba._native_agent_output(deepcopy(stored), stored, title=TITLE, revid=42, html=HTML)
+        self.assertEqual(produced[0], stored[0])
+        self.assertNotEqual(produced[1]['unlinked'][0]['location'], stored[1]['unlinked'][0]['location'])
+        posted, stats = moderate.finalize_for_post(stored, produced)
+        self.assertEqual(posted[0], stored[0])
+        self.assertEqual((stats['human_restored_wire'], stats['human_reinserted_wire']), (0, 0))
+
+
 class Rendering(unittest.TestCase):
     def test_only_the_matching_source_renders(self):
         for uri, expected in ((None,False),('https://other.example/',False),(URI,True)):
@@ -284,6 +580,45 @@ class Pipeline(unittest.TestCase):
             n.validate_items(article['annotations'])
             self.assertEqual(article['annotations'][0]['private'],{'opaque':True})
             self.assertIn('native review-item format',fake.call_args_list[0].args[0])
+
+    def test_native_moderation_of_a_stored_article_reaches_the_write(self):
+        # End to end over the nightly review path: stored item → references in
+        # both prompts → merge → resolution → the POST payload moderate.py builds.
+        import batch_annotate as ba
+        existing = [item(links=[], unlinked=[occurrence(junk=['0 / 0 = 0'])], note='old')]
+        replies = [{'annotations': [{'id': 'aabbccddeeff', 'status': 'not_formalized',
+                                     'links': [], 'unlinked': [{'ref': 'u0'}], 'note': 'still stated'}]},
+                   {'annotations': [{'id': 'aabbccddeeff', 'status': 'formalized', 'unlinked': [],
+                                     'links': [{'id': 'aabbccddeeff:link:1', 'annotation': {
+                                         'subject': [{'ref': 'u0'}],
+                                         'object': [n.mathlib_end('Mathlib.Group', 'Group.identity')]}}]}]}]
+        prompts = []
+        async def agent(system, prompt, *args, **kwargs):
+            prompts.append(prompt)
+            return replies[len(prompts) - 1], {}
+        with tempfile.TemporaryDirectory() as tmp:
+            directory = Path(tmp)
+            (directory / 'Synthetic_Article.42.sections.json').write_text(json.dumps({'sections': []}))
+            (directory / 'Synthetic_Article.42.html').write_text(HTML)
+            with patch.object(ba, 'CACHE', directory), patch.object(ba, 'ANNOT', directory), patch.object(ba, 'OUT', directory), \
+                 patch.object(ba, 'fetch_html', return_value=True), patch.object(ba, 'run_script', return_value=(0, '')), \
+                 patch.object(ba, 'run_agent', agent):
+                result = asyncio.run(ba.annotate_one({'title': TITLE}, asyncio.Semaphore(1), {}, moderate=True,
+                                                     existing_override=deepcopy(existing), target_revid=42))
+            final = json.loads((directory / 'Synthetic_Article.json').read_text())['annotations']
+        self.assertNotIn('error', result)
+        for prompt in prompts:  # neither agent is shown a location it would have to retype
+            self.assertIn('"ref": "u0"', prompt)
+            self.assertNotIn('not_attempted', prompt)
+        link = final[0]['links'][0]['annotation']
+        self.assertEqual(link['subject'][0]['junk'], ['0 / 0 = 0'])          # the stored bytes rode through
+        self.assertEqual(link['subject'][0]['location']['quote']['exact'], 'A finite group')
+        self.assertEqual(link['subject'][0]['extensions']['org.wikilean']['anchor'],
+                         occurrence()['location']['anchor'])
+        self.assertEqual(final[0]['unlinked'], [])
+        posted, stats = moderate.finalize_for_post(existing, final)
+        self.assertEqual([a['id'] for a in posted], ['aabbccddeeff'])
+        self.assertEqual((stats['ids_echoed'], stats['ids_fresh']), (1, 0))
 
     def test_native_repin_updates_only_ai_owned_sources_with_audit(self):
         import update_from_upstream as drift

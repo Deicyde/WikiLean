@@ -307,6 +307,20 @@ def test_build_meta_shape():
         "moderation_flags": []}
 
 
+def test_build_meta_carries_the_ids_the_native_merge_only_carried():
+    # M3: the rebase and the flush re-finalize this payload against a newer
+    # article, so the merge's own record of what it carried has to ride with
+    # it. Nothing to carry, nothing in meta.
+    ctx = SimpleNamespace(run_id="deadbeef", mode="review", model="claude-opus-4-7",
+                          prompt_sha="abc123abc123", mathlib_sha="1234567",
+                          auth="subscription")
+    rec = {"native_merge": {"carried_items": 2,
+                            "carried_ids": ["001122334455", "aabbccddeeff", "001122334455"]}}
+    assert m.build_meta(ctx, rec, {})["native_carried"] == ["001122334455", "aabbccddeeff"]
+    assert "native_carried" not in m.build_meta(ctx, {"native_merge": {"carried_items": 0}}, {})
+    assert "native_carried" not in m.build_meta(ctx, {}, {})
+
+
 def test_prompt_sha_moves_with_the_agent_sandbox_version():
     # The sandbox changed what the agents see (tools, settings, CLAUDE.md,
     # hooks, cwd) without moving any prompt text; prompt_sha must still mark
@@ -674,6 +688,34 @@ def test_write_article_409_rebases_once_with_fresh_state():
     assert rebased["meta"]["ids"]["human_reinserted_wire"] == 1  # stats refreshed
 
 
+def test_write_article_409_rebase_drops_a_carried_item_d1_no_longer_has():
+    # M3: the payload was built against an older snapshot. 'cccccccccccc' is a
+    # review item the native merge only carried forward — the agent said
+    # nothing about it — and a person deleted it in between. Re-posting it
+    # would hand the deletion a fresh id and bring the annotation back.
+    import io
+    authored = ann(label="a", id="bbbbbbbbbbbb")
+    idless = ann(label="n")
+    carried = ann(label="c", id="cccccccccccc")
+    fresh = {"annotations": [ann(label="a", id="bbbbbbbbbbbb")], "version": 9,
+             "wikipedia_title": "S"}
+    body = {"annotations": [authored, idless, carried], "base_version": 4,
+            "meta": {"ids": {"stale": True}, "native_carried": ["cccccccccccc"]}}
+    out = io.StringIO()
+    with _patched_get(200, fresh) as gets:
+        with _patched_transport([(409, {"error": "stale", "version": 9}),
+                                 (200, {"version": 10})]) as t:
+            with contextlib.redirect_stdout(out):
+                code, _payload, rebased = asyncio.run(
+                    m._write_article(_write_ctx(), "S", body, "post"))
+    assert code == 200 and rebased is True and len(gets) == 1
+    posted = t.calls[1]["body"]["annotations"]
+    # The agent's own item and the id-less one ride on; only the carried one goes.
+    assert [a["label"] for a in posted] == ["a", "n"]
+    assert all(a["id"] != "cccccccccccc" for a in posted)
+    assert "cccccccccccc" in out.getvalue()      # and it is reported, not silent
+
+
 def test_write_article_409_second_conflict_returned():
     # F9: only ONE rebase — a second 409 goes back to the caller (skip+requeue).
     with _patched_get(200, {"annotations": [], "version": 9}) as gets:
@@ -841,6 +883,88 @@ def test_process_review_dry_run_no_agents_no_writes():
     # the dry-run wire stats come from finalize_for_post(existing, existing)
     assert rec["ids"]["ids_echoed"] == 1          # the ai annotation echoes its id
     assert rec["ids"]["human_restored_wire"] == 0
+
+
+def test_process_review_dry_run_reports_a_tripwire_failure_like_the_live_path():
+    # L3: the dry run ran finalize_for_post outside the try/except the live
+    # path has, so one stored article the tripwire cannot pass — here two
+    # id-less native items whose anchor signatures collide — raised out of
+    # process_review instead of being that article's error.
+    twins = [{"links": [], "unlinked": [], "provenance": "ai"},
+             {"links": [], "unlinked": [], "provenance": "ai"}]
+    rec, t, ctx = _run_review([], dry_run=True, get_payload={
+        "annotations": twins, "version": 7, "wikipedia_title": "T Article", "revid": 1})
+    assert rec["error"].startswith("native_output_needs_review: ")
+    assert "ambiguous native work items" in rec["error"]
+    assert t.calls == [] and ctx._state["agent_calls"] == 0
+    assert "dry_run" not in rec
+
+
+def test_process_review_reports_what_the_native_merge_carried():
+    # The merge carries stored selections and items forward itself, so what it
+    # carried has to reach the run log — a silently unreviewed item is a finding.
+    import tempfile, io, contextlib
+    report = {"carried_items": 1, "promoted": 2,
+              "rejections": [{"item": "aabbccddeeff", "ref": "u3", "reason": "no longer stated"}],
+              "skipped_items": [{"item": "001122334455", "reason": "unknown source-selection reference 'u9'"}]}
+    with tempfile.TemporaryDirectory() as td:
+        ctx = _review_ctx(Path(td))
+        inner = ctx.ba.annotate_one
+
+        async def annotate_one(*a, **kw):
+            return {**await inner(*a, **kw), "native_merge": report}
+
+        ctx.ba = SimpleNamespace(annotate_one=annotate_one, ANNOT=Path(td))
+        out = io.StringIO()
+        with _patched_get(200, {"annotations": [], "version": 7,
+                                "wikipedia_title": "T Article", "revid": 123456789}):
+            with _patched_transport([(200, {"version": 8})]):
+                with contextlib.redirect_stdout(out):
+                    rec = asyncio.run(m.process_review(
+                        {"slug": "T_Article"}, ctx, asyncio.Semaphore(1)))
+    printed = out.getvalue()
+    assert '"carried_items": 1' in printed and "rejections" not in printed
+    assert "u3" in printed and "no longer stated" in printed
+    assert "001122334455" in printed and "unknown source-selection reference" in printed
+    # The report is run-log material; the stored meta ladder keeps its shape.
+    assert m.build_meta(ctx, rec, {})["ladder"] == {
+        "restored": 0, "reinserted": 0, "downgrades_blocked": 0, "moderation_flags": []}
+
+
+def test_prompt_sha_covers_the_native_prompts_the_review_actually_runs():
+    # Every converted article runs the native prompts; a change there has to
+    # move the cohort boundary, or the research data cannot tell the runs apart.
+    prompts = dict(MODERATE_AGENT1_SYSTEM="a1-review", AGENT1_SYSTEM="a1", AGENT2_SYSTEM="a2",
+                   NATIVE_AGENT1_SYSTEM="n1", NATIVE_AGENT2_SYSTEM="n2")
+    for changed in ("NATIVE_AGENT1_SYSTEM", "NATIVE_AGENT2_SYSTEM"):
+        after = SimpleNamespace(**{**prompts, changed: "moved"})
+        for mode in ("review", "new"):
+            assert m.get_prompt_sha(SimpleNamespace(**prompts), mode) != m.get_prompt_sha(after, mode), (changed, mode)
+    import batch_annotate as ba
+    for name in ("NATIVE_AGENT1_SYSTEM", "NATIVE_AGENT2_SYSTEM"):
+        assert isinstance(getattr(ba, name), str) and getattr(ba, name)
+
+
+def test_prompt_sha_covers_the_view_that_replaced_the_agents_data():
+    # L2: review_view replaced the selections in the agents' user prompt with
+    # reference stubs — the largest cohort change there is — with no prompt
+    # text moving. prompt_sha must move with it, as it does with the sandbox.
+    import native_review as nr
+    prompts = dict(MODERATE_AGENT1_SYSTEM="a1-review", AGENT1_SYSTEM="a1", AGENT2_SYSTEM="a2")
+    before = SimpleNamespace(**prompts)
+    baseline = {mode: m.get_prompt_sha(before, mode) for mode in ("review", "new")}
+    live = nr.VIEW_VERSION
+    assert isinstance(live, str) and live
+    try:
+        nr.VIEW_VERSION = "review-view-vNEXT"
+        for mode in ("review", "new"):
+            assert m.get_prompt_sha(before, mode) != baseline[mode], mode
+    finally:
+        nr.VIEW_VERSION = live
+    assert m.get_prompt_sha(before, "review") == baseline["review"]
+    # The docstring describes what is actually hashed.
+    doc = m.get_prompt_sha.__doc__
+    assert "VIEW_VERSION" in doc and "SANDBOX_VERSION" in doc
 
 
 def test_process_review_agent_error_short_circuits():
@@ -1766,6 +1890,34 @@ def test_flush_post_preserves_human_and_clears():
         assert posted["meta"]["flushed"] is True     # flush marker on meta
         assert posted["meta"]["ids"]["human_reinserted_wire"] == 1
         assert m.list_checkpoints(pend) == []        # cleared on 200
+
+
+def test_flush_post_drops_a_carried_item_d1_no_longer_has():
+    # M3, the other re-finalize path: a checkpoint written days ago carries a
+    # review item the agent never touched, and the article has lost it since.
+    # The flush must not bring a human's deletion back with a fresh id.
+    import io
+    with _tmp_pending() as pend:
+        authored = ann(label="a", id="bbbbbbbbbbbb")
+        carried = ann(label="c", id="cccccccccccc")
+        body = {"annotations": [authored, carried], "base_version": 3,
+                "comment": "ai-moderate:review:r0",
+                "meta": {"run_id": "r0", "ids": {"stale": True},
+                         "native_carried": ["cccccccccccc"]}}
+        m.write_checkpoint("Foo", "post", body, "r0", "review", pending_dir=pend)
+        current = {"annotations": [ann(label="a", id="bbbbbbbbbbbb")], "version": 9,
+                   "wikipedia_title": "Foo"}
+        out = io.StringIO()
+        with _patched_get_article([(current, 200)]):
+            with _patched_transport([(200, {"version": 10})]) as t:
+                with contextlib.redirect_stdout(out):
+                    stats = asyncio.run(m.flush_pending(_flush_ctx(),
+                                                        pending_dir=pend))
+        assert stats == {"flushed": 1, "skipped": 0, "failed": 0}
+        posted = t.calls[0]["body"]["annotations"]
+        assert [a["id"] for a in posted] == ["bbbbbbbbbbbb"]
+        assert "cccccccccccc" in out.getvalue()
+        assert m.list_checkpoints(pend) == []
 
 
 def test_flush_post_422_clears_and_counts_failed():
