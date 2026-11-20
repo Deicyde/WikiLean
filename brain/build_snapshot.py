@@ -169,10 +169,17 @@ def build_sqlite_from_context(context: build_context.BuildContext) -> Path:
 
 
 def _publish_live_graph(*, data_dir: Path, sqlite_output: Path | None) -> str:
-    """Build and atomically publish the base graph, optionally with SQLite."""
+    """Build and atomically publish the base graph, optionally with SQLite.
+
+    Live builds also publish the plans layer's held list, held_edges.jsonl, and
+    keep the one they replace as held_edges.previous.jsonl: test_acceptance
+    accounts every previously held edge against this build (brain/plans_layer.py).
+    """
+    import plans_layer  # live path only: replay's declared code closure is unchanged
+
     data_dir = Path(data_dir)
     sqlite_output = Path(sqlite_output) if sqlite_output is not None else None
-    nodes, edges, meta = build()
+    nodes, edges, meta, held = build(with_held=True)
 
     data_dir.parent.mkdir(parents=True, exist_ok=True)
     staging = Path(tempfile.mkdtemp(prefix=".brain-snapshot.", dir=data_dir.parent))
@@ -202,6 +209,22 @@ def _publish_live_graph(*, data_dir: Path, sqlite_output: Path | None) -> str:
             staged_db = staging / DEFAULT_SQLITE_NAME
             write_sqlite_from_jsonl(staged_db, staging)
             publications.append((staged_db, sqlite_output))
+
+        held_target = data_dir / plans_layer.HELD_NAME
+        previous_target = data_dir / plans_layer.HELD_PREVIOUS_NAME
+        staged_held = staging / plans_layer.HELD_NAME
+        plans = meta.get("plans") or {}
+        plans_layer.write_held(staged_held, held, logical_root=plans.get("logical_root"),
+                               snapshot_id=snapshot_id)
+        if held_target.exists():
+            staged_previous = staging / plans_layer.HELD_PREVIOUS_NAME
+            shutil.copy2(held_target, staged_previous)
+            publications.append((staged_previous, previous_target))
+        else:
+            # No held list to replace: an older previous one is not this build's
+            # predecessor, and accounting against it would be wrong.
+            previous_target.unlink(missing_ok=True)
+        publications.append((staged_held, held_target))
         data_dir.mkdir(parents=True, exist_ok=True)
         backups: list[tuple[Path, Path | None]] = []
         try:

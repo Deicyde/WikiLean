@@ -181,6 +181,8 @@ run_check "Mathlib declarations: list reader and fixture build" "$PYTHON_BIN" sc
 run_check "Brain producers: declaration fetch offline" "$PYTHON_BIN" scripts/brain_producers/test_fetch_decls.py
 run_check "Brain producers: exports agree on shared pins" "$PYTHON_BIN" scripts/brain_producers/test_check_pins.py
 run_check "Brain producers: build is offline and refuses a bad input" "$PYTHON_BIN" scripts/brain_producers/test_build_inputs.py
+run_check "Brain plans layer: export checks, plan nodes, held edges and their accounting" "$PYTHON_BIN" brain/test_plans_layer.py
+run_check "Brain producers in the nightly: run, stage and check offline" "$PYTHON_BIN" site/ops/test_brain_producers.py
 run_check "Brain step 0 measurement harness" "$PYTHON_BIN" scripts/brain_measure/test_brain_measure.py
 
 printf '\nCI Python summary: %s commands passed; all required offline scenarios ran.\n' "$CHECKS_PASSED"

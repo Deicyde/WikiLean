@@ -123,8 +123,16 @@ F_LITERATURE = 1 << 7       # node has >=1 cites/matches edge; lit PAPER nodes
                             # (lit:<arxiv_id>, no #ref) carry it natively
 F_EXT = 1 << 8              # node is an ext page
 F_HAS_SNIPPET = 1 << 15     # ext node stores a licensed content snippet
+F_PLAN = 1 << 16            # node is a plan (a roadmap or a layer of one; SCHEMA "Plans layer")
 F_DB_BIT = {"lmfdb_knowl": 1 << 9, "nlab": 1 << 10, "mathworld": 1 << 11,
             "proofwiki": 1 << 12, "stacks": 1 << 13, "oeis": 1 << 14}
+
+# The plans layer (brain/plans_layer.py): the sealed Tau Ceti plans export, staged here by
+# site/ops/brain_producers.py and never committed. Live builds only (see _build).
+PLANS_EXPORT_DIR = BRAIN_DATA / "tauceti_plans"
+# path:<root> trees no library may claim: path:Plans holds the plans layer, one child per
+# planning source (brain/SCHEMA.md "Plans layer").
+RESERVED_LIBRARY_ROOTS = frozenset({"Plans"})
 
 # links evidence.context, best-first (dedup keeps the strongest context)
 CONTEXT_RANK = {"statement": 0, "proof": 1, "body": 2, "related": 3}
@@ -1769,7 +1777,11 @@ def apply_facets(nodes: list[dict], edges: list[dict],
         k = e["kind"]
         if k == "xref":
             xref_touch.add(e["src"])
-            xref_touch.add(e["dst"])
+            # A plan's xref marks the plan, never the page it cites: the plans
+            # layer changes no other node, and whether a cited page shows as
+            # cross-referenced on /brain is decided with plan cells.
+            if e["provenance"]["source"] != "tauceti_plans":
+                xref_touch.add(e["dst"])
             db_bits[e["src"]] |= F_DB_BIT.get(e["provenance"]["source"], 0)
         elif k in ("cites", "matches"):
             lit.add(e["src"])
@@ -1812,6 +1824,10 @@ def apply_facets(nodes: list[dict], edges: list[dict],
             # paper-level lit nodes (lit:<arxiv_id>) anchor the literature
             # facet natively; statement nodes stay bare
             f |= F_LITERATURE
+        elif t == "plan":
+            # a layer's coverage `state` is the roadmap's claim about itself and
+            # never feeds the formalization bits (4, 5)
+            f |= F_PLAN
         if nid in xref_touch:
             f |= F_ANY_XREF
         f |= db_bits.get(nid, 0)
@@ -1845,7 +1861,7 @@ def aggregate_facets(nodes: list[dict], edges: list[dict]) -> None:
 
     for n in nodes:
         f = n.get("f", 0)
-        if f and n["type"] in ("decl", "container"):
+        if f and n["type"] in ("decl", "container", "plan"):
             up(parent.get(n["id"]), f)
     for e in edges:
         if e["kind"] != "formalizes":
@@ -1864,8 +1880,8 @@ def _build(
     *,
     source_set: ContextBuildInputs | None = None,
     local_hf_metadata: Mapping[str, dict[str, object]] | None = None,
-) -> tuple[list[dict], list[dict], dict]:
-    """Returns (nodes, edges, meta) — both lists fully sorted, byte-deterministic."""
+) -> tuple[list[dict], list[dict], dict, list[dict]]:
+    """Returns (nodes, edges, meta, held) — all fully sorted, byte-deterministic."""
     if source_set is None:
         inputs = dict(INPUTS)
         optional_inputs: dict[str, Path | None] = dict(OPTIONAL_INPUTS)
@@ -2958,10 +2974,14 @@ def _build(
                   f"decls exceeds the {USER_REPO_DECL_CAP} per-repo cap",
                   file=sys.stderr)
             continue
-        if f"path:{u_lib}" in containers:
+        # The reservation is live-only like the plans layer itself, so a replay
+        # reduces exactly as its pinned reducer did.
+        if f"path:{u_lib}" in containers or (
+                source_set is None and u_lib in RESERVED_LIBRARY_ROOTS):
             n_user_repos_skipped += 1
             print(f"WARNING: user_repos/{up.name} skipped — lib {u_lib!r} "
-                  f"collides with an existing container tree", file=sys.stderr)
+                  f"collides with an existing or reserved container tree",
+                  file=sys.stderr)
             continue
         if source_set is None:
             fallback_pin = datetime.fromtimestamp(
@@ -3108,10 +3128,65 @@ def _build(
     # empty-ref statement's id)
     lit_nodes = sorted(lit_nodes + paper_nodes, key=lambda n: n["id"])
 
+    # ---- plans layer: Tau Ceti roadmaps and layers (brain/plans_layer.py) ----
+    # Last, so it reads every other node and changes none of them (apply_facets
+    # keeps their bits too): an edge whose endpoint this build did not mint is
+    # held, never dropped. Live builds only:
+    # no replay inventory declares the export (reducer-inputs-v1.json does), and
+    # the import stays on this path so replay's declared code closure is unchanged.
+    plan_nodes: list[dict] = []
+    held_edges: list[dict] = []
+    plans_export_manifest: Path | None = None
+    # None in replay: a replay's output bytes, its meta included, stay exactly
+    # those of the reducer its inventory pins.
+    plans_meta: dict | None = None
+    if source_set is not None:
+        print("NOTE: plans layer skipped in replay (only reducer-inputs-v1.json "
+              "declares brain/data/tauceti_plans/)", file=sys.stderr)
+    else:
+        import plans_layer
+        try:
+            plans_export = plans_layer.load_export(PLANS_EXPORT_DIR)
+            if plans_export is None:
+                plans_meta = {"state": "absent",
+                              "reason": "no brain/data/tauceti_plans/ staged"}
+                print("NOTE: brain/data/tauceti_plans/ missing — plans layer skipped "
+                      "(site/ops/brain_producers.py stages it)", file=sys.stderr)
+            else:
+                other_ids = (
+                    {n["id"] for n in concept_nodes} | set(containers)
+                    | {n["id"] for n in decl_nodes} | {n["id"] for n in lit_nodes}
+                    | {n["id"] for n in ext_nodes})
+                layer = plans_layer.build_layer(plans_export, node_ids=other_ids)
+        except plans_layer.PlansExportError as exc:
+            raise SystemExit(f"FATAL: brain/data/tauceti_plans/ is not a valid plans "
+                             f"export: {exc}") from exc
+        if plans_export is not None:
+            for c in layer.containers:
+                if c["id"] in containers:
+                    raise SystemExit(f"BUG: {c['id']} is reserved for the plans layer "
+                                     f"but another layer minted it")
+                containers[c["id"]] = c
+            edges.extend(layer.edges)
+            plan_nodes, held_edges = layer.nodes, layer.held
+            plans_export_manifest = PLANS_EXPORT_DIR / plans_layer.MANIFEST
+            plans_meta = {
+                "state": "present",
+                "schema": plans_layer.EXPORT_SCHEMA,
+                "logical_root": plans_export.logical_root,
+                "counts": layer.stats,
+                "held": plans_layer.held_summary(held_edges),
+            }
+            print(f"  plans layer: {layer.stats['roadmaps']} roadmaps, "
+                  f"{layer.stats['layers']} layers; edges "
+                  f"{layer.stats['edges']}; held {layer.stats['held']} "
+                  f"(export {plans_export.logical_root[:12]})", file=sys.stderr)
+
     nodes = (sorted(concept_nodes, key=lambda n: int(n["id"][1:]))
              + [containers[k] for k in sorted(containers)]
              + decl_nodes + lit_nodes
-             + sorted(ext_nodes, key=lambda n: n["id"]))
+             + sorted(ext_nodes, key=lambda n: n["id"])
+             + plan_nodes)
 
     # ---- v2 unit cards + facet bitmasks (need the complete node/edge sets) ---
     descriptions: dict[str, str] = {}
@@ -3159,6 +3234,8 @@ def _build(
             present[f"external/{cit_path.name}"] = cit_path
         for up in user_repo_files:
             present[f"user_repos/{up.name}"] = up
+        if plans_export_manifest is not None:
+            present["tauceti_plans/manifest.json"] = plans_export_manifest
         newest = max(
             [v.stat().st_mtime for v in present.values()] + external_mtimes
         )
@@ -3303,13 +3380,31 @@ def _build(
             "lit_citation_rows_dropped": lit_stats["citation_rows_dropped"],
         },
     }
-    return nodes, edges, meta
+    if plans_meta is not None:
+        # The plans layer's input and held list, so a release records both (the
+        # held list itself is brain/data/held_edges.jsonl). Live builds only.
+        meta["licenses"]["tauceti_plans"] = (
+            "plan nodes from TauCetiProject/TauCetiRoadmap (Apache-2.0, TauCeti "
+            "contributors) through the scripts/tauceti_plans export: titles, keys, "
+            "coverage states, Lean names, Stacks tags, arXiv ids and pointers into "
+            "the pinned commit — never README prose")
+        meta["plans"] = plans_meta
+    return nodes, edges, meta, held_edges
 
 
 def build(
-    *, source_set: ContextBuildInputs | None = None
-) -> tuple[list[dict], list[dict], dict]:
-    """Build from a sealed replay context or a locked, reviewed local cache."""
+    *, source_set: ContextBuildInputs | None = None, with_held: bool = False
+) -> tuple:
+    """Build from a sealed replay context or a locked, reviewed local cache.
+
+    Returns (nodes, edges, meta); with ``with_held``, also the plans layer's held
+    edges (brain/plans_layer.py), which brain/build_snapshot.py publishes.
+    """
+    result = _build_any(source_set=source_set)
+    return result if with_held else result[:3]
+
+
+def _build_any(*, source_set: ContextBuildInputs | None) -> tuple:
     if source_set is not None:
         return _build(source_set=source_set)
     # Keep local acquisition policy outside the sealed reducer's import
