@@ -1,7 +1,8 @@
 // Server-rendered chrome for the live wiki: the auth bar + editor injection on
 // article pages, plus the History and Recent-changes pages.
 
-import { siteNav, SITE_TOOLS } from "./site-nav.js";
+import { SITE_TOOLS } from "./site-nav.js";
+import { siteHeader, THEME_BOOTSTRAP, themeToggleScript } from "./site-shell.js";
 import { editorItems, wikipediaSourceUri } from "./native-companion.js";
 import { htmlEscape } from "./engine/html.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
@@ -162,124 +163,72 @@ export function injectArticlesSummary(page: string, box: string | null): string 
   return page;
 }
 
-// Warm academic-minimalist shell, matching home.ts: paper background, serif
-// display headings (system stacks only), one deep-blue accent (#1a4b8c), and
-// the status trio retuned to #2f7d4f / #b08020 / #b3372f. Text-on-tint badge
-// colors use darker inks (#7d5a10, #9c2f28) to keep WCAG AA contrast.
+// The shared layer. Bump with any change to site/assets/style.css, in step with
+// home.ts and articles-render.ts, which link the same file.
+const STYLE_CSS = "/assets/style.css?v=12";
+
+// The chrome pages' own components. The palette, the type scale, the spacing,
+// the header and the theme toggle all come from the shared layer
+// (site/assets/style.css), which this shell links: before the restyle of
+// 2026-11-19 this block restated every colour literally, twice over with its
+// own [data-theme="dark"] half, and so did not follow a re-palette.
 const SHELL_CSS = `
 *{box-sizing:border-box}
-body{margin:0;background:#f7f4ee;color:#1f1d1a;line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-:focus-visible{outline:2px solid #1a4b8c;outline-offset:2px}
-.wl-header{display:flex;align-items:baseline;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:20px 24px 0}
-.wl-brand{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-weight:700;font-size:1.1rem;color:#1f1d1a;text-decoration:none}
-.wl-brand:hover{color:#1a4b8c}
-.wl-navlink{color:#1a4b8c;text-decoration:none;font-size:.88rem}
-.wl-navlink:hover{text-decoration:underline}
-.wrap{max-width:900px;margin:0 auto;padding:26px 24px 64px}
-h1{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.6rem;margin:0 0 .35rem}
+body{line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:var(--s5) var(--s5) var(--s8)}
+h1{font-family:var(--serif);font-size:var(--t-2xl);font-weight:500;line-height:1.15;margin:0 0 var(--s2)}
 h1 a{color:inherit}
-.lead{color:#5f594e;margin:0 0 20px}
-table{border-collapse:collapse;width:100%;background:#fffdf9;border:1px solid #d8d0bd;border-radius:8px;overflow:hidden}
-th,td{border-bottom:1px solid #ece6d8;padding:8px 12px;text-align:left;font-size:.9rem;vertical-align:top}
-th{background:#f2eee3;text-transform:uppercase;letter-spacing:.05em;font-size:.72rem;color:#5f594e}
+.lead{color:var(--muted);margin:0 0 var(--s5);max-width:var(--measure)}
+table{border-collapse:collapse;width:100%;background:var(--surface);border:1px solid var(--line-strong);border-radius:4px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:var(--s2) var(--s3);text-align:left;font-size:var(--t-s);vertical-align:top}
+th{background:var(--sunken);text-transform:uppercase;letter-spacing:.06em;font-size:var(--t-xs);font-weight:700;color:var(--faint)}
 tr:last-child td{border-bottom:none}
-a{color:#1a4b8c;text-decoration:none}
+a{color:var(--accent);text-decoration:none;text-underline-offset:3px}
 a:hover{text-decoration:underline}
-.muted{color:#6e675a}
-button.revert{font:inherit;font-size:.8rem;padding:3px 10px;border:1px solid #d8d0bd;border-radius:6px;background:#fffdf9;color:#1f1d1a;cursor:pointer;margin-right:4px}
-button.revert:hover{border-color:#1a4b8c;color:#1a4b8c}
-.wl-flag-reason{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600;white-space:nowrap}
-.wl-fr-wrong_decl{background:rgba(179,55,47,.10);color:#9c2f28}
-.wl-fr-wrong_status{background:rgba(176,128,32,.14);color:#7d5a10}
-.wl-fr-irrelevant{background:#ece6d8;color:#5f594e}
-.wl-fr-missing_formalization{background:rgba(26,75,140,.10);color:#1a4b8c}
-.wl-fr-other{background:#ece6d8;color:#5f594e}
-.wl-diff-card{background:#fffdf9;border:1px solid #d8d0bd;border-left-width:4px;border-radius:8px;padding:12px 16px;margin:0 0 14px}
-.wl-diff-add{border-left-color:#2f7d4f}
-.wl-diff-delete{border-left-color:#b3372f}
-.wl-diff-modify{border-left-color:#b08020}
-.wl-diff-head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
-.wl-diff-type{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.wl-diff-add .wl-diff-type{color:#2f7d4f}
-.wl-diff-delete .wl-diff-type{color:#9c2f28}
-.wl-diff-modify .wl-diff-type{color:#7d5a10}
+.muted{color:var(--muted)}
+button.revert{font:var(--t-xs)/1.5 var(--sans);padding:3px 10px;border:1px solid var(--line-strong);border-radius:3px;background:var(--surface);color:var(--ink);cursor:pointer;margin-right:4px}
+button.revert:hover{border-color:var(--accent);color:var(--accent)}
+.wl-flag-reason{display:inline-block;padding:2px 8px;border-radius:3px;font-size:var(--t-xs);font-weight:600;white-space:nowrap}
+.wl-fr-wrong_decl{background:var(--c-not_formalized-bg);color:var(--c-not_formalized-ink)}
+.wl-fr-wrong_status{background:var(--c-statement_only-bg);color:var(--c-statement_only-ink)}
+.wl-fr-irrelevant{background:var(--sunken);color:var(--muted)}
+.wl-fr-missing_formalization{background:var(--accent-soft);color:var(--accent)}
+.wl-fr-other{background:var(--sunken);color:var(--muted)}
+.wl-diff-card{background:var(--surface);border:1px solid var(--line);border-left-width:3px;border-radius:3px;padding:var(--s3) var(--s4);margin:0 0 var(--s3)}
+.wl-diff-add{border-left-color:var(--c-formalized)}
+.wl-diff-delete{border-left-color:var(--c-not_formalized)}
+.wl-diff-modify{border-left-color:var(--c-partial)}
+.wl-diff-head{display:flex;gap:var(--s3);align-items:baseline;flex-wrap:wrap;margin-bottom:var(--s2)}
+.wl-diff-type{font-size:var(--t-xs);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.wl-diff-add .wl-diff-type{color:var(--c-formalized-ink)}
+.wl-diff-delete .wl-diff-type{color:var(--c-not_formalized-ink)}
+.wl-diff-modify .wl-diff-type{color:var(--c-partial-ink)}
 .wl-diff-label{font-weight:600}
 .wl-diff-card table{border:none;border-radius:0}
-.wl-diff-card td{font-size:.85rem;word-break:break-word;white-space:pre-wrap}
-.wl-diff-card td.wl-diff-field{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.8rem;white-space:nowrap}
-.wl-kind{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:600;white-space:nowrap;background:#ece6d8;color:#5f594e}
-.wl-kind-edit{background:rgba(26,75,140,.10);color:#1a4b8c}
-.wl-kind-revert{background:rgba(179,55,47,.10);color:#9c2f28}
-.wl-kind-pipeline{background:rgba(47,125,79,.12);color:#2f7d4f}
-.wl-kind-contribution{background:rgba(176,128,32,.14);color:#7d5a10}
-.wl-unpatrolled{color:#b08020;font-size:.65rem;vertical-align:1px;margin-right:6px;cursor:default}
-.wl-patrolled{color:#2f7d4f;font-size:.8rem;white-space:nowrap;cursor:default}
-.wl-filterbar{color:#6e675a;font-size:.85rem;margin:0 0 14px}
-.wl-filterbar a.active{font-weight:700;text-decoration:underline}
-.wl-rq{display:inline-block;padding:1px 7px;border-radius:9px;font-size:.7rem;font-weight:600;white-space:nowrap;background:rgba(26,75,140,.08);color:#1a4b8c;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.wl-diff-card td{font-size:var(--t-xs);word-break:break-word;white-space:pre-wrap}
+.wl-diff-card td.wl-diff-field{font-family:var(--mono);font-size:var(--t-xs);white-space:nowrap}
+.wl-kind{display:inline-block;padding:2px 8px;border-radius:3px;font-size:var(--t-xs);font-weight:600;white-space:nowrap;background:var(--sunken);color:var(--muted)}
+.wl-kind-edit{background:var(--accent-soft);color:var(--accent)}
+.wl-kind-revert{background:var(--c-not_formalized-bg);color:var(--c-not_formalized-ink)}
+.wl-kind-pipeline{background:var(--c-formalized-bg);color:var(--c-formalized-ink)}
+.wl-kind-contribution{background:var(--c-statement_only-bg);color:var(--c-statement_only-ink)}
+.wl-unpatrolled{color:var(--c-partial-ink);font-size:.65rem;vertical-align:1px;margin-right:6px;cursor:default}
+.wl-patrolled{color:var(--c-formalized-ink);font-size:var(--t-xs);white-space:nowrap;cursor:default}
+.wl-filterbar{color:var(--muted);font-size:var(--t-s);margin:0 0 var(--s3)}
+.wl-filterbar a.active{font-weight:700;text-decoration:underline;color:var(--ink)}
+.wl-rq{display:inline-block;padding:1px 7px;border-radius:3px;font-size:var(--t-xs);font-weight:600;white-space:nowrap;background:var(--accent-soft);color:var(--accent);font-family:var(--mono)}
 .wl-stat-num{font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.wl-stats-foot{color:#6e675a;font-size:.82rem;margin:22px 0 0;line-height:1.6}
-h2.wl-stats-h{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.15rem;margin:28px 0 10px}
-.wl-profile-hdr{display:flex;gap:18px;align-items:center;margin:0 0 6px}
-.wl-avatar{width:56px;height:56px;border-radius:50%;background:#ece6d8;flex:0 0 56px}
-.wl-avatar-fallback{display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:#5f594e}
+.wl-stats-foot{color:var(--muted);font-size:var(--t-xs);margin:var(--s5) 0 0;line-height:1.6}
+h2.wl-stats-h{font-family:var(--serif);font-size:var(--t-lg);font-weight:500;margin:var(--s6) 0 var(--s3)}
+.wl-profile-hdr{display:flex;gap:var(--s4);align-items:center;margin:0 0 var(--s2)}
+.wl-avatar{width:56px;height:56px;border-radius:50%;background:var(--sunken);flex:0 0 56px}
+.wl-avatar-fallback{display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;color:var(--muted)}
 .wl-profile-name{margin:0}
-.wl-role{display:inline-block;padding:1px 8px;border-radius:10px;font-size:.7rem;font-weight:700;background:rgba(26,75,140,.10);color:#1a4b8c;text-transform:uppercase;letter-spacing:.04em;vertical-align:3px;margin-left:6px}
-.wl-profile-stats{display:flex;gap:18px;color:#5f594e;font-size:.92rem;margin:14px 0 18px;flex-wrap:wrap}
-.wl-profile-stats b{color:#1f1d1a}
-.wl-watch-list{padding-left:1.2em;margin:8px 0 8px;columns:2;column-gap:36px}
+.wl-role{display:inline-block;padding:1px 8px;border-radius:3px;font-size:var(--t-xs);font-weight:700;background:var(--accent-soft);color:var(--accent);text-transform:uppercase;letter-spacing:.04em;vertical-align:3px;margin-left:6px}
+.wl-profile-stats{display:flex;gap:var(--s4);color:var(--muted);font-size:var(--t-s);margin:var(--s3) 0 var(--s4);flex-wrap:wrap}
+.wl-profile-stats b{color:var(--ink)}
+.wl-watch-list{padding-left:1.2em;margin:var(--s2) 0;columns:2;column-gap:36px}
 .wl-watch-list li{margin:3px 0;break-inside:avoid}
-
-/* Theme-toggle button (matches the article-page version in style.css). */
-.wl-theme-toggle{background:transparent;border:1px solid #d8d0bd;color:#5f594e;border-radius:50%;width:28px;height:28px;padding:0;line-height:1;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:10px}
-.wl-theme-toggle:hover{color:#1f1d1a;border-color:#1a4b8c}
-
-/* ---- Dark mode for the chrome pages. Additive [data-theme="dark"] rules
-   override the warm-paper defaults above without touching the existing
-   selectors — same approach as style.css's article-page dark block. */
-[data-theme="dark"] body{background:#1a1816;color:#ebe5d8}
-[data-theme="dark"] :focus-visible{outline-color:#6e9adf}
-[data-theme="dark"] .wl-brand{color:#ebe5d8}
-[data-theme="dark"] .wl-brand:hover{color:#6e9adf}
-[data-theme="dark"] .wl-navlink{color:#6e9adf}
-[data-theme="dark"] .lead{color:#9a9081}
-[data-theme="dark"] table{background:#232020;border-color:#4d4742}
-[data-theme="dark"] th,[data-theme="dark"] td{border-bottom-color:#3a3530}
-[data-theme="dark"] th{background:#2a2725;color:#9a9081}
-[data-theme="dark"] a{color:#6e9adf}
-[data-theme="dark"] .muted{color:#8a8278}
-[data-theme="dark"] button.revert{background:#232020;color:#ebe5d8;border-color:#4d4742}
-[data-theme="dark"] button.revert:hover{color:#6e9adf;border-color:#6e9adf}
-[data-theme="dark"] .wl-fr-wrong_decl{background:rgba(226,104,95,.18);color:#f08e85}
-[data-theme="dark"] .wl-fr-wrong_status{background:rgba(212,160,66,.20);color:#e2bf78}
-[data-theme="dark"] .wl-fr-irrelevant{background:#2e2a2f;color:#9a9081}
-[data-theme="dark"] .wl-fr-missing_formalization{background:rgba(110,154,223,.16);color:#6e9adf}
-[data-theme="dark"] .wl-fr-other{background:#2e2a2f;color:#9a9081}
-[data-theme="dark"] .wl-diff-card{background:#232020;border-color:#4d4742}
-[data-theme="dark"] .wl-diff-add{border-left-color:#4ca97a}
-[data-theme="dark"] .wl-diff-delete{border-left-color:#e2685f}
-[data-theme="dark"] .wl-diff-modify{border-left-color:#d4a042}
-[data-theme="dark"] .wl-diff-add .wl-diff-type{color:#8fd4ad}
-[data-theme="dark"] .wl-diff-delete .wl-diff-type{color:#f08e85}
-[data-theme="dark"] .wl-diff-modify .wl-diff-type{color:#e2bf78}
-[data-theme="dark"] .wl-kind{background:#2e2a2f;color:#9a9081}
-[data-theme="dark"] .wl-kind-edit{background:rgba(110,154,223,.16);color:#6e9adf}
-[data-theme="dark"] .wl-kind-revert{background:rgba(226,104,95,.18);color:#f08e85}
-[data-theme="dark"] .wl-kind-pipeline{background:rgba(76,169,122,.18);color:#8fd4ad}
-[data-theme="dark"] .wl-kind-contribution{background:rgba(212,160,66,.20);color:#e2bf78}
-[data-theme="dark"] .wl-unpatrolled{color:#d4a042}
-[data-theme="dark"] .wl-patrolled{color:#8fd4ad}
-[data-theme="dark"] .wl-filterbar{color:#9a9081}
-[data-theme="dark"] .wl-filterbar a.active{color:#ebe5d8}
-[data-theme="dark"] .wl-rq{background:rgba(110,154,223,.14);color:#6e9adf}
-[data-theme="dark"] .wl-stats-foot{color:#9a9081}
-[data-theme="dark"] .wl-avatar{background:#2e2a2f}
-[data-theme="dark"] .wl-avatar-fallback{color:#9a9081}
-[data-theme="dark"] .wl-role{background:rgba(110,154,223,.16);color:#6e9adf}
-[data-theme="dark"] .wl-profile-stats{color:#9a9081}
-[data-theme="dark"] .wl-profile-stats b{color:#ebe5d8}
-[data-theme="dark"] .wl-theme-toggle{color:#9a9081;border-color:#4d4742}
-[data-theme="dark"] .wl-theme-toggle:hover{color:#ebe5d8;border-color:#6e9adf}
 `;
 
 function shell(title: string, bodyInner: string, extraScript = ""): string {
@@ -290,16 +239,17 @@ function shell(title: string, bodyInner: string, extraScript = ""): string {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WikiLean · ${htmlEscape(title, false)}</title>
 <meta name="robots" content="noindex">
-<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+${THEME_BOOTSTRAP}
+<link rel="stylesheet" href="${STYLE_CSS}">
 <style>${SHELL_CSS}${SEARCHBOX_CSS}</style>
 </head>
 <body>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span>${SEARCHBOX_HTML} ${siteNav("", " · ")}<button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button></span></header>
+${siteHeader({ search: SEARCHBOX_HTML })}
 <div class="wrap">
 ${bodyInner}
 <footer><p>${SITE_TOOLS}</p><p>Moderation: <a href="/proposals">Proposals</a> · <a href="/flags">Reader reports</a></p></footer>
 </div>
-<script>(function(){var b=document.getElementById("wl-theme-toggle");if(!b)return;b.addEventListener("click",function(){var r=document.documentElement;var n=r.dataset.theme==="dark"?"light":"dark";r.dataset.theme=n;try{localStorage.setItem("wl-theme",n);}catch(e){}});})();</script>
+${themeToggleScript()}
 ${SEARCHBOX_SCRIPT}
 ${extraScript}
 </body>

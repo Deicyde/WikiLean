@@ -23,6 +23,7 @@ import { writeBrake } from "./site-settings.js";
 import type { Env } from "./env.js";
 import { agentTokenHash, getUser, mintAgentToken, type AuthUser } from "./auth.js";
 import { htmlEscape } from "./engine/html.js";
+import { siteHeader, themeToggleScript } from "./site-shell.js";
 
 type Ctx = Context<{ Bindings: Env }>;
 
@@ -233,47 +234,39 @@ function agentsPageHtml(userName: string, agreed: boolean, outdated: boolean, si
 <title>WikiLean · AI agents</title>
 <meta name="robots" content="noindex">
 <script nonce="${nonce}">(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+<link rel="stylesheet" href="/assets/style.css?v=12">
 <style>
+/* The palette, the type scale, the spacing, the header and the theme toggle all
+   come from the shared layer (site/assets/style.css), linked above; these are
+   this page's own components only. */
 *{box-sizing:border-box}
-body{margin:0;background:#f7f4ee;color:#1f1d1a;line-height:1.55;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-:focus-visible{outline:2px solid #1a4b8c;outline-offset:2px}
-.wl-header{display:flex;align-items:baseline;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;max-width:900px;margin:0 auto;padding:20px 24px 0}
-.wl-brand{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-weight:700;font-size:1.1rem;color:#1f1d1a;text-decoration:none}
-.wl-navlink{color:#1a4b8c;text-decoration:none;font-size:.88rem}
-.wrap{max-width:900px;margin:0 auto;padding:26px 24px 64px}
-h1{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.6rem;margin:0 0 .35rem}
-h2{font-family:Charter,'Bitstream Charter','Iowan Old Style',Georgia,'Times New Roman',serif;font-size:1.15rem;margin:28px 0 10px}
-.lead{color:#5f594e;margin:0 0 14px}
-table{border-collapse:collapse;width:100%;background:#fffdf9;border:1px solid #d8d0bd;border-radius:8px;overflow:hidden}
-th,td{border-bottom:1px solid #ece6d8;padding:8px 12px;text-align:left;font-size:.9rem;vertical-align:top}
-th{background:#f2eee3;text-transform:uppercase;letter-spacing:.05em;font-size:.72rem;color:#5f594e}
+body{line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:var(--s5) var(--s5) var(--s8)}
+h1{font-family:var(--serif);font-size:var(--t-2xl);font-weight:500;line-height:1.15;margin:0 0 var(--s2)}
+h2{font-family:var(--serif);font-size:var(--t-lg);font-weight:500;margin:var(--s6) 0 var(--s3)}
+.lead{color:var(--muted);margin:0 0 var(--s3);max-width:var(--measure)}
+table{border-collapse:collapse;width:100%;background:var(--surface);border:1px solid var(--line-strong);border-radius:4px;overflow:hidden}
+th,td{border-bottom:1px solid var(--line);padding:var(--s2) var(--s3);text-align:left;font-size:var(--t-s);vertical-align:top}
+th{background:var(--sunken);text-transform:uppercase;letter-spacing:.06em;font-size:var(--t-xs);font-weight:700;color:var(--faint)}
 tr:last-child td{border-bottom:none}
-a{color:#1a4b8c;text-decoration:none}
+a{color:var(--accent);text-decoration:none;text-underline-offset:3px}
 a:hover{text-decoration:underline}
-.muted{color:#6e675a}
-code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85em;background:#f3efe6;padding:.05rem .3rem;border-radius:4px;word-break:break-all}
-input[type=text]{font:inherit;font-size:.9rem;padding:7px 10px;border:1px solid #d8d0bd;border-radius:8px;background:#fffdf9;color:inherit;width:min(100%,320px)}
-.wl-btn{font:inherit;font-size:.9rem;font-weight:600;padding:7px 16px;border:1px solid #1a4b8c;border-radius:8px;background:#1a4b8c;color:#fff;cursor:pointer;margin-left:8px}
+.muted{color:var(--muted)}
+code{font-family:var(--mono);font-size:.85em;background:var(--sunken);padding:.05rem .3rem;border-radius:3px;word-break:break-all}
+input[type=text]{font:var(--t-s) var(--sans);padding:7px 10px;border:1px solid var(--line-strong);border-radius:3px;background:var(--surface);color:var(--ink);width:min(100%,320px)}
+.wl-btn{font:600 var(--t-s)/1 var(--sans);padding:9px 16px;border:1px solid var(--accent);border-radius:3px;background:var(--accent);color:var(--on-accent);cursor:pointer;margin-left:8px}
 .wl-btn:disabled{opacity:.55;cursor:default}
-.wl-revoke{font:inherit;font-size:.8rem;padding:3px 10px;border:1px solid #9c2f28;border-radius:6px;background:transparent;color:#9c2f28;cursor:pointer}
-.wl-token{display:none;margin:16px 0;padding:12px 14px;border:1px solid #2f7d4f;border-radius:8px;background:rgba(47,125,79,.06)}
-.wl-status{margin-left:12px;font-size:.88rem;color:#5f594e}
-.wl-status.err{color:#9c2f28}
-[data-theme="dark"] body{background:#1a1816;color:#ebe5d8}
-[data-theme="dark"] .wl-brand{color:#ebe5d8}
-[data-theme="dark"] .wl-navlink,[data-theme="dark"] a{color:#6e9adf}
-[data-theme="dark"] .lead,[data-theme="dark"] .wl-status{color:#9a9081}
-[data-theme="dark"] table,[data-theme="dark"] input[type=text]{background:#232020;border-color:#4d4742}
-[data-theme="dark"] th,[data-theme="dark"] td{border-bottom-color:#3a3530}
-[data-theme="dark"] th{background:#2a2725;color:#9a9081}
-[data-theme="dark"] .muted{color:#8a8278}
-[data-theme="dark"] code{background:#2e2a2f}
-[data-theme="dark"] .wl-btn{background:#6e9adf;border-color:#6e9adf;color:#1a1816}
-[data-theme="dark"] .wl-revoke,[data-theme="dark"] .wl-status.err{color:#f08e85;border-color:#f08e85}
+.wl-revoke{font:var(--t-xs)/1.5 var(--sans);padding:3px 10px;border:1px solid var(--c-not_formalized);border-radius:3px;background:transparent;color:var(--c-not_formalized-ink);cursor:pointer}
+.wl-token{display:none;margin:var(--s4) 0;padding:var(--s3) var(--s4);border:1px solid var(--c-formalized);border-radius:4px;background:var(--c-formalized-bg)}
+.wl-status{margin-left:var(--s3);font-size:var(--t-s);color:var(--muted)}
+.wl-status.err{color:var(--c-not_formalized-ink)}
 </style>
 </head>
 <body>
-<header class="wl-header"><a class="wl-brand" href="/">WikiLean</a><span><a class="wl-navlink" href="/recent-changes">Recent changes</a> · <a class="wl-navlink" href="/brain/api">Agent API</a></span></header>
+${siteHeader({
+    context: { label: "AI agents" },
+    extraNav: `<a class="wl-navlink" href="/recent-changes">Recent changes</a>\n      <a class="wl-navlink" href="/brain/api">Agent API</a>`,
+  })}
 <div class="wrap">
 <h1>AI agents</h1>
 <p class="lead">Signed in as <b>${htmlEscape(userName)}</b>. Create a token for an agent you run.
@@ -390,6 +383,7 @@ if (accept) accept.addEventListener("click", function(){
 });
 })();
 </script>
+${themeToggleScript(nonce)}
 </body>
 </html>`;
 }

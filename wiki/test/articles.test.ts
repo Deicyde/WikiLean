@@ -26,7 +26,7 @@ import {
 } from "../src/articles.js";
 import {
   ARTICLES_JS, ARTICLES_NOTICE, ARTICLES_READER_CSS, ARTICLES_READER_JS, NO_LOCATE_RUN, UNMEASURED, articlesSummaryBox,
-  campaignLabel, campaignRuns, challengeSentence, coverageStatus, locationStatus, plainHead,
+  campaignLabel, campaignRuns, challengeSentence, coverageStatus, locationStatus, plainHead, statusData,
 } from "../src/articles-render.js";
 import { libraryInfo, libraryInfos, repoHref, sourceUrl, treeUrl } from "../src/libraries.js";
 import { CC0_AGREEMENT_VERSION } from "../src/articles-overlay.js";
@@ -301,7 +301,7 @@ describe("articles pages with the fixture store", () => {
     expect(html).toContain('</span></span></div>\n<p class="articles-strip-lead" id="articles-central"><b>Central statements:</b> 4 of the 6 passages, across 2 articles, ' +
       "state an article's subject or a named result or definition; the other 2 are supporting (examples, setup). Of these 4: " +
       '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>3 formalized</span><span>,</span> ' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">∅</span>1 not formalized</span>.</p>');
     // Complete and incomplete locations are separate columns: TauCeti only
     // states its result, so it is never counted like a proved Mathlib row.
     expect(html).toContain('<th scope="col" class="num">Complete</th><th scope="col" class="num">Incomplete</th>');
@@ -336,8 +336,8 @@ describe("articles pages with the fixture store", () => {
       expect(html).toContain(`<div class="articles-table-wrap" role="region" tabindex="0" aria-label="Table: ${name}">`);
     }
     expect(html).toContain('<a class="wl-navlink" href="/articles" aria-current="page">Articles</a>');
-    expect(html).toContain('<script src="/assets/articles.js?v=9"></script>');
-    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=14">');
+    expect(html).toContain('<script src="/assets/articles.js?v=10"></script>');
+    expect(html).toContain('<link rel="stylesheet" href="/assets/articles.css?v=16">');
     expect(html).not.toMatch(/\son[a-z]+=/i); // no inline event handlers
     expect(html).not.toMatch(/\bAI\b|pipeline/); // no generic label anywhere a reader sees
   });
@@ -354,7 +354,7 @@ describe("articles pages with the fixture store", () => {
       '<span class="articles-dot" aria-hidden="true">·</span>' +
       '<span class="articles-mini" data-status="statement_only"><span class="articles-ico" aria-hidden="true">◐</span>1 statement only</span>' +
       '<span class="articles-dot" aria-hidden="true">·</span>' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span></p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">∅</span>1 not formalized</span></p>');
     // The legend is the filter: a swatch, an icon and a word per status, and no second
     // copy of the counts. What each status means is the button's title.
     const key = html.slice(html.indexOf('<div class="articles-chips articles-key"'), html.indexOf("</div>", html.indexOf('articles-key"')));
@@ -743,7 +743,7 @@ describe("articles pages with the fixture store", () => {
     // title, and the pill is not read twice.
     expect(html).toContain('<p class="articles-why">Formalized: Mathlib states this exactly (proved).</p>');
     expect(html).toContain('<p class="articles-why">Statement only: TauCeti states this exactly (statement only: the proof is not finished).</p>');
-    expect(html).toContain('<span class="articles-pill" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>Formalized</span>');
+    expect(html).toContain('<span class="articles-pill" data-status="formalized"><span class="wl-tok" data-status="formalized" aria-hidden="true">✓</span>Formalized</span>');
     expect(html).not.toContain('class="articles-pill" data-status="formalized" title=');
     expect(html.match(/class="articles-why"/g)).toHaveLength(2); // the absence has its own box
     // The producer's item id is markup, not reader-facing text.
@@ -1350,7 +1350,7 @@ describe("articles pages with the fixture store", () => {
     expect(widget).toContain('<p class="articles-strip-lead" id="articles-central"><b>Central statements:</b> 2 of the 3 passages ' +
       "state the article's subject or a named result or definition; the other one is supporting (examples, setup). Of these 2: " +
       '<span class="articles-mini" data-status="formalized"><span class="articles-ico" aria-hidden="true">✓</span>1 formalized</span><span>,</span> ' +
-      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">✕</span>1 not formalized</span>.</p>');
+      '<span class="articles-mini" data-status="not_formalized"><span class="articles-ico" aria-hidden="true">∅</span>1 not formalized</span>.</p>');
     const gadget = await (await get(h.env, `/articles/${GADGET_PAGEID}`)).text();
     expect(gadget).toContain("<b>Central statements:</b> 2 of the 3 passages state the article's subject or a named result or definition; " +
       "the other one is supporting (examples, setup). Of these 2: " +
@@ -2395,7 +2395,7 @@ describe("articles security headers and CSP", () => {
       expect(urls.filter((url) => !sameOrigin(url)), path).toEqual([]);
       expect(embeds, path).toEqual([]);
       expect(handlers, path).toEqual([]);
-      expect(html, path).toContain('<script src="/assets/articles.js?v=9"></script>');
+      expect(html, path).toContain('<script src="/assets/articles.js?v=10"></script>');
     }
     const article = await (await get(h.env, `/${SLUG}`)).text();
     const start = article.indexOf('<link rel="stylesheet" href="/assets/articles.css');
@@ -2403,7 +2403,7 @@ describe("articles security headers and CSP", () => {
     expect(start).toBeGreaterThan(-1);
     expect(end).toBeGreaterThan(start);
     const box = loads(article.slice(start, end));
-    expect(box.urls).toEqual(["/assets/articles.css?v=14"]);
+    expect(box.urls).toEqual(["/assets/articles.css?v=16"]);
     expect(box.embeds).toEqual([]);
     expect(box.handlers).toEqual([]);
   });
@@ -2508,6 +2508,36 @@ describe("articles security headers and CSP", () => {
     }
   });
 
+  // The two scripts redraw a status after the page has loaded: articles.js rebuilds the
+  // list's rows from the index shards, and articles-reader.js names a passage and writes
+  // the hover peek. They read the server's own STATUS table off the page instead of
+  // keeping a copy, so a glyph is defined once and the ✕ → ∅ change of 2026-11-19 cannot
+  // leave a script behind saying the old thing.
+  it("hands the scripts the one status table, and neither script keeps a second copy of the glyphs", async () => {
+    const h = setup();
+    bindArticles(h.env, articlesFixtureFiles());
+    const html = await (await get(h.env, "/articles")).text();
+    const data = /<body class="articles-body[^"]*" data-wl-status="([^"]*)">/.exec(html);
+    expect(data, "the status table on <body>").not.toBeNull();
+    const table = JSON.parse(data![1].replace(/&quot;/g, '"').replace(/&#x27;/g, "'").replace(/&amp;/g, "&")) as
+      Record<string, { label: string; icon: string; plural: string }>;
+    expect(table.not_formalized).toEqual({ label: "Not formalized", icon: "∅", plural: "not formalized" });
+    expect(table.formalized).toEqual({ label: "Formalized", icon: "✓", plural: "formalized" });
+    // Only the statuses the build shows: nothing in this one is unchecked, so the page
+    // carries no "not checked yet" in its data either, exactly as it carries none in its text.
+    expect(Object.keys(table)).toEqual(["formalized", "statement_only", "partial", "not_formalized"]);
+    const cut = setup();
+    bindArticles(cut.env, articlesStatementFiles());
+    const cutHtml = await (await get(cut.env, "/articles")).text();
+    expect(cutHtml).toContain("&quot;not_checked&quot;:{&quot;label&quot;:&quot;Not checked yet&quot;,&quot;icon&quot;:&quot;○&quot;");
+    for (const name of ["articles.js", "articles-reader.js"]) {
+      const source = readFileSync(new URL(`../../site/assets/${name}`, import.meta.url), "utf8");
+      expect(source, name).toContain('getAttribute("data-wl-status")');
+      // Not one status glyph of its own, in code or in a comment: the icons live in STATUS.
+      for (const glyph of ["✓", "◐", "◔", "∅", "○", "✕"]) expect(source, `${name} ${glyph}`).not.toContain(glyph);
+    }
+  });
+
   it("articles.js fetches only same-origin paths and never evaluates strings; articles.css loads nothing", () => {
     const js = readFileSync(new URL("../../site/assets/articles.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles.css", import.meta.url), "utf8");
@@ -2556,8 +2586,8 @@ describe("article page summary box", () => {
     expect(html.indexOf("wl-articles-box")).toBeLessThan(html.indexOf('<main class="wl-article-body">'));
     // The publish switch and one index shard, nothing else from the store (each kept a minute).
     expect(h.gets).toEqual(["articles/v1/current.json", "articles/v1/index/1.json"]);
-    // The cached base page (render:v21) does not carry the box.
-    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v21:"));
+    // The cached base page (render:v22) does not carry the box.
+    const cached = [...h.renderCache.store.entries()].filter(([key]) => key.startsWith("render:v22:"));
     expect(cached).toHaveLength(1);
     expect(String(cached[0][1])).not.toContain("wl-articles-box");
   });
@@ -2792,12 +2822,16 @@ describe("the plane says the links are preliminary, and what measured them", () 
       const res = await get(env.env, path);
       expect(res.status, path).toBe(status);
       const html = await res.text();
-      // The reader heads its article column with it (beside the sticky panel, not above it);
-      // every other page has it right after the header.
+      // The reader closes its article column's head with it — one quiet line under the
+      // hint, never a banner over the page (the Ledger restyle, 2026-11-19). An article
+      // with a reader carries the context strip between the header and the line; every
+      // other page has the line right after the header.
       const line = `<p class="articles-notice" id="articles-notice">${ARTICLES_NOTICE}</p>\n`;
       const reader = path === WIDGET_PATH && status === 200;
-      expect(html, path).toContain(reader ? `</header>\n<div class="atlr-layout"` : `</header>\n${line}`);
-      if (reader) expect(html, path).toContain(`<div class="atlr-head">\n${line}<nav class="articles-crumbs"`);
+      const strip = path === `${WIDGET_PATH}?view=cards` && status === 200;
+      expect(html, path).toContain(reader || strip ? `</header>\n<div class="wl-ctx">` : `</header>\n${line}`);
+      if (strip) expect(html, path).toContain(`</div></div>\n${line}`);
+      if (reader) expect(html, path).toContain(`</p>\n${line}</div>\n<article class="wl-article-body atlr-article"`);
       expect(html.match(/Preliminary/g), path).toHaveLength(1);
       expect(html.match(/independent audit/g), path).toHaveLength(1);
     }
@@ -3301,7 +3335,8 @@ describe("the article reader", () => {
     expect(html).toContain(readerHtml());
     expect(html).toContain(`<link rel="stylesheet" href="${ARTICLES_READER_CSS}">`);
     expect(html).toContain(`<script src="${ARTICLES_JS}"></script>\n<script src="${ARTICLES_READER_JS}"></script>`);
-    expect(html).toContain(`<body class="articles-body atlr-body">\n<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`);
+    expect(html).toContain(`<body class="articles-body atlr-body" data-wl-status="${statusData().replaceAll('"', "&quot;")}">\n` +
+      `<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`);
     // The view switch, the article current; the card list one link away.
     expect(html).toContain(`<nav class="atlr-switch" aria-label="View"><a id="atlr-to-article" href="${WIDGET_PATH}" aria-current="page">Article</a>` +
       `<a id="atlr-to-cards" href="${WIDGET_PATH}?view=cards">Card list</a></nav>`);
@@ -3446,7 +3481,7 @@ describe("the article reader", () => {
     const scripts = [...html.matchAll(/<script\b[^>]*\ssrc="([^"]*)"/g)].map((m) => m[1]);
     expect(scripts).toEqual([ARTICLES_JS, ARTICLES_READER_JS]);
     const sheets = [...html.matchAll(/<link\b[^>]*\srel="stylesheet"[^>]*\shref="([^"]*)"/g)].map((m) => m[1]);
-    expect(sheets).toEqual(["/assets/style.css?v=11", "/assets/articles.css?v=14", ARTICLES_READER_CSS]);
+    expect(sheets).toEqual(["/assets/style.css?v=12", "/assets/articles.css?v=16", ARTICLES_READER_CSS]);
     expect([...html.matchAll(/<[a-z][^>]*\s(on[a-z]+)\s*=/gi)]).toEqual([]);
     const js = readFileSync(new URL("../../site/assets/articles-reader.js", import.meta.url), "utf8");
     const css = readFileSync(new URL("../../site/assets/articles-reader.css", import.meta.url), "utf8");
@@ -3531,7 +3566,7 @@ describe("a statement-only article", () => {
     const h = statements();
     const html = await (await get(h.env, SPROCKET_PATH)).text();
     expect(html.match(/<li class="articles-passage[^"]*" id="p-[0-9a-f]+" data-status="not_checked"/g)).toHaveLength(3);
-    expect(html).toContain('<span class="articles-pill" data-status="not_checked"><span class="articles-ico" aria-hidden="true">○</span>Not checked yet</span>');
+    expect(html).toContain('<span class="articles-pill" data-status="not_checked"><span class="wl-tok" data-status="not_checked" aria-hidden="true">○</span>Not checked yet</span>');
     // The card's exact words (the design, section 3).
     expect(html.match(/Not checked yet — no library has been searched for this statement\./g)).toHaveLength(3);
     // No Confirm/Report: they are a verdict on a sealed location, and there is none.
@@ -3714,22 +3749,30 @@ describe("the article reader on a statement-only article", () => {
     // summary status ("not_checked"). Both must paint, or a highlight goes missing.
     expect(css).toMatch(/mark\.atl\[data-status="unchecked"\], mark\.atl\[data-status="not_checked"\]/);
     const shared = readFileSync(new URL("../../site/assets/articles.css", import.meta.url), "utf8");
-    expect(shared).toMatch(/\[data-status="not_checked"\],\n\[data-status="unchecked"\]/);
+    // The [data-status] -> --st mapping lives in the shared token layer (the Ledger
+    // restyle, 2026-11-19); the fills stay with the components that draw them.
+    const tokens = readFileSync(new URL("../../site/assets/style.css", import.meta.url), "utf8");
+    expect(tokens).toMatch(/\[data-status="not_checked"\],\n\[data-status="unchecked"\]/);
     // Its own swatch fill, told apart from every other status without colour.
     expect(shared).toContain('.articles-seg[data-status="not_checked"], .articles-swatch[data-status="not_checked"]');
     // Its stroke is not one another status uses.
-    const rule = /^\[data-status="not_checked"\],\n\[data-status="unchecked"\]\s*\{([^}]*)\}/m.exec(shared);
+    const rule = /^\[data-status="not_checked"\],\n\[data-status="unchecked"\]\s*\{([^}]*)\}/m.exec(tokens);
     expect(rule, "the two tokens share one rule").not.toBeNull();
     expect(rule![1]).toContain("--st: var(--c-untouched)");
     expect(rule![1]).toContain("--st-line: dashed");
     // Its ink is the page's, not the muted grey: the pill and its count keep their contrast.
     expect(rule![1]).toContain("--st-ink: var(--ink)");
     // Translucent, like the other three: the reader paints the wash three times over on the
-    // selected passage, and an opaque one would not move.
-    expect(rule![1]).toMatch(/--st-bg: rgba\([^)]*0\.\d+\)/);
-    // And a dark-mode value of its own, under both of the theme's selectors.
-    expect(shared).toContain('[data-theme="dark"] [data-status="not_checked"]');
-    expect(shared).toContain(':root:not([data-theme]) [data-status="not_checked"]');
+    // selected passage, and an opaque one would not move. The wash is its own token, so the
+    // two themes set it in one place each.
+    expect(rule![1]).toContain("--st-bg: var(--c-not_checked-bg)");
+    const washes = [...tokens.matchAll(/--c-not_checked-bg:\s*(rgba\([^)]*\));/g)].map((m) => m[1]);
+    expect(washes).toHaveLength(3);
+    for (const wash of washes) expect(wash).toMatch(/0\.\d+\)$/);
+    // Light and dark differ, and dark is set under both of the theme's selectors.
+    expect(new Set(washes).size).toBe(2);
+    expect(washes[1]).toBe(washes[2]);
+    expect(washes[0]).not.toBe(washes[1]);
   });
 });
 

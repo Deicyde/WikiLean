@@ -1,101 +1,238 @@
-/* WikiLean rendered-article styles — warm academic-minimalist palette.
-   Paper background, serif display headings (system stacks only), one deep-blue
-   accent (--accent), and the three semantic status colors retuned to harmonize:
-   green=formalized, amber=partial, red=not formalized. The amber (#b08020) is
-   used for graphics (bars, washes, underlines) only; text set in a status color
-   uses the darker *-ink variants to keep WCAG AA contrast. */
+/* WikiLean's shared layer — the one token set, the one site header, and the
+   status token, for every page the Worker renders: the home page, /about and
+   /contribute (home.ts), the formalization reader (articles-render.ts), the
+   chrome pages (pages.ts), /agents (agents.ts) and the old annotated article
+   pages (engine/page.ts). Everything below the header section is the annotated
+   article page's own styling, which has always lived here.
+
+   The look is "Ledger" (the restyle of 2026-11-19): a quiet, reading-first
+   journal. One serif voice for prose and mathematics, system sans for controls
+   and figures, mono for Lean. Absence is unpainted, never red — "not
+   formalized" is a pale ground with a baseline, not a red hatch, and only
+   "formalized" is ever a solid fill. System font stacks only: both policies in
+   security.ts pin font-src to 'self', so no page may fetch a webfont.
+
+   Status is never colour alone. Each status owns a glyph (STATUS in
+   articles-render.ts), a word, a stroke style and a fill pattern, and the
+   [data-status] block below maps each onto the generic --st trio so every
+   component downstream (articles.css, articles-reader.css) is written once.
+   "not_checked" is NOT a shade of "not formalized": they are opposite claims,
+   so it carries a neutral grey of its own and is never folded into the red
+   family's tokens. */
 
 :root {
-  --c-formalized:     #2f7d4f;
-  --c-formalized-bg:  rgba(47, 125, 79, 0.12);
-  --c-formalized-ink: #266844;
-  --c-partial:        #b08020;
-  --c-partial-bg:     rgba(176, 128, 32, 0.13);
-  --c-partial-ink:    #7d5a10;
-  --c-not_formalized: #b3372f;
-  --c-not_formalized-bg: rgba(179, 55, 47, 0.10);
-  --c-not_formalized-ink: #9c2f28;
-  --c-untouched:      #9a9183;
-  --paper:   #f7f4ee;
-  --surface: #fffdf9;
-  --ink:     #1f1d1a;
-  --muted:   #5f594e;
-  --line:    #e6e0d2;
-  --line-strong: #d8d0bd;
-  --accent:  #1a4b8c;
-  --serif:   Charter, 'Bitstream Charter', 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  color-scheme: light;
+
+  /* --- surfaces and ink ------------------------------------------------- */
+  --paper:   #faf8f3;
+  --surface: #ffffff;
+  --sunken:  #f2efe7;
+  --ink:     #1b1a17;   /* 16.4:1 on paper */
+  --muted:   #5c564b;   /*  6.9:1 on paper */
+  --faint:   #726b5f;   /*  5.0:1 — the quietest text tone that still clears AA */
+  --line:        #e7e1d4;
+  --line-strong: #cfc6b4;
+  --accent:      #1f4e79;   /* 8.2:1 on paper */
+  --accent-soft: rgba(31, 78, 121, 0.10);
+  /* Readable text ON the accent (a filled button): white on light, the sunken
+     near-black on dark, where the accent is a pale blue. */
+  --on-accent: #ffffff;
+
+  /* --- the five statuses: graphic / text ink / wash ---------------------- */
+  /* The graphic tone clears 3:1 against its background; the ink clears 4.5:1.
+     statement_only and partial share the amber graphic and differ by pattern
+     (hatch vs stipple) and by wash strength. */
+  --c-formalized:         #2f7d4f;
+  --c-formalized-bg:      rgba(47, 125, 79, 0.13);
+  --c-formalized-ink:     #1d5c3c;
+  --c-statement_only:     #b08020;
+  --c-statement_only-bg:  rgba(176, 128, 32, 0.14);
+  --c-statement_only-ink: #775510;
+  --c-partial:            #b08020;
+  --c-partial-bg:         rgba(176, 128, 32, 0.10);
+  --c-partial-ink:        #775510;
+  /* Clay, not red: "searched every library and found nothing" is a finding,
+     not an error. It is never painted as a solid fill. */
+  --c-not_formalized:     #a8604f;
+  --c-not_formalized-bg:  rgba(168, 96, 79, 0.09);
+  --c-not_formalized-ink: #8a443a;
+  /* Neutral grey, in no status family: nothing has been searched yet. */
+  --c-untouched:          #857d70;
+  --c-not_checked-bg:     rgba(133, 125, 112, 0.16);
+
+  /* --- type ------------------------------------------------------------- */
+  --serif: Charter, 'Bitstream Charter', 'Iowan Old Style', 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --math:  "STIX Two Math", "Latin Modern Math", "Cambria Math", "Noto Sans Math", math;
+
+  --t-xs:   0.78rem;   /* 12.5 — captions, provenance, fold bodies */
+  --t-s:    0.875rem;  /* 14   — all UI, nav, table numerals */
+  --t-base: 1.03rem;   /* 16.5 — body prose */
+  --t-md:   1.19rem;   /* 19   — leads, brand */
+  --t-lg:   1.44rem;   /* 23   — section headings */
+  --t-xl:   1.81rem;   /* 29 */
+  --t-2xl:  2.25rem;   /* 36   — page titles */
+  --t-3xl:  2.88rem;   /* 46   — the home h1 */
+
+  /* --- spacing: a 4px base, doubling ------------------------------------ */
+  --s1: 4px;  --s2: 8px;  --s3: 12px; --s4: 16px;
+  --s5: 24px; --s6: 32px; --s7: 48px; --s8: 72px;
+
+  --measure: 68ch;
+  --page: 1120px;
 }
 
+/* One assignment maps a status onto the generic --st trio. It lives here, in
+   the token layer, so every stylesheet and every page — including the ones
+   that load only this file — can use .wl-tok and the status components. */
+[data-status="formalized"]     { --st: var(--c-formalized);     --st-ink: var(--c-formalized-ink);     --st-bg: var(--c-formalized-bg);     --st-line: solid; }
+[data-status="statement_only"] { --st: var(--c-statement_only); --st-ink: var(--c-statement_only-ink); --st-bg: var(--c-statement_only-bg); --st-line: dashed; }
+[data-status="partial"]        { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dotted; }
+[data-status="not_formalized"] { --st: var(--c-not_formalized); --st-ink: var(--c-not_formalized-ink); --st-bg: var(--c-not_formalized-bg); --st-line: double; }
+/* "unchecked" is the outcome a store's reader mark carries; "not_checked" is the
+   summary status the pages count. Both paint the same neutral grey, and the ink
+   is the page's own so the word keeps AA on the wash in both themes. */
+[data-status="not_checked"],
+[data-status="unchecked"]      { --st: var(--c-untouched);      --st-ink: var(--ink);                  --st-bg: var(--c-not_checked-bg);    --st-line: dashed; }
+[data-status="unresolved"]     { --st: var(--c-untouched);      --st-ink: var(--muted);                --st-bg: transparent;                --st-line: groove; }
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--sans);
   margin: 0;
   background: var(--paper);
   color: var(--ink);
 }
 
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+/* ---------- The one site header ------------------------------------------
+   Every page the Worker renders uses this markup (wiki/src/site-shell.ts):
+   a sticky single row of brand · context, then the nav, the search box where
+   a page has one, and the theme toggle. No page defines its own header any
+   more, and no page stacks a second header row — a page with its own context
+   (the reader) puts it in the .wl-ctx strip below. */
 
 .wl-header {
   position: sticky;
   top: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line-strong);
-  padding: 10px 28px;
   z-index: 100;
-  box-shadow: 0 1px 3px rgba(60, 50, 30, 0.05);
+  background: var(--paper);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  padding: 0;
 }
 
 .wl-title {
   display: flex;
-  gap: 8px;
+  gap: var(--s2) var(--s4);
   align-items: baseline;
-  font-size: 14px;
+  flex-wrap: wrap;
+  padding: var(--s3) var(--s5);
+  font-size: var(--t-s);
 }
-.wl-brand    { font-family: var(--serif); font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; }
+.wl-brand    { font: 600 var(--t-md)/1.15 var(--serif); letter-spacing: -0.015em; color: var(--ink); text-decoration: none; }
 .wl-brand:hover { color: var(--accent); }
-.wl-sep      { color: var(--c-untouched); }
-.wl-article  { color: var(--ink); font-weight: 500; }
-/* flex-wrap: the nav now carries the full unified link set + the search box —
-   on narrow viewports the links wrap instead of overflowing the header. */
-.wl-nav      { margin-left: auto; display: flex; gap: 6px 14px; align-items: baseline; flex-wrap: wrap; justify-content: flex-end; }
-.wl-navlink, .wl-wikilink { color: var(--accent); text-decoration: none; font-size: 12px; }
-.wl-navlink:hover, .wl-wikilink:hover { text-decoration: underline; }
+.wl-sep      { color: var(--faint); }
+.wl-article  { color: var(--muted); font-family: var(--serif); font-weight: 400; }
+/* flex-wrap: the nav carries the full unified link set + the search box — on
+   narrow viewports the links wrap instead of overflowing the header. */
+.wl-nav      { margin-left: auto; display: flex; gap: var(--s2) var(--s4); align-items: baseline; flex-wrap: wrap; justify-content: flex-end; }
+.wl-navlink, .wl-wikilink { color: var(--muted); text-decoration: none; font: var(--t-s)/1.4 var(--sans); }
+.wl-navlink:hover, .wl-wikilink:hover { color: var(--accent); text-decoration: underline; }
+.wl-navlink[aria-current] { color: var(--ink); font-weight: 600; }
+.wl-wikilink { color: var(--accent); }
+
+/* The context strip (borrowed from the "Console" direction): the same surface
+   as the header, one border, never a second header row. A page that needs a
+   title, a breadcrumb or a view switch beside the nav puts them here. */
+.wl-ctx { background: var(--surface); border-bottom: 1px solid var(--line); }
+.wl-ctx-in {
+  display: flex; align-items: baseline; flex-wrap: wrap;
+  gap: var(--s2) var(--s4); padding: var(--s2) var(--s5);
+}
+.wl-ctx-crumb { font: var(--t-xs)/1.5 var(--sans); color: var(--faint); }
+.wl-ctx-crumb a { color: var(--muted); }
+.wl-ctx h1, .wl-ctx .wl-ctx-h { margin: 0; font: 600 var(--t-md)/1.25 var(--serif); overflow-wrap: anywhere; }
+.wl-ctx-right { margin-left: auto; display: flex; align-items: center; gap: var(--s2) var(--s3); flex-wrap: wrap; }
+
+/* The 18px status token (also borrowed from "Console"): a sign in a box with
+   its own fill, so a column of them scans straight down and a status is legible
+   at a glance without reading its word. The word is always beside it. */
+.wl-tok {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; flex: none; box-sizing: border-box;
+  border-radius: 2px; font: 700 11px/1 var(--sans);
+  color: var(--st-ink, var(--muted)); background: var(--st-bg, transparent);
+  box-shadow: inset 0 0 0 1px var(--st, var(--line-strong));
+  vertical-align: -4px;
+}
+/* Nothing searched: an open dashed box, never a filled one. */
+.wl-tok[data-status="not_checked"], .wl-tok[data-status="unchecked"] {
+  background: none; box-shadow: none; border: 1px dashed var(--st);
+}
+
+/* The map Key (from the "Terrain" direction): a bordered, titled box that
+   appears on every page showing a coverage bar, so nobody has to guess what a
+   fill means. Each row is swatch · token · word · meaning. */
+.wl-key {
+  margin: var(--s4) 0; padding: var(--s3) var(--s4);
+  border: 1px solid var(--line-strong); border-radius: 4px; background: var(--surface);
+}
+.wl-key > h2, .wl-key > h3 {
+  margin: 0 0 var(--s2); font: 700 var(--t-xs)/1.4 var(--sans);
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint);
+}
+.wl-key ul {
+  list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--s1) var(--s4);
+}
+.wl-key li {
+  display: grid; grid-template-columns: 15px 18px 1fr; align-items: baseline;
+  gap: var(--s2); font: var(--t-xs)/1.6 var(--sans); color: var(--muted);
+}
+.wl-key li > .articles-swatch, .wl-key li > .wl-tok { align-self: center; }
+.wl-key b { color: var(--st-ink); font-weight: 700; }
+.wl-key .wl-key-mean { display: block; color: var(--faint); }
 
 .wl-controls {
   display: flex;
-  gap: 16px;
+  gap: var(--s3) var(--s4);
   align-items: center;
-  margin-top: 8px;
   flex-wrap: wrap;
-  font-size: 12px;
+  padding: 0 var(--s5) var(--s3);
+  font-size: var(--t-xs);
 }
 
 .wl-badge {
   display: inline-block;
   padding: 2px 8px;
-  border-radius: 10px;
+  border-radius: 3px;
   margin-right: 4px;
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
 }
 .wl-badge.wl-formalized     { background: var(--c-formalized-bg);     color: var(--c-formalized-ink); }
 .wl-badge.wl-partial        { background: var(--c-partial-bg);        color: var(--c-partial-ink); }
-.wl-badge.wl-not_formalized { background: var(--c-not_formalized-bg); color: var(--c-not_formalized-ink); }
-.wl-badge.wl-untouched      { background: #ece6d8;                    color: var(--muted); }
+/* Unpainted, like every other "not formalized" graphic: a pale ground under a
+   baseline rather than a filled red lozenge. */
+.wl-badge.wl-not_formalized { background: var(--c-not_formalized-bg); color: var(--c-not_formalized-ink); box-shadow: inset 0 -2px 0 var(--c-not_formalized); }
+.wl-badge.wl-untouched      { background: var(--sunken);              color: var(--muted); }
 
-.wl-toggles { margin-left: auto; display: flex; gap: 4px; }
+.wl-toggles { margin-left: auto; display: flex; gap: var(--s1); }
 .wl-toggles button {
   padding: 4px 10px;
   cursor: pointer;
   background: var(--surface);
   border: 1px solid var(--line-strong);
-  border-radius: 4px;
-  font-size: 12px;
-  font-family: inherit;
+  border-radius: 3px;
+  font: var(--t-xs)/1.5 var(--sans);
   color: var(--ink);
 }
 .wl-toggles button:hover  { border-color: var(--accent); color: var(--accent); }
-.wl-toggles button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.wl-toggles button.active { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 
 .wl-article-body {
   padding: 24px 28px 60px;
@@ -348,9 +485,12 @@ body.show-dim .anno .mwe-math-element-block            { opacity: 1; }
 /* (fix #11a/#11e) */
 
 @media (max-width: 640px) {
-  .wl-header { padding: 8px 14px; }
-  .wl-title { flex-wrap: wrap; }
-  .wl-controls { gap: 8px; margin-top: 6px; }
+  :root { --t-3xl: 2.3rem; --t-2xl: 1.85rem; --s5: 16px; }
+  .wl-title { padding: var(--s2) var(--s4); gap: var(--s1) var(--s3); }
+  .wl-nav { gap: var(--s1) var(--s3); }
+  .wl-ctx-in { padding: var(--s2) var(--s4); }
+  .wl-key ul { grid-template-columns: 1fr; }
+  .wl-controls { gap: 8px; padding: 0 var(--s4) var(--s2); }
   .wl-badge { font-size: 10px; padding: 1px 6px; margin-right: 2px; }
   /* Toggles become one horizontally-scrollable row instead of wrapping the
      sticky header ever taller. */
@@ -381,66 +521,84 @@ body.show-dim .anno .mwe-math-element-block            { opacity: 1; }
    dark)). [data-theme="light"] explicitly opts out of dark on a dark-OS. */
 
 [data-theme="dark"] {
-  --paper:           #1a1816;
-  --surface:         #232020;
-  --ink:             #ebe5d8;
-  --muted:           #9a9081;
-  --line:            #3a3530;
-  --line-strong:     #4d4742;
-  --accent:          #6e9adf;
+  color-scheme: dark;
+  --paper:           #171614;
+  --surface:         #1f1d1a;
+  --sunken:          #121110;
+  --ink:             #ece7da;
+  --muted:           #a39b8c;
+  --faint:           #8f877b;
+  --line:            #332f2a;
+  --line-strong:     #4a443c;
+  --accent:          #8fb4e8;
+  --accent-soft:     rgba(143, 180, 232, 0.14);
+  --on-accent:       #121110;
   --c-formalized:        #4ca97a;
   --c-formalized-bg:     rgba(76, 169, 122, 0.20);
-  --c-formalized-ink:    #8fd4ad;
-  --c-partial:           #d4a042;
-  --c-partial-bg:        rgba(212, 160, 66, 0.22);
-  --c-partial-ink:       #e2bf78;
-  --c-not_formalized:    #e2685f;
-  --c-not_formalized-bg: rgba(226, 104, 95, 0.20);
-  --c-not_formalized-ink:#f08e85;
-  --c-untouched:         #6e6660;
+  --c-formalized-ink:    #73c79b;
+  --c-statement_only:    #c9952f;
+  --c-statement_only-bg: rgba(201, 149, 47, 0.22);
+  --c-statement_only-ink:#dcb766;
+  --c-partial:           #c9952f;
+  --c-partial-bg:        rgba(201, 149, 47, 0.15);
+  --c-partial-ink:       #dcb766;
+  --c-not_formalized:    #bf6b5c;
+  --c-not_formalized-bg: rgba(191, 107, 92, 0.16);
+  --c-not_formalized-ink:#e39a8c;
+  --c-untouched:         #8c8478;
+  --c-not_checked-bg:    rgba(140, 132, 120, 0.22);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --paper:           #1a1816;
-    --surface:         #232020;
-    --ink:             #ebe5d8;
-    --muted:           #9a9081;
-    --line:            #3a3530;
-    --line-strong:     #4d4742;
-    --accent:          #6e9adf;
+    color-scheme: dark;
+    --paper:           #171614;
+    --surface:         #1f1d1a;
+    --sunken:          #121110;
+    --ink:             #ece7da;
+    --muted:           #a39b8c;
+    --faint:           #8f877b;
+    --line:            #332f2a;
+    --line-strong:     #4a443c;
+    --accent:          #8fb4e8;
+    --accent-soft:     rgba(143, 180, 232, 0.14);
+    --on-accent:       #121110;
     --c-formalized:        #4ca97a;
     --c-formalized-bg:     rgba(76, 169, 122, 0.20);
-    --c-formalized-ink:    #8fd4ad;
-    --c-partial:           #d4a042;
-    --c-partial-bg:        rgba(212, 160, 66, 0.22);
-    --c-partial-ink:       #e2bf78;
-    --c-not_formalized:    #e2685f;
-    --c-not_formalized-bg: rgba(226, 104, 95, 0.20);
-    --c-not_formalized-ink:#f08e85;
-    --c-untouched:         #6e6660;
+    --c-formalized-ink:    #73c79b;
+    --c-statement_only:    #c9952f;
+    --c-statement_only-bg: rgba(201, 149, 47, 0.22);
+    --c-statement_only-ink:#dcb766;
+    --c-partial:           #c9952f;
+    --c-partial-bg:        rgba(201, 149, 47, 0.15);
+    --c-partial-ink:       #dcb766;
+    --c-not_formalized:    #bf6b5c;
+    --c-not_formalized-bg: rgba(191, 107, 92, 0.16);
+    --c-not_formalized-ink:#e39a8c;
+    --c-untouched:         #8c8478;
+    --c-not_checked-bg:    rgba(140, 132, 120, 0.22);
   }
 }
 
-/* Theme-toggle button in the article header. currentColor + bordered circle
-   so it reads as a small icon without competing with the nav links. */
+/* Theme-toggle button in the site header. A quiet bordered pill so it reads as
+   a control without competing with the nav links. */
 .wl-theme-toggle {
   background: transparent;
   border: 1px solid var(--line-strong);
   color: var(--muted);
-  border-radius: 50%;
-  width: 28px;
-  height: 28px;
-  padding: 0;
+  border-radius: 999px;
+  min-width: 28px;
+  height: 26px;
+  padding: 0 7px;
   line-height: 1;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 .wl-theme-toggle:hover {
-  color: var(--ink);
+  color: var(--accent);
   border-color: var(--accent);
 }
 

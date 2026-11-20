@@ -41,7 +41,8 @@
 // outside that fold are plain: "libraries searched", "pinned revision", never "universe",
 // "frozen", "central", "campaign" or "coverage claim".
 
-import { siteNav, SITE_TOOLS } from "./site-nav.js";
+import { SITE_TOOLS } from "./site-nav.js";
+import { contextStrip, siteHeader, THEME_BOOTSTRAP } from "./site-shell.js";
 import { htmlEscape } from "./engine/html.js";
 import { passageTextHtml, quoteFragment, quoteSegments, renderQuote } from "./articles-math.js";
 import { SEARCHBOX_CSS, SEARCHBOX_HTML, SEARCHBOX_SCRIPT } from "./engine/searchbox.js";
@@ -56,13 +57,15 @@ import {
 import type { MergedArticle, MergedBundle, MergedLocation } from "./articles-overlay.js";
 
 // Asset versions: bump with any change to site/assets/articles.{css,js}.
-export const ARTICLES_CSS = "/assets/articles.css?v=14";
-export const ARTICLES_JS = "/assets/articles.js?v=9";
+export const ARTICLES_CSS = "/assets/articles.css?v=16";
+export const ARTICLES_JS = "/assets/articles.js?v=10";
 // The article reader (articlesReaderPage) and the view switch on its card list: bump with any
 // change to site/assets/articles-reader.{css,js}.
-export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=7";
-export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=6";
-const STYLE_CSS = "/assets/style.css?v=11";
+export const ARTICLES_READER_CSS = "/assets/articles-reader.css?v=10";
+export const ARTICLES_READER_JS = "/assets/articles-reader.js?v=9";
+// The shared layer (the restyle of 2026-11-19): the token set, the one site header and
+// the status token. home.ts and pages.ts pin the same version.
+const STYLE_CSS = "/assets/style.css?v=12";
 
 const text = (s: string) => htmlEscape(String(s ?? ""), false);
 const attr = (s: string) => htmlEscape(String(s ?? ""), true);
@@ -95,7 +98,11 @@ const STATUS: Record<SummaryStatus, { label: string; icon: string; plural: strin
   formalized: { label: "Formalized", icon: "✓", plural: "formalized" },
   statement_only: { label: "Statement only", icon: "◐", plural: "statement only" },
   partial: { label: "Partial", icon: "◔", plural: "partial" },
-  not_formalized: { label: "Not formalized", icon: "✕", plural: "not formalized" },
+  // The glyph is the empty set, not a cross (the Ledger restyle, 2026-11-19). A cross
+  // reads as "wrong" or "failed"; the status claims that the set of formalizations found
+  // is empty, which is what the empty set says, and it is at home on this site. The word
+  // is unchanged, and so is the meaning.
+  not_formalized: { label: "Not formalized", icon: "∅", plural: "not formalized" },
   // Phase 1 (the statement-set design, section 3): the statement was cut and no library has
   // been searched for it. Shown only where there is one (shownStatuses), and never counted,
   // coloured or worded as "not formalized", which is the opposite claim.
@@ -114,6 +121,22 @@ const ARTICLE_STATUSES: SummaryStatus[] = STATUS_ORDER.filter((s) => s !== "unre
 // counts. A statement nothing has searched for is in neither — it is not a shade of
 // "not formalized", so it never takes a share of the bar.
 const CHECKED_STATUSES: SummaryStatus[] = ARTICLE_STATUSES.filter((s) => s !== "not_checked");
+
+// The table above, as the page's own data, for the two scripts that draw a status after
+// load: articles.js rebuilds the list's rows from the index shards, and articles-reader.js
+// names a passage and writes the hover peek. They read this instead of keeping a second
+// copy of the glyphs and the words, so STATUS is the one definition of both and a script
+// cannot drift from the HTML around it (the ✕ → ∅ change of 2026-11-19 left two such
+// copies behind). It rides a data attribute rather than a <script type="application/json">
+// block because the plane's policy (security.ts articlesCsp) admits inline script by hash
+// alone: a data block would be reported as a violation on every page of the plane.
+//
+// A page carries exactly the statuses it shows (shownStatuses), never the whole table: a
+// build with nothing unchecked must not say "not checked yet" anywhere, in text or in
+// data, and "no status yet" is never a status a page offers at all.
+export function statusData(statuses: SummaryStatus[] = CHECKED_STATUSES): string {
+  return JSON.stringify(Object.fromEntries(statuses.map((s) => [s, STATUS[s]])));
+}
 
 // The statuses a page's legend, columns and chips offer, given its counts: the four a check can
 // give, always, and "not checked yet" only where something is not checked (a page of checked
@@ -750,14 +773,29 @@ function declName(name: string): string {
 // The status word with its icon. The sentence that explains it is visible
 // text beside it (passageBlock), so the pill carries no hover-only title.
 function pill(status: SummaryStatus): string {
-  const meta = STATUS[status];
-  return `<span class="articles-pill" data-status="${status}">` +
-    `<span class="articles-ico" aria-hidden="true">${meta.icon}</span>${text(meta.label)}</span>`;
+  return `<span class="articles-pill" data-status="${status}">${tok(status)}${text(STATUS[status].label)}</span>`;
 }
 
 // A small sample of a status's coverage-bar fill: the bar's legend.
 function swatch(status: SummaryStatus): string {
   return `<span class="articles-swatch" data-status="${status}" aria-hidden="true"></span>`;
+}
+
+// The 18px status token (the Ledger restyle, 2026-11-19; style.css .wl-tok): the
+// status's glyph in a box with its own fill, so a column of them scans straight down.
+// It is always beside the status's word or count — never the only mark.
+function tok(status: SummaryStatus): string {
+  return `<span class="wl-tok" data-status="${status}" aria-hidden="true">${STATUS[status].icon}</span>`;
+}
+
+// The map Key (the Terrain direction's one idea, transplanted): on every page that
+// shows a coverage bar, what each fill means, in words. Nobody has to guess a colour,
+// and "not checked yet" says plainly that it is not a kind of "not formalized".
+function mapKey(byStatus: Record<SummaryStatus, number>): string {
+  const rows = shownStatuses(byStatus).map((s) =>
+    `<li data-status="${s}">${swatch(s)}${tok(s)}<span><b>${text(STATUS[s].label)}</b>` +
+    `<span class="wl-key-mean">${text(READER_LEGEND[s])}</span></span></li>`).join("");
+  return `<div class="wl-key"><h2>Key</h2><ul>${rows}</ul></div>`;
 }
 
 // ---- quotes ----------------------------------------------------------------
@@ -953,9 +991,10 @@ function shell(opts: {
   // The page shows passages in full, so its JSON download carries their text.
   fullText?: boolean;
   // A page that has the article reader (articlesReaderPage, and its card list's view switch):
-  // its stylesheet, a class on the body, a skip link before the header, a second header
-  // row, its own footer and its script. Absent, the shell is what it always was.
-  readerCss?: boolean; bodyClass?: string; skip?: string; headerRow?: string; footer?: string; readerJs?: boolean;
+  // its stylesheet, a class on the body, a skip link before the header, the context strip
+  // under it, its own footer and its script. Absent, the shell is what it always was.
+  // `contextStrip` is site-shell.ts's one-row strip — NEVER a second header row.
+  readerCss?: boolean; bodyClass?: string; skip?: string; contextStrip?: string; footer?: string; readerJs?: boolean;
   // The page puts the notice line at the top of its own main column (the reader: under the
   // header still, but beside the sticky panel rather than above it, so the panel keeps the
   // viewport's height).
@@ -965,6 +1004,8 @@ function shell(opts: {
   // plane loads, and only on this one page state. articlesCsp(origin, true)
   // widens script-src, frame-src and connect-src by exactly that origin.
   turnstile?: boolean;
+  // The statuses this page shows, for the scripts that redraw one (statusData).
+  statuses?: SummaryStatus[];
 }): string {
   // aria-current="page" only on /articles itself: an article or universe page is
   // inside the plane but is not the page the nav link opens.
@@ -976,25 +1017,18 @@ function shell(opts: {
 <title>WikiLean · ${text(opts.title)}</title>
 <meta name="robots" content="noindex">
 <meta name="description" content="${attr(opts.description)}">
-${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : ""}<script>(function(){try{var s=localStorage.getItem("wl-theme");var t=s==="dark"||s==="light"?s:(window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();</script>
+${opts.canonical ? `<link rel="canonical" href="${attr(opts.canonical)}">\n` : ""}${THEME_BOOTSTRAP}
 <link rel="stylesheet" href="${STYLE_CSS}">
 <link rel="stylesheet" href="${ARTICLES_CSS}">
 ${opts.readerCss ? `<link rel="stylesheet" href="${ARTICLES_READER_CSS}">\n` : ""}<style>${SEARCHBOX_CSS}</style>
 </head>
-<body class="articles-body${opts.bodyClass ? ` ${attr(opts.bodyClass)}` : ""}">
-${opts.skip ? `${opts.skip}\n` : ""}<header class="wl-header">
-  <div class="wl-title">
-    <a class="wl-brand" href="/">WikiLean</a>
-    <span class="wl-sep">·</span>
-    <a class="wl-article articles-home" href="/articles">Articles</a>
-    <span class="wl-nav">
-      ${SEARCHBOX_HTML}
-      ${siteNav(opts.dashboard ? "/articles" : "")}
-      <button id="wl-theme-toggle" class="wl-theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌓</button>
-    </span>
-  </div>
-${opts.headerRow ? `${opts.headerRow}\n` : ""}</header>
-${opts.noticeInMain ? "" : `${NOTICE_LINE}\n`}${opts.main}
+<body class="articles-body${opts.bodyClass ? ` ${attr(opts.bodyClass)}` : ""}" data-wl-status="${attr(statusData(opts.statuses))}">
+${opts.skip ? `${opts.skip}\n` : ""}${siteHeader({
+    current: opts.dashboard ? "/articles" : "",
+    context: { label: "Articles", href: "/articles", cls: "articles-home" },
+    search: SEARCHBOX_HTML,
+  })}
+${opts.contextStrip ? `${opts.contextStrip}\n` : ""}${opts.noticeInMain ? "" : `${NOTICE_LINE}\n`}${opts.main}
 ${opts.footer ?? `<footer class="articles-foot">
   <p>Wikipedia text: ${CC_BY_SA}. WikiLean mappings: CC0. Lean code keeps its library’s licence.</p>
   <details class="articles-about"><summary>Sources, licences, and data</summary>
@@ -1933,7 +1967,10 @@ function passageBlock(passage: ArticlesPassage, article: ArticlesArticle, ctx: C
   // it, and the community card beside it says who disagreed.
   if (passage.absence) {
     const a = passage.absence;
-    parts.push(`<p class="articles-absence"><span class="articles-ico" aria-hidden="true">✕</span>` +
+    // The glyph is the status's own (∅, the Ledger restyle): "searched and not found" is
+    // exactly the not-formalized claim, so the notice is marked as that status is, never
+    // with a cross that would read as "this is wrong".
+    parts.push(`<p class="articles-absence"><span class="articles-ico" aria-hidden="true">${STATUS.not_formalized.icon}</span>` +
       `Searched ${int(a.libraries)} libraries — not found. ` +
       `<a href="/articles/universe/${attr(a.universe_sha256)}">Which libraries, at which commits</a> ` +
       `(pinned ${text(article.universe.frozen)}).</p>`);
@@ -2038,7 +2075,9 @@ function countsLine(byStatus: Record<SummaryStatus, number>, nUnread: number, le
 // gains no fifth, always-empty chip.
 function statusKey(byStatus: Record<SummaryStatus, number>): string {
   const chips = shownStatuses(byStatus).map((s) => {
-    const mark = `${swatch(s)}<span class="articles-ico" aria-hidden="true">${STATUS[s].icon}</span>`;
+    // The swatch is the coverage bar's fill; the token is the status's sign. Both, so
+    // the chip is the bar's legend and reads at a glance.
+    const mark = `${swatch(s)}${tok(s)}`;
     if (count(byStatus[s]) === 0) {
       return `<span class="articles-chip is-static is-zero" data-status="${s}">${mark}${text(STATUS[s].label)}</span>`;
     }
@@ -2272,7 +2311,7 @@ function articleParts(input: ArticlePageInput) {
   // `key` and `about` above, so neither page can say one of them a second time.
   return {
     ctx, n, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
-    overlayRow, agreement, unchecked, noun,
+    overlayRow, agreement, unchecked, noun, statuses: shownStatuses(byStatus),
   };
 }
 
@@ -2306,7 +2345,7 @@ export function articlesArticlePage(input: ArticlePageInput): string {
   const { article, user, selfHref } = input;
   const {
     ctx, counts, key, libraryChips, nText, about, description, readerHref, passages, nUnread,
-    overlayRow, agreement, unchecked, noun,
+    overlayRow, agreement, unchecked, noun, statuses,
   } = articleParts(input);
   // A page of statements nothing has searched for calls them statements, here as in its
   // counts line; every other page is a page of passages, as it always was. With no card on
@@ -2342,8 +2381,17 @@ ${user ? `<p class="articles-muted articles-fb-help">Confirm says the link is ri
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main, fullText: nText > 0, footer,
-    turnstile: pageNeedsTurnstile(ctx.overlay),
-    ...(readerHref ? { readerCss: true, readerJs: true, headerRow: `<div class="atlr-bar">${viewSwitch(readerHref, "cards")}</div>` } : {}),
+    turnstile: pageNeedsTurnstile(ctx.overlay), statuses,
+    ...(readerHref
+      ? {
+        readerCss: true,
+        readerJs: true,
+        // The view switch rides the context strip, not a second header row. The
+        // card list keeps its own breadcrumb and title in the page body, where
+        // the counts line and the legend follow them.
+        contextStrip: contextStrip({ right: viewSwitch(readerHref, "cards") }),
+      }
+      : {}),
   });
 }
 
@@ -2397,7 +2445,7 @@ function readerIndex(passages: ArticlesPassage[], placed: Set<string>, ctx: Card
 export function articlesReaderPage(input: ArticlePageInput & { html: string }): string {
   const { article, user, selfHref, html } = input;
   const parts = articleParts({ ...input, readerHref: selfHref });
-  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement, unchecked, noun } = parts;
+  const { ctx, n, counts, key, libraryChips, about, description, overlayRow, agreement, unchecked, noun, statuses } = parts;
   const passages = readingOrder(parts.passages, html);
   const placed = new Set<string>();
   for (const m of html.matchAll(/<mark class="atl" data-p="([0-9a-f]{8,16})"/g)) placed.add(m[1]);
@@ -2406,8 +2454,16 @@ export function articlesReaderPage(input: ArticlePageInput & { html: string }): 
   const extraChips = chip("central", "The article's own statements", nCentral,
     "Show only the passages that state the article's subject or a named result or definition") +
     `<button type="button" class="articles-chip atlr-dim-chip" data-filter="dim" aria-pressed="false" title="Fade the article text outside the passages">Dim the rest of the text</button>`;
-  const headerRow = `<div class="atlr-bar">${viewSwitch(selfHref, "article")}` +
-    `<button type="button" class="atlr-panel-toggle" id="atlr-panel-toggle" aria-controls="atlr-panel" aria-expanded="true">Hide the passage list</button></div>`;
+  // One head, not three: the breadcrumb, the article's name, the view switch and the
+  // panel toggle all ride the context strip on the header's own surface. The reader
+  // used to stack the site header, a second bar and the notice banner above the
+  // article; now the notice is one quiet line inside the article column (below).
+  const strip = contextStrip({
+    crumb: `<a href="/articles">Articles</a> <span aria-hidden="true">›</span>`,
+    title: text(article.title),
+    right: `${viewSwitch(selfHref, "article")}` +
+      `<button type="button" class="atlr-panel-toggle" id="atlr-panel-toggle" aria-controls="atlr-panel" aria-expanded="true">Hide the passage list</button>`,
+  });
   const unplaced = passages.filter((p) => !placed.has(passageHex(p))).length;
   // With no card in the panel there is nothing for the relation legend to explain.
   const readerRelations = !unchecked || passages.some((p) => shownLocations(p, ctx).length > 0)
@@ -2415,8 +2471,6 @@ export function articlesReaderPage(input: ArticlePageInput & { html: string }): 
   const main = `<div class="atlr-layout" id="articles-reader" data-pageid="${int(article.pageid)}" data-self="${attr(selfHref)}" data-passages="${int(n)}">
 <main class="atlr-main" id="atlr-main">
 <div class="atlr-head">
-${NOTICE_LINE}
-<nav class="articles-crumbs" aria-label="Breadcrumb"><a href="/articles">Articles</a> <span aria-hidden="true">›</span> <span>${text(article.title)}</span></nav>
 <h1 class="articles-h1">${text(article.title)}</h1>
 ${counts}
 ${key}
@@ -2424,6 +2478,7 @@ ${filterNote(true, noun)}
 ${moreFilters(libraryChips, extraChips)}
 ${about}
 <p class="atlr-hint">${unchecked ? "Select a highlighted statement to read it on its own; no library has been searched for it yet" : "Select a highlighted passage to see where Lean formalizes it"}${unplaced ? `. ${plural(unplaced, `${noun.one} is`, `${noun.many} are`)} listed in the panel only` : ""}.</p>
+${NOTICE_LINE}
 </div>
 <article class="wl-article-body atlr-article" id="atlr-article" lang="en" aria-label="${attr(article.title)}, Wikipedia revision ${int(article.revision)}">
 <div class="atlr-mbar" id="atlr-mbar" aria-hidden="true" hidden></div>
@@ -2460,8 +2515,8 @@ ${passages.map((p) => passageBlock(p, article, ctx, true)).join("\n")}
 </footer>`;
   return shell({
     title: `Articles · ${article.title}`, description, canonical: `https://wikilean.jackmccarthy.org${selfHref}`, main,
-    readerCss: true, readerJs: true, bodyClass: "atlr-body", headerRow, footer, noticeInMain: true,
-    turnstile: pageNeedsTurnstile(ctx.overlay),
+    readerCss: true, readerJs: true, bodyClass: "atlr-body", contextStrip: strip, footer, noticeInMain: true,
+    turnstile: pageNeedsTurnstile(ctx.overlay), statuses,
     skip: `<a class="atlr-skip" href="#atlr-panel">Skip to the passage panel</a>`,
   });
 }
@@ -2515,6 +2570,21 @@ function listHeads(): string {
     ` data-sort="${col.key}" data-sort-title="${attr(col.title)}">${text(col.label)}</th>`).join("");
 }
 
+// Under a row's bar: its counts in words, each with its status token, so the row says
+// what the fills mean without the reader looking anything up (the Ledger list). A
+// status the article has none of is left out; "not checked yet" is counted apart from
+// every other status, because nothing has searched for those statements.
+function covWords(byStatus: Record<SummaryStatus, number>, notChecked: number): string {
+  const parts = CHECKED_STATUSES.filter((s) => count(byStatus[s]) > 0)
+    .map((s) => `<span class="articles-cov-n" data-status="${s}">${tok(s)}` +
+      `<span class="articles-n">${int(byStatus[s])}</span> ${text(STATUS[s].plural)}</span>`);
+  if (notChecked > 0) {
+    parts.push(`<span class="articles-cov-n" data-status="not_checked">${tok("not_checked")}` +
+      `<span class="articles-n">${int(notChecked)}</span> ${text(STATUS.not_checked.plural)}</span>`);
+  }
+  return parts.length ? `<span class="articles-cov-words">${parts.join("")}</span>` : "";
+}
+
 // One row of that list. Every key the script sorts by is a data attribute, so sorting
 // never re-reads a cell, and the library names a row counts are its cell's title.
 function listRow(row: DashboardRow, libs: Map<string, LibraryView>): string {
@@ -2533,7 +2603,7 @@ function listRow(row: DashboardRow, libs: Map<string, LibraryView>): string {
     `${notChecked ? ` data-not-checked="${int(notChecked)}"` : ""}` +
     ` data-libraries="${int(ids.length)}" data-importance="${attr(String(row.importance ?? ""))}">` +
     `<th scope="row"><a href="${attr(row.href)}">${text(row.title)}</a></th>` +
-    `<td class="articles-cov">${bar}</td>` +
+    `<td class="articles-cov">${bar}${covWords(byStatus, notChecked)}</td>` +
     `<td class="num">${notChecked > 0 ? `${int(checked)} of ${int(shown)} checked` : int(checked)}</td>` +
     `<td class="num">${ids.length ? `<span title="${attr(names)}">${plural(ids.length, "library", "libraries")}</span>`
       : `<span class="articles-muted">none</span>`}</td></tr>`;
@@ -2682,6 +2752,7 @@ ${about}
 <section aria-labelledby="articles-h-list">
 <form class="articles-search" method="get" action="/articles" role="search"><label for="articles-q">Search covered articles</label> <input id="articles-q" name="q" type="search" value="${attr(q)}" maxlength="200" autocomplete="off"> <button type="submit">Search</button></form>
 <p class="articles-count" id="articles-count" role="status">${showing}</p>
+${mapKey(byStatus)}
 ${tableWrap("Articles", `<table class="articles-table articles-list" id="articles-list" data-total="${int(total)}" data-shards="${attr(shards.join(" "))}" data-library-names="${attr(libraryNames)}"><thead><tr>${listHeads()}</tr></thead><tbody>
 ${list}
 </tbody></table>`)}
@@ -2694,6 +2765,7 @@ ${list}
     canonical: "https://wikilean.jackmccarthy.org/articles",
     main,
     dashboard: true,
+    statuses: buildStatuses,
   });
 }
 

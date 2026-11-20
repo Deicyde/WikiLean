@@ -1,43 +1,33 @@
 /* The formalization reader (docs/ARTICLES.md, "UI"): the /articles pages and the
-   summary box on the old article pages. Built only from style.css's tokens (--paper, --surface,
-   --ink, --muted, --line, --line-strong, --accent, --serif and the --c-* status
-   trio), so dark mode follows [data-theme] and prefers-color-scheme exactly as
-   the article pages do. Status is never colour alone: every status has an icon
-   and a word in the markup, and its own stroke here (solid, dashed, dotted,
-   double, groove grey); the coverage bar adds fill patterns, and the status
-   chips carry a swatch of each fill as its legend. */
+   summary box on the old article pages. Built only from the shared layer's tokens
+   (style.css: --paper, --surface, --sunken, --ink, --muted, --faint, --line,
+   --line-strong, --accent, the type scale, the spacing and the --c-* status trio),
+   so dark mode follows [data-theme] and prefers-color-scheme exactly as the article
+   pages do. The [data-status] -> --st mapping lives in style.css now, with the rest
+   of the token layer.
 
-[data-status="formalized"]     { --st: var(--c-formalized);     --st-ink: var(--c-formalized-ink);     --st-bg: var(--c-formalized-bg);     --st-line: solid; }
-[data-status="statement_only"] { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dashed; }
-[data-status="partial"]        { --st: var(--c-partial);        --st-ink: var(--c-partial-ink);        --st-bg: var(--c-partial-bg);        --st-line: dotted; }
-[data-status="not_formalized"] { --st: var(--c-not_formalized); --st-ink: var(--c-not_formalized-ink); --st-bg: var(--c-not_formalized-bg); --st-line: double; }
-/* Phase 1's statements: a neutral grey, never one of the three status colours, with its own
-   dashed grey stroke, its own hatched swatch below, and the page's ink (not the muted grey)
-   on its wash, so the pill and its counts keep AA contrast in both themes. The wash is
-   TRANSLUCENT, like the other three, so the reader's selected highlight — which paints the
-   wash three times over — still reads as selected. "unchecked" is the word a store's reader
-   mark carries (the passage's outcome); "not_checked" is the summary status the pages count —
-   both paint the same. */
-[data-status="not_checked"],
-[data-status="unchecked"]      { --st: var(--c-untouched);      --st-ink: var(--ink);                  --st-bg: rgba(154, 145, 131, 0.22); --st-line: dashed; }
-[data-theme="dark"] [data-status="not_checked"],
-[data-theme="dark"] [data-status="unchecked"] { --st-bg: rgba(154, 144, 129, 0.26); }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme]) [data-status="not_checked"],
-  :root:not([data-theme]) [data-status="unchecked"] { --st-bg: rgba(154, 144, 129, 0.26); }
-}
-[data-status="unresolved"]     { --st: var(--c-untouched);      --st-ink: var(--muted);                --st-bg: transparent;                --st-line: groove; }
+   Status is never colour alone: every status has a glyph, a word, its own stroke
+   (solid, dashed, dotted, double, dashed grey) and its own fill below, and the status
+   chips and the map Key carry a swatch of each fill as its legend.
+
+   The fills are the Ledger set (2026-11-19), and they are calm by construction:
+   FORMALIZED is the only solid fill. Statement-only is hatched and partial stippled in
+   the same amber; NOT FORMALIZED is a pale ground under a baseline — never a red hatch,
+   because "searched every library and found nothing" is a finding, not an error; and
+   NOT CHECKED is a horizontal hatch in an open dashed track, its own pattern in a
+   neutral grey that belongs to no status family. not_checked is never folded into
+   not_formalized: they are opposite claims. */
 
 .articles-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 
 /* ---- page frame ---- */
-.wl-articles { max-width: 1000px; margin: 0 auto; padding: 20px 28px 48px; color: var(--ink); line-height: 1.55; font-size: 15px; box-sizing: border-box; }
+.wl-articles { max-width: 1000px; margin: 0 auto; padding: var(--s6) var(--s5) var(--s8); color: var(--ink); line-height: 1.6; font-size: var(--t-s); box-sizing: border-box; }
 .wl-articles a, .articles-foot a { color: var(--accent); text-underline-offset: 2px; }
 .wl-articles a:hover { text-decoration-thickness: 2px; }
 .articles-crumbs { font-size: 12px; color: var(--muted); margin: 0 0 4px; }
-.articles-h1 { font-family: var(--serif); font-size: 1.75rem; line-height: 1.2; margin: 4px 0 6px; overflow-wrap: anywhere; }
-.articles-h2 { font-family: var(--serif); font-size: 1.15rem; margin: 28px 0 8px; }
-.articles-lead { color: var(--muted); max-width: 70ch; margin: 0 0 8px; }
+.articles-h1 { font-family: var(--serif); font-size: var(--t-2xl); font-weight: 500; line-height: 1.12; margin: 0 0 var(--s2); overflow-wrap: anywhere; }
+.articles-h2 { font-family: var(--serif); font-size: var(--t-lg); font-weight: 500; margin: var(--s6) 0 var(--s2); }
+.articles-lead { color: var(--muted); font-size: var(--t-base); line-height: 1.56; max-width: 58ch; margin: 0 0 var(--s3); }
 .articles-meta { color: var(--muted); font-size: 13px; margin: 2px 0; }
 .articles-muted { color: var(--muted); }
 .articles-data { margin: 24px 0 0; font-size: 12px; color: var(--muted); }
@@ -48,14 +38,15 @@
 .articles-foot a { text-decoration: underline; }
 /* The data's audit status: one quiet line under the header of every articles page, never a
    banner and never on a card. It keeps its words; it does not keep the page's attention. */
-.articles-notice { margin: 0; padding: 5px 28px; border-bottom: 1px solid var(--line); background: none; color: var(--muted); font-size: 12px; line-height: 1.45; text-align: left; }
+/* One quiet line, never a banner: it keeps its words, not the page's attention. */
+.articles-notice { margin: 0; padding: var(--s1) var(--s5); border-bottom: 1px solid var(--line); background: none; color: var(--faint); font-size: var(--t-xs); line-height: 1.5; text-align: left; }
 
 /* ---- the head of an article page: counts, legend-filter, folds ---- */
 /* One line of counts under the title, then the legend that is also the filter. Nothing
    else: every other figure is in the "About this page" fold under them. */
-.articles-counts { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 0; margin: 2px 0 8px; font-size: 15px; }
-.articles-counts b { font-weight: 700; }
-.articles-dot { margin: 0 8px; color: var(--c-untouched); }
+.articles-counts { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s1) 0; margin: 0 0 var(--s3); font: var(--t-s)/1.6 var(--sans); color: var(--muted); }
+.articles-counts b { color: var(--ink); font-weight: 600; }
+.articles-dot { margin: 0 var(--s2); color: var(--faint); }
 .articles-key { margin: 0 0 2px; }
 .articles-key .articles-chip { font-size: 12.5px; }
 /* The filters that are not the legend, folded away. */
@@ -85,35 +76,42 @@
 .articles-strip-row { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; margin: 8px 0 0; }
 .articles-strip-h { flex: 0 0 64px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .articles-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.articles-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; box-sizing: border-box; padding: 2px 10px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 12px; line-height: 1.3; cursor: pointer; }
-.articles-chip[data-status] { border: 1.5px var(--st-line) var(--st); }
-.articles-chip[data-status="not_formalized"] { border-width: 3px; }
+.articles-chip { display: inline-flex; align-items: center; gap: var(--s2); min-height: 28px; box-sizing: border-box; padding: 2px 10px 2px 6px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--surface); color: var(--ink); font: var(--t-xs)/1.4 var(--sans); cursor: pointer; }
+.articles-chip[data-status] { border-left: 3px var(--st-line) var(--st); }
 .articles-chip:hover { border-color: var(--accent); }
 .articles-chip[aria-pressed="true"] { background: var(--st-bg, var(--line)); outline: 2px solid var(--accent); outline-offset: 1px; font-weight: 600; }
 .articles-chip.is-static, .articles-chip.is-static[data-status] { cursor: default; border-color: transparent; background: transparent; padding-left: 2px; }
 .articles-chip.is-zero { opacity: .7; }
 .articles-chip.is-static:hover { border-color: transparent; }
 .articles-n { font-weight: 700; font-variant-numeric: tabular-nums; }
-.articles-ico { display: inline-block; min-width: 1em; text-align: center; font-weight: 700; color: var(--st-ink, inherit); }
+.articles-ico { display: inline-block; min-width: 1em; text-align: center; font-family: var(--sans); font-weight: 700; color: var(--st-ink, inherit); }
 .articles-filter-note { margin: 8px 0 0; font-size: 12px; color: var(--muted); min-height: 1em; }
 .articles-clear { font: inherit; font-size: 12px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--accent); border-radius: 6px; padding: 1px 8px; cursor: pointer; }
 
-.articles-bar { display: flex; height: 12px; margin: 6px 0 4px; border: 1px solid var(--line-strong); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.articles-bar { display: flex; height: 9px; margin: var(--s1) 0 var(--s1); border-radius: 1px; overflow: hidden; background: var(--sunken); box-shadow: inset 0 0 0 1px var(--line); }
 /* Nothing checked: the empty track, dashed so it reads as waiting rather than as a bar
    that failed to draw (the statement-set design, section 3). */
-.articles-bar.is-empty { border-style: dashed; border-color: var(--c-untouched); }
-.articles-seg { display: block; height: 100%; box-shadow: inset -2px 0 0 var(--surface); }
-.articles-seg:last-child { box-shadow: none; }
+.articles-bar.is-empty { background: none; box-shadow: none; border: 1px dashed var(--c-untouched); border-radius: 2px; }
+.articles-seg { display: block; height: 100%; }
 /* The swatch is the bar's legend: the same fill, inside each status chip. */
-.articles-swatch { display: inline-block; width: 14px; height: 10px; flex: 0 0 14px; border: 1px solid var(--line-strong); border-radius: 2px; box-sizing: border-box; }
+.articles-swatch { display: inline-block; width: 15px; height: 9px; flex: 0 0 15px; border-radius: 1px; box-shadow: inset 0 0 0 1px var(--line-strong); box-sizing: border-box; vertical-align: -1px; }
+/* The one solid fill on the whole site. */
 .articles-seg[data-status="formalized"], .articles-swatch[data-status="formalized"] { background: var(--c-formalized); }
-.articles-seg[data-status="statement_only"], .articles-swatch[data-status="statement_only"] { background: repeating-linear-gradient(135deg, var(--c-partial) 0 3px, transparent 3px 6px); }
-.articles-seg[data-status="partial"], .articles-swatch[data-status="partial"] { background: radial-gradient(circle, var(--c-partial) 1.4px, transparent 1.8px) 0 0 / 5px 5px; }
-.articles-seg[data-status="not_formalized"], .articles-swatch[data-status="not_formalized"] { background: repeating-linear-gradient(45deg, var(--c-not_formalized) 0 2px, transparent 2px 5px), repeating-linear-gradient(-45deg, var(--c-not_formalized) 0 2px, transparent 2px 5px); }
+/* Stated, not proved: a diagonal hatch over the amber wash. */
+.articles-seg[data-status="statement_only"], .articles-swatch[data-status="statement_only"] { background: repeating-linear-gradient(135deg, var(--c-statement_only) 0 2px, transparent 2px 5px), var(--c-statement_only-bg); }
+/* Partly stated: the same amber, stippled, so the two are told apart without colour. */
+.articles-seg[data-status="partial"], .articles-swatch[data-status="partial"] { background: radial-gradient(circle at 50% 50%, var(--c-partial) 1.2px, transparent 1.5px) 0 0 / 4px 4px, var(--c-partial-bg); }
+/* The glyph beside this status is the empty set, not a cross (STATUS in
+   articles-render.ts): the claim is that the set of formalizations found is empty.
+   Searched, nothing found: UNPAINTED — a pale ground with a baseline under it, which
+   is a reading of the ground rather than a mark against the article. */
+.articles-seg[data-status="not_formalized"] { background: var(--c-not_formalized-bg); box-shadow: inset 0 -2px 0 var(--c-not_formalized); }
+.articles-swatch[data-status="not_formalized"] { background: var(--c-not_formalized-bg); box-shadow: inset 0 0 0 1px var(--line-strong), inset 0 -2px 0 var(--c-not_formalized); }
 /* Not checked yet: a grey HORIZONTAL hatch — its own pattern, told apart from every status
    fill above and from the undecided vertical hatch below without colour. */
-.articles-seg[data-status="not_checked"], .articles-swatch[data-status="not_checked"] { background: repeating-linear-gradient(0deg, var(--c-untouched) 0 1.5px, transparent 1.5px 5px); }
+.articles-seg[data-status="not_checked"], .articles-swatch[data-status="not_checked"] { background: repeating-linear-gradient(0deg, var(--c-untouched) 0 1px, transparent 1px 4px); }
 .articles-seg[data-status="not_checked"] { box-shadow: inset 0 0 0 1px var(--c-untouched); }
+.articles-swatch[data-status="not_checked"] { box-shadow: inset 0 0 0 1px var(--c-untouched); }
 /* Undecided is a visible grey vertical hatch, never an empty-looking track. */
 .articles-seg[data-status="unresolved"], .articles-swatch[data-status="unresolved"] { background: repeating-linear-gradient(90deg, var(--c-untouched) 0 1.5px, transparent 1.5px 4px); }
 .articles-seg[data-status="unresolved"] { box-shadow: inset 0 0 0 1px var(--c-untouched); }
@@ -139,8 +137,7 @@
 .articles-subject-list li { display: flex; flex-wrap: wrap; gap: 4px 8px; align-items: center; }
 .articles-subject-list a { overflow-wrap: anywhere; }
 .articles-subject-list .articles-pill { margin-left: 0; }
-.articles-pill { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; padding: 1px 10px; border: 1.5px var(--st-line) var(--st); border-radius: 999px; background: var(--st-bg); color: var(--st-ink); font-size: 12px; font-weight: 700; }
-.articles-pill[data-status="not_formalized"] { border-width: 3px; }
+.articles-pill { margin-left: auto; display: inline-flex; align-items: center; gap: var(--s2); padding: 4px 10px 4px 7px; border-left: 3px var(--st-line) var(--st); border-radius: 2px; background: var(--st-bg); color: var(--st-ink); font: 600 var(--t-xs)/1.3 var(--sans); }
 .articles-quote { margin: 8px 0 4px; padding: 0 0 0 12px; border-left: 3px solid var(--line-strong); font-family: var(--serif); font-size: 16px; line-height: 1.5; overflow-wrap: anywhere; }
 .articles-quote mark { background: var(--st-bg); color: inherit; padding: 0 2px; border-radius: 2px; }
 .articles-affix { color: var(--muted); }
@@ -293,15 +290,26 @@
 
 /* ---- tables and search (dashboard, universe) ---- */
 .articles-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.articles-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line-strong); font-size: 13px; }
-.articles-table th, .articles-table td { padding: 6px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-.articles-table thead th { font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.articles-table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--line-strong); font-size: var(--t-xs); }
+.articles-table th, .articles-table td { padding: var(--s2) var(--s3); border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.articles-table thead th { font: 600 var(--t-xs)/1.5 var(--sans); letter-spacing: .07em; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
 /* The articles list: one row per article — its name, a bar of its statuses, how many
    passages it has and how many libraries hold a match. Four columns, not eleven. */
-.articles-list th, .articles-list td { padding: 7px 8px; vertical-align: middle; }
+/* The articles list is a ruled list, not a striped grid: the title in serif at reading
+   size, the bar with its counts in words under it, then the two figures. */
+.articles-list { background: none; border: 0; }
+.articles-list th, .articles-list td { padding: var(--s3) var(--s3) var(--s3) 0; vertical-align: baseline; }
+.articles-list thead th { border-bottom: 1px solid var(--line-strong); padding-bottom: var(--s2); }
+.articles-list tbody tr:hover { background: var(--accent-soft); }
+.articles-list tbody th { font-weight: 400; }
+.articles-list tbody th a { font: var(--t-base)/1.35 var(--serif); color: var(--ink); text-decoration: none; }
+.articles-list tbody th a:hover { color: var(--accent); text-decoration: underline; }
 .articles-list thead th.num { white-space: normal; min-width: 4em; }
-.articles-list .articles-cov { width: 34%; min-width: 120px; }
-.articles-list .articles-cov .articles-bar { margin: 0; }
+.articles-list .articles-cov { width: 34%; min-width: 150px; }
+.articles-list .articles-cov .articles-bar { margin: 0 0 5px; }
+.articles-cov-words { display: flex; flex-wrap: wrap; gap: 2px var(--s3); font: var(--t-xs)/1.5 var(--sans); color: var(--muted); }
+.articles-cov-n { display: inline-flex; align-items: center; gap: var(--s1); color: var(--st-ink); white-space: nowrap; }
+.articles-cov-n .wl-tok { font-size: 10px; }
 .articles-list .articles-libtag { margin: 0 0 2px; }
 /* A sortable column head: plain text without the script, a button with it
    (articles.js wraps the head's words), and an arrow for the column in force. */
@@ -312,6 +320,7 @@
 [aria-sort] .articles-sort { color: var(--ink); }
 .articles-table tbody th { font-weight: 600; }
 .articles-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.articles-list td.num { font: var(--t-s)/1.5 var(--sans); color: var(--muted); white-space: nowrap; }
 .articles-table code { font-size: 11.5px; overflow-wrap: anywhere; }
 .articles-table code.articles-sha { white-space: nowrap; overflow-wrap: normal; }
 .articles-search { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin: 0 0 6px; }

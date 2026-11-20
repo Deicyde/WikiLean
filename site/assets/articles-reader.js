@@ -57,18 +57,28 @@
   var noteBox = document.querySelector(".articles-filter-note");
   var noun = (noteBox && noteBox.getAttribute("data-noun")) || "passages";
   var header = document.querySelector(".wl-header");
+  var ctx = document.querySelector(".wl-ctx");
   var self = root.getAttribute("data-self") || location.pathname;
 
   // The statuses a passage can be shown with. A passage with no status is set aside by the page and
   // never reaches the panel; a section without one of these is ignored, never labelled.
   // not_checked is phase 1's: the statement was cut and no library has been searched for it.
-  var STATUS = {
-    formalized: ["\u2713", "Formalized"],
-    statement_only: ["\u25d0", "Statement only"],
-    partial: ["\u25d4", "Partial"],
-    not_formalized: ["\u2715", "Not formalized"],
-    not_checked: ["\u25cb", "Not checked yet"]
-  };
+  // The glyph and the word of each are the server's own, read from <body data-wl-status>
+  // (articles-render.ts STATUS_DATA), so this script and the HTML around it cannot say
+  // different things about one status; they are two readings of one table. A page without
+  // the attribute keeps the five statuses and loses only their glyphs.
+  var STATUS_IDS = ["formalized", "statement_only", "partial", "not_formalized", "not_checked"];
+  var STATUS = (function () {
+    var data = {};
+    try { data = JSON.parse((document.body && document.body.getAttribute("data-wl-status")) || "{}") || {}; }
+    catch (e) { data = {}; }
+    var out = {};
+    STATUS_IDS.forEach(function (s) {
+      var d = data[s] && typeof data[s] === "object" ? data[s] : {};
+      out[s] = [typeof d.icon === "string" ? d.icon : "", d.label ? String(d.label) : s.replace(/_/g, " ")];
+    });
+    return out;
+  })();
   var phone = window.matchMedia ? window.matchMedia("(max-width: 999px)") : { matches: false };
   var finePointer = window.matchMedia ? window.matchMedia("(hover: hover) and (pointer: fine)") : { matches: true };
   var calm = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
@@ -359,9 +369,16 @@
   // ---- geometry ----
   var headerH = 0;
   function measure() {
-    headerH = header ? header.getBoundingClientRect().height : 0;
-    // The panel sticks under the header (the body's --atlr-top), and every in-page jump,
-    // Wikipedia's own [1] and back and section links among them, stops below it.
+    // The sticky chrome is two elements now (the Ledger restyle, 2026-11-19): the one
+    // site header and the context strip under it, which carries this page's breadcrumb,
+    // title, view switch and panel toggle. --atlr-hdr is where the strip sticks;
+    // --atlr-top is the whole chrome's height, which is where the panel sticks and where
+    // every in-page jump stops (Wikipedia's own [1] and back and section links among
+    // them).
+    var hdr = header ? header.getBoundingClientRect().height : 0;
+    var strip = ctx ? ctx.getBoundingClientRect().height : 0;
+    headerH = hdr + strip;
+    document.body.style.setProperty("--atlr-hdr", Math.round(hdr) + "px");
     document.body.style.setProperty("--atlr-top", Math.round(headerH) + "px");
     html.style.scrollPaddingTop = Math.round(headerH + 12) + "px";
   }
@@ -706,7 +723,7 @@
   function showPeek(p, mark) {
     var st = STATUS[p.status];
     peek.textContent = "";
-    var word = el("span", "atlr-peek-st", st[0] + " " + st[1]);
+    var word = el("span", "atlr-peek-st", (st[0] ? st[0] + " " : "") + st[1]);
     word.setAttribute("data-status", p.status);
     peek.appendChild(word);
     if (p.lead) {
