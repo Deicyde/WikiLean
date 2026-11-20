@@ -81,6 +81,9 @@ DRY_RUN_SCHEMA = "wikilean.brain-promotion-dry-run/v2"
 DRY_RUN_ARTIFACT_SCHEMA = "wikilean.brain-promotion-dry-run-artifacts/v1"
 DRY_RUN_ARTIFACT_DOMAIN = "wikilean.brain-promotion-dry-run-artifacts.v1"
 RESULT_SCHEMA = "wikilean.brain-promotion-result/v1"
+# Code-only policies whose open attempts reconcile still accepts. When the code-only POLICY is
+# bumped, keep every value an open attempt may carry, or that attempt cannot be reconciled.
+RECONCILABLE_CODE_ONLY_POLICIES = frozenset({"wikilean.code-only-release-paths/v1", CODE_ONLY_POLICY})
 MAX_COMMAND_EVIDENCE_BYTES = 4 * 1024 * 1024
 MAX_NODE_MODULE_OBJECTS = 100_000
 MAX_NODE_MODULE_BYTES = 2 * 1024 * 1024 * 1024
@@ -1964,13 +1967,15 @@ class BrainPromoter:
         return tuple(changes)
 
     def _check_recovery_checkout(self, authority_commit: str) -> str:
+        """authority_commit is the commit the attempt's public baseline names: the Brain's
+        commit for a full promotion, the promotion commit for a code-only one."""
         head, main, branch = self._clean_checkout_state()
         current_reviewed_main = head == main and branch in {"", "main"}
         detached_authority = head == authority_commit and branch == ""
         if not current_reviewed_main and not detached_authority:
             raise PromotionError(
                 "reconciliation requires either clean current main or a clean detached "
-                f"checkout of release authority {authority_commit} "
+                f"checkout of the attempt's authority commit {authority_commit} "
                 f"(HEAD={head}, main={main}, branch={branch or 'detached'})"
             )
         return head
@@ -4081,6 +4086,40 @@ class BrainPromoter:
             raise PromotionError("journal intent payload is malformed")
         return payload
 
+    @staticmethod
+    def _journal_baseline_authority(
+        intent: Mapping[str, object],
+        *,
+        requested_release: str,
+        release_manifest_sha256: str,
+        authority_commit: str,
+    ) -> str:
+        """The commit an attempt's public baseline was frozen at.
+
+        A full promotion freezes the baseline at the commit that built the Brain. A
+        code-only promotion reuses that Brain but freezes the baseline at the promotion
+        commit, as prepare, _prepare_reviewed_activation and _final_predeploy_fence do.
+        The baseline itself stays pinned by its ID and manifest digest; this only selects
+        the commit it must name. The code-only block is accepted only when it agrees with
+        the intent's promotion commit, this Brain and the requested release.
+        """
+        code_only = intent.get("code_only")
+        if code_only is None:
+            return authority_commit
+        promotion_commit = intent.get("promotion_commit")
+        if (
+            not isinstance(code_only, dict)
+            or code_only.get("policy") not in RECONCILABLE_CODE_ONLY_POLICIES
+            or not isinstance(promotion_commit, str)
+            or GIT_COMMIT_RE.fullmatch(promotion_commit) is None
+            or code_only.get("code_git_commit") != promotion_commit
+            or code_only.get("brain_authority_commit") != authority_commit
+            or code_only.get("reused_release_id") != requested_release
+            or code_only.get("reused_manifest_sha256") != release_manifest_sha256
+        ):
+            raise PromotionError("journal code-only identity is malformed")
+        return promotion_commit
+
     def _stable_reconciliation_observation(
         self,
         config: Path | None = None,
@@ -4251,6 +4290,12 @@ class BrainPromoter:
             or not isinstance(predeploy, dict)
         ):
             raise PromotionError("journal intent lacks verified release/deployment state")
+        baseline_authority = self._journal_baseline_authority(
+            intent,
+            requested_release=requested_release,
+            release_manifest_sha256=release_manifest_sha256,
+            authority_commit=authority_commit,
+        )
         candidate = self._verify_release(
             requested_release,
             Path(release_root),
@@ -4279,14 +4324,14 @@ class BrainPromoter:
                 Path(baseline_root),
                 self.repo.resolve(strict=True),
                 expected_baseline_id=baseline_id,
-                expected_authority_git_commit=authority_commit,
+                expected_authority_git_commit=baseline_authority,
             )
         except BaselineValidationError as exc:
             raise PromotionError(f"journal public baseline no longer verifies: {exc}") from exc
         if (
             sha256_bytes(verified_baseline.manifest_path.read_bytes())
             != baseline_manifest_sha256
-            or public_baseline.get("authority_commit") != authority_commit
+            or public_baseline.get("authority_commit") != baseline_authority
             or public_baseline.get("files") != len(verified_baseline.files)
             or public_baseline.get("bytes") != verified_baseline.total_bytes
         ):
@@ -4318,7 +4363,7 @@ class BrainPromoter:
                 reducer_commit=retained_reducer,
             ):
                 raise PromotionError("retained release no longer matches the durable intent")
-        self._check_recovery_checkout(authority_commit)
+        self._check_recovery_checkout(baseline_authority)
         reviewed_installation = worker_bundle.get("installation")
         if (
             reviewed_installation is not None
