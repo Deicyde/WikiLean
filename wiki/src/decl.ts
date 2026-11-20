@@ -128,15 +128,20 @@ export interface DeclCitation {
 
 // ---- multi-library fabric (Phase 1.4 of the math-DB unification) ------------
 // Beyond Mathlib (the sharded asset index), other Lean libraries' own decls
-// live in one KV blob refreshed nightly from each library's doc-gen4
-// declaration-data (site/build_library_decls.py + catalog/data/libraries.json).
-// The blob carries each library's docs_base, so library URL churn (Physlib has
-// renamed twice) is a data update, never a Worker deploy.
+// live in one KV blob refreshed nightly from each library's declaration index
+// (site/build_library_decls.py + catalog/data/libraries.json): doc-gen4's
+// declaration-data, or a Verso literate site's xref.json. The blob carries each
+// library's docs_base, so library URL churn (Physlib has renamed twice) is a
+// data update, never a Worker deploy.
 export const LIBDECLS_KV_KEY = "libdecls:v1";
 
 interface LibDeclsBlob {
   libraries: Record<string, { label: string; docs_base: string; aliases: string[] }>;
   decls: Record<string, Record<string, string>>; // library → name → module
+  // library → name → page#anchor relative to docs_base, for a library whose
+  // pages are not doc-gen4's Module/Path.html#Name (a Verso site's anchors are
+  // mangled names). A decl without one gets the doc-gen4 link.
+  hrefs?: Record<string, Record<string, string>>;
 }
 
 export async function resolveInLibraries(
@@ -149,11 +154,14 @@ export async function resolveInLibraries(
     if (!module) continue;
     const lib = blob.libraries[key];
     if (!lib?.docs_base) continue;
+    const href = blob.hrefs?.[key]?.[name];
     return {
       library: key,
       label: lib.label,
       module,
-      docs_url: `${lib.docs_base}${module.replace(/\./g, "/")}.html#${encodeURIComponent(name)}`,
+      docs_url: typeof href === "string" && href
+        ? `${lib.docs_base}${href}`
+        : `${lib.docs_base}${module.replace(/\./g, "/")}.html#${encodeURIComponent(name)}`,
     };
   }
   return null;

@@ -63,23 +63,46 @@ describe("multi-library fabric (resolveInLibraries)", () => {
   const BLOB = {
     libraries: {
       cslib: { label: "CSLib", docs_base: "https://api.cslib.io/docs/", aliases: [] },
-      "formal-conjectures": { label: "Formal Conjectures", docs_base: "https://google-deepmind.github.io/formal-conjectures/doc/", aliases: [] },
+      "formal-conjectures": { label: "Formal Conjectures", docs_base: "https://google-deepmind.github.io/formal-conjectures/src/", aliases: [] },
     },
     decls: {
       cslib: { "Cslib.Automata.DA": "Cslib.Automata.DA.Basic" },
-      "formal-conjectures": { "CollatzConjecture.collatz_conjecture": "FormalConjectures.Wikipedia.CollatzConjecture" },
+      "formal-conjectures": {
+        "CollatzConjecture.collatz_conjecture": "FormalConjectures.Wikipedia.CollatzConjecture",
+        "Green100.IsSofic": "FormalConjectures.GreensOpenProblems.«100»",
+      },
+    },
+    // As site/build_library_decls.py writes them from FC's Verso xref.json.
+    hrefs: {
+      "formal-conjectures": {
+        "CollatzConjecture.collatz_conjecture": "FormalConjectures/Wikipedia/CollatzConjecture/#CollatzConjecture___collatz_conjecture",
+        "Green100.IsSofic": "FormalConjectures/GreensOpenProblems/%C2%AB100%C2%BB/#Green100___IsSofic",
+      },
     },
   };
-  it("resolves a CSLib decl to its docs URL", async () => {
+  it("resolves a CSLib decl to its doc-gen4 URL", async () => {
     const { resolveInLibraries } = await import("../src/decl.js");
     const hit = await resolveInLibraries(BLOB as never, "Cslib.Automata.DA");
     expect(hit).toMatchObject({ library: "cslib", label: "CSLib" });
     expect(hit!.docs_url).toBe("https://api.cslib.io/docs/Cslib/Automata/DA/Basic.html#Cslib.Automata.DA");
   });
-  it("resolves an FC decl whose namespace differs from its module", async () => {
+  it("resolves an FC decl to its Verso page and anchor", async () => {
     const { resolveInLibraries } = await import("../src/decl.js");
     const hit = await resolveInLibraries(BLOB as never, "CollatzConjecture.collatz_conjecture");
-    expect(hit!.docs_url).toContain("/doc/FormalConjectures/Wikipedia/CollatzConjecture.html#CollatzConjecture.collatz_conjecture");
+    expect(hit).toMatchObject({ library: "formal-conjectures", module: "FormalConjectures.Wikipedia.CollatzConjecture" });
+    expect(hit!.docs_url).toBe(
+      "https://google-deepmind.github.io/formal-conjectures/src/FormalConjectures/Wikipedia/CollatzConjecture/#CollatzConjecture___collatz_conjecture",
+    );
+    const guillemets = await resolveInLibraries(BLOB as never, "Green100.IsSofic");
+    expect(guillemets!.docs_url).toBe(
+      "https://google-deepmind.github.io/formal-conjectures/src/FormalConjectures/GreensOpenProblems/%C2%AB100%C2%BB/#Green100___IsSofic",
+    );
+  });
+  it("reads a blob from before hrefs existed", async () => {
+    const { resolveInLibraries } = await import("../src/decl.js");
+    const old = { libraries: BLOB.libraries, decls: BLOB.decls };
+    const hit = await resolveInLibraries(old as never, "Cslib.Automata.DA");
+    expect(hit!.docs_url).toBe("https://api.cslib.io/docs/Cslib/Automata/DA/Basic.html#Cslib.Automata.DA");
   });
   it("misses cleanly on unknown names and null blobs", async () => {
     const { resolveInLibraries } = await import("../src/decl.js");
