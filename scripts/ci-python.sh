@@ -35,6 +35,7 @@ run_check "anchor resolution tests" "$PYTHON_BIN" site/test_anchor_resolve.py
 run_check "moderation unit tests" "$PYTHON_BIN" site/test_moderate.py
 run_check "cross-language parity tests" "$PYTHON_BIN" site/test_parity.py
 run_check "Agent sandbox tests (no bypassPermissions, positive tool sets)" "$PYTHON_BIN" site/test_agent_sandbox.py
+run_check "Multi-library decl fabric builder tests" "$PYTHON_BIN" site/test_build_library_decls.py
 run_check "offline moderation evaluation" "$PYTHON_BIN" site/eval_moderation.py --offline --require-all
 run_check "Nightly health summary tests" "$PYTHON_BIN" manage/test_nightly_health.py
 run_check "Brain v2 fixture tests" "$PYTHON_BIN" brain/test_v2.py

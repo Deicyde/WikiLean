@@ -1,5 +1,5 @@
 {
-  "_comment": "Lean library registry — the (library, decl) pair is the universal L1 join key (docs/research/mathdb-unification-research.json). Every doc-gen4 site serves declarations/declaration-data.bmp (JSON despite the extension, CORS *). module_roots filters each site's index to the library's OWN decls (each site bundles Mathlib+core: cslib's index is 231k decls of which 3.2k are its own). aliases record renames (Physlib was HEPLean then PhysLean) so old references stay resolvable. enabled=false keeps a library registered but unfetched (lean-pool: 52k decls of mixed-tier student projects — listed, not yet served).",
+  "_comment": "Lean library registry — the (library, decl) pair is the universal L1 join key (docs/research/mathdb-unification-research.json). Every doc-gen4 site serves declarations/declaration-data.bmp (JSON despite the extension, CORS *); index_format (default doc-gen4) says what declaration_data is, and verso-xref is a Verso literate site's xref.json (site/build_library_decls.py). module_roots filters each site's index to the library's OWN decls (each site bundles Mathlib+core: cslib's index is 231k decls of which 3.2k are its own). aliases record renames (Physlib was HEPLean then PhysLean) so old references stay resolvable. enabled=false keeps a library registered but unfetched (lean-pool: 52k decls of mixed-tier student projects — listed, not yet served).",
   "libraries": [
     {
       "key": "mathlib",
@@ -32,11 +32,13 @@
     {
       "key": "formal-conjectures",
       "label": "Formal Conjectures",
-      "docs_base": "https://google-deepmind.github.io/formal-conjectures/doc/",
-      "declaration_data": "https://google-deepmind.github.io/formal-conjectures/doc/declarations/declaration-data.bmp",
+      "docs_base": "https://google-deepmind.github.io/formal-conjectures/src/",
+      "declaration_data": "https://google-deepmind.github.io/formal-conjectures/src/xref.json",
+      "index_format": "verso-xref",
       "module_roots": ["FormalConjectures", "FormalConjecturesForMathlib"],
       "aliases": [],
-      "enabled": true
+      "enabled": true,
+      "note": "doc-gen4 docs were removed upstream on 2026-07-29 (google-deepmind/formal-conjectures#4302); the Verso literate pages under src/ replace them, and src/xref.json names each declaration's page and anchor"
     },
     {
       "key": "lean-pool",
