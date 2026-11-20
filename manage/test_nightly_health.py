@@ -398,6 +398,230 @@ def test_missing_cache_dir_is_an_error():
     assert rc == 2 and "no such directory" in buf.getvalue()
 
 
+CURL_404 = "curl: (22) The requested URL returned error: 404"
+
+
+def _builder_output(libs) -> list:
+    """site/build_library_decls.py's lines as they land in the moderate log:
+    stderr's FETCH FAILED lines at once, stdout's when the builder exits.
+    libs: [(key, own decls, failure reason or None)]."""
+    err = [f"  {k}: FETCH FAILED ({r})" for k, _, r in libs if r is not None]
+    out = []
+    for k, own, r in libs:
+        if r is not None:
+            out.append(f"  {k}: keeping {own} decls from the previous blob")
+        out.append(f"  {k}: {own} own decls")
+    total = sum(own for _, own, _ in libs)
+    return err + out + [f"wrote library_decls.json: {total} decls across "
+                        f"{len(libs)} libraries (1.6 MB)"]
+
+
+def _moderate_log(cron: Path, day: int, section, after=()) -> None:
+    """One night's moderate log, shaped like site/ops/nightly-moderate.sh's, with
+    decoy builder-like lines in the sections either side. section=None leaves
+    the decl fabric step out (WIKILEAN_LIBDECLS_REFRESH=0)."""
+    stamp = f"202611{day:02d}T032004"
+    lines = [f"=== WikiLean nightly moderation {stamp} ===",
+             "PY=/usr/bin/python3  wp=1000 review=15 conc=2 budget=700000", "",
+             "--- refresh /decl reverse citations (KV declcites:v1) ---",
+             "  physlib: 0 own decls", ""]
+    if section is not None:
+        lines += [nh.DECL_SECTION, *section, "",
+                  " ⛅️ wrangler 4.107.0 (update available 4.158.0)",
+                  "Resource location: remote ",
+                  'Writing the contents of /Users/jack/x/site/out/library_decls.json to the '
+                  'key "libdecls:v1" on namespace binding: "RENDER_CACHE" (id: "abc").',
+                  *after, ""]
+    lines += ["--- refresh golden fixtures (site/out, local only) ---",
+              "  cslib: 0 own decls", "(golden fixtures: 3 re-rendered, 0 failed)", "",
+              f"=== done {stamp[:9]}045512 ==="]
+    cron.mkdir(parents=True, exist_ok=True)
+    (cron / f"moderate-{stamp}.log").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+HEALTHY = [("cslib", 6139, None), ("physlib", 12739, None),
+           ("formal-conjectures", 13823, None)]
+
+
+def _fc(own, reason):
+    return [("cslib", 6139, None), ("physlib", 12739, None),
+            ("formal-conjectures", own, reason)]
+
+
+def test_decl_section_reads_only_its_own_lines():
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        _moderate_log(cron, 9, _builder_output(_fc(0, CURL_404)))
+        (log,) = cron.iterdir()
+        sec = nh.decl_section(log.read_text(encoding="utf-8"))
+    assert sec["libraries"] == {
+        "formal-conjectures": {"own": 0, "kept": 0, "reason": CURL_404},
+        "cslib": {"own": 6139, "kept": None, "reason": None},
+        "physlib": {"own": 12739, "kept": None, "reason": None},
+    }, sec
+    assert not sec["build_failed"] and sec["kv_put"] is None, sec
+    assert nh.decl_section("=== WikiLean nightly moderation ===\n--- review batch ---\n") is None
+
+
+def test_decl_section_waits_for_the_builder_to_finish():
+    """Read mid-run, a section has only the FETCH FAILED lines (stderr) so far;
+    it counts once the builder's last line or the wrapper's build-failed line is in."""
+    head = f"=== WikiLean nightly moderation 20261120T032004 ===\n{nh.DECL_SECTION}\n"
+    running = head + f"  formal-conjectures: FETCH FAILED ({CURL_404})\n"
+    assert nh.decl_section(running) is None
+    assert nh.decl_section(running + "(library-decls build failed — keeping the last KV copy)\n"
+                           )["build_failed"]
+    done = running + "\n".join(_builder_output(_fc(0, CURL_404))[1:]) + "\n"
+    assert nh.decl_section(done)["libraries"]["formal-conjectures"]["own"] == 0
+
+
+def test_decl_fabric_flags_an_enabled_library_at_zero_on_the_first_night():
+    """A fetch that succeeds but keeps no decl (module_roots wrong, say) is
+    flagged at once; the empty blob looks like any other success."""
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        _moderate_log(cron, 9, _builder_output(HEALTHY))
+        _moderate_log(cron, 10, _builder_output(_fc(0, None)))
+        fab = nh.decl_fabric(cron)
+    assert fab["log"] == "moderate-20261110T032004.log" and fab["refreshes"] == 2, fab
+    assert [lib["key"] for lib in fab["libraries"]] == ["cslib", "formal-conjectures", "physlib"]
+    (w,) = fab["warnings"]
+    assert w.startswith("formal-conjectures has 0 own decls"), w
+
+
+def test_decl_fabric_flags_a_fetch_that_failed_three_refreshes_running():
+    """One or two failed nights are listed, not flagged: the builder keeps the
+    last good blob. The run starts after the last night the fetch worked."""
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        _moderate_log(cron, 8, _builder_output(_fc(13823, "JSONDecodeError")))
+        _moderate_log(cron, 9, _builder_output(HEALTHY))
+        for day in (10, 11):
+            _moderate_log(cron, day, _builder_output(_fc(13823, "JSONDecodeError")))
+        fab = nh.decl_fabric(cron)
+        fc = next(lib for lib in fab["libraries"] if lib["key"] == "formal-conjectures")
+        assert fc["failed"] and fc["run"] == 2 and fc["kept"] == 13823, fc
+        assert fab["warnings"] == [], fab["warnings"]
+        _moderate_log(cron, 12, _builder_output(_fc(13823, "JSONDecodeError")))
+        fab = nh.decl_fabric(cron)
+    (w,) = fab["warnings"]
+    assert w == ("formal-conjectures: fetch failed in each of the last 3 refreshes, since "
+                 "2026-11-10 (JSONDecodeError); the 13,823 decls it serves are left from an "
+                 "earlier blob"), w
+
+
+def test_decl_fabric_the_2026_11_incident():
+    """formal-conjectures' doc-gen4 site gone and no previous entries to keep:
+    0 own decls every night. Both warnings, and the run covers every log read."""
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        for day in range(9, 21):
+            _moderate_log(cron, day, _builder_output(_fc(0, "JSONDecodeError")))
+        fab = nh.decl_fabric(cron)
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            nh.print_decl_fabric(fab)
+    zero, run = fab["warnings"]
+    assert zero.startswith("formal-conjectures has 0 own decls"), zero
+    assert ("fetch failed in each of the last 12 refreshes, since at least 2026-11-09 "
+            "(JSONDecodeError)") in run, run
+    assert "left from an earlier blob" not in run, run
+    assert ("formal-conjectures        0 own decls  fetch failed (JSONDecodeError), kept 0 "
+            "from the previous blob; 12 refreshes running") in out.getvalue(), out.getvalue()
+
+
+def test_decl_fabric_run_stops_where_the_library_is_not_listed():
+    """A newly enabled library's run cannot reach back before it was enabled."""
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        _moderate_log(cron, 9, _builder_output(HEALTHY[:2]))
+        for day in (10, 11, 12):
+            _moderate_log(cron, day, _builder_output(_fc(0, CURL_404)))
+        fab = nh.decl_fabric(cron)
+    fc = next(lib for lib in fab["libraries"] if lib["key"] == "formal-conjectures")
+    assert fc["run"] == 3 and fc["since"] == "2026-11-10", fc
+    assert "since 2026-11-10 (curl: (22) The requested URL returned error: 404)" in \
+        fab["warnings"][1], fab["warnings"]
+
+
+def test_decl_fabric_run_passes_over_a_build_that_listed_nothing():
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        _moderate_log(cron, 9, _builder_output(HEALTHY))
+        for day in (10, 11):
+            _moderate_log(cron, day, _builder_output(_fc(13823, "JSONDecodeError")))
+        _moderate_log(cron, 12, ["(library-decls build failed — keeping the last KV copy)"])
+        _moderate_log(cron, 13, _builder_output(_fc(13823, "JSONDecodeError")))
+        fab = nh.decl_fabric(cron)
+    fc = next(lib for lib in fab["libraries"] if lib["key"] == "formal-conjectures")
+    assert fc["run"] == 3 and fc["since"] == "2026-11-10", fc
+    assert len(fab["warnings"]) == 1 and "last 3 refreshes" in fab["warnings"][0], fab
+
+
+def test_decl_fabric_skips_logs_without_the_step_and_reads_only_the_newest():
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        for day in (9, 10, 11):
+            _moderate_log(cron, day, _builder_output(_fc(5, "CalledProcessError")))
+        _moderate_log(cron, 12, None)
+        fab = nh.decl_fabric(cron)
+        assert fab["log"] == "moderate-20261111T032004.log", fab
+        assert fab["newest_log"] == "moderate-20261112T032004.log", fab
+        assert fab["libraries"][1]["run"] == 3, fab["libraries"]
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            nh.print_decl_fabric(fab)
+        assert "the newest log, moderate-20261112T032004.log, has no finished refresh section" \
+            in out.getvalue(), out.getvalue()
+        assert nh.decl_fabric(cron, max_logs=2)["libraries"][1]["run"] == 1
+        assert nh.decl_fabric(cron, max_logs=1)["log"] is None
+
+
+def test_decl_fabric_flags_a_failed_build_and_kv_put():
+    with tempfile.TemporaryDirectory() as td:
+        cron = Path(td)
+        _moderate_log(cron, 9, ["Traceback (most recent call last):",
+                                "FileNotFoundError: catalog/data/libraries.json",
+                                "(library-decls build failed — keeping the last KV copy)"])
+        fab = nh.decl_fabric(cron)
+        assert fab["libraries"] == [] and len(fab["warnings"]) == 1, fab
+        assert fab["warnings"][0].startswith("the build failed"), fab["warnings"]
+        _moderate_log(cron, 10, _builder_output(HEALTHY), after=["(libdecls kv put returned 1)"])
+        fab = nh.decl_fabric(cron)
+    assert fab["warnings"] == ["(libdecls kv put returned 1): KV libdecls:v1 is older than "
+                               "this blob"], fab["warnings"]
+
+
+def test_report_prints_the_decl_fabric():
+    with tempfile.TemporaryDirectory() as td:
+        cache = Path(td)
+        out = io.StringIO()
+        with _at_now(), contextlib.redirect_stdout(out):
+            nh.main(["--cache", str(cache)])
+        assert ("decl fabric (KV libdecls:v1): no finished refresh section and no moderate logs "
+                "under cron/") in out.getvalue(), out.getvalue()
+        _moderate_log(cache / "cron", 9, _builder_output(HEALTHY))
+        out = io.StringIO()
+        with _at_now(), contextlib.redirect_stdout(out):
+            rc = nh.main(["--cache", str(cache)])
+        text = out.getvalue()
+        assert rc == 0
+        assert ("decl fabric (KV libdecls:v1), moderate-20261109T032004.log (the newest of "
+                "1 refreshes read):") in text, text
+        assert "  physlib              12,739 own decls\n" in text, text
+        assert "verdict  no library is at 0 own decls" in text, text
+        assert "WARNING" not in text, text
+        for day in (10, 11, 12):
+            _moderate_log(cache / "cron", day, _builder_output(_fc(0, CURL_404)))
+        out = io.StringIO()
+        with _at_now(), contextlib.redirect_stdout(out):
+            nh.main(["--cache", str(cache)])
+    text = out.getvalue()
+    assert "  WARNING  formal-conjectures has 0 own decls" in text, text
+    assert "  WARNING  formal-conjectures: fetch failed in each of the last 3 refreshes" in text
+    assert "verdict" not in text.split("decl fabric")[1], text
+
+
 def test_runs_on_python_39_grammar():
     """The script must run on an older host's python3 (macOS system Python)."""
     src = (HERE / "nightly_health.py").read_text(encoding="utf-8")
