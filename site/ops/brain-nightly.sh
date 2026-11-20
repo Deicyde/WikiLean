@@ -126,6 +126,12 @@ WIKIDATA_OBSERVATION_PLAN_SHA256="${WIKILEAN_WIKIDATA_OBSERVATION_PLAN_SHA256:-}
 # This run establishes its own exact generation after verification; inherited
 # selectors must never select a different installed bundle behind the gate.
 unset WIKILEAN_WIKIDATA_OBSERVATION_BUNDLE
+# Brain producers' private store (site/ops/brain_producers.py): inputs, sealed
+# exports and run records. It must sit outside every git work tree, since the
+# producers refuse to build into one; override it in nightly.local.env.
+BRAIN_PRODUCER_STORE="${WIKILEAN_BRAIN_PRODUCER_STORE:-$HOME/.local/share/wikilean/brain-producers}"
+# How stale the staged plans export may get before the log says so (3 weekly runs).
+BRAIN_PRODUCER_MAX_AGE_HOURS="${WIKILEAN_BRAIN_PRODUCER_MAX_AGE_HOURS:-504}"
 RELEASE_STORE="$REPO/site/out/brain-releases"
 RELEASE_RESULT="$REPO/site/out/brain-release-result.json"
 RELEASE_METRICS_RESULT="$REPO/site/out/brain-release-metrics.json"
@@ -595,6 +601,12 @@ cd "$REPO" || exit 1
     py_soft "formal-conjectures harvest"     "$REPO/brain/ingest/formal_conjectures.py"
     py_soft "erdosproblems ingest"           "$REPO/brain/ingest/erdosproblems.py"
     py_soft "tauceti harvest"                "$REPO/brain/ingest/lean_repo.py" tauceti
+    # Tau Ceti plans producer (docs/BRAIN-PLANS.md "Running the producer in the
+    # nightly"): networked fetch + offline build into the private producer
+    # store; a new logical_root is published there and staged below.
+    py_soft "tauceti plans producer"         "$REPO/site/ops/brain_producers.py" \
+        run tauceti_plans --repo "$REPO" --store "$BRAIN_PRODUCER_STORE" \
+        --python "$PYTHON_BIN"
     # User-registered Lean repos: sync the enabled list from the live Worker
     # (pinned contract: GET /api/repos/enabled -> {"repos":[{owner,repo,lib}]}),
     # fail-soft — a failed curl keeps the previous registrations.json, and a
@@ -613,8 +625,18 @@ cd "$REPO" || exit 1
     py_soft "user Lean repos harvest"        "$REPO/brain/ingest/lean_repo.py" --user-repos
     touch "$LOGDIR/.stamp.brain-weekly"
   else
-    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/formal-conjectures/erdos/tauceti/user-repos)"
+    echo "(weekly sources not due — skipping lmfdb/eom/planetmath/formal-conjectures/erdos/tauceti/tauceti-plans/user-repos)"
   fi
+  # Stage the current plans export for build_snapshot every night (a no-op when
+  # its logical_root is already staged), then report the producer's freshness.
+  # Fail-soft: on any failure the staged export stays as it was and the build
+  # reads that one.
+  py_soft "stage tauceti plans export" "$REPO/site/ops/brain_producers.py" \
+      stage tauceti_plans --store "$BRAIN_PRODUCER_STORE" \
+      --into "$REPO/brain/data/tauceti_plans"
+  py_soft "tauceti plans freshness" "$REPO/site/ops/brain_producers.py" \
+      check tauceti_plans --store "$BRAIN_PRODUCER_STORE" \
+      --max-age-hours "$BRAIN_PRODUCER_MAX_AGE_HOURS"
   echo
   if due brain-monthly 27; then
     echo "=== ingest: monthly sources ==="

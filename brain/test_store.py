@@ -347,7 +347,7 @@ class HybridStoreTest(unittest.TestCase):
             mock.patch.object(
                 self.snapshot_module,
                 "build",
-                side_effect=[(nodes, edges, meta), (nodes, edges, meta)],
+                side_effect=[(nodes, edges, meta, []), (nodes, edges, meta, [])],
             ),
             mock.patch.object(
                 self.snapshot_module,
@@ -420,7 +420,7 @@ class HybridStoreTest(unittest.TestCase):
             mock.patch.object(
                 self.snapshot_module,
                 "build",
-                return_value=([NODES[0]], [MAIN_EDGES[0]], meta),
+                return_value=([NODES[0]], [MAIN_EDGES[0]], meta, []),
             ),
             mock.patch.object(
                 self.snapshot_module, "write_sqlite_from_jsonl",
@@ -429,9 +429,10 @@ class HybridStoreTest(unittest.TestCase):
             snapshot_id = self.snapshot_module.build_jsonl_only(data_dir=data_dir)
 
         self.assertRegex(snapshot_id, r"^[0-9a-f]{64}$")
+        # A live publish also writes the plans layer's held list (empty here).
         self.assertEqual(
             {path.name for path in data_dir.iterdir()},
-            {"nodes.jsonl", "edges.jsonl", "edges_links.jsonl"},
+            {"nodes.jsonl", "edges.jsonl", "edges_links.jsonl", "held_edges.jsonl"},
         )
         sqlite_builder.assert_not_called()
 

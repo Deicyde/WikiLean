@@ -13,6 +13,7 @@
     "brain/stage_io.py",
     "brain/store.py",
     "brain/frontier_suitability.py",
+    "brain/plans_layer.py",
     "site/build_brain_page.py"
   ],
   "classes": {
@@ -56,6 +57,8 @@
     {"path": "catalog/data/formal_conjectures.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "FormalConjectures repository harvest"},
     {"path": "catalog/data/erdos_joins.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "Erdos problem joins"},
     {"path": "catalog/data/tauceti.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "TauCeti repository harvest"},
+    {"path_pattern": "brain/data/tauceti_plans/*.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "sealed Tau Ceti plans export (scripts/tauceti_plans), staged by site/ops/brain_producers.py; its manifest binds every file; optional in the current build"},
+    {"path": "brain/data/tauceti_plans/manifest.json", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "the plans export's manifest: file digests and its logical_root; optional in the current build"},
     {"path_pattern": "catalog/data/user_repos/*.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "enabled user Lean repository harvests; exact members must be enumerated in the pack"},
     {"path_pattern": "catalog/data/external/*_pages.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "external database page harvests; exact members must be enumerated in the pack"},
     {"path_pattern": "catalog/data/external/*_links.jsonl", "class": "immutable_source_object", "consumers": ["brain/build_common.py"], "purpose": "external database link harvests; exact members must be enumerated in the pack"},
