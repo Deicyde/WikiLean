@@ -14,8 +14,8 @@ reach over ssh::
 a WikiLean agent token and no work repo (:mod:`claims`): ``claim`` takes a package from
 the claims API and unpacks it to ``<workdir>/packages/<run id>/``, its gate code held to
 the public commit it names; ``index`` downloads the index bundle it names and links the
-index and search corpus into the root; ``run`` renews the lease first and after every
-task; ``seal`` takes the package's campaign; ``results`` submits the sealed set through
+index and search corpus into the root; ``run`` renews the lease first and every half
+hour after a task; ``seal`` takes the package's campaign; ``results`` submits the sealed set through
 intake and links the receipt to the claim; ``release --reason`` ends the claim. The
 token is read from ``$WIKILEAN_AGENT_TOKEN`` once and taken out of the environment.
 
@@ -412,8 +412,43 @@ def claims_notice(log=print) -> None:
     log("# A package that ships no fetched bytes needs its sources refetched by hand.")
 
 
+def accepted_receipt(*, workdir: Path, base: str, token: str, log=print) -> str:
+    """A linked submission intake accepted, asked of the service now; or RunProblem.
+
+    ``done`` tells the coordinator there is a result to collect, so it waits for intake's
+    verdict: a set still queued is not yet a result, and a rejected one never is.
+    """
+    import submit as submit_mod  # noqa: PLC0415
+    import submission_transport  # noqa: PLC0415
+
+    mine = claims_mod.held(workdir) or {}
+    if not claims_mod.live(mine):
+        raise RunProblem("this workdir holds no live claim to release")
+    held = sorted(claims_mod.receipts_dir(workdir, mine["claim_id"]).glob("sub-*.json"))
+    states = {}
+    for path in held:
+        try:
+            result = submit_mod.status(path.stem, base_url=base, token=token)
+        except submission_transport.TransportError as exc:
+            raise RunProblem(f"could not ask intake about {path.stem}: {exc}") from exc
+        states[path.stem] = (result.get("submission") or {}).get("state")
+        if states[path.stem] == "accepted":
+            log(f"  accepted : {path.stem}")
+            return path.stem
+    if not states:
+        raise RunProblem("no receipt is linked from this workdir; --stage results --execute "
+                         "sends the sealed set first")
+    waiting = [sub for sub, state in states.items() if state in ("queued", "validating")]
+    if waiting:
+        raise RunProblem(f"intake has not decided on {', '.join(sorted(waiting))} yet; "
+                         "release as done once it accepts one")
+    raise RunProblem("intake accepted none of this claim's sets ("
+                     + ", ".join(f"{sub[:16]}… {state}" for sub, state in sorted(states.items()))
+                     + "); fix and resubmit, or release with another --reason")
+
+
 def submit_and_link(*, workdir: Path, record_set: Path, base: str, token: str,
-                    execute: bool, log=print) -> dict:
+                    execute: bool, wait: float = 0, log=print) -> dict:
     """Claims mode's ``--stage results``: the sealed set through intake, its receipt linked.
 
     The receipt is kept as ``submissions/<id>.json`` and ``SUBMISSION.json``; a set intake
@@ -426,7 +461,8 @@ def submit_and_link(*, workdir: Path, record_set: Path, base: str, token: str,
     if problem:
         raise RunProblem(problem)
     try:
-        receipt = submit_set(record_set, base_url=base, execute=execute, token=token)
+        receipt = submit_set(record_set, base_url=base, execute=execute, token=token,
+                             wait_seconds=wait if execute else 0)
     except (submission_transport.TransportError,
             submission_transport.intake.build_store.ArticlesError) as exc:
         raise RunProblem(str(exc)) from exc
@@ -434,7 +470,7 @@ def submit_and_link(*, workdir: Path, record_set: Path, base: str, token: str,
     if not execute:
         log("# dry run: would submit this set and link its receipt to the claim")
         return receipt
-    claims_mod.save_receipt(workdir, receipt)
+    claims_mod.save_receipt(workdir, claims_mod.held(workdir)["claim_id"], receipt)
     submission = receipt.get("submission") or {}
     if submission.get("state") in ("rejected", "failed"):
         raise RunProblem(f"intake turned the set away ({submission.get('state')}); nothing "
@@ -478,6 +514,8 @@ def run_claims(args, stages: tuple[str, ...], machine: str) -> int:
             continue
         mine = claims_mod.held(workdir)
         if stage == "release":
+            if args.reason == "done" and args.execute:
+                accepted_receipt(workdir=workdir, base=base, token=token)
             claims_mod.release(base=base, token=token, workdir=workdir,
                                reason=args.reason or "", note=args.note,
                                execute=args.execute)
@@ -502,8 +540,12 @@ def run_claims(args, stages: tuple[str, ...], machine: str) -> int:
             if args.execute:
                 mine = claims_mod.renew(base=base, token=token, workdir=workdir)
                 after_task = claims_mod.renewer(base=base, token=token, workdir=workdir)
-            # the gate code runs on this machine: checked against its commit every time
-            claims_mod.fetch_package(base=base, token=token, workdir=workdir, record=mine)
+            # the gate code runs on this machine: checked against its commit every time,
+            # and the root it runs in for code the package did not bring
+            target, manifest = claims_mod.fetch_package(base=base, token=token,
+                                                        workdir=workdir, record=mine,
+                                                        execute=args.execute)
+            claims_mod.checked_root(workdir, target, manifest)
             run_stage(repo=workdir, workdir=workdir, package=package,
                       worker_command=args.worker_command or "", execute=args.execute,
                       model=args.model, reviewer=not args.no_reviewer,
@@ -533,11 +575,14 @@ def run_claims(args, stages: tuple[str, ...], machine: str) -> int:
             if not Path(record_set).is_dir():
                 raise RunProblem(f"no sealed set at {record_set}: seal one first (--stage "
                                  "seal), or pass --record-set")
-            if not claims_mod.live(mine) and args.execute:
+            if not claims_mod.live(mine):
                 raise RunProblem(f"the claim on {package} has ended ({mine.get('state')}), so "
                                  "a receipt cannot be linked to it")
+            if args.execute:
+                # the service's word on the claim, before a set is sent for it
+                claims_mod.renew(base=base, token=token, workdir=workdir)
             submit_and_link(workdir=workdir, record_set=Path(record_set), base=base,
-                            token=token, execute=args.execute)
+                            token=token, execute=args.execute, wait=args.wait)
     return 0
 
 
@@ -557,6 +602,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--reason", choices=claims_mod.RELEASE_REASONS, default=None,
                         help="with --claims --stage release: why the claim ends; done "
                              "needs a linked receipt")
+    parser.add_argument("--wait", type=float, default=60,
+                        help="with --claims --stage results --execute: seconds to wait for "
+                             "intake's verdict before linking (0 to 300; it is linked either "
+                             "way, and release --reason done waits for an accepted one)")
     parser.add_argument("--note", default=None,
                         help="with --claims --stage release: a note for the coordinator")
     parser.add_argument("--workdir", required=True, type=Path,
@@ -638,6 +687,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--take-over is git mode's; the claims API gives a package to one agent")
     if args.stage in CLAIMS_ONLY and not args.claims:
         parser.error(f"--stage {args.stage} is claims mode's (--claims)")
+    if not 0 <= args.wait <= 300:
+        parser.error("--wait must be between 0 and 300 seconds")
     if args.stage == "release" and not args.reason:
         parser.error("--stage release needs --reason")
     stages = (args.stage,) if args.stage else (CLAIMS_STAGES if args.claims

@@ -13,7 +13,7 @@ module is the contributor's side of it (wiki/src/claims.ts):
   from (:func:`gate_code_problems`), because that code runs on this machine.
 * **index** — the index bundle the package names, into a cache, and its index and
   search corpus linked into the root where the gate and staging read them.
-* **renew** — before a paid run and after every task, so a long run keeps its lease;
+* **renew** — before a paid run and after a task once half an hour has passed, so a long run keeps its lease;
   a claim that ended stops the run after the task in hand.
 * **link** — an intake receipt joined to the claim, so the coordinator finds it.
 * **release** — the claim ended with a reason, ``done`` once a receipt is linked.
@@ -25,6 +25,7 @@ working directory, and never the token. No network here: every request is
 from __future__ import annotations
 
 import datetime as _dt
+import importlib.machinery
 import json
 import os
 import re
@@ -32,6 +33,7 @@ import secrets
 import shutil
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -42,6 +44,7 @@ for _path in (str(HERE), str(PIPELINE), str(PIPELINE / "gate"), str(CHECKOUT / "
         sys.path.insert(0, _path)
 
 import envelope as envelope_mod  # noqa: E402
+import keys as keys_mod  # noqa: E402 — scripts/pipeline/keys.py
 import package as package_mod  # noqa: E402
 import stage as stage_mod  # noqa: E402 — scripts/pipeline/gate/stage.py, what a gate holds
 import work as work_mod  # noqa: E402
@@ -60,6 +63,8 @@ COMMIT_RE = re.compile(r"[0-9a-f]{40}")
 #: The renew refusals that mean the claim is over (wiki/src/claims.ts ``ownLive``):
 #: ended or its package moved, its lease ran out, or this agent holds no such claim.
 ENDED_CODES = ("lease", "claim_expired", "not_found")
+#: Seconds between a paid run's renewals: the lease is 24 hours, a write costs budget.
+RENEW_EVERY = 30 * 60
 
 
 class ClaimProblem(ValueError):
@@ -149,7 +154,9 @@ def request_key(workdir: Path, package: str | None) -> str:
         pending = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         pending = None
-    if isinstance(pending, dict) and pending.get("run_id") == package \
+    # a retry that names no package reuses the pending key whatever it named: the Worker
+    # answers that key with the claim it made, so a lost answer leaves no orphan claim
+    if isinstance(pending, dict) and package in (None, pending.get("run_id")) \
             and isinstance(pending.get("request_key"), str) \
             and re.fullmatch(r"[0-9a-f]{32}", pending["request_key"]) \
             and pending["request_key"] != spent:
@@ -186,7 +193,8 @@ def claim(*, base: str, token: str, workdir: Path, package: str | None = None,
             f"until {stamp(mine.get('lease_until'))}")
         if execute:
             mine = renew(base=base, token=token, workdir=workdir, log=log)
-            fetch_package(base=base, token=token, workdir=workdir, record=mine, log=log)
+            fetch_package(base=base, token=token, workdir=workdir, record=mine,
+                          execute=True, log=log)
         return mine["run_id"]
     if not execute:
         listed = _call(base, "/api/packages", token).get("packages") or []
@@ -201,36 +209,58 @@ def claim(*, base: str, token: str, workdir: Path, package: str | None = None,
             f"{pick.get('max_cost')}")
         log("# dry run: would claim it, download its package and check its gate code")
         return str(pick["run_id"])
-    key = request_key(workdir, package)
-    answer = _call(base, "/api/claims", token,
-                   {"request_key": key, **({"run_id": package} if package else {})})
-    if not answer.get("claim"):
-        raise NothingFree("no package is free to claim" + (f" under the name {package}"
-                                                            if package else ""))
-    record = save(workdir, answer["claim"], base, request_key=key)
+    for _attempt in range(2):
+        key = request_key(workdir, package)
+        answer = _call(base, "/api/claims", token,
+                       {"request_key": key, **({"run_id": package} if package else {})})
+        if not answer.get("claim"):
+            raise NothingFree("no package is free to claim"
+                              + (f" under the name {package}" if package else ""))
+        record = save(workdir, answer["claim"], base, request_key=key)
+        if live(record):
+            break
+        # a retried key answers with the claim it made, which may have ended since; the
+        # key is spent now, so the next request is a new claim
+        log(f"  ended    : {record['claim_id']} on {record['run_id']} is {record['state']}; "
+            "claiming again")
+    else:
+        raise ClaimProblem(f"the claim on {record['run_id']} ended as it was made "
+                           f"({record['state']})")
     log(f"  claimed  : {record['run_id']} as {record['claim_id']}, lease until "
         f"{stamp(record.get('lease_until'))}")
-    fetch_package(base=base, token=token, workdir=workdir, record=record, log=log)
+    fetch_package(base=base, token=token, workdir=workdir, record=record, execute=True,
+                  log=log)
     return record["run_id"]
 
 
 def stamp(millis) -> str:
     if not isinstance(millis, (int, float)):
         return "?"
-    moment = _dt.datetime.fromtimestamp(millis / 1000, _dt.timezone.utc)
+    try:
+        moment = _dt.datetime.fromtimestamp(millis / 1000, _dt.timezone.utc)
+    except (OverflowError, OSError, ValueError):
+        return "?"
     return moment.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def fetch_package(*, base: str, token: str, workdir: Path, record: dict,
-                  log=print) -> tuple[Path, dict]:
-    """The claimed package, downloaded and unpacked once, its gate code checked every time."""
+                  execute: bool = False, log=print) -> tuple[Path, dict]:
+    """The claimed package, downloaded and unpacked once, its gate code checked every time.
+
+    Only ``execute`` downloads: a dry run reads a package already unpacked, or refuses.
+    """
     workdir = Path(workdir)
     target = package_dir(workdir, record)
     if not (target / package_mod.PACKAGE_JSON).is_file():
+        if not execute:
+            raise ClaimProblem(f"the package of claim {record.get('claim_id')} is not "
+                               f"downloaded yet ({target}); --stage claim --execute "
+                               "downloads it")
         sha, size = record.get("envelope_sha256"), record.get("bytes")
         if not (isinstance(sha, str) and re.fullmatch(r"[0-9a-f]{64}", sha)
-                and isinstance(size, int) and size > 0):
-            raise ClaimProblem("the claim names no envelope sha256 and size to download")
+                and isinstance(size, int) and 0 < size <= envelope_mod.MAX_ENVELOPE_BYTES):
+            raise ClaimProblem("the claim names no envelope sha256 and size to download "
+                               f"(at most {envelope_mod.MAX_ENVELOPE_BYTES} bytes)")
         dest = workdir / ENVELOPES_DIR / f"{sha}.json"
         transport().download(base, record["package_url"], token, dest, size=size, sha256=sha)
         target, _manifest = envelope_mod.unpack(dest.read_bytes(), target.parent)
@@ -247,15 +277,29 @@ def fetch_package(*, base: str, token: str, workdir: Path, record: dict,
     return target, manifest
 
 
+#: What Python would import as code from a directory on ``sys.path``: source, bytecode,
+#: extension modules, and the path and archive files that add more of them. Compared
+#: casefolded, because the default macOS disk opens ``VOCAB.PY`` as ``vocab.py``.
+IMPORTABLE = tuple(sorted({suffix.casefold() for suffix in importlib.machinery.all_suffixes()}
+                          | {".py", ".pyc", ".pyo", ".pyd", ".so", ".dylib", ".pth", ".zip",
+                             ".egg", ".whl"}))
+GATE_DATA = re.compile(r"gate\.json|tasks/[A-Za-z0-9][A-Za-z0-9._-]*\.json")
+
+
+def importable(name: str) -> bool:
+    return name.casefold().endswith(IMPORTABLE)
+
+
 def gate_code_problems(directory: Path, manifest: dict, checkout: Path | None = None) -> list[str]:
-    """Whether the package's ``gate/`` is the gate of the public commit it names.
+    """Whether the only code the package carries is the gate of the public commit it names.
 
     The runner runs the package's own ``gate/verify_locate.py`` and
-    ``gate/passage_ids.py`` with this machine's Python (``run/task.py``), and they import
-    their siblings from ``gate/``. So the directory may hold exactly what
-    ``gate/stage.py`` puts there: its named files, each byte for byte the file at
-    ``producer_commit`` in this checkout's history, plus ``gate.json`` and
-    ``tasks/<task>.json``, which are the plan's data.
+    ``gate/passage_ids.py`` with this machine's Python (``run/task.py``), and
+    ``verify_locate.py`` puts both ``gate/`` and the root above it on ``sys.path``. So
+    ``gate/`` holds exactly what ``gate/stage.py`` puts there: every one of its named
+    files, each byte for byte the file at ``producer_commit``, a commit on this checkout's
+    ``origin/main``, plus ``gate.json`` and ``tasks/<task>.json``, which are the plan's
+    data; and nothing anywhere else in the package is a file Python would import.
     """
     checkout = CHECKOUT if checkout is None else checkout
     commit = str(manifest.get("producer_commit") or "")
@@ -264,24 +308,77 @@ def gate_code_problems(directory: Path, manifest: dict, checkout: Path | None = 
     sources = {name: source.relative_to(stage_mod.ROOT).as_posix()
                for source, name in stage_mod.GATE_FILES}
     problems: list[str] = []
+    gate: dict[str, str] = {}
     for rel in sorted(manifest.get("files") or {}):
-        if not rel.startswith("gate/"):
-            continue
-        name = rel[len("gate/"):]
-        if name == "gate.json" or re.fullmatch(r"tasks/[A-Za-z0-9][A-Za-z0-9._-]*\.json", name):
-            continue
-        if name not in sources:
-            problems.append(f"{rel} is not a file the gate is made of")
-            continue
+        top, _, name = rel.partition("/")
+        if top.casefold() == "gate" and top != "gate":
+            problems.append(f"{rel} is spelled otherwise than gate/")
+        elif top != "gate":
+            if importable(rel) or "__pycache__" in rel.split("/"):
+                problems.append(f"{rel} is code outside gate/")
+        elif not GATE_DATA.fullmatch(name):
+            if name in sources:
+                gate[name] = rel
+            else:
+                problems.append(f"{rel} is not a file the gate is made of")
+    absent = sorted(set(sources) - set(gate))
+    if absent:
+        problems.append(f"the package's gate lacks {', '.join(absent)}")
+    if problems:
+        return problems
+    ancestor = subprocess.run(["git", "-C", str(checkout), "merge-base", "--is-ancestor",
+                               commit, "origin/main"], capture_output=True)
+    if ancestor.returncode != 0:
+        return [f"commit {commit[:12]} is not on this checkout's origin/main (git -C "
+                f"{checkout} fetch origin, then run this again; a commit that is not on "
+                "WikiLean's main is not one to run)"]
+    for name, rel in sorted(gate.items()):
         shown = subprocess.run(["git", "-C", str(checkout), "show", f"{commit}:{sources[name]}"],
                                capture_output=True)
-        if shown.returncode != 0:
-            problems.append(f"commit {commit[:12]} is not in this checkout's history "
-                            f"(git -C {checkout} fetch origin, then run this again)")
-            break
-        if shown.stdout != (Path(directory) / rel).read_bytes():
+        if shown.returncode != 0 or shown.stdout != (Path(directory) / rel).read_bytes():
             problems.append(f"{rel} is not {sources[name]} at {commit[:12]}")
     return problems
+
+
+def root_problems(root: Path, manifest: dict) -> list[str]:
+    """Code in the root the package did not bring: the two ``sys.path`` directories.
+
+    ``materialise`` writes the package over the root and deletes nothing, so a file left
+    in ``root/`` or ``root/gate/`` by an earlier package or by hand would be imported by
+    the gate as surely as one the package carried.
+    """
+    root = Path(root)
+    carried = set(manifest.get("files") or {})
+    problems: list[str] = []
+    for directory, prefix in ((root, ""), (root / "gate", "gate/")):
+        if not directory.is_dir():
+            continue
+        for path in sorted(directory.iterdir()):
+            rel = prefix + path.name
+            if path.is_symlink():
+                problems.append(f"{rel} is a symlink")
+            elif path.is_dir():
+                if prefix == "gate/" and path.name != "tasks":
+                    problems.append(f"{rel}/ is a directory the gate does not hold")
+                elif (prefix == "gate/" or path.name.casefold() != "gate") and any(
+                        importable(child.name) for child in path.iterdir()):
+                    problems.append(f"{rel}/ holds code, and its parent is on sys.path")
+            elif importable(path.name) and rel not in carried:
+                problems.append(f"{rel} is code the package did not carry")
+            elif prefix == "gate/" and rel not in carried and not GATE_DATA.fullmatch(path.name):
+                problems.append(f"{rel} is a file the package did not carry")
+    return problems
+
+
+def checked_root(workdir: Path, target: Path, manifest: dict) -> Path:
+    """The package materialised into ``<workdir>/root``, holding no code it did not carry."""
+    root = work_mod.materialise(Path(target), Path(workdir))
+    problems = root_problems(root, manifest)
+    if problems:
+        raise ClaimProblem(f"{root} holds code the package did not bring, and the gate would "
+                           "import it: " + "; ".join(problems[:5]) + ". Remove it, or use a "
+                           "fresh --workdir")
+    return root
 
 
 # ---- the index bundle -------------------------------------------------------------------
@@ -297,8 +394,8 @@ def install_index(*, base: str, token: str, workdir: Path, record: dict, cache: 
     manifest: dict = {}
     if execute or (package_dir(workdir, record) / package_mod.PACKAGE_JSON).is_file():
         target, manifest = fetch_package(base=base, token=token, workdir=workdir,
-                                         record=record, log=log)
-        root = work_mod.materialise(target, Path(workdir))
+                                         record=record, execute=execute, log=log)
+        root = checked_root(workdir, target, manifest)
     sha = (manifest.get("index_bundle") or {}).get("manifest_sha256") or record.get("bundle_sha256")
     if not (isinstance(sha, str) and re.fullmatch(r"[0-9a-f]{64}", sha)):
         raise ClaimProblem("the package names no index bundle")
@@ -326,33 +423,51 @@ def install_index(*, base: str, token: str, workdir: Path, record: dict, cache: 
 def link_index(root: Path, bundle_root: Path, bundle: dict) -> list[str]:
     """Hard-link (or copy) the bundle's index and search corpus to where the root reads them.
 
-    The index goes to the path ``gate.json`` names, which must lie inside the root and
-    end as the bundle's own file does, because the index reader is chosen by suffix; the
-    gate pins its sha, and the bundle's must be that one. The search corpus goes to
-    ``index/search/``, for a run that hands it out.
+    Only files the bundle's MANIFEST.json lists are read, each by a plain path inside the
+    bundle, and the index file's own bytes must hash to the sha the gate pins. It goes
+    to the path ``gate.json`` names, which must lie under ``root/index/`` (no package
+    carries ``index/``, so nothing writes there through the link) and end as the
+    bundle's file does, because the index reader is chosen by suffix. The search corpus
+    goes to ``index/search/``, for a run that hands it out.
     """
     root = Path(root).resolve()
+    bundle_root = Path(bundle_root).resolve()
     config = work_mod.gate_config(root)
     index = config.get("index") if isinstance(config.get("index"), dict) else {}
     bundled = bundle.get("index") if isinstance(bundle.get("index"), dict) else {}
+    files = bundle.get("files") if isinstance(bundle.get("files"), dict) else {}
+
+    def listed(rel: str) -> Path:
+        if not (package_mod.plain(rel) and isinstance(files.get(rel), dict)):
+            raise ClaimProblem(f"the bundle's MANIFEST.json does not list {rel[:120]!r}")
+        source = (bundle_root / rel).resolve()
+        if bundle_root not in source.parents:
+            raise ClaimProblem(f"{rel[:120]!r} is not inside the bundle")
+        return source
+
     linked: list[str] = []
     if index.get("path"):
-        if bundled.get("sha256") != index.get("sha256"):
+        pinned = index.get("sha256")
+        source = listed(str(bundled.get("path") or ""))
+        if not (isinstance(pinned, str) and bundled.get("sha256") == pinned
+                and files[str(bundled["path"])].get("sha256") == pinned):
             raise ClaimProblem("the bundle's index is not the one the gate pins")
+        if source.is_file() and keys_mod.sha256_file(source) != pinned:
+            raise ClaimProblem(f"{source} does not hash to the index the gate pins")
         named = Path(str(index["path"]))
         destination = (named if named.is_absolute() else root / "gate" / named).resolve()
-        if root not in destination.parents:
-            raise ClaimProblem(f"gate.json names the index at {index['path']}, outside the root")
-        if destination.suffix != Path(str(bundled.get("path"))).suffix:
-            raise ClaimProblem(f"gate.json names the index as {destination.name} and the bundle's "
-                               f"is {Path(str(bundled.get('path'))).name}; the reader is chosen "
-                               "by suffix")
-        _place(bundle_root / str(bundled["path"]), destination)
+        if (root / "index") not in destination.parents:
+            raise ClaimProblem(f"gate.json names the index at {index['path']}, outside "
+                               f"{root / 'index'}")
+        if destination.suffix != source.suffix:
+            raise ClaimProblem(f"gate.json names the index as {destination.name} and the "
+                               f"bundle's is {source.name}; the reader is chosen by suffix")
+        _place(source, destination)
         linked.append(destination.relative_to(root).as_posix())
     _use_candidates, use_search = work_mod.hands_out(root)
     if use_search:
         for name in workdir_mod.SEARCH_FILES:
-            _place(bundle_root / "search" / name, work_mod.search_dir(root) / name)
+            _place(listed(f"search/{name}"), work_mod.search_dir(root) / name)
             linked.append(f"index/search/{name}")
     return linked
 
@@ -375,17 +490,28 @@ def _place(source: Path, destination: Path) -> None:
 # ---- the lease, the receipt and the end ----------------------------------------------
 
 
+def _on_claim(base: str, token: str, workdir: Path, mine: dict, action: str,
+              payload: dict | None = None) -> dict:
+    """A request about the held claim; a refusal that says it ended is recorded so."""
+    try:
+        return _call(base, f"/api/claims/{mine['claim_id']}/{action}", token, payload)
+    except ClaimProblem as exc:
+        if getattr(exc, "code", "") in ENDED_CODES:
+            save(workdir, {**_as_claim(mine), "state": "ended"}, base)
+        raise
+
+
+def ended(exc: BaseException) -> bool:
+    """Whether a refusal says the claim is over, rather than not now."""
+    return getattr(exc, "code", "") in ENDED_CODES
+
+
 def renew(*, base: str, token: str, workdir: Path, log=print) -> dict:
     """Extend the lease; a claim that has ended is recorded so and raises ClaimProblem."""
     mine = held(workdir)
     if not live(mine):
         raise ClaimProblem("this workdir holds no live claim to renew")
-    try:
-        answer = _call(base, f"/api/claims/{mine['claim_id']}/renew", token, {})
-    except ClaimProblem as exc:
-        if getattr(exc, "code", "") in ENDED_CODES:
-            save(workdir, {**_as_claim(mine), "state": "ended"}, base)
-        raise
+    answer = _on_claim(base, token, workdir, mine, "renew", {})
     record = save(workdir, answer["claim"], base)
     log(f"  renewed  : {record['claim_id']}, lease until {stamp(record.get('lease_until'))}")
     return record
@@ -404,19 +530,31 @@ def _as_claim(record: dict) -> dict:
                                                          "index_sha256")}}
 
 
-def renewer(*, base: str, token: str, workdir: Path, log=print):
+def renewer(*, base: str, token: str, workdir: Path, log=print,
+            every: float | None = None, clock=time.monotonic):
     """The after-task hook of a paid run: renew, and stop the run once the claim has ended.
 
-    A network failure is logged and the run goes on, because the lease is a day long and
-    the next task renews again; a refusal ends the run after the task in hand, and what
-    passed is still harvested.
+    It renews when ``every`` seconds have passed since the last renewal (the run renews
+    once before it starts), because each renewal spends the agent's write budget and the
+    lease is a day long. A refusal that says the claim ended stops the run after the task
+    in hand, and what passed is still harvested; any other refusal or a network failure
+    is logged and the run goes on, and the next task tries again.
     """
+    every = RENEW_EVERY if every is None else every
+    last = [clock()]
+
     def after_task(_record: dict) -> bool:
+        if clock() - last[0] < every:
+            return True
         try:
             renew(base=base, token=token, workdir=workdir, log=log)
+            last[0] = clock()
         except ClaimProblem as exc:
-            log(f"  stopped  : {exc}; the tasks that passed are harvested, the rest are not run")
-            return False
+            if ended(exc):
+                log(f"  stopped  : {exc}; the tasks that passed are harvested, the rest "
+                    "are not run")
+                return False
+            log(f"  warning  : could not renew the claim ({exc}); carrying on")
         except ValueError as exc:  # contrib_transport.TransportError: the network
             log(f"  warning  : could not renew the claim ({exc}); carrying on")
         return True
@@ -428,21 +566,28 @@ def link(*, base: str, token: str, workdir: Path, submission_id: str, log=print)
     mine = held(workdir)
     if not live(mine):
         raise ClaimProblem("this workdir holds no live claim to link a receipt to")
-    answer = _call(base, f"/api/claims/{mine['claim_id']}/submissions", token,
-                   {"submission_id": submission_id})
+    answer = _on_claim(base, token, workdir, mine, "submissions",
+                       {"submission_id": submission_id})
     log(f"  linked   : {submission_id} to {mine['claim_id']}")
     return answer
 
 
-def save_receipt(workdir: Path, receipt: dict) -> Path | None:
-    """Keep each submission's receipt by its id; SUBMISSION.json is the latest one."""
+def receipts_dir(workdir: Path, claim_id: str) -> Path:
+    """``<workdir>/submissions/<claim id>/``: the receipts of one claim's sets."""
+    if not re.fullmatch(r"clm-[0-9a-f]{32}", str(claim_id)):
+        raise ClaimProblem(f"{claim_id!r} is not a claim id")
+    return Path(workdir) / SUBMISSIONS_DIR / claim_id
+
+
+def save_receipt(workdir: Path, claim_id: str, receipt: dict) -> Path | None:
+    """Keep each submission's receipt by its claim and id; SUBMISSION.json is the latest."""
     workdir = Path(workdir)
     workdir.mkdir(parents=True, exist_ok=True)
     text = json.dumps(receipt, indent=2, sort_keys=True) + "\n"
     (workdir / "SUBMISSION.json").write_text(text, encoding="utf-8")
     sub = (receipt.get("submission") or {}).get("id")
     if isinstance(sub, str) and re.fullmatch(r"sub-[0-9a-f]{64}", sub):
-        path = workdir / SUBMISSIONS_DIR / f"{sub}.json"
+        path = receipts_dir(workdir, claim_id) / f"{sub}.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding="utf-8")
         return path
@@ -461,7 +606,7 @@ def release(*, base: str, token: str, workdir: Path, reason: str, note: str | No
         log(f"# dry run: would release {mine['claim_id']} on {mine['run_id']} as {reason}")
         return None
     body = {"reason": reason, **({"note": note} if note else {})}
-    answer = _call(base, f"/api/claims/{mine['claim_id']}/release", token, body)
+    answer = _on_claim(base, token, workdir, mine, "release", body)
     record = save(workdir, answer["claim"], base)
     log(f"  released : {record['claim_id']} ({record.get('state')}, {reason})")
     return record

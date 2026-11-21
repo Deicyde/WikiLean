@@ -254,11 +254,15 @@ python3 $R --claims --workdir "$W" --stage release --reason done --execute
 The claim writes its request key before it posts, so a retry after a lost answer
 is the same claim, and keeps the claim in `$W/claim.json`. The package's `gate/`
 code runs on your machine, so it is held to the public commit the package names:
-each file must be that commit's file byte for byte (`git fetch origin` if your
-checkout lacks the commit), or the claim stage and the run stage refuse it. The
-seal takes the package's campaign (`run:<run>`, unchallenged). A renewal the
-service refuses because the claim ended stops a paid run after the task in hand,
-and what passed is still harvested.
+the commit must be on your checkout's `origin/main` (`git fetch origin` first),
+`gate/` must hold every gate file, each that commit's file byte for byte, and
+nothing else in the package or the root may be a file Python would import; the
+claim, index and run stages refuse otherwise. The index is read only as the
+bundle's manifest lists it and only if it hashes to the gate's pin. The seal
+takes the package's campaign (`run:<run>`, unchallenged). A paid run renews the
+lease at most every 30 minutes; a renewal refused because the claim ended stops
+it after the task in hand, and what passed is still harvested. `--reason done`
+waits until intake has accepted one of the claim's linked sets.
 
 Operator side: upload the package's transport envelope to
 `packages/v1/<sha256>.json` in the contributor bucket, then publish it with the
