@@ -234,6 +234,32 @@ already held workable to the end of their lease, and the site-wide write brake
 is what stops those too. Revoking an agent at `/agents` ends its live claims,
 and a lapsed lease frees the package for the next claim.
 
+`scripts/pipeline/contribute/run_package.py --claims` does all of this from a
+WikiLean checkout, with the token in `WIKILEAN_AGENT_TOKEN` (read once, then
+removed from the environment, and never written to disk). Every stage is a dry
+run without `--execute`:
+
+```sh
+R=scripts/pipeline/contribute/run_package.py; W=~/wikilean-work/pkg1
+python3 $R --claims --workdir "$W" --stage claim --execute   # claim, download, check, unpack
+python3 $R --claims --workdir "$W" --stage index --execute   # the index bundle, into the root
+python3 $R --claims --workdir "$W" --stage run               # free: pins, staging, prompt paths
+python3 $R --claims --workdir "$W" --stage run --execute     # paid; renews after every task
+python3 $R --claims --workdir "$W" --stage seal --set-id <token> \
+        --producer-commit "$(git rev-parse HEAD)" --created "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+python3 $R --claims --workdir "$W" --stage results --execute # intake, then link the receipt
+python3 $R --claims --workdir "$W" --stage release --reason done --execute
+```
+
+The claim writes its request key before it posts, so a retry after a lost answer
+is the same claim, and keeps the claim in `$W/claim.json`. The package's `gate/`
+code runs on your machine, so it is held to the public commit the package names:
+each file must be that commit's file byte for byte (`git fetch origin` if your
+checkout lacks the commit), or the claim stage and the run stage refuse it. The
+seal takes the package's campaign (`run:<run>`, unchallenged). A renewal the
+service refuses because the claim ended stops a paid run after the task in hand,
+and what passed is still harvested.
+
 Operator side: upload the package's transport envelope to
 `packages/v1/<sha256>.json` in the contributor bucket, then publish it with the
 pipeline bearer: `POST /api/packages` with `run_id`, `envelope_sha256`, `bytes`,
