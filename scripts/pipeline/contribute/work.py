@@ -51,7 +51,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
-from typing import Iterable
+from typing import Callable, Iterable
 
 HERE = Path(__file__).resolve().parent
 PIPELINE = HERE.parent
@@ -412,8 +412,14 @@ def check_prompts(root: Path, *, tasks: Iterable[str] | None = None,
 def run_tasks(root: Path, *, tasks: Iterable[str] | None = None,
               worker_command: str = "", execute: bool = False,
               model: str | None = None, reviewer: bool = True,
-              max_attempts: int = task_mod.MAX_ATTEMPTS, log=print) -> list[dict]:
-    """One ``run/task.py`` task per task: call, gate, retry, promote. Returns the records."""
+              max_attempts: int = task_mod.MAX_ATTEMPTS, log=print,
+              after_task: Callable[[dict], bool] | None = None) -> list[dict]:
+    """One ``run/task.py`` task per task: call, gate, retry, promote. Returns the records.
+
+    ``after_task``, when given, is called with each task's record once it is done; a
+    false answer stops the run before the next task (claims mode renews its lease here,
+    and stops once the claim has ended).
+    """
     root = Path(root)
     if not (root / "prompts" / "worker.md").is_file():
         raise WorkProblem(
@@ -431,6 +437,8 @@ def run_tasks(root: Path, *, tasks: Iterable[str] | None = None,
             reviewer=reviewer, max_attempts=max_attempts)
         log("  " + task_mod.describe(record))
         out.append(record)
+        if after_task is not None and not after_task(record):
+            break
     return out
 
 
@@ -498,7 +506,8 @@ def held_receipt(workdir: Path, run_id: str) -> dict | None:
 def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command: str = "",
                execute: bool = False, model: str | None = None,
                max_cost: float | None = None, reviewer: bool = True,
-               max_attempts: int = task_mod.MAX_ATTEMPTS, log=print) -> dict:
+               max_attempts: int = task_mod.MAX_ATTEMPTS, log=print,
+               after_task: Callable[[dict], bool] | None = None) -> dict:
     """materialise, stage, check, run, harvest — and say what came of each.
 
     Returns ``{"root", "tasks", "staged", "prompts", "records", "passed", "rejected",
@@ -564,7 +573,8 @@ def run_middle(*, package_dir: Path, workdir: Path, run_id: str, worker_command:
             ran = True
             records = run_tasks(root, tasks=tasks, worker_command=worker_command,
                                 execute=execute, model=model, reviewer=reviewer,
-                                max_attempts=max_attempts, log=log)
+                                max_attempts=max_attempts, log=log,
+                                after_task=after_task)
             passed = [r["task_id"] for r in records if (r.get("gate") or {}).get("ok")]
             rejected = [r["task_id"] for r in records
                         if not (r.get("gate") or {}).get("ok")]

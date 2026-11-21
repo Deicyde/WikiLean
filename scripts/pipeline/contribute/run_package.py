@@ -7,6 +7,17 @@ reach over ssh::
     python3 scripts/pipeline/contribute/run_package.py --repo <clone> --workdir <dir> \\
         [--package loc-7] [--machine-id <id>] [--stage claim|run|seal|results] \\
         [--execute]
+    python3 scripts/pipeline/contribute/run_package.py --claims --workdir <dir> \\
+        [--stage claim|index|run|seal|results|release] [--execute]
+
+**Claims mode** (``--claims``, in place of ``--repo``) is the same run for a machine with
+a WikiLean agent token and no work repo (:mod:`claims`): ``claim`` takes a package from
+the claims API and unpacks it to ``<workdir>/packages/<run id>/``, its gate code held to
+the public commit it names; ``index`` downloads the index bundle it names and links the
+index and search corpus into the root; ``run`` renews the lease first and every half
+hour after a task; ``seal`` takes the package's campaign; ``results`` submits the sealed set through
+intake and links the receipt to the claim; ``release --reason`` ends the claim. The
+token is read from ``$WIKILEAN_AGENT_TOKEN`` once and taken out of the environment.
 
 **A DRY RUN IS THE DEFAULT, and it is the documented way to start.** Without
 ``--execute``, nothing is pushed and no model is called. Run previews write local
@@ -68,6 +79,7 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
+import os
 import secrets
 import shutil
 import sys
@@ -79,6 +91,7 @@ for _candidate in (HERE, PIPELINE, PIPELINE / "gate", PIPELINE / "run"):
     if str(_candidate) not in sys.path:
         sys.path.insert(0, str(_candidate))
 
+import claims as claims_mod  # noqa: E402
 import package as package_mod  # noqa: E402
 import results as results_mod  # noqa: E402
 import seal as seal_mod  # noqa: E402
@@ -89,8 +102,15 @@ import workrepo  # noqa: E402
 
 #: The stages in the order a contributor meets them. ``seal`` is not in the default
 #: sequence: a set is sealed once, deliberately, with pins a person supplies.
-STAGES = ("claim", "run", "seal", "results")
+STAGES = ("claim", "index", "run", "seal", "results", "release")
 DEFAULT_STAGES = ("claim", "run", "results")
+#: Claims mode's default: claim, install the index, run. Sealing takes pins a person
+#: supplies, and results and release follow it.
+CLAIMS_STAGES = ("claim", "index", "run")
+#: The stages only claims mode has: the index arrives as a bundle, and a claim is released.
+CLAIMS_ONLY = ("index", "release")
+#: Where ``--stage index`` keeps downloaded bundles, one directory per manifest sha.
+INDEX_CACHE = Path.home() / ".cache" / "wikilean" / "index"
 #: Where ``--stage seal`` writes, under the working directory, unless told otherwise.
 SET_DIR = "set"
 #: What a contributor's workdir records about the package it holds, so a second
@@ -114,7 +134,8 @@ REFUSALS = (RunProblem, package_mod.PackageProblem, results_mod.ResultProblem,
             seal_mod.SealProblem, work_mod.WorkProblem, workrepo.WorkRepoProblem,
             workdir_mod.WorkdirProblem, task_mod.TaskProblem,
             seal_mod.tally_mod.TallyProblem, seal_mod.corpus_mod.CorpusProblem,
-            seal_mod.export_records.ExportProblem, seal_mod.index_mod.IndexProblem)
+            seal_mod.export_records.ExportProblem, seal_mod.index_mod.IndexProblem,
+            claims_mod.ClaimProblem, claims_mod.transport().Refusal)
 
 
 def now() -> str:
@@ -319,7 +340,7 @@ def staged_notice(log=print) -> None:
 def run_stage(*, repo: Path, workdir: Path, package: str, worker_command: str = "",
               execute: bool = False, model: str | None = None,
               max_cost: float | None = None, reviewer: bool = True,
-              max_attempts: int | None = None, log=print) -> dict:
+              max_attempts: int | None = None, after_task=None, log=print) -> dict:
     """``--stage run``: the middle (:mod:`work`). A dry run unless ``--execute``.
 
     A dry run materialises the package, stages every task's working directory, says
@@ -335,7 +356,7 @@ def run_stage(*, repo: Path, workdir: Path, package: str, worker_command: str = 
         run_id=str(manifest.get("run_id") or package), worker_command=worker_command,
         execute=execute, model=model, reviewer=reviewer,
         max_cost=manifest.get("max_cost") if max_cost is None else max_cost, log=log,
-        **extra)
+        after_task=after_task, **extra)
 
 
 def seal_stage(*, repo: Path, workdir: Path, package: str, set_id: str, campaign: str,
@@ -384,9 +405,209 @@ def seal_stage(*, repo: Path, workdir: Path, package: str, set_id: str, campaign
     return {**done, "submission": submission}
 
 
+def claims_notice(log=print) -> None:
+    log("# next: `--stage index` downloads the declaration index and search corpus the")
+    log("# package names and links them into the root; then `--stage run`, WITHOUT")
+    log("# --execute first, stages everything and checks every path the prompts name.")
+    log("# A package that ships no fetched bytes needs its sources refetched by hand.")
+
+
+def accepted_receipt(*, workdir: Path, base: str, token: str, log=print) -> str:
+    """A linked submission intake accepted, asked of the service now; or RunProblem.
+
+    ``done`` tells the coordinator there is a result to collect, so it waits for intake's
+    verdict: a set still queued is not yet a result, and a rejected one never is.
+    """
+    import submit as submit_mod  # noqa: PLC0415
+    import submission_transport  # noqa: PLC0415
+
+    mine = claims_mod.held(workdir) or {}
+    if not claims_mod.live(mine):
+        raise RunProblem("this workdir holds no live claim to release")
+    held = sorted(claims_mod.receipts_dir(workdir, mine["claim_id"]).glob("sub-*.json"))
+    states = {}
+    for path in held:
+        try:
+            result = submit_mod.status(path.stem, base_url=base, token=token)
+        except submission_transport.TransportError as exc:
+            raise RunProblem(f"could not ask intake about {path.stem}: {exc}") from exc
+        states[path.stem] = (result.get("submission") or {}).get("state")
+        if states[path.stem] == "accepted":
+            log(f"  accepted : {path.stem}")
+            return path.stem
+    if not states:
+        raise RunProblem("no receipt is linked from this workdir; --stage results --execute "
+                         "sends the sealed set first")
+    waiting = [sub for sub, state in states.items() if state in ("queued", "validating")]
+    if waiting:
+        raise RunProblem(f"intake has not decided on {', '.join(sorted(waiting))} yet; "
+                         "release as done once it accepts one")
+    raise RunProblem("intake accepted none of this claim's sets ("
+                     + ", ".join(f"{sub[:16]}… {state}" for sub, state in sorted(states.items()))
+                     + "); fix and resubmit, or release with another --reason")
+
+
+def submit_and_link(*, workdir: Path, record_set: Path, base: str, token: str,
+                    execute: bool, wait: float = 0, log=print) -> dict:
+    """Claims mode's ``--stage results``: the sealed set through intake, its receipt linked.
+
+    The receipt is kept as ``submissions/<id>.json`` and ``SUBMISSION.json``; a set intake
+    turned away is linked to nothing.
+    """
+    from submit import submit as submit_set  # noqa: PLC0415
+    import submission_transport  # noqa: PLC0415
+
+    problem = submission_transport.intake.build_store.interpreter_problem()
+    if problem:
+        raise RunProblem(problem)
+    try:
+        receipt = submit_set(record_set, base_url=base, execute=execute, token=token,
+                             wait_seconds=wait if execute else 0)
+    except (submission_transport.TransportError,
+            submission_transport.intake.build_store.ArticlesError) as exc:
+        raise RunProblem(str(exc)) from exc
+    log(json.dumps(receipt, indent=2))
+    if not execute:
+        log("# dry run: would submit this set and link its receipt to the claim")
+        return receipt
+    claims_mod.save_receipt(workdir, claims_mod.held(workdir)["claim_id"], receipt)
+    submission = receipt.get("submission") or {}
+    if submission.get("state") in ("rejected", "failed"):
+        raise RunProblem(f"intake turned the set away ({submission.get('state')}); nothing "
+                         f"was linked. The receipt is in {Path(workdir) / 'SUBMISSION.json'}")
+    if not isinstance(submission.get("id"), str):
+        raise RunProblem("intake's receipt names no submission id to link to the claim")
+    claims_mod.link(base=base, token=token, workdir=workdir, submission_id=submission["id"],
+                    log=log)
+    log("# next: --stage release --reason done --execute, once every set is linked")
+    return receipt
+
+
+def run_claims(args, stages: tuple[str, ...], machine: str) -> int:
+    """Claims mode (``--claims``): every stage against WikiLean's claims API, no work repo.
+
+    The working directory stands in for the clone: the claimed package unpacks to
+    ``<workdir>/packages/<run id>/``, where ``run_stage`` and ``seal_stage`` read it.
+    """
+    workdir = Path(args.workdir).expanduser()
+    base = args.base_url
+    # read once and taken out of the environment, so no stage's child process inherits it
+    token = os.environ.pop(claims_mod.TOKEN_ENV, "")
+    if not token:
+        raise RunProblem(f"claims mode needs an agent token in ${claims_mod.TOKEN_ENV}: mint "
+                         "one at /agents, then read -s it into the environment")
+    package = None
+    for number, stage in enumerate(stages):
+        if stage == "claim":
+            try:
+                package = claims_mod.claim(base=base, token=token, workdir=workdir,
+                                           package=args.package, execute=args.execute)
+            except claims_mod.NothingFree as exc:
+                print(str(exc))
+                return 0
+            if not claims_mod.live(claims_mod.held(workdir)):
+                if stages[number + 1:]:
+                    print("# dry run: the stages after the claim need the claimed package; "
+                          "claim it with --execute")
+                return 0
+            claims_notice()
+            continue
+        mine = claims_mod.held(workdir)
+        if stage == "release":
+            if args.reason == "done" and args.execute:
+                accepted_receipt(workdir=workdir, base=base, token=token)
+            claims_mod.release(base=base, token=token, workdir=workdir,
+                               reason=args.reason or "", note=args.note,
+                               execute=args.execute)
+            continue
+        if not mine:
+            raise RunProblem(f"{workdir} holds no claim: claim a package first "
+                             "(--stage claim --execute)")
+        package = mine["run_id"]
+        if args.package not in (None, package):
+            raise RunProblem(f"{workdir} holds the claim on {package}, not {args.package}")
+        if stage == "index":
+            if not claims_mod.live(mine):
+                raise RunProblem(f"the claim on {package} has ended ({mine.get('state')})")
+            claims_mod.install_index(base=base, token=token, workdir=workdir, record=mine,
+                                     cache=Path(args.index_cache).expanduser(),
+                                     execute=args.execute)
+        elif stage == "run":
+            if not claims_mod.live(mine):
+                raise RunProblem(f"the claim on {package} has ended ({mine.get('state')}); "
+                                 "a run of it would not be taken")
+            after_task = None
+            if args.execute:
+                mine = claims_mod.renew(base=base, token=token, workdir=workdir)
+                after_task = claims_mod.renewer(base=base, token=token, workdir=workdir)
+            # the gate code runs on this machine: checked against its commit every time,
+            # and the root it runs in for code the package did not bring
+            target, manifest = claims_mod.fetch_package(base=base, token=token,
+                                                        workdir=workdir, record=mine,
+                                                        execute=args.execute)
+            claims_mod.checked_root(workdir, target, manifest)
+            run_stage(repo=workdir, workdir=workdir, package=package,
+                      worker_command=args.worker_command or "", execute=args.execute,
+                      model=args.model, reviewer=not args.no_reviewer,
+                      max_attempts=args.max_attempts, max_cost=args.max_cost,
+                      after_task=after_task)
+        elif stage == "seal":
+            pins = package_mod.read(package_mod.package_dir(workdir, package)).get("seal") or {}
+            campaign = args.campaign or pins.get("campaign")
+            unchallenged = args.unchallenged or (not args.challenge_run
+                                                 and pins.get("unchallenged") is True)
+            missing = [name for name, value in
+                       (("--set-id", args.set_id), ("--campaign", campaign),
+                        ("--producer-commit", args.producer_commit),
+                        ("--created", args.created)) if not value]
+            if missing:
+                raise RunProblem(f"--stage seal needs {', '.join(missing)}: the package pins "
+                                 "the campaign, and the set's id, the commit of the code "
+                                 "that produced it and when it was made are yours to give")
+            seal_stage(repo=workdir, workdir=workdir, package=package, set_id=args.set_id,
+                       campaign=campaign, producer_commit=args.producer_commit,
+                       created=args.created, index=args.index, out=args.set_out,
+                       sourceset=args.sourceset, challenge_runs=tuple(args.challenge_run),
+                       unchallenged=unchallenged, runs=args.runs,
+                       byte_budget=args.byte_budget, machine=machine)
+        elif stage == "results":
+            record_set = args.record_set or args.set_out or workdir / SET_DIR
+            if not Path(record_set).is_dir():
+                raise RunProblem(f"no sealed set at {record_set}: seal one first (--stage "
+                                 "seal), or pass --record-set")
+            if not claims_mod.live(mine):
+                raise RunProblem(f"the claim on {package} has ended ({mine.get('state')}), so "
+                                 "a receipt cannot be linked to it")
+            if args.execute:
+                # the service's word on the claim, before a set is sent for it
+                claims_mod.renew(base=base, token=token, workdir=workdir)
+            submit_and_link(workdir=workdir, record_set=Path(record_set), base=base,
+                            token=token, execute=args.execute, wait=args.wait)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--repo", required=True, type=Path, help="a clone of the work repo")
+    parser.add_argument("--repo", type=Path,
+                        help="a clone of the work repo (git mode; or --claims)")
+    parser.add_argument("--claims", action="store_true",
+                        help="claims mode: claim, download and send through WikiLean's claims "
+                             f"API with the agent token in ${claims_mod.TOKEN_ENV}, with no "
+                             "work repo")
+    parser.add_argument("--base-url", default=claims_mod.transport().BASE_URL,
+                        help="the WikiLean site claims mode and --submit talk to")
+    parser.add_argument("--index-cache", type=Path, default=INDEX_CACHE,
+                        help="with --claims --stage index: where index bundles are kept "
+                             "(default: ~/.cache/wikilean/index)")
+    parser.add_argument("--reason", choices=claims_mod.RELEASE_REASONS, default=None,
+                        help="with --claims --stage release: why the claim ends; done "
+                             "needs a linked receipt")
+    parser.add_argument("--wait", type=float, default=60,
+                        help="with --claims --stage results --execute: seconds to wait for "
+                             "intake's verdict before linking (0 to 300; it is linked either "
+                             "way, and release --reason done waits for an accepted one)")
+    parser.add_argument("--note", default=None,
+                        help="with --claims --stage release: a note for the coordinator")
     parser.add_argument("--workdir", required=True, type=Path,
                         help="where this machine's claim and working files go (created)")
     parser.add_argument("--package", default=None,
@@ -399,8 +620,9 @@ def main(argv: list[str] | None = None) -> int:
                         help="this machine's id in results/<package>/<machine-id>/ "
                              "(default: $WIKILEAN_MACHINE_ID, else the host name)")
     parser.add_argument("--stage", choices=STAGES, default=None,
-                        help="run this stage only (default: claim, run, then results; "
-                             "seal is never in the default sequence)")
+                        help="run this stage only (default: claim, run, then results, or "
+                             "with --claims claim, index, then run; seal is never in the "
+                             "default sequence, and index and release are claims mode's)")
     parser.add_argument("--worker-command",
                         help="with --stage run: a local command that stands in for the "
                              "model, run once per task in its own worktree")
@@ -459,25 +681,44 @@ def main(argv: list[str] | None = None) -> int:
                         help="really claim, really call a model, really push; without it "
                              "every step that would prints what it would do")
     args = parser.parse_args(argv)
-    stages = (args.stage,) if args.stage else DEFAULT_STAGES
+    if bool(args.repo) == bool(args.claims):
+        parser.error("give one of --repo (git mode) and --claims (claims mode)")
+    if args.claims and args.take_over:
+        parser.error("--take-over is git mode's; the claims API gives a package to one agent")
+    if args.stage in CLAIMS_ONLY and not args.claims:
+        parser.error(f"--stage {args.stage} is claims mode's (--claims)")
+    if not 0 <= args.wait <= 300:
+        parser.error("--wait must be between 0 and 300 seconds")
+    if args.stage == "release" and not args.reason:
+        parser.error("--stage release needs --reason")
+    stages = (args.stage,) if args.stage else (CLAIMS_STAGES if args.claims
+                                                else DEFAULT_STAGES)
     if args.submit and args.stage != "results":
         parser.error("--submit requires --stage results and --record-set")
-    if args.submit and args.record_set is None:
+    if args.submit and args.record_set is None and not args.claims:
         parser.error("--submit requires --record-set")
     try:
-        repo = workrepo.check_clone(args.repo)
         machine = workrepo.machine_id(args.machine_id)
         package = args.package
         # `seal` is not one of the stages --execute governs: it writes a set and pushes
         # nothing either way. Preview stages can also write local staging/result files;
         # describe the model and push boundary explicitly.
         if not args.execute and set(stages) - {"seal"}:
-            print("# DRY RUN: nothing is pushed and no model is called; local staging "
-                  "and result files may be written.\n# This is the default. Read what follows, then add "
-                  "--execute if you agree with it.")
+            if args.claims:
+                print("# DRY RUN: nothing is claimed, downloaded, sent or released and no "
+                      "model is called; only small read-only\n# requests are made, and "
+                      "local staging files may be written. This is the default. Read what "
+                      "follows,\n# then add --execute if you agree with it.")
+            else:
+                print("# DRY RUN: nothing is pushed and no model is called; local staging "
+                      "and result files may be written.\n# This is the default. Read what "
+                      "follows, then add --execute if you agree with it.")
         if "seal" in stages:
             print("# --stage seal writes a record set and pushes nothing, with or "
                   "without --execute.\n# `--stage results` is what sends it.")
+        if args.claims:
+            return run_claims(args, stages, machine)
+        repo = workrepo.check_clone(args.repo)
         if "claim" in stages:
             package = claim(repo=repo, workdir=args.workdir, machine=machine,
                             package=args.package, take_over=args.take_over,
@@ -526,7 +767,8 @@ def main(argv: list[str] | None = None) -> int:
                 from submit import submit as submit_set
                 import submission_transport
                 try:
-                    receipt = submit_set(args.record_set, execute=args.execute)
+                    receipt = submit_set(args.record_set, base_url=args.base_url,
+                                         execute=args.execute)
                 except (submission_transport.TransportError, submission_transport.intake.build_store.ArticlesError) as exc:
                     raise RunProblem(str(exc)) from exc
                 args.workdir.mkdir(parents=True, exist_ok=True)

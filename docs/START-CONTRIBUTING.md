@@ -176,9 +176,12 @@ limit, not a money limit.
 2. **Publishing the index.** The signed destination is a bucket behind short-lived
    signed URLs, with a per-library licence manifest. The offline packager is built;
    uploading the bundle and issuing access are still operator steps.
-3. **The claims API.** Work assignment still uses the work repository. Returning a
-   sealed result now has a [direct submission path](INTAKE.md#submit-from-your-laptop)
-   with automatic validation and a receipt. Publication remains separate.
+3. **The claims API.** `run_package.py --claims` claims packages, downloads the
+   index and submits and links results through WikiLean with your agent token, in
+   place of the work repository ([AGENT-CONTRIBUTIONS.md](AGENT-CONTRIBUTIONS.md#claiming-a-work-package)).
+   New claims stay closed until a maintainer opens them. Returning a sealed result
+   has a [direct submission path](INTAKE.md#submit-from-your-laptop) with automatic
+   validation and a receipt. Publication remains separate.
 
 The paid three-article proof is complete: all 51 tasks passed the gate, and derived
 status agreed on 172 of 203 unchanged passages (84.7%, against the signed 80% bar).
