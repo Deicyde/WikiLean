@@ -648,6 +648,9 @@ class ReconcileScenario(promote.BrainPromoter):
         self.prepared_value = prepared
         self.observations = list(observations)
         self.observation_calls = 0
+        self.verify_release_calls = 0
+        self.recovery_checkout_commits: list[str] = []
+        self.canary_baselines: list[promote.PublicAssetBaseline | None] = []
         self.canary_releases: list[tuple[str, str, str]] = []
         self.sleeps: list[float] = []
         self.canary_ok = True
@@ -683,6 +686,7 @@ class ReconcileScenario(promote.BrainPromoter):
         self, expected_release_id, root_input, *, allow_legacy_release_id_root=False
     ):
         del root_input, allow_legacy_release_id_root
+        self.verify_release_calls += 1
         if expected_release_id == self.prepared_value.candidate.release_id:
             return self.prepared_value.candidate
         if (
@@ -702,6 +706,7 @@ class ReconcileScenario(promote.BrainPromoter):
         return expected_commit
 
     def _check_recovery_checkout(self, authority_commit):
+        self.recovery_checkout_commits.append(authority_commit)
         return authority_commit
 
     def _verify_toolchain(self):
@@ -748,7 +753,8 @@ class ReconcileScenario(promote.BrainPromoter):
         expected_trust_source,
         public_baseline=None,
     ):
-        del journal, public_baseline
+        del journal
+        self.canary_baselines.append(public_baseline)
         self.canary_releases.append((release_id, prefix, expected_trust_source))
         result = promote.RunResult(("canary",), 0 if self.canary_ok else 1, b"", b"")
         return self.canary_ok, {
@@ -1903,6 +1909,8 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
         *,
         prepared: promote.PreparedPromotion | None = None,
         legacy_selector_intent: bool = False,
+        baseline_verifier=None,
+        edit_intent=None,
     ):
         prepared = prepared or self.prepared
         intent = scenario._intent_payload(prepared)
@@ -1911,6 +1919,8 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
             intent["staged_selector"].pop("previous_manifest_sha256")
             intent["predeploy"].pop("manifest_sha256")
             intent["predeploy"].pop("previous_manifest_sha256")
+        if edit_intent is not None:
+            edit_intent(intent)
         with PromotionLock(self.receipt):
             journal = EventJournal.create_with_intent(
                 self.receipt,
@@ -1922,16 +1932,296 @@ class BrainPromotionJournalFlowTest(unittest.TestCase):
                     "deploy_invocation",
                     {"production_mutation_possible_after_this_event": True},
                 )
-            with mock.patch.object(
-                promote,
-                "verify_public_baseline",
-                return_value=prepared.public_baseline,
-            ):
+            baseline_patch = (
+                mock.patch.object(promote, "verify_public_baseline", baseline_verifier)
+                if baseline_verifier is not None
+                else mock.patch.object(
+                    promote,
+                    "verify_public_baseline",
+                    return_value=prepared.public_baseline,
+                )
+            )
+            with baseline_patch:
                 with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(
                     io.StringIO()
                 ):
                     result = scenario.reconcile(journal)
             return result, EventJournal.load(journal.attempt_dir)
+
+    @staticmethod
+    def recording_baseline_verifier(baseline: promote.PublicAssetBaseline, calls: list[str]):
+        """A verify_public_baseline stand-in that, like the real one, refuses any
+        expected authority other than the commit the baseline was frozen at."""
+
+        def verify(root, repo, **kwargs):
+            del root, repo
+            calls.append(kwargs["expected_authority_git_commit"])
+            if kwargs["expected_baseline_id"] != baseline.baseline_id:
+                raise promote.BaselineValidationError("baseline ID mismatch")
+            if kwargs["expected_authority_git_commit"] != baseline.authority_git_commit:
+                raise promote.BaselineValidationError(
+                    "baseline authority mismatch: expected "
+                    f"{kwargs['expected_authority_git_commit']}, "
+                    f"got {baseline.authority_git_commit}"
+                )
+            return baseline
+
+        return verify
+
+    def code_only_prepared(self) -> promote.PreparedPromotion:
+        """A code-only promotion as the writer produces one: production already serves the
+        reused release, built at COMMIT, and the public baseline is frozen at the website
+        commit being promoted."""
+        website_commit = "d" * 40
+        candidate = self.prepared.candidate
+        prior = self.prepared.prior
+        assert prior is not None
+        staged = json.loads(self.prepared.staged_selector.body)
+        live_body = (
+            json.dumps({**staged, "audited_at": "2029-12-31T00:00:00Z"}, sort_keys=True) + "\n"
+        ).encode()
+        live_selector = promote.selector_from_probe(
+            selector_probe(candidate.release_id, body=live_body),
+            candidate.release_id,
+            candidate_manifest_sha256=candidate.manifest_sha256,
+            allow_first_deploy=False,
+        )
+        record = code_only_policy.CodeOnlyRelease(
+            record_id="sha256:" + "7" * 64,
+            brain_release_id=candidate.release_id,
+            brain_manifest_sha256=candidate.manifest_sha256,
+            brain_authority_commit=candidate.authority_commit,
+            brain_reducer_commit=candidate.reducer_commit,
+            previous_release_id=prior.release_id,
+            previous_manifest_sha256=prior.manifest_sha256,
+            code_commit=website_commit,
+            selector_sha256=live_selector.body_sha256,
+            classification=code_only_policy.classify_changes(["wiki/src/index.ts"]),
+            review_required=("wiki/src/index.ts",),
+        )
+        return replace(
+            self.prepared,
+            initial_selector=live_selector,
+            predeploy_release=candidate,
+            public_baseline=replace(
+                self.prepared.public_baseline, authority_git_commit=website_commit
+            ),
+            promotion_commit=website_commit,
+            code_only=record,
+            code_only_fence={"checked": []},
+        )
+
+    def candidate_observation(self, prepared: promote.PreparedPromotion):
+        return make_observation(
+            prepared.staged_selector,
+            annotations={
+                "workers/tag": prepared.tag,
+                "workers/message": prepared.message,
+            },
+        )
+
+    def test_code_only_reconciliation_verifies_the_baseline_at_the_promotion_commit(self):
+        prepared = self.code_only_prepared()
+        self.assertNotEqual(prepared.promotion_commit, prepared.candidate.authority_commit)
+        exact = self.candidate_observation(prepared)
+        # The production shape: the deploy was invoked before the attempt was left open.
+        scenario = ReconcileScenario(
+            self.repo,
+            self.receipt,
+            prepared,
+            [exact, exact],
+            reconcile_attempt="code-only-candidate",
+            deploy_invocation_started=True,
+        )
+        calls: list[str] = []
+        exit_code, journal = self.run_reconciliation(
+            scenario,
+            "code-only-candidate",
+            prepared=prepared,
+            baseline_verifier=self.recording_baseline_verifier(prepared.public_baseline, calls),
+        )
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(calls, [prepared.promotion_commit])
+        self.assertEqual(scenario.recovery_checkout_commits, [prepared.promotion_commit])
+        # The reconciliation canary checks the live assets against the baseline verified
+        # at the promotion commit.
+        self.assertEqual(scenario.canary_baselines, [prepared.public_baseline])
+        self.assertEqual(
+            [event["kind"] for event in journal.events][:2], ["intent", "deploy_invocation"]
+        )
+        final = journal.events[-1]
+        self.assertEqual(final["kind"], "final_state")
+        self.assertEqual(final["payload"]["outcome"], "deployed_reconciled")
+        self.assertEqual(final["payload"]["release_id"], prepared.candidate.release_id)
+
+    def test_full_reconciliation_still_verifies_the_baseline_at_the_brain_commit(self):
+        cases = {
+            # A release-neutral promotion commit differs from the Brain's, but the baseline
+            # stays frozen at the Brain's commit.
+            "release-neutral": (replace(self.prepared, promotion_commit="d" * 40), None),
+            # Intents written before promotion_commit existed (2026-10-08) still reconcile.
+            "no-promotion-commit": (
+                self.prepared,
+                lambda intent: (intent.pop("promotion_commit"), intent.pop("neutral_changes")),
+            ),
+        }
+        for label, (prepared, edit) in cases.items():
+            attempt_id = f"full-candidate-{label}"
+            exact = self.candidate_observation(prepared)
+            scenario = ReconcileScenario(
+                self.repo,
+                self.receipt,
+                prepared,
+                [exact, exact],
+                reconcile_attempt=attempt_id,
+            )
+            calls: list[str] = []
+            with self.subTest(label=label):
+                exit_code, journal = self.run_reconciliation(
+                    scenario,
+                    attempt_id,
+                    prepared=prepared,
+                    baseline_verifier=self.recording_baseline_verifier(
+                        prepared.public_baseline, calls
+                    ),
+                    edit_intent=edit,
+                )
+                self.assertEqual(exit_code, 0)
+                self.assertEqual(calls, [COMMIT])
+                self.assertEqual(scenario.recovery_checkout_commits, [COMMIT])
+                self.assertEqual(journal.events[-1]["payload"]["outcome"], "deployed_reconciled")
+
+    def test_reconcile_keeps_accepting_the_v1_code_only_policy(self):
+        # An open code-only attempt carries the policy it was written with.
+        self.assertIn(
+            "wikilean.code-only-release-paths/v1", promote.RECONCILABLE_CODE_ONLY_POLICIES
+        )
+        self.assertIn(promote.CODE_ONLY_POLICY, promote.RECONCILABLE_CODE_ONLY_POLICIES)
+
+    def test_code_only_reconciliation_refuses_a_code_only_block_that_disagrees(self):
+        prepared = self.code_only_prepared()
+
+        def set_code_only(key, value):
+            return lambda intent: intent["code_only"].__setitem__(key, value)
+
+        def set_both_commits(value):
+            # Both commits agree but neither is a commit, so only the shape guard refuses.
+            def edit(intent):
+                if value is None:
+                    intent.pop("promotion_commit")
+                    intent["code_only"].pop("code_git_commit")
+                else:
+                    intent["promotion_commit"] = value
+                    intent["code_only"]["code_git_commit"] = value
+
+            return edit
+
+        edits = {
+            "policy": set_code_only("policy", promote.NEUTRAL_POLICY),
+            "unknown-policy": set_code_only("policy", "wikilean.code-only-release-paths/v0"),
+            "code-commit": set_code_only("code_git_commit", "e" * 40),
+            "brain-authority": set_code_only("brain_authority_commit", PRIOR_COMMIT),
+            "reused-release": set_code_only("reused_release_id", RELEASE_C),
+            "reused-manifest": set_code_only("reused_manifest_sha256", "9" * 64),
+            "promotion-commit": lambda intent: intent.__setitem__("promotion_commit", "main"),
+            "no-promotion-commit": lambda intent: intent.pop("promotion_commit"),
+            "both-commits-a-branch-name": set_both_commits("main"),
+            "both-commits-uppercase": set_both_commits("D" * 40),
+            "both-commits-short": set_both_commits("d" * 39),
+            "both-commits-absent": set_both_commits(None),
+            "not-a-mapping": lambda intent: intent.__setitem__("code_only", ["code-only"]),
+            "empty-mapping": lambda intent: intent.__setitem__("code_only", {}),
+            "empty-list": lambda intent: intent.__setitem__("code_only", []),
+        }
+        for label, edit in edits.items():
+            attempt_id = f"code-only-malformed-{label}"
+            exact = self.candidate_observation(prepared)
+            scenario = ReconcileScenario(
+                self.repo,
+                self.receipt,
+                prepared,
+                [exact, exact],
+                reconcile_attempt=attempt_id,
+            )
+            calls: list[str] = []
+            with self.subTest(label=label):
+                with self.assertRaisesRegex(
+                    promote.PromotionError, "journal code-only identity is malformed"
+                ):
+                    self.run_reconciliation(
+                        scenario,
+                        attempt_id,
+                        prepared=prepared,
+                        baseline_verifier=self.recording_baseline_verifier(
+                            prepared.public_baseline, calls
+                        ),
+                        edit_intent=edit,
+                    )
+                self.assertEqual(calls, [])
+                self.assertEqual(scenario.observation_calls, 0)
+                # It refuses before the slow release verification.
+                self.assertEqual(scenario.verify_release_calls, 0)
+                loaded = EventJournal.load(self.receipt / "attempts" / attempt_id)
+                self.assertTrue(loaded.incomplete)
+                self.assertEqual([event["kind"] for event in loaded.events], ["intent"])
+
+    def test_code_only_reconciliation_refuses_a_baseline_bound_to_another_commit(self):
+        code_only = self.code_only_prepared()
+        cases = {
+            # The intent says the baseline was frozen at the Brain's commit, which a
+            # code-only promotion never does.
+            "intent-names-brain-commit": (
+                code_only,
+                lambda intent: intent["public_baseline"].__setitem__(
+                    "authority_commit", code_only.candidate.authority_commit
+                ),
+                "journal public baseline differs from its durable intent",
+                [code_only.promotion_commit],
+            ),
+            # Without its code-only block the attempt would be checked as a full one,
+            # and a baseline frozen at the website commit does not verify at the Brain's.
+            "code-only-block-dropped": (
+                code_only,
+                lambda intent: intent.pop("code_only"),
+                "journal public baseline no longer verifies: baseline authority mismatch",
+                [COMMIT],
+            ),
+            # A consistent code-only intent whose frozen baseline names the Brain's commit:
+            # only the verifier, asked for the promotion commit, can refuse it.
+            "baseline-frozen-at-brain-commit": (
+                replace(code_only, public_baseline=self.prepared.public_baseline),
+                None,
+                "journal public baseline no longer verifies: baseline authority mismatch",
+                [code_only.promotion_commit],
+            ),
+        }
+        for label, (prepared, edit, message, expected_calls) in cases.items():
+            attempt_id = f"code-only-baseline-{label}"
+            exact = self.candidate_observation(prepared)
+            scenario = ReconcileScenario(
+                self.repo,
+                self.receipt,
+                prepared,
+                [exact, exact],
+                reconcile_attempt=attempt_id,
+            )
+            calls: list[str] = []
+            with self.subTest(label=label):
+                with self.assertRaisesRegex(promote.PromotionError, message):
+                    self.run_reconciliation(
+                        scenario,
+                        attempt_id,
+                        prepared=prepared,
+                        baseline_verifier=self.recording_baseline_verifier(
+                            prepared.public_baseline, calls
+                        ),
+                        edit_intent=edit,
+                    )
+                self.assertEqual(calls, expected_calls)
+                self.assertEqual(scenario.observation_calls, 0)
+                loaded = EventJournal.load(self.receipt / "attempts" / attempt_id)
+                self.assertTrue(loaded.incomplete)
+                self.assertNotIn("final_state", [event["kind"] for event in loaded.events])
 
     def test_legacy_v1_intent_remains_reconcilable(self):
         legacy_body = (
