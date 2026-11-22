@@ -497,7 +497,7 @@ reproduce byte-identically. Status: **56/56 green**.
 
 ---
 
-# (v1/v2) organ-layer schema — one graph, six node types, two edge families
+# (v1/v2) organ-layer schema — one graph, seven node types, two edge families
 
 > The canonical data contract for the WikiLean Math Brain. Everything in `brain/data/` is
 > built to this spec. It instantiates the granularity model + anti-slop doctrine of
@@ -587,6 +587,7 @@ the UI (`/brain#<id>`), the API (`/api/brain/cell?key=<id>`), and by agents.
 | literature | `lit:<arxiv_id>#<ref>` (statement) · `lit:<arxiv_id>` (paper) | `lit:1707.04448#thm1.2`, `lit:1707.04448` | arXiv id + printed label; TheoremGraph UUID kept as session key in payload. The paper node `contains` its statement nodes (derived from the id prefix); an empty-ref statement id IS the paper id and doubles as it. Papers carry `f` bit 7 natively |
 | object | `obj:<db>:<label>` | `obj:lmfdb:11.a2`, `obj:oeis:A000045` | external DB's own never-reused label |
 | ext | `xref:<db>:<value>` | `xref:nlab:abelian+group`, `xref:stacks:0001` | external DB PAGE (v2) — id form is deliberately identical to the historical xref edge dst string, so pre-v2 `xref` edges became node-to-node with zero migration and `xref_index.json` keys are node ids |
+| plan | `tauceti:<folder>` (roadmap) · `tauceti:<folder>#<anchor>` (layer) | `tauceti:TauCetiRoadmap/ModularForms`, `tauceti:Completed/AdicSpaces#layer-0-topological-algebra-huber-rings-and-tate-algebras` | the Tau Ceti plans export's own id, unchanged: a folder of TauCetiProject/TauCetiRoadmap holding a `README.md`, and GitHub's anchor of a layer heading in it. What a library PLANS, never what it contains ("Plans layer" below) |
 
 **`ext` node payload** (v2): `{"id","type":"ext","db","label","url","snippet"?,
 "snippet_license"?,"kind_hint"?,"qid"?,"f"}`. `db` MUST be a key of
@@ -595,6 +596,19 @@ license permits (nlab/stacks/lmfdb/proofwiki/planetmath/oeis); MathWorld/DLMF/Eo
 ext nodes are ids+titles+links only — display deep-links out. Minting policy: anchored
 (xref target of a concept) + ≤1 link-hop frontier, capped per source (default 8,000/db);
 full corpora stay in `catalog/data/external/`.
+
+**`plan` node payload**: `{"id","type":"plan","plan_kind":"roadmap"|"layer","label",
+"source","planned_names"?,"unqualified_names"?,"f"}`, plus `origin` and `topic` on a
+roadmap and `key`, `state`, `ordinal` and `status_source` on a layer, all as the export
+gives them. `source` and `status_source` are pointers `{repo, commit, path, line?}` into the
+pinned TauCetiRoadmap commit. A layer's `state` (`done`, `partial`, `untouched`,
+`unassessed`) is the coverage claim the roadmap makes about itself: it never feeds
+formalization status (`f` bits 4 and 5). `ordinal` is sequence, never a `depends` edge.
+`planned_names` (sorted names that exist in no library yet) and `unqualified_names`
+(`[{name, candidates, candidates_total, candidate_libraries}]`, at most 8 candidates, as the
+export gives them) are attributes, never nodes: neither passes the existence oracle (law 1),
+and a candidate becomes an edge only through a reviewed proposal. No atlas text, evidence
+quote or README prose enters a node.
 
 WikiLean articles/annotations are NOT brain nodes; an article is the `enwiki` sitelink
 of its concept QID and annotations attach through the existing D1 stack. The brain
@@ -635,28 +649,36 @@ the overlay of law 5.
   bit0 gold `@[wikidata]` tag · bit1 `@[stacks]` · bit2 `@[kerodon]` · bit3 any xref ·
   bit4 formalized · bit5 partial · bit6 has WikiLean article · bit7 has literature ·
   bit8 is ext · bit9 lmfdb · bit10 nlab · bit11 mathworld · bit12 proofwiki ·
-  bit13 stacks(xref) · bit14 oeis · bit15 has stored snippet. Omitted when 0.
+  bit13 stacks(xref) · bit14 oeis · bit15 has stored snippet · bit16 is plan. Omitted
+  when 0. Plan nodes' bits aggregate into their `path:Plans` containers' `fa` like a
+  decl's into its library's.
 
 ## Edge families
 
 **Taxonomy (`contains`)** — strict single-parent containment, mechanically derived,
 one tree: `path:Mathlib` → `path:Mathlib/Algebra` → … → `decl:Mathlib:CommGroup`,
-plus the literature forest `lit:<arxiv_id>` → `lit:<arxiv_id>#<ref>` (id-prefix derived).
+plus the literature forest `lit:<arxiv_id>` → `lit:<arxiv_id>#<ref>` (id-prefix derived),
+plus the plans tree `path:Plans` → `path:Plans/<source>` → … ("Plans layer" below).
 Never inferred, never LLM-written. Concepts are NOT in the tree (they attach via
 ontology edges at whatever altitude their evidence supports).
+
+**Reserved root.** `path:Plans` belongs to the plans layer: no library may claim it.
+The build skips a registered repository whose library is `Plans`
+(`RESERVED_LIBRARY_ROOTS`, brain/build_common.py) and refuses a build in which any other
+layer mints a `path:Plans` container.
 
 **Ontology** — many-to-many, typed, weighted, non-transitive:
 
 | kind | src → dst | native evidence | source of truth |
 |---|---|---|---|
 | `formalizes` | concept → decl **or container** | match_kind + confidence + method | agent grounding, @[wikidata] tags, P14534, 1000.yaml, LMFDB `mathlib=` xids |
-| `mentions` | concept → decl | `{"role": "citation"}` (provenance.source `annotations`) | `decl_qid_roles_v2.json` role=citation — annotation-cited decls; EXCLUDED from all formalization-status logic |
-| `depends` | decl → decl (rolled up to file/dir/module grains) | edge_type from kernel extraction | TheoremGraph formal_dependency.csv @ pin |
+| `mentions` | concept → decl; plan → decl | `{"role": "citation"}` (provenance.source `annotations`); `{"role": "plan", "resolution", "via_namespace"?, "resolved_name"?, "occurrences", "pointer"}` (`tauceti_plans`) | `decl_qid_roles_v2.json` role=citation — annotation-cited decls; the plans export's resolved names (method `exact` or `declared-scope`). EXCLUDED from all formalization-status logic: a roadmap naming a declaration claims nothing about it |
+| `depends` | decl → decl (rolled up to file/dir/module grains); plan → plan | edge_type from kernel extraction; `{"evidence", "evidence_public": true, "more_evidence"?, "atlas_kinds"}` | TheoremGraph formal_dependency.csv @ pin; the plans export's `edges.jsonl` (consumer → prerequisite, method `atlas-verified-line`) |
 | `matches` | decl ↔ literature | judge + similarity + license flag | theorem_matching.csv (dual-judge) |
-| `xref` | concept → external DB page; decl → Stacks/Kerodon tag; decl:FormalConjectures → erdos/OEIS page | Wikidata property id; `@[stacks]`/`@[kerodon]` attribute in the mathlib4 source; verbatim reference URL in the FC source / problems.yaml join | P12987 LMFDB, P4215 nLab, P2812 MathWorld, P6781 ProofWiki, P7554 EoM, P7726 PlanetMath, P829 OEIS, P12888 Metamath, P11497 DLMF, P3285 MSC; `mathlib_tag_xrefs.jsonl` (harvest_mathlib_tags.py); `formal_conjectures.jsonl` + `erdos_joins.jsonl` |
+| `xref` | concept → external DB page; decl → Stacks/Kerodon tag; decl:FormalConjectures → erdos/OEIS page; plan → Stacks tag | Wikidata property id; `@[stacks]`/`@[kerodon]` attribute in the mathlib4 source; verbatim reference URL in the FC source / problems.yaml join; `{"system": "stacks", "occurrences", "pointer"}` | P12987 LMFDB, P4215 nLab, P2812 MathWorld, P6781 ProofWiki, P7554 EoM, P7726 PlanetMath, P829 OEIS, P12888 Metamath, P11497 DLMF, P3285 MSC; `mathlib_tag_xrefs.jsonl` (harvest_mathlib_tags.py); `formal_conjectures.jsonl` + `erdos_joins.jsonl`; the plans export's `xrefs.jsonl` (method `pattern-scan`) |
 | `relates` | concept ↔ concept | Wikidata P-property (P279, P361, P2579...) | wikidata_edges.jsonl |
 | `links` | ext → ext; concept → concept (projected); literature paper → paper | `{"context": "statement"\|"proof"\|"body"\|"related"\|"bibliography"}`; projected form adds `{"projected": true, "via": "<db>", "src_page", "dst_page"}`; `bibliography` = src paper's bibliography cites dst paper (OpenAlex `referenced_works`, CC0, both endpoints ours) | `catalog/data/external/<db>_links.jsonl` (v2 ingest adapters); projection joins page-level links through xref anchors; `catalog/data/external/arxiv_citations.jsonl` (brain/ingest/openalex_citations.py, provenance `openalex`) |
-| `cites` | concept → literature | lifted via decl (transitive join) | theoremgraph_links.json |
+| `cites` | concept → literature; plan → literature paper | lifted via decl (transitive join); `{"system": "arxiv", "occurrences", "pointer"}` | theoremgraph_links.json; the plans export's `xrefs.jsonl` (method `pattern-scan`) |
 | `invocation` | frontier decl → decl:Mathlib:* | `{"name": "<full FQ name>"}`, method `fq-name-in-statement` | deterministic scan of the frontier harvest's statement snippets for whole-token fully-qualified Mathlib names (suffix-proof; universe = current minted Mathlib decls). Synapse-only — NEVER a merge kind (rule 3). |
 | `instance_of` | object → concept | invariant agreement | LMFDB/OEIS joins (future) |
 
@@ -712,6 +734,10 @@ v2 datapoints (active once `catalog/data/external/` is populated):
 10. At least one `links` edge with `evidence.context == "bibliography"` joins two
     literature PAPER nodes (`lit:<arxiv_id>`) — OpenAlex `referenced_works`
     (auto-skips when `catalog/data/external/arxiv_citations.jsonl` is absent).
+11. (P17) The staged plans export is the one the build read (`logical_root`), every
+    roadmap and layer is a plan node, and every held edge is accounted for against the
+    previous build: `previous − emitted − gone + newly held = current` by kind and reason
+    ("Plans layer" below; skips when no export is staged).
 
 ## Provenance & licensing
 
@@ -824,6 +850,79 @@ In the v3 cell layer each conjecture decl is its own atom (or fuses into its
 concept's atom via rule 1), its erdos page attaches as a single-claimant organ,
 and `path:FormalConjectures/ErdosProblems` renders as a supercell.
 
+## Plans layer (Tau Ceti roadmaps)
+
+What Tau Ceti plans to formalize, beside what the libraries contain. Code
+`brain/plans_layer.py`; the producer and its export are `docs/BRAIN-PLANS.md`.
+
+**Input.** The sealed export of `scripts/tauceti_plans` (`wikilean.brain.plans/v1`: six
+JSONL files and `manifest.json`), staged at `brain/data/tauceti_plans/` by
+`site/ops/brain_producers.py` (weekly, from `site/ops/brain-nightly.sh`) and never
+committed. Before reading a row the build checks that the directory holds exactly those
+seven files (hidden entries such as a Finder `.DS_Store` are ignored and bound by no
+release), that each file's size and sha256 match the manifest, that the manifest's
+`logical_root` recomputes (canonical JSON without `logical_root` and every `fetched_at`),
+and that rows are sorted by unique `id` and resolve to each other; any failure refuses the
+build. No export, no plan nodes: the build says so and goes on. The nodes `_meta` records
+`plans: {state, logical_root, counts, held}`, and a release binds the export's bytes through
+`reducer-inputs-v1.json`. **Live builds only**: the replay inventories (v2, v3, v3-folded)
+do not declare the export, so a replay has no plan nodes and its bytes are unchanged; the
+next replay inventory adds it.
+
+**Nodes and containment.** One `plan` node per roadmap and per layer. Containers:
+`path:Plans` (the root; one child per planning source) → `path:Plans/TauCeti` →
+`path:Plans/TauCeti/<topic>`, where `<topic>` is a top-level roadmap's `topic` (an arXiv
+category such as `math.NT`) or `unclassified` when it has none or it is not a category
+token. A top-level roadmap sits in its topic container, a nested roadmap in its export
+`parent` (never its own `topic`, which is not inherited), a layer in its roadmap. Layers
+have no children.
+
+**Edges.** Every edge has `provenance {"source": "tauceti_plans", "method", "pin": <the
+export's logical_root>}` and confidence `high`; the source is a node's export `layer`, or its
+`roadmap` for a roadmap-level row.
+
+| kind | from | becomes an edge when | method |
+|---|---|---|---|
+| `contains` | the tree above | always | `plans export tree (roadmaps.jsonl)` / `(layers.jsonl)` |
+| `depends` | `edges.jsonl`, consumer → prerequisite, never flipped | `evidence_public` is `true` and both ends are plan nodes | `atlas-verified-line` |
+| `mentions` | `decl_refs.jsonl` rows resolved `mathlib`/`tauceti`; dst `decl:Mathlib:<n>` or `decl:TauCeti:<n>`, `<n>` the `resolved_name` else the `name` | the decl node exists | `exact` or `declared-scope` |
+| `xref` | `xrefs.jsonl` rows of system `stacks`, dst `xref:stacks:<TAG>` | the ext node exists | `pattern-scan` |
+| `cites` | `xrefs.jsonl` rows of system `arxiv`, dst the paper `lit:<id>` (never a statement) | the literature node exists | `pattern-scan` |
+
+Two names of one source that resolve to one declaration make one `mentions` edge (the
+exact resolution kept).
+
+**The held-edge rule.** An edge that does not become an edge is held, never dropped:
+`brain/data/held_edges.jsonl` (gitignored, rebuilt every build), a `_meta` line
+`{schema: wikilean.brain.held-edges/v1, logical_root, snapshot_id, rows, counts, sha256}`
+and then one canonical row `{edge, reason, missing?, logical_root, row}` per held edge,
+where `row` is the export row it came from and `sha256` covers the rows. Reasons:
+`endpoint_missing` (`missing` names the endpoint this build did not mint) and
+`evidence_not_public` (a `depends` row resting only on the atlas's README copies, which no
+reader can follow to a public commit). Every build retries every held edge and emits it as
+soon as its reason no longer holds; holding is per build, so no state carries over except
+through the inputs. The held list's counts by kind and reason and its digest are in the
+nodes `_meta` (`plans.held`), which every release carries.
+
+**Accounting** (`test_acceptance` P17). *Completeness*, every build: every edge the
+staged export proposes, derived again from its rows alone, is either emitted or held,
+and no other plan edge is emitted. So no build can drop one, whatever it wrote.
+*Across builds*: `build_snapshot` keeps the held list it replaces as
+`held_edges.previous.jsonl`, and by kind and reason
+`previous − emitted − gone + newly held = current`, where a previously held edge is
+still held, was emitted this build, or is gone because the current export no longer
+proposes it (its row went, or the name now resolves to another declaration). The build
+also fails on a held edge that is also emitted or held twice, a held list whose digest or
+counts disagree with the nodes `_meta`, and a staged export that is not the one the
+build read.
+
+**Not yet** (later, separate changes): plan cells and their synapses on `/brain`
+(`build_cells` makes cells from concepts and decls only, so plan nodes reach the graph
+files and the SQLite index but no page; `path:Plans` shows as a root with no cells, like
+other cell-less roots); serving the held list or a `plan_kind`/`state` column on D1 (the
+`wikilean-brain` 0002 migration); a deep link into the Tau Ceti atlas, which needs the
+atlas's own roadmap and stage ids in the export.
+
 ## Build pipeline (brain/*.py, all deterministic, no LLM on the build path)
 
 ```
@@ -831,6 +930,7 @@ catalog/data/{rebuild_grounding,wikidata_universe,wikidata_crossrefs,hierarchy,.
 catalog/data/external/<db>_{pages,links}.jsonl        (v2: brain/ingest/*.py)
 catalog/data/wikidata_descriptions.json               (v2: brain/ingest/wikidata_descriptions.py)
 catalog/.cache/{statement_formal,formal_dependency,theorem_matching}.csv
+brain/data/tauceti_plans/                             (plans export, staged; gitignored)
         │
         ▼
 brain/build_snapshot.py   → brain/data/nodes.jsonl     (v2: + ext nodes, unit, f bits)
@@ -839,6 +939,7 @@ brain/build_snapshot.py   → brain/data/nodes.jsonl     (v2: + ext nodes, unit,
                             joint file over GitHub's 100MB limit; gitignored, rebuilt from
                             the committed external inputs; readers merge both files)
                           + brain/data/brain.sqlite3   (gitignored local query index)
+                          + brain/data/held_edges{,.previous}.jsonl (plans layer; gitignored)
 brain/build_rollups.py    → brain/data/rollup_edges.*.jsonl
 brain/build_shards.py     → site/assets/brain/{xref_index,sources}.json (via wiki
                             build-public; the v2 per-node shard layer is retired —

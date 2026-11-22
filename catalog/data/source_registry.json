@@ -409,6 +409,21 @@
     "verified": "2026-07-25"
    }
   },
+  "tauceti_plans": {
+   "name": "Tau Ceti roadmaps",
+   "homepage": "https://github.com/TauCetiProject/TauCetiRoadmap",
+   "layer": "formal",
+   "kind": "Formalization plans: the roadmaps of TauCetiProject/TauCetiRoadmap and their layers minted as `plan` nodes (tauceti:<folder>, tauceti:<folder>#<anchor>) under path:Plans/TauCeti/<arXiv topic>, each layer carrying the roadmap's own coverage state (a claim about itself, never a formalization status). Edges: roadmap->roadmap `depends` (consumer -> prerequisite, each verified at a pinned README line; only public evidence becomes an edge), plan->decl `mentions` for the Lean names a roadmap resolves exactly or through a declared namespace, plan->xref:stacks `xref` and plan->lit `cites`. Planned and ambiguous names stay node attributes. An edge whose endpoint the build did not mint is held in brain/data/held_edges.jsonl, never dropped.",
+   "our_provenance": "scripts/tauceti_plans (fetch pins TauCetiRoadmap, trough, the Tau Ceti atlas and the Mathlib/Tau Ceti doc-gen indexes; build is offline and deterministic) -> a sealed export with a clock-free logical_root (docs/BRAIN-PLANS.md), run weekly by site/ops/brain_producers.py from brain-nightly.sh and staged at brain/data/tauceti_plans/; brain/plans_layer.py re-verifies it and mints the nodes/edges.",
+   "target_license": "Apache-2.0",
+   "ingest": {
+    "mode": "git-clone",
+    "bulk_path": "github.com/TauCetiProject/TauCetiRoadmap at a pinned commit (+ trough, the atlas page and two doc-gen declaration indexes, each pinned by commit or sha256)",
+    "cadence": "weekly",
+    "snippets": false,
+    "verified": "2026-11-20"
+   }
+  },
   "user_lean_repos": {
    "name": "User-registered Lean repos",
    "homepage": "https://wikilean.jackmccarthy.org",

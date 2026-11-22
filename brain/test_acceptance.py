@@ -46,6 +46,7 @@ from itertools import chain
 from pathlib import Path
 
 from ingest.common import ExternalPairError, validate_external_directory
+from plans_layer import SOURCE as PLANS_SOURCE, check_plans
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -168,6 +169,7 @@ def main() -> int:
     lit_paper_ids: set[str] = set()    # lit:<arxiv_id> paper-level nodes
     n_tc_decl_nodes = 0                # decl:TauCeti:* nodes (P13)
     n_fc_decl_nodes = 0                # decl:FormalConjectures:* nodes (P14)
+    n_plan_nodes = 0                   # plan nodes (P17)
     for rec in iter_jsonl(NODES, "id"):
         n_nodes += 1
         nid = rec["id"]
@@ -202,6 +204,8 @@ def main() -> int:
                 n_fc_decl_nodes += 1
         elif t == "literature" and "#" not in nid:
             lit_paper_ids.add(nid)
+        elif t == "plan":
+            n_plan_nodes += 1
 
     # ---- edges pass: invariants + targeted captures, one streaming pass ------
     n_edges = 0
@@ -228,6 +232,7 @@ def main() -> int:
     inv_shape_bad: list[str] = []      # malformed invocation edges (P15)
     n_inv_shape_bad = 0
     inv_edges: list[tuple[str, str, str]] = []  # (src, dst, evidence.name)
+    plan_edge_keys: set[tuple[str, str, str]] = set()  # (kind, src, dst), P17
 
     edge_streams = [iter_jsonl(EDGES, "src")]
     if EDGES_LINKS.exists():
@@ -246,6 +251,8 @@ def main() -> int:
                 bad_shape.append(f"{src} -{kind}-> {dst}")
         elif prov["source"] not in valid_sources:
             unknown_sources[prov["source"]] += 1
+        if isinstance(prov, dict) and prov.get("source") == PLANS_SOURCE:
+            plan_edge_keys.add((kind, src, dst))
 
         if kind == "formalizes":
             if not (dst.startswith("decl:") or dst.startswith("path:")) \
@@ -654,6 +661,18 @@ def main() -> int:
             ["tauceti.jsonl present but no invocation edge has a "
              "decl:TauCeti:* src (rerun brain/build_edges.py)"],
         ))
+
+    # ---- the plans layer and its held list (brain/plans_layer.py) -------------
+    # A held edge never disappears silently: against the previous build's held
+    # list, each one is still held, emitted, or gone with its export row.
+    p17_ok, p17_details = check_plans(
+        nodes_meta=first_meta(NODES), n_plan_nodes=n_plan_nodes, node_ids=node_ids,
+        plan_edge_keys=plan_edge_keys, data_dir=DATA)
+    checks.append((
+        "P17", "plans layer: the staged export is the one the build read; every held "
+               "edge is accounted for (previous - emitted - gone + new = current)",
+        p17_ok, p17_details,
+    ))
 
     # ---- report ---------------------------------------------------------------
     print(f"BRAIN acceptance — {n_nodes:,} nodes, {n_edges:,} edges "

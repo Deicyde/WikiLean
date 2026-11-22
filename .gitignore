@@ -103,6 +103,14 @@ brain/.brain-snapshot.*/
 # review list is a derived advisory worklist emitted with frontier.jsonl.
 brain/data/synapses.jsonl
 brain/data/frontier_review.jsonl
+# The plans layer (brain/plans_layer.py): the sealed Tau Ceti plans export the
+# nightly stages from its private producer store (site/ops/brain_producers.py;
+# about 60 MB and never committed), and the held-edge list the build derives from
+# it, with the previous build's copy that test_acceptance accounts against.
+brain/data/tauceti_plans/
+brain/data/.tauceti_plans.*/
+brain/data/held_edges.jsonl
+brain/data/held_edges.previous.jsonl
 # brain-nightly cadence stamps + lock dir (its *.log files are covered above)
 site/ops/logs/
 # Host-local launchd/runtime paths (Python, Mathlib checkout); sourced after the
