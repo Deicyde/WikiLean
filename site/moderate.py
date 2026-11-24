@@ -63,6 +63,7 @@ import urllib.parse
 from pathlib import Path
 
 import native_annotations as native
+import native_review
 from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
@@ -303,7 +304,7 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
         counted as veto_adjacent_dropped (F6: shifted-anchor and repinned
         resurrections of human vetoes don't reach the wire).
     """
-    produced = native.preserve_native_items(existing, produced)
+    produced = native_review.check_native_output(existing, produced)
     humans = [a for a in existing if a.get("provenance") == "human"]
     tombs = [a for a in existing if a.get("status") == "rejected"]
     h_by_id = {a["id"]: i for i, a in enumerate(humans)
@@ -379,6 +380,27 @@ def finalize_for_post(existing: list[dict], produced: list[dict],
     return out, stats
 
 
+def drop_deleted_carried(slug: str, current: list[dict], body: dict) -> list[dict]:
+    """A checkpointed payload's annotations, minus the carried items D1 lost.
+
+    The 409 rebase and the checkpoint flush re-finalize a payload built
+    against an older snapshot. A review item in it that the native merge only
+    carried forward — the agent said nothing about it, so none of it is the
+    agent's — and that the article no longer has was deleted by a person in
+    between; re-posting it gives the deletion a fresh id and brings it back.
+    Nothing the agent authored is dropped; the ids come from the merge
+    report's own record, which build_meta put in meta.native_carried.
+    """
+    meta = body.get("meta")
+    carried = meta.get("native_carried") if isinstance(meta, dict) else None
+    annotations, dropped = native_review.drop_deleted_carried(
+        current, body.get("annotations") or [], carried)
+    for name in dropped:
+        print(f"  {slug}: carried review item [{name}] is gone from the article — "
+              f"deleted since this payload was built; not re-posting it", flush=True)
+    return annotations
+
+
 def resolve_token() -> str | None:
     """WIKILEAN_API_TOKEN env var, else PIPELINE_TOKEN from wiki/.dev.vars."""
     tok = os.environ.get("WIKILEAN_API_TOKEN")
@@ -402,6 +424,11 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
     ladder = {"restored": 0, "reinserted": 0, "downgrades_blocked": 0,
               "moderation_flags": []}  # F14 dissent (+ step-2 proposals when present) ride meta
     ladder.update(rec.get("ladder") or {})
+    # The native review items this payload only carried forward. It rides with
+    # the payload (and so into the checkpoint) because the 409 rebase and the
+    # flush re-finalize it against a newer article and must not resurrect one a
+    # person deleted in between — see native_review.drop_deleted_carried.
+    carried = (rec.get("native_merge") or {}).get("carried_ids") or []
     return {
         "run_id": ctx.run_id,
         "mode": ctx.mode,
@@ -414,6 +441,7 @@ def build_meta(ctx, rec: dict, wire_stats: dict) -> dict:
         "auth_mode": ctx.auth,
         "ladder": ladder,
         "ids": wire_stats,
+        **({"native_carried": sorted(set(carried))} if carried else {}),
     }
 
 
@@ -814,13 +842,20 @@ def get_mathlib_sha() -> str | None:
 
 
 def get_prompt_sha(ba_mod, mode: str) -> str:
-    """First 12 hex of sha256 over the system prompts the mode uses (Agent 1's
-    mode-specific prompt + the shared Agent 2 prompt) and the agents' sandbox
-    version (site/agent_sandbox.py SANDBOX_VERSION)."""
+    """First 12 hex of sha256 over everything that decides what the agents see:
+    Agent 1's mode-specific prompt, the shared Agent 2 prompt, both native
+    prompts, the review-mode proposal guidance when it is on, the agents'
+    sandbox version (site/agent_sandbox.py SANDBOX_VERSION) and the
+    agent-facing view of stored review items (site/native_review.py
+    VIEW_VERSION)."""
     if ba_mod is None:
         return "unavailable"
     a1 = ba_mod.MODERATE_AGENT1_SYSTEM if mode == "review" else ba_mod.AGENT1_SYSTEM
     parts = a1 + "\n" + ba_mod.AGENT2_SYSTEM
+    # Native articles run the native prompts instead; they are the live cohort
+    # boundary for every converted article, so they must move the sha too.
+    for native_prompt in ("NATIVE_AGENT1_SYSTEM", "NATIVE_AGENT2_SYSTEM"):
+        parts += "\n" + getattr(ba_mod, native_prompt, "")
     # Step 2: the proposal guidance changes Agent 2's review-mode prompt, so it must
     # move prompt_sha when enabled (else the two cohorts look identical in research).
     if mode == "review" and getattr(ba_mod, "_PROPOSALS", False):
@@ -830,6 +865,11 @@ def get_prompt_sha(ba_mod, mode: str) -> str:
     sandbox = getattr(ba_mod, "SANDBOX_VERSION", "")
     if sandbox:
         parts += "\n" + sandbox
+    # The native review runs on a projection of the stored items, not the
+    # items: review_view hands the agents reference stubs in place of the
+    # selections. That is the same kind of cohort boundary as the sandbox —
+    # the agents saw something different with no prompt text moving.
+    parts += "\n" + native_review.VIEW_VERSION
     return hashlib.sha256(parts.encode("utf-8")).hexdigest()[:12]
 
 
@@ -1038,9 +1078,10 @@ async def _write_article(ctx, slug: str, body: dict, method: str,
             rebased = True
             art, status = await get_article(ctx.api_base, slug, ctx.token)
             if art is not None:
+                current = art.get("annotations") or []
+                annotations = drop_deleted_carried(slug, current, body)
                 try:
-                    posted, wire = finalize_for_post(
-                        art.get("annotations") or [], body.get("annotations") or [])
+                    posted, wire = finalize_for_post(current, annotations)
                 except native.NativeAnnotationError as exc:
                     print(f"  {slug}: native rebase needs review ({exc}); checkpoint kept", flush=True)
                     return 409, {"error": "native_rebase_needs_review"}, rebased
@@ -1118,9 +1159,10 @@ async def flush_pending(ctx, pending_dir: Path | None = None) -> dict:
             stats["failed"] += 1
             print(f"  {slug}: re-GET failed ({st}) — keeping checkpoint", flush=True)
             continue
+        current = art.get("annotations") or []
         try:
             posted, wire = finalize_for_post(
-                art.get("annotations") or [], body.get("annotations") or [])
+                current, drop_deleted_carried(slug, current, body))
         except native.NativeAnnotationError as exc:
             stats["failed"] += 1
             print(f"  {slug}: native checkpoint needs review ({exc}); kept", flush=True)
@@ -1183,7 +1225,13 @@ async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore"
               f"the legacy/live HTML", flush=True)
 
     if ctx.dry_run:
-        posted, wire = finalize_for_post(existing, existing)
+        # The same guard the live path has: a stored article the tripwire
+        # cannot pass is one article's error, not an aborted run.
+        try:
+            posted, wire = finalize_for_post(existing, existing)
+        except native.NativeAnnotationError as exc:
+            rec["error"] = f"native_output_needs_review: {exc}"
+            return rec
         meta = build_meta(ctx, {}, wire)
         print(f"  DRY-RUN {slug}: would POST base_version={base_version} "
               f"annotations={len(posted)} revid_reviewed={target_revid} "
@@ -1200,6 +1248,18 @@ async def process_review(job: dict, ctx, sem: "_AbortingSem | asyncio.Semaphore"
         return rec
     # F14: surface harvested agent dissent on human annotations in the run log
     # (it also rides meta.ladder.moderation_flags via build_meta).
+    # The native merge carries stored selections and items forward itself; say
+    # what it carried, so a silently unreviewed item is visible in the run log.
+    merged = arec.get("native_merge") or {}
+    if merged:
+        counts = {key: value for key, value in merged.items() if not isinstance(value, list)}
+        print(f"  ~ {slug}: native merge {json.dumps(counts, ensure_ascii=False)}", flush=True)
+        for entry in merged.get("rejections") or []:
+            print(f"  ⚑ {slug}: agent disputes selection {entry.get('ref')} of "
+                  f"[{entry.get('item')}]: {entry.get('reason')}", flush=True)
+        for entry in merged.get("skipped_items") or []:
+            print(f"  ! {slug}: review item [{entry.get('item')}] kept unchanged: "
+                  f"{entry.get('reason')}", flush=True)
     for pair in (arec.get("ladder") or {}).get("moderation_flags") or []:
         fid, flag = (pair + [None, None])[:2] if isinstance(pair, list) else (None, pair)
         print(f"  ⚑ {slug}: moderation_flag on human annotation "
