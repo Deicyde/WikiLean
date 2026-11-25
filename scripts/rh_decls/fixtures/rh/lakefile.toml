@@ -1,0 +1,20 @@
+name = "tree"
+srcDir = "src"
+defaultTargets = ["Alpha", "Beta", "Main"]
+
+[[lean_lib]]
+name = "Alpha"
+globs = ["Alpha.+"]
+
+[[lean_lib]]
+name = "Beta"
+globs = ["Beta.+"]
+
+[[lean_lib]]
+name = "Main"
+roots = ["Main"]
+
+# Not a default target, as Comparator's Challenge library in riemann-hypothesis.
+[[lean_lib]]
+name = "Challenge"
+roots = ["Challenge"]

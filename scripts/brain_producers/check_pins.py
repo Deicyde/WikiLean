@@ -15,7 +15,10 @@ import json
 import os
 import sys
 
-SCHEMAS = {"wikilean.brain.plans/v1", "wikilean.brain.tauceti-decls/v1", "wikilean.brain.mathlib-decls/v1"}
+# Producer 4 (rh-decls) shares no input with the others; it is listed so a run over every
+# export does not stop at its manifest.
+SCHEMAS = {"wikilean.brain.plans/v1", "wikilean.brain.tauceti-decls/v1", "wikilean.brain.mathlib-decls/v1",
+           "wikilean.brain.rh-decls/v1"}
 PINS = [("trough", "commit"), ("tauceti_decls", "sha256"), ("tauceti_decls", "docs_commit"),
         ("mathlib_decls", "sha256"), ("mathlib_decls", "docs_commit")]
 

@@ -178,6 +178,7 @@ run_check "Articles to Brain: the section 13 rules and the fold's row shapes" "$
 run_check "Articles to Brain: offline fetch and pinning" "$PYTHON_BIN" scripts/articles_brain/test_fetch.py
 run_check "Tau Ceti declarations: fixture build" "$PYTHON_BIN" scripts/tauceti_decls/test_build.py
 run_check "Mathlib declarations: list reader and fixture build" "$PYTHON_BIN" scripts/mathlib_decls/test_build.py
+run_check "riemann-hypothesis declarations: fixture build and local fetch" "$PYTHON_BIN" scripts/rh_decls/test_build.py
 run_check "Brain producers: declaration fetch offline" "$PYTHON_BIN" scripts/brain_producers/test_fetch_decls.py
 run_check "Brain producers: exports agree on shared pins" "$PYTHON_BIN" scripts/brain_producers/test_check_pins.py
 run_check "Brain producers: build is offline and refuses a bad input" "$PYTHON_BIN" scripts/brain_producers/test_build_inputs.py
