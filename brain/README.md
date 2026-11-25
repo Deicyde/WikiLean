@@ -258,7 +258,8 @@ acquisition-evidence requirements.
   no oracle ⇒ the pre-fix behaviour.
 - **decl `code`** — the statement header, read from the live checkout by
   `_lean_decl_lines`, which indexes a file's declarations by **fully-qualified**
-  name (tracking the `namespace` stack, honouring `_root_.`, skipping comments).
+  name (tracking `namespace`, every form of `section`, and `mutual` scopes,
+  honouring `_root_.`, skipping comments).
   It used to match the decl's BARE last segment with any namespace prefix and take
   the first hit, which silently showed a DIFFERENT declaration's statement: 344
   decls carried the wrong code (`AddGroup.FG` displayed `def Submonoid.FG`;

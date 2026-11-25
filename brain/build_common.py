@@ -772,7 +772,13 @@ _LEAN_KW = (r"(?:theorem|lemma|def|abbrev|structure|class|instance|inductive"
             r"|opaque|axiom)")
 _LEAN_MOD = (r"(?:private|protected|public|noncomputable|nonrec|scoped|partial"
              r"|unsafe|local)")
-_LEAN_NS = re.compile(rf"^\s*(namespace|section|end)(?:\s+({_LEAN_IDENT}))?\s*$")
+_LEAN_NAMESPACE = re.compile(rf"^\s*namespace\s+({_LEAN_IDENT})\s*$")
+# `section`, `section Foo`, `noncomputable section`, `@[expose] public section`, ...
+_LEAN_SECTION = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*(?:(?:public|noncomputable|meta)\s+)*"
+                           rf"section(?:\s+({_LEAN_IDENT}))?\s*$")
+_LEAN_MUTUAL = re.compile(r"^\s*mutual\s*$")
+_LEAN_END = re.compile(rf"^\s*end(?:\s+({_LEAN_IDENT}))?\s*$")
+_LEAN_NAME_PART = re.compile(r"«[^»]*»|[^.«]+")
 _LEAN_DECL = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*(?:{_LEAN_MOD}\s+)*{_LEAN_KW}\s+"
                         rf"(_root_\.)?({_LEAN_IDENT})")
 
@@ -801,6 +807,11 @@ def _strip_lean_comments(lines: list[str]):
         yield i, "".join(out)
 
 
+def _lean_name_parts(name: str) -> list[str]:
+    """`A.«b.c».d` -> `["A", "«b.c»", "d"]`: a dot inside «» is part of the name."""
+    return _LEAN_NAME_PART.findall(name)
+
+
 def _lean_decl_lines(lines: list[str]) -> dict[str, int]:
     """`fully-qualified decl name -> line index that declares it`, for one file.
 
@@ -824,27 +835,49 @@ def _lean_decl_lines(lines: list[str]) -> dict[str, int]:
     remainder are `private` decls, whose real names are mangled, and modules whose
     .ilean predates the source). Coverage went UP (6,409 regex hits -> 6,417 exact),
     because the old pattern also missed `public` decls.
+
+    The scopes are `namespace`, every form of `section` (`section Foo`,
+    `noncomputable section`, `@[expose] public section`) and `mutual`, each closed
+    by `end`. As in Lean, `namespace A.B` opens two scopes, and `end A.B` closes the
+    two innermost, whether they were opened together or one at a time; `end B`
+    closes only the last part of a `namespace A.B`. The stack used to know only
+    `namespace` and a bare `section`, each as one entry, so the `end` of a
+    `noncomputable section` or `mutual` closed the enclosing namespace, and an
+    `end` naming part of a scope closed nothing. On a mathlib checkout of
+    2026-08-24 that gave 1,683 wrong names in 98 of 8,384 files
+    (`NNReal.addLeftMono` came out as `addLeftMono`, `Bundle.Trivialization` as
+    `Bundle.Pretrivialization.Trivialization`). None of the 1,683 is in doc-gen's
+    declaration index for its module; the corrected names all are, except
+    `private` decls, guillemet names and one file moved since the index was built.
     """
     out: dict[str, int] = {}
+    # One entry per scope Lean opens; an unnamed `section` and `mutual` have no name.
     stack: list[tuple[str, str | None]] = []
     for i, code in _strip_lean_comments(lines):
         if not code.strip():
             continue
-        m = _LEAN_NS.match(code)
-        if m:
-            kind, name = m.group(1), m.group(2)
-            if kind == "namespace" and name:
-                stack.append(("ns", name))
-            elif kind == "section":
-                stack.append(("sec", name))          # sections don't name decls
-            elif kind == "end":
-                if name:
-                    for j in range(len(stack) - 1, -1, -1):
-                        if stack[j][1] == name:
-                            del stack[j:]
-                            break
-                elif stack:
+        if m := _LEAN_NAMESPACE.match(code):
+            stack.extend(("ns", part) for part in _lean_name_parts(m.group(1)))
+            continue
+        if m := _LEAN_SECTION.match(code):           # sections don't name decls
+            parts = _lean_name_parts(m.group(1)) if m.group(1) else [None]
+            stack.extend(("sec", part) for part in parts)
+            continue
+        if _LEAN_MUTUAL.match(code):
+            stack.append(("mutual", None))
+            continue
+        if m := _LEAN_END.match(code):
+            if not m.group(1):
+                if stack:
                     stack.pop()
+                continue
+            # `end A.B` closes the innermost scopes named A, B. If something above
+            # them is still open, the reader missed its `end`: close it too.
+            want = _lean_name_parts(m.group(1))
+            for j in range(len(stack) - len(want), -1, -1):
+                if [name for _, name in stack[j:j + len(want)]] == want:
+                    del stack[j:]
+                    break
             continue
         d = _LEAN_DECL.match(code)
         if not d:
