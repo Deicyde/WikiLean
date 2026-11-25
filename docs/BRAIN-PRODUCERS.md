@@ -150,13 +150,16 @@ for the whole repository, with the name printed as Lean prints it (`«exists»` 
 | File | Rows |
 |---|---|
 | `names.jsonl` | every declaration: `id`, `name`, `module`, `lean_lib`, `kind`, `private`, `source` (`{repo, commit, path, line}`) |
-| `decls.jsonl` | the same declarations, adding `source_name` (the name as written), `line`, `signature` (the header: from the declaration's first line, comments removed, up to the first `:=` or `where` outside brackets, an equation line `\| …`, a blank line or the next command; at most 12 lines and 700 characters; an `alias` keeps its `:= target`), `doc` (the docstring, whitespace collapsed, at most 700 characters) and `refs` (Erdős, Wikipedia and OEIS links in the docstring) |
+| `decls.jsonl` | the same declarations, adding `source_name` (the name as written), `line`, `signature` (the header: from the declaration's first line, comments removed, up to the first `:=` or `where` outside brackets that is not the `:=` of a `let`, `letI`, `have` or `haveI` in the statement, or up to an equation line `\| … =>` that does not follow a line ending in `:` (any `\|` line for an inductive), a blank line or the next command; at most 12 lines and 700 characters; an `alias` keeps its `:= target`), `doc` (the docstring, whitespace collapsed, at most 700 characters) and `refs` (Erdős, Wikipedia and OEIS links in the docstring) |
 | `deps.jsonl` | empty: dependency edges need the elaborated project |
 | `rejected.jsonl` | `decl/ambiguous_name` (a public name declared in more than one module, which Lean allows when no module imports both; neither is exported), `file/outside_default_libs` (a `.lean` file under `srcDir` that no default library takes), `file/not_utf8` |
 
 - A private declaration gets Lean's name for it, `_private.<module>.0.<name>`, so two modules'
   private helpers of one name stay two declarations. It is private when its line says `private`,
   or when its file is a `module` and it is neither marked `public` nor inside a `public section`.
+- `kind` is the keyword in the source: `theorem`, `lemma`, `def`, `abbrev`, `alias`, and so on,
+  with `class` for `class inductive` and `class abbrev`. That is not doc-gen4's kind, which
+  producers 2 and 3 carry and which has no `lemma`, `abbrev` or `alias`.
 - What the source does not spell out is not exported: structure fields, anonymous instances,
   `to_additive` twins and other generated names. Commented-out code is skipped.
 - A limit shared with the Brain's reader: the comment stripper does not know string literals, so
@@ -171,16 +174,21 @@ Measured at main `246656fc` on 2026-11-25, one process on a Linux server:
   GroundTheoryFields 7,176, PositivityTheory 2,669, Lemmata 190, Main 9. 3,312 are aliases.
 - 54,955 private, 349 with a docstring. Four ambiguous names and `src/Challenge.lean` rejected.
 - Checked against Lean's own names. Lean writes an `.ilean` index for each module it builds, and
-  the build server's shared cache store holds them for recent main commits. In 6,000 modules
-  sampled from it, 87,902 of the export's 87,945 names are among the names Lean defines in that
-  module (its `decls`, or a `references` entry with a definition there), every alias included.
-  The other 43 are not in that build at all, as for source added since. No name differs in
-  namespace or visibility.
-- On the same files, `_lean_decl_lines` reads 888 names that `scan` does not, and misses 4,538
-  that it reads (3,312 of them aliases).
-- No signature runs into the next declaration; a `:=` left in one is inside brackets, as a
-  named argument.
-- A first fetch takes about 100 s and 1.4 GB on disk. The build took 3 to 5 minutes on a shared
+  the build server's shared cache store holds them for recent main commits. 38,048 modules have
+  one built from exactly this source: the same imports, and every declaration it records has its
+  name at the recorded position in the file.
+  - All 399,237 export names in those modules are names Lean defines there, in the index's
+    `decls` or as a `references` entry with a definition there.
+  - Every declaration the index records, auxiliary names aside, is in the export, except the
+    ones rejected as ambiguous.
+- On the same files, `_lean_decl_lines` gives 888 names that `scan` does not, most of them the
+  same declarations under a wrong namespace or visibility. It has no name for 4,538 that `scan`
+  reads, 3,312 of them aliases.
+- No signature runs into the next declaration. A `:=` left in one is inside brackets: a named
+  argument, a default value, or a bracketed `letI … :=`. 878 theorem and lemma headers end at a
+  `:` before their conclusion: 872 at the 700-character cap, 5 at the 12-line cap and 1 at a
+  blank line in the statement.
+- A first fetch takes about 100 s and 1.4 GB on disk. The build took 3 to 6 minutes on a shared
   server and wrote 985 MB (`decls.jsonl` 635 MB, `names.jsonl` 397 MB).
 
 That is about 2.4 times Tau Ceti's 311k declarations, so, like Tau Ceti, it can reach the site only

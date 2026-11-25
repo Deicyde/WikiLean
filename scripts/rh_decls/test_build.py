@@ -324,6 +324,21 @@ end Q
 """), [("M.i", True), ("M.j", False), ("Q.R.a", False), ("Q.R.b", True), ("Q.c", False), ("Q.d", False),
        ("Q.e", True)])
 
+    def test_root_in_an_alias_pair_and_a_held_public_before_section(self):
+        self.assertEqual(names("""
+module
+namespace N
+public section
+theorem t : True ↔ True := Iff.rfl
+alias ⟨_root_.mpRoot, mprN⟩ := t
+end
+public
+section
+def x : Nat := 1
+end
+end N
+"""), [("N.t", False), ("mpRoot", False), ("N.mprN", False), ("N.x", False)])
+
     def test_guillemet_names(self):
         self.assertEqual(names("""
 namespace Arxiv.«0911.2077»
@@ -395,6 +410,29 @@ alias al := foo
 opaque op : Nat
 theorem next : True :=
   trivial
+theorem lt : let x := 1; x = 1 := rfl
+theorem absy (x : Int) (h : 0 ≤ x) :
+    |x| = x := by
+  simp [h]
+theorem card (s : Finset Nat) :
+    #s ≤ #s := le_rfl
+theorem openTerm (a b : Nat) :
+    open Classical in if a = b then True else True := by
+  split <;> trivial
+theorem openLine (a b : Nat) :
+    open Classical in
+    if a = b then True else True := by
+  split <;> trivial
+theorem absFun (y : Int) :
+    |(fun x => x) y| = |y| := rfl
+def evenB : Nat → Bool
+  | 0 => true
+  | n + 1 => !evenB n
+private
+theorem splitSig (a : Nat) : a = a := rfl
+inductive Two
+  | a
+  | b
 """
 
     def test_the_header_stops_before_the_body_and_the_next_declaration(self):
@@ -408,7 +446,16 @@ theorem next : True :=
             "X": "abbrev X",
             "al": "alias al := foo",
             "op": "opaque op : Nat",
-            "next": "theorem next : True"})
+            "next": "theorem next : True",
+            "lt": "theorem lt : let x := 1; x = 1",
+            "absy": "theorem absy (x : Int) (h : 0 ≤ x) :\n    |x| = x",
+            "card": "theorem card (s : Finset Nat) :\n    #s ≤ #s",
+            "openTerm": "theorem openTerm (a b : Nat) :\n    open Classical in if a = b then True else True",
+            "openLine": "theorem openLine (a b : Nat) :\n    open Classical in\n    if a = b then True else True",
+            "absFun": "theorem absFun (y : Int) :\n    |(fun x => x) y| = |y|",
+            "evenB": "def evenB : Nat → Bool",
+            "splitSig": "private\ntheorem splitSig (a : Nat) : a = a",
+            "Two": "inductive Two"})
         self.assertEqual((rows["foo"]["doc"], rows["foo"]["line"], rows["al"]["kind"]), ("A doc.", 3, "alias"))
 
 

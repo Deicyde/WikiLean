@@ -83,10 +83,17 @@ _SECTION = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*((?:(?:public|noncomputable|meta
                       rf"(?:\s+({_IDENT}))?\s*$")
 _MUTUAL = re.compile(r"^\s*mutual\s*$")
 _END = re.compile(rf"^\s*end(?:\s+({_IDENT}))?\s*$")
-# A line that starts another command, which ends a declaration's header.
-_NEXT = re.compile(rf"{_LEAD}(?:{_MODS}\s+)*(?:{_KW}|example|namespace|section|end|mutual|open|variable|universe"
-                   rf"|set_option|attribute|omit|include)(?![\w'!?])|^\s*(?:#|@\[)|^\s*(?:{_MODS}\s+)*{_MODS}\s*$"
+# A line that starts another command, which ends a declaration's header. `open X in` and
+# `set_option o v in` followed by a term on the same line are part of a statement, and `#s` is
+# Mathlib's card notation, so only `#check`-style commands count.
+_NEXT = re.compile(rf"{_LEAD}(?:{_MODS}\s+)*(?:{_KW}|example|namespace|section|end|mutual|variable|universe"
+                   rf"|attribute|omit|include)(?![\w'!?])|^(?:open|set_option)(?![\w'!?])(?![^\n]*\sin\s+\S)"
+                   rf"|^\s+(?:open|set_option)(?![\w'!?])(?![^\n]*\sin(?![\w'!?]))"
+                   rf"|^\s*#(?:check|eval|print|exit|guard_msgs|guard|lint|reduce|synth|help|where|align|noalign"
+                   rf"|align_import|adaptation_note|time|find)(?![\w'!?])|^\s*@\[|^\s*(?:{_MODS}\s+)*{_MODS}\s*$"
                    rf"|^\s*(?:public|noncomputable|meta)\s")
+# `let x :=` and the like in a statement: their `:=` does not end the header.
+_BINDER = re.compile(r"(?<![\w'.!?])(?:letI|let|haveI|have)(?![\w'!?])")
 SIGNATURE_LINES = 12
 SIGNATURE_CHARS = 700
 _OPEN, _CLOSE = "([{⦃⟨⟦", ")]}⦄⟩⟧"
@@ -135,7 +142,7 @@ def scan(lines: list[str]) -> list[tuple[int, str, str, bool, str]]:
         if m := _NAMESPACE.match(code):
             stack += [("ns", p, public) for p in name_parts(m.group(1))]
         elif m := _SECTION.match(code):
-            public = public or "public" in m.group(1).split()
+            public = public or "public" in mods + m.group(1).split()
             stack += [("sec", p, public) for p in (name_parts(m.group(2)) if m.group(2) else [None])]
         elif _MUTUAL.match(code):
             stack.append(("mutual", None, public))
@@ -151,7 +158,8 @@ def scan(lines: list[str]) -> list[tuple[int, str, str, bool, str]]:
             else:
                 mods += p.group(1).split()
                 kind = "alias"
-                written = [(n.strip(), False) for n in p.group(2).split(",") if n.strip() not in ("", "_")]
+                written = [(n.removeprefix("_root_."), n.startswith("_root_."))
+                           for n in (x.strip() for x in p.group(2).split(",")) if n not in ("", "_")]
             private = "private" in mods or bool(is_module and "public" not in mods and not public)
             prefix = [n for k, n, _ in stack if k == "ns"]
             for name, root in written:
@@ -164,23 +172,50 @@ def scan(lines: list[str]) -> list[tuple[int, str, str, bool, str]]:
     return out
 
 
+def _equation(line: str, kind: str, before: str) -> bool:
+    """A line that starts a definition's equations (`| 0 => ...`) or an inductive's constructors,
+    not a statement line that starts with an absolute value (`|x| = x`, `|(fun x => x) y|`). An
+    equation needs a `=>` with no `|` before it, and never follows a line ending in `:`."""
+    s = line.lstrip()
+    if not s.startswith("|"):
+        return False
+    if kind in ("inductive", "class"):
+        return True
+    arrow = s.find("=>")
+    return arrow > 0 and "|" not in s[1:arrow] and not before.rstrip().endswith(":")
+
+
 def signature(code: list[str], start: int, kind: str) -> str | None:
     """The declaration's header, from its first line (comments removed): cut before the first
-    `:=` or `where` outside brackets, and before an equation line (`| ...`), a blank line or the
-    next command; at most 12 lines and 700 characters. An alias keeps its `:= target`."""
+    `:=` or `where` outside brackets, other than the `:=` of a `let`, `letI`, `have` or `haveI`
+    in the statement, and before an equation line, a blank line or the next command; at most 12
+    lines and 700 characters. A modifier on a line of its own is kept with the declaration line
+    below it. An alias keeps its `:= target`."""
     out: list[str] = []
     depth = 0
+    binders: list[int] = []  # depth of each `let`/`have` whose `:=` is still to come
+    held = bool(_MODS_ALONE.match(code[start]))
     for j in range(start, min(start + SIGNATURE_LINES, len(code))):
         line = code[j]
-        if j > start and (not line.strip() or _NEXT.match(line) or (depth == 0 and line.lstrip().startswith("|"))):
+        if held and j > start:
+            if not line.strip():
+                continue
+            held = not (_DECL.match(line) or _ALIAS_PAIR.match(line))
+        elif j > start and (not line.strip() or _NEXT.match(line)
+                            or (depth == 0 and _equation(line, kind, out[-1] if out else ""))):
             break
         cut = None
         if kind != "alias":
+            at_binder = {m.start() for m in _BINDER.finditer(line)}
             for k, ch in enumerate(line):
+                if k in at_binder:
+                    binders.append(depth)
                 if ch in _OPEN:
                     depth += 1
                 elif ch in _CLOSE:
                     depth = max(depth - 1, 0)
+                elif line.startswith(":=", k) and binders and binders[-1] == depth:
+                    binders.pop()
                 elif depth == 0 and (line.startswith(":=", k) or (
                         line.startswith("where", k) and not (k and (line[k - 1].isalnum() or line[k - 1] in "_'."))
                         and not line[k + 5:k + 6].isalnum() and line[k + 5:k + 6] not in ("_", "'", "!", "?"))):
