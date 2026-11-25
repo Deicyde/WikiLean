@@ -73,6 +73,13 @@ class CheckPins(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertNotIn("tauceti_decls", out.split("logical_root")[-1])
 
+    def test_producer_4_is_read_and_shares_no_pin(self):
+        rh = self.write("p4", manifest("wikilean.brain.rh-decls/v1", rh={"commit": "e" * 40}))
+        code, out, _ = self.run_main(self.exports() + [rh])
+        self.assertEqual(code, 0)
+        self.assertNotIn("rh.", out)
+        self.assertEqual(self.run_main([rh])[0], 0)
+
     def test_unreadable_manifest(self):
         bad = self.write("bad", {"schema": "something/else", "inputs": {}})
         self.assertEqual(self.run_main([bad])[0], 2)
