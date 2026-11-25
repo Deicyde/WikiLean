@@ -111,9 +111,19 @@ From trough's `data/mathlib/` (`concept-deps.json`, `yaml/{overview,undergrad,10
 From the source of
 [leanprover-community/riemann-hypothesis](https://github.com/leanprover-community/riemann-hypothesis).
 That repository publishes no doc-gen4 site and trough has no record of it, so this producer reads
-its source at one commit with the Brain's own Lean reader: `lean_repo.harvest_rows` (the
-frontier-repo harvest) on each file for the name, kind, statement and docstring, and
-`build_common._lean_decl_lines` for the line. No Lean runs. The files read are the modules of the
+its source at one commit with the Brain's own Lean reader: `build_common`'s comment stripping and
+declaration pattern, and the frontier harvest's kind, statement and docstring snippets
+(`formal_conjectures`, as `lean_repo.harvest_rows` uses them). No Lean runs. The scopes are the
+producer's own pass (`build.scan`) rather than `build_common._lean_decl_lines`, for two reasons:
+
+- Every RH file is a `module`. In a module, a declaration outside a `public section` is private
+  unless it is marked `public`, and Lean names it `_private.<module>.0.<name>`.
+- `_lean_decl_lines` only knows a bare `section`, so the `end` of a `public section` or
+  `noncomputable section` closes the enclosing namespace there, and later declarations get the
+  wrong full name.
+
+`scan` treats `namespace`, every form of `section`, and `mutual` as scopes. The fixture's
+expected names were checked with Lean 4.37. The files read are the modules of the
 libraries `lake build` builds: `lakefile.toml` at the commit gives `srcDir`, `defaultTargets` and
 each `lean_lib`'s globs (`X`, `X.+`, `X.*`; `roots`, else the library's name, when there are none).
 Comparator's `Challenge` library is not a default target. It restates the five headline theorems
@@ -136,23 +146,26 @@ producers 1–3. Ids are `decl:RiemannHypothesis:<Lean name>` for the whole repo
 | `deps.jsonl` | empty: dependency edges need the elaborated project |
 | `rejected.jsonl` | `decl/ambiguous_name` (a public name declared in more than one module, which Lean allows when no module imports both; neither is exported), `file/outside_default_libs` (a `.lean` file under `srcDir` that no default library takes), `file/not_utf8` |
 
-- A `private` declaration gets Lean's name for it, `_private.<module>.0.<name>`, so two modules'
-  private helpers of one name stay two declarations. Only the declaration line is read for
-  `private`.
+- A private declaration gets Lean's name for it, `_private.<module>.0.<name>`, so two modules'
+  private helpers of one name stay two declarations. It is private when its line says `private`,
+  or when its file is a `module` and it is neither marked `public` nor inside a `public section`.
 - What the source does not spell out is not exported: structure fields, anonymous instances,
   `to_additive` twins and other generated names. Commented-out code is skipped.
-- The reader's files (`brain/build_common.py`, `brain/ingest/{common,formal_conjectures,
-  git_snapshot,lean_repo}.py`) are hashed into the manifest's `reader`, so a change to the reader
-  gives a new logical root. The manifest's `lake` block records the libraries read and left out.
+- The reader's files (`brain/build_common.py`, `brain/ingest/{common,formal_conjectures}.py`) are
+  hashed into the manifest's `reader`, so a change to the reader gives a new logical root. The manifest's `lake` block records the libraries read and left out.
 
-Measured at main `fcb6eac7` on 2026-11-24, one process on a Linux server:
+Measured at main `246656fc` on 2026-11-25, one process on a Linux server:
 
-- 752,946 declarations from 59,763 files in the nine default libraries: Development 496,906,
-  Formalism 166,584, GroundTheory 41,262, ReciprocityTheory 28,732, CompanionTheory 9,099,
-  GroundTheoryFields 7,178, PositivityTheory 2,986, Lemmata 190, Main 9.
-- 54,871 private, 346 with a docstring. Five ambiguous names and `src/Challenge.lean` rejected.
-- The fetch takes about 100 s and 1.4 GB on disk. The build takes about 6 minutes and writes
-  1.0 GB (`decls.jsonl` 649 MB, `names.jsonl` 399 MB).
+- 745,776 declarations from 59,469 files in the nine default libraries: Development 491,431,
+  Formalism 165,662, GroundTheory 41,030, ReciprocityTheory 28,521, CompanionTheory 9,092,
+  GroundTheoryFields 7,173, PositivityTheory 2,668, Lemmata 190, Main 9.
+- 54,802 private, 349 with a docstring. Four ambiguous names and `src/Challenge.lean` rejected.
+- Against `_lean_decl_lines` on the same files, `scan` changes 826 declarations in 51 files:
+  341 become private, 359 get back a namespace the shared reader had closed early, and 126 both.
+  Lean's own constant names (the dependency census) agree with `scan` on the ones checked.
+- A first fetch takes about 100 s and 1.4 GB on disk; moving the checkout to a newer commit took
+  17 s. The build took about 3 minutes and wrote 990 MB (`decls.jsonl` 642 MB, `names.jsonl`
+  395 MB).
 
 That is about 2.4 times Tau Ceti's 311k declarations, so, like Tau Ceti, it can reach the site only
 after the D1 cutover ([`BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md)).

@@ -7,11 +7,17 @@ rejected.jsonl and manifest.json under --out. Same inputs and the same reader, s
 Contract: docs/BRAIN-PRODUCERS.md, producer 4.
 
 The repository publishes no doc-gen4 index and trough has no record of it, so the
-declarations come from its source text, read by the Brain's own Lean reader: the
-frontier-repo harvest (`lean_repo.harvest_rows`, one file at a time) for the name, kind,
-statement code and docstring, and `build_common._lean_decl_lines` for the line. That reader
-resolves `namespace` blocks and `_root_`, and skips what the source does not spell out
-(structure fields, anonymous instances, generated names). No Lean runs, so deps.jsonl is empty.
+declarations come from its source text, read with the Brain's own Lean reader: its comment
+stripping and declaration pattern (`build_common`), and the frontier harvest's docstring,
+kind and statement snippets (`formal_conjectures`). It skips what the source does not spell
+out (structure fields, anonymous instances, generated names). No Lean runs, so deps.jsonl is
+empty.
+
+The scopes are this producer's own pass (`scan`), for two things the shared reader's
+`_lean_decl_lines` does not do. Every RH file is a `module`, and in a module a declaration
+is private unless it is marked `public` or sits in a `public section`; Lean names it
+`_private.<module>.0.<name>`. And the shared reader only knows a bare `section`, so there the
+`end` of a `public section` or `noncomputable section` closes the enclosing namespace instead.
 """
 
 from __future__ import annotations
@@ -31,8 +37,8 @@ for _p in (os.path.join(ROOT, "brain", "ingest"), os.path.join(ROOT, "brain")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
 import build_common  # noqa: E402  (brain/build_common.py: the Lean declaration reader)
-import git_snapshot  # noqa: E402  (brain/ingest/git_snapshot.py: harvest_rows' input type)
-import lean_repo  # noqa: E402  (brain/ingest/lean_repo.py: the frontier-repo harvest)
+import common  # noqa: E402  (brain/ingest/common.py: clean_snippet)
+import formal_conjectures as fc  # noqa: E402  (brain/ingest/formal_conjectures.py: decl context)
 
 SCHEMA = "wikilean.brain.rh-decls/v1"
 PRODUCER = {"name": "scripts.rh_decls", "version": "1.0.0"}
@@ -44,8 +50,7 @@ SRC = "src/"  # what fetch checks out; build takes the source folder from lakefi
 FILES = D.FILES
 # The reader is an input: a change to any of these files may change the rows, so their
 # hashes are in the manifest and hence in the logical root.
-READER_FILES = ("brain/build_common.py", "brain/ingest/common.py", "brain/ingest/formal_conjectures.py",
-                "brain/ingest/git_snapshot.py", "brain/ingest/lean_repo.py")
+READER_FILES = ("brain/build_common.py", "brain/ingest/common.py", "brain/ingest/formal_conjectures.py")
 READ_CHUNK = 2000  # blobs per `git cat-file --batch`; the repository's src/ is about 1 GB
 ATTRIBUTION = [
     {"work": "riemann-hypothesis", "url": URL, "license": None,
@@ -57,13 +62,63 @@ ATTRIBUTION = [
              "(docs/BRAIN-PRODUCERS.md, producer 4)."},
 ]
 
-_HEADER = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*((?:{build_common._LEAN_MOD}\s+)*){build_common._LEAN_KW}\s")
+_IDENT = build_common._LEAN_IDENT
+_DECL = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*((?:{build_common._LEAN_MOD}\s+)*){build_common._LEAN_KW}\s+"
+                   rf"(_root_\.)?({_IDENT})")
+_MODULE = re.compile(r"^\s*module\s*$")
+_NAMESPACE = re.compile(rf"^\s*namespace\s+({_IDENT})\s*$")
+# `section`, `noncomputable section`, `@[expose] public section`, `public section Name`, ...
+_SECTION = re.compile(rf"^\s*(?:@\[[^\]]*\]\s*)*((?:(?:public|noncomputable|meta)\s+)*)section"
+                      rf"(?:\s+({_IDENT}))?\s*$")
+_MUTUAL = re.compile(r"^\s*mutual\s*$")
+_END = re.compile(rf"^\s*end(?:\s+({_IDENT}))?\s*$")
 
 
-def is_private(code: str) -> bool:
-    """Whether a declaration line (comments blanked) carries the `private` modifier."""
-    m = _HEADER.match(code)
-    return bool(m) and "private" in m.group(1).split()
+def scan(lines: list[str]) -> list[tuple[int, str, bool]]:
+    """(line index, full name as written, private) for each declaration the source spells out,
+    in file order; the first of a repeated name wins, as in `_lean_decl_lines`.
+
+    Scopes are `namespace`, every form of `section`, and `mutual`, each closed by `end`. In a
+    file whose first command is `module`, a scope is public when it is a `public ... section`
+    or sits in one, and a declaration is private unless it is marked `public` or is in a
+    public scope (checked against Lean 4.37). Elsewhere only `private` makes it private."""
+    stack: list[tuple[str, str | None, bool]] = []  # (kind, name, public scope)
+    is_module = None
+    seen: set[str] = set()
+    out = []
+    for i, code in build_common._strip_lean_comments(lines):
+        if not code.strip():
+            continue
+        if is_module is None:
+            is_module = bool(_MODULE.match(code))
+            if is_module:
+                continue
+        public = bool(stack) and stack[-1][2]
+        if m := _NAMESPACE.match(code):
+            stack.append(("ns", m.group(1), public))
+        elif m := _SECTION.match(code):
+            stack.append(("sec", m.group(2), public or "public" in m.group(1).split()))
+        elif _MUTUAL.match(code):
+            stack.append(("mutual", None, public))
+        elif m := _END.match(code):
+            name = m.group(1)
+            if not name:
+                if stack:
+                    stack.pop()
+            else:  # `end A.B` closes `namespace A.B`, or `namespace A` with `namespace B` in it
+                for j in range(len(stack) - 1, -1, -1):
+                    if ".".join(n for _, n, _ in stack[j:] if n) == name:
+                        del stack[j:]
+                        break
+        elif d := _DECL.match(code):
+            mods, root, name = d.group(1).split(), d.group(2), d.group(3).rstrip(".")
+            prefix = ".".join(n for k, n, _ in stack if k == "ns" and n)
+            fq = name if root or not prefix else f"{prefix}.{name}"
+            if not name or fq in seen:
+                continue
+            seen.add(fq)
+            out.append((i, fq, "private" in mods or (is_module and "public" not in mods and not public)))
+    return out
 
 
 def lean_name(fq: str, module: str, private: bool) -> str:
@@ -122,23 +177,20 @@ def lean_lib_of(module: str, libs: list[tuple[str, list[tuple[str, str]]]]) -> s
     return None
 
 
-def file_decls(path: str, prefix: str, text: str, commit: str) -> list[dict]:
-    """Every declaration the Brain's reader finds in one source file."""
-    rel = path[len(prefix):]
-    module = rel[:-len(".lean")].replace("/", ".")
-    snap = git_snapshot.GitTextSnapshot(commit=commit, files=(git_snapshot.GitTextFile(rel, text),), tree="")
-    rows, _ = lean_repo.harvest_rows(snap, LIBRARY)
+def file_decls(path: str, prefix: str, text: str) -> list[dict]:
+    """Every declaration `scan` finds in one source file, with the frontier harvest's kind,
+    statement snippet, docstring and links (as `lean_repo.harvest_rows` makes them)."""
+    module = path[len(prefix):-len(".lean")].replace("/", ".")
     lines = text.splitlines()
-    where = build_common._lean_decl_lines(lines)
-    code = dict(build_common._strip_lean_comments(lines))
     out = []
-    for r in rows:
-        idx = where[r["decl"]]
-        private = is_private(code[idx])
-        out.append({"fq": r["decl"], "name": lean_name(r["decl"], module, private), "module": module,
-                    "kind": r.get("kind"), "private": private, "line": idx + 1,
-                    "signature": r.get("code"), "doc": r.get("docstring"), "refs": r.get("refs"),
-                    "path": path})
+    for idx, fq, private in scan(lines):
+        _, doc = fc._decl_context(lines, idx)
+        kw = fc._KW.search(re.sub(r"@\[[^\]]*\]", "", lines[idx]))
+        out.append({"fq": fq, "name": lean_name(fq, module, private), "module": module,
+                    "kind": kw.group(1) if kw else None, "private": private, "line": idx + 1,
+                    "signature": fc._code_snippet(lines, idx) or None,
+                    "doc": common.clean_snippet(doc, fc.DOCSTRING_MAX) or None,
+                    "refs": fc._refs(doc) or None, "path": path})
     return out
 
 
@@ -177,7 +229,7 @@ def build(inputs: str, out: str) -> dict:
             except UnicodeDecodeError:
                 rejected.append({"kind": "file", "reason": "not_utf8", "candidate": p})
                 continue
-            for d in file_decls(p, prefix, text, tree.commit):
+            for d in file_decls(p, prefix, text):
                 d["lean_lib"] = lib_of[p]
                 found.append(d)
 

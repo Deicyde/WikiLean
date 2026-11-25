@@ -1,2 +1,2 @@
-/-- The main statement, as posed. -/
-theorem Main.statement : True := by sorry
+/-- The headline claim, as posed. -/
+theorem riemannHypothesis : True := by sorry

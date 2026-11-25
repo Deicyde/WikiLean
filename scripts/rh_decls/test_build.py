@@ -19,9 +19,10 @@ from scripts.tauceti_plans.test_build import _git_repo  # noqa: E402
 
 FIX = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fixtures", "rh")
 LIB = "decl:RiemannHypothesis:"
-FOO = LIB + "Alpha.foo"
-HELPER_BASIC = LIB + "_private.Alpha.Basic.0.Alpha.helper"
-HELPER_OTHER = LIB + "_private.Alpha.Other.0.Alpha.helper"
+FOO = LIB + "Development.foo"
+HELPER_BASIC = LIB + "_private.Development.Basic.0.Development.helper"
+HELPER_OTHER = LIB + "_private.Development.Other.0.Development.helper"
+EARLY = LIB + "_private.Development.Other.0.Development.early"
 
 
 def write_pins(inputs: str, commit: str | None, fetched_at: str = "2026-11-24T00:00:00Z") -> None:
@@ -65,52 +66,75 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(m["inputs"]["rh"]["fetched_at"], "2030-01-01T00:00:00Z")
 
     def test_a_declaration_carries_its_code_docstring_and_source(self):
-        source = {"repo": B.REPO, "commit": self.commit, "path": "src/Alpha/Basic.lean", "line": 8}
+        source = {"repo": B.REPO, "commit": self.commit, "path": "src/Development/Basic.lean", "line": 12}
         self.assertEqual(self.rows["names.jsonl"][FOO], {
-            "id": FOO, "name": "Alpha.foo", "module": "Alpha.Basic", "lean_lib": "Alpha", "kind": "theorem",
-            "private": False, "source": source})
+            "id": FOO, "name": "Development.foo", "module": "Development.Basic", "lean_lib": "Development",
+            "kind": "theorem", "private": False, "source": source})
         self.assertEqual(self.rows["decls.jsonl"][FOO], {
-            "id": FOO, "name": "Alpha.foo", "source_name": "Alpha.foo", "module": "Alpha.Basic",
-            "lean_lib": "Alpha", "kind": "theorem", "private": False, "line": 8, "signature": "theorem foo : 1 = 1 := rfl",
-            "doc": "The **foo** lemma.", "refs": None, "source": source})
+            "id": FOO, "name": "Development.foo", "source_name": "Development.foo", "module": "Development.Basic",
+            "lean_lib": "Development", "kind": "theorem", "private": False, "line": 12,
+            "signature": "theorem foo : 1 = 1 := rfl", "doc": "The **foo** lemma.", "refs": None, "source": source})
 
     def test_names_and_decls_are_the_same_declarations(self):
         self.assertEqual(sorted(self.rows["names.jsonl"]), sorted(self.rows["decls.jsonl"]))
         self.assertEqual(sorted(self.rows["decls.jsonl"]), sorted([
-            FOO, HELPER_BASIC, HELPER_OTHER, LIB + "Alpha.bar", LIB + "Beta.Point", LIB + "Main.statement",
-            LIB + "topLevel"]))
+            FOO, HELPER_BASIC, HELPER_OTHER, EARLY, LIB + "Development.bar", LIB + "Development.baz",
+            LIB + "Development.even", LIB + "Development.odd", LIB + "Development.afterEnd",
+            LIB + "Development.shown", LIB + "Development.late", LIB + "Formalism.Point",
+            LIB + "riemannHypothesis", LIB + "topLevel"]))
 
     def test_private_helpers_get_their_lean_names(self):
         decls = self.rows["decls.jsonl"]
-        for did, module, line in ((HELPER_BASIC, "Alpha.Basic", 10), (HELPER_OTHER, "Alpha.Other", 3)):
+        for did, module, line in ((HELPER_BASIC, "Development.Basic", 14), (HELPER_OTHER, "Development.Other", 7)):
             row = decls[did]
             self.assertEqual((row["private"], row["source_name"], row["module"], row["line"]),
-                             (True, "Alpha.helper", module, line))
+                             (True, "Development.helper", module, line))
+
+    def test_in_a_module_a_declaration_outside_a_public_section_is_private(self):
+        """Every RH file is a `module`. Before Other.lean's `public section`, `early` is private
+        and `shown` is public because it says so; in Formalism/Dup.lean, which is not a module,
+        only `private` would make a declaration private."""
+        decls = self.rows["decls.jsonl"]
+        self.assertEqual((decls[EARLY]["private"], decls[EARLY]["source_name"], decls[EARLY]["line"]),
+                         (True, "Development.early", 5))
+        self.assertNotIn(LIB + "Development.early", decls)
+        for name in ("Development.shown", "Development.late", "Formalism.Point", "riemannHypothesis"):
+            self.assertFalse(decls[LIB + name]["private"], name)
+
+    def test_an_end_closes_its_own_scope(self):
+        """`noncomputable section` and `mutual` are scopes, so their `end`s leave the declarations
+        after them in `Development`. A reader that knows only a bare `section` would close the
+        namespace at the first `end` and put `afterEnd` at the root."""
+        decls = self.rows["decls.jsonl"]
+        self.assertEqual([decls[LIB + "Development." + n]["line"] for n in ("baz", "even", "odd", "afterEnd")],
+                         [26, 31, 34, 40])
+        self.assertNotIn(LIB + "afterEnd", decls)
 
     def test_namespace_root_and_attribute(self):
         decls = self.rows["decls.jsonl"]
-        self.assertEqual((decls[LIB + "topLevel"]["module"], decls[LIB + "topLevel"]["line"]), ("Alpha.Basic", 16))
-        self.assertEqual((decls[LIB + "Alpha.bar"]["kind"], decls[LIB + "Alpha.bar"]["line"]), ("def", 12))
-        self.assertEqual(decls[LIB + "Beta.Point"]["kind"], "structure")
+        self.assertEqual((decls[LIB + "topLevel"]["module"], decls[LIB + "topLevel"]["line"]),
+                         ("Development.Basic", 20))
+        self.assertEqual((decls[LIB + "Development.bar"]["kind"], decls[LIB + "Development.bar"]["line"]), ("def", 16))
+        self.assertEqual(decls[LIB + "Formalism.Point"]["kind"], "structure")
 
     def test_a_library_lake_build_skips_is_not_read(self):
-        """Challenge restates Main.statement with `sorry`; it is no default target, so it is not
+        """Challenge restates riemannHypothesis with `sorry`; it is no default target, so it is not
         read, and Main's declaration is not made ambiguous by it."""
-        main = self.rows["decls.jsonl"][LIB + "Main.statement"]
-        self.assertEqual((main["module"], main["lean_lib"], main["doc"]), ("Main", "Main", "The main statement."))
+        main = self.rows["decls.jsonl"][LIB + "riemannHypothesis"]
+        self.assertEqual((main["module"], main["lean_lib"], main["doc"]), ("Main", "Main", "The headline claim, proved."))
         files = [r["candidate"] for r in self.rows["rejected.jsonl"].values() if r["reason"] == "outside_default_libs"]
         self.assertEqual(files, ["src/Challenge.lean"])
 
     def test_a_public_name_in_two_modules_is_rejected_not_guessed(self):
-        self.assertNotIn(LIB + "Alpha.dup", self.rows["names.jsonl"])
+        self.assertNotIn(LIB + "Development.dup", self.rows["names.jsonl"])
         rej = [r for r in self.rows["rejected.jsonl"].values() if r["reason"] == "ambiguous_name"]
         self.assertEqual(len(rej), 1)
-        self.assertEqual((rej[0]["candidate"], rej[0]["modules"]), ("Alpha.dup", ["Alpha.Basic", "Beta.Dup"]))
+        self.assertEqual((rej[0]["candidate"], rej[0]["modules"]), ("Development.dup", ["Development.Basic", "Formalism.Dup"]))
 
     def test_what_the_source_does_not_declare_is_skipped(self):
         names = {r["name"] for r in self.rows["names.jsonl"].values()}
-        self.assertFalse(names & {"outside", "Alpha.commented", "Beta.Point.x"})
-        self.assertNotIn("Alpha.notes", {r["module"] for r in self.rows["names.jsonl"].values()})
+        self.assertFalse(names & {"outside", "Development.commented", "Formalism.Point.x"})
+        self.assertNotIn("Development.notes", {r["module"] for r in self.rows["names.jsonl"].values()})
 
     def test_manifest(self):
         m = self.manifest
@@ -121,12 +145,12 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(m["inputs"]["rh"]["src_tree"], src_tree)
         self.assertEqual(sorted(m["reader"]), sorted(B.READER_FILES))
         self.assertIsNone(m["attribution"][0]["license"])
-        self.assertEqual(m["lake"], {"src_dir": "src", "default_libs": ["Alpha", "Beta", "Main"],
+        self.assertEqual(m["lake"], {"src_dir": "src", "default_libs": ["Development", "Formalism", "Main"],
                                      "other_libs": ["Challenge"]})
         c = m["counts"]
         self.assertEqual((c["files"], c["files_in_default_libs"], c["files_with_decls"], c["decls"],
-                          c["decls_private"], c["decls_with_doc"]), (5, 4, 4, 7, 2, 2))
-        self.assertEqual(c["decls_by_lean_lib"], {"Alpha": 5, "Beta": 1, "Main": 1})
+                          c["decls_private"], c["decls_with_doc"]), (5, 4, 4, 14, 3, 3))
+        self.assertEqual(c["decls_by_lean_lib"], {"Development": 12, "Formalism": 1, "Main": 1})
         self.assertEqual(c["rejected_by_reason"], {"decl/ambiguous_name": 1, "file/outside_default_libs": 1})
         self.assertEqual(m["files"]["deps.jsonl"]["rows"], 0)
         self.assertEqual(self.rows["deps.jsonl"], {})
@@ -159,14 +183,13 @@ class BuildRefuses(unittest.TestCase):
     def test_a_file_that_is_not_utf8_is_rejected_and_the_rest_built(self):
         src = os.path.join(self.tmp, "src-copy")
         shutil.copytree(FIX, src)
-        with open(os.path.join(src, "src", "Alpha", "Bad.lean"), "wb") as f:
+        with open(os.path.join(src, "src", "Development", "Bad.lean"), "wb") as f:
             f.write(b"theorem bad : True := trivial -- \xff\n")
         inputs = make_inputs(self.tmp, src)
         m = B.build(inputs, os.path.join(self.tmp, "out"))
         self.assertEqual(m["counts"]["rejected_by_reason"],
                          {"decl/ambiguous_name": 1, "file/not_utf8": 1, "file/outside_default_libs": 1})
-        self.assertEqual(m["counts"]["decls"], 7)
-
+        self.assertEqual(m["counts"]["decls"], 14)
 
 
 class LakeConfig(unittest.TestCase):
@@ -188,18 +211,31 @@ class LakeConfig(unittest.TestCase):
         return B.lake_config(GitTree(os.path.join(tmp, "repo")))
 
     def test_no_default_targets_reads_every_library_and_roots_default_to_the_name(self):
-        prefix, libs, other = self._config('[[lean_lib]]\nname = "Alpha"\n[[lean_lib]]\nname = "Beta"\n'
-                                           'globs = ["Beta.*"]\n')
+        prefix, libs, other = self._config('[[lean_lib]]\nname = "Development"\n[[lean_lib]]\n'
+                                           'name = "Formalism"\nglobs = ["Formalism.*"]\n')
         self.assertEqual((prefix, other), ("", []))
-        self.assertEqual(libs, [("Alpha", [("one", "Alpha")]), ("Beta", [("and_submodules", "Beta")])])
+        self.assertEqual(libs, [("Development", [("one", "Development")]),
+                                ("Formalism", [("and_submodules", "Formalism")])])
 
     def test_a_library_with_its_own_src_dir_refuses(self):
         with self.assertRaisesRegex(D.BuildError, "its own srcDir"):
-            self._config('srcDir = "src"\n[[lean_lib]]\nname = "Alpha"\nsrcDir = "other"\n')
+            self._config('srcDir = "src"\n[[lean_lib]]\nname = "Development"\nsrcDir = "other"\n')
 
     def test_a_src_dir_outside_the_repository_refuses(self):
         with self.assertRaisesRegex(D.BuildError, "not a folder inside"):
-            self._config('srcDir = "../x"\n[[lean_lib]]\nname = "Alpha"\n')
+            self._config('srcDir = "../x"\n[[lean_lib]]\nname = "Development"\n')
+
+
+class Scan(unittest.TestCase):
+    def test_a_dotted_end_closes_each_namespace_it_names(self):
+        lines = ["namespace A", "namespace B", "theorem x : True := trivial", "end A.B",
+                 "theorem y : True := trivial"]
+        self.assertEqual(B.scan(lines), [(2, "A.B.x", False), (4, "y", False)])
+
+    def test_a_public_section_inside_a_namespace_is_public(self):
+        lines = ["module", "namespace M", "def i : Nat := 9", "public section", "def j : Nat := 10", "end",
+                 "end M"]
+        self.assertEqual(B.scan(lines), [(2, "M.i", True), (4, "M.j", False)])
 
 
 class LocalOpener(F.Opener):
@@ -259,7 +295,7 @@ class Fetch(unittest.TestCase):
         F.fetch(self.inputs, self.pins_file(self.first), opener=self.opener)
         self.assertEqual(self.pins()["rh"]["commit"], self.first)
         m = B.build(self.inputs, os.path.join(self.tmp, "out"))
-        self.assertEqual((m["inputs"]["rh"]["commit"], m["counts"]["decls"]), (self.first, 7))
+        self.assertEqual((m["inputs"]["rh"]["commit"], m["counts"]["decls"]), (self.first, 14))
 
     def test_a_pin_the_remote_lacks_fails_and_leaves_rh_unpinned(self):
         F.fetch(self.inputs, opener=self.opener)
