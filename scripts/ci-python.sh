@@ -74,6 +74,7 @@ run_check "Normalized input metadata tests" "$PYTHON_BIN" brain/test_normalized_
 run_check "Immutable Git snapshot tests" "$PYTHON_BIN" brain/test_git_snapshot.py
 run_check "Formal Conjectures and Erdos Git harvester tests" "$PYTHON_BIN" brain/test_git_harvesters_fc_erdos.py
 run_check "Generic Lean Git harvester tests" "$PYTHON_BIN" brain/test_git_harvester_lean_repo.py
+run_check "Lean reader scope tests" "$PYTHON_BIN" brain/test_lean_decl_lines.py
 run_check "D1 acquisition snapshot tests" "$PYTHON_BIN" brain/test_acquire_d1_snapshot.py
 run_check "D1 immutable source export tests" "$PYTHON_BIN" brain/test_export_d1_sources.py
 run_check "Wikidata entity bundle tests" "$PYTHON_BIN" brain/test_acquire_wikidata_entities.py
