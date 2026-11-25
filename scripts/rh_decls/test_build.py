@@ -73,7 +73,7 @@ class BuildFixture(unittest.TestCase):
         self.assertEqual(self.rows["decls.jsonl"][FOO], {
             "id": FOO, "name": "Development.foo", "source_name": "Development.foo", "module": "Development.Basic",
             "lean_lib": "Development", "kind": "theorem", "private": False, "line": 12,
-            "signature": "theorem foo : 1 = 1 := rfl", "doc": "The **foo** lemma.", "refs": None, "source": source})
+            "signature": "theorem foo : 1 = 1", "doc": "The **foo** lemma.", "refs": None, "source": source})
 
     def test_names_and_decls_are_the_same_declarations(self):
         self.assertEqual(sorted(self.rows["names.jsonl"]), sorted(self.rows["decls.jsonl"]))
@@ -210,32 +210,206 @@ class LakeConfig(unittest.TestCase):
         _git_repo(src, os.path.join(tmp, "repo"))
         return B.lake_config(GitTree(os.path.join(tmp, "repo")))
 
-    def test_no_default_targets_reads_every_library_and_roots_default_to_the_name(self):
-        prefix, libs, other = self._config('[[lean_lib]]\nname = "Development"\n[[lean_lib]]\n'
-                                           'name = "Formalism"\nglobs = ["Formalism.*"]\n')
-        self.assertEqual((prefix, other), ("", []))
+    def test_roots_default_to_the_name_and_empty_globs_take_nothing(self):
+        prefix, libs, other = self._config(
+            'defaultTargets = ["Development", "Formalism", "Main"]\n[[lean_lib]]\nname = "Development"\n'
+            '[[lean_lib]]\nname = "Formalism"\nglobs = ["Formalism.*"]\n[[lean_lib]]\nname = "Main"\nglobs = []\n'
+            '[[lean_lib]]\nname = "Other"\n')
+        self.assertEqual((prefix, other), ("", ["Other"]))
         self.assertEqual(libs, [("Development", [("one", "Development")]),
-                                ("Formalism", [("and_submodules", "Formalism")])])
+                                ("Formalism", [("and_submodules", "Formalism")]), ("Main", [])])
+
+    def test_no_default_targets_refuses(self):
+        """Lake's default is no targets, so `lake build` alone builds nothing."""
+        with self.assertRaisesRegex(D.BuildError, "names no defaultTargets"):
+            self._config('[[lean_lib]]\nname = "Development"\n')
 
     def test_a_library_with_its_own_src_dir_refuses(self):
         with self.assertRaisesRegex(D.BuildError, "its own srcDir"):
-            self._config('srcDir = "src"\n[[lean_lib]]\nname = "Development"\nsrcDir = "other"\n')
+            self._config('srcDir = "src"\ndefaultTargets = ["Development"]\n[[lean_lib]]\nname = "Development"\n'
+                         'srcDir = "other"\n')
 
     def test_a_src_dir_outside_the_repository_refuses(self):
         with self.assertRaisesRegex(D.BuildError, "not a folder inside"):
             self._config('srcDir = "../x"\n[[lean_lib]]\nname = "Development"\n')
 
 
-class Scan(unittest.TestCase):
-    def test_a_dotted_end_closes_each_namespace_it_names(self):
-        lines = ["namespace A", "namespace B", "theorem x : True := trivial", "end A.B",
-                 "theorem y : True := trivial"]
-        self.assertEqual(B.scan(lines), [(2, "A.B.x", False), (4, "y", False)])
+def names(source: str) -> list[tuple[str, bool]]:
+    """(Lean's name, private) for each declaration `scan` reads, in file order."""
+    return [(lean, private) for _, _, lean, private, _ in B.scan(source.strip("\n").splitlines())]
 
-    def test_a_public_section_inside_a_namespace_is_public(self):
-        lines = ["module", "namespace M", "def i : Nat := 9", "public section", "def j : Nat := 10", "end",
-                 "end M"]
-        self.assertEqual(B.scan(lines), [(2, "M.i", True), (4, "M.j", False)])
+
+class Scan(unittest.TestCase):
+    """Each expected name is the one Lean 4.37 gives (checked by compiling the same text;
+    `alias` with Batteries). Several come from patterns in riemann-hypothesis and Mathlib."""
+
+    def test_end_closes_one_scope_per_part_of_its_name(self):
+        # RH RingEquivTransportsVarietyPairData.lean: `end C` after `namespace A.B.C`, then reopened
+        self.assertEqual(names("""
+namespace G.C.M
+theorem a : True := trivial
+end M
+end G.C
+namespace G.C.M
+theorem b : True := trivial
+end G.C.M
+theorem c : True := trivial
+"""), [("G.C.M.a", False), ("G.C.M.b", False), ("c", False)])
+        # Mathlib Topology/FiberBundle/Trivialization.lean
+        self.assertEqual(names("""
+namespace Bundle.Pretrivialization
+def p : Nat := 0
+end Pretrivialization
+namespace Trivialization
+def t : Nat := 0
+end Bundle.Trivialization
+def top : Nat := 0
+"""), [("Bundle.Pretrivialization.p", False), ("Bundle.Trivialization.t", False), ("top", False)])
+
+    def test_a_dotted_end_closes_scopes_opened_one_at_a_time(self):
+        self.assertEqual(names("""
+namespace Topology
+section IsInducing
+namespace IsInducing
+theorem inside : True := trivial
+end IsInducing.IsInducing
+theorem outside : True := trivial
+end Topology
+namespace A
+namespace B
+theorem x : True := trivial
+end A.B
+theorem y : True := trivial
+"""), [("Topology.IsInducing.inside", False), ("Topology.outside", False), ("A.B.x", False), ("y", False)])
+
+    def test_a_dotted_section_opens_one_scope_per_part(self):
+        self.assertEqual(names("""
+namespace N
+section S.T
+def x : Nat := 1
+end S.T
+def y : Nat := 2
+end N
+namespace P
+section S.T
+def w : Nat := 0
+end T
+end S
+def z : Nat := 3
+end P
+"""), [("N.x", False), ("N.y", False), ("P.w", False), ("P.z", False)])
+
+    def test_public_scopes_in_a_module(self):
+        self.assertEqual(names("""
+module
+namespace M
+def i : Nat := 9
+public section
+def j : Nat := 10
+end
+end M
+namespace Q.R
+public section
+def a : Nat := 1
+end
+def b : Nat := 2
+end R
+@[expose] public section A.B
+def c : Nat := 3
+end B
+def d : Nat := 4
+end A
+def e : Nat := 5
+end Q
+"""), [("M.i", True), ("M.j", False), ("Q.R.a", False), ("Q.R.b", True), ("Q.c", False), ("Q.d", False),
+       ("Q.e", True)])
+
+    def test_guillemet_names(self):
+        self.assertEqual(names("""
+namespace Arxiv.«0911.2077»
+theorem c : True := trivial
+end Arxiv.«0911.2077»
+theorem d : True := trivial
+namespace N
+def «foo bar» : Nat := 1
+def «exists» : Nat := 2
+end N
+"""), [("Arxiv.«0911.2077».c", False), ("d", False), ("N.«foo bar»", False), ("N.exists", False)])
+
+    def test_declaration_forms(self):
+        decls = B.scan("""
+module
+
+public import Batteries.Tactic.Alias
+
+namespace N
+theorem base : True := trivial
+alias al := base
+theorem iffThm : True ↔ True := Iff.rfl
+alias ⟨mpPriv, mprPriv⟩ := iffThm
+public section
+alias pubAl := base
+alias ⟨mpAl, mprAl⟩ := iffThm
+alias ⟨_, onlyMpr⟩ := iffThm
+instance (priority := high) instPrio : Inhabited Nat := ⟨0⟩
+instance (priority := low) : Inhabited Bool := ⟨true⟩
+class inductive CI : Prop
+  | mk
+class abbrev CA (α : Type) := Inhabited α
+public meta def m2 : Nat := 2
+open Nat in theorem openIn : True := trivial
+end
+meta def m1 : Nat := 1
+public
+theorem splitPublic : True := trivial
+private
+theorem splitPrivate : True := trivial
+end N
+""".strip("\n").splitlines())
+        self.assertEqual([(lean, private, kind) for _, _, lean, private, kind in decls], [
+            ("N.base", True, "theorem"), ("N.al", True, "alias"), ("N.iffThm", True, "theorem"),
+            ("N.mpPriv", True, "alias"), ("N.mprPriv", True, "alias"), ("N.pubAl", False, "alias"),
+            ("N.mpAl", False, "alias"), ("N.mprAl", False, "alias"), ("N.onlyMpr", False, "alias"),
+            ("N.instPrio", False, "instance"), ("N.CI", False, "class"), ("N.CA", False, "class"),
+            ("N.m2", False, "def"), ("N.openIn", False, "theorem"), ("N.m1", True, "def"),
+            ("N.splitPublic", False, "theorem"), ("N.splitPrivate", True, "theorem")])
+        self.assertEqual([start for start, _, lean, _, _ in decls if lean.startswith("N.split")], [22, 24])
+
+
+class Signature(unittest.TestCase):
+    TEXT = """
+/-- A doc. -/
+theorem foo : 1 = 1 := rfl
+theorem multi (a b : Nat)
+    (h : a = b) : -- the hypothesis
+    b = a := by
+  exact h.symm
+def dflt (x : Nat := 0) : Nat := x
+structure P where
+  x : Nat
+def even : Nat → Bool
+  | 0 => true
+  | n + 1 => even n
+abbrev X := Nat
+alias al := foo
+opaque op : Nat
+theorem next : True :=
+  trivial
+"""
+
+    def test_the_header_stops_before_the_body_and_the_next_declaration(self):
+        rows = {r["fq"]: r for r in B.file_decls("src/T.lean", "src/", self.TEXT)}
+        self.assertEqual({n: r["signature"] for n, r in rows.items()}, {
+            "foo": "theorem foo : 1 = 1",
+            "multi": "theorem multi (a b : Nat)\n    (h : a = b) :\n    b = a",
+            "dflt": "def dflt (x : Nat := 0) : Nat",
+            "P": "structure P",
+            "even": "def even : Nat → Bool",
+            "X": "abbrev X",
+            "al": "alias al := foo",
+            "op": "opaque op : Nat",
+            "next": "theorem next : True"})
+        self.assertEqual((rows["foo"]["doc"], rows["foo"]["line"], rows["al"]["kind"]), ("A doc.", 3, "alias"))
 
 
 class LocalOpener(F.Opener):
@@ -296,6 +470,29 @@ class Fetch(unittest.TestCase):
         self.assertEqual(self.pins()["rh"]["commit"], self.first)
         m = B.build(self.inputs, os.path.join(self.tmp, "out"))
         self.assertEqual((m["inputs"]["rh"]["commit"], m["counts"]["decls"]), (self.first, 14))
+
+    def test_a_pins_file_that_is_not_a_mapping_is_unreadable_not_a_crash(self):
+        os.makedirs(self.inputs)
+        with open(os.path.join(self.inputs, "PINS.json"), "w") as f:
+            json.dump({"inputs": ["rh"]}, f)
+        F.fetch(self.inputs, opener=self.opener)
+        self.assertEqual(list(self.pins()), ["rh"])
+
+    def test_a_blob_outside_src_is_an_error_not_a_lazy_fetch(self):
+        """fetch checks out `src/` only, so a lakefile whose srcDir is elsewhere names files whose
+        blobs were never fetched: build must stop, not fetch them from the remote."""
+        with open(os.path.join(self.remote, "lakefile.toml"), "w") as f:
+            f.write('srcDir = "tools"\ndefaultTargets = ["Script"]\n[[lean_lib]]\nname = "Script"\n')
+        env = {"PATH": os.environ.get("PATH", ""), "HOME": self.remote, "GIT_CONFIG_NOSYSTEM": "1",
+               "GIT_AUTHOR_NAME": "f", "GIT_AUTHOR_EMAIL": "f@example.invalid", "GIT_COMMITTER_NAME": "f",
+               "GIT_COMMITTER_EMAIL": "f@example.invalid"}
+        for args in (["add", "."], ["-c", "commit.gpgsign=false", "commit", "-q", "-m", "tools"]):
+            subprocess.run(["git", "-C", self.remote, *args], check=True, env=env)
+        F.fetch(self.inputs, opener=self.opener)
+        out = os.path.join(self.tmp, "out")
+        with self.assertRaisesRegex(D.BuildError, "tools/Script.lean"):
+            B.build(self.inputs, out)
+        self.assertFalse(os.path.exists(out))
 
     def test_a_pin_the_remote_lacks_fails_and_leaves_rh_unpinned(self):
         F.fetch(self.inputs, opener=self.opener)

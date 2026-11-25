@@ -111,21 +111,27 @@ From trough's `data/mathlib/` (`concept-deps.json`, `yaml/{overview,undergrad,10
 From the source of
 [leanprover-community/riemann-hypothesis](https://github.com/leanprover-community/riemann-hypothesis).
 That repository publishes no doc-gen4 site and trough has no record of it, so this producer reads
-its source at one commit with the Brain's own Lean reader: `build_common`'s comment stripping and
-declaration pattern, and the frontier harvest's kind, statement and docstring snippets
-(`formal_conjectures`, as `lean_repo.harvest_rows` uses them). No Lean runs. The scopes are the
-producer's own pass (`build.scan`) rather than `build_common._lean_decl_lines`, for two reasons:
+its source text at one commit. No Lean runs. It reuses the Brain's comment stripping
+(`build_common._strip_lean_comments`) and the frontier harvest's docstring and link extraction
+(`formal_conjectures`). The declarations, their scopes and their headers come from the producer's
+own pass (`build.scan`, `build.signature`) rather than `build_common._lean_decl_lines`:
 
 - Every RH file is a `module`. In a module, a declaration outside a `public section` is private
   unless it is marked `public`, and Lean names it `_private.<module>.0.<name>`.
-- `_lean_decl_lines` only knows a bare `section`, so the `end` of a `public section` or
-  `noncomputable section` closes the enclosing namespace there, and later declarations get the
-  wrong full name.
+- Scopes follow Lean: `namespace A.B` and `section A.B` open one scope per part, a bare `section`
+  and `mutual` open one, and `end X` closes as many scopes as `X` has parts. `_lean_decl_lines`
+  only knows a bare `section` and keeps `A.B` as one scope, so at some `end`s it closes the wrong
+  scope or none, and later declarations get the wrong full name.
+- Besides `theorem`, `lemma`, `def`, `abbrev`, `structure`, `class`, `instance`, `inductive`,
+  `opaque` and `axiom`, it reads `alias` (with `alias ⟨a, b⟩`), `class inductive`, `class abbrev`,
+  named instances with a `(priority := …)`, `meta` declarations, a modifier on the line above
+  its declaration, and an `open … in` in front of one.
 
-`scan` treats `namespace`, every form of `section`, and `mutual` as scopes. The fixture's
-expected names were checked with Lean 4.37. The files read are the modules of the
+Every case in `scripts/rh_decls/test_build.py` was checked by compiling it with Lean 4.37
+(`alias` with Batteries). The files read are the modules of the
 libraries `lake build` builds: `lakefile.toml` at the commit gives `srcDir`, `defaultTargets` and
 each `lean_lib`'s globs (`X`, `X.+`, `X.*`; `roots`, else the library's name, when there are none).
+A lakefile without `defaultTargets` is refused, since `lake build` alone would build nothing.
 Comparator's `Challenge` library is not a default target. It restates the five headline theorems
 with `sorry` under the same names, so reading it would make them ambiguous.
 
@@ -136,13 +142,15 @@ python3 -m scripts.rh_decls build --inputs DIR --out OUT
 
 The input is `rh/`, a clone one commit deep with only `src/` checked out (`--depth 1
 --filter=blob:none --sparse`), pinned by commit in PINS.json's `rh` entry. It shares no input with
-producers 1–3. Ids are `decl:RiemannHypothesis:<Lean name>` for the whole repository; `module` and
-`lean_lib` say where the declaration lives.
+producers 1–3. Its `Opener` is producer 1's with a one-commit-deep `clone`; the tests clone a
+local `file://` repository, which needs no network. Ids are `decl:RiemannHypothesis:<Lean name>`
+for the whole repository, with the name printed as Lean prints it (`«exists»` is `exists`, while
+`«foo bar»` keeps its guillemets); `module` and `lean_lib` say where the declaration lives.
 
 | File | Rows |
 |---|---|
 | `names.jsonl` | every declaration: `id`, `name`, `module`, `lean_lib`, `kind`, `private`, `source` (`{repo, commit, path, line}`) |
-| `decls.jsonl` | the same declarations, adding `source_name` (the name as written), `line`, `signature` (the statement as the frontier harvest cuts it: from the declaration line to `:=`, at most 12 lines and 700 characters), `doc` (the docstring, whitespace collapsed, at most 700 characters) and `refs` (Erdős, Wikipedia and OEIS links in the docstring) |
+| `decls.jsonl` | the same declarations, adding `source_name` (the name as written), `line`, `signature` (the header: from the declaration's first line, comments removed, up to the first `:=` or `where` outside brackets, an equation line `\| …`, a blank line or the next command; at most 12 lines and 700 characters; an `alias` keeps its `:= target`), `doc` (the docstring, whitespace collapsed, at most 700 characters) and `refs` (Erdős, Wikipedia and OEIS links in the docstring) |
 | `deps.jsonl` | empty: dependency edges need the elaborated project |
 | `rejected.jsonl` | `decl/ambiguous_name` (a public name declared in more than one module, which Lean allows when no module imports both; neither is exported), `file/outside_default_libs` (a `.lean` file under `srcDir` that no default library takes), `file/not_utf8` |
 
@@ -151,21 +159,29 @@ producers 1–3. Ids are `decl:RiemannHypothesis:<Lean name>` for the whole repo
   or when its file is a `module` and it is neither marked `public` nor inside a `public section`.
 - What the source does not spell out is not exported: structure fields, anonymous instances,
   `to_additive` twins and other generated names. Commented-out code is skipped.
+- A limit shared with the Brain's reader: the comment stripper does not know string literals, so
+  a string holding `/-` would hide what follows it up to a `-/`. RH has none.
 - The reader's files (`brain/build_common.py`, `brain/ingest/{common,formal_conjectures}.py`) are
   hashed into the manifest's `reader`, so a change to the reader gives a new logical root. The manifest's `lake` block records the libraries read and left out.
 
 Measured at main `246656fc` on 2026-11-25, one process on a Linux server:
 
-- 745,776 declarations from 59,469 files in the nine default libraries: Development 491,431,
-  Formalism 165,662, GroundTheory 41,030, ReciprocityTheory 28,521, CompanionTheory 9,092,
-  GroundTheoryFields 7,173, PositivityTheory 2,668, Lemmata 190, Main 9.
-- 54,802 private, 349 with a docstring. Four ambiguous names and `src/Challenge.lean` rejected.
-- Against `_lean_decl_lines` on the same files, `scan` changes 826 declarations in 51 files:
-  341 become private, 359 get back a namespace the shared reader had closed early, and 126 both.
-  Lean's own constant names (the dependency census) agree with `scan` on the ones checked.
-- A first fetch takes about 100 s and 1.4 GB on disk; moving the checkout to a newer commit took
-  17 s. The build took about 3 minutes and wrote 990 MB (`decls.jsonl` 642 MB, `names.jsonl`
-  395 MB).
+- 749,426 declarations from 59,469 files in the nine default libraries: Development 493,677,
+  Formalism 166,457, GroundTheory 41,496, ReciprocityTheory 28,642, CompanionTheory 9,110,
+  GroundTheoryFields 7,176, PositivityTheory 2,669, Lemmata 190, Main 9. 3,312 are aliases.
+- 54,955 private, 349 with a docstring. Four ambiguous names and `src/Challenge.lean` rejected.
+- Checked against Lean's own names. Lean writes an `.ilean` index for each module it builds, and
+  the build server's shared cache store holds them for recent main commits. In 6,000 modules
+  sampled from it, 87,902 of the export's 87,945 names are among the names Lean defines in that
+  module (its `decls`, or a `references` entry with a definition there), every alias included.
+  The other 43 are not in that build at all, as for source added since. No name differs in
+  namespace or visibility.
+- On the same files, `_lean_decl_lines` reads 888 names that `scan` does not, and misses 4,538
+  that it reads (3,312 of them aliases).
+- No signature runs into the next declaration; a `:=` left in one is inside brackets, as a
+  named argument.
+- A first fetch takes about 100 s and 1.4 GB on disk. The build took 3 to 5 minutes on a shared
+  server and wrote 985 MB (`decls.jsonl` 635 MB, `names.jsonl` 397 MB).
 
 That is about 2.4 times Tau Ceti's 311k declarations, so, like Tau Ceti, it can reach the site only
 after the D1 cutover ([`BRAIN-TAUCETI.md`](BRAIN-TAUCETI.md)).
@@ -188,11 +204,12 @@ authors and notes from the yaml are not copied.
 riemann-hypothesis has no licence: its README says the submission belongs to its author and was
 published without one. On 2026-11-24 Jack chose to carry its statements and docstrings anyway, an
 exception to "pointers, not prose" above. Producer 4's `attribution` says so, with `license`
-null. The repository's `comparator/` files (Apache-2.0, from formal-conjectures) are outside `src/`
-and are not read.
+null. The declarations in the repository's `comparator/` folder that are copied from
+formal-conjectures are Apache-2.0, as its README says; `comparator/` is outside `src/` and is not
+read.
 
 ## Not yet
 
 - No importer into D1 or the Brain, and no schedule.
-- Producer 4 has no dependency edges, and its `signature` is the declaration's header, so a
-  definition's body after `:=` is not in it. Both need more than the source text.
+- Producer 4 has no dependency edges, and its `signature` is the declaration's header only, so a
+  definition's body is not in it. Both need more than the source text.
